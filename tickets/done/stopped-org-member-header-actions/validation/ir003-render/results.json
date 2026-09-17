@@ -1,0 +1,18 @@
+{
+  "scope": "Implementation synthetic transport renderer only; no backend/provider/API acceptance",
+  "results": [
+    {
+      "entry": "header",
+      "pending": true,
+      "failureRetainsSource": true,
+      "retryFreshValue": true
+    },
+    {
+      "entry": "group",
+      "pending": true,
+      "failureRetainsSource": true,
+      "retryFreshValue": true
+    }
+  ],
+  "errors": []
+}

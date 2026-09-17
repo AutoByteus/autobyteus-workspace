@@ -1,3 +1,4 @@
+import type { AgentOrgRunLaunchSeed } from '~/types/agent/AgentOrgRunLaunchSeed'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
@@ -81,6 +82,17 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
     launchError.value = null
   }
 
+  const beginFromSeed = (seed: AgentOrgRunLaunchSeed): void => {
+    const copy: AgentOrgRunLaunchSeed = JSON.parse(JSON.stringify(seed))
+    begin(copy)
+    autoExecuteTools.value = copy.autoExecuteTools
+    workspaceSelection.value = copy.workspaceSelection
+    rootWorkspaceSelectionSource.value = 'explicit'
+    teamOverrides.value = copy.teamOverrides
+    agentOverrides.value = copy.agentOverrides
+    teamWorkspaceSelections.value = copy.teamWorkspaceSelections
+  }
+
   const setRootRuntimeKind = (value: string): void => {
     if (runtimeKind.value === value) return
     runtimeKind.value = value
@@ -161,7 +173,7 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
   const setModelSchemaState = (address: AgentTeamAddress, state: RuntimeModelConfigSchemaState): void => {
     if (!modelSchemaScopeAddresses.value.includes(address)) return
     const current = modelSchemaStateByAddress.value[address]
-    if (current?.status === state.status && current.message === state.message) return
+    if (current?.status === state.status && current.message === state.message && current.reason === state.reason) return
     modelSchemaStateByAddress.value = {
       ...modelSchemaStateByAddress.value,
       [address]: { ...state },
@@ -170,7 +182,12 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
   const modelSchemaStateFor = (address: AgentTeamAddress): RuntimeModelConfigSchemaState =>
     modelSchemaStateByAddress.value[address] ?? loadingSchemaState()
   const firstModelSchemaBlock = computed(() => {
-    for (const address of modelSchemaScopeAddresses.value) {
+    const ordered = [...modelSchemaScopeAddresses.value].sort((left, right) => {
+      const failure = (address: string) => ['invalid', 'unavailable'].includes(modelSchemaStateFor(address).status)
+        && modelSchemaStateFor(address).reason !== 'model_required' ? 0 : 1
+      return failure(left) - failure(right)
+    })
+    for (const address of ordered) {
       const state = modelSchemaStateFor(address)
       if (state.status !== 'ready') return Object.freeze({ address, state })
     }
@@ -210,7 +227,7 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
     workspaceSelection, teamOverrides, agentOverrides, teamWorkspaceSelections, teamWorkspaceOperations,
     modelSchemaScopeAddresses, modelSchemaStateByAddress, firstModelSchemaBlock, allModelSchemaScopesReady,
     projectionError, launchError, intent,
-    begin, setRootRuntimeKind, setRootLlmModelIdentifier, setRootLlmConfig, setRootAutoExecuteTools,
+    begin, beginFromSeed, setRootRuntimeKind, setRootLlmModelIdentifier, setRootLlmConfig, setRootAutoExecuteTools,
     setWorkspaceSelection, selectDefaultRootWorkspace, setTeamOverride, resetTeamOverride, setAgentOverride,
     setTeamWorkspaceSelection, setTeamWorkspaceOperation, teamWorkspaceSelectionFor, teamWorkspaceOperationFor,
     reconcileModelSchemaScopes, setModelSchemaState, modelSchemaStateFor,

@@ -1,3 +1,7 @@
+import { isDeepStrictEqual } from "node:util";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import type { AgentOrgMemberModelConfigIdentity, AgentOrgMemberModelConfig, UpdateAgentOrgMemberModelConfig, AgentOrgMemberModelConfigResult } from "../domain/agent-org-member-model-config.js";
+import { resolveAgentOrgMemberModelConfig, patchAgentOrgMemberModelConfig, AgentOrgMemberModelConfigNotFound } from "./agent-org-member-model-config-mutator.js";
 import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { ActiveCollaborationRootDirectory, getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -18,6 +22,7 @@ import type { AgentOrgExecutionScopeBuilder } from "./agent-org-execution-scope-
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
 
 export type AgentOrgRunManagerOptions = Readonly<{
+  modelSelectionValidator?: Pick<RunModelSelectionValidator, "validate">;
   memoryDir: string;
   scopeBuilder: AgentOrgExecutionScopeBuilder;
   executionTreeStore?: AgentOrgRunExecutionTreeStore;
@@ -46,6 +51,7 @@ export class AgentOrgRunManager {
   private readonly active = new Map<string, AgentOrgRun>();
   private readonly transitions = new Map<string, Promise<void>>();
   private rootAdmissionOpen = true;
+  private readonly modelSelectionValidator: Pick<RunModelSelectionValidator, "validate"> | undefined;
 
   static getInstance(): AgentOrgRunManager {
     if (!this.instance) throw new Error("The process AgentOrgRunManager is not initialized.");
@@ -61,6 +67,7 @@ export class AgentOrgRunManager {
 
   constructor(options: AgentOrgRunManagerOptions) {
     if (!options.scopeBuilder) throw new Error("AgentOrgExecutionScopeBuilder is required.");
+    this.modelSelectionValidator = options.modelSelectionValidator;
     this.layout = new AgentMemoryLayout(options.memoryDir);
     this.scopeBuilder = options.scopeBuilder;
     this.tokenUsageRunStore = options.tokenUsageRunStore ?? new TokenUsageRunStore();
@@ -167,6 +174,79 @@ export class AgentOrgRunManager {
         snapshot: Object.freeze({ tree: state.executionTree, tasks: state.taskRecords,
           messages: state.communicationMessages, statuses }) });
     });
+  }
+
+  getMemberModelConfig(identity: AgentOrgMemberModelConfigIdentity): Promise<AgentOrgMemberModelConfig> {
+    return this.withTransition(required(identity.orgRunId, "orgRunId"), async () => {
+      const tree = await this.readModelConfigTree(identity);
+      return this.memberModelConfig(tree, identity);
+    });
+  }
+
+  updateStoppedMemberModelConfig(input: UpdateAgentOrgMemberModelConfig): Promise<AgentOrgMemberModelConfigResult> {
+    return this.withTransition(required(input.orgRunId, "orgRunId"), async () => {
+      let canonical: AgentOrgMemberModelConfig | null = null;
+      const result = (outcome: AgentOrgMemberModelConfigResult["outcome"], message: string,
+        fieldErrors: AgentOrgMemberModelConfigResult["fieldErrors"] = []): AgentOrgMemberModelConfigResult => ({
+        success: outcome === "UPDATED" || outcome === "UNCHANGED", outcome, message, canonical,
+        isActive: this.active.has(input.orgRunId),
+        editability: canonical?.editability ?? { editable: false, reason: "REFRESH_REQUIRED" }, fieldErrors,
+      });
+      let tree: AgentOrgRunExecutionTreeFileV1;
+      try { tree = await this.readModelConfigTree(input); canonical = this.memberModelConfig(tree, input); }
+      catch (error) { return result(error instanceof AgentOrgMemberModelConfigNotFound ? "NOT_FOUND" : "INTERNAL_ERROR", String(error)); }
+      if (this.active.has(input.orgRunId)) return result("RUN_ACTIVE", "The enclosing Org is managed or active.");
+      if (tree.archivedAt) return result("RUN_ARCHIVED", "The Org is archived.");
+      if (!canonical.editability.editable) return result("VALIDATION_FAILED", canonical.editability.reason!);
+      if (!this.modelSelectionValidator) return result("INTERNAL_ERROR", "Model selection capability is unavailable.");
+      let validation;
+      try {
+        const current = canonical.launchConfiguration;
+        validation = await this.modelSelectionValidator.validate({ context: {
+          runtimeKind: current.runtimeKind, currentModelIdentifier: current.llmModelIdentifier,
+          workspaceRootPath: current.workspaceRootPath ?? "",
+        }, selection: { llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig } });
+      } catch { return result("INTERNAL_ERROR", "Model validation is unavailable."); }
+      if (validation.kind === "invalid") return result("VALIDATION_FAILED", "Invalid model configuration.", validation.errors);
+      if (validation.kind === "model_unavailable") return result("MODEL_UNAVAILABLE", "Model unavailable.");
+      if (validation.kind === "schema_unavailable") return result("SCHEMA_UNAVAILABLE", "Model schema unavailable.");
+      if (validation.kind !== "valid") return result("INTERNAL_ERROR", "Model validation returned no selection.");
+      const expected = patchAgentOrgMemberModelConfig(tree, input, validation.selection);
+      if (isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "Model configuration is unchanged.");
+      // From this point, an unexpected error cannot establish that rename did not occur.
+      let outcome: "committed" | "not_renamed" | "renamed_finalization_indeterminate";
+      try { outcome = (await this.executionTreeStore.write(this.layout.getOrgDirPath(input.orgRunId), expected)).outcome; }
+      catch { outcome = "renamed_finalization_indeterminate"; }
+      let readback: AgentOrgRunExecutionTreeFileV1 | null = null;
+      canonical = null;
+      try {
+        readback = await this.executionTreeStore.read(this.layout.getOrgDirPath(input.orgRunId), input.orgRunId);
+        if (readback) canonical = this.memberModelConfig(readback, input);
+      } catch { /* Unknown canonical values must not become the requested selection. */ }
+      if (outcome === "not_renamed") return result("PERSISTENCE_FAILED", "Configuration was not written.");
+      if (outcome !== "committed" || !readback || !isDeepStrictEqual(readback, expected)) {
+        return result("PERSISTENCE_INDETERMINATE", "Save outcome is uncertain. Refresh canonical configuration before another Save.");
+      }
+      return result("UPDATED", "Model configuration saved.");
+    });
+  }
+
+  private async readModelConfigTree(identity: AgentOrgMemberModelConfigIdentity) {
+    if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(identity.orgRunId)) {
+      throw new AgentOrgMemberModelConfigNotFound("AgentOrg package is not admitted.");
+    }
+    const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(identity.orgRunId), identity.orgRunId);
+    if (!tree) throw new AgentOrgMemberModelConfigNotFound("AgentOrg configuration is unavailable.");
+    resolveAgentOrgMemberModelConfig(tree, identity);
+    return tree;
+  }
+  private memberModelConfig(tree: AgentOrgRunExecutionTreeFileV1, identity: AgentOrgMemberModelConfigIdentity): AgentOrgMemberModelConfig {
+    const node = resolveAgentOrgMemberModelConfig(tree, identity);
+    const reason = this.active.has(identity.orgRunId) ? "RUN_ACTIVE" : tree.archivedAt ? "RUN_ARCHIVED"
+      : tree.applicationBinding ? "OWNERSHIP_UNAVAILABLE" : !this.rootAdmissionOpen ? "ADMISSION_CLOSED" : null;
+    return { orgRunId: identity.orgRunId, memberAddress: identity.memberAddress, agentRunId: identity.agentRunId,
+      launchConfiguration: node.launchConfiguration, isActive: this.active.has(identity.orgRunId),
+      editability: { editable: reason === null, reason } };
   }
 
   terminate(orgRunIdInput: string): Promise<boolean> {

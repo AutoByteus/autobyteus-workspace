@@ -7,6 +7,7 @@
           <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">{{ org.name }}</div>
         </div>
 
+        <template v-if="initializationReady" :key="configStore.draftEpoch">
         <RuntimeModelConfigFields
           :runtime-kind="runtimeKind"
           :llm-model-identifier="llmModelIdentifier"
@@ -80,6 +81,11 @@
           />
         </MemberOverridesDisclosure>
 
+        </template>
+        <p v-if="initializationError" role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">
+          {{ initializationError }}
+          <button type="button" class="ml-2 underline" data-test="org-seed-retry" @click="retryInitialization++">{{ t('workspace.agentOrg.runConfig.retryInitialization') }}</button>
+        </p>
         <p
           v-if="referenceDiagnostic"
           :role="referenceDiagnostic.unavailable ? 'alert' : 'status'"
@@ -98,9 +104,9 @@
         <p
           v-if="modelSchemaBlockingDiagnostic"
           id="org-model-schema-status"
-          :role="modelSchemaBlockingDiagnostic.status === 'loading' ? 'status' : 'alert'"
+          :role="modelSchemaBlockingDiagnostic.neutral ? 'status' : 'alert'"
           class="rounded-md border p-3 text-sm"
-          :class="modelSchemaBlockingDiagnostic.status === 'loading'
+          :class="modelSchemaBlockingDiagnostic.neutral
             ? 'border-blue-100 bg-blue-50 text-blue-700'
             : 'border-red-200 bg-red-50 text-red-700'"
           data-test="org-config-schema-diagnostic"
@@ -108,7 +114,10 @@
           {{ modelSchemaBlockingDiagnostic.message }}
         </p>
       </div>
-      <div v-else class="flex h-full items-center justify-center text-gray-500">{{ t('workspace.agentOrg.runConfig.loading') }}</div>
+      <div v-else class="flex h-full flex-col items-center justify-center gap-3 text-gray-500" :role="catalogError || catalogLoaded ? 'alert' : 'status'">
+        {{ catalogError || (catalogLoaded ? t('workspace.agentOrg.inspectionUnavailable') : t('workspace.agentOrg.runConfig.loading')) }}
+        <button v-if="catalogError || catalogLoaded" type="button" class="underline" @click="loadCatalogs">{{ t('workspace.agentOrg.runConfig.retryInitialization') }}</button>
+      </div>
     </div>
     <div class="border-t border-gray-200 bg-gray-50 px-4 py-3">
       <button
@@ -121,7 +130,7 @@
       >
         {{ orgRunStore.launching ? t('workspace.agentOrg.runConfig.starting') : t('workspace.agentOrg.runConfig.run') }}
       </button>
-      <p v-if="!workspaceReady" class="mt-2 text-xs text-amber-700">{{ t('workspace.agentOrg.runConfig.workspaceRequired') }}</p>
+      <p v-if="initializationReady && !workspaceReady" class="mt-2 text-xs text-amber-700">{{ t('workspace.agentOrg.runConfig.workspaceRequired') }}</p>
     </div>
   </div>
 </template>
@@ -152,6 +161,8 @@ import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelecti
 import { projectEditableAgentOrgRunFormModel } from '~/utils/editableAgentOrgRunFormModel'
 import { hasMeaningfulLaunchOverride } from '~/utils/teamRunConfigUtils'
 import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
+import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
+import { buildEditableAgentOrgRunSeed } from '~/services/runConfigEditing/agentOrgRunLaunchSeed'
 import { toAgentOrgPlacementLaunchConfiguration } from '~/utils/agentOrgLaunchPatch'
 
 const route = useRoute()
@@ -176,18 +187,20 @@ const org = computed(() => orgStore.byId(definitionId.value))
 const workspaceLoading = ref(false)
 const workspaceError = ref<string | null>(null)
 const editingDirectAgent = ref<AgentTeamAddress | null>(null)
-const initializedDefinitionId = ref<string | null>(null)
+const sourceOrgRunId = computed(() => String(route.query.sourceOrgRunId || ''))
+const intentKey = computed(() => JSON.stringify([definitionId.value, sourceOrgRunId.value]))
+const initializedIntent = ref<string | null>(null)
+const initializationReady = computed(() => initializedIntent.value === intentKey.value)
+const initializationError = ref<string | null>(null)
+const retryInitialization = ref(0)
+let initializedSource: Awaited<ReturnType<typeof readAgentOrgRunInspection>> | null = null
+watch(intentKey, () => { initializedIntent.value = null; initializedSource = null }, { flush: 'sync' })
 
-watch(org, (value) => {
-  if (!value || initializedDefinitionId.value === value.id) return
-  initializedDefinitionId.value = value.id
+watch([org, intentKey], ([value, intent]) => {
+  if (!value || sourceOrgRunId.value || initializedIntent.value === intent) return
+  configStore.begin({ definitionId: value.id, ...value.defaultLaunchConfig })
+  initializedIntent.value = intent
   editingDirectAgent.value = null
-  configStore.begin({
-    definitionId: value.id,
-    runtimeKind: value.defaultLaunchConfig?.runtimeKind,
-    llmModelIdentifier: value.defaultLaunchConfig?.llmModelIdentifier,
-    llmConfig: value.defaultLaunchConfig?.llmConfig ?? null,
-  })
 }, { immediate: true })
 
 // A public catalog is not an inventory of the selected Org's owned definitions.
@@ -203,7 +216,7 @@ const references = ref<{
 const referencesReady = computed(() => Boolean(referenceKey.value
   && references.value.key === referenceKey.value && references.value.status === 'ready'))
 const referenceDiagnostic = computed(() => {
-  if (!org.value || referencesReady.value) return null
+  if (!org.value || initializationError.value || (referencesReady.value && initializationReady.value)) return null
   const unavailable = references.value.key === referenceKey.value && references.value.status === 'unavailable'
   return {
     unavailable,
@@ -214,21 +227,44 @@ const referenceDiagnostic = computed(() => {
       : t('workspace.agentOrg.runConfig.referencesLoading'),
   }
 })
-watch(referenceKey, async (key, _previous, onCleanup) => {
+watch([referenceKey, intentKey, retryInitialization], async ([key, intent], _previous, onCleanup) => {
   let current = true
   onCleanup(() => { current = false })
+  initializationError.value = null
   references.value = { key, status: 'loading', snapshot: null }
   if (!key || !org.value) return
-  const selected = { id: org.value.id, members: org.value.members.map(member => ({ ...member })) }
+  const selected = { ...org.value, members: org.value.members.map(member => ({ ...member })) }
+  const sourceId = sourceOrgRunId.value
   try {
-    const snapshot = await loadAgentOrgDefinitionReferences(selected.id, selected.members, {
+    const snapshotRequest = loadAgentOrgDefinitionReferences(selected.id, selected.members, {
       getCatalogAgentById: agentStore.getAgentDefinitionById,
       getCatalogTeamById: teamStore.getCatalogAgentTeamDefinitionById,
     })
-    if (!current || referenceKey.value !== key) return
+    const [snapshot, source] = await Promise.all([
+      snapshotRequest,
+      sourceId && initializedIntent.value !== intent ? readAgentOrgRunInspection(sourceId) : null,
+    ])
+    if (!current || referenceKey.value !== key || intentKey.value !== intent) return
+    if (snapshot.unavailable.length && !sourceId) {
+      references.value = { key, status: 'unavailable', snapshot }
+      return
+    }
+    if (snapshot.unavailable.length) throw new Error(t('workspace.agentOrg.runConfig.referencesUnavailable', { references: snapshot.unavailable.join(', ') }))
+    const sourceSnapshot = source ?? initializedSource
+    if (sourceId && !sourceSnapshot) throw new Error(t('workspace.agentOrg.inspectionUnavailable'))
+    const seed = sourceId && sourceSnapshot ? buildEditableAgentOrgRunSeed(sourceSnapshot.execution_tree, selected, snapshot,
+      Object.values(workspaceStore.workspaceMetadataById)) : null
+    if (initializedIntent.value !== intent) {
+      if (seed) configStore.beginFromSeed(seed)
+      else configStore.begin({ definitionId: selected.id, ...selected.defaultLaunchConfig })
+      initializedSource = source
+      initializedIntent.value = intent
+      editingDirectAgent.value = null
+    }
     references.value = { key, status: snapshot.unavailable.length ? 'unavailable' : 'ready', snapshot }
-  } catch {
-    if (current && referenceKey.value === key) {
+  } catch (cause) {
+    if (current && referenceKey.value === key && intentKey.value === intent) {
+      if (sourceId) initializationError.value = cause instanceof Error ? cause.message : String(cause)
       references.value = { key, status: 'unavailable', snapshot: null }
     }
   }
@@ -257,7 +293,7 @@ const rootConfig = computed<Readonly<ResolvedTeamRunLaunchConfig>>(() => Object.
   skillAccessMode: 'PRELOADED_ONLY',
 }))
 const projection = computed(() => {
-  if (!org.value || !referencesReady.value) return null
+  if (!org.value || !referencesReady.value || !initializationReady.value) return null
   return projectEditableAgentOrgRunFormModel({
     orgDefinition: org.value,
     rootConfig: rootConfig.value,
@@ -289,15 +325,17 @@ watch(formModel, (model) => {
   ])
 }, { immediate: true })
 const modelSchemaBlockingDiagnostic = computed(() => {
+  if (!initializationReady.value) return null
   const blocked = firstModelSchemaBlock.value
   if (!blocked) return null
-  const message = blocked.state.status === 'loading'
+  const missing = blocked.state.reason === 'model_required'
+  const message = missing ? t('workspace.agentOrg.runConfig.modelRequired', { address: blocked.address }) : blocked.state.status === 'loading'
     ? t('workspace.agentOrg.runConfig.schemaLoading', { address: blocked.address })
     : t('workspace.agentOrg.runConfig.schemaBlocked', {
         address: blocked.address,
         error: blocked.state.message || t('workspace.agentOrg.runConfig.schemaUnavailable'),
       })
-  return Object.freeze({ status: blocked.state.status, message })
+  return Object.freeze({ status: blocked.state.status, message, neutral: missing || blocked.state.status === 'loading' })
 })
 const workspaceReady = computed(() => Boolean(rootWorkspacePath.value))
 const teamWorkspacesReady = computed(() => Object.entries(configStore.teamWorkspaceSelections).every(
@@ -307,7 +345,7 @@ const teamWorkspacesReady = computed(() => Object.entries(configStore.teamWorksp
   },
 ))
 const canRun = computed(() => Boolean(
-  org.value && referencesReady.value && formModel.value && runtimeKind.value && llmModelIdentifier.value && workspaceReady.value
+  org.value && initializationReady.value && referencesReady.value && formModel.value && runtimeKind.value && llmModelIdentifier.value.trim() && workspaceReady.value
     && teamWorkspacesReady.value && allModelSchemaScopesReady.value,
 ))
 
@@ -433,18 +471,26 @@ const runOrg = async () => {
 }
 
 const applyAvailableRootDefault = (): void => {
-  configStore.selectDefaultRootWorkspace(workspaceStore.tempWorkspaceId)
+  if (initializationReady.value && !sourceOrgRunId.value) configStore.selectDefaultRootWorkspace(workspaceStore.tempWorkspaceId)
 }
 
-watch(() => workspaceStore.tempWorkspaceId, applyAvailableRootDefault)
+watch([() => workspaceStore.tempWorkspaceId, initializationReady], applyAvailableRootDefault)
 
-onMounted(async () => {
-  await Promise.all([
-    orgStore.fetchAll(),
-    agentStore.fetchAllAgentDefinitions(),
-    teamStore.fetchAllAgentTeamDefinitions(),
-    workspaceStore.fetchAllWorkspaces(),
-  ])
-  applyAvailableRootDefault()
-})
+const catalogLoaded = ref(false)
+const catalogError = ref<string | null>(null)
+const loadCatalogs = async () => {
+  catalogLoaded.value = false
+  catalogError.value = null
+  try {
+    await Promise.all([
+      orgStore.fetchAll(),
+      agentStore.fetchAllAgentDefinitions(),
+      teamStore.fetchAllAgentTeamDefinitions(),
+      workspaceStore.fetchAllWorkspaces(),
+    ])
+    applyAvailableRootDefault()
+    catalogLoaded.value = true
+  } catch (cause) { catalogError.value = cause instanceof Error ? cause.message : String(cause) }
+}
+onMounted(loadCatalogs)
 </script>

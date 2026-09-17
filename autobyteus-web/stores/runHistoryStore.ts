@@ -375,6 +375,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
         executionTree: teamRunExecutionTreeDtoSchema.parse(raw.executionTree),
         modelConfigEditability: raw.modelConfigEditability,
       };
+      if (payload.teamRunId !== teamRunId || payload.executionTree.root_team.team_run_id !== teamRunId) {
+        throw new Error(`Team execution tree root identity mismatch for '${teamRunId}'.`);
+      }
       this.teamResumeConfigByTeamRunId[teamRunId] = payload;
       return payload;
     },

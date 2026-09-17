@@ -1,0 +1,12 @@
+{
+  "data/agent-orgs/task-policy-lab/org-config.json": "a59fa966894db38a3316c430e46811d71249dce9c593bdb1b0ca28c14afa993d",
+  "data/agent-orgs/task-policy-lab/org.md": "ef2398dbcbe33dcbd62b8588d14dc728021f9bf57de03d4944faa55831cc30e6",
+  "data/agent-orgs/task-policy-lab/agents/parent/agent.md": "d9916e58d7821d7a6e379dfc923e959b633b880990683f2de5cc58c7ceeaac5f",
+  "data/agent-orgs/task-policy-lab/agents/parent/agent-config.json": "f677a792530381d75c72dbce41ab212ebed0c08300e32f5497a3759b4c08a5ee",
+  "data/agent-orgs/task-policy-lab/agents/worker/agent.md": "f986f2f595b107e7d02337dca7f121ed681b7c80265ea02324c19b5df8e36294",
+  "data/agent-orgs/task-policy-lab/agents/worker/agent-config.json": "f677a792530381d75c72dbce41ab212ebed0c08300e32f5497a3759b4c08a5ee",
+  "data/agent-orgs/unavailable-model-lab/org-config.json": "bd793a75595be053d6a9e764ba91345a369308eefc44e03805a7fb2086440932",
+  "data/agent-orgs/unavailable-model-lab/org.md": "978965a12d2fea9cf571f15854edd201a25016a61661008b620a32f51fdea1f2",
+  "data/agent-orgs/unavailable-model-lab/agents/worker/agent.md": "f986f2f595b107e7d02337dca7f121ed681b7c80265ea02324c19b5df8e36294",
+  "data/agent-orgs/unavailable-model-lab/agents/worker/agent-config.json": "f677a792530381d75c72dbce41ab212ebed0c08300e32f5497a3759b4c08a5ee"
+}

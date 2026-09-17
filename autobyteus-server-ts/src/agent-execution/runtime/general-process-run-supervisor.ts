@@ -47,7 +47,7 @@ import { RunFileChangeService } from "../../services/run-file-changes/run-file-c
 import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import type { RunModelSelectionValidator, RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
 import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
@@ -64,7 +64,7 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   workspaceManager: WorkspaceManager;
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions">;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -88,6 +88,7 @@ const requireGeneralProcessRunSupervisorInput = (
     || !input.agentToolMcpSessionAuthority
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
+    || typeof input.modelSelectionValidator.listOptions !== "function"
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
@@ -209,6 +210,7 @@ export class GeneralProcessRunSupervisor {
       });
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         memoryDir,
+        modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
           taskExecutionIdentity,
@@ -273,6 +275,7 @@ export class GeneralProcessRunSupervisor {
         workspaces: workspaceManager,
         admission: input.definitionAdmissionService,
         modelSelectionValidator: input.modelSelectionValidator,
+        modelSelectionOptions: input.modelSelectionValidator,
         history: agentOrgRunHistoryCatalogService,
       });
 

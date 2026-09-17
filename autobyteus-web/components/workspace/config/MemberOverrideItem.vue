@@ -281,6 +281,7 @@ watch(
     selectedRuntimeUnavailableReason,
     isUnresolvedInheritedModel,
     effectiveModelIdentifier,
+    () => hasModelIdentifier(effectiveModelIdentifier.value),
     modelConfigSchema,
     editableModelConfigErrors,
   ],
@@ -290,8 +291,7 @@ watch(
     let state: RuntimeModelConfigSchemaState
     if (isLoadingModels.value) {
       state = { status: 'loading', message: null }
-    } else if (modelLoadError.value || selectedRuntimeUnavailableReason.value || isUnresolvedInheritedModel.value
-      || !effectiveModelIdentifier.value || !hasModelIdentifier(effectiveModelIdentifier.value)) {
+    } else if (modelLoadError.value || selectedRuntimeUnavailableReason.value) {
       state = {
         status: 'unavailable',
         message: modelLoadError.value
@@ -300,6 +300,11 @@ watch(
             ? unresolvedInheritedModelMessage.value
             : t('workspace.runModelConfig.selectedModelUnavailable')),
       }
+    } else if (!effectiveModelIdentifier.value?.trim()) {
+      state = { status: 'invalid', reason: 'model_required', message: t('workspace.runModelConfig.modelRequired') }
+    } else if (isUnresolvedInheritedModel.value || !hasModelIdentifier(effectiveModelIdentifier.value)) {
+      state = { status: 'unavailable', message: isUnresolvedInheritedModel.value
+        ? unresolvedInheritedModelMessage.value : t('workspace.runModelConfig.selectedModelUnavailable') }
     } else if (Object.keys(editableModelConfigErrors.value).length) {
       state = { status: 'invalid', message: Object.values(editableModelConfigErrors.value)[0] ?? null }
     } else {
@@ -373,19 +378,6 @@ const modelConfigSchemaFromRows = (
 const maybeOpenAdvanced = (schema: UiModelConfigSchema | null, config: Record<string, unknown> | null | undefined) => {
   if (shouldOpenAdvancedForSchema(schema, config)) memberAdvancedExplicitlyExpanded.value = true
 }
-
-watch(
-  () => [effectiveRuntimeKind.value, explicitModelIdentifier.value],
-  () => {
-    const editable = editableNode.value
-    if (!editable || isInteractionDisabled.value || !hasExplicitModelOverride.value || !explicitModelIdentifier.value) return
-    if (hasModelIdentifier(explicitModelIdentifier.value)) return
-    emitEditableOverride(buildOverride({
-      runtimeKind: editable.override?.runtimeKind,
-      autoExecuteTools: editable.override?.autoExecuteTools,
-    }))
-  },
-)
 
 const handleRuntimeChange = async (value: string) => {
   const editable = editableNode.value

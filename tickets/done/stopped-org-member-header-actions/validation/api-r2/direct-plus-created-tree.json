@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "createdAt": "2026-09-17T02:14:35.265Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "config-lab",
+    "orgDefinitionName": "Config Lab",
+    "orgRunId": "config_lab_a45e347f35e24c43abd1d64aec748a36",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "gpt-5.4-mini",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/guide",
+        "agentDefinitionId": "agent-org-owned-agent:config-lab:guide",
+        "role": null,
+        "description": null,
+        "agentRunId": "config_guide_13c32fd445d94a8d938aacba88cbff5d",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.4",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+        }
+      },
+      {
+        "address": "/squad",
+        "teamDefinitionId": "agent-org-owned-team:config-lab:squad",
+        "role": null,
+        "description": null,
+        "teamRunId": "config_squad_149d49ee20134409a0e36f815a7c7056",
+        "coordinatorAddress": "/squad/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.4-mini",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/squad/lead",
+            "agentDefinitionId": "team-local-agent:agent-org-owned-team%3Aconfig-lab%3Asquad:worker",
+            "role": null,
+            "description": null,
+            "agentRunId": "config_worker_e255a369a5784b47b7685f935466d85d",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": []
+  }
+}

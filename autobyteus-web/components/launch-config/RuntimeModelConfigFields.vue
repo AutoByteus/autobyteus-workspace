@@ -92,7 +92,6 @@ import type { ExistingRunModelSelection, ExistingRunModelOptionsState } from '~/
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue'
 import {
-  DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import {
@@ -213,7 +212,9 @@ const modelOptionsMessage = computed(() => {
 
 watch(
   () => props.runtimeKind,
-  async (runtimeKind, previousRuntimeKind) => {
+  async (runtimeKind, previousRuntimeKind, onCleanup) => {
+    let current = true
+    onCleanup(() => { current = false })
     const normalizedStoredRuntime = normalizeScopedRuntimeKind(runtimeKind, allowBlankRuntime.value)
     if ((props.runtimeKind ?? '') !== normalizedStoredRuntime) {
       if (readOnlyComputed.value || runtimeSelectionLockedComputed.value) {
@@ -234,7 +235,7 @@ watch(
     }
 
     if (
-      validateSelectedModel &&
+      current && validateSelectedModel &&
       props.llmModelIdentifier &&
       !hasModelIdentifier(props.llmModelIdentifier)
     ) {
@@ -246,36 +247,6 @@ watch(
     }
   },
   { immediate: true },
-)
-
-watch(
-  [
-    () => runtimeOptions.value,
-    () => props.runtimeKind,
-    () => runtimeSelectionLockedComputed.value,
-  ],
-  ([, runtimeKind, runtimeLocked]) => {
-    if (runtimeLocked) {
-      return
-    }
-
-    if (readOnlyComputed.value) {
-      return
-    }
-
-    const effectiveRuntime = resolveEffectiveScopedRuntimeKind(runtimeKind)
-    const selectedOption = runtimeOptions.value.find((option) => option.value === effectiveRuntime)
-    if (selectedOption?.enabled !== false) {
-      return
-    }
-
-    const fallbackRuntime = allowBlankRuntime.value ? '' : DEFAULT_AGENT_RUNTIME_KIND
-    if (normalizedStoredRuntimeKind.value !== fallbackRuntime) {
-      emit('update:runtimeKind', fallbackRuntime)
-    }
-    emit('update:llmModelIdentifier', '')
-    emit('update:llmConfig', null)
-  },
 )
 
 const modelConfigSchema = computed(() =>
@@ -319,17 +290,19 @@ const showNoAdjustableSettings = computed(() => Boolean(
 ))
 
 watch(
-  [isLoadingModels, modelLoadError, selectedModelUnavailable, modelConfigSchema, historicalResidualsPresent, mergedValidationErrors],
+  [isLoadingModels, modelLoadError, selectedRuntimeUnavailableReason, selectedModelUnavailable, modelConfigSchema, historicalResidualsPresent, mergedValidationErrors, () => props.llmModelIdentifier],
   () => {
     if (isLoadingModels.value) {
       emit('schema-state', { status: 'loading', message: null })
-    } else if (modelConfigUnavailable.value) {
+    } else if (modelConfigUnavailable.value || selectedRuntimeUnavailableReason.value) {
       emit('schema-state', {
         status: 'unavailable',
-        message: modelLoadError.value || (historicalResidualsPresent.value
+        message: modelLoadError.value || selectedRuntimeUnavailableReason.value || (historicalResidualsPresent.value
           ? t('workspace.runModelConfig.schemaUnavailable')
           : selectedModelUnavailableMessage.value),
       })
+    } else if (!props.llmModelIdentifier?.trim()) {
+      emit('schema-state', { status: 'invalid', reason: 'model_required', message: t('workspace.runModelConfig.modelRequired') })
     } else if (Object.keys(mergedValidationErrors.value).length) {
       emit('schema-state', {
         status: 'invalid',

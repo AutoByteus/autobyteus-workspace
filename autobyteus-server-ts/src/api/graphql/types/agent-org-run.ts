@@ -1,3 +1,4 @@
+import { RunModelConfigEditabilityObject, RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
@@ -70,10 +71,54 @@ export class AgentOrgExecutionCheckpointPayload {
   @Field(() => Boolean) hasOpenExecutionWork!: boolean;
 }
 
+@InputType()
+export class AgentOrgMemberModelConfigIdentityInput {
+  @Field(() => String) orgRunId!: string;
+  @Field(() => String) memberAddress!: string;
+  @Field(() => String) agentRunId!: string;
+}
+@InputType()
+export class UpdateStoppedAgentOrgMemberModelConfigInput extends AgentOrgMemberModelConfigIdentityInput {
+  @Field(() => String) llmModelIdentifier!: string;
+  @Field(() => GraphQLJSON, { nullable: true }) llmConfig?: Record<string, unknown> | null;
+}
+@ObjectType()
+export class AgentOrgMemberModelConfigObject {
+  @Field(() => String) orgRunId!: string;
+  @Field(() => String) memberAddress!: string;
+  @Field(() => String) agentRunId!: string;
+  @Field(() => GraphQLJSON) launchConfiguration!: Record<string, unknown>;
+  @Field(() => Boolean) isActive!: boolean;
+  @Field(() => RunModelConfigEditabilityObject) editability!: RunModelConfigEditabilityObject;
+}
+@ObjectType()
+export class AgentOrgMemberModelConfigReadObject extends AgentOrgMemberModelConfigObject {
+  @Field(() => RunModelOptionsObject) modelOptions!: RunModelOptionsObject;
+}
+@ObjectType()
+export class AgentOrgMemberModelConfigUpdateResult {
+  @Field(() => Boolean) success!: boolean;
+  @Field(() => String) outcome!: string;
+  @Field(() => String) message!: string;
+  @Field(() => Boolean) isActive!: boolean;
+  @Field(() => RunModelConfigEditabilityObject) editability!: RunModelConfigEditabilityObject;
+  @Field(() => AgentOrgMemberModelConfigObject, { nullable: true }) canonical!: AgentOrgMemberModelConfigObject | null;
+  @Field(() => [RunModelConfigFieldErrorObject]) fieldErrors!: readonly RunModelConfigFieldErrorObject[];
+}
+
 @Resolver()
 export class AgentOrgRunResolver {
   private readonly service = getStudioAgentOrgRunService();
   private readonly memberViews = getAgentOrgMemberRunViewProjectionService();
+
+  @Query(() => AgentOrgMemberModelConfigReadObject)
+  getAgentOrgMemberModelConfig(@Arg("identity", () => AgentOrgMemberModelConfigIdentityInput) identity: AgentOrgMemberModelConfigIdentityInput) {
+    return this.service.getMemberModelConfig(identity);
+  }
+  @Mutation(() => AgentOrgMemberModelConfigUpdateResult)
+  updateStoppedAgentOrgMemberModelConfig(@Arg("input", () => UpdateStoppedAgentOrgMemberModelConfigInput) input: UpdateStoppedAgentOrgMemberModelConfigInput) {
+    return this.service.updateStoppedMemberModelConfig({ ...input, llmConfig: input.llmConfig ?? null });
+  }
 
   @Query(() => GraphQLJSON)
   getAgentOrgRunInspection(@Arg("orgRunId", () => String) orgRunId: string) {

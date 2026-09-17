@@ -1,0 +1,9 @@
+{
+  "agent_org_communication_messages.json": "922571e098f96244fdeb81cb2bf69ae34e6984d7f5ebdc5ad77203be78deb185",
+  "agent_org_run_execution_tree.json": "308f3e0bb35f5a0665cd088bd2cbbb873d9e8653f13b82bf6533e3c59ebeccea",
+  "agent_org_task_delegation_records.json": "a0e5a7b7aca44b95cd331f4e6093cd41926f135c11691be9eaa5bc964b17ee79",
+  "config_guide_58b1481c340743b5a5933a2eb4a314b5/raw_traces_active.jsonl": "759b2cb8a62de807031faf7b32821b7e9d0edebaaefd8f5ca1367fb20499b76b",
+  "config_guide_58b1481c340743b5a5933a2eb4a314b5/working_context_snapshot.json": "fe3bdad921e6967b7e33099b6c879c5b541ebc7d9e03a17787aa3028b05ab8b2",
+  "config_squad_35e656ca12ab48eeb9621366bb76935d/config_worker_8c88f091b3a94cf98cb519a0f6e13385/raw_traces_active.jsonl": "89c12af33b0b589a6f8464016c9bdd52e384c10b9ff0d48e52939a79ccec2426",
+  "config_squad_35e656ca12ab48eeb9621366bb76935d/config_worker_8c88f091b3a94cf98cb519a0f6e13385/working_context_snapshot.json": "23fe48f4f5c3ea59d50bea85110c79bda97a2f29705bf9dad1543cb7ad7fd4e7"
+}

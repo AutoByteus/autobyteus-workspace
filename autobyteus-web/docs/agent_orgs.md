@@ -265,12 +265,36 @@ leave/return journeys pass; the writer responsible for the historical single
 publication-related redirect remains unassigned, so this is not a causal claim
 about that incident or a guarantee against every future timing interleaving.
 
-For a focused live direct Agent or Agent inside a mounted Team, the header gear
-opens that exact AgentRun in the established locked Agent configuration form.
-Runtime, model, Workspace, and tool-approval identity remain inspection-only.
-**Back** returns to the same exact Org/member event monitor without disconnecting
-the live context; **New** remains a separate action that starts a fresh AgentOrg
-launch configuration without retaining the current `orgRunId`.
+For a focused configured direct Agent or Agent inside a mounted Team, the header
+gear opens that exact member's canonical run configuration even when stopped.
+Runtime, Workspace, tool approval and skill policy remain locked. While the
+enclosing Org is stopped, explicit **Save** can change that member's same-runtime
+model (verified equal/larger context capacity) and schema-valid parameters.
+Active/unknown, archived and application-owned roots stay noneditable; task
+inspection does not acquire configuration editing. A failed or uncertain Save
+never reports success; an uncertain outcome requires explicit canonical refresh.
+The Org manager serializes the exact root/address/Agent-ID write with restore,
+changes only that leaf's model fields, and verifies atomic persistence by strict
+readback. Inspect/Save does not start an Agent/provider or rewrite history.
+**Back** retains the same member/context; reopening reads canonical values.
+Normal Send still restores the canonical root using saved values, with lazy
+member startup. **New (+)** reads the enclosing Org through inactive-capable
+inspection and opens a new editable configuration seeded with its root, Team and
+Agent settings. It does not add a member, activate or alter the retained run.
+The source run ID is navigation provenance only; ordinary Create allocates new
+identities without copying tasks, history, attachments or provider bindings.
+
+Seed initialization waits for exact current definition references and installs
+once per navigation intent. Parameters (including null, 0 and false), sparse
+immediate-parent overrides, tool policy and supported workspace paths are retained.
+Changed placement identities or non-authorable skill/per-Agent workspace values
+block initialization instead of silently substituting defaults. Load failures
+have explicit Retry. Catalog Run without a source retains normal default mode.
+
+Empty model selections remain blocking but show neutral scope-specific required
+hints. Nonempty unavailable models and real runtime/catalog/schema failures stay
+visible errors. Metadata refresh does not silently erase saved source selections;
+deliberate runtime/model edits retain their normal clearing/inheritance behavior.
 
 ### Cold Exact Inspection
 
@@ -424,8 +448,8 @@ report for the exact acceptance scope.
   layout, replacing the Team-only Tasks section.
 - `components/workspace/org/AgentOrgWorkspaceView.vue`: focused/unfocused and
   stopped workspace states plus the exact-member config/Back adapter.
-- `components/workspace/org/AgentOrgMemberRunConfigPanel.vue`: locked current-
-  Agent configuration presentation.
+- `components/workspace/org/AgentOrgMemberRunConfigPanel.vue`: exact-member canonical
+  inspection and stopped model-edit form, backed by `useAgentOrgMemberModelConfig`.
 - `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` and
   `WorkspaceHistoryWorkspaceSection.vue`: always-mounted mixed-family
   Workspaces hierarchy and sibling Agent/Team/AgentOrg groups.

@@ -1,0 +1,108 @@
+[
+  {
+    "at": "2026-09-17T03:10:42.852Z",
+    "id": 33,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:10:57.197Z",
+    "id": 46,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:13:39.028Z",
+    "id": 189,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:14:01.066Z",
+    "id": 207,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "control-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "team-local-agent:control-team:worker",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+            }
+          ]
+        }
+      },
+      "query": "mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {\n  createAgentTeamRun(input: $input) {\n    __typename\n    success\n    message\n    teamRunId\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:14:01.149Z",
+    "id": 207,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"createAgentTeamRun\":{\"__typename\":\"CreateAgentTeamRunResult\",\"success\":true,\"message\":\"Agent team run created successfully.\",\"teamRunId\":\"team_control_879ceeadd3e2415a9737a5703bff3e77\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:14:01.157Z",
+    "id": 208,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_879ceeadd3e2415a9737a5703bff3e77"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  }
+]

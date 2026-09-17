@@ -1,0 +1,8 @@
+{
+  "changedPreexistingRuntimeFiles": [
+    "agent_org_run_history_index.json",
+    "team_run_history_index.json",
+    "agent_teams/team_control_ef5f8cb76cf74bd680919d02e743811a/team_run_execution_tree.json"
+  ],
+  "expectedOnlySourceTeamTreePlusHistoryIndex": true
+}

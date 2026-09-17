@@ -1,0 +1,170 @@
+HTML-Inhalte 127.0.0.1:51083/workspace
+					20 container
+						21 container 智能体和团队
+							22 container 主要导航
+								23 Inhaltsliste
+									24 container
+										25 Button 智能体
+										26 Button 折叠左侧面板
+											27 Bild
+									28 Button 智能体团队
+									29 Button 智能体组织
+									30 Button 技能
+									31 Button 记忆
+									32 Button 节点
+							33 container
+								34 Kopfzeile Workspaces, Value: 3
+									35 Text Workspaces
+								36 Button 添加工作区
+								37 container
+									38 Button Temp Workspace
+									39 Button SC Standalone Control (1)
+										40 Text SC
+										41 Text Standalone Control
+										42 Text (1)
+									43 Button 使用此智能体开始新的运行
+									44 Button Reply exactly STANDALONE-CONTROL-917. Do not call tools. 归档运行 永久删除运行 3m
+										45 Text Reply exactly STANDALONE-CONTROL-917. Do not call tools.
+										46 Button 归档运行
+										47 Button 永久删除运行
+										48 Text 3m
+									49 Text TEAMS
+									50 Button 无活跃团队运行 Team Control (1)
+										51 Bild 无活跃团队运行
+										52 Text Team Control
+										53 Text (1)
+									54 Button 非活跃团队运行 Reply exactly TEAM-CONTROL-917. Do not call tools.
+										55 Bild 非活跃团队运行
+										56 Text Reply exactly TEAM-CONTROL-917. Do not call tools.
+									57 Button 归档团队历史记录
+									58 Button 永久删除团队历史记录
+									59 Text 2m
+									60 Gliederung Reply exactly TEAM-CONTROL-917. Do not call tools.组织树
+										61 row Description: 智能体，lead，第 1 级，离线，/lead, Help: 智能体 · lead · /lead
+											62 container
+												63 text L lead 2m
+									64 Text 组织
+									65 Button Config Lab (4)
+										66 Text Config Lab
+										67 Text (4)
+									68 Button 折叠 Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not cal... 下的成员
+									69 Button 已停止 Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not cal...
+										70 container 已停止
+										71 Text Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not cal...
+									72 Text 3 分钟
+									73 Gliederung Config Lab 执行层级
+										74 row guide, 离线, /guide, config_guide_243bc1a9e0af42c1b54798eca2a75923
+											75 Text G
+											76 Text guide
+										77 row squad. 团队状态：离线
+											78 Bild 团队状态：离线
+											79 Text squad
+									80 Button 折叠 Config Lab 下的成员
+									81 Button 已停止 新建 - Config Lab
+										82 container 已停止
+										83 Text 新建 - Config Lab
+									84 Text 5 分钟
+									85 Gliederung Config Lab 执行层级
+										86 row guide, 离线, /guide, config_guide_57b551c1d4db4c5eb602127eed0c3fce
+											87 Text G
+											88 Text guide
+										89 row squad. 团队状态：离线
+											90 Bild 团队状态：离线
+											91 Text squad
+									92 Button 折叠 Config Lab 下的成员
+									93 Button 已停止 新建 - Config Lab
+										94 container 已停止
+										95 Text 新建 - Config Lab
+									96 Text 6 分钟
+									97 Gliederung Config Lab 执行层级
+										98 row guide, 离线, /guide, config_guide_13c32fd445d94a8d938aacba88cbff5d
+											99 Text G
+											100 Text guide
+										101 row squad. 团队状态：离线
+											102 Bild 团队状态：离线
+											103 Text squad
+									104 Button 折叠 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready. 下的成员
+									105 Button 已停止 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+										106 container 已停止
+										107 Text Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+									108 Text 1 小时
+									109 Gliederung Config Lab 执行层级
+										110 row guide, 离线, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+											111 Text G
+											112 Text guide
+										113 row squad. 团队状态：离线
+											114 Bild 团队状态：离线
+											115 Text squad
+							116 Button 设置
+						117 container
+							118 container
+								119 text 团队定义 Team Control Runtime
+								120 Pop-up-Button Runtime, Value: AutoByteus
+									121 (selected) AutoByteus
+								122 text 选择此团队运行所使用的运行时后端。 默认 LLM 模型（全球）
+								123 Einblendmenü OpenAI / gpt-5.4-mini
+								124 text 除非被覆盖，否则所有成员都将使用此模型。 Thinking
+								125 Button 使用设置
+								126 Button 高级
+								127 container reasoning_effort
+									128 Text Reasoning Effort 
+									129 Text ⓘ
+								130 Pop-up-Button none
+									131 (selected) none
+								132 container reasoning_summary
+									133 Text Reasoning Summary 
+									134 Text ⓘ
+								135 Pop-up-Button none
+									136 (selected) none
+								137 Text 工作区目录
+								138 Titelgruppe
+									139 tab (selected) Existing, Value: 1
+									140 tab (settable, integer) New, Value: 0
+								141 Button 📁 Temp Workspace (Default) Default temporary workspace
+									142 Text 📁 Temp Workspace (Default)
+									143 Text Default temporary workspace
+									144 Bild
+								145 text Workspace: Temp Workspace 自动批准工具 Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。
+								146 wechseln 自动批准工具, Value: off
+								147 Button 团队成员覆盖 (1)
+								148 text lead 协调者
+								149 Text 运行时
+								150 Pop-up-Button 全局默认
+									151 (selected) 全局默认
+								152 Text LLM 模型
+								153 Einblendmenü 全局默认
+								154 Text 自动批准
+								155 Kästchen 全局默认, Value: 2
+								156 Text Thinking
+								157 Button 使用设置
+								158 Button 高级
+								159 container reasoning_effort
+									160 Text Reasoning Effort 
+									161 Text ⓘ
+								162 Pop-up-Button none
+									163 (selected) none
+								164 container reasoning_summary
+									165 Text Reasoning Summary 
+									166 Text ⓘ
+								167 Pop-up-Button none
+									168 (selected) none
+							169 Button 运行团队
+							170 Titelgruppe 工作区工具
+								171 tab (selected) 文件, Value: 1
+									172 Text 文件
+								173 tab (settable, integer) 终端, Value: 0
+								174 tab (settable, integer) 活动, Value: 0
+								175 tab (settable, integer) Token, Value: 0
+								176 tab (settable, integer) 产物, Value: 0
+								177 tab (settable, integer) VNC 查看器, Value: 0
+							178 Button 切换侧边栏
+								179 Bild
+							180 container
+								181 Textfeld (settable) 搜索...
+								182 Button Maximize view
+								183 container
+									184 Bild
+									185 Kopfzeile No file selected, Value: 3
+										186 Text No file selected
+									187 Text Select a file from the explorer to view or edit its content.
+			188 

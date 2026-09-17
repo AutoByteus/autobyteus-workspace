@@ -1,3 +1,5 @@
+import type { AgentOrgMemberModelConfigCanonical } from '~/services/runConfigEditing/agentOrgMemberModelConfigClient'
+import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { reactive, shallowReactive } from 'vue'
 import type {
   AgentOrgExecutionEventDto,
@@ -144,6 +146,32 @@ export class AgentOrgExecutionContext {
       this.contexts.set(entry.agentRunId, old)
     }
     this.select(previous.selection)
+  }
+
+  applyMemberModelConfig(canonical: AgentOrgMemberModelConfigCanonical): boolean {
+    if (this.phase !== 'historical' || this.isActive || canonical.isActive || canonical.orgRunId !== this.orgRunId) return false
+    const agent = this.index.agents.get(canonical.agentRunId)
+    const context = this.getAgentContext(canonical.agentRunId)
+    if (!agent || agent.task || agent.kind !== 'configured' || agent.address !== canonical.memberAddress || !context) return false
+    const previous = agent.source.launchConfiguration
+    const next = canonical.launchConfiguration
+    // A configuration return may change only model fields, never execution policy/identity.
+    if (previous.runtimeKind !== next.runtimeKind || previous.workspaceRootPath !== next.workspaceRootPath
+      || previous.autoExecuteTools !== next.autoExecuteTools || previous.skillAccessMode !== next.skillAccessMode) throw new Error('Org configuration changed locked fields.')
+    const tree = this.view.execution_tree
+    const patch = (node: typeof agent.source) => node.agentRunId === canonical.agentRunId
+      ? { ...node, launchConfiguration: cloneExistingRunJsonValue(next) } : node
+    const view = { ...this.view, execution_tree: { ...tree, rootOrg: { ...tree.rootOrg,
+      members: tree.rootOrg.members.map(member => 'agentRunId' in member ? patch(member)
+        : { ...member, members: member.members.map(patch) }) } } }
+    const index = new AgentOrgExecutionViewIndex(view)
+    const config = { ...context.config, llmModelIdentifier: next.llmModelIdentifier, llmConfig: cloneExistingRunJsonValue(next.llmConfig) }
+    // All validation/clone/index work precedes synchronous model-only publication.
+    this.view = view
+    this.index = index
+    context.config = config
+    context.conversation.llmModelIdentifier = next.llmModelIdentifier
+    return true
   }
 
   applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto): AgentOrgEventApplication {

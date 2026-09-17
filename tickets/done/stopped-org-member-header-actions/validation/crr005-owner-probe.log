@@ -1,0 +1,29 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/crr005-team-save-seed-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | stores/__tests__/crr005-team-save-seed-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/crr005-team-save-seed-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/crr005-team-save-seed-probe.spec.ts > F-003 owner boundary diagnostic > proves successful canonical Save leaves the same retained view/Plus seed stale before any shared field mounts
+F003_DIAGNOSTIC: saved history/draft low; retained view root/member null; actual Plus seed/store root null; no form mounted
+
+ ✓ stores/__tests__/crr005-team-save-seed-probe.spec.ts (2 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  04:30:29
+   Duration  4.96s (transform 2.66s, setup 4.34s, collect 113ms, tests 14ms, environment 173ms, prepare 134ms)
+

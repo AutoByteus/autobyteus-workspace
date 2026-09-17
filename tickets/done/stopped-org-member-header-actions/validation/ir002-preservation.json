@@ -1,0 +1,30 @@
+{
+  "unchanged_ir001_files": [
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+    "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+    "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+    "autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue",
+    "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+    "autobyteus-web/composables/useAgentOrgMemberModelConfig.ts",
+    "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+    "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+    "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+    "autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts",
+    "autobyteus-web/stores/agentOrgContextsStore.ts"
+  ],
+  "revised_ir001_files": [
+    "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+    "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+    "autobyteus-web/docs/agent_orgs.md",
+    "autobyteus-web/localization/messages/en/workspace.ts",
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts"
+  ],
+  "backend_unchanged": true
+}

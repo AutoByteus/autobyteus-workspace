@@ -52,7 +52,7 @@ const createSupervisorInput = () => {
     workspaceManager: WorkspaceManager.getInstance(),
     agentProviderFactoryBuilder: createProviderBuilder(),
     agentToolMcpSessionAuthority: createAuthority(),
-    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
   };
 };
 
@@ -125,7 +125,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService),
       taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "task-agent-run" }),
-      modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+      modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     });
     try {
       expect(() => new GeneralProcessRunSupervisor(input)).toThrow("already initialized");
@@ -146,6 +146,13 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     } finally {
       releaseProcessAgentRunService(conflictingService);
     }
+  });
+
+  it("rejects validator-only capabilities before manager mutation", () => {
+    const input = createSupervisorInput();
+    delete (input.modelSelectionValidator as Partial<typeof input.modelSelectionValidator>).listOptions;
+    expect(() => new GeneralProcessRunSupervisor(input)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
+    expect(() => AgentOrgRunManager.getInstance()).toThrow();
   });
 
   it("rejects each required construction input before manager mutation", () => {

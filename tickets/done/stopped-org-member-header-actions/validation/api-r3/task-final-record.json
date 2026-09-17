@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "task_policy_lab_8b14533624084d9cb384f6743a7cb4c5",
+  "records": [
+    {
+      "taskId": "task_159c08c3b517455eb5e31a3ced8cd660",
+      "delegatorAgentRunId": "test_parent_a53a09836ab64c73a90237fb73e8b4a0",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "test_worker_4141f2860c4740db878fac752f7e33b4"
+      },
+      "description": "Compute 2 + 2 and submit the result. Return only the computed value and a brief confirmation.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_3c1a7969cdf54dfea68f9ccf88852177",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-17T03:17:39.045Z"
+        }
+      ],
+      "createdAt": "2026-09-17T03:16:55.802Z"
+    }
+  ]
+}

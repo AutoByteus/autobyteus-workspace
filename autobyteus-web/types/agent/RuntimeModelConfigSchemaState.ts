@@ -1,4 +1,4 @@
-export type RuntimeModelConfigSchemaState = Readonly<{
-  status: 'loading' | 'ready' | 'invalid' | 'unavailable'
-  message: string | null
-}>
+export type RuntimeModelConfigSchemaState = Readonly<
+  | { status: 'invalid'; message: string | null; reason?: 'model_required' }
+  | { status: 'loading' | 'ready' | 'unavailable'; message: string | null; reason?: never }
+>

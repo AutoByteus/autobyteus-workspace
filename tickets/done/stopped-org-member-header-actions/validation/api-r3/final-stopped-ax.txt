@@ -1,0 +1,118 @@
+Browser tab: 1211480694, Title: "127.0.0.1:51083/workspace", URL: "http://127.0.0.1:51083/workspace".
+0 AXWebArea 127.0.0.1:51083/workspace
+	1 container app
+		2 container
+			3 container 智能体和团队
+				4 container 主要导航
+					5 content list
+						6 container
+							7 button 智能体
+							8 button 折叠左侧面板
+								9 image
+						10 button 智能体团队
+						11 button 智能体组织
+						12 button 技能
+						13 button 记忆
+						14 button 节点
+				15 container
+					16 heading Workspaces, Value: 3
+						17 text Workspaces
+					18 button 添加工作区
+					19 button (expanded) Temp Workspace, Secondary Actions: Collapse
+					20 button (collapsed) SC Standalone Control (1), Secondary Actions: Expand
+						21 text SC
+						22 text Standalone Control
+						23 text (1)
+					24 button 使用此智能体开始新的运行
+					25 text TEAMS
+					26 button (expanded) 无活跃团队运行 Team Control (3), Secondary Actions: Collapse
+						27 image 无活跃团队运行
+						28 text Team Control
+						29 text (3)
+					30 button (expanded) 非活跃团队运行 Reply exactly TEAM-COPY-R3-917. Do not call tools., Secondary Actions: Collapse
+						31 image 非活跃团队运行
+						106 text Reply exactly TEAM-COPY-R3-917. Do not call tools.
+					107 button 归档团队历史记录
+					108 button 永久删除团队历史记录
+					109 text 6m
+					36 outline Reply exactly TEAM-COPY-R3-917. Do not call tools.组织树
+						37 row (selectable) Description: 智能体，lead，第 1 级，离线，/lead, Help: 智能体 · lead · /lead
+							38 container
+								39 text L lead 6m
+					40 button (collapsed) 非活跃团队运行 Untitled team run, Secondary Actions: Expand
+						41 image 非活跃团队运行
+						42 text Untitled team run
+					43 button 归档团队历史记录
+					44 button 永久删除团队历史记录
+					110 text 55m
+					46 button (expanded) 非活跃团队运行 Reply exactly TEAM-CONTROL-917. Do not call tools., Secondary Actions: Collapse
+						47 image 非活跃团队运行
+						48 text Reply exactly TEAM-CONTROL-917. Do not call tools.
+					49 button 归档团队历史记录
+					50 button 永久删除团队历史记录
+					111 text 58m
+					52 outline Reply exactly TEAM-CONTROL-917. Do not call tools.组织树
+						53 row (selected) Description: 智能体，lead，第 1 级，离线，/lead, Help: 智能体 · lead · /lead
+							54 container
+								55 text L lead 58m
+					56 text 组织
+					57 button (collapsed) Config Lab (4), Secondary Actions: Expand
+						58 text Config Lab
+						59 text (4)
+					60 button (expanded) Task Policy Lab (1), Secondary Actions: Collapse
+						61 text Task Policy Lab
+						62 text (1)
+					63 button (expanded) Secondary Actions: Collapse, Description: 折叠 For this isolated UI test, delegate exactly one task to /worker: compute 2 + 2 and submit the res... 下的成员
+					64 button 已停止 For this isolated UI test, delegate exactly one task to /worker: compute 2 + 2 and submit the res...
+						65 container 已停止
+						66 text For this isolated UI test, delegate exactly one task to /worker: compute 2 + 2 and submit the res...
+					67 text 2 分钟
+					68 outline Description: Task Policy Lab 执行层级, ID: org-hierarchy-workspace%3A%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fstopped-org-member-header-actions%2F.local%2Fapi-stopped-config%2Fdata%2Ftemp_workspace-task_policy_lab_8b14533624084d9cb384f6743a7cb4c5
+						69 row (selectable) parent, 离线, /parent, test_parent_a53a09836ab64c73a90237fb73e8b4a0
+							70 text P
+							71 text parent
+						72 row (selectable) worker, 离线, /worker, test_worker_54d9ed517cda406d8bbd9491ff57271d
+							73 text W
+							74 text worker
+				75 button 设置
+			76 container
+				112 text L
+				113 heading lead, Value: 4
+					114 text lead
+				115 text Offline
+				116 button 编辑配置
+				117 button 新建智能体
+				118 container
+					119 container agent-conversation-scroll-control_worker_76fc3c6f4bce461d93b3d1972d7ef7fc-500
+						120 text You
+						121 text Reply exactly TEAM-CONTROL-917. Do not call tools.
+						122 text L lead
+						123 text TEAM-CONTROL-917
+					124 button (expanded) Context Files (0) （拖动、粘贴或上传）, Secondary Actions: Collapse
+						125 text Context Files (0) （拖动、粘贴或上传）
+					126 button 上传文件
+						127 image
+					128 text entry area (settable) R3-SOURCE-DRAFT-RETAIN
+					129 button Send message
+				89 tab group 工作区工具
+					90 tab (selectable, settable, boolean) 文件, Value: 0
+					91 tab (selected, settable, boolean) 团队, Value: 1
+					92 tab (selectable, settable, boolean) 终端, Value: 0
+					93 tab (selectable, settable, boolean) 活动, Value: 0
+					94 tab (selectable, settable, boolean) Token, Value: 0
+					95 tab (selectable, settable, boolean) 产物, Value: 0
+					96 tab (selectable, settable, boolean) VNC 查看器, Value: 0
+				97 button 切换侧边栏
+					98 image
+				99 container
+					100 button (expanded) 消息 0 消息, Secondary Actions: Collapse
+						101 heading 消息, Value: 3
+							102 text 消息
+						103 text 0 消息
+					130 container
+						131 text 暂无团队消息 已接受的智能体间消息及其引用文件会显示在这里。
+					104 button (collapsed) 任务 0 个任务, Secondary Actions: Expand
+						105 text 任务
+						132 text 0 个任务
+
+The focused UI element is 53 row (selected) Description: 智能体，lead，第 1 级，离线，/lead, Help: 智能体 · lead · /lead

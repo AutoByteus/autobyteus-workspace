@@ -1,0 +1,17 @@
+[
+  {
+    "path": "autobyteus-web/components/workspace/team/TeamWorkspaceView.vue",
+    "byteIdenticalToHEAD": true,
+    "sha256": "a67301cf4abaa0eee86f13b383becba6ed5c662e6847dd5d76e90104605670eb"
+  },
+  {
+    "path": "autobyteus-web/composables/useDefinitionLaunchDefaults.ts",
+    "byteIdenticalToHEAD": true,
+    "sha256": "d151ec19dc95f25b619d389191bb079abc5516e2fbc7a9eebc47a4a255eea1a7"
+  },
+  {
+    "path": "autobyteus-web/stores/teamRunConfigStore.ts",
+    "byteIdenticalToHEAD": true,
+    "sha256": "95a126c0715f6ddf973f4f167fb242f0fc240073ac6508c9505561e7f505a445"
+  }
+]

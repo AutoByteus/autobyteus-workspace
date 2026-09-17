@@ -1,0 +1,144 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header coalesces clicks and preserves screen/draft on failure; same action retries
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after unmount
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after replacement
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after newer-intent
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts (15 tests | 2 failed) 449ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state 154ms
+   × Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state 81ms
+     → expected { memberAddress: '/lead', …(7) } to match object { …(2) }
+(6 matching properties omitted from actual)
+   ✓ Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state 68ms
+   × Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state 69ms
+     → expected { memberAddress: '/lead', …(7) } to match object { …(2) }
+(6 matching properties omitted from actual)
+   ✓ Team canonical Save -> Back -> both Plus consumers > header coalesces clicks and preserves screen/draft on failure; same action retries 10ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > group coalesces clicks and preserves screen/draft on failure; same action retries 5ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > header rejects late copy after selection 8ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > header rejects late copy after unmount 8ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > header rejects late copy after replacement 8ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > header rejects late copy after newer-intent 13ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > group rejects late copy after selection 5ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > group rejects late copy after unmount 4ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > group rejects late copy after replacement 4ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > group rejects late copy after newer-intent 4ms
+   ✓ Team canonical Save -> Back -> both Plus consumers > preserves the source-free template branch without canonical IO 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+AssertionError: expected { memberAddress: '/lead', …(7) } to match object { …(2) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "llmConfig": {
+-     "budget": 0,
+-   },
++   "llmConfig": null,
+    "llmModelIdentifier": "replacement-model",
+  }
+
+ ❯ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts:116:53
+    114|     const create = io.mutate.mock.calls.find(([r]) => r.mutation.defin…
+    115|     expect(create.variables.input.teamConfigs[0].llmConfig).toMatchObj…
+    116|     expect(create.variables.input.memberConfigs[0]).toMatchObject({ ll…
+       |                                                     ^
+    117|     expect(JSON.stringify(create.variables)).not.toContain('old-agent'…
+    118|     expect(JSON.stringify(canonical)).toBe(before)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+AssertionError: expected { memberAddress: '/lead', …(7) } to match object { …(2) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "llmConfig": {
+-     "budget": 0,
+-   },
++   "llmConfig": null,
+    "llmModelIdentifier": "replacement-model",
+  }
+
+ ❯ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts:116:53
+    114|     const create = io.mutate.mock.calls.find(([r]) => r.mutation.defin…
+    115|     expect(create.variables.input.teamConfigs[0].llmConfig).toMatchObj…
+    116|     expect(create.variables.input.memberConfigs[0]).toMatchObject({ ll…
+       |                                                     ^
+    117|     expect(JSON.stringify(create.variables)).not.toContain('old-agent'…
+    118|     expect(JSON.stringify(canonical)).toBe(before)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 13 passed (15)
+   Start at  04:59:33
+   Duration  6.45s (transform 3.41s, setup 4.86s, collect 577ms, tests 449ms, environment 131ms, prepare 128ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,10 @@
+{
+  "backup": "/Users/normy/autobyteus_org/delivery-retained/ORG-STOPPED-CONFIG-20260917-001-DR002",
+  "file_count": 142,
+  "verification": "Each retained file SHA-256 verified; symlinks target verified. Private contents/manifest excluded from Git.",
+  "excluded_regenerable": [
+    "node_modules",
+    "dist",
+    ".nuxt"
+  ]
+}

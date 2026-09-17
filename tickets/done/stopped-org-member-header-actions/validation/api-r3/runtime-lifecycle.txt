@@ -1,0 +1,18 @@
+Agent 'test_parent_a53a09836ab64c73a90237fb73e8b4a0': Starting direct runtime bootstrap lifecycle.
+Published autobyteus agent run 'test_parent_a53a09836ab64c73a90237fb73e8b4a0'.
+Agent 'test_worker_4141f2860c4740db878fac752f7e33b4': Starting direct runtime bootstrap lifecycle.
+Published autobyteus agent run 'test_worker_4141f2860c4740db878fac752f7e33b4'.
+Removing agent 'test_worker_4141f2860c4740db878fac752f7e33b4'. Attempting graceful shutdown.
+AgentWorker 'test_worker_4141f2860c4740db878fac752f7e33b4': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'test_worker_4141f2860c4740db878fac752f7e33b4'.
+AgentRuntime for 'test_worker_4141f2860c4740db878fac752f7e33b4' stop() method completed.
+Removing agent 'test_parent_a53a09836ab64c73a90237fb73e8b4a0'. Attempting graceful shutdown.
+AgentWorker 'test_parent_a53a09836ab64c73a90237fb73e8b4a0': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'test_parent_a53a09836ab64c73a90237fb73e8b4a0'.
+AgentRuntime for 'test_parent_a53a09836ab64c73a90237fb73e8b4a0' stop() method completed.
+Agent 'control_worker_1adb0eab9fff42769860df13659564ed': Starting direct runtime bootstrap lifecycle.
+Published autobyteus agent run 'control_worker_1adb0eab9fff42769860df13659564ed'.
+Removing agent 'control_worker_1adb0eab9fff42769860df13659564ed'. Attempting graceful shutdown.
+AgentWorker 'control_worker_1adb0eab9fff42769860df13659564ed': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'control_worker_1adb0eab9fff42769860df13659564ed'.
+AgentRuntime for 'control_worker_1adb0eab9fff42769860df13659564ed' stop() method completed.

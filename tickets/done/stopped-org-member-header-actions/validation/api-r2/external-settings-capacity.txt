@@ -1,0 +1,115 @@
+HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_9cf12404d4964b7b877de91e7b0022a7&mode=history&memberAddress=/squad
+					20 container
+						21 container 智能体和团队
+							22 container 主要导航
+								23 Inhaltsliste
+									24 container
+										25 Button 智能体
+										26 Button 折叠左侧面板
+											27 Bild
+									28 Button 智能体团队
+									29 Button 智能体组织
+									30 Button 技能
+									31 Button 记忆
+									32 Button 节点
+							33 container
+								34 Kopfzeile Workspaces, Value: 3
+									35 Text Workspaces
+								36 Button 添加工作区
+								37 Button Temp Workspace
+								38 Text 组织
+								39 Button Config Lab (4)
+									40 Text Config Lab
+									41 Text (4)
+								42 Button 折叠 Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not cal... 下的成员
+								43 Button 已停止 Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not cal...
+									44 container 已停止
+									45 Text Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not cal...
+								46 Text 1 分钟
+								47 Gliederung Config Lab 执行层级
+									48 row guide, 离线, /guide, config_guide_243bc1a9e0af42c1b54798eca2a75923
+										49 Text G
+										50 Text guide
+									51 row (selected) squad. 团队状态：离线
+										52 Bild 团队状态：离线
+										53 Text squad
+								54 Button 折叠 Config Lab 下的成员
+								55 Button 已停止 新建 - Config Lab
+									56 container 已停止
+									57 Text 新建 - Config Lab
+								58 Text 2 分钟
+								59 Gliederung Config Lab 执行层级
+									60 row guide, 离线, /guide, config_guide_57b551c1d4db4c5eb602127eed0c3fce
+										61 Text G
+										62 Text guide
+									63 row squad. 团队状态：离线
+										64 Bild 团队状态：离线
+										65 Text squad
+								66 Button 折叠 Config Lab 下的成员
+								67 Button 已停止 新建 - Config Lab
+									68 container 已停止
+									69 Text 新建 - Config Lab
+								70 Text 3 分钟
+								71 Gliederung Config Lab 执行层级
+									72 row guide, 离线, /guide, config_guide_13c32fd445d94a8d938aacba88cbff5d
+										73 Text G
+										74 Text guide
+									75 row squad. 团队状态：离线
+										76 Bild 团队状态：离线
+										77 Text squad
+								78 Button 折叠 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready. 下的成员
+								79 Button 已停止 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+									80 container 已停止
+									81 Text Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+								82 Text 1 小时
+								83 Gliederung Config Lab 执行层级
+									84 row guide, 离线, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+										85 Text G
+										86 Text guide
+									87 row squad. 团队状态：离线
+										88 Bild 团队状态：离线
+										89 Text squad
+							90 Button 设置
+						91 container
+							92 container
+								93 Kopfzeile 智能体配置, Value: 3
+									94 Text 智能体配置
+								95 Button 返回事件视图
+								96 text 智能体定义 lead Runtime
+								97 Pop-up-Button (disabled) Runtime, Value: Claude Agent SDK
+								98 text 运行时固定。替换模型的上下文容量不得小于已保存模型。 法学硕士模式
+								99 Einblendmenü Anthropic / Haiku
+								100 text 运行时固定。替换模型的上下文容量不得小于已保存模型。 The current model's context capacity could not be verified. Its settings can still be edited. 此模型没有可调整的设置。 工作区目录
+								101 Titelgruppe
+									102 tab (selected, disabled) Existing, Value: 1
+									103 tab (disabled, settable, integer) New, Value: 0
+								104 Button (disabled) 📁 Temp Workspace (Default) Default temporary workspace
+									105 Text 📁 Temp Workspace (Default)
+									106 Text Default temporary workspace
+									107 Bild
+								108 text 现有运行的工作区已固定。 自动批准工具 Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。
+								109 Button (disabled) 自动批准工具
+								110 Text 此运行已停止。下次恢复时将使用已保存的模型设置。
+								111 Button (disabled) 保存
+							112 Titelgruppe 工作区工具
+								113 tab (settable, integer) 文件, Value: 0
+								114 tab (selected) Description: 智能体组织, Value: 1
+									115 Text 组织
+								116 tab (settable, integer) 终端, Value: 0
+								117 tab (settable, integer) 活动, Value: 0
+								118 tab (settable, integer) Token, Value: 0
+								119 tab (settable, integer) 产物, Value: 0
+								120 tab (settable, integer) VNC 查看器, Value: 0
+							121 Button 切换侧边栏
+								122 Bild
+							123 container
+								124 Button 消息 0 消息
+									125 Kopfzeile 消息, Value: 3
+										126 Text 消息
+									127 Text 0 消息
+								128 Text 暂无团队消息
+								129 Text 已接受的智能体间消息及其引用文件会显示在这里。
+								130 Button 任务 0 个任务
+									131 Text 任务
+									132 Text 0 个任务
+			133 

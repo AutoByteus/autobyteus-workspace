@@ -1,3 +1,5 @@
+import type { AgentOrgMemberModelConfigIdentity, UpdateAgentOrgMemberModelConfig } from "../domain/agent-org-member-model-config.js";
+import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
@@ -49,8 +51,22 @@ export class AgentOrgRunService {
     workspaces: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     admission: Pick<DefinitionAdmissionService, "requireAvailable">;
     modelSelectionValidator: Pick<RunModelSelectionValidator, "validate">;
+    modelSelectionOptions: Pick<RunModelSelectionService, "listOptions">;
     history: Pick<AgentOrgRunHistoryCatalogService, "initialize" | "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary">;
   }>) {}
+
+  async getMemberModelConfig(identity: AgentOrgMemberModelConfigIdentity) {
+    const canonical = await this.dependencies.manager.getMemberModelConfig(identity);
+    const current = canonical.launchConfiguration;
+    const modelOptions = await this.dependencies.modelSelectionOptions.listOptions({
+      runtimeKind: current.runtimeKind, currentModelIdentifier: current.llmModelIdentifier,
+      workspaceRootPath: current.workspaceRootPath ?? "",
+    });
+    return { ...canonical, modelOptions };
+  }
+  updateStoppedMemberModelConfig(input: UpdateAgentOrgMemberModelConfig) {
+    return this.dependencies.manager.updateStoppedMemberModelConfig(input);
+  }
 
   async create(command: CreateAgentOrgRunCommand): Promise<AgentOrgRun> {
     const definitionId = required(command.agentOrgDefinitionId, "agentOrgDefinitionId");

@@ -1,6 +1,13 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.teamCopy.loading": "Reading saved Team configuration…",
+  "workspace.teamCopy.failed": "Could not copy this Team configuration: {error} Use New (+) to retry.",
+  "workspace.runModelConfig.modelRequired": "Select a model before launch.",
+  "workspace.agentOrg.runConfig.modelRequired": "Select a model for {address} before launch.",
+  "workspace.agentOrg.runConfig.retryInitialization": "Retry loading configuration",
+
+  "workspace.runModelConfig.orgOwnershipUnavailable": "This Org run is application-owned. Its model settings cannot be edited here.",
   "workspace.agentOrg.inspectionUnavailable": "Saved Agent Org data is unavailable. No run was started.",
   "workspace.runModelConfig.loading": "Loading run configuration…",
   "workspace.runModelConfig.runUnavailable": "This run is no longer available.",

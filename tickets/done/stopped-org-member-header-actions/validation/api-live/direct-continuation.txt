@@ -1,0 +1,8 @@
+The following is a diff from the previous accessibility tree for Window: "127.0.0.1:51083/workspace?ro…tive&memberAddress=/guide 🔊" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 207
+~									49 row (selected) guide, 空闲, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
++								215 Text Idle
+~									208 text You What test token did I previously ask you to remember? Reply with that token only. G guide
++									216 Text DIRECT-917
+~								199 Button (disabled) Send message
+The focused UI element is 20 HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/guide

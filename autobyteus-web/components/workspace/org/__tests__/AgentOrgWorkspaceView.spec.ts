@@ -43,7 +43,7 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
 const context = (phase: 'live' | 'reopen_required' | 'historical' = 'live') => ({
   phase,
   error: phase === 'reopen_required' ? 'Sequence gap' : null,
-  executionTree: { rootOrg: { orgDefinitionId: 'org-def' } },
+  executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
 })
 const directTarget = {
   kind: 'agent_org_direct_agent', access: 'live',
@@ -69,7 +69,7 @@ const mountSubject = () => mount(AgentOrgWorkspaceView, {
     TeamWorkspaceSurface: {
       props: ['target', 'showHeaderActions', 'recoveryNotice'],
       emits: ['new-team', 'edit-config'],
-      template: '<div data-test="shared-team-surface"><button data-test="org-team-edit" @click="$emit(\'edit-config\')" /></div>',
+      template: '<div data-test="shared-team-surface" :data-actions="String(showHeaderActions)"><button data-test="org-team-new" @click="$emit(\'new-team\')" /><button data-test="org-team-edit" @click="$emit(\'edit-config\')" /></div>',
     },
     AgentOrgMemberRunConfigPanel: {
       props: ['target'],
@@ -88,6 +88,28 @@ describe('AgentOrgWorkspaceView', () => {
     state.target = directTarget
     route.query.mode = 'active'
     center.mode = 'chat'
+  })
+
+  it.each([directTarget, mountedTeamTarget])('exposes stopped configured $kind Settings and existing + semantics', async target => {
+    state.context = context('historical'); state.target = { ...target, access: 'continuable' }; route.query.mode = 'history'
+    const wrapper = mountSubject()
+    const surface = wrapper.find(target.kind === 'agent_org_direct_agent' ? '[data-test="shared-agent-surface"]' : '[data-test="shared-team-surface"]')
+    expect(surface.attributes('data-actions')).toBe('true')
+    await wrapper.get(target.kind === 'agent_org_direct_agent' ? '[data-test="org-edit"]' : '[data-test="org-team-edit"]').trigger('click')
+    expect(wrapper.get('[data-test="member-run-config"]').attributes('data-member-address')).toBe(target.address)
+    await wrapper.get('[data-test="config-back"]').trigger('click')
+    {
+      await wrapper.get(target.kind === 'agent_org_direct_agent' ? '[data-test="org-new"]' : '[data-test="org-team-new"]').trigger('click')
+      expect(push).toHaveBeenCalledWith({ path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: 'org-def', sourceOrgRunId: 'org-run', mode: 'configuration' } })
+    }
+    wrapper.unmount()
+  })
+  it('keeps historical task actions excluded', async () => {
+    state.context = context('historical'); state.target = { ...directTarget, kind: 'agent_org_task_agent', access: 'read_only' }
+    const wrapper = mountSubject()
+    expect(wrapper.get('[data-test="shared-agent-surface"]').attributes('data-actions')).toBe('false')
+    await wrapper.get('[data-test="org-edit"]').trigger('click'); expect(center.showConfig).not.toHaveBeenCalled()
+    wrapper.unmount()
   })
 
   it('opens the exact direct-Agent locked run configuration and returns to the same monitor', async () => {
@@ -112,7 +134,7 @@ describe('AgentOrgWorkspaceView', () => {
     await wrapper.get('[data-test="org-new"]').trigger('click')
     expect(push).toHaveBeenCalledWith({
       path: '/workspace',
-      query: { rootSubjectKind: 'agent_org', definitionId: 'org-def', mode: 'configuration' },
+      query: { rootSubjectKind: 'agent_org', definitionId: 'org-def', sourceOrgRunId: 'org-run', mode: 'configuration' },
     })
     wrapper.unmount()
     expect(disconnect).toHaveBeenCalledWith('org-run')

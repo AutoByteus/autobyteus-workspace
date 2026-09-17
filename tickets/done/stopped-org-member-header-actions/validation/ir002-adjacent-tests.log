@@ -1,0 +1,488 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts (6 tests | 2 failed) 80ms
+   ✓ RuntimeModelConfigFields stored historical values > keeps removed runtime/model/config values visible inside disabled shared controls 17ms
+   ✓ RuntimeModelConfigFields stored historical values > keeps an editable numeric draft rendered while reporting current-schema validation errors 10ms
+   ✓ RuntimeModelConfigFields stored historical values > reports an unavailable selected launch model after its runtime catalog is ready 17ms
+   × RuntimeModelConfigFields stored historical values > accepts and emits exact Codex enum members for the 'launch' consumer 13ms
+     → expected [ { status: 'unavailable', …(1) } ] to deeply equal [ { status: 'ready', message: null } ]
+   × RuntimeModelConfigFields stored historical values > accepts and emits exact Codex enum members for the 'existing-run Settings' consumer 10ms
+     → expected [ { status: 'unavailable', …(1) } ] to deeply equal [ { status: 'ready', message: null } ]
+   ✓ RuntimeModelConfigFields stored historical values > offers only verified replacements and emits a reset coherent pair for existing Settings 12ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (12 tests) 138ms
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (13 tests) 85ms
+ ❯ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts (16 tests | 8 failed) 189ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > direct configuration resolves exact owned Teams and Agents without prior detail/public insertion, then issues ordinary Create 43ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > blocks while pending without premature missing-Team error and preserves drafts without refetch on form edits 32ms
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on missing-team even with a partial Team snapshot 13ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on missing-child even with a partial Team snapshot 7ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: team-local-agent:agent-org-owned-team%3Aalpha%3Asquad:worker <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on network even with a partial Team snapshot 9ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on graphql even with a partial Team snapshot 5ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-id even with a partial Team snapshot 6ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-scope even with a partial Team snapshot 6ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-org even with a partial Team snapshot 11ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   × selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-team-owner even with a partial Team snapshot 9ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: team-local-agent:agent-org-owned-team%3Aalpha%3Asquad:worker <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after route invalidation 12ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after revision invalidation 9ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after members invalidation 12ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after unmount invalidation 4ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > retains unknown overrides as a blocked projection instead of discarding them 4ms
+   ✓ selected Org launch references through real panel, stores, projector and Apollo reader > localizes loading and unavailable status in Simplified Chinese 5ms
+ ❯ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts (10 tests | 1 failed) 221ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > starts with the exact Agent count collapsed, then keeps each mounted Team independently collapsed 43ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > keeps Team and Agent patches independent and preserves them across collapse/reopen 28ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > maps exact sparse Team and Agent patches to the unchanged AgentOrg launch command 32ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > selects the catalog Temp Workspace once for a fresh Org root and projects inheritance 14ms
+   × AgentOrgRunConfigPanel mounted-Team hierarchy > fails closed and disables Run when a referenced Team is unavailable 17ms
+     → Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">Delivery Org</div>
+      </div>
+      <div data-test="runtime-fields" data-id-prefix="org-run" runtime-kind="autobyteus" llm-model-identifier="gpt-root" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div data-test="workspace-selector" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: software-team <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <p class="mt-2 text-xs text-amber-700">Workspace is required to run an Agent Org.</p>
+  </div>
+</div>
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > blocks the root invalid schema state with an exact accessible diagnostic until ready 25ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > blocks the exact mounted Team schema state until that Team becomes ready 14ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > forwards a direct Agent schema state and blocks only until the exact Agent is ready 13ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > cannot launch stale Agent state and admits the committed default after a failed choice is abandoned 21ms
+   ✓ AgentOrgRunConfigPanel mounted-Team hierarchy > renders the Agent Org launch controls through the Simplified Chinese catalog 13ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts > RuntimeModelConfigFields stored historical values > accepts and emits exact Codex enum members for the 'launch' consumer
+ FAIL  components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts > RuntimeModelConfigFields stored historical values > accepts and emits exact Codex enum members for the 'existing-run Settings' consumer
+AssertionError: expected [ { status: 'unavailable', …(1) } ] to deeply equal [ { status: 'ready', message: null } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "message": null,
+-     "status": "ready",
++     "message": "Runtime is not available in current capabilities.",
++     "status": "unavailable",
+    },
+  ]
+
+ ❯ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts:163:53
+    161|     await wrapper.vm.$nextTick()
+    162| 
+    163|     expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
+       |                                                     ^
+    164|       status: 'ready',
+    165|       message: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on missing-team even with a partial Team snapshot
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on network even with a partial Team snapshot
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on graphql even with a partial Team snapshot
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-id even with a partial Team snapshot
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-scope even with a partial Team snapshot
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-org even with a partial Team snapshot
+Error: Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: agent-org-owned-team:alpha:squad <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts:173:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on missing-child even with a partial Team snapshot
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-team-owner even with a partial Team snapshot
+Error: Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">alpha</div>
+      </div>
+      <div runtime-kind="autobyteus" runtime-help-text="Selects the runtime used by this organization run." model-label="Default LLM Model" model-help-text="Used across the organization unless a placement is customized." id-prefix="org-run" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div model="[object Object]" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: team-local-agent:agent-org-owned-team%3Aalpha%3Asquad:worker <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <!--v-if-->
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts:173:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts > AgentOrgRunConfigPanel mounted-Team hierarchy > fails closed and disables Run when a referenced Team is unavailable
+Error: Unable to get [data-test="org-config-reference-diagnostic"] within: <div class="flex h-full flex-col bg-white" data-test="agent-org-run-config">
+  <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <div><label class="mb-1 block text-sm font-medium text-gray-700">Agent Org</label>
+        <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">Delivery Org</div>
+      </div>
+      <div data-test="runtime-fields" data-id-prefix="org-run" runtime-kind="autobyteus" llm-model-identifier="gpt-root" control-variant="quiet"></div>
+      <div class="pt-4">
+        <div data-test="workspace-selector" control-variant="quiet" auto-select-default="false"></div>
+      </div>
+      <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+        <div class="min-w-0"><label class="block text-base text-gray-900">Auto approve tools</label>
+          <p class="mt-1 text-xs text-gray-500">Automatically allows tool calls and access requests for this run.</p>
+        </div><button type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200"><span class="sr-only">Auto approve tools</span><span class="inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0"></span></button>
+      </div>
+      <!--v-if-->
+      <p role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">Unable to load organization members: software-team <button type="button" class="ml-2 underline" data-test="org-seed-retry">Retry loading configuration</button></p>
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="border-t border-gray-200 bg-gray-50 px-4 py-3"><button type="button" data-test="run-agent-org" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50" disabled="">Run Agent Org</button>
+    <p class="mt-2 text-xs text-amber-700">Workspace is required to run an Agent Org.</p>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts:260:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+
+ Test Files  3 failed | 2 passed (5)
+      Tests  11 failed | 46 passed (57)
+   Start at  03:52:22
+   Duration  6.68s (transform 3.57s, setup 27.34s, collect 1.96s, tests 712ms, environment 828ms, prepare 762ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,7 @@
+{
+  "kind": "Implementation panel rendering with synthetic in-memory transport/catalog, NOT actual API/continuation acceptance",
+  "directSaveReopen": true,
+  "mountedSave": true,
+  "uncertaintyExplicitRefresh": true,
+  "errors": []
+}

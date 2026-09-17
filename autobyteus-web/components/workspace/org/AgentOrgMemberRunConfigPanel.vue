@@ -30,23 +30,42 @@
     </div>
 
     <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+      <p v-if="editor.loading.value" role="status">{{ t('workspace.runModelConfig.loading') }}</p>
       <AgentRunConfigForm
-        :config="lockedConfig"
+        v-if="!editor.configured.value || editor.canonical.value"
+        :key="formKey"
+        :config="formConfig"
         :agent-definition="agentDefinition"
         :workspace-loading-state="workspaceLoadingState"
         :workspace-selection="workspaceSelection"
         :workspace-locked="true"
         :runtime-locked="true"
         :existing-run="true"
-        :original-model-identifier="lockedConfig.llmModelIdentifier"
-        :existing-model-config-editable="false"
+        :original-model-identifier="editor.canonical.value?.launchConfiguration.llmModelIdentifier || formConfig.llmModelIdentifier"
+        :existing-model-config-editable="editor.editable.value"
+        :existing-model-config-reason="editor.refreshRequired.value ? 'REFRESH_REQUIRED' : editor.canonical.value?.editability.reason"
+        :saving="editor.saving.value || editor.loading.value"
+        :model-options="editor.options.value"
+        :model-config-field-errors="modelFieldErrors"
+        @selection-change="selectionHandler"
+        @schema-state="schemaHandler"
       />
+      <p v-if="ownershipLocked" role="status" class="mt-3 text-sm text-amber-700">{{ t('workspace.runModelConfig.orgOwnershipUnavailable') }}</p>
+      <ul v-if="editor.fieldErrors.value.length" role="alert" class="mt-3 text-sm text-red-700">
+        <li v-for="error in editor.fieldErrors.value" :key="error.path">{{ error.path }}: {{ error.message }}</li>
+      </ul>
+    </div>
+    <div v-if="editor.configured.value" class="border-t border-gray-200 bg-gray-50 px-4 py-3">
+      <p v-if="editor.feedback.value" role="status" aria-live="polite" class="mb-2 text-sm">{{ editor.feedback.value }}</p>
+      <button v-if="editor.refreshRequired.value" type="button" data-test="refresh-org-model-config" class="mb-2 w-full rounded border px-4 py-2 text-indigo-700" :disabled="editor.loading.value || editor.saving.value" @click="editor.load">{{ t('workspace.runModelConfig.retry') }}</button>
+      <button type="button" data-test="save-org-model-config" class="w-full rounded bg-indigo-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50" :disabled="!editor.canSave.value" @click="editor.save">{{ t(editor.saving.value ? 'workspace.runModelConfig.saving' : 'workspace.runModelConfig.save') }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
+import { useAgentOrgMemberModelConfig } from '~/composables/useAgentOrgMemberModelConfig'
 import AgentRunConfigForm from '~/components/workspace/config/AgentRunConfigForm.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
@@ -60,8 +79,26 @@ const props = defineProps<{ target: AgentOrgMemberTarget }>()
 defineEmits<{ (event: 'back'): void }>()
 
 const { t } = useLocalization()
-const lockedConfig = computed<AgentRunConfig>(() => ({
+const editor = useAgentOrgMemberModelConfig(toRef(props, 'target'))
+const ownershipLocked = computed(() => editor.canonical.value?.editability.reason === 'OWNERSHIP_UNAVAILABLE')
+const formKey = computed(() => `${props.target.root.orgRunId}:${props.target.context.state.runId}:${editor.selection.value?.llmModelIdentifier || ''}:${editor.formGeneration.value}`)
+// The form is keyed on selected identity/model; retired schema callbacks cannot unlock a new draft.
+const selectionHandler = computed(() => {
+  const key = formKey.value
+  return (value: Parameters<typeof editor.updateSelection>[0]) => { if (formKey.value === key) editor.updateSelection(value) }
+})
+const schemaHandler = computed(() => {
+  const key = formKey.value
+  return (value: Parameters<typeof editor.setSchema>[0]) => { if (formKey.value === key) editor.setSchema(value) }
+})
+const modelFieldErrors = computed(() => Object.fromEntries(editor.fieldErrors.value.flatMap(error => {
+  const match = /^llmConfig\.([^.[]+)/.exec(error.path)
+  return match ? [[match[1]!, error.message]] : []
+})))
+const formConfig = computed<AgentRunConfig>(() => ({
   ...props.target.context.config,
+  ...(editor.canonical.value ? { ...editor.canonical.value.launchConfiguration } : {}),
+  ...(editor.selection.value || {}),
   isLocked: true,
 }))
 const agentDefinition = computed(() => ({

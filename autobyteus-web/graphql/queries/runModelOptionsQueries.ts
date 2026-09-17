@@ -12,3 +12,10 @@ export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: Str
     replacements { llmModelIdentifier contextTokens }
   }
 }`
+
+export const AgentOrgMemberModelConfig = gql`query AgentOrgMemberModelConfig($identity: AgentOrgMemberModelConfigIdentityInput!) {
+  getAgentOrgMemberModelConfig(identity: $identity) {
+    orgRunId memberAddress agentRunId launchConfiguration isActive editability { editable reason }
+    modelOptions { ...RunModelOptionsFields }
+  }
+} ${options}`

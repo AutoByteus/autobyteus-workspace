@@ -1,0 +1,286 @@
+{
+  "manifest": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/running/RunningAgentsPanel.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/TeamWorkspaceView.vue",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/composables/useAgentOrgMemberModelConfig.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/composables/useDefinitionLaunchDefaults.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_teams.md",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/orgSeedFixture.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgRunLaunchSeed.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/teamRunLaunchSeed.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgRunConfigStore.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentOrgRunLaunchSeed.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/RuntimeModelConfigSchemaState.ts",
+      "match": true
+    }
+  ],
+  "authored": [
+    {
+      "path": "data/agents/control-agent/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agents/control-agent/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-teams/control-team/team-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-teams/control-team/team.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-teams/control-team/agents/worker/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-teams/control-team/agents/worker/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/org-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/org.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/agents/guide/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/agents/guide/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/agent-teams/squad/team-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/agent-teams/squad/team.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/agent-teams/squad/agents/worker/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/config-lab/agent-teams/squad/agents/worker/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/task-policy-lab/org-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/task-policy-lab/org.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/task-policy-lab/agents/parent/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/task-policy-lab/agents/parent/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/task-policy-lab/agents/worker/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/task-policy-lab/agents/worker/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/unavailable-model-lab/org-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/unavailable-model-lab/org.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/unavailable-model-lab/agents/worker/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/unavailable-model-lab/agents/worker/agent-config.json",
+      "match": true
+    }
+  ],
+  "changedPreexistingRuntimeFiles": [
+    "agent_org_run_history_index.json",
+    "team_run_history_index.json",
+    "agent_teams/team_control_ef5f8cb76cf74bd680919d02e743811a/team_run_execution_tree.json"
+  ],
+  "originalOrgFilesUnchanged": 8,
+  "sourceTeamNonTreeFilesUnchanged": true,
+  "sourceTreeUnchangedSinceSave": true
+}

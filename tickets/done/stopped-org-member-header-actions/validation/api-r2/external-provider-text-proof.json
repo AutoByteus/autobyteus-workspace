@@ -1,0 +1,66 @@
+[
+  {
+    "session": "1ab5fa81-18bd-49e7-a666-085a54be3542",
+    "type": "user",
+    "model": null,
+    "texts": [
+      "Remember synthetic token EXTERNAL-DIRECT-917. Reply exactly EXTERNAL-DIRECT-917 ready. Do not call tools."
+    ]
+  },
+  {
+    "session": "1ab5fa81-18bd-49e7-a666-085a54be3542",
+    "type": "assistant",
+    "model": "claude-haiku-4-5-20251001",
+    "texts": [
+      "EXTERNAL-DIRECT-917 ready"
+    ]
+  },
+  {
+    "session": "1ab5fa81-18bd-49e7-a666-085a54be3542",
+    "type": "user",
+    "model": null,
+    "texts": [
+      "What synthetic token did I ask you to remember? Reply with that token only. Do not call tools."
+    ]
+  },
+  {
+    "session": "1ab5fa81-18bd-49e7-a666-085a54be3542",
+    "type": "assistant",
+    "model": "claude-haiku-4-5-20251001",
+    "texts": [
+      "EXTERNAL-DIRECT-917"
+    ]
+  },
+  {
+    "session": "97463e5e-9d0f-4acd-bd22-49676184f7a2",
+    "type": "user",
+    "model": null,
+    "texts": [
+      "Remember synthetic token EXTERNAL-MOUNTED-917. Reply exactly EXTERNAL-MOUNTED-917 ready. Do not call tools."
+    ]
+  },
+  {
+    "session": "97463e5e-9d0f-4acd-bd22-49676184f7a2",
+    "type": "assistant",
+    "model": "claude-haiku-4-5-20251001",
+    "texts": [
+      "EXTERNAL-MOUNTED-917 ready"
+    ]
+  },
+  {
+    "session": "97463e5e-9d0f-4acd-bd22-49676184f7a2",
+    "type": "user",
+    "model": null,
+    "texts": [
+      "What synthetic token did I ask you to remember? Reply with that token only. Do not call tools."
+    ]
+  },
+  {
+    "session": "97463e5e-9d0f-4acd-bd22-49676184f7a2",
+    "type": "assistant",
+    "model": "claude-haiku-4-5-20251001",
+    "texts": [
+      "EXTERNAL-MOUNTED-917"
+    ]
+  }
+]

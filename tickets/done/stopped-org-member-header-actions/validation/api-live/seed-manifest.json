@@ -1,0 +1,16 @@
+{
+  "data/agents/control-agent/agent.md": "5e2dac6b158fba63190f551d19f43262e7bd82c1177fc88ec8252c40ee7d2fca",
+  "data/agents/control-agent/agent-config.json": "5b2adb0411511cc345be24cd03dcc17e1f92c3bed992cc9e7c0c66504bbbcb6d",
+  "data/agent-teams/control-team/team-config.json": "089541a7851c48e0b88a43b03d4eccb416aac724a119e490956661c430d52f24",
+  "data/agent-teams/control-team/team.md": "2ec3fba83687aea1ef190173e17ca9013ca079eec2979f500e847ffb810b4049",
+  "data/agent-teams/control-team/agents/worker/agent.md": "ff42e3ab7ad2a5c78c7449416d1467578d9008be74dd6317b6c1eb61b509e36f",
+  "data/agent-teams/control-team/agents/worker/agent-config.json": "5b2adb0411511cc345be24cd03dcc17e1f92c3bed992cc9e7c0c66504bbbcb6d",
+  "data/agent-orgs/config-lab/org-config.json": "b5748b4c2cbdc0d973094b36cfb6b31618cce84ec9845de54ce4efad1c28e3e3",
+  "data/agent-orgs/config-lab/org.md": "2c6e25d05be85976ca14e6fc9ff8349616dc54e125e556e51d82fd2d03ba2526",
+  "data/agent-orgs/config-lab/agents/guide/agent.md": "5c8d3b69856ddc31da7512f677de5c52bdf5def6ca5c8c3df3835bc9118bed37",
+  "data/agent-orgs/config-lab/agents/guide/agent-config.json": "5b2adb0411511cc345be24cd03dcc17e1f92c3bed992cc9e7c0c66504bbbcb6d",
+  "data/agent-orgs/config-lab/agent-teams/squad/team-config.json": "089541a7851c48e0b88a43b03d4eccb416aac724a119e490956661c430d52f24",
+  "data/agent-orgs/config-lab/agent-teams/squad/team.md": "517bf39ba4d00960fb8f997a033d096b2786dc3aec40033f5514f11eaca73f7b",
+  "data/agent-orgs/config-lab/agent-teams/squad/agents/worker/agent.md": "ce0a637a295606c2dade83f4795b044eae51cedee1ed5cdebf67eddd092e4986",
+  "data/agent-orgs/config-lab/agent-teams/squad/agents/worker/agent-config.json": "5b2adb0411511cc345be24cd03dcc17e1f92c3bed992cc9e7c0c66504bbbcb6d"
+}

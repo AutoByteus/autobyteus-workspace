@@ -1,0 +1,28 @@
+{
+  "terminatedKnownOwned": [
+    36901,
+    37215,
+    37520
+  ],
+  "ownedDescendants": [
+    37521,
+    37525,
+    37526
+  ],
+  "portsClosed": {
+    "51081": "",
+    "51082": "",
+    "51083": ""
+  },
+  "ownedTabClosed": true,
+  "removedGeneratedAbsentIntake": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "privateTestDbRetainedIgnored": true,
+  "uiStoppedCreatedRoots": [
+    "team_control_879ceeadd3e2415a9737a5703bff3e77",
+    "task_policy_lab_8b14533624084d9cb384f6743a7cb4c5"
+  ],
+  "userResourcesTouched": false
+}

@@ -1,0 +1,13 @@
+import { createRequire } from 'node:module';import fs from 'node:fs/promises';
+const require=createRequire(process.cwd()+'/package.json');const {chromium}=require('playwright-core');
+const out='../tickets/in-progress/stopped-org-member-header-actions/validation/render/';
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+const errors=[];try {const p=await browser.newPage({viewport:{width:1280,height:1000}});p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:50983/__impl-org-config');
+await p.locator('input[type="number"]').waitFor({timeout:60000});await p.screenshot({path:out+'direct.png'});
+await p.locator('input[type="number"]').fill('0');await p.locator('input[type="number"]').blur();await p.locator('[data-test="save-org-model-config"]').click();await p.getByText('Model configuration saved.',{exact:true}).waitFor();
+await p.locator('[data-test="agent-org-config-back-to-events"]').click();await p.getByRole('button',{name:'Reopen settings',exact:true}).click();await p.locator('input[type="number"]').waitFor();if(await p.locator('input[type="number"]').inputValue()!=='0')throw Error('canonical reopen mismatch');
+await p.getByRole('button',{name:'Mounted member',exact:true}).click();await p.locator('[data-member-address="/team/lead"]').waitFor();
+await p.locator('input[type="number"]').fill('3');await p.locator('input[type="number"]').blur();await p.locator('[data-test="save-org-model-config"]').click();await p.getByText('Model configuration saved.',{exact:true}).waitFor();await p.screenshot({path:out+'mounted-saved.png'});
+await p.getByRole('button',{name:'Next save uncertain',exact:true}).click();await p.locator('input[type="number"]').fill('4');await p.locator('input[type="number"]').blur();await p.locator('[data-test="save-org-model-config"]').click();await p.locator('[data-test="refresh-org-model-config"]').waitFor();await p.screenshot({path:out+'uncertain.png'});await p.locator('[data-test="refresh-org-model-config"]').click();await p.locator('input[type="number"]').waitFor();if(await p.locator('input[type="number"]').inputValue()!=='4')throw Error('explicit refresh mismatch');
+await p.setViewportSize({width:760,height:1000});await p.screenshot({path:out+'narrow.png'});await fs.writeFile(out+'dom.txt',await p.locator('body').innerText());await fs.writeFile(out+'results.json',JSON.stringify({kind:'Implementation panel rendering with synthetic in-memory transport/catalog, NOT actual API/continuation acceptance',directSaveReopen:true,mountedSave:true,uncertaintyExplicitRefresh:true,errors},null,2));
+} catch(e){console.error(e);throw e} finally{await browser.close()}

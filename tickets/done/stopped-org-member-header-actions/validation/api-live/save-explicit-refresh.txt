@@ -1,0 +1,37 @@
+The following is a diff from the previous accessibility tree for Window: "127.0.0.1:51083/workspace?ro…tory&memberAddress=/guide 🔊" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 64-96
+~								156 Text 智能体定义
+~								157 Text guide
++								158 Text Runtime
++								159 Pop-up-Button (disabled) Runtime, Value: AutoByteus
++								160 Text 运行时固定。替换模型的上下文容量不得小于已保存模型。
++								161 Text 法学硕士模式
++								162 Einblendmenü OpenAI / gpt-5.4
++								163 Text 运行时固定。替换模型的上下文容量不得小于已保存模型。
++								164 Text Thinking
++								165 Button 使用设置
++								166 Button 高级
++								167 container reasoning_effort
++									168 Text Reasoning Effort 
++									169 Text ⓘ
++								170 Pop-up-Button medium
++									171 (selected) medium
++								172 container reasoning_summary
++									173 Text Reasoning Summary 
++									174 Text ⓘ
++								175 Pop-up-Button none
++									176 (selected) none
++								177 Text 工作区目录
++								178 Titelgruppe
++									179 tab (selected, disabled) Existing, Value: 1
++									180 tab (disabled, settable, integer) New, Value: 0
++								181 Button (disabled) 📁 Temp Workspace (Default) Default temporary workspace
++									182 Text 📁 Temp Workspace (Default)
++									183 Text Default temporary workspace
++									184 Bild
++								185 Text 现有运行的工作区已固定。
++								186 Text 自动批准工具
++								187 Text Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。
++								188 Button (disabled) 自动批准工具
++								189 Text 此运行已停止。下次恢复时将使用已保存的模型设置。
+The focused UI element is 20 HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=history&memberAddress=/guide

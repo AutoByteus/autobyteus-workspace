@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
@@ -26,13 +26,15 @@ const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigSto
     },
     teamRunConfigStoreMock: { setConfig: vi.fn() },
     agentRunConfigStoreMock: { clearConfig: vi.fn() },
-    selectionStoreMock: { selectedType: 'team', clearSelection: vi.fn() },
+    selectionStoreMock: { selectedType: 'team', subject: null, beginSelectionIntent: vi.fn(() => ({ isCurrent: () => true })), clearSelection: vi.fn() },
     workspaceCenterViewStoreMock: { showConfig: vi.fn() },
     agentTeamRunStoreMock: {
       getTeamStreamRecoveryNotice: vi.fn(() => localState.recoveryNotice),
     },
   };
 });
+
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshTeamResumeConfig: async () => ({ teamRunId: 'team-1', executionTree: state.activeTeamContext.view.getExecutionTree() }), resolveWorkspaceMetadataByRootPath: async (path: string) => ({ workspaceId: 'ws-1', workspaceRootPath: path, displayName: 'Workspace', kind: 'filesystem' }) }) }));
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentDefinitionStoreMock }));
@@ -164,6 +166,7 @@ describe('TeamWorkspaceView current aggregate', () => {
     const sourceConfig = state.activeTeamContext.view.getConfigurationView();
     const wrapper = mountComponent();
     await wrapper.get('[data-test="new-agent"]').trigger('click');
+    await flushPromises();
     const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
     expect(seed).toEqual(expect.objectContaining({ isLocked: false }));
     seed.rootConfig.llmConfig.nested.values.push('mutated');

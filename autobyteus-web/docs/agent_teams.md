@@ -281,3 +281,30 @@ local to its view and does not change shared/application catalog membership.
 Reading a definition does not grant shared visibility, independent mutation or
 new standalone run permissions. This boundary does not change the existing
 independent Run/Edit policy for owned Teams.
+
+### Copying a retained Team after Settings Save
+
+Header **New (+)** reads the source Team's current canonical resume configuration
+before installing an editable draft. The alternate existing-source group action
+in `RunningAgentsPanel` uses the same reader, but that component is not mounted
+by the current application host: `AppLeftPanel` uses
+`WorkspaceAgentRunsTreePanel`, which has no Team group Plus control. The alternate
+action's component/loader/seed tests are not a live-browser acceptance claim.
+A retained execution view is presentation state, not authoring authority after a
+successful stopped-run Settings Save. The reader correlates requested, response,
+and tree root IDs before cache publication; the copy also verifies its definition.
+Only matching read-only workspace metadata is reused or resolved. Missing metadata
+blocks the copy rather than changing the workspace or creating one implicitly.
+Loading and failure stay on the source screen; the same action retries. A changed
+selection, source association, or unmounted caller cannot publish a late draft.
+Copying does not replace the source's context, history, Activity or composer state.
+Source-free creation still uses definition defaults; ordinary Create allocates
+new runtime identities.
+
+Sparse copy preserves explicit member parameters when its runtime or model differs
+from the parent, even if the parameter object equals the parent's. Explicit null,
+zero and false remain meaningful. With the same runtime/model/parameters, no
+redundant override is needed. This copy rule does not change deliberate editing:
+choosing a different runtime/model with unspecified parameters still follows the
+existing clearing/inheritance policy. Copying config never clones source runtime
+IDs, provider bindings, tasks, messages or attachments.

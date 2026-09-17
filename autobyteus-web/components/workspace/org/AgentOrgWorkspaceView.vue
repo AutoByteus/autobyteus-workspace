@@ -35,13 +35,14 @@
     <AgentOrgMemberRunConfigPanel
       v-else-if="target && center.isConfigMode"
       :target="target"
+      :key="targetIdentity || 'none'"
       @back="center.showChat"
     />
     <AgentWorkspaceSurface
       v-else-if="target.kind === 'agent_org_direct_agent' || target.kind === 'agent_org_task_agent'"
       class="min-h-0 flex-1"
       :target="target"
-      :show-header-actions="target.access === 'live'"
+      :show-header-actions="headerActionsAvailable"
       :recovery-notice="recoveryNotice"
       @new-agent="openNewOrgRun"
       @edit-config="openMemberConfiguration"
@@ -50,7 +51,7 @@
       v-else-if="target.kind === 'agent_org_team_member' || target.kind === 'agent_org_task_team_member'"
       class="min-h-0 flex-1"
       :target="target"
-      :show-header-actions="target.access === 'live'"
+      :show-header-actions="headerActionsAvailable"
       :recovery-notice="recoveryNotice"
       @new-team="openNewOrgRun"
       @edit-config="openMemberConfiguration"
@@ -112,17 +113,19 @@ const selectRouteExecution = () => {
 }
 watch([() => route.query.agentRunId, () => route.query.memberAddress, context], selectRouteExecution, { immediate: true })
 const openNewOrgRun = () => {
-  const definitionId = context.value?.executionTree.rootOrg.orgDefinitionId
-    || String(route.query.definitionId || '')
-  if (!definitionId) return
+  const source = context.value?.executionTree.rootOrg
+  if (!source) return
+  const definitionId = source.orgDefinitionId
   center.showChat()
   void router.push({
     path: '/workspace',
-    query: { rootSubjectKind: 'agent_org', definitionId, mode: 'configuration' },
+    query: { rootSubjectKind: 'agent_org', definitionId, sourceOrgRunId: source.orgRunId, mode: 'configuration' },
   })
 }
+const headerActionsAvailable = computed(() => Boolean(target.value && (target.value.access === 'live'
+  || target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')))
 const openMemberConfiguration = () => {
-  if (target.value?.access === 'live') center.showConfig()
+  if (headerActionsAvailable.value) center.showConfig()
 }
 
 onMounted(() => {

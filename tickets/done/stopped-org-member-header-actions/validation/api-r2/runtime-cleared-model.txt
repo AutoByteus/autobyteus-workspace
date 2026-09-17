@@ -1,0 +1,96 @@
+HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&mode=configuration
+					21 container
+						22 container 智能体和团队
+							23 container 主要导航
+								24 Inhaltsliste
+									25 container
+										26 Button 智能体
+										27 Button 折叠左侧面板
+											28 Bild
+									29 Button 智能体团队
+									30 Button 智能体组织
+									31 Button 技能
+									32 Button 记忆
+									33 Button 节点
+							34 container
+								35 Kopfzeile Workspaces, Value: 3
+									36 Text Workspaces
+								37 Button 添加工作区
+								38 Button Temp Workspace
+								39 Text 组织
+								40 Button Config Lab (3)
+									41 Text Config Lab
+									42 Text (3)
+								43 Button 折叠 Config Lab 下的成员
+								44 Button 已停止 新建 - Config Lab
+									45 container 已停止
+									46 Text 新建 - Config Lab
+								47 Text 刚刚
+								48 Gliederung Config Lab 执行层级
+									49 row guide, 离线, /guide, config_guide_57b551c1d4db4c5eb602127eed0c3fce
+										50 Text G
+										51 Text guide
+									52 row squad. 团队状态：离线
+										53 Bild 团队状态：离线
+										54 Text squad
+								55 Button 折叠 Config Lab 下的成员
+								56 Button 已停止 新建 - Config Lab
+									57 container 已停止
+									58 Text 新建 - Config Lab
+								59 Text 1 分钟
+								60 Gliederung Config Lab 执行层级
+									61 row guide, 离线, /guide, config_guide_13c32fd445d94a8d938aacba88cbff5d
+										62 Text G
+										63 Text guide
+									64 row squad. 团队状态：离线
+										65 Bild 团队状态：离线
+										66 Text squad
+								67 Button 折叠 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready. 下的成员
+								68 Button 已停止 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+									69 container 已停止
+									70 Text Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+								71 Text 1 小时
+								72 Gliederung Config Lab 执行层级
+									73 row guide, 离线, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+										74 Text G
+										75 Text guide
+									76 row squad. 团队状态：离线
+										77 Bild 团队状态：离线
+										78 Text squad
+							79 Button 设置
+						80 container
+							81 Text 智能体组织
+							82 Text Config Lab
+							83 Text Runtime
+							84 Pop-up-Button Runtime, Value: Claude Agent SDK
+								85 (selected) Claude Agent SDK
+							86 Text 选择此组织运行所使用的运行时。
+							87 Text 默认大语言模型
+							88 Einblendmenü (disabled) Select a model
+							89 Text 应用于整个组织，除非某个位置已自定义。
+							90 Text 正在加载模型选项…
+							91 Text 工作区目录
+							92 Titelgruppe
+								93 tab (selected) Existing, Value: 1
+								94 tab (settable, integer) New, Value: 0
+							95 Button 📁 Temp Workspace (Default) Default temporary workspace
+								96 Text 📁 Temp Workspace (Default)
+								97 Text Default temporary workspace
+								98 Bild
+							99 Text Workspace: Temp Workspace
+							100 Text 自动批准工具
+							101 Text 自动允许本次运行中的工具调用和访问请求。
+							102 wechseln 自动批准工具, Value: off
+							103 Button 成员覆盖 (2)
+							104 Text 正在验证 / 的模型配置…
+							105 Button (disabled) 运行智能体组织
+							106 Titelgruppe 工作区工具
+								107 tab (settable, integer) 文件, Value: 0
+								108 tab (settable, integer) 终端, Value: 0
+								109 tab (settable, integer) 活动, Value: 0
+								110 tab (settable, integer) Token, Value: 0
+								111 tab (settable, integer) 产物, Value: 0
+								112 tab (settable, integer) VNC 查看器, Value: 0
+							113 Button 切换侧边栏
+								114 Bild
+			115 

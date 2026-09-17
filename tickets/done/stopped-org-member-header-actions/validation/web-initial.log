@@ -1,0 +1,56 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/org/__tests__ --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts (2 tests | 2 failed) 14ms
+   × AgentOrgMemberRunConfigPanel > keeps the exact active agent_org_direct_agent locked after compatible model selection integration 11ms
+     → Cannot call props on an empty VueWrapper.
+   × AgentOrgMemberRunConfigPanel > keeps the exact active agent_org_team_member locked after compatible model selection integration 2ms
+     → Cannot call props on an empty VueWrapper.
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (10 tests) 66ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > AgentOrgMemberRunConfigPanel > keeps the exact active agent_org_direct_agent locked after compatible model selection integration
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > AgentOrgMemberRunConfigPanel > keeps the exact active agent_org_team_member locked after compatible model selection integration
+Error: Cannot call props on an empty VueWrapper.
+ ❯ Object.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:1574:27
+    1572|                     return function () { return false; };
+    1573|                 default:
+    1574|                     throw new Error("Cannot call ".concat(String(prop)…
+       |                           ^
+    1575|             }
+    1576|         }
+ ❯ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts:62:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 10 passed (12)
+   Start at  02:46:30
+   Duration  6.58s (transform 2.97s, setup 11.36s, collect 502ms, tests 81ms, environment 377ms, prepare 259ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

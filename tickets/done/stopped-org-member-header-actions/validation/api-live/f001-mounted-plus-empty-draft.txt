@@ -1,0 +1,83 @@
+HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&mode=configuration
+					20 container
+						21 container 智能体和团队
+							22 container 主要导航
+								23 Inhaltsliste
+									24 container
+										25 Button 智能体
+										26 Button 折叠左侧面板
+											27 Bild
+									28 Button 智能体团队
+									29 Button 智能体组织
+									30 Button 技能
+									31 Button 记忆
+									32 Button 节点
+							33 container
+								34 Kopfzeile Workspaces, Value: 3
+									35 Text Workspaces
+								36 Button 添加工作区
+								37 Button Temp Workspace
+								38 Text 组织
+								39 Button Config Lab (1)
+									40 Text Config Lab
+									41 Text (1)
+								42 Button 折叠 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready. 下的成员
+								43 Button 已停止 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+									44 container 已停止
+									45 Text Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+								46 Text 11 分钟
+								47 Gliederung Config Lab 执行层级
+									48 row guide, 离线, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+										49 Text G
+										50 Text guide
+									51 row squad. 团队状态：离线
+										52 Bild 团队状态：离线
+										53 Text squad
+									54 row lead, 离线, /squad/lead, config_worker_8c88f091b3a94cf98cb519a0f6e13385
+										55 Text L
+										56 Text lead
+							57 Button 设置
+						58 container
+							59 Text 智能体组织
+							60 Text Config Lab
+							61 Text Runtime
+							62 Pop-up-Button Runtime, Value: AutoByteus
+								63 (selected) AutoByteus
+							64 Text 选择此组织运行所使用的运行时。
+							65 Text 默认大语言模型
+							66 Einblendmenü Select a model
+							67 Text 应用于整个组织，除非某个位置已自定义。
+							68 Text 工作区目录
+							69 Titelgruppe
+								70 tab (selected) Existing, Value: 1
+								71 tab (settable, integer) New, Value: 0
+							72 Button 📁 Temp Workspace (Default) Default temporary workspace
+								73 Text 📁 Temp Workspace (Default)
+								74 Text Default temporary workspace
+								75 Bild
+							76 Text Workspace: Temp Workspace
+							77 Text 自动批准工具
+							78 Text 自动允许本次运行中的工具调用和访问请求。
+							79 wechseln 自动批准工具, Value: off
+							80 Button 成员覆盖 (2)
+							81 Text /guide 的模型配置尚未就绪：所选模型在当前运行时中不可用。
+							82 Button (disabled) 运行智能体组织
+							83 Titelgruppe 工作区工具
+								84 tab (selected) 文件, Value: 1
+									85 Text 文件
+								86 tab (settable, integer) 终端, Value: 0
+								87 tab (settable, integer) 活动, Value: 0
+								88 tab (settable, integer) Token, Value: 0
+								89 tab (settable, integer) 产物, Value: 0
+								90 tab (settable, integer) VNC 查看器, Value: 0
+							91 Button 切换侧边栏
+								92 Bild
+							93 container
+								94 Text 没有可用的工作区。添加工作区以查看文件。
+								95 Button Maximize view
+								96 container
+									97 Bild
+									98 Kopfzeile No file selected, Value: 3
+										99 Text No file selected
+									100 Text Select a file from the explorer to view or edit its content.
+			101 

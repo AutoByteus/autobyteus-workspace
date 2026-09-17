@@ -1,0 +1,46 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts [ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts ]
+ FAIL  components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts [ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts ]
+ FAIL  components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts [ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts ]
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts [ components/workspace/config/__tests__/MemberOverrideItem.spec.ts ]
+Error: Transform failed with 1 error:
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web/localization/messages/en/workspace.ts:2:42: ERROR: Expected "as" but found ":"
+  Plugin: vite:esbuild
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web/localization/messages/en/workspace.ts:2:42
+  
+  Expected "as" but found ":"
+  1  |  import type {
+  2  |    "workspace.runModelConfig.modelRequired": "Select a model before launch.",
+     |                                            ^
+  3  |    "workspace.agentOrg.runConfig.modelRequired": "Select a model for {address} before launch.",
+  4  |    "workspace.agentOrg.runConfig.retryInitialization": "Retry loading configuration",
+  
+ ❯ failureErrorWithLog ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467:15
+ ❯ ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:736:50
+ ❯ responseCallbacks.<computed> ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:603:9
+ ❯ handleIncomingPacket ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:658:12
+ ❯ Socket.readFromStdout ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:581:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  no tests
+   Start at  03:51:44
+   Duration  1.71s (transform 744ms, setup 0ms, collect 0ms, tests 0ms, environment 867ms, prepare 575ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

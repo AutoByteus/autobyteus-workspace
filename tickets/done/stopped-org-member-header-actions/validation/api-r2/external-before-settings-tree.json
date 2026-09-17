@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "createdAt": "2026-09-17T02:17:04.888Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "config-lab",
+    "orgDefinitionName": "Config Lab",
+    "orgRunId": "config_lab_9cf12404d4964b7b877de91e7b0022a7",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "haiku",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/guide",
+        "agentDefinitionId": "agent-org-owned-agent:config-lab:guide",
+        "role": null,
+        "description": null,
+        "agentRunId": "config_guide_243bc1a9e0af42c1b54798eca2a75923",
+        "platformAgentRunId": "1ab5fa81-18bd-49e7-a666-085a54be3542",
+        "launchConfiguration": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+        }
+      },
+      {
+        "address": "/squad",
+        "teamDefinitionId": "agent-org-owned-team:config-lab:squad",
+        "role": null,
+        "description": null,
+        "teamRunId": "config_squad_330e3821f22346e69f9a1221e9a0d34d",
+        "coordinatorAddress": "/squad/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/squad/lead",
+            "agentDefinitionId": "team-local-agent:agent-org-owned-team%3Aconfig-lab%3Asquad:worker",
+            "role": null,
+            "description": null,
+            "agentRunId": "config_worker_17ea84e915d848c99e5c418438db33a3",
+            "platformAgentRunId": "97463e5e-9d0f-4acd-bd22-49676184f7a2",
+            "launchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": []
+  }
+}

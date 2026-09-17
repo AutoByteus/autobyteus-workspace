@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts (10 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  03:52:59
+   Duration  4.56s (transform 2.63s, setup 4.09s, collect 30ms, tests 14ms, environment 125ms, prepare 122ms)
+

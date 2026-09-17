@@ -1,3 +1,6 @@
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { readAgentOrgMemberModelConfig, saveAgentOrgMemberModelConfig, type AgentOrgMemberModelConfigIdentity } from '~/services/runConfigEditing/agentOrgMemberModelConfigClient'
+import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore'
 import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
 import { defineStore } from 'pinia'
@@ -21,7 +24,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const contexts = ref<Record<string, AgentOrgExecutionContext>>({})
   const errors = ref<Record<string, string | null>>({})
   const pendingFocus = ref<Record<string, OrgWorkspaceSelection | string | null | undefined>>({})
-  const operations = ref<Record<string, 'continuation' | 'stop'>>({})
+  const operations = ref<Record<string, 'continuation' | 'stop' | 'configuration'>>({})
   const services = new Map<string, AgentOrgStreamingService>()
   const inspections = new Map<string, Promise<void>>()
   const generations = new Map<string, symbol>()
@@ -263,7 +266,36 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     finally { finishOperation(id) }
   }
 
+  const requireConfigOwner = (identity: AgentOrgMemberModelConfigIdentity) => {
+    const org = contexts.value[identity.orgRunId]
+    const agent = org?.index.agents.get(identity.agentRunId)
+    if (!org || !agent || agent.task || agent.kind !== 'configured' || agent.address !== identity.memberAddress) throw new Error('Org configuration target is stale.')
+    if (operations.value[identity.orgRunId] || inspections.has(identity.orgRunId)) throw new Error('Org operation is already pending.')
+    return org
+  }
+  const readMemberModelConfig = async (identity: AgentOrgMemberModelConfigIdentity) => {
+    const org = requireConfigOwner(identity), view = org.view
+    const binding = useWindowNodeContextStore().bindingRevision
+    const canonical = await readAgentOrgMemberModelConfig(identity)
+    if (contexts.value[identity.orgRunId] === org && org.view === view && !operations.value[identity.orgRunId]
+      && binding === useWindowNodeContextStore().bindingRevision) org.applyMemberModelConfig(canonical)
+    return canonical
+  }
+  const saveMemberModelConfig = async (identity: AgentOrgMemberModelConfigIdentity, selection: ExistingRunModelSelection) => {
+    const org = requireConfigOwner(identity), id = identity.orgRunId, view = org.view
+    if (org.isActive || org.phase !== 'historical' || org.getAgentContext(identity.agentRunId)?.submissionPending
+      || [...submissions.keys()].some(key => key.startsWith(`${id}\0`))) throw new Error('Org must be stopped before configuration Save.')
+    const binding = useWindowNodeContextStore().bindingRevision
+    operations.value = { ...operations.value, [id]: 'configuration' }
+    try {
+      const result = await saveAgentOrgMemberModelConfig(identity, selection)
+      if (result.canonical && contexts.value[id] === org && org.view === view
+        && binding === useWindowNodeContextStore().bindingRevision) org.applyMemberModelConfig(result.canonical)
+      return result
+    } finally { finishOperation(id) }
+  }
+
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { contexts, errors, operations, reconcileRetainedHistory, openForInspection, disconnect, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readMemberModelConfig, saveMemberModelConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, disconnect, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })

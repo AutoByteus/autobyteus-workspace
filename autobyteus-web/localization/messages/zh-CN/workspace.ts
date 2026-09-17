@@ -1,6 +1,13 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
+  "workspace.teamCopy.failed": "无法复制此团队配置：{error}。请点击新建（+）重试。" ,
+  "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
+  "workspace.agentOrg.runConfig.modelRequired": "启动前请为 {address} 选择模型。",
+  "workspace.agentOrg.runConfig.retryInitialization": "重试加载配置",
+
+  "workspace.runModelConfig.orgOwnershipUnavailable": "此组织运行由应用管理，无法在此编辑模型设置。",
   "workspace.agentOrg.inspectionUnavailable": "无法读取已保存的智能体组织数据。未启动任何运行。",
   "workspace.runModelConfig.loading": "正在加载运行配置…",
   "workspace.runModelConfig.runUnavailable": "此运行已不可用。",

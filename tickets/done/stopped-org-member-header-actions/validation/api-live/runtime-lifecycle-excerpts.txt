@@ -1,0 +1,57 @@
+AgentFactory (Singleton) initialized.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-17T01:13:45.810Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+AgentRuntimeState initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentWorker initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'.
+Registered AgentContext for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Context registered.
+Agent facade initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'.
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (event store initialized).
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (status deriver initialized).
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (AgentEventInbox initialized).
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (AgentEventScheduler initialized).
+AgentEventStream (ID: e1966f6b-1a3f-4987-81fd-92df7a2415c6) initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Subscribed to notifier.
+AgentWorker 'config_guide_58b1481c340743b5a5933a2eb4a314b5' initialized successfully. Entering main event scheduler loop.
+AgentEventStream (ID: 15e1df13-602a-4e17-a5ab-1087a3c6e37e) initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Subscribed to notifier.
+AgentRuntimeState initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentWorker initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'.
+Registered AgentContext for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Context registered.
+Agent facade initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'.
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (event store initialized).
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (status deriver initialized).
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (AgentEventInbox initialized).
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (AgentEventScheduler initialized).
+AgentEventStream (ID: 8ee79e3d-46c9-4099-9652-c6f460df9ed2) initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Subscribed to notifier.
+AgentWorker 'config_worker_8c88f091b3a94cf98cb519a0f6e13385' initialized successfully. Entering main event scheduler loop.
+AgentEventStream (ID: f06fddeb-b689-41f9-bcb6-c3c2541545b4) initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Subscribed to notifier.
+Unregistered AgentContext for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'.
+Unregistered AgentContext for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'.
+AgentRuntimeState initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentWorker initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'.
+Registered AgentContext for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Context registered.
+Agent facade initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'.
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (event store initialized).
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (status deriver initialized).
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (AgentEventInbox initialized).
+Agent 'config_worker_8c88f091b3a94cf98cb519a0f6e13385': Runtime init completed (AgentEventScheduler initialized).
+AgentEventStream (ID: f2c97d27-1a37-4c98-9920-4d99235abe8c) initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Subscribed to notifier.
+AgentWorker 'config_worker_8c88f091b3a94cf98cb519a0f6e13385' initialized successfully. Entering main event scheduler loop.
+AgentEventStream (ID: 2a846c29-bc13-4701-b3cf-36ac99bb3d7e) initialized for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'. Subscribed to notifier.
+AgentRuntimeState initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentWorker initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'.
+Registered AgentContext for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Context registered.
+Agent facade initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'.
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (event store initialized).
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (status deriver initialized).
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (AgentEventInbox initialized).
+Agent 'config_guide_58b1481c340743b5a5933a2eb4a314b5': Runtime init completed (AgentEventScheduler initialized).
+AgentEventStream (ID: d54a39e2-9981-45f9-addf-045049c5ce84) initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Subscribed to notifier.
+AgentWorker 'config_guide_58b1481c340743b5a5933a2eb4a314b5' initialized successfully. Entering main event scheduler loop.
+AgentEventStream (ID: 3ac33b74-114f-4fb2-beb0-1b2eb68beeca) initialized for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'. Subscribed to notifier.
+Unregistered AgentContext for agent_id 'config_worker_8c88f091b3a94cf98cb519a0f6e13385'.
+Unregistered AgentContext for agent_id 'config_guide_58b1481c340743b5a5933a2eb4a314b5'.

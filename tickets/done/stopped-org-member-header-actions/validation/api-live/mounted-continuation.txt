@@ -1,0 +1,40 @@
+The following is a diff from the previous accessibility tree for Window: "127.0.0.1:51083/workspace?ro…memberAddress=/squad/lead 🔊" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 185-187, 189-199, 201-205, 208, 210-214, 216
+~1 Standardfenster Secondary Actions: Raise, 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/squad/lead - Google Chrome – ryan, URL: 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/squad/lead
+~	2 container 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/squad/lead - Google Chrome – ryan, URL: 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/squad/lead
+~					10 Textfeld (settable) Description: Adress- und Suchleiste, Placeholder: Mit Google suchen oder eine URL eingeben, Value: 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/squad/lead
+~									49 row guide, 空闲, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+~									55 row (selected) lead, 空闲, /squad/lead, config_worker_8c88f091b3a94cf98cb519a0f6e13385
++								210 Text L
++								211 Kopfzeile lead, Value: 4
++									212 Text lead
++								213 Text Idle
++								214 Button 编辑配置
+~								215 Button 新建智能体
++								216 container
++									217 text You Remember test token MOUNTED-917. Reply exactly: MOUNTED-917 ready. L lead
++									218 Text MOUNTED-917 ready.
++									219 text You What test token did I previously ask you to remember? Reply with that token only. 上下文文件
++									220 Inhaltsliste
++										221 Button Open attachment.txt
++									222 text L lead
++									223 Text MOUNTED-917
++								224 Button Context Files (0) （拖动、粘贴或上传）
++									225 text Context Files (0) （拖动、粘贴或上传）
++								226 Button 上传文件
++									227 Bild
++								228 container
++									229 Bereich für Texteinträge (settable) 输入消息...
++									230 Button (disabled) Send message
++								231 Button 系统指令。由 AutoByteus 提供 · Native 已配置系统提示词。可用。捕获于 17.09.2026, 03:16:22。8141 个字符。
++									232 Text 系统指令
++									233 Text 由 AutoByteus 提供 · Native 已配置系统提示词
++									234 Text 捕获于 17.09.2026, 03:16:22 · 8141 个字符
++									235 Text 可用
++								236 Button 系统指令。由 AutoByteus 提供 · Native 已配置系统提示词。可用。捕获于 17.09.2026, 03:20:08。8047 个字符。
++									237 Text 系统指令
++									238 Text 由 AutoByteus 提供 · Native 已配置系统提示词
++									239 Text 捕获于 17.09.2026, 03:20:08 · 8047 个字符
++									240 Text 可用
+~					142 Titel (selected, settable, boolean) Value: on, Description: 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/squad/lead – Arbeitsspeichernutzung – 336 MB
+The focused UI element is 55 row (selected) lead, 空闲, /squad/lead, config_worker_8c88f091b3a94cf98cb519a0f6e13385
