@@ -15,3 +15,6 @@ Docs sync Pass. Next: explicit current-ticket user verification/finalization aut
 
 ## DR-002 finalization supplement
 Explicit current acceptance received. Archive/package8301360b3 integrated and pushed to target, cleanup completed with69privatefiles preserved; canonical doc unchanged since DR001. Earlier hold superseded by current handoff/release receipt. No build/release; no broad diff-clean claim for raw evidence.
+
+## DR-003 build supplement
+Requested rebuild from latest base4d28c37c1 completed; no production/long-lived-doc changes. Current handoff/release/buildREADME and checksums own output identity; prior installer-predates-fix statement superseded for this output. No claim of GUI/profile startup acceptance.
