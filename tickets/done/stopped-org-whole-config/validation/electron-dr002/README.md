@@ -27,3 +27,6 @@ App: /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/a
 Build and package verification Completed. Unsigned local artifact; not installed or launched by Delivery. No user profile/data/provider/credentials/migration/reset action. No Electron functional acceptance has yet occurred; user will test. Existing API limits remain: no all-provider/arbitrary-model certification; task/attachment-bearing adversarial preservation is direct owner-suite evidence; global typecheck/broader-suite limitations remain. Repository remains uncommitted/unpushed/unmerged and ticket remains in progress pending explicit acceptance after testing.
 
 Post-build cleanup removed only the two intake-absent generated SDK `dist` directories. The Electron output and local build audit remain available for user testing.
+
+## Final disposition
+The user functionally verified this task-worktree build. Before task cleanup, the exact DMG/ZIP were hash-verified into `/Users/normy/autobyteus_org/delivery-retained/ORG-STOPPED-WHOLE-CONFIG-20260917-001-DR003/tested-electron/`. The task-worktree artifact path is now retired. The base-worktree Electron output was not rebuilt and was left running/untouched; only base source was finalized.

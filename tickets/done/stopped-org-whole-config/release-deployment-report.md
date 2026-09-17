@@ -1,3 +1,26 @@
+# Authoritative DR-003 — Delivery Completed (2026-09-18)
+
+ORG-STOPPED-WHOLE-CONFIG-20260917-001; Medium / High / Reviewed retained. User explicitly verified the task-worktree Electron candidate: “i just tested, it works now.” User then clarified “I'm not running the electron from the task work tree anymore. I'm running the electron from the base work tree so you can safely finalize.” All applicable delivery gates are Completed or truthfully Not required.
+
+## Repository and cleanup receipt
+- Post-verification target remained64852674b5f003aea2a169233093f12a9f80ffba, identical to verified candidate base. No new source/integration delta, executable rerun or renewed verification needed.47/47IR003 paths exact.
+- Archived before exact staging.170 paths staged explicitly:47 implementation/doc/test manifest entries and123ticket artifacts/evidence. No blanket staging. Source/canonical docs and authored delivery markdown whitespace Pass; raw verbatim evidence has whitespace findings in20validation-only files, so no global clean-diff claim.
+- Package commit **d830832f64d608763b33ff62c2c9a218acdb6aff**. Ticket branch pushed and remote verified. Base worktree branch `requirements/flat-agent-organization-model` refreshed, ff-only merged, pushed and ls-remote confirmed same package commit. Personal untouched. This subsequent receipt commit changes only final delivery artifacts.
+-3424private isolated files and exact user-tested DMG/ZIP were preserved at `/Users/normy/autobyteus_org/delivery-retained/ORG-STOPPED-WHOLE-CONFIG-20260917-001-DR003` (root0700), per-file/symlink/archive hashes verified. Private manifest/content excluded from Git.
+- Recheck proved no task-worktree Electron process remained. Clean ticket worktree removed, local `codex/stopped-org-whole-config` deleted, registration pruned; remote ticket retained. Base application processes remained running from the base worktree and were not stopped, modified or relaunched. Unrelated base SDKdist outputs and org-history-resume-offline-analysis preserved.
+
+## Build / release distinction
+The user-tested task build passed canonical preparation/package, DMG/ZIP integrity,239-file asar equality and packaged terminal spawn. Its archives remain under the secure preservation directory. The task path no longer exists after safe cleanup. The currently running base-worktree Electron output was intentionally untouched and predates this package; base source is latest but Electron was NOT rebuilt in the base worktree during finalization. No signing/notarization/install/release/tag/publication/deployment occurred.
+
+## Gates / residuals
+Docs sync Completed; explicit functional verification Completed; repository finalization Completed; safe cleanup Completed. Release/deployment/rollout Not required. Directly Usable—No Migration. No user data/profile/provider/reset/repair action.
+ARCHREV001 Pass; IR001–003; CRR004 source Pass with CR001/002 resolved; APIREV002 Pass95.0% confidence (not pass rate), superseding APIREV001 Fail; CRR005 successful test review Not Applicable (zero API durable test delta). Actual direct/mounted one-read form, four-scope Save/reopen/real continuation, pre-write correction, response-loss canonical reconcile/no replay, lifecycle/adjacent controls and preservation pass.
+No Electron functional matrix or all-provider/arbitrary-model certification beyond the user-tested candidate; task/attachment-bearing adversarial preservation remains direct owner-suite evidence. Global typecheck/broader-suite limitations remain. No scoped finding remains.
+
+Prior DR001 hold and DR002/DR003 checkpoint text below is historical. Current artifacts and validation indexes own complete truth. Successful terminal is eligible; get_handoff_rules and send transport results are external tool authority and must not be inferred from this file.
+
+---
+
 # Current DR-003 — verified finalization checkpoint (2026-09-18)
 
 User explicitly verified the task-worktree Electron build: “i just tested, it works now.” User then instructed “continue please” after Delivery stated it would finalize the verified package.

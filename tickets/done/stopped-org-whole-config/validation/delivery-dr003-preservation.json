@@ -3,5 +3,9 @@
   "private_file_count": 3424,
   "tested_installer_archives_preserved": true,
   "verification": "Per-file private hashes/symlinks and DMG/ZIP SHA-256 verified; private manifest/content excluded from Git.",
-  "app_running_cleanup_hold": true
+  "app_running_cleanup_hold": false,
+  "task_app_process_absent_before_cleanup": true,
+  "task_worktree_cleanup_complete": true,
+  "local_ticket_branch_deleted": true,
+  "base_app_running_untouched": true
 }
