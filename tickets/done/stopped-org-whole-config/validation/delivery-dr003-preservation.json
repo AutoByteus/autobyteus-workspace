@@ -1,0 +1,7 @@
+{
+  "backup": "/Users/normy/autobyteus_org/delivery-retained/ORG-STOPPED-WHOLE-CONFIG-20260917-001-DR003",
+  "private_file_count": 3424,
+  "tested_installer_archives_preserved": true,
+  "verification": "Per-file private hashes/symlinks and DMG/ZIP SHA-256 verified; private manifest/content excluded from Git.",
+  "app_running_cleanup_hold": true
+}

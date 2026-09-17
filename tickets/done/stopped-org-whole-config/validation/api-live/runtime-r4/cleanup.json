@@ -1,0 +1,39 @@
+{
+  "browserTabClosed": true,
+  "ownedPidsTerminated": [
+    97040,
+    97041,
+    97044,
+    97953,
+    97954,
+    97955
+  ],
+  "portsClosed": [
+    51281,
+    51282,
+    51283
+  ],
+  "generatedPaths": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-application-sdk-contracts/dist",
+      "existed": true,
+      "removed": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-application-backend-sdk/dist",
+      "existed": true,
+      "removed": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist",
+      "existed": false,
+      "removed": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/resources/server",
+      "existed": false,
+      "removed": true
+    }
+  ],
+  "isolatedDataRetained": true
+}

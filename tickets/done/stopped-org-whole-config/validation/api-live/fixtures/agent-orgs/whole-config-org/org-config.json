@@ -1,0 +1,15 @@
+{
+  "members": [
+    { "memberName": "guide", "ref": "whole-config-agent", "refScope": "shared", "refType": "agent" },
+    { "memberName": "squad", "ref": "whole-config-team", "refScope": "shared", "refType": "agent_team" }
+  ],
+  "handoffs": [
+    { "from": "/guide", "to": "/squad/lead", "rules": ["Route synthetic validation handoffs only when explicitly requested."] }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "gpt-5.4-mini",
+    "llmConfig": { "reasoning_effort": "low" }
+  }
+}

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useExistingRunModelConfigStore } from '../existingRunModelConfigStore'
+import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
 const mocks = vi.hoisted(() => ({
   updateAgent: vi.fn(),
@@ -8,6 +9,8 @@ const mocks = vi.hoisted(() => ({
   refreshAgent: vi.fn(),
   refreshTeam: vi.fn(),
   patchConfigOnly: vi.fn(),
+  readOrg: vi.fn(),
+  saveOrg: vi.fn(),
   resumeConfigByRunId: {} as Record<string, unknown>,
   teamResumeConfigByTeamRunId: {} as Record<string, unknown>,
 }))
@@ -28,6 +31,9 @@ vi.mock('~/stores/runHistoryStore', () => ({
 }))
 vi.mock('~/stores/agentContextsStore', () => ({
   useAgentContextsStore: () => ({ patchConfigOnly: mocks.patchConfigOnly }),
+}))
+vi.mock('~/stores/agentOrgContextsStore', () => ({
+  useAgentOrgContextsStore: () => ({ readRunModelConfig: mocks.readOrg, saveRunModelConfigs: mocks.saveOrg }),
 }))
 
 const editability = () => ({ editable: true, reason: null })
@@ -139,6 +145,178 @@ describe('existingRunModelConfigStore', () => {
     expect(store.draft).toMatchObject({ kind: 'agent', runId: 'run-2' })
     expect(mocks.refreshAgent).toHaveBeenNthCalledWith(1, 'run-1')
     expect(mocks.refreshAgent).toHaveBeenNthCalledWith(2, 'run-2')
+  })
+
+  it('loads one canonical AgentOrg subject and saves recursive changed scopes as one aggregate command', async () => {
+    const store = useExistingRunModelConfigStore()
+    const executionTree = taskBearingView().execution_tree
+    mocks.readOrg.mockResolvedValue({ orgRunId: 'org-run', executionTree, isActive: false, editability: editability() })
+    await store.loadAgentOrgCanonical('org-run')
+    expect(store.draft).toMatchObject({ kind: 'agent_org', orgRunId: 'org-run' })
+    const addresses = Object.keys(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress : {})
+    for (const address of addresses) {
+      store.modelOptionsByAddress[address] = { status: 'ready', options: {
+        currentModelIdentifier: store.draft!.kind === 'agent_org'
+          ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : '',
+        currentContextTokens: 100, replacements: [], unavailableReason: null,
+      } }
+      store.setSchemaState(address, { status: 'ready', message: null })
+    }
+    store.updateAgentOrgScopeModelConfig('/', {
+      llmModelIdentifier: store.draft!.kind === 'agent_org'
+        ? store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier : '',
+      llmConfig: { budget: 0, enabled: false, optional: null },
+    })
+    expect(store.patches.length).toBeGreaterThan(1)
+    const canonical = structuredClone(executionTree)
+    canonical.rootOrg.defaultLaunchConfiguration.llmConfig = { budget: 0, enabled: false, optional: null }
+    for (const member of canonical.rootOrg.members) {
+      if ('agentRunId' in member) member.launchConfiguration.llmConfig = { budget: 0, enabled: false, optional: null }
+      else {
+        member.defaultLaunchConfiguration.llmConfig = { budget: 0, enabled: false, optional: null }
+        for (const agent of member.members) agent.launchConfiguration.llmConfig = { budget: 0, enabled: false, optional: null }
+      }
+    }
+    mocks.saveOrg.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
+      editability: editability(), canonicalExecutionTree: canonical, fieldErrors: [] })
+    await expect(store.save()).resolves.toBe(true)
+    expect(mocks.saveOrg).toHaveBeenCalledTimes(1)
+    expect(mocks.saveOrg.mock.calls[0]![0]).toBe('org-run')
+    expect(mocks.saveOrg.mock.calls[0]![1]).toEqual(expect.arrayContaining([
+      expect.objectContaining({ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmConfig: { budget: 0, enabled: false, optional: null } }),
+    ]))
+    expect(store.dirty).toBe(false)
+  })
+
+  it('keeps submitted AgentOrg root/member edits correctable after determinate validation failure', async () => {
+    const store = useExistingRunModelConfigStore()
+    const executionTree = taskBearingView().execution_tree
+    mocks.readOrg.mockResolvedValue({ orgRunId: 'org-run', executionTree, isActive: false, editability: editability() })
+    await store.loadAgentOrgCanonical('org-run')
+    if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
+    for (const address of Object.keys(store.draft.planner.scopesByAddress)) {
+      store.setSchemaState(address, { status: 'ready', message: null })
+    }
+    const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
+    const invalidRoot = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-root' } }
+    const invalidMember = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-member' } }
+    store.updateAgentOrgScopeModelConfig('/', invalidRoot)
+    store.updateAgentOrgScopeModelConfig('/team/worker', invalidMember)
+    const submittedPatches = structuredClone(store.patches)
+    mocks.saveOrg.mockResolvedValueOnce({
+      success: false,
+      outcome: 'VALIDATION_FAILED',
+      message: 'One or more AgentOrg model settings are invalid.',
+      isActive: false,
+      editability: editability(),
+      canonicalExecutionTree: executionTree,
+      fieldErrors: [
+        { path: 'patches[/].llmConfig.effort', message: 'Invalid root effort.' },
+        { path: 'patches[/team/worker].llmConfig.effort', message: 'Invalid member effort.' },
+      ],
+    })
+
+    await expect(store.save()).resolves.toBe(false)
+    expect(mocks.saveOrg).toHaveBeenCalledTimes(1)
+    expect(store.draft.planner.scopesByAddress['/']!.draftSelection).toEqual(invalidRoot)
+    expect(store.draft.planner.scopesByAddress['/team/worker']!.draftSelection).toEqual(invalidMember)
+    expect(store.patches).toEqual(submittedPatches)
+    expect(store.fieldErrors).toEqual([
+      { path: 'patches[/].llmConfig.effort', message: 'Invalid root effort.' },
+      { path: 'patches[/team/worker].llmConfig.effort', message: 'Invalid member effort.' },
+    ])
+
+    const correctedRoot = { llmModelIdentifier: model, llmConfig: { effort: 'high' } }
+    const correctedMember = { llmModelIdentifier: model, llmConfig: { effort: 'medium' } }
+    store.updateAgentOrgScopeModelConfig('/', correctedRoot)
+    store.updateAgentOrgScopeModelConfig('/team/worker', correctedMember)
+    expect(store.fieldErrors).toEqual([])
+    const canonical = structuredClone(executionTree)
+    canonical.rootOrg.defaultLaunchConfiguration.llmConfig = correctedRoot.llmConfig
+    for (const member of canonical.rootOrg.members) {
+      if ('agentRunId' in member) member.launchConfiguration.llmConfig = correctedRoot.llmConfig
+      else {
+        member.defaultLaunchConfiguration.llmConfig = correctedRoot.llmConfig
+        for (const agent of member.members) {
+          agent.launchConfiguration.llmConfig = agent.address === '/team/worker'
+            ? correctedMember.llmConfig
+            : correctedRoot.llmConfig
+        }
+      }
+    }
+    mocks.saveOrg.mockResolvedValueOnce({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
+      editability: editability(), canonicalExecutionTree: canonical, fieldErrors: [] })
+
+    await expect(store.save()).resolves.toBe(true)
+    expect(mocks.saveOrg).toHaveBeenCalledTimes(2)
+    expect(mocks.saveOrg.mock.calls[1]![1]).toEqual(expect.arrayContaining([
+      expect.objectContaining({ scopeAddress: '/', llmConfig: correctedRoot.llmConfig }),
+      expect.objectContaining({ scopeAddress: '/team/worker', llmConfig: correctedMember.llmConfig }),
+    ]))
+    expect(store.dirty).toBe(false)
+  })
+
+  it.each(['MODEL_UNAVAILABLE', 'SCHEMA_UNAVAILABLE', 'PERSISTENCE_FAILED'] as const)(
+    'retains AgentOrg edits for determinate %s without canonical refresh',
+    async outcome => {
+      const store = useExistingRunModelConfigStore()
+      const executionTree = taskBearingView().execution_tree
+      mocks.readOrg.mockResolvedValue({ orgRunId: 'org-run', executionTree,
+        isActive: false, editability: editability() })
+      await store.loadAgentOrgCanonical('org-run')
+      if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
+      for (const address of Object.keys(store.draft.planner.scopesByAddress)) {
+        store.setSchemaState(address, { status: 'ready', message: null })
+      }
+      const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
+      const attemptedRoot = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-root` } }
+      const attemptedMember = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-member` } }
+      store.updateAgentOrgScopeModelConfig('/', attemptedRoot)
+      store.updateAgentOrgScopeModelConfig('/team/worker', attemptedMember)
+      mocks.saveOrg.mockResolvedValueOnce({ success: false, outcome, message: 'Determinate failure.',
+        isActive: false, editability: editability(), canonicalExecutionTree: executionTree, fieldErrors: [] })
+
+      await expect(store.save()).resolves.toBe(false)
+      if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
+      expect(store.draft.planner.scopesByAddress['/']!.draftSelection).toEqual(attemptedRoot)
+      expect(store.draft.planner.scopesByAddress['/team/worker']!.draftSelection).toEqual(attemptedMember)
+      expect(store.patches.length).toBeGreaterThan(0)
+      expect(mocks.readOrg).toHaveBeenCalledTimes(1)
+    },
+  )
+
+  it('replaces an attempted AgentOrg draft only after indeterminate canonical refresh', async () => {
+    const store = useExistingRunModelConfigStore()
+    const executionTree = taskBearingView().execution_tree
+    mocks.readOrg.mockResolvedValueOnce({ orgRunId: 'org-run', executionTree, isActive: false, editability: editability() })
+    await store.loadAgentOrgCanonical('org-run')
+    if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
+    for (const address of Object.keys(store.draft.planner.scopesByAddress)) {
+      store.setSchemaState(address, { status: 'ready', message: null })
+    }
+    const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
+    store.updateAgentOrgScopeModelConfig('/', { llmModelIdentifier: model, llmConfig: { effort: 'attempted' } })
+    mocks.saveOrg.mockResolvedValueOnce({
+      success: false,
+      outcome: 'PERSISTENCE_INDETERMINATE',
+      message: 'Update outcome is being verified.',
+      isActive: false,
+      editability: editability(),
+      canonicalExecutionTree: executionTree,
+      fieldErrors: [],
+    })
+    const verifiedTree = structuredClone(executionTree)
+    verifiedTree.rootOrg.defaultLaunchConfiguration.llmConfig = { effort: 'stored' }
+    mocks.readOrg.mockResolvedValueOnce({ orgRunId: 'org-run', executionTree: verifiedTree,
+      isActive: false, editability: editability() })
+
+    await expect(store.save()).resolves.toBe(false)
+    expect(mocks.saveOrg).toHaveBeenCalledTimes(1)
+    expect(mocks.readOrg).toHaveBeenCalledTimes(2)
+    expect(store.reconciliationRequired).toBe(false)
+    expect(store.draft.planner.scopesByAddress['/']!.originalSelection.llmConfig).toEqual({ effort: 'stored' })
+    expect(store.draft.planner.scopesByAddress['/']!.draftSelection.llmConfig).toEqual({ effort: 'stored' })
+    expect(store.patches).toEqual([])
   })
 
   it('allows cached lifecycle state to relock during loading but never unlocks from cache', async () => {

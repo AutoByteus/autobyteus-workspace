@@ -13,9 +13,14 @@ export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: Str
   }
 }`
 
-export const AgentOrgMemberModelConfig = gql`query AgentOrgMemberModelConfig($identity: AgentOrgMemberModelConfigIdentityInput!) {
-  getAgentOrgMemberModelConfig(identity: $identity) {
-    orgRunId memberAddress agentRunId launchConfiguration isActive editability { editable reason }
-    modelOptions { ...RunModelOptionsFields }
+export const AgentOrgRunModelConfig = gql`query AgentOrgRunModelConfig($orgRunId: String!) {
+  getAgentOrgRunModelConfig(orgRunId: $orgRunId) {
+    orgRunId executionTree isActive editability { editable reason }
   }
-} ${options}`
+}`
+export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRunId: String!) {
+  agentOrgRunModelOptions(orgRunId: $orgRunId) {
+    scopeKind scopeAddress currentModelIdentifier currentContextTokens unavailableReason
+    replacements { llmModelIdentifier contextTokens }
+  }
+}`

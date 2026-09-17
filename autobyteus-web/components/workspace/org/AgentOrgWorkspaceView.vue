@@ -32,12 +32,18 @@
         </div>
       </div>
     </template>
-    <AgentOrgMemberRunConfigPanel
-      v-else-if="target && center.isConfigMode"
-      :target="target"
-      :key="targetIdentity || 'none'"
-      @back="center.showChat"
-    />
+    <div v-else-if="configurationTarget && center.isConfigMode" class="flex h-full min-h-0 flex-col bg-white" data-test="agent-org-run-config-editor">
+      <div class="flex items-center justify-between border-b border-gray-200 px-4 py-2">
+        <h3 class="truncate text-sm font-semibold text-gray-800">{{ t('workspace.agentOrg.runConfig.orgLabel') }}</h3>
+        <button type="button" data-test="agent-org-config-back-to-events"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md text-indigo-600 hover:bg-indigo-50"
+          :aria-label="t('workspace.components.workspace.config.RunConfigPanel.back_to_event_view')"
+          @click="center.showChat">
+          <Icon icon="heroicons:arrow-left-20-solid" class="h-4 w-4" />
+        </button>
+      </div>
+      <ExistingRunConfigEditor :target="{ kind: 'agent_org', orgRunId: configurationTarget.root.orgRunId }" />
+    </div>
     <AgentWorkspaceSurface
       v-else-if="target.kind === 'agent_org_direct_agent' || target.kind === 'agent_org_task_agent'"
       class="min-h-0 flex-1"
@@ -67,7 +73,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
 import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue'
-import AgentOrgMemberRunConfigPanel from '~/components/workspace/org/AgentOrgMemberRunConfigPanel.vue'
+import ExistingRunConfigEditor from '~/components/workspace/config/ExistingRunConfigEditor.vue'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 
 const route = useRoute()
@@ -95,6 +101,9 @@ const target = computed(() => {
 const targetIdentity = computed(() => target.value
   ? `${target.value.root.orgRunId}\u0000${target.value.address}\u0000${target.value.context.state.runId}`
   : null)
+const configurationTarget = computed(() => target.value
+  && (target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')
+  ? target.value : null)
 const open = () => {
   if (orgRunId.value) void active.inspectAgentOrg(orgRunId.value).catch(() => undefined)
 }
@@ -125,7 +134,7 @@ const openNewOrgRun = () => {
 const headerActionsAvailable = computed(() => Boolean(target.value && (target.value.access === 'live'
   || target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')))
 const openMemberConfiguration = () => {
-  if (headerActionsAvailable.value) center.showConfig()
+  if (configurationTarget.value) center.showConfig()
 }
 
 onMounted(() => {

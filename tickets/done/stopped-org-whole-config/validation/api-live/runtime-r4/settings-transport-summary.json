@@ -1,0 +1,351 @@
+{
+  "transportStartExclusiveLine": 6931,
+  "requests": [
+    {
+      "id": 38,
+      "at": "2026-09-17T23:10:39.138Z",
+      "op": "AgentOrgRunModelConfig",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 39,
+      "at": "2026-09-17T23:10:39.275Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 73,
+      "at": "2026-09-17T23:11:13.867Z",
+      "op": "AgentOrgRunModelConfig",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 74,
+      "at": "2026-09-17T23:11:13.912Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 135,
+      "at": "2026-09-17T23:12:34.502Z",
+      "op": "UpdateStoppedAgentOrgRunModelConfigs",
+      "variables": {
+        "input": {
+          "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_ORG",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              }
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/guide",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "high"
+              }
+            },
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/squad",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "high"
+              }
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/squad/lead",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "xhigh"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 136,
+      "at": "2026-09-17T23:12:34.565Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 157,
+      "at": "2026-09-17T23:12:59.177Z",
+      "op": "AgentOrgRunModelConfig",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 158,
+      "at": "2026-09-17T23:12:59.234Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 239,
+      "at": "2026-09-17T23:14:23.331Z",
+      "op": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 251,
+      "at": "2026-09-17T23:14:28.885Z",
+      "op": "AgentOrgRunModelConfig",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 252,
+      "at": "2026-09-17T23:14:28.910Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 270,
+      "at": "2026-09-17T23:14:47.748Z",
+      "op": "UpdateStoppedAgentOrgRunModelConfigs",
+      "variables": {
+        "input": {
+          "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_ORG",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 283,
+      "at": "2026-09-17T23:15:05.661Z",
+      "op": "UpdateStoppedAgentOrgRunModelConfigs",
+      "variables": {
+        "input": {
+          "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_ORG",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 284,
+      "at": "2026-09-17T23:15:06.096Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 313,
+      "at": "2026-09-17T23:15:41.341Z",
+      "op": "UpdateStoppedAgentOrgRunModelConfigs",
+      "variables": {
+        "input": {
+          "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_ORG",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 314,
+      "at": "2026-09-17T23:15:41.400Z",
+      "op": "AgentOrgRunModelConfig",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 315,
+      "at": "2026-09-17T23:15:41.509Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 380,
+      "at": "2026-09-17T23:16:48.992Z",
+      "op": "AgentOrgRunModelConfig",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 381,
+      "at": "2026-09-17T23:16:49.178Z",
+      "op": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    },
+    {
+      "id": 451,
+      "at": "2026-09-17T23:18:13.225Z",
+      "op": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "temp-1789687084822-1"
+      }
+    },
+    {
+      "id": 477,
+      "at": "2026-09-17T23:18:40.803Z",
+      "op": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "whole_config_agent_0efb094dbe744d5884a4254ba0fddc91"
+      }
+    },
+    {
+      "id": 566,
+      "at": "2026-09-17T23:20:27.224Z",
+      "op": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "whole_config_agent_0efb094dbe744d5884a4254ba0fddc91"
+      }
+    },
+    {
+      "id": 567,
+      "at": "2026-09-17T23:20:27.289Z",
+      "op": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "whole_config_agent_0efb094dbe744d5884a4254ba0fddc91"
+      }
+    },
+    {
+      "id": 577,
+      "at": "2026-09-17T23:20:40.354Z",
+      "op": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "whole-config-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data/temp_workspace"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "whole-config-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data/temp_workspace"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 578,
+      "at": "2026-09-17T23:20:40.453Z",
+      "op": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "whole_config_team_49746c9ee4f7491082cdf0e9816764f0"
+      }
+    },
+    {
+      "id": 599,
+      "at": "2026-09-17T23:20:56.912Z",
+      "op": "TerminateAgentTeamRun",
+      "variables": {
+        "teamRunId": "whole_config_team_49746c9ee4f7491082cdf0e9816764f0"
+      }
+    },
+    {
+      "id": 610,
+      "at": "2026-09-17T23:21:02.380Z",
+      "op": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "whole_config_team_49746c9ee4f7491082cdf0e9816764f0"
+      }
+    },
+    {
+      "id": 611,
+      "at": "2026-09-17T23:21:02.401Z",
+      "op": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "whole_config_team_49746c9ee4f7491082cdf0e9816764f0"
+      }
+    },
+    {
+      "id": 627,
+      "at": "2026-09-17T23:21:24.476Z",
+      "op": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+      }
+    }
+  ],
+  "countsByOperation": {
+    "AgentOrgRunModelConfig": 6,
+    "AgentOrgRunModelOptions": 8,
+    "UpdateStoppedAgentOrgRunModelConfigs": 4,
+    "TerminateAgentOrgRun": 2,
+    "GetAgentRunResumeConfig": 2,
+    "TerminateAgentRun": 1,
+    "AgentRunModelOptions": 1,
+    "CreateAgentTeamRun": 1,
+    "GetTeamRunResumeConfig": 2,
+    "TerminateAgentTeamRun": 1,
+    "TeamRunModelOptions": 1
+  }
+}

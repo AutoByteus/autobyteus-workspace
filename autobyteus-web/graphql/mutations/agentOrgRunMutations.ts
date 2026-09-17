@@ -16,11 +16,11 @@ export const TerminateAgentOrgRun = gql`
   }
 `
 
-export const UpdateStoppedAgentOrgMemberModelConfig = gql`
-  mutation UpdateStoppedAgentOrgMemberModelConfig($input: UpdateStoppedAgentOrgMemberModelConfigInput!) {
-    updateStoppedAgentOrgMemberModelConfig(input: $input) {
+export const UpdateStoppedAgentOrgRunModelConfigs = gql`
+  mutation UpdateStoppedAgentOrgRunModelConfigs($input: UpdateStoppedAgentOrgRunModelConfigsInput!) {
+    updateStoppedAgentOrgRunModelConfigs(input: $input) {
       success outcome message isActive editability { editable reason } fieldErrors { path message }
-      canonical { orgRunId memberAddress agentRunId launchConfiguration isActive editability { editable reason } }
+      canonical
     }
   }
 `

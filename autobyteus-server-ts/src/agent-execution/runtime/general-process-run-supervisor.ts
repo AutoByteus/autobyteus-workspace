@@ -64,7 +64,7 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   workspaceManager: WorkspaceManager;
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
-  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions">;
+  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (

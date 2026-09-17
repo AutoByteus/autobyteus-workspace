@@ -1,5 +1,5 @@
-import type { AgentOrgMemberModelConfigCanonical } from '~/services/runConfigEditing/agentOrgMemberModelConfigClient'
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import type { AgentOrgConfiguredAgentNode, AgentOrgConfiguredMember } from '~/types/collaboration/agentOrgExecution'
 import { reactive, shallowReactive } from 'vue'
 import type {
   AgentOrgExecutionEventDto,
@@ -37,6 +37,7 @@ export type AgentOrgContextEntry = Readonly<{
 
 type TaskRecord = AgentOrgExecutionViewDto['task_records']['records'][number]
 type TaskEvent = Extract<AgentOrgExecutionEventDto, { kind: 'task' }>['event']
+type AgentOrgStatus = AgentOrgExecutionViewDto['agent_statuses'][number]
 
 const nameAt = (address: string): string => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
 
@@ -148,29 +149,39 @@ export class AgentOrgExecutionContext {
     this.select(previous.selection)
   }
 
-  applyMemberModelConfig(canonical: AgentOrgMemberModelConfigCanonical): boolean {
-    if (this.phase !== 'historical' || this.isActive || canonical.isActive || canonical.orgRunId !== this.orgRunId) return false
-    const agent = this.index.agents.get(canonical.agentRunId)
-    const context = this.getAgentContext(canonical.agentRunId)
-    if (!agent || agent.task || agent.kind !== 'configured' || agent.address !== canonical.memberAddress || !context) return false
-    const previous = agent.source.launchConfiguration
-    const next = canonical.launchConfiguration
-    // A configuration return may change only model fields, never execution policy/identity.
-    if (previous.runtimeKind !== next.runtimeKind || previous.workspaceRootPath !== next.workspaceRootPath
-      || previous.autoExecuteTools !== next.autoExecuteTools || previous.skillAccessMode !== next.skillAccessMode) throw new Error('Org configuration changed locked fields.')
-    const tree = this.view.execution_tree
-    const patch = (node: typeof agent.source) => node.agentRunId === canonical.agentRunId
-      ? { ...node, launchConfiguration: cloneExistingRunJsonValue(next) } : node
-    const view = { ...this.view, execution_tree: { ...tree, rootOrg: { ...tree.rootOrg,
-      members: tree.rootOrg.members.map(member => 'agentRunId' in member ? patch(member)
-        : { ...member, members: member.members.map(patch) }) } } }
+  applyRunModelConfig(executionTree: AgentOrgExecutionViewDto['execution_tree'], isActive: boolean): boolean {
+    if (this.phase !== 'historical' || this.isActive || isActive
+      || executionTree.rootOrg.orgRunId !== this.orgRunId) return false
+    const withoutModels = (tree: AgentOrgExecutionViewDto['execution_tree']) => {
+      const launch = <T extends { llmModelIdentifier: string; llmConfig: unknown }>(value: T): T => ({
+        ...value, llmModelIdentifier: '__MODEL__', llmConfig: null,
+      })
+      return { ...tree, rootOrg: { ...tree.rootOrg,
+        defaultLaunchConfiguration: launch(tree.rootOrg.defaultLaunchConfiguration),
+        members: tree.rootOrg.members.map((member: AgentOrgConfiguredMember) => 'agentRunId' in member
+          ? { ...member, launchConfiguration: launch(member.launchConfiguration) }
+          : { ...member, defaultLaunchConfiguration: launch(member.defaultLaunchConfiguration),
+              members: member.members.map((agent: AgentOrgConfiguredAgentNode) => ({ ...agent, launchConfiguration: launch(agent.launchConfiguration) })) }) } }
+    }
+    if (JSON.stringify(withoutModels(this.view.execution_tree)) !== JSON.stringify(withoutModels(executionTree))) {
+      throw new Error('Org configuration changed topology, identity, or locked fields.')
+    }
+    const view = { ...this.view, execution_tree: cloneExistingRunJsonValue(executionTree) }
     const index = new AgentOrgExecutionViewIndex(view)
-    const config = { ...context.config, llmModelIdentifier: next.llmModelIdentifier, llmConfig: cloneExistingRunJsonValue(next.llmConfig) }
-    // All validation/clone/index work precedes synchronous model-only publication.
+    const updates = [...index.agents.values()].flatMap((agent) => {
+      if (agent.task || agent.kind !== 'configured') return []
+      const context = this.getAgentContext(agent.agentRunId)
+      if (!context) throw new Error(`Org configured context '${agent.agentRunId}' is unavailable.`)
+      return [{ context, launch: agent.source.launchConfiguration }]
+    })
+    // All validation, clone, index and context planning precedes synchronous publication.
     this.view = view
     this.index = index
-    context.config = config
-    context.conversation.llmModelIdentifier = next.llmModelIdentifier
+    for (const { context, launch } of updates) {
+      context.config = { ...context.config, llmModelIdentifier: launch.llmModelIdentifier,
+        llmConfig: cloneExistingRunJsonValue(launch.llmConfig) }
+      context.conversation.llmModelIdentifier = launch.llmModelIdentifier
+    }
     return true
   }
 
@@ -191,7 +202,7 @@ export class AgentOrgExecutionContext {
         toAgentPresentationProjectionMessage(event.message, event.agent_run_id),
         {
           kind: 'agent_org_member', context, orgRunId: this.orgRunId,
-          agentRunId: event.agent_run_id, memberAddress: address,
+          agentRunId: event.agent_run_id, memberAddress: event.member_address,
         },
       )
     } else if (event.kind === 'task') {
@@ -230,7 +241,7 @@ export class AgentOrgExecutionContext {
   setActive(active: boolean): void {
     this.view = { ...this.view, is_active: active }
     if (!active) {
-      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status) => ({ ...status, status: 'offline' })) })
+      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline' })) })
       this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
       this.phase = 'historical'
     }
@@ -252,7 +263,7 @@ export class AgentOrgExecutionContext {
     if (!this.index.agents.has(task.delegatorAgentRunId)) {
       this.correlationFailure(`AgentOrg task '${task.taskId}' delegator identity mismatch.`)
     }
-    const existing = this.view.task_records.records.find((record) => record.taskId === task.taskId)
+    const existing = this.view.task_records.records.find((record: TaskRecord) => record.taskId === task.taskId)
     if (event.kind === 'activated') {
       if (existing) this.correlationFailure(`AgentOrg task '${task.taskId}' activation is duplicated.`)
       this.validateFreshTaskExecution(task)

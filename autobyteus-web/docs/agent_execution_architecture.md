@@ -156,15 +156,15 @@ connects/selects the exact Org context and publishes the typed AgentOrg route.
 URL, center content, and one highlighted history row consequently describe the
 same root/member for active, inactive/Restore, and return transitions.
 
-`AgentOrgWorkspaceView` keeps **Edit config** and **New** separate. For the gear
-action it retains the connected Org context and passes the current exact direct
-or mounted-Team Agent target to `AgentOrgMemberRunConfigPanel`. That panel adapts
-the live target's immutable run configuration into the existing
-`AgentRunConfigForm` with runtime, model, Workspace, and existing-run editing
-locked. The center store's **Back** action returns to chat/Event Monitor for the
-same `orgRunId`, address, and AgentRun id; changing target/root or leaving the
-route resets config mode. **New** deliberately enters a fresh AgentOrg launch
-route with the definition id and no current `orgRunId`.
+`AgentOrgWorkspaceView` keeps **Edit config** and **New** separate. Gear on any
+configured direct or mounted-Team Agent normalizes immediately to the enclosing
+`{ kind: 'agent_org', orgRunId }` existing-run subject. `ExistingRunConfigEditor`
+loads the stopped canonical tree and renders the shared AgentOrg configuration
+form with runtime, Workspace and tool policy locked while allowing compatible
+model/settings edits across root, Team and Agent scopes. One Save submits all
+changed scopes atomically. The center store's **Back** action returns to
+chat/Event Monitor without changing focus. **New** remains a fresh AgentOrg
+launch route and never reuses the stopped editor's persistence path.
 
 ### Org Observational Inspection And Deliberate Continuation
 

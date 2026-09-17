@@ -7,81 +7,62 @@
           <div class="block w-full select-none rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-500">{{ org.name }}</div>
         </div>
 
-        <template v-if="initializationReady" :key="configStore.draftEpoch">
-        <RuntimeModelConfigFields
-          :runtime-kind="runtimeKind"
-          :llm-model-identifier="llmModelIdentifier"
-          :llm-config="llmConfig"
-          :runtime-help-text="t('workspace.agentOrg.runConfig.runtimeHelp')"
-          :model-label="t('workspace.agentOrg.runConfig.modelLabel')"
-          :model-help-text="t('workspace.agentOrg.runConfig.modelHelp')"
-          id-prefix="org-run"
-          control-variant="quiet"
-          @update:runtime-kind="configStore.setRootRuntimeKind"
-          @update:llm-model-identifier="configStore.setRootLlmModelIdentifier"
-          @update:llm-config="configStore.setRootLlmConfig"
-          @schema-state="configStore.setModelSchemaState('/', $event)"
-        />
-
-        <div class="pt-4">
-          <WorkspaceSelector
-            :model="{ mode: 'editable', selection: workspaceSelection, isLoading: workspaceLoading, error: workspaceError }"
-            control-variant="quiet"
-            :auto-select-default="false"
-            @update:model-value="handleWorkspaceSelection"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
-          <div class="min-w-0">
-            <label class="block text-base text-gray-900">{{ t('workspace.agentOrg.runConfig.autoApprove') }}</label>
-            <p class="mt-1 text-xs text-gray-500">{{ t('workspace.agentOrg.runConfig.autoApproveHelp') }}</p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            :aria-checked="autoExecuteTools"
-            class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500"
-            :class="autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
-            @click="configStore.setRootAutoExecuteTools(!autoExecuteTools)"
-          >
-            <span class="sr-only">{{ t('workspace.agentOrg.runConfig.autoApprove') }}</span>
-            <span class="inline-block h-5 w-5 rounded-full bg-white shadow transition" :class="autoExecuteTools ? 'translate-x-5' : 'translate-x-0'" />
-          </button>
-        </div>
-
-        <MemberOverridesDisclosure
-          v-if="formModel"
-          :key="org.id"
-          :label="t('workspace.agentOrg.runConfig.memberOverrides')"
-          :count="formModel.configurableAgentCount"
-          test-prefix="org-member-overrides"
+        <AgentOrgRunConfigForm
+          v-if="initializationReady"
+          :key="configStore.draftEpoch"
+          :editable-model="formModel"
+          :expanded-direct-agent="editingDirectAgent"
+          :member-overrides-label="t('workspace.agentOrg.runConfig.memberOverrides')"
+          :team-model-help-text="t('workspace.components.workspace.config.TeamScopeConfigEditor.flat_model_help')"
+          @toggle-direct-agent="toggleDirectAgent"
+          @update-team="configStore.setTeamOverride"
+          @reset-team="configStore.resetTeamOverride"
+          @update-agent="configStore.setAgentOverride"
+          @update:workspace-selection="handleTeamWorkspaceSelection"
+          @schema-state="handleModelSchemaState"
         >
-          <div v-if="formModel.directAgents.length" class="mb-3 overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm">
-            <AgentOrgDirectAgentOverrideRow
-              v-for="agent in formModel.directAgents"
-              :key="agent.address"
-              :node="agent"
-              :expanded="editingDirectAgent === agent.address"
-              @toggle="toggleDirectAgent(agent.address)"
-              @update:override="configStore.setAgentOverride(agent.address, $event)"
-              @schema-state="handleModelSchemaState"
+          <RuntimeModelConfigFields
+            :runtime-kind="runtimeKind"
+            :llm-model-identifier="llmModelIdentifier"
+            :llm-config="llmConfig"
+            :runtime-help-text="t('workspace.agentOrg.runConfig.runtimeHelp')"
+            :model-label="t('workspace.agentOrg.runConfig.modelLabel')"
+            :model-help-text="t('workspace.agentOrg.runConfig.modelHelp')"
+            id-prefix="org-run"
+            control-variant="quiet"
+            @update:runtime-kind="configStore.setRootRuntimeKind"
+            @update:llm-model-identifier="configStore.setRootLlmModelIdentifier"
+            @update:llm-config="configStore.setRootLlmConfig"
+            @schema-state="configStore.setModelSchemaState('/', $event)"
+          />
+
+          <div class="pt-4">
+            <WorkspaceSelector
+              :model="{ mode: 'editable', selection: workspaceSelection, isLoading: workspaceLoading, error: workspaceError }"
+              control-variant="quiet"
+              :auto-select-default="false"
+              @update:model-value="handleWorkspaceSelection"
             />
           </div>
-          <TeamMemberConfigTree
-            v-if="formModel.mountedTeams.length"
-            :member-nodes="formModel.mountedTeams"
-            :disabled="false"
-            :team-model-help-text="t('workspace.components.workspace.config.TeamScopeConfigEditor.flat_model_help')"
-            @update-team="configStore.setTeamOverride"
-            @reset-team="configStore.resetTeamOverride"
-            @update-agent="configStore.setAgentOverride"
-            @update:workspace-selection="handleTeamWorkspaceSelection"
-            @schema-state="handleModelSchemaState"
-          />
-        </MemberOverridesDisclosure>
 
-        </template>
+          <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
+            <div class="min-w-0">
+              <label class="block text-base text-gray-900">{{ t('workspace.agentOrg.runConfig.autoApprove') }}</label>
+              <p class="mt-1 text-xs text-gray-500">{{ t('workspace.agentOrg.runConfig.autoApproveHelp') }}</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              :aria-checked="autoExecuteTools"
+              class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500"
+              :class="autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
+              @click="configStore.setRootAutoExecuteTools(!autoExecuteTools)"
+            >
+              <span class="sr-only">{{ t('workspace.agentOrg.runConfig.autoApprove') }}</span>
+              <span class="inline-block h-5 w-5 rounded-full bg-white shadow transition" :class="autoExecuteTools ? 'translate-x-5' : 'translate-x-0'" />
+            </button>
+          </div>
+        </AgentOrgRunConfigForm>
         <p v-if="initializationError" role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-seed-error">
           {{ initializationError }}
           <button type="button" class="ml-2 underline" data-test="org-seed-retry" @click="retryInitialization++">{{ t('workspace.agentOrg.runConfig.retryInitialization') }}</button>
@@ -140,9 +121,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
-import AgentOrgDirectAgentOverrideRow from './AgentOrgDirectAgentOverrideRow.vue'
-import MemberOverridesDisclosure from './MemberOverridesDisclosure.vue'
-import TeamMemberConfigTree from './TeamMemberConfigTree.vue'
+import AgentOrgRunConfigForm from './AgentOrgRunConfigForm.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useRightSideTabs } from '~/composables/useRightSideTabs'

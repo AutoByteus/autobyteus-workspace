@@ -1,0 +1,2 @@
+ec7bf907ab361164b96a1fdf6bfc7466ef718406ed6decf9d4cc1d13de74601e  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg
+607127bc5d13a8a6772d80041c886d9109a0f97871cf712ac26bf9d3e818435b  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip

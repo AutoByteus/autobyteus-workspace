@@ -1,0 +1,51 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+
+stderr | stores/__tests__/crr001-validation-draft-retention-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/crr001-validation-draft-retention-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/crr001-validation-draft-retention-probe.spec.ts (1 test | 1 failed) 17ms
+   × review probe: determinate AgentOrg validation failure > keeps the submitted draft visible so the reported field error remains correctable 17ms
+     → expected { …(2) } to deeply equal { …(2) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/crr001-validation-draft-retention-probe.spec.ts > review probe: determinate AgentOrg validation failure > keeps the submitted draft visible so the reported field error remains correctable
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  {
+-   "llmConfig": {
+-     "effort": "invalid-for-schema",
+-   },
++   "llmConfig": null,
+    "llmModelIdentifier": "gpt-5.6-sol",
+  }
+
+ ❯ stores/__tests__/crr001-validation-draft-retention-probe.spec.ts:63:70
+     61|     expect(store.draft?.kind).toBe('agent_org')
+     62|     if (store.draft?.kind !== 'agent_org') throw new Error('Expected A…
+     63|     expect(store.draft.planner.scopesByAddress['/']!.draftSelection).t…
+       |                                                                      ^
+     64|     expect(store.patches.length).toBeGreaterThan(0)
+     65|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  17:12:41
+   Duration  4.34s (transform 2.53s, setup 3.85s, collect 65ms, tests 17ms, environment 119ms, prepare 103ms)
+

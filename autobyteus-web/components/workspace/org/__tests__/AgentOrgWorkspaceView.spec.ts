@@ -71,10 +71,9 @@ const mountSubject = () => mount(AgentOrgWorkspaceView, {
       emits: ['new-team', 'edit-config'],
       template: '<div data-test="shared-team-surface" :data-actions="String(showHeaderActions)"><button data-test="org-team-new" @click="$emit(\'new-team\')" /><button data-test="org-team-edit" @click="$emit(\'edit-config\')" /></div>',
     },
-    AgentOrgMemberRunConfigPanel: {
+    ExistingRunConfigEditor: {
       props: ['target'],
-      emits: ['back'],
-      template: '<div data-test="member-run-config" :data-org-run-id="target.root.orgRunId" :data-member-address="target.address" :data-agent-run-id="target.context.state.runId"><button data-test="config-back" @click="$emit(\'back\')" /></div>',
+      template: '<div data-test="whole-org-run-config" :data-org-run-id="target.orgRunId" />',
     },
   } },
 })
@@ -96,8 +95,8 @@ describe('AgentOrgWorkspaceView', () => {
     const surface = wrapper.find(target.kind === 'agent_org_direct_agent' ? '[data-test="shared-agent-surface"]' : '[data-test="shared-team-surface"]')
     expect(surface.attributes('data-actions')).toBe('true')
     await wrapper.get(target.kind === 'agent_org_direct_agent' ? '[data-test="org-edit"]' : '[data-test="org-team-edit"]').trigger('click')
-    expect(wrapper.get('[data-test="member-run-config"]').attributes('data-member-address')).toBe(target.address)
-    await wrapper.get('[data-test="config-back"]').trigger('click')
+    expect(wrapper.get('[data-test="whole-org-run-config"]').attributes('data-org-run-id')).toBe('org-run')
+    await wrapper.get('[data-test="agent-org-config-back-to-events"]').trigger('click')
     {
       await wrapper.get(target.kind === 'agent_org_direct_agent' ? '[data-test="org-new"]' : '[data-test="org-team-new"]').trigger('click')
       expect(push).toHaveBeenCalledWith({ path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: 'org-def', sourceOrgRunId: 'org-run', mode: 'configuration' } })
@@ -112,7 +111,7 @@ describe('AgentOrgWorkspaceView', () => {
     wrapper.unmount()
   })
 
-  it('opens the exact direct-Agent locked run configuration and returns to the same monitor', async () => {
+  it('opens the enclosing whole-Org configuration from a direct Agent and returns to the same monitor', async () => {
     const wrapper = mountSubject()
     expect(wrapper.find('[data-test="shared-agent-surface"]').exists()).toBe(true)
     expect(wrapper.find('[data-test="shared-team-surface"]').exists()).toBe(false)
@@ -120,14 +119,10 @@ describe('AgentOrgWorkspaceView', () => {
     expect(wrapper.text()).not.toContain('AGENT RUN EVENT')
     await wrapper.get('[data-test="org-edit"]').trigger('click')
     expect(push).not.toHaveBeenCalled()
-    expect(wrapper.get('[data-test="member-run-config"]').attributes()).toEqual(expect.objectContaining({
-      'data-org-run-id': 'org-run',
-      'data-member-address': '/writer',
-      'data-agent-run-id': 'agent-run',
-    }))
+    expect(wrapper.get('[data-test="whole-org-run-config"]').attributes('data-org-run-id')).toBe('org-run')
     expect(state.target).toStrictEqual(directTarget)
 
-    await wrapper.get('[data-test="config-back"]').trigger('click')
+    await wrapper.get('[data-test="agent-org-config-back-to-events"]').trigger('click')
     expect(wrapper.find('[data-test="shared-agent-surface"]').exists()).toBe(true)
     expect(state.target).toStrictEqual(directTarget)
 
@@ -140,7 +135,7 @@ describe('AgentOrgWorkspaceView', () => {
     expect(disconnect).toHaveBeenCalledWith('org-run')
   })
 
-  it('opens the exact mounted-Team Agent run configuration without changing Org focus', async () => {
+  it('opens the same enclosing whole-Org configuration from a mounted-Team Agent without changing Org focus', async () => {
     state.target = mountedTeamTarget
     const wrapper = mountSubject()
 
@@ -148,14 +143,10 @@ describe('AgentOrgWorkspaceView', () => {
     await wrapper.get('[data-test="org-team-edit"]').trigger('click')
 
     expect(push).not.toHaveBeenCalled()
-    expect(wrapper.get('[data-test="member-run-config"]').attributes()).toEqual(expect.objectContaining({
-      'data-org-run-id': 'org-run',
-      'data-member-address': '/delivery/reviewer',
-      'data-agent-run-id': 'mounted-agent-run',
-    }))
+    expect(wrapper.get('[data-test="whole-org-run-config"]').attributes('data-org-run-id')).toBe('org-run')
     expect(state.target).toStrictEqual(mountedTeamTarget)
 
-    await wrapper.get('[data-test="config-back"]').trigger('click')
+    await wrapper.get('[data-test="agent-org-config-back-to-events"]').trigger('click')
     expect(wrapper.find('[data-test="shared-team-surface"]').exists()).toBe(true)
     expect(state.target).toStrictEqual(mountedTeamTarget)
   })

@@ -1,0 +1,20 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts (3 tests) 53ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:01:55
+   Duration  5.54s (transform 3.22s, setup 4.57s, collect 438ms, tests 53ms, environment 129ms, prepare 128ms)
+

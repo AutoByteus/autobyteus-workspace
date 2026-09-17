@@ -24,6 +24,8 @@ const messages = {
   "workspace.runModelConfig.agentStopped": "This run is stopped. Saved model settings will be used when it resumes.",
   "workspace.runModelConfig.agentActive": "Stop this run before changing model settings.",
   "workspace.runModelConfig.teamStopped": "This team is stopped. Saved model settings will be used when it resumes.",
+  "workspace.runModelConfig.orgStopped": "This Agent Org is stopped. Saved model settings will be used when it resumes.",
+  "workspace.runModelConfig.orgActive": "This Agent Org is active or managed elsewhere. Stop it before changing model settings.",
   "workspace.runModelConfig.teamActive": "Stop this team before changing model settings.",
   "workspace.runModelConfig.fixedIdentity": "Runtime is fixed. Replacement models must have at least the saved model’s context capacity.",
   "workspace.runModelConfig.loadingCapacity": "Checking replacement model context capacities…",

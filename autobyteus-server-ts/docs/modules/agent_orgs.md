@@ -448,22 +448,25 @@ Reference-content REST routes are rooted below
 - `src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1`
 - `@autobyteus/collaboration-stream-contracts`
 
-## Stopped Configured Member Model Settings
+## Stopped AgentOrg Model Settings
 
-`AgentOrgRunService.getMemberModelConfig` and
-`updateStoppedMemberModelConfig` use exact `orgRunId`, `memberAddress`, and
-`agentRunId` correlation. The manager owns the same transition lane as restore;
-only configured direct/mounted Agents are writable. Managed roots (including
-fail-stopped), archived/unadmitted roots and application bindings cannot be
-edited. Runtime, workspace, peers, defaults, tasks and IDs are not patched.
+`AgentOrgRunService.getRunModelConfig`, `runModelOptions`, and
+`updateStoppedRunModelConfigs` use one exact `orgRunId` subject. The manager owns
+the same root transition lane as restore and resolves explicit Org, mounted-Team,
+and configured-Agent scope addresses before validating any selection. Managed
+roots (including fail-stopped), archived/unadmitted roots and application
+bindings cannot be edited. Runtime, workspace, topology, handoffs, tasks,
+application/archive metadata and identities are not patched.
 
 The injected RunModelSelectionService enforces same-runtime verified equal/larger
 replacement capacity and schema-valid settings. Same-model settings need no
 replacement-capacity comparison. No Agent/provider activation or workspace
-provisioning occurs during read/save. The current strict execution-tree writer
-is unchanged: no-op writes are skipped, pre-rename failure remains failed, and
-post-rename/unreadable/mismatched readback remains indeterminate. UPDATED requires
-strict readback equal to the expected tree; unknown canonical values are null,
-never echoed request values. No migration, repair, mutation replay or separate
-standalone Agent/Team writer is introduced. Ordinary restore reads the updated
-canonical root under the same lane.
+provisioning occurs during read/save. Every requested scope is validated through
+one request-local `validateMany` operation before one immutable tree is written.
+The strict execution-tree writer is unchanged: no-op writes are skipped,
+not-renamed failure remains failed, and post-rename/unreadable/mismatched
+readback remains indeterminate. UPDATED requires strict readback equal to the
+expected whole tree; unknown canonical values are null, never echoed request
+values. No migration, repair, mutation replay or separate standalone Agent/Team
+writer is introduced. Ordinary restore reads the updated canonical root under
+the same lane.

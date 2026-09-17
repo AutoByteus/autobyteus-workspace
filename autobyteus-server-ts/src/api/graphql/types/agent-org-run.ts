@@ -72,37 +72,37 @@ export class AgentOrgExecutionCheckpointPayload {
 }
 
 @InputType()
-export class AgentOrgMemberModelConfigIdentityInput {
-  @Field(() => String) orgRunId!: string;
-  @Field(() => String) memberAddress!: string;
-  @Field(() => String) agentRunId!: string;
+export class AgentOrgRunModelConfigPatchInput {
+  @Field(() => String) scopeKind!: "CONFIGURED_ORG" | "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
+  @Field(() => String) scopeAddress!: string;
+  @Field(() => String) llmModelIdentifier!: string;
+  @Field(() => GraphQLJSON, { nullable: true }) llmConfig!: Record<string, unknown> | null;
 }
 @InputType()
-export class UpdateStoppedAgentOrgMemberModelConfigInput extends AgentOrgMemberModelConfigIdentityInput {
-  @Field(() => String) llmModelIdentifier!: string;
-  @Field(() => GraphQLJSON, { nullable: true }) llmConfig?: Record<string, unknown> | null;
+export class UpdateStoppedAgentOrgRunModelConfigsInput {
+  @Field(() => String) orgRunId!: string;
+  @Field(() => [AgentOrgRunModelConfigPatchInput]) patches!: AgentOrgRunModelConfigPatchInput[];
 }
 @ObjectType()
-export class AgentOrgMemberModelConfigObject {
+export class AgentOrgRunModelConfigObject {
   @Field(() => String) orgRunId!: string;
-  @Field(() => String) memberAddress!: string;
-  @Field(() => String) agentRunId!: string;
-  @Field(() => GraphQLJSON) launchConfiguration!: Record<string, unknown>;
+  @Field(() => GraphQLJSON) executionTree!: Record<string, unknown>;
   @Field(() => Boolean) isActive!: boolean;
   @Field(() => RunModelConfigEditabilityObject) editability!: RunModelConfigEditabilityObject;
 }
 @ObjectType()
-export class AgentOrgMemberModelConfigReadObject extends AgentOrgMemberModelConfigObject {
-  @Field(() => RunModelOptionsObject) modelOptions!: RunModelOptionsObject;
+export class AgentOrgRunModelOptionObject extends RunModelOptionsObject {
+  @Field(() => String) scopeKind!: string;
+  @Field(() => String) scopeAddress!: string;
 }
 @ObjectType()
-export class AgentOrgMemberModelConfigUpdateResult {
+export class AgentOrgRunModelConfigUpdateResult {
   @Field(() => Boolean) success!: boolean;
   @Field(() => String) outcome!: string;
   @Field(() => String) message!: string;
   @Field(() => Boolean) isActive!: boolean;
   @Field(() => RunModelConfigEditabilityObject) editability!: RunModelConfigEditabilityObject;
-  @Field(() => AgentOrgMemberModelConfigObject, { nullable: true }) canonical!: AgentOrgMemberModelConfigObject | null;
+  @Field(() => GraphQLJSON, { nullable: true }) canonical!: Record<string, unknown> | null;
   @Field(() => [RunModelConfigFieldErrorObject]) fieldErrors!: readonly RunModelConfigFieldErrorObject[];
 }
 
@@ -111,13 +111,20 @@ export class AgentOrgRunResolver {
   private readonly service = getStudioAgentOrgRunService();
   private readonly memberViews = getAgentOrgMemberRunViewProjectionService();
 
-  @Query(() => AgentOrgMemberModelConfigReadObject)
-  getAgentOrgMemberModelConfig(@Arg("identity", () => AgentOrgMemberModelConfigIdentityInput) identity: AgentOrgMemberModelConfigIdentityInput) {
-    return this.service.getMemberModelConfig(identity);
+  @Query(() => AgentOrgRunModelConfigObject)
+  getAgentOrgRunModelConfig(@Arg("orgRunId", () => String) orgRunId: string) {
+    return this.service.getRunModelConfig(orgRunId);
   }
-  @Mutation(() => AgentOrgMemberModelConfigUpdateResult)
-  updateStoppedAgentOrgMemberModelConfig(@Arg("input", () => UpdateStoppedAgentOrgMemberModelConfigInput) input: UpdateStoppedAgentOrgMemberModelConfigInput) {
-    return this.service.updateStoppedMemberModelConfig({ ...input, llmConfig: input.llmConfig ?? null });
+  @Query(() => [AgentOrgRunModelOptionObject])
+  agentOrgRunModelOptions(@Arg("orgRunId", () => String) orgRunId: string) {
+    return this.service.runModelOptions(orgRunId);
+  }
+  @Mutation(() => AgentOrgRunModelConfigUpdateResult)
+  updateStoppedAgentOrgRunModelConfigs(
+    @Arg("input", () => UpdateStoppedAgentOrgRunModelConfigsInput) input: UpdateStoppedAgentOrgRunModelConfigsInput,
+  ) {
+    return this.service.updateStoppedRunModelConfigs({ orgRunId: input.orgRunId,
+      patches: input.patches.map((patch) => ({ ...patch, llmConfig: patch.llmConfig })) });
   }
 
   @Query(() => GraphQLJSON)

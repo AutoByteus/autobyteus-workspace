@@ -1,0 +1,243 @@
+{
+  "base_head": "64852674b5f003aea2a169233093f12a9f80ffba",
+  "manifest_entries": 47,
+  "result": "Pass",
+  "unexpected_non_ticket_changes": [],
+  "entries": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "state": "modified",
+      "sha256": "d7da6933a7d2ea10f4482790bfee59221d88ea98d5dcd51cb994ba11e7146504"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "state": "modified",
+      "sha256": "5f35bf1f00bf48613d094e63d008e842e4aedd52a65ecc2b3382594ed59d82d5"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-model-config.ts",
+      "state": "added",
+      "sha256": "a01058d24279ab357d3da0e73714c9de5a59982d247b213d86f2277916ac836b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "state": "modified",
+      "sha256": "160b79d4d1221e20e24b054b792ee91f6eb5ede714990f645d0d1ce9a82bb7e8"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-model-config-mutator.ts",
+      "state": "added",
+      "sha256": "1285b1a6e003bc979e483f63f2383aa9f9458589903be5a5e71b6670ce0c2bc2"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "state": "modified",
+      "sha256": "7e7ec7951a3ecad8cf3c50df77137d8ada8c475cf956f99e6846bbc80018430f"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "state": "modified",
+      "sha256": "fac875f2d628953c81508421f5f1c46368d8d99c7368bb0d52448db836b09f53"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-model-config.test.ts",
+      "state": "added",
+      "sha256": "cea8079e2e094111b19b7eeb3b27372f4fb5b4f3d4fe6f28512e6b59c02156c7"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-run-model-config.test.ts",
+      "state": "added",
+      "sha256": "fe3b0ebdf6efa05291b245a52113028cba964de0c801d2599489cf9055584f51"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgDirectAgentOverrideRow.vue",
+      "state": "modified",
+      "sha256": "8205d85abfb07ada05db8bab1761644bb29d7231260dd1a6cd05218bf45a0bc9"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigForm.vue",
+      "state": "added",
+      "sha256": "59cb302d77d2d5ff183fdfb1652c6c0b62a3e5086c42f2e01f91acb0fcdcbd67"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "state": "modified",
+      "sha256": "1a1eee703eca4dfdd9293f5a2c52eeef994802fa0323aeaba587a5898e984201"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "state": "modified",
+      "sha256": "42ecbcd62707d0eb4baa01a279c511dea4dc34734c9aa780ab8b435b1b0d686c"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts",
+      "state": "added",
+      "sha256": "be704d21db16b2c91e948b0aef19d2250ed9aab821ddb03cb0514c091082e497"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "state": "modified",
+      "sha256": "c08a577c4780ac5cabef271d9d220db8f0091a4c084ec9779ef249f0399b7a75"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts",
+      "state": "added",
+      "sha256": "fb670d55bfd37937c4c990f6e8228d1db9004162664004d5075b59947c61409a"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+      "state": "modified",
+      "sha256": "128f2cfd08eef1c8b0e04a0ab0cf5723d7a780aacc2c26e28b2ff9f35c27b176"
+    },
+    {
+      "path": "autobyteus-web/composables/useAgentOrgMemberModelConfig.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-web/docs/agent_execution_architecture.md",
+      "state": "modified",
+      "sha256": "ef29dc11c2c087d916de1b2b37ab51f42821d293bb334eda4a3575b690186264"
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "state": "modified",
+      "sha256": "a7568fd15ee1dfbc636b4ec802913071506c79acb1e9fd989f90239817b6e814"
+    },
+    {
+      "path": "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+      "state": "modified",
+      "sha256": "e5d2f163a4c54cba656f49787ebc55b3081bddd9358227fb4872e05489dff640"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+      "state": "modified",
+      "sha256": "c2aeac1361e11c48a4b35c4101b323c5470243e4942400bfbda1744bb6756177"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "state": "modified",
+      "sha256": "c26157959be73a41e92c1867e31d043aebd09f3eaf52ca36bc66eaee9319d984"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "state": "modified",
+      "sha256": "fd6595a226f5be89deb8e0b56bb6c8ad339d3f8625f0dd7f5041fca153309776"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgRunModelConfigAdoption.spec.ts",
+      "state": "added",
+      "sha256": "5481013486509f3b965532066a1eb27bff48569365c545dc64f1247a599c568e"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "state": "modified",
+      "sha256": "b2f6170d4ab3207f0a05529ee6d78acb6ca59bca73d7a33e5f0f4d69da08ca92"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/existingAgentOrgModelConfigDraft.spec.ts",
+      "state": "added",
+      "sha256": "e8fb10d567ef66bd57b427d7f0242df2987bc0d4dbb70ee37158431e72e62016"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts",
+      "state": "modified",
+      "sha256": "e0bd7860b6395f04b936eec77978117cfe9bcc55aba8663ad0cdc2990d89de2b"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgRunModelConfigClient.ts",
+      "state": "added",
+      "sha256": "40a0fe5c6fa8f17db30955f9511cbc68443695e096ad2375961ba241fd1f0de9"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingAgentOrgModelConfigDraft.ts",
+      "state": "added",
+      "sha256": "93f8d5a05277a263fa3a5f6d0362bd1c9345e1c48301a0e2fb71d6ef0dc10c3b"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingAgentOrgRunFormModel.ts",
+      "state": "added",
+      "sha256": "de7d483bc2c08aa016debed55ca05b122dfa870a74a31860585b6874cc1b62b9"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingHierarchicalModelConfigDraft.ts",
+      "state": "added",
+      "sha256": "bcbdb65b7da74caec92dddade2c166cbb31f9969b503864db068608eea7678eb"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts",
+      "state": "modified",
+      "sha256": "2cb2896211f74466a3201f3417164a0fc35ed2a0694cd1b434c035d2b2561ed7"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingRunModelOptionsClient.ts",
+      "state": "modified",
+      "sha256": "1538e8e515979514af0830ede5d2a7bb03fd037337839fd8e7eb1ad4e470100e"
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts",
+      "state": "modified",
+      "sha256": "dfc8ad6572ce62bee7cfb64d04285b9cb382d6bf45e6b8ae4f8a1df60cd00ab4"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/existingRunModelConfigStore.spec.ts",
+      "state": "modified",
+      "sha256": "d71baed3afb137fb4fa064f8a6958f400c580ee3c4612891d38df3c812aa7dd1"
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "state": "modified",
+      "sha256": "3bea129ef21aba803ee7f5704caec3e8dbaa5fc8a904000f8ec09a8d7b959c89"
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunModelConfigResultActions.ts",
+      "state": "added",
+      "sha256": "602d286825920faf0c9d671a3161cf58e1b97f15d38d492c79191f1e63ca279f"
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunModelConfigStore.ts",
+      "state": "modified",
+      "sha256": "641d25209357e3847ca7589bc5a09ecbfe93c95506b68b348fdd9d74fe5f4d39"
+    },
+    {
+      "path": "autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts",
+      "state": "modified",
+      "sha256": "ce66ff89d09f76fe748362f9e6ac7ab18cc13f204a4877344a93a81d12965fbf"
+    }
+  ]
+}

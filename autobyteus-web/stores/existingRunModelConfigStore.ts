@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import type {
   ExistingRunModelConfigDraft,
@@ -24,19 +26,30 @@ import {
   updateExistingTeamScopeModelConfig,
 } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import {
+  createExistingAgentOrgModelConfigDraft,
+  planExistingAgentOrgModelConfigPatches,
+  updateExistingAgentOrgScopeModelConfig,
+} from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
+import {
   updateStoppedAgentModelConfig,
   updateStoppedTeamModelConfigs,
   type AgentModelConfigMutationResult,
-  type ExistingRunModelConfigMutationResult,
   type TeamModelConfigMutationResult,
+  type AgentOrgModelConfigMutationResult,
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
+import type { AgentOrgRunModelConfigRead } from '~/services/runConfigEditing/agentOrgRunModelConfigClient'
+import { existingRunModelConfigResultActions } from '~/stores/existingRunModelConfigResultActions'
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
-const requiresOutcomeVerification = (outcome: string): boolean => outcome === 'PERSISTENCE_INDETERMINATE'
+const metadataSelection = (metadata: RunResumeConfigPayload['metadataConfig']): ExistingRunModelSelection => ({
+  llmModelIdentifier: metadata.llmModelIdentifier,
+  llmConfig: cloneExistingRunModelConfig(metadata.llmConfig),
+})
 
 type CanonicalLoadTarget =
   | Readonly<{ kind: 'agent'; runId: string }>
   | Readonly<{ kind: 'team'; teamRunId: string }>
+  | Readonly<{ kind: 'agent_org'; orgRunId: string }>
 
 type CachedLifecycleLock = Readonly<{
   target: CanonicalLoadTarget
@@ -46,9 +59,9 @@ type CachedLifecycleLock = Readonly<{
 
 const sameTarget = (left: CanonicalLoadTarget | null, right: CanonicalLoadTarget): boolean => {
   if (!left || left.kind !== right.kind) return false
-  return left.kind === 'agent' && right.kind === 'agent'
-    ? left.runId === right.runId
-    : left.kind === 'team' && right.kind === 'team' && left.teamRunId === right.teamRunId
+  if (left.kind === 'agent' && right.kind === 'agent') return left.runId === right.runId
+  if (left.kind === 'team' && right.kind === 'team') return left.teamRunId === right.teamRunId
+  return left.kind === 'agent_org' && right.kind === 'agent_org' && left.orgRunId === right.orgRunId
 }
 
 export const useExistingRunModelConfigStore = defineStore('existingRunModelConfig', {
@@ -69,29 +82,35 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
   }),
   getters: {
     patches(state) {
-      return state.draft?.kind === 'team'
-        ? planExistingTeamModelConfigPatches(state.draft.planner)
-        : []
+      if (state.draft?.kind === 'team') return planExistingTeamModelConfigPatches(state.draft.planner)
+      if (state.draft?.kind === 'agent_org') return planExistingAgentOrgModelConfigPatches(state.draft.planner)
+      return []
     },
     dirty(state): boolean {
-      if (!state.draft) return false
-      return state.draft.kind === 'agent'
-        ? !existingRunSelectionsEqual(state.draft.metadata, state.draft.draftSelection)
-        : planExistingTeamModelConfigPatches(state.draft.planner).length > 0
+      const draft = state.draft
+      if (!draft) return false
+      return draft.kind === 'agent'
+        ? !existingRunSelectionsEqual(metadataSelection(draft.metadata), draft.draftSelection)
+        : draft.kind === 'team'
+          ? planExistingTeamModelConfigPatches(draft.planner).length > 0
+          : planExistingAgentOrgModelConfigPatches(draft.planner).length > 0
     },
     canSave(state): boolean {
-      if (!state.draft || state.saving || state.loadingCanonical || state.reconciling
-          || state.reconciliationRequired || state.draft.isActive || !state.draft.editability.editable) return false
-      if (state.draft.kind === 'agent') {
-        return !existingRunSelectionsEqual(state.draft.metadata, state.draft.draftSelection)
+      const draft = state.draft
+      if (!draft || state.saving || state.loadingCanonical || state.reconciling
+          || state.reconciliationRequired || draft.isActive || !draft.editability.editable) return false
+      if (draft.kind === 'agent') {
+        return !existingRunSelectionsEqual(metadataSelection(draft.metadata), draft.draftSelection)
           && state.schemaStateByAddress['/']?.status === 'ready'
-          && selectionAllowed(state.draft.metadata, state.draft.draftSelection, state.modelOptionsByAddress['/'])
+          && selectionAllowed(metadataSelection(draft.metadata), draft.draftSelection, state.modelOptionsByAddress['/'])
       }
-      const patches = planExistingTeamModelConfigPatches(state.draft.planner)
-      const allScopesReady = Object.keys(state.draft.planner.scopesByAddress)
+      const patches = draft.kind === 'team'
+        ? planExistingTeamModelConfigPatches(draft.planner)
+        : planExistingAgentOrgModelConfigPatches(draft.planner)
+      const allScopesReady = Object.keys(draft.planner.scopesByAddress)
         .every((address) => state.schemaStateByAddress[address]?.status === 'ready')
       return patches.length > 0 && allScopesReady && patches.every((patch) => {
-        const scope = state.draft!.kind === 'team' ? state.draft.planner.scopesByAddress[patch.scopeAddress]! : null
+        const scope = draft.planner.scopesByAddress[patch.scopeAddress]!
         return scope && selectionAllowed(scope.originalSelection, scope.draftSelection, state.modelOptionsByAddress[patch.scopeAddress])
       })
     },
@@ -144,10 +163,11 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       return requestId
     },
     isCurrentLoad(requestId: number, target: CanonicalLoadTarget): boolean {
-      if (requestId !== this.canonicalLoadRequestId || this.loadTarget?.kind !== target.kind) return false
-      return target.kind === 'agent'
-        ? this.loadTarget.runId === target.runId
-        : this.loadTarget.teamRunId === target.teamRunId
+      const current = this.loadTarget
+      if (requestId !== this.canonicalLoadRequestId || !current || current.kind !== target.kind) return false
+      if (target.kind === 'agent' && current.kind === 'agent') return current.runId === target.runId
+      if (target.kind === 'team' && current.kind === 'team') return current.teamRunId === target.teamRunId
+      return target.kind === 'agent_org' && current.kind === 'agent_org' && current.orgRunId === target.orgRunId
     },
     async loadAgentCanonical(runId: string): Promise<void> {
       const target = { kind: 'agent' as const, runId }
@@ -177,6 +197,20 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
       }
     },
+    async loadAgentOrgCanonical(orgRunId: string): Promise<void> {
+      const target = { kind: 'agent_org' as const, orgRunId }
+      const requestId = this.beginCanonicalLoad(target)
+      try {
+        const payload = await useAgentOrgContextsStore().readRunModelConfig(orgRunId)
+        if (this.isCurrentLoad(requestId, target)) this.syncAgentOrgCanonical(payload)
+      } catch (error) {
+        if (!this.isCurrentLoad(requestId, target)) return
+        this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
+        this.reconciliationRequired = true
+      } finally {
+        if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
+      }
+    },
     syncAgentCanonical(payload: RunResumeConfigPayload): void {
       const sameSubject = this.draft?.kind === 'agent' && this.draft.runId === payload.runId
       this.draft = {
@@ -185,7 +219,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         isActive: payload.isActive,
         editability: { ...payload.modelConfigEditability },
         metadata: cloneExistingRunJsonValue(payload.metadataConfig),
-        draftSelection: cloneExistingRunSelection(payload.metadataConfig),
+        draftSelection: metadataSelection(payload.metadataConfig),
       }
       this.schemaStateByAddress = { '/': loadingSchemaState() }
       this.fieldErrors = []
@@ -210,6 +244,20 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.fieldErrors = []
       this.reconciliationRequired = false
       this.applyCachedLifecycleLock({ kind: 'team', teamRunId: payload.teamRunId })
+      void this.refreshModelOptions()
+      if (!sameSubject) this.feedback = null
+    },
+    syncAgentOrgCanonical(payload: AgentOrgRunModelConfigRead): void {
+      const sameSubject = this.draft?.kind === 'agent_org' && this.draft.orgRunId === payload.orgRunId
+      const tree = parseAgentOrgExecutionTree(payload.executionTree)
+      this.draft = { kind: 'agent_org', orgRunId: payload.orgRunId, isActive: payload.isActive,
+        editability: { ...payload.editability }, executionTree: cloneExistingRunJsonValue(tree),
+        planner: createExistingAgentOrgModelConfigDraft(tree) }
+      this.schemaStateByAddress = Object.fromEntries(
+        Object.keys(this.draft.planner.scopesByAddress).map((address) => [address, loadingSchemaState()]),
+      )
+      this.fieldErrors = []
+      this.reconciliationRequired = false
       void this.refreshModelOptions()
       if (!sameSubject) this.feedback = null
     },
@@ -273,9 +321,17 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.feedback = null
       this.fieldErrors = []
     },
+    updateAgentOrgScopeModelConfig(address: string, selection: ExistingRunModelSelection, directlyEdited = true): void {
+      if (this.draft?.kind !== 'agent_org' || !this.draft.editability.editable || this.draft.isActive
+          || this.saving || this.reconciling || this.reconciliationRequired) return
+      this.draft = { ...this.draft,
+        planner: updateExistingAgentOrgScopeModelConfig(this.draft.planner, address, selection, directlyEdited) }
+      this.feedback = null
+      this.fieldErrors = []
+    },
     setSchemaState(address: string, state: ExistingRunModelConfigSchemaState): void {
       if (!this.draft || (this.draft.kind === 'agent' && address !== '/') ||
-          (this.draft.kind === 'team' && !this.draft.planner.scopesByAddress[address])) return
+          (this.draft.kind !== 'agent' && !this.draft.planner.scopesByAddress[address])) return
       this.schemaStateByAddress = { ...this.schemaStateByAddress, [address]: { ...state } }
     },
     async save(): Promise<boolean> {
@@ -285,15 +341,17 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.feedback = null
       this.fieldErrors = []
       try {
-        return draft.kind === 'agent'
-          ? await this.saveAgent(draft)
-          : await this.saveTeam(draft)
+        if (draft.kind === 'agent') return await this.saveAgent(draft)
+        if (draft.kind === 'team') return await this.saveTeam(draft)
+        return await this.saveAgentOrg(draft)
       } catch (error) {
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         if (draft.kind === 'agent') {
           await this.reconcileAgentFailure('PERSISTENCE_INDETERMINATE', draft.runId)
-        } else {
+        } else if (draft.kind === 'team') {
           await this.reconcileTeamFailure('PERSISTENCE_INDETERMINATE', draft.teamRunId)
+        } else {
+          await this.reconcileAgentOrgFailure('PERSISTENCE_INDETERMINATE', draft.orgRunId)
         }
         return false
       } finally {
@@ -353,6 +411,25 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       await this.reconcileTeamFailure(result.outcome, draft.teamRunId)
       return false
     },
+    async saveAgentOrg(draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent_org' }>): Promise<boolean> {
+      const result = await useAgentOrgContextsStore().saveRunModelConfigs(
+        draft.orgRunId,
+        planExistingAgentOrgModelConfigPatches(draft.planner),
+      )
+      if (this.draft?.kind !== 'agent_org' || this.draft.orgRunId !== draft.orgRunId) return false
+      if (result.success) {
+        const tree = parseAgentOrgExecutionTree(result.canonicalExecutionTree)
+        this.applyResultState(result)
+        this.syncAgentOrgCanonical({ orgRunId: draft.orgRunId, executionTree: tree,
+          isActive: result.isActive, editability: result.editability })
+        this.feedback = { kind: 'success', message: result.message }
+        return true
+      }
+      this.applyAgentOrgFailureCanonical(draft, result)
+      this.applyResultState(result)
+      await this.reconcileAgentOrgFailure(result.outcome, draft.orgRunId)
+      return false
+    },
     applyAgentFailureCanonical(
       draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent' }>,
       result: AgentModelConfigMutationResult,
@@ -399,61 +476,19 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         executionTree: cloneExistingRunJsonValue(parsedTree.data),
       }
     },
-    applyResultState(result: ExistingRunModelConfigMutationResult): void {
-      this.feedback = { kind: result.success ? 'success' : 'error', message: result.message }
-      this.fieldErrors = [...(result.fieldErrors ?? [])]
-      if (result.outcome === 'MODEL_UNAVAILABLE' || result.outcome === 'SCHEMA_UNAVAILABLE') {
-        const affectedAddresses = this.draft?.kind === 'team'
-          ? planExistingTeamModelConfigPatches(this.draft.planner).map((patch) => patch.scopeAddress)
-          : ['/']
-        this.schemaStateByAddress = {
-          ...this.schemaStateByAddress,
-          ...Object.fromEntries(affectedAddresses.map((address) => [address, {
-            status: 'unavailable' as const,
-            message: result.message,
-          }])),
-        }
-      }
-    },
-    async reconcileAgentFailure(outcome: string, runId: string): Promise<void> {
-      if (!requiresOutcomeVerification(outcome)) return
-      this.reconciliationRequired = true
-      this.reconciling = true
-      this.cachedLifecycleLock = null
+    applyAgentOrgFailureCanonical(
+      draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent_org' }>,
+      result: AgentOrgModelConfigMutationResult,
+    ): void {
       try {
-        this.syncAgentCanonical(await useRunHistoryStore().refreshAgentResumeConfig(runId))
-      } catch (error) {
-        this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
-      } finally {
-        this.reconciling = false
+        const tree = parseAgentOrgExecutionTree(result.canonicalExecutionTree)
+        // Keep submitted planner values aligned with determinate field errors; indeterminate outcomes replace them after an explicit read.
+        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability },
+          executionTree: cloneExistingRunJsonValue(tree) }
+      } catch {
+        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
       }
     },
-    async reconcileTeamFailure(outcome: string, teamRunId: string): Promise<void> {
-      if (!requiresOutcomeVerification(outcome)) return
-      this.reconciliationRequired = true
-      this.reconciling = true
-      this.cachedLifecycleLock = null
-      try {
-        this.syncTeamCanonical(await useRunHistoryStore().refreshTeamResumeConfig(teamRunId))
-        this.feedback = null
-      } catch (error) {
-        this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
-      } finally {
-        this.reconciling = false
-      }
-    },
-    async retryCanonicalRefresh(): Promise<void> {
-      if (this.reconciling || this.loadingCanonical) return
-      const draft = this.draft
-      if (draft?.kind === 'agent') {
-        await this.reconcileAgentFailure('PERSISTENCE_INDETERMINATE', draft.runId)
-      } else if (draft?.kind === 'team') {
-        await this.reconcileTeamFailure('PERSISTENCE_INDETERMINATE', draft.teamRunId)
-      } else if (this.loadTarget?.kind === 'agent') {
-        await this.loadAgentCanonical(this.loadTarget.runId)
-      } else if (this.loadTarget?.kind === 'team') {
-        await this.loadTeamCanonical(this.loadTarget.teamRunId)
-      }
-    },
+    ...existingRunModelConfigResultActions,
   },
 })

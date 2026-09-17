@@ -266,16 +266,21 @@ publication-related redirect remains unassigned, so this is not a causal claim
 about that incident or a guarantee against every future timing interleaving.
 
 For a focused configured direct Agent or Agent inside a mounted Team, the header
-gear opens that exact member's canonical run configuration even when stopped.
-Runtime, Workspace, tool approval and skill policy remain locked. While the
-enclosing Org is stopped, explicit **Save** can change that member's same-runtime
-model (verified equal/larger context capacity) and schema-valid parameters.
+gear opens the enclosing AgentOrg's complete canonical run configuration. The
+shared launch/existing form shows the Org root, direct Agents, mounted Teams and
+their configured Agents in the familiar hierarchy. Runtime, Workspace, tool
+approval and skill policy remain locked. While the enclosing Org is stopped,
+explicit **Save** can change compatible same-runtime models (verified
+equal/larger context capacity) and schema-valid parameters across configured
+scopes. Parent-linked scopes follow root or Team edits until directly edited;
+pre-existing and directly edited overrides stay independent.
 Active/unknown, archived and application-owned roots stay noneditable; task
 inspection does not acquire configuration editing. A failed or uncertain Save
 never reports success; an uncertain outcome requires explicit canonical refresh.
-The Org manager serializes the exact root/address/Agent-ID write with restore,
-changes only that leaf's model fields, and verifies atomic persistence by strict
-readback. Inspect/Save does not start an Agent/provider or rewrite history.
+The Org manager serializes one whole-root aggregate command with restore,
+validates every configured target, changes only model fields, writes once and
+verifies the entire canonical result by strict readback. Validation failure is
+all-or-none. Inspect/Save does not start an Agent/provider or rewrite history.
 **Back** retains the same member/context; reopening reads canonical values.
 Normal Send still restores the canonical root using saved values, with lazy
 member startup. **New (+)** reads the enclosing Org through inactive-capable
@@ -466,9 +471,10 @@ report for the exact acceptance scope.
   `CollaborationDelegatedTasksSection.vue`: shared independent facets and Tasks
   layout, replacing the Team-only Tasks section.
 - `components/workspace/org/AgentOrgWorkspaceView.vue`: focused/unfocused and
-  stopped workspace states plus the exact-member config/Back adapter.
-- `components/workspace/org/AgentOrgMemberRunConfigPanel.vue`: exact-member canonical
-  inspection and stopped model-edit form, backed by `useAgentOrgMemberModelConfig`.
+  stopped workspace states plus the enclosing-Org config/Back adapter.
+- `components/workspace/config/AgentOrgRunConfigForm.vue`: shared launch and
+  stopped whole-Org hierarchy body. Existing mode is backed by the canonical
+  execution tree and the subject-neutral existing-run editor/store.
 - `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` and
   `WorkspaceHistoryWorkspaceSection.vue`: always-mounted mixed-family
   Workspaces hierarchy and sibling Agent/Team/AgentOrg groups.

@@ -27,8 +27,10 @@
         <MemberOverrideItem
           :node="node"
           :member-breadcrumb="node.address.split('/').filter(Boolean).join(' / ')"
-          :disabled="false"
+          :disabled="disabled"
+          :model-config-field-errors="modelConfigFieldErrors"
           @update:override="(_, value) => emit('update:override', value)"
+          @update-existing-model-config="forwardExistingModelConfig"
           @schema-state="forwardSchemaState"
         />
       </div>
@@ -41,18 +43,22 @@ import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import MemberOverrideItem from './MemberOverrideItem.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import type { EditableTeamFormAgentNode } from '~/types/agent/EditableTeamRunFormModel'
+import type { TeamFormAgentNode } from '~/types/agent/TeamRunFormModel'
+import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
 
-const props = defineProps<{
-  node: Readonly<EditableTeamFormAgentNode>
+const props = withDefaults(defineProps<{
+  node: Readonly<TeamFormAgentNode>
   expanded: boolean
-}>()
+  disabled?: boolean
+  modelConfigFieldErrors?: Readonly<Record<string, string>>
+}>(), { disabled: false })
 
 const emit = defineEmits<{
   (event: 'toggle'): void
   (event: 'update:override', value: AgentConfigOverride | null): void
+  (event: 'update-existing-model-config', address: string, value: ExistingRunModelSelection, directlyEdited: boolean): void
   (event: 'schema-state', address: string, state: RuntimeModelConfigSchemaState): void
 }>()
 
@@ -60,5 +66,8 @@ const { t } = useLocalization()
 const panelId = computed(() => `org-direct-agent-${props.node.address.slice(1).replaceAll('/', '-')}-panel`)
 const forwardSchemaState = (address: string, state: RuntimeModelConfigSchemaState) => {
   if (address === props.node.address) emit('schema-state', address, state)
+}
+const forwardExistingModelConfig = (address: string, value: ExistingRunModelSelection, directlyEdited: boolean) => {
+  if (address === props.node.address) emit('update-existing-model-config', address, value, directlyEdited)
 }
 </script>
