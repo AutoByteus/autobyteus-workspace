@@ -65,6 +65,7 @@ export interface RunHistoryFetchStoreLike {
   agentOrgHistory: AgentOrgRunHistoryItem[];
   historyFamilyErrors: RunHistoryFamilyErrors;
   agentOrgRequestGeneration: number;
+  refreshRunNavigationTopology(reason: string): void;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
@@ -104,25 +105,20 @@ export const fetchRunHistoryTree = async (
     }
 
     const client = getApolloClient();
-    const [workspaceResult, agentOrgResult] = await Promise.allSettled([
-      client.query<ListWorkspaceRunHistoryQueryData>({
-        query: ListWorkspaceRunHistory,
-        variables: { limitPerAgent },
-        fetchPolicy: 'network-only',
-      }).then((result) => {
+    const workspaceBranch = (async () => {
+      try {
+        const result = await client.query<ListWorkspaceRunHistoryQueryData>({
+          query: ListWorkspaceRunHistory,
+          variables: { limitPerAgent },
+          fetchPolicy: 'network-only',
+        });
         if (result.errors?.length) {
           throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '));
         }
-        return result.data?.listWorkspaceRunHistory || [];
-      }),
-      readAgentOrgHistory(client),
-    ]);
-
-    if (workspaceResult.status === 'fulfilled') {
-      store.workspaceGroups = workspaceResult.value;
-      store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
-      store.error = null;
-      try {
+        store.workspaceGroups = result.data?.listWorkspaceRunHistory || [];
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
+        store.error = null;
+        store.refreshRunNavigationTopology('workspace-history-ready');
         store.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
           store.agentAvatarByDefinitionId,
           { loadDefinitionsIfNeeded: true },
@@ -133,26 +129,25 @@ export const fetchRunHistoryTree = async (
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
         if (!quiet) store.error = detail;
       }
-    } else {
-      const detail = workspaceResult.reason instanceof Error
-        ? workspaceResult.reason.message
-        : String(workspaceResult.reason);
-      store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
-      if (!quiet) store.error = detail;
-    }
+    })();
 
-    if (agentOrgGeneration !== store.agentOrgRequestGeneration) {
-      // A newer full or focused Org-family request owns the slice.
-    } else if (agentOrgResult.status === 'fulfilled') {
-      store.agentOrgHistory = agentOrgResult.value;
-      useAgentOrgContextsStore().reconcileRetainedHistory(agentOrgResult.value.map((row) => row.rootRunId));
-      store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
-    } else {
-      const detail = agentOrgResult.reason instanceof Error
-        ? agentOrgResult.reason.message
-        : String(agentOrgResult.reason);
-      store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: detail };
-    }
+    const agentOrgBranch = (async () => {
+      try {
+        const rows = await readAgentOrgHistory(client);
+        if (agentOrgGeneration !== store.agentOrgRequestGeneration) return;
+        store.agentOrgHistory = rows;
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
+        store.refreshRunNavigationTopology('agent-org-history-ready');
+        useAgentOrgContextsStore().reconcileRetainedHistory(rows.map((row) => row.rootRunId));
+      } catch (error) {
+        if (agentOrgGeneration !== store.agentOrgRequestGeneration) return;
+        const detail = error instanceof Error ? error.message : String(error);
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: detail };
+      }
+    })();
+
+    // Completion still includes enrichment/reconnection; visible families do not wait for it.
+    await Promise.all([workspaceBranch, agentOrgBranch]);
   } catch (error: any) {
     const detail = error?.message || 'Failed to load run history.';
     store.historyFamilyErrors = {

@@ -1,0 +1,11 @@
+{
+  "backup": "/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR002",
+  "count": 69,
+  "verified": true,
+  "private_manifest_in_backup_only": true,
+  "regenerable_exclusions": [
+    "node_modules",
+    "dist",
+    ".nuxt"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "members": [
+    {
+      "memberName": "guide",
+      "ref": "latency-agent",
+      "refScope": "shared",
+      "refType": "agent"
+    },
+    {
+      "memberName": "squad",
+      "ref": "latency-team",
+      "refScope": "shared",
+      "refType": "agent_team"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "gpt-5.4-mini",
+    "llmConfig": null
+  }
+}

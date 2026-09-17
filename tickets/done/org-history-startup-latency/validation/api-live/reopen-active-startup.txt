@@ -1,0 +1,63 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "设置":
+    - generic: 设置
+- main:
+  - textbox "按名称或描述搜索智能体..."
+  - button "重新加载":
+    - text: 重新加载
+  - button "创建智能体"
+  - heading "个人智能体" [level=2]
+  - generic: 3 个智能体
+  - generic: LA
+  - heading "Latency Agent" [level=3]
+  - paragraph: Isolated startup history validation
+  - generic: 工具 0
+  - generic: 无
+  - generic: 技能 0
+  - generic: 无
+  - button "运行"
+  - button "查看详情":
+    - text: 查看详情
+    - generic: ➡️
+  - generic: MC
+  - heading "Memory Compactor" [level=3]
+  - paragraph: Summarizes the conversation history of a target agent so the target agent can continue later.
+  - generic: 工具 0
+  - generic: 无
+  - generic: 技能 0
+  - generic: 无
+  - button "运行"
+  - button "查看详情":
+    - text: 查看详情
+    - generic: ➡️
+  - generic: RS
+  - heading "Retrospective Skill Improver" [level=3]
+  - paragraph: Improves configured durable skill packages from target run work-trace evidence.
+  - generic: 工具 2
+  - generic: run_bash
+  - generic: send_message_to
+  - generic: 技能 1
+  - generic: retrospective-skill-improver
+  - button "运行"
+  - button "查看详情":
+    - text: 查看详情
+    - generic: ➡️

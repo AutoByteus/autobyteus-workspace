@@ -1,0 +1,41 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - generic: 正在加载任务历史记录...
+  - button "temp_workspace" [expanded]:
+    - generic: temp_workspace
+  - generic: 组织
+  - button "Latency Org (1)" [expanded]:
+    - generic: Latency Org
+    - generic: (1)
+  - button "折叠 Reply exactly LATENCY-ORG-917. Do not call tools. 下的成员" [expanded] [active]:
+  - treeitem "已停止 Reply exactly LATENCY-ORG-917. Do not call tools.":
+    - generic "已停止"
+    - generic: Reply exactly LATENCY-ORG-917. Do not call tools.
+  - generic: 6 分钟
+  - tree "Latency Org 执行层级":
+    - treeitem "guide, 离线, /guide, latency_agent_6fe64ab4f7524226b550158b338ec219" [level=1]:
+      - generic: G
+      - generic: guide
+    - treeitem "squad. 团队状态：离线" [level=1]:
+      - img "团队状态：离线"
+      - generic: squad
+  - button "设置":
+    - generic: 设置
+- main:
+  - paragraph: 正在准备智能体管理器...

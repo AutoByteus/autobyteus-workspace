@@ -1,0 +1,83 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts --run -t 'renders ready'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests | 2 failed | 7 skipped) 50ms
+   × independent family publication through real initialized Pinia projection and sidebar > renders ready org while other query and catalogs remain pending 38ms
+     → expected [] to deeply equal [ 'org-history' ]
+   × independent family publication through real initialized Pinia projection and sidebar > renders ready workspace while other query and catalogs remain pending 11ms
+     → expected undefined to be 'agent-history' // Object.is equality
+   ↓ independent family publication through real initialized Pinia projection and sidebar > publishes both families before avatar enrichment and awaits later active hydration/connection
+   ↓ independent family publication through real initialized Pinia projection and sidebar > publishes a later Org response while existing active hydration is already blocked
+   ↓ independent family publication through real initialized Pinia projection and sidebar > preserves accepted workspace rows on failure while publishing successful empty other family
+   ↓ independent family publication through real initialized Pinia projection and sidebar > preserves accepted org rows on failure while publishing successful empty other family
+   ↓ independent family publication through real initialized Pinia projection and sidebar > older full Org cannot publish or reconcile after newer focused request (failure=false)
+   ↓ independent family publication through real initialized Pinia projection and sidebar > older full Org cannot publish or reconcile after newer focused request (failure=true)
+   ↓ independent family publication through real initialized Pinia projection and sidebar > quiet partial failure retains legacy global error while other accepted family publishes
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts > independent family publication through real initialized Pinia projection and sidebar > renders ready org while other query and catalogs remain pending
+AssertionError: expected [] to deeply equal [ 'org-history' ]
+
+- Expected
++ Received
+
+- [
+-   "org-history",
+- ]
++ []
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts:72:27
+     70|     // Check the cached read model BEFORE expansion can request a scop…
+     71|     if(first==='workspace') expect(store.getTreeNodes()[0]?.agents[0]?…
+     72|     else expect(orgIds()).toEqual(['org-history']);
+       |                           ^
+     73|     await expandWorkspace();
+     74|     expect(wrapper!.text()).toContain(first==='org'?'History Org':'His…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts > independent family publication through real initialized Pinia projection and sidebar > renders ready workspace while other query and catalogs remain pending
+AssertionError: expected undefined to be 'agent-history' // Object.is equality
+
+- Expected: 
+"agent-history"
+
++ Received: 
+undefined
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts:71:88
+     69|     await flushPromises();
+     70|     // Check the cached read model BEFORE expansion can request a scop…
+     71|     if(first==='workspace') expect(store.getTreeNodes()[0]?.agents[0]?…
+       |                                                                                        ^
+     72|     else expect(orgIds()).toEqual(['org-history']);
+     73|     await expandWorkspace();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 skipped (9)
+   Start at  07:47:14
+   Duration  4.85s (transform 2.74s, setup 3.99s, collect 341ms, tests 50ms, environment 130ms, prepare 108ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+BASELINE exit=1

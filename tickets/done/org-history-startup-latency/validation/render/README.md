@@ -1,0 +1,6 @@
+# Rendered implementation self-check
+Actual WorkspaceAgentRunsTreePanel / real Pinia / real initialized navigation projection. Synthetic strict Org/workspace responses and pending catalog/scoped-expansion query; no backend/provider/user profile. Known workspace descriptor provided only for standalone workspace-family mode, preserving existing projection policy. Org-only mode starts with none.
+
+Fresh Chrome/owned Nuxt50985: release Org first, observe hierarchy and expand run/member while workspace/catalog pending; release workspace first, observe Agent group while Org/catalog pending. Completion remains false until remaining branches/catalog release. No new controls in application source; fixture buttons only drive synthetic IO. Screenshots inspected1180x800, loading+available rows coexist with preserved geometry; final no page errors.
+
+results.json46ms/52ms are synthetic release-click-to-visible including scripted expansion, NOT actual server startup or response timings, user's reported ten seconds, SLA, or Electron/API acceptance. Initial fixture returned unexpected scoped-expansion query error; current fixture defers the normal scoped response, final rerun/screenshots replace that invalid fixture state. Owned browser/server stopped, temp page removed before production build. Real API startup/inspection/reconnect/data checks remain downstream.

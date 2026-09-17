@@ -1,0 +1,22 @@
+[
+  {
+    "at": 1789624466455,
+    "id": 14,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 39,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624466471,
+    "id": 15,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 44,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[]}}",
+    "control": {}
+  }
+]

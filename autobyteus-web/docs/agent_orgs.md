@@ -333,6 +333,25 @@ Workspaces hierarchy. AgentTeam and AgentOrg roots keep explicit root kinds and
 family-specific loaders; a failure in one family retains the other family and
 the last good slice instead of blanking the entire navigation tree.
 
+History publication is independent for the workspace family (standalone Agents
+and Teams) and the Org family. `runHistoryLoadActions` accepts each response and
+synchronously refreshes the existing navigation projection through
+`refreshRunNavigationTopology`; changing a raw history array alone is not the
+render boundary. Ready rows do not wait for the other family, definition/avatar
+enrichment, or active Agent/Team reconnection. Existing workspace-descriptor
+visibility rules still apply; this does not invent rows for unresolved workspaces.
+
+The full fetch still awaits both branches and workspace enrichment/reconnection
+before settling loading and performing its final topology refresh. Usable rows
+can therefore coexist with an ongoing loading indicator. There is no detached
+background replacement for the existing lifecycle work. Full and focused Org
+requests retain latest-initiated generation ownership before publishing state,
+errors or retained-recovery effects. A failed family retains its last accepted
+slice and family error; a successful empty result is not a pending/failed result.
+Normal quiet refresh, selection, disclosure and stopped-run non-activation remain
+unchanged. This is a frontend scheduling change, not a migration, backend index
+redesign, fixed latency guarantee or measurement of a particular user's startup.
+
 Each individual Org run has an independent native disclosure button supporting
 Enter/Space and `aria-expanded`. It can collapse active or stopped, selected or
 unselected runs without inspection, navigation, Stop or runtime activation.

@@ -1,0 +1,34 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts stores/__tests__/runHistoryStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (8 tests) 83ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (44 tests) 461ms
+
+ Test Files  2 passed (2)
+      Tests  52 passed (52)
+   Start at  07:43:04
+   Duration  5.35s (transform 2.92s, setup 8.39s, collect 631ms, tests 544ms, environment 279ms, prepare 246ms)
+

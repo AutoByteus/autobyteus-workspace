@@ -1,0 +1,8 @@
+{
+  "data/agents/latency-agent/agent.md": "ec189c451e8b412df6b939a9754ba6f4f4ae24f2d14ec7196e1e04b7c65ce0a7",
+  "data/agents/latency-agent/agent-config.json": "ed7f44373f1deef336dc5222e61ff7f0967bb932c5402bd016f7e98c560c2625",
+  "data/agent-orgs/latency-org/org-config.json": "7899a8a96a8514e79e3878a85394ffa4d44281adf2dff27d5598e1a9d60d35c9",
+  "data/agent-orgs/latency-org/org.md": "1fd560aca7b8370c806fa9451ca6e186f27f355eee51e46f2c5724cd7e37dde5",
+  "data/agent-teams/latency-team/team-config.json": "9f1940163164bf2c8264c3d5d67442245bbe430bd5a6492dcc1a2b674a9bc666",
+  "data/agent-teams/latency-team/team.md": "3e0a178e760ac3a5e3bac953a529984a7d989e23884197ea092033d169732949"
+}

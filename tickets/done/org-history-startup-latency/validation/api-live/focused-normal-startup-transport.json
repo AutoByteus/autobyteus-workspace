@@ -1,0 +1,589 @@
+[
+  {
+    "at": 1789625066962,
+    "id": 629,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066963,
+    "id": 629,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066963,
+    "id": 629,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625066965,
+    "id": 630,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAgentOrgRunInspection",
+    "variables": {
+      "orgRunId": "latency_org_95ea2fedc93c43e58595e556a66643bf"
+    }
+  },
+  {
+    "at": 1789625066967,
+    "id": 630,
+    "type": "backend_ready",
+    "op": "GetAgentOrgRunInspection",
+    "status": 200,
+    "bytes": 2668,
+    "control": {}
+  },
+  {
+    "at": 1789625066967,
+    "id": 630,
+    "type": "released",
+    "op": "GetAgentOrgRunInspection",
+    "status": 200
+  },
+  {
+    "at": 1789625066972,
+    "id": 631,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066973,
+    "id": 631,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066973,
+    "id": 631,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625066989,
+    "id": 632,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066991,
+    "id": 632,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066991,
+    "id": 632,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625066991,
+    "id": 633,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066993,
+    "id": 633,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066993,
+    "id": 633,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625066994,
+    "id": 634,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066995,
+    "id": 634,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066995,
+    "id": 634,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625066996,
+    "id": 635,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066997,
+    "id": 635,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066997,
+    "id": 635,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625066998,
+    "id": 636,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625066999,
+    "id": 636,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625066999,
+    "id": 636,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625067097,
+    "type": "ws_upgrade",
+    "url": "/ws/terminal/9862a37d-06da-4b42-a548-558d325b529e"
+  },
+  {
+    "at": 1789625067152,
+    "id": 637,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetApplicationsCapability",
+    "variables": {}
+  },
+  {
+    "at": 1789625067153,
+    "id": 637,
+    "type": "backend_ready",
+    "op": "GetApplicationsCapability",
+    "status": 200,
+    "bytes": 173,
+    "control": {}
+  },
+  {
+    "at": 1789625067159,
+    "id": 637,
+    "type": "released",
+    "op": "GetApplicationsCapability",
+    "status": 200
+  },
+  {
+    "at": 1789625067159,
+    "id": 638,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetServerSettings",
+    "variables": {}
+  },
+  {
+    "at": 1789625067160,
+    "id": 638,
+    "type": "backend_ready",
+    "op": "GetServerSettings",
+    "status": 200,
+    "bytes": 2909,
+    "control": {}
+  },
+  {
+    "at": 1789625067160,
+    "id": 638,
+    "type": "released",
+    "op": "GetServerSettings",
+    "status": 200
+  },
+  {
+    "at": 1789625067162,
+    "id": 639,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAllWorkspaces",
+    "variables": {}
+  },
+  {
+    "at": 1789625067162,
+    "id": 639,
+    "type": "backend_ready",
+    "op": "GetAllWorkspaces",
+    "status": 200,
+    "bytes": 642,
+    "control": {}
+  },
+  {
+    "at": 1789625067163,
+    "id": 639,
+    "type": "released",
+    "op": "GetAllWorkspaces",
+    "status": 200
+  },
+  {
+    "at": 1789625067166,
+    "id": 640,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789625067167,
+    "id": 640,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2898,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:02:05.986Z\",\"status\":\"offline\",\"isActive\":false,\"shouldConnectStream\":false,\"statusSource\":\"TERMINATED_METADATA\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789625067168,
+    "id": 640,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789625067168,
+    "id": 641,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789625067169,
+    "id": 641,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789625067169,
+    "id": 641,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789625067176,
+    "id": 642,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAgentDefinitions",
+    "variables": {}
+  },
+  {
+    "at": 1789625067178,
+    "id": 642,
+    "type": "backend_ready",
+    "op": "GetAgentDefinitions",
+    "status": 200,
+    "bytes": 6408,
+    "control": {}
+  },
+  {
+    "at": 1789625067178,
+    "id": 642,
+    "type": "released",
+    "op": "GetAgentDefinitions",
+    "status": 200
+  },
+  {
+    "at": 1789625067181,
+    "id": 643,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAgentTeamDefinitions",
+    "variables": {}
+  },
+  {
+    "at": 1789625067184,
+    "id": 643,
+    "type": "backend_ready",
+    "op": "GetAgentTeamDefinitions",
+    "status": 200,
+    "bytes": 870,
+    "control": {}
+  },
+  {
+    "at": 1789625067184,
+    "id": 643,
+    "type": "released",
+    "op": "GetAgentTeamDefinitions",
+    "status": 200
+  },
+  {
+    "at": 1789625067186,
+    "id": 644,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAgentOrgDefinitions",
+    "variables": {}
+  },
+  {
+    "at": 1789625067189,
+    "id": 644,
+    "type": "backend_ready",
+    "op": "GetAgentOrgDefinitions",
+    "status": 200,
+    "bytes": 804,
+    "control": {}
+  },
+  {
+    "at": 1789625067189,
+    "id": 644,
+    "type": "released",
+    "op": "GetAgentOrgDefinitions",
+    "status": 200
+  },
+  {
+    "at": 1789625067241,
+    "id": 645,
+    "type": "request",
+    "method": "OPTIONS",
+    "url": "/graphql",
+    "op": ""
+  },
+  {
+    "at": 1789625067241,
+    "id": 645,
+    "type": "backend_ready",
+    "op": "",
+    "status": 204,
+    "bytes": 0,
+    "control": {}
+  },
+  {
+    "at": 1789625067242,
+    "id": 645,
+    "type": "released",
+    "op": "",
+    "status": 204
+  },
+  {
+    "at": 1789625067243,
+    "id": 646,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetWorkspaceMetadata",
+    "variables": {
+      "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace"
+    }
+  },
+  {
+    "at": 1789625067244,
+    "id": 646,
+    "type": "backend_ready",
+    "op": "GetWorkspaceMetadata",
+    "status": 200,
+    "bytes": 352,
+    "control": {}
+  },
+  {
+    "at": 1789625067244,
+    "id": 646,
+    "type": "released",
+    "op": "GetWorkspaceMetadata",
+    "status": 200
+  },
+  {
+    "at": 1789625067270,
+    "id": 647,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625067270,
+    "id": 647,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625067271,
+    "id": 647,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625067365,
+    "id": 648,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAgentOrgMemberRunProjection",
+    "variables": {
+      "orgRunId": "latency_org_95ea2fedc93c43e58595e556a66643bf",
+      "memberAddress": "/guide",
+      "agentRunId": "latency_agent_6fe64ab4f7524226b550158b338ec219"
+    }
+  },
+  {
+    "at": 1789625067365,
+    "id": 649,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetAgentOrgMemberRunProjection",
+    "variables": {
+      "orgRunId": "latency_org_95ea2fedc93c43e58595e556a66643bf",
+      "memberAddress": "/squad/lead",
+      "agentRunId": "latency_agent_b0c22d1b3b5f4befa32459d07dc52d83"
+    }
+  },
+  {
+    "at": 1789625067367,
+    "id": 648,
+    "type": "backend_ready",
+    "op": "GetAgentOrgMemberRunProjection",
+    "status": 200,
+    "bytes": 9111,
+    "control": {}
+  },
+  {
+    "at": 1789625067367,
+    "id": 648,
+    "type": "released",
+    "op": "GetAgentOrgMemberRunProjection",
+    "status": 200
+  },
+  {
+    "at": 1789625067367,
+    "id": 649,
+    "type": "backend_ready",
+    "op": "GetAgentOrgMemberRunProjection",
+    "status": 200,
+    "bytes": 294,
+    "control": {}
+  },
+  {
+    "at": 1789625067368,
+    "id": 649,
+    "type": "released",
+    "op": "GetAgentOrgMemberRunProjection",
+    "status": 200
+  },
+  {
+    "at": 1789625067405,
+    "id": 650,
+    "type": "request",
+    "method": "GET",
+    "url": "/rest/health",
+    "op": ""
+  },
+  {
+    "at": 1789625067406,
+    "id": 650,
+    "type": "backend_ready",
+    "op": "",
+    "status": 200,
+    "bytes": 45,
+    "control": {}
+  },
+  {
+    "at": 1789625067406,
+    "id": 650,
+    "type": "released",
+    "op": "",
+    "status": 200
+  },
+  {
+    "at": 1789625067486,
+    "id": 651,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789625067488,
+    "id": 651,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789625067488,
+    "id": 651,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  }
+]

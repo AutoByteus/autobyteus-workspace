@@ -275,7 +275,7 @@ it.each(['full', 'focused'])('RET-04: successful %s loader recovers an exhausted
   const retained = store.activeTargetFor('org-run')!.context
   mocks.query.mockRejectedValue(new Error('offline server'))
   socket.close(); await vi.advanceTimersByTimeAsync(20000)
-  const history = { agentOrgRequestGeneration: 0, historyFamilyErrors: { workspace: null, agentOrg: null }, agentOrgHistory: [], workspaceGroups: [] } as any
+  const history = { refreshRunNavigationTopology: vi.fn(), agentOrgRequestGeneration: 0, historyFamilyErrors: { workspace: null, agentOrg: null }, agentOrgHistory: [], workspaceGroups: [] } as any
   mocks.query.mockImplementation(async ({ query, variables }) => {
     if (query === ListCollaborationRootHistory) return { data: historyData(true) } // stale active row is only a trigger.
     if (query === GetAgentOrgRunInspection) return inspection(false)
