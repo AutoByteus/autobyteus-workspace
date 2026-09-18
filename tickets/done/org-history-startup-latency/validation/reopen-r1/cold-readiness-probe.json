@@ -1,0 +1,18 @@
+{
+  "ticket": "ORG-HISTORY-LATENCY-20260917-001",
+  "round": "reopen-r1",
+  "method": "A fresh Node process imported the exact packaged latest-base RootRunPackageReadinessIndex and executed one read-only rebuild against the same memory root used by the Electron backend. The process did not invoke migrations, index writers, mutations, providers, or the running server.",
+  "result": {
+    "durationMs": 26657.10125,
+    "admittedTeamPackages": 307,
+    "admittedAgentOrgPackages": 17,
+    "diagnostics": 219
+  },
+  "sourceAttribution": {
+    "startup": "server-runtime.ts rebuilds the shared readiness generation before listen",
+    "agentOrgFirstHistoryRead": "agent-org-run-history-catalog-service.ts calls packageCatalog.rebuild() again while initializing",
+    "teamComparator": "team-run-history-catalog-service.ts calls packageCatalog.awaitReady() and reuses the existing/lazily-established generation"
+  },
+  "resultInterpretation": "The first AgentOrg history request can repeat a complete Team+AgentOrg package-readiness scan already completed before the server listened. On this real package population, that duplicate scan alone took 26.657 seconds and blocks ListCollaborationRootHistory, while workspace Team history uses the already-ready catalog path.",
+  "dataSafety": "Counts and duration only; no paths, package contents, secrets, history bodies, or diagnostics are retained."
+}

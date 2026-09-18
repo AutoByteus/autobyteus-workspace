@@ -1,0 +1,38 @@
+{
+  "base": "d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd",
+  "revision": "IR-002",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts",
+      "base_sha256": "4c8a6690c9be7e831aabb4efa517fa549686a10c241164a71433a670ab029c9b",
+      "sha256": "7c8f2d29f4c6e9a6b2559dd68bbfda6e9552ba89d6d84eea34eec1a538bf6058",
+      "nonempty_lines": 112,
+      "added_lines": 1,
+      "removed_lines": 1
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts",
+      "base_sha256": "c2539a9ff64761eaa136ee5d48e2856bde17de6feacd7147a433befaf0c8205c",
+      "sha256": "64262bea049a76af3ae4a1ea209c51efc37249dcbfe2fcbc933865bbcca3452a",
+      "nonempty_lines": 96,
+      "added_lines": 48,
+      "removed_lines": 4
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "base_sha256": "7214cd391d7aab188331cc5df6188ebc116575fd4ec411db8afbdf80c2433a5c",
+      "sha256": "dd63192625b0af560d37682d876e10f32f8b8fa8559c658720b92841e4952dc0",
+      "nonempty_lines": 129,
+      "added_lines": 18,
+      "removed_lines": 1
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+      "base_sha256": "5caf6ea62328a520432ad3897eb9d897309dd377f927e826d2effa79cd945a81",
+      "sha256": "8eda15b1c74d63f71e60aaba14ec5d3b7ee92915bc2bc489ac784a1ca04d12cf",
+      "nonempty_lines": 170,
+      "added_lines": 6,
+      "removed_lines": 1
+    }
+  ]
+}

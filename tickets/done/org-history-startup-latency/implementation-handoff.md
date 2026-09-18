@@ -1,64 +1,128 @@
 # Implementation Handoff — ORG-HISTORY-LATENCY-20260917-001
 
-## Current result and authority
-**IR-001 Initial implementation complete; ready for direct API/E2E validation with explicit baseline test qualifications. Small / Low confirmed.**
-Approved requirements SR-001 via SR-002; completed design SR-003 / DS-001. Independent architecture review and independent source review: **N/A — not applicable** on this classification. CRR/API-REV/DR: N/A for this NEW ticket. No acceptance or Delivery Pass claimed.
+## Upstream Artifact Package
 
-Worktree W: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency
-Ticket T: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency
-Branch codex/org-history-startup-latency; HEAD/base6f15f446d6a56004caa15e70f4d8e68cba6eb9bc. Eventual target origin/requirements/flat-agent-organization-model, NOT personal. No commit/push/merge, Electron build/release, user app/profile/server/private-data operation or migration/reset/repair.
+- Upstream review applicability and handoff-rule result: reopened recovery `SR-004 / DS-REV-002`, direct implementation; independent architecture and source review are `N/A — not applicable` for Small / Low.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/investigation-notes.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/solution-revision-record.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/design-spec.md`
+- Solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/solution-handoff.md`
+- Supplemental evidence: `validation/reopen-r1/README.md`, `warm-browser-observation.json`, and `cold-readiness-probe.json` in the same ticket directory.
+- Design review report / architecture review revision record: `N/A — not applicable`.
+- Triggering recovery: the user's post-delivery cold-start report and `SR-004` evidence E-007–010 supersede the historical terminal-effectiveness claim for this latency outcome.
 
-## Cumulative package
-Canonical artifacts in T: requirements-doc.md, investigation-notes.md, design-spec.md, solution-revision-record.md, solution-handoff.md, bootstrap-handoff.md. Designer validation/publication-order-probe.cjs/.log retained unchanged as diagnostic evidence of old raw sequencing, not acceptance. No Product/UI supplement; existing sidebar presentation governs. Current implementation-revision-record.md contains IR-001 initial baseline; validation/ir001-source-manifest.json identifies exact four implementation/test files.
+## Current Implementation Summary
 
-## Complete implementation / production spine
-Only production change is stores/runHistoryLoadActions.ts.
-- Existing readiness preflight and same two GraphQL queries retained.
-- Independent handled workspace/Org branches replace all-results-before-publication barrier. Each accepted slice publishes synchronously through the REQUIRED existing refreshRunNavigationTopology(reason) capability; no optional no-op, new projector, cache or reactive watcher.
-- Workspace response clears the same errors, publishes immediately, then awaits existing avatar enrichment and active Agent/Team reconciliation unchanged.
-- Org response passes existing strict parser, checks captured generation, publishes accepted rows/error state/topology, then dispatches existing retained-history reconciliation. Stale response cannot write slice/error, publish topology or dispatch recovery.
-- Final Promise.all joins both handled branches, preserving loading/completion lifetime. Existing runHistoryStore.fetchTree final topology refresh remains unchanged for enrichment/context effects.
-- Existing focused Org action, query/parser contracts, workspace metadata policy, runtime/selection ownership and reconnect mechanisms unchanged.
+**IR-002 reopened recovery implementation complete; ready for direct API/E2E validation.** The historical IR-001 frontend independent-family publication remains byte-identical. The AgentOrg history catalog now awaits the current shared root-package readiness generation rather than forcing another complete rebuild during first initialization.
 
-## Reviewed behavior trace
-| IDs | Actual implementation / local outcome |
-|---|---|
-| BEH-001 / SCN-001 / REQ-001 / AC-001 / DS-001 | Sidebar mount→real Pinia fetchTree→independent query→accepted state AND cached navigation projection→real sidebar. Org-first with unknown workspace/catalogs pending; workspace-first with known workspace descriptor; both families before avatar work; later Org response while active hydration blocked. Projection initialized before every case; assertions precede expansion's scoped fetch. |
-| BEH-002 / SCN-002 / REQ-002 / AC-002 / DS-002 | Family failure keeps prior slice; successful empty replaces only its own family; strict malformed Org rejection; quiet error behavior; older full vs newer focused success/failure guards. Current store and retained recovery regressions included. |
-| BEH-001/002 / REQ-003 / AC-003 / DS-003 | Existing labels/IDs/grouping/expansion/selection preserved. Publication precedes retained recovery dispatch; operation stays pending until active hydration/connection completes. Inactive fixture does not hydrate/connect. No history/model/state persistence mutation introduced. |
+- Implementation cycle: Rework of the reopened same ticket
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen`
+- Branch/base: `codex/org-history-startup-latency-reopen` / `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`
+- Eventual target: `origin/requirements/flat-agent-organization-model`, not `personal`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/implementation-revision-record.md`
+- Current implementation revision ID: `IR-002`
+- Related solution revisions: `SR-004 / DS-REV-002`; historical `SR-001–003 / DS-001` preserved
+- Related architecture-review revisions: N/A
+- Related code-review revisions: N/A
+- Related API/E2E revisions: historical `API-REV-001` is prior-basis evidence only and does not validate IR-002
+- Related delivery revisions: historical `DR-001–003` are preserved but their latency-effectiveness conclusion is superseded by SR-004
+- Triggering finding: duplicate cold readiness generation on first AgentOrg history catalog initialization
+- Git/runtime authority: no commit, push, merge, release, Electron build, provider start, or user server/profile/data operation was performed.
 
-## Files and clean cut
-- stores/runHistoryLoadActions.ts: one local orchestration/type modification,30added/35removed; no new module/framework.
-- components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts:9durable real Pinia/projection/render scenarios at deferred IO/catalog/hydration boundaries.
-- test-support/historyFamilyPublicationFixture.ts: synthetic valid strict Org and workspace history fixture, shared with owned renderer, no user data.
-- stores/__tests__/agentOrgRetainedRecovery.spec.ts: one mechanical required refreshRunNavigationTopology mock method in structural loader double. Real recovery assertions unchanged.
-- No UI source, runHistoryStore implementation, parser/projector, backend/API/schema/runtime owner changed. Old scheduling barrier removed outright; no feature flag or compatibility fallback.
+## Routing Classification (Mandatory)
 
-## Design health / classification / self-review
-Root cause confirmed local sequencing plus cached-projection publication; selected local refactor sufficient. Existing loader owns settlement; existing topology action owns projection. No new request-generation/recovery policy. Persisted data **Not Affected**; no schema branch/migration. Required capability keeps boundary explicit. Shared structures remain tight.
-Small/Low confirmed: one production owner, existing async operations and state contract, no expanded persistence/security/lifecycle/deployment boundary. Source below500nonempty lines, delta below220; exact counts in manifest. No Design Impact found. Direct-route lightweight self-review completed: checked both settlement orders, per-family catches/clear semantics, Org generation effect guards, awaited enrichment/final refresh, source isolation, required mock updates, stale and failed cases. Independent reviews N/A, not implied Pass.
+- Task size: **Small**
+- Architecture risk: **Low**
+- Design classification reference: `design-spec.md`, “Classification” and `DS-REV-002`
+- Classification confirmed or changed: **Confirmed**
+- Evidence: one production method selection changed inside the existing catalog owner; existing readiness, queue, admission, persistence, GraphQL, and frontend contracts are unchanged. Production source remains 112 effective non-empty lines and changes by one added/one removed line.
+- Selected route: **Direct API/E2E**
+- Lightweight implementation self-review completed: **Yes**
+- New design impact or escalation trigger: **None**
 
-## Local validation and truthful limits
-- **136tests/10files Pass**, validation/ir001-scoped-tests.log: all current history/recovery files except three independently failing baseline suites. Includes9new real-store/render cases,44existing runHistoryStore cases, retained Org/Team recovery, history hydration/disclosure/navigation controls. These are implementation checks, not API acceptance.
-- Broader run **190pass/18fail,16unhandled errors across13files**, ir001-current-tests.log; NOT a passing suite. Same18assertion failures and16unhandled errors reproduced against unmodified base production loader in the three affected unchanged suites (18fail/54pass,72total): WorkspaceAgentRunsTreePanel.spec.ts, WorkspaceAgentRunsTreePanel.regressions.spec.ts, WorkspaceAgentOrgActivityPublication.spec.ts. Exact failure-set equality recorded in ir001-baseline-comparison.json and ir001-adjacent-baseline.log. Baseline mocks omit selection-intent methods/use legacy nested assumptions; rejected Org Stop expectation is live vs reopen_required. No unrelated fix/scope expansion attempted.
-- New two ready-family DOM regressions fail against original base loader (**2fail/7skipped**, ir001-baseline-regression.log), then pass on current source. Temporary baseline substitution was restored in finally; manifest identifies final candidate.
-- Initial broader attempt also found one directly affected structural mock missing the new required method; corrected mechanically. Initial focused harness incorrectly assumed standalone Agent history renders without any registered workspace descriptor; existing projector intentionally gates those rows. Corrected fixture, NOT production projector. Org-only history still proves publication with workspace catalog unresolved. Expansion's existing scoped query is held unresolved too, so it cannot accidentally trigger a final topology refresh and mask raw-only publication. Intermediate logs retained.
-- Production Nuxt build **Pass16routes**, ir001-build.log after normal prepare:shared in ir001-build-prerequisites.log. Temp renderer route removed. Known generated untracked shared SDK dist outputs cleaned.
-- Web/localization boundary guards and git diff --check pass (ir001-guards.log).
-- Strict Vue typecheck **not completed**: vue-tsc unavailable (ir001-typecheck.log); build is not typecheck. No backend tests/typecheck/provider matrix run; no backend source change.
-- Frozen workspace dependencies installed locally, Nuxt prepared. Install warnings about unbuilt app-devkit bins retained; no lockfile/source drift.
+## Reviewed Behavior Implementation Trace
 
-## Rendered self-check
-validation/render fixture.vue/browser.mjs/results.json/screenshots/README.md document actual production sidebar+Pinia+projection in owned Nuxt127.0.0.1:50985/fresh Chrome with synthetic delayed transport only. Org response rendered hierarchy while workspace query and catalogs stayed pending; workspace response rendered Agent group while Org/catalogs stayed pending. Existing workspace expansion's scoped read also remained pending; operationComplete stayed false. Org expand/run disclosure/leaf display exercised; final release completes normally. Loading labels coexist with usable rows as designed. No visual redesign or page errors.
-Synthetic release-click-to-visible, INCLUDING expansion, measured46ms Org/52ms workspace in this run; these are NOT real backend response metrics, user's ten seconds, a universal SLA or Electron acceptance. Screenshots inspected at1180x800. Initial fixture lacked scoped query response and showed a synthetic error; corrected fixture to hold the normal scoped query and reran, final screenshots/results authoritative. Owned browser/server stopped and temporary page removed; no user profile/backend/provider connected.
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| `BEH-001`, `SCN-001`, `REQ-001`, `AC-001` | Reuse shared readiness on the first AgentOrg history read; do not repeat startup's strict package scan. | `AgentOrgRunHistoryCatalogService.ensureInitialized()` now calls `AgentOrgRunPackageCatalog.awaitReady()` before the unchanged persisted-index and admitted-tree projection. | Complete. Concurrent `listRows()`/`initialize()` calls coalesce through the existing queue: one `awaitReady`, zero explicit `rebuild`, one index projection/write. The base source fails the new regression. |
+| `BEH-001`, `SCN-001`, `REQ-001`, `AC-001` lazy comparator | If startup has not established readiness, strict validation must still run once and admit both root families. | Existing `AgentOrgRunPackageCatalog` delegates to process-global `RootRunPackageReadinessIndex.awaitReady()`; no new fallback or cache. | Complete. Real package stores prove three concurrent awaits across two facades share exactly one rebuild and admit Team + Org. The mixed first-history regression also proves one generation and both result families. |
+| `BEH-002`, `SCN-002`, `REQ-002`, `AC-002` | Preserve failure truth, ordering, and no publication from failed readiness. | Existing catalog queue and index/tree sequencing remain; new failure regression rejects before index/tree reads or writes. | Complete. Existing summary/restore tests remain green; readiness failure cannot publish unvalidated history. |
+| `BEH-001/002`, `REQ-003`, `AC-003` | Preserve independent frontend publication, identities, selection, reconciliation, and stopped-run behavior. | No frontend production change. Historical IR-001 files remain byte-identical (`validation/ir002-preservation.json`). | Preserved. The same 10 focused frontend history/recovery files pass 136 tests. Actual cold response-to-DOM acceptance remains downstream. |
 
-## Assumptions / risks / required API validation
-- Existing standalone Agent workspace-descriptor visibility policy remains unchanged; Org-only history works without that catalog. Definitions/avatar/hydration cannot gate accepted-family projection. Final loading still awaits all work by design.
-- Each family adds one bounded topology rebuild plus existing final rebuild; no per-member loop/rebuild or performance framework.
-- Exact user startup delay split unmeasured. Backend full-tree reads may independently cost time; not evidence for a backend rewrite.
-- API must investigate current coverage and validate actual isolated normal sidebar startup using representative owned Agent/Team/Org history. Record query completion→DOM publication while controlling unrelated response/avatar/active hydration latency; do not substitute the synthetic fixture/probe for actual server acceptance.
-- Verify family failure/empty/quiet and full/focused generation preservation, normal expand/select/inspection, root/member IDs/status and no history/conversation/attachment loss, active reconnection still completes without starting stopped providers merely to list.
-- Carry baseline18fail/16errors and vue-tsc limit honestly. No implicit permission to alter user server/profile or execute Git finalization.
+## Key Files Or Areas
 
-## Routing
-Fresh governing completion rule for Small/Low with local validation and self-review selects **Direct API/E2E → /software_engineering_team/api_e2e_engineer**. Sole recipient; no Code Reviewer/Designer duplicate forwarding. Actual message result is delivery authority, not this document.
+- `autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts` — clean replacement of forced `rebuild()` with `awaitReady()`.
+- `autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts` — distinguishes readiness reuse from explicit rebuild, concurrency, failure, and original summary sequencing.
+- `autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts` — real lazy strict shared-generation coverage with current Team and Org packages.
+- `autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-readiness.test.ts` — real first mixed-history proof that Team and Org share one readiness generation.
+- `validation/ir002-source-manifest.json` — exact four-file hashes/deltas.
+- `validation/ir002-preservation.json` — exact historical IR-001 hash preservation.
+
+## Important Assumptions
+
+- Normal startup continues to own the explicit strict readiness rebuild before listen.
+- `awaitReady()` remains the authoritative two-state contract: reuse an initialized/in-flight generation or lazily start one when none exists.
+- The AgentOrg catalog still reads admitted Org trees and rewrites its derived history index; that bounded correctness work is intentionally unchanged.
+
+## Known Risks
+
+- IR-002 removes only the duplicate Team+Org readiness scan. A very large admitted Org-tree set can still make the required catalog projection measurable; that is not evidence for an index redesign in this ticket.
+- No implementation-stage live cold browser/process run was performed. Independent API/E2E must validate the exact fresh-process first-read boundary; warm-only timing is insufficient.
+- No universal millisecond SLA or all-profile performance guarantee is claimed.
+
+## Task Design Health Assessment Implementation Check
+
+- Reviewed change posture: performance bug fix
+- Reviewed root-cause classification: Local Implementation Defect / initialization asymmetry
+- Reviewed refactor decision: No Refactor Needed
+- Implementation matched the reviewed assessment: Yes
+- If challenged, routed as Design Impact: N/A; no mismatch found
+- Evidence / notes: the exact reusable comparator method already existed on the correct facade. The implementation does not change readiness ownership, startup order, or public interfaces.
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms introduced: None
+- Legacy old-behavior retained in scope: No; normal first AgentOrg initialization no longer forces a rebuild
+- Dead/obsolete code removed in scope: the obsolete invocation was replaced cleanly; explicit `rebuild()` remains on the facade for genuine generation owners as designed
+- Shared structures remain tight: Yes; no new types, adapters, cache, or optional base fields
+- Canonical shared design guidance reapplied: Yes
+- Changed source size guardrails: Yes; 112 effective non-empty lines, one-line production delta, no `>500` or `>220` pressure
+
+## Persisted Data Transition Check
+
+- Approved decision: **Directly Usable — No Migration**
+- Design reference: `design-spec.md`, persisted-data decision under change inventory/removal
+- Implementation follows the decision: Yes
+- Evidence: history index/tree formats and strict package admission are unchanged; readiness remains in-memory and rebuilt per process. No migration, repair, dual read, or version-specific fallback was added.
+- Deviation: None
+
+## Environment Or Dependency Notes
+
+- Workspace dependencies were installed from the frozen lockfile in offline mode. The install completed with two unrelated missing unbuilt application-devkit bin warnings for sample applications.
+- Normal shared-package preparation and Prisma client generation were required for the mixed server test/build. Generated SDK `dist` directories were removed after checks; no generated application source is part of the candidate.
+
+## Local Implementation Checks Run
+
+- `validation/ir002-baseline-regression.log`: expected original-source failure, 2 failed / 2 passed; proves the new regression detects forced rebuild and failure masking. Candidate source was restored by trap.
+- `validation/ir002-server-focused.log`: **3 files / 12 tests passed**. Covers catalog reuse/failure/sequence, real lazy strict readiness, and mixed Team+Org first history.
+- `validation/ir002-server-build.log`: server production build passed, including TypeScript build and sanitized built-in agent bootstrap smoke.
+- `validation/ir002-web-preservation.log`: **10 files / 136 tests passed** for unchanged frontend independent publication, disclosure, recovery, hydration, and history store paths.
+- `validation/ir002-guards.log`: `git diff --check` passed; only four application source/test files changed; IR-001 hashes all match; production size guard passed.
+- These are implementation-scoped checks, not downstream API/E2E acceptance.
+
+## Frontend Rendered-Result Check
+
+**Not Applicable for IR-002** — the recovery delta is backend initialization only and changes no rendered frontend or interaction. The historical IR-001 rendered implementation/evidence is preserved byte-for-byte, and its 136-test frontend preservation suite was rerun. Independent cold process/browser response-to-DOM validation is still required because the prior warm UI result did not exercise this backend boundary.
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+1. Start a fresh isolated server/process with representative Team and AgentOrg packages and reset process-global readiness/catalog state.
+2. Prove startup establishes one readiness generation and the first AgentOrg/mixed history read starts no second generation using a deterministic counter or test seam.
+3. Record listen, first workspace-history response, first mixed AgentOrg response, and first visible Team/AgentOrg sidebar rows through the normal browser UI.
+4. Preserve failure/empty/latest-generation behavior, normal expand/select/inspection, active reconciliation, inactive no-start, and history/conversation/attachment integrity.
+5. Do not substitute the warm-browser evidence or wall-clock speed alone for the cold-generation assertion, and do not use the user's live profile as a public fixture.
+
+## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+Independent API/E2E validation is required for SR-004/IR-002. Historical `API-REV-001` and `DR-001–003` do not validate this reopened backend correction. No commit/push/merge/release or user-resource action is authorized by this handoff.

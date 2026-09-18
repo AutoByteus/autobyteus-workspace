@@ -24,17 +24,56 @@ const harness = () => {
     readIndex: vi.fn(async () => [...persisted]),
     writeIndex: vi.fn(async (rows: readonly AgentOrgRunIndexRowRecord[]) => { persisted = [...rows]; }),
   };
-  const packages = { rebuild: vi.fn(async () => undefined), listAdmitted: vi.fn(() => ["org-run"]), exclude: vi.fn() };
+  const packages = {
+    awaitReady: vi.fn(async () => undefined),
+    rebuild: vi.fn(async () => undefined),
+    listAdmitted: vi.fn(() => ["org-run"]),
+    exclude: vi.fn(),
+  };
   const trees = { read: vi.fn(async () => tree) };
   const catalog = new AgentOrgRunHistoryCatalogService("/unused", { getActive: () => null } as never, {
     indexStore: index as never,
     packageCatalog: packages as never,
     treeStore: trees as never,
   });
-  return { catalog, index, get persisted() { return persisted; } };
+  return {
+    catalog,
+    index,
+    packages,
+    trees,
+    get persisted() {
+      return persisted;
+    },
+  };
 };
 
-describe("AgentOrgRunHistoryCatalogService summary sequencing", () => {
+describe("AgentOrgRunHistoryCatalogService", () => {
+  it("awaits the current readiness generation once without forcing a rebuild", async () => {
+    const test = harness();
+    await Promise.all([test.catalog.listRows(), test.catalog.listRows(), test.catalog.initialize()]);
+
+    expect(test.packages.awaitReady).toHaveBeenCalledTimes(1);
+    expect(test.packages.rebuild).not.toHaveBeenCalled();
+    expect(test.index.readIndex).toHaveBeenCalledTimes(1);
+    expect(test.packages.listAdmitted).toHaveBeenCalledTimes(1);
+    expect(test.trees.read).toHaveBeenCalledWith(expect.any(String), "org-run");
+    expect(test.index.writeIndex).toHaveBeenCalledTimes(1);
+    expect(test.packages.awaitReady.mock.invocationCallOrder[0]!).toBeLessThan(test.index.readIndex.mock.invocationCallOrder[0]!);
+    expect(test.index.readIndex.mock.invocationCallOrder[0]!).toBeLessThan(test.trees.read.mock.invocationCallOrder[0]!);
+    expect(test.trees.read.mock.invocationCallOrder[0]!).toBeLessThan(test.index.writeIndex.mock.invocationCallOrder[0]!);
+  });
+
+  it("rejects readiness failures without reading or publishing unvalidated history", async () => {
+    const test = harness();
+    test.packages.awaitReady.mockRejectedValueOnce(new Error("Strict root readiness failed."));
+
+    await expect(test.catalog.listRows()).rejects.toThrow("Strict root readiness failed.");
+    expect(test.packages.rebuild).not.toHaveBeenCalled();
+    expect(test.index.readIndex).not.toHaveBeenCalled();
+    expect(test.trees.read).not.toHaveBeenCalled();
+    expect(test.index.writeIndex).not.toHaveBeenCalled();
+  });
+
   it("serializes first-write attempts and keeps the first enqueued accepted completion", async () => {
     const test = harness();
     await test.catalog.initialize();
@@ -53,7 +92,12 @@ describe("AgentOrgRunHistoryCatalogService summary sequencing", () => {
 
     const rebuilt = new AgentOrgRunHistoryCatalogService("/unused", { getActive: () => null } as never, {
       indexStore: test.index as never,
-      packageCatalog: { rebuild: vi.fn(async () => undefined), listAdmitted: () => ["org-run"], exclude: vi.fn() } as never,
+      packageCatalog: {
+        awaitReady: vi.fn(async () => undefined),
+        rebuild: vi.fn(async () => undefined),
+        listAdmitted: () => ["org-run"],
+        exclude: vi.fn(),
+      } as never,
       treeStore: { read: vi.fn(async () => tree) } as never,
     });
     expect((await rebuilt.listRows())[0]?.summary).toBe("Stable first message");

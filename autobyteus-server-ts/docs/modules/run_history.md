@@ -69,6 +69,23 @@ Collaboration-root operations:
 - `listCollaborationRootHistory`, which returns explicit `agent_team` or
   `agent_org` roots through family-specific strict loaders.
 
+## Collaboration Root Package Readiness
+
+Team and AgentOrg history packages share one process-local strict readiness
+generation. Normal server startup explicitly rebuilds that generation before
+the HTTP server listens. Family history readers and the AgentOrg history
+catalog then call the shared `awaitReady()` contract: they reuse the current or
+in-flight generation, or lazily start one strict generation when startup has
+not established it. A first AgentOrg history read must not force a second full
+Team-and-AgentOrg package scan after startup readiness has already completed.
+
+Readiness failure rejects the history operation; it is not converted into a
+successful empty result and cannot publish unvalidated index rows. After
+readiness succeeds, the AgentOrg catalog retains its existing serialized
+index/tree projection and derived-index write. Readiness state is reconstructed
+in memory for each process and changes no history package or index format, so
+no persisted-data migration is required.
+
 ## Stopped Run Model Configuration
 
 Studio exposes one revision-free edit contract for persisted standalone Agent

@@ -1,4 +1,62 @@
-# Authoritative DR-003 — Requested Electron build completed (2026-09-17)
+# Current DR-006 — User-verified recovery; repository finalization in progress (2026-09-18)
+
+The user verified the exact DR-005 Electron candidate: “it works. i tested it. now we could finalize the ticket”. This is explicit verification and finalization authority for reopened IR-002. A fresh post-acceptance fetch found the ticket and target unchanged at `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`; no source change, renewed verification or additional rerun is needed.
+
+The private isolated API state, test DB, build audit and exact tested DMG/ZIP are preserved outside Git under `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` (0700; 91 files; 147 copy checks passed). Private contents and manifest are not attached or staged. Finalization will archive the ticket, exact-stage the reviewed source/tests, canonical doc and ticket evidence, push the ticket branch, integrate and push `requirements/flat-agent-organization-model`, then clean the dedicated worktree/local branch only after the running user-tested application exits normally. Delivery will not terminate that process. No release, version, tag, publication or deployment is required.
+
+---
+
+# Current DR-005 — Reopened-candidate Electron build ready for user testing (2026-09-18)
+
+The user requested that Delivery read the README and build Electron for personal testing. Delivery used the documented pnpm build:electron:mac command in /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen. The resulting local package includes the uncommitted IR-002 recovery; it is not a build from the finalized base branch.
+
+## Test artifacts
+- DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg
+  - SHA-256 a597776f6764c134414fb14d81afe818f22d6b94ac46ab653f6861f16b9248a6
+- ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip
+  - SHA-256 1ecbcb1c5cfb606f2fbda25a80c6249e66f484c8061f7d07e7b95dbb4ce8949c
+- App: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+## Build verification
+- README-defined web/localization guards, server/shared/Prisma preparation, sanitized bootstrap, Electron generation/transpilation/TypeScript and macOS package pipeline: Pass.
+- DMG and ZIP integrity: Pass. Packaged terminal runtime and actual node-pty spawn: Pass. Mach-O arm64 and version 1.4.69: Pass. Generated Electron/renderer content: 239/239 matches app.asar.
+- Packaged compiled AgentOrg history catalog service exactly matches the staged compiled file, contains packages.awaitReady and contains no forced packages.rebuild call. IR-002 is present in this application.
+- No existing task-output process or electron-dist was replaced; no process was terminated. No install or launch was performed by Delivery.
+
+This is unsigned/unnotarized local test output, not a release. Full receipt: validation/electron-dr005/README.md. Explicit user functional verification remains pending; no archive, commit, push, target integration, worktree cleanup, release or deployment has occurred.
+
+---
+
+# DR-004 — Reopened recovery ready for user verification (2026-09-18)
+
+**Integrated docs-sync Pass; awaiting explicit verification of the reopened result. Not Delivery Completed.**
+
+ORG-HISTORY-LATENCY-20260917-001; Small / Low / Direct. Approved SR-001/SR-002 behavior remains unchanged; SR-004/DS-REV-002 identifies and fixes the residual cold backend owner; IR-002 complete; API-REV-002 Pass at 97.4% validation confidence, not a test pass rate. Historical API-REV-001 and DR-001–003 are preserved but their original cold-start effectiveness is superseded. Independent architecture/source reviews remain N/A; proportional API test-code review is Not Required because API/E2E changed no durable test code.
+
+## Latest-base integration and documentation
+- Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen, branch codex/org-history-startup-latency-reopen; eventual target origin/requirements/flat-agent-organization-model, not personal.
+- Fresh fetch before Delivery edits found ticket HEAD and target identical at d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd. No new base commit/conflict/checkpoint. Delivery independently verified all 4 IR-002 source/test hashes. No executable rerun was required because integration and candidate source were unchanged after API-REV-002.
+- Canonical autobyteus-server-ts/docs/modules/run_history.md now records shared process-local root-package readiness: startup rebuilds before listen, family/catalog readers await and reuse that generation, failures reject before history projection, and persistence formats remain unchanged. The prior independent frontend publication documentation remains accurate.
+
+## Delivered recovery
+- Normal cold startup still performs one strict Team+AgentOrg package-readiness rebuild before listening.
+- The first AgentOrg history catalog initialization now calls the existing awaitReady contract instead of forcing a second full scan. If no generation exists, awaitReady still performs one strict lazy generation; validation is never bypassed.
+- Existing AgentOrg catalog queue, admitted-tree reads, derived index write, family errors, frontend independent publication, identity, selection, stopped status and reconciliation are unchanged.
+- Persisted data is Directly Usable—No Migration. No history repair, reset, index/schema conversion or provider/runtime change.
+
+## Validation and qualifications
+- Current owner tests: 3 server files / 12 tests Pass after the documented generated-SDK prerequisite. Unchanged frontend preservation: 10 files / 136 tests Pass. Supplied current server production build Pass. Counts overlap where upstream reports say so and are not a pass percentage.
+- Actual isolated Chrome→Nuxt→proxy→compiled backend→SQLite flow created one Agent, one Team and one AgentOrg through normal Run/Send/Stop, with three real gpt-5.4-mini replies.
+- Authoritative fresh process: exactly one startup RootRunPackageReadinessIndex rebuild in 8 ms; first history initialization used two already-initialized awaitReady calls and zero post-startup rebuilds. Workspace history returned/released in 4/5 ms and collaboration roots in 22/22 ms. From about:blank, the retained Agent/Team/Org rows and exact Org reply were observed within a 6,188 ms accessibility upper bound.
+- All 22 compared authored/history/tree/context/trace/message/task files remained byte-identical; cold listing/inspection emitted zero provider metadata calls. Owned processes/tab were stopped and ports 51181–51183 closed.
+- This is a representative isolated dataset, not production-scale history. The browser number is not paint timing or a universal SLA. Current live readiness failure was not reinjected; direct owner tests prove failure/no-publication and historical unchanged frontend evidence covers recovery. No Electron-shell, all-profile, global-clean or strict-build claim.
+
+## Current gate
+The historical pre-reopen acceptance cannot authorize this recovery finalization. Current reopened-result verification is pending. No archive, stage, commit, push, target merge, worktree cleanup, Electron build, release, publication or deployment has occurred in DR-004. After explicit acceptance, Delivery will refresh the target again, integrate/check any new base, archive the ticket, commit/push the ticket branch, update/push the target, preserve private ignored evidence safely and clean the dedicated worktree/local branch when safe.
+
+---
+
+# Historical DR-003 — Requested Electron build completed (2026-09-17)
 
 ORG-HISTORY-LATENCY-20260917-001; Small / Low / Direct. User requested “now build the electron from the base worktree”. Prior DR002 finalization remains complete, no replay. Fresh fetch/ff-only base update confirmed **4d28c37c1ac587146101a0b73017eb49f787ca3b**, the build source, including independent history publication. Base worktree /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base. This later receipt commit is documentation only, not packaged-source change.
 

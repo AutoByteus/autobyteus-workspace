@@ -1,0 +1,6 @@
+-rw-r--r--@ 1 normy  staff   446M Sep 18 06:59 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg
+-rw-r--r--@ 1 normy  staff   475K Sep 18 06:59 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   441M Sep 18 07:02 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip
+-rw-r--r--@ 1 normy  staff   466K Sep 18 07:02 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B Sep 18 07:02 autobyteus-web/electron-dist/builder-debug.yml
+-rw-r--r--@ 1 normy  staff   561B Sep 18 07:02 autobyteus-web/electron-dist/latest-mac.yml

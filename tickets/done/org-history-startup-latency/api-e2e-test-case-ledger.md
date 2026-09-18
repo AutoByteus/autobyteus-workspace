@@ -25,3 +25,37 @@ Normal five-second quiet refresh observed actual injected503 independently in ea
 
 ## C01 — completed Pass
 All four IR-001 source/test/fixture hashes and six authored package hashes unchanged;16 history/tree/context/trace files unchanged. Exact owned services and children stopped,51181–51183 closed, owned browser tab closed. Generated SDK dist absent at intake removed; private ignored test data retained safely, no user actions/Git finalization. Reports/investigation and API-REV-001 persisted. Final seven-category confidence95.0%; direct low-risk Delivery route, no API-owned durable test change.
+
+## API-REV-002 reopened plan — IR-002 cold readiness recovery
+
+Historical API-REV-001 remains Pass evidence for the byte-identical IR-001 frontend and unchanged recovery/selection lifecycle, but does not validate this reopened backend correction.
+
+| Case | Expected | Status |
+| --- | --- | --- |
+| R02 | Current IR-002 manifest, changed server owner tests and frontend preservation scope valid | Pass |
+| B05 | Fresh process performs exactly one readiness rebuild before listen and first mixed/Org history triggers no second rebuild | Pass |
+| B06 | Same cold normal browser renders representative Team and AgentOrg rows from real responses without unrelated delay | Pass |
+| B07 | Expand/select/inspect works; inactive listing starts no provider; identities/status/data hashes preserved; unchanged failure/generation/reconnection coverage remains valid | Pass |
+| C02 | Owned resources cleaned; canonical reports and API-REV-002 reconciled; rule-based handoff | Pass |
+
+### R02 — completed Pass
+- IR-002 manifest 4/4 entries exact (`validation/api-reopen-r2/intake-manifest-check.json`).
+- First server attempt was setup-only: two files/11 tests passed while the mixed-history file could not resolve an absent generated shared SDK package. This was not a product result.
+- After the documented `prepare:shared`, all three changed server owner files passed 12/12 (`server-focused-after-setup.log`): awaitReady/rebuild discrimination, concurrent initialization, readiness failure, lazy strict generation and real first mixed history.
+- The unchanged IR-001 frontend preservation scope passed 136/136 across ten files (`web-preservation.log`). No API/E2E source or durable test edit was made.
+
+### B05 — completed Pass
+- Histories were first created by real Chrome Run/Send/Stop journeys: standalone Agent `latency_agent_6a7477bb658a40f0980744fe808ec7ed`, standalone Team `latency_team_8573f2095ac242b188665a08eb0a2915`, and AgentOrg `latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5` with direct and mounted placements. Three provider requests returned the exact `LATENCY-AGENT-R2`, `LATENCY-TEAM-R2` and `LATENCY-ORG-R2` replies before the seed process stopped.
+- Definitive fresh backend PID9296 recorded exactly one startup `rebuild()` from `startConfiguredServer`, admitting one Team and one Org. First workspace/Org history initialization then issued two `awaitReady()` calls with `initializedBefore:true`; no second rebuild occurred. Evidence: `validation/api-reopen-r2/cold-generation-summary.json`, `cold-run3-readiness-events.jsonl`, `cold-run3-backend.log`.
+
+### B06 — completed Pass
+- From an owned Chrome tab on `about:blank`, normal navigation to the retained AgentOrg route displayed standalone Agent, Team and Org groups plus the selected stopped Org tree and exact reply within a 6,188 ms AX-observation upper bound. Workspace history returned in4ms/released5ms; collaboration-root history returned/released22ms. This is representative cold-process acceptance, not universal SLA or paint instrumentation.
+- The same behavior occurred in two earlier fresh-process runs; they remain supporting evidence, while cold-run3 is authoritative. No successful response was fabricated or held.
+
+### B07 — completed Pass
+- Normal sidebar expansion and selection reopened the standalone Team lead (`Offline`, exact `LATENCY-TEAM-R2`), standalone Agent (`Offline`, exact `LATENCY-AGENT-R2`), AgentOrg direct guide (`Offline`, exact `LATENCY-ORG-R2`) and never-used mounted Team/lead (`Offline`). Original IDs, labels, grouping and selection were retained.
+- Provider metadata remained empty throughout the cold listing/inspection process. All22 compared authored and persistent history/tree/context/trace/message/task files were byte-identical before/after. Current owner tests cover readiness failure/generation; unchanged API-REV-001 actual recovery/reconnection evidence remains applicable.
+
+### C02 — completed Pass
+- Final four-entry implementation manifest exact; `git diff --check` Pass. API-REV-002 canonical investigation/report/ledger/revision record reconciled at97.4% confidence.
+- Owned Chrome tab and all exact backend/proxy/frontend processes stopped; ports51181–51183 closed. Generated SDK prerequisites absent again. Isolated evidence/data retained, user profile/server/data untouched, no staging/commit/push/merge/release.

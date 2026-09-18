@@ -12,7 +12,10 @@ import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/tea
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryCatalogService } from "../../../../src/run-history/services/agent-org-run-history-catalog-service.js";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
-import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
+import {
+  resetRootRunPackageReadinessIndex,
+  RootRunPackageReadinessIndex,
+} from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import {
   resetTeamRunHistoryCatalogState,
   TeamRunHistoryCatalogService,
@@ -138,6 +141,7 @@ describe("first mixed collaboration history after restart", () => {
       orgs: orgHistory,
       orgRuns: orgManager as never,
     });
+    const readinessRebuild = vi.spyOn(RootRunPackageReadinessIndex.prototype, "rebuild");
 
     const firstMixedRead = mixedHistory.list();
     await orgValidationStarted;
@@ -151,6 +155,7 @@ describe("first mixed collaboration history after restart", () => {
       expect.objectContaining({ root_subject_kind: "agent_team", root_run_id: teamRunId }),
       expect.objectContaining({ root_subject_kind: "agent_org", root_run_id: orgRunId }),
     ]));
+    expect(readinessRebuild).toHaveBeenCalledTimes(1);
 
     const workspaceHistory = new WorkspaceRunHistoryService({
       agentRunHistoryService: { listRunHistory: vi.fn(async () => []) } as never,

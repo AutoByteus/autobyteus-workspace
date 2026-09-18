@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../../src/run-history/services/root-run-package-readiness-index.js';
 import { TeamRunExecutionTreeStore } from '../../../../src/run-history/store/team-run-execution-tree-store.js';
@@ -15,6 +15,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../../fixtures/c
 
 const roots: string[] = [];
 afterEach(async () => {
+  vi.restoreAllMocks();
   for (const root of roots.splice(0)) {
     resetRootRunPackageReadinessIndex(root);
     await fs.rm(root, { recursive: true, force: true });
@@ -53,6 +54,22 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
 };
 
 describe('RootRunPackageReadinessIndex', () => {
+  it('lazily shares one strict awaitReady generation across Team and Org facades', async () => {
+    const memoryDir = await temporaryMemory();
+    await writeTeam(memoryDir, 'team-lazy');
+    await writeOrg(memoryDir, 'org-lazy');
+    const first = new RootRunPackageReadinessIndex(memoryDir);
+    const second = new RootRunPackageReadinessIndex(memoryDir);
+    const rebuild = vi.spyOn(RootRunPackageReadinessIndex.prototype, 'rebuild');
+
+    await Promise.all([first.awaitReady(), second.awaitReady(), first.awaitReady()]);
+
+    expect(rebuild).toHaveBeenCalledTimes(1);
+    expect(first.listAdmitted('agent_team')).toEqual(['team-lazy']);
+    expect(second.listAdmitted('agent_org')).toEqual(['org-lazy']);
+    expect(first.listDiagnostics()).toEqual([]);
+  });
+
   it('admits exact current Team V2 and Org V1 packages', async () => {
     const memoryDir = await temporaryMemory();
     await writeTeam(memoryDir, 'team-1');

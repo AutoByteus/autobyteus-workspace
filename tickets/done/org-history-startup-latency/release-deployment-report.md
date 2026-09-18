@@ -1,4 +1,56 @@
-# Authoritative DR-003 — Requested Electron build completed (2026-09-17)
+# Current DR-006 — Verified finalization checkpoint (2026-09-18)
+
+## Gate state
+Explicit reopened-result functional verification: Completed. User statement: “it works. i tested it. now we could finalize the ticket”. Fresh target check: unchanged at `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`. Docs sync: Completed. Repository finalization: In progress. Safe cleanup: Pending because the verified application still runs from the dedicated worktree; Delivery will not terminate it.
+
+## Preservation and release scope
+Private ignored API/test state, build audit and exact tested DMG/ZIP are preserved in `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` under mode 0700; 91 files and 147 copy checks passed. The private manifest/contents are excluded from Git. Version bump, tag, signed release, publication, deployment and rollout are Not required/not authorized. The DR-005 unsigned local Electron artifacts are test outputs, not published release assets.
+
+## Remaining operation
+Archive and exact commit/push, update and push the recorded target, verify remote refs, then perform safe task-worktree/local-branch cleanup after the application exits normally. Terminal completion is not eligible until those operations complete.
+
+---
+
+# Current DR-005 — Reopened-candidate Electron verification build (2026-09-18)
+
+## Current result
+Local user-testing package Completed; explicit reopened-result functional verification remains pending. This build does not change or complete repository finalization.
+
+## Build and verification
+At the user’s request, Delivery followed the repository/Web README and Electron packaging guide and ran pnpm build:electron:mac in the reopened task worktree. The canonical guards, audit, integrated server preparation/build, Electron generation/transpilation/build and macOS packaging passed. DMG/ZIP integrity, packaged terminal runtime and node-pty spawn, arm64/version metadata, 239/239 ASAR equality and packaged IR-002 compiled-code identity passed.
+
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg; SHA-256 a597776f6764c134414fb14d81afe818f22d6b94ac46ab653f6861f16b9248a6.
+
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip; SHA-256 1ecbcb1c5cfb606f2fbda25a80c6249e66f484c8061f7d07e7b95dbb4ce8949c.
+
+Signing discovery was disabled; Developer ID signing and notarization were not performed. Delivery did not install/launch the GUI or packaged backend against a profile. No user data, provider, credential, conversation, migration, reset or service was changed. No version/tag/release/publication/deployment/rollout occurred.
+
+## Repository gate
+No task-output process or prior task electron-dist existed; no process was killed. Two build-generated SDK dist directories absent at intake were removed; output/evidence retained. No archive, stage, commit, push, target merge or dedicated-worktree cleanup. Historical DR-004 integrated docs-sync remains valid. User testing of this candidate is the next gate; only explicit acceptance authorizes finalization.
+
+---
+
+# DR-004 — Reopened recovery delivery report (2026-09-18)
+
+## Current result and authority
+Integrated docs-sync Pass; ordinary explicit user-verification hold. Not Delivery Completed. ORG-HISTORY-LATENCY-20260917-001 remains Small / Low / Direct under approved SR-001/SR-002 and SR-004/DS-REV-002; IR-002; API-REV-002 Pass at 97.4% validation confidence, not a test pass rate. Architecture/source reviews are N/A and proportional API test-code review is Not Required because API/E2E changed no durable tests. Historical DR-001–003 remain evidence but do not authorize reopened finalization.
+
+## Initial recovery integration and documentation
+Freshly fetched origin/requirements/flat-agent-organization-model before Delivery edits. Ticket HEAD and target were identical at d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd; no integration delta/conflict/checkpoint. Delivery independently verified 4/4 IR-002 manifest hashes. No executable rerun was required because base and candidate were unchanged after API-REV-002; validation is carried with upstream provenance. validation/delivery-dr004-integrity.json records the check.
+
+Updated autobyteus-server-ts/docs/modules/run_history.md to preserve durable readiness ownership: one process-local strict root-package generation, startup rebuild before listen, awaitReady reuse or lazy creation by family/catalog readers, failure before projection, unchanged serialized AgentOrg index/tree work and no migration. Existing frontend independent-family documentation remains correct.
+
+## Validation and residual risk
+Current server owner 3 files / 12 tests Pass; unchanged frontend preservation 10 files / 136 tests Pass; supplied current server production build Pass. Actual normal browser/provider histories and an authoritative fresh compiled-process run prove exactly one startup rebuild, no first-read rebuild, rapid backend responses, visible retained histories, zero provider metadata activation during listing, and 22/22 file preservation. The 6,188 ms accessibility observation is not paint timing, production-scale benchmarking or a universal SLA. Current live readiness failure was not reinjected; owner tests plus unchanged historical frontend recovery evidence cover it. No Electron-shell/global-clean/all-profile claim.
+
+## Verification, repository and release gates
+Current reopened-result user acceptance: No. Repository archive/commit/ticket push/target merge/target push: No. Safe cleanup: Pending after authorized finalization. Release notes: Not required for this unreleased integration. Version/tag/Electron package/publication/deployment/rollout: Not requested and not performed. Persisted data: Directly Usable—No Migration; no user profile/server/data/provider/reset/repair action.
+
+No product blocker remains. The only hold is explicit current-result verification. A successful terminal message is not eligible until user acceptance, repository finalization and safe cleanup are complete.
+
+---
+
+# Historical DR-003 — Requested Electron build completed (2026-09-17)
 
 ORG-HISTORY-LATENCY-20260917-001; Small / Low / Direct. User requested “now build the electron from the base worktree”. Prior DR002 finalization remains complete, no replay. Fresh fetch/ff-only base update confirmed **4d28c37c1ac587146101a0b73017eb49f787ca3b**, the build source, including independent history publication. Base worktree /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base. This later receipt commit is documentation only, not packaged-source change.
 

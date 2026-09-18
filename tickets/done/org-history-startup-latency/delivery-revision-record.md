@@ -3,6 +3,11 @@
 | Revision | Trigger | Prior | Current result | Authority |
 |---|---|---|---|---|
 | DR-001 | Initial API-REV-001 direct Pass | N/A | Integrated docs-sync Pass; user-verification hold | docs-sync-report.md; handoff-summary.md; release-deployment-report.md |
+| DR-002 | User accepted original IR-001 result | DR-001 | Original repository finalization completed | handoff-summary.md; release-deployment-report.md |
+| DR-003 | User requested original base-worktree Electron build | DR-002 | Historical Electron package built and verified | validation/electron-dr003/README.md |
+| DR-004 | API-REV-002 Pass after SR-004 reopened cold-start recovery | DR-003 terminal effectiveness superseded | Integrated recovery docs-sync Pass; user-verification hold | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; validation/delivery-dr004-integrity.json |
+| DR-005 | User requested reopened-candidate Electron build for personal testing | DR-004 | Task-worktree package built and verified; user verification pending | validation/electron-dr005/README.md |
+| DR-006 | User functionally verified the reopened Electron candidate and authorized finalization | DR-005 | Verification complete; repository finalization authorized and in progress | handoff-summary.md; release-deployment-report.md |
 
 ## DR-001 — Initial integrated delivery baseline (2026-09-17)
 ORG-HISTORY-LATENCY-20260917-001; Small / Low / Direct. Approved SR001 via SR002; SR003/DS001; IR001; API-REV-001 Pass95.0% validation confidence, not test pass rate. Independent architecture/source review Not Applicable; proportional API test-code review Not Required — direct low-risk route. No API-owned durable delta.
@@ -19,3 +24,29 @@ Delivery Completed. User acceptance current-ticket recorded; archive and104exact
 
 ## DR-003 — Supplemental requested Electron build completed
 User “now build the electron from the base worktree”. Prior DR002 remains complete. Refreshed source4d28c37c1ac587146101a0b73017eb49f787ca3b; canonical prepare/packagePass, DMG/ZIP integrity/native terminal spawn/239asar comparisonsPass. AutoByteus1.4.69 enterprise macOSarm64 unsigned/unnotarized; no install/GUI/backend/profile launch/release. Previous output retained; no running output bundle before replacement; no user-data change. Current handoff/release headers and validation/electron-dr003/README.md own build truth. Source unchanged by subsequent docs receipt; API limitations retained.
+
+## DR-004 — Reopened cold-start recovery delivery baseline (2026-09-18)
+- Trigger: API-REV-002 direct Pass after the user-reported real cold-start failure reopened the same stable ticket and SR-004/DS-REV-002 corrected the residual duplicate readiness owner.
+- Prior DR-003: historical original implementation/finalization/build completed, but SR-004 supersedes its latency-effectiveness conclusion for the reopened outcome. No earlier acceptance is reused.
+- Current package: Small / Low / Direct; approved SR-001/SR-002 and SR-004/DS-REV-002; IR-002; API-REV-002 Pass 97.4% validation confidence. Architecture/source reviews N/A; proportional successful API test-code review Not Required because API/E2E added, updated and removed no durable tests.
+- Fresh fetch found ticket HEAD and target identical at d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd. Four of four IR-002 manifest entries independently match exact hashes. No base/source integration delta, conflict or executable rerun; API evidence retained with original provenance.
+- Canonical run-history documentation now records shared process-local readiness generation reuse, strict failure behavior and unchanged persistence/no-migration result. Historical independent frontend-family publication documentation remains accurate.
+- Validation carried: current server owner 12 tests across 3 files Pass after documented prerequisite; unchanged frontend preservation 136 tests across 10 files Pass; supplied current production server build Pass; actual fresh-process/browser cold journey proves one startup rebuild, two already-initialized first-read awaits, zero post-startup rebuilds, retained histories and no provider activation or file mutation.
+- Precise limits retained: representative isolated dataset, accessibility-observation upper bound rather than paint/SLA, current live failure not reinjected, no Electron/global-clean/all-profile claim.
+- Current result: integrated docs-sync Pass; explicit reopened-result user verification pending. No archive/stage/commit/push/target merge/cleanup/build/release/deployment. Terminal return not eligible.
+
+## DR-005 — Reopened-candidate Electron verification build completed
+- Trigger: User requested that Delivery read the README and build Electron for personal testing.
+- Prior DR-004: integrated recovery docs-sync Pass; explicit verification pending.
+- Used the documented pnpm build:electron:mac pipeline in the reopened task worktree. AutoByteus 1.4.69 / Electron 42.4.1 / enterprise macOS arm64 package completed with signing/notarization disabled.
+- DMG/ZIP integrity, packaged terminal/node-pty spawn, Mach-O/version metadata and 239/239 Electron/renderer-to-ASAR equality checks Pass.
+- Packaged compiled AgentOrg catalog service is byte-identical to staged server output and proves IR-002 awaitReady is present with no forced packages.rebuild call.
+- DMG SHA-256 a597776f6764c134414fb14d81afe818f22d6b94ac46ab653f6861f16b9248a6; ZIP SHA-256 1ecbcb1c5cfb606f2fbda25a80c6249e66f484c8061f7d07e7b95dbb4ce8949c.
+- No output process or prior task-worktree electron-dist existed; no process was terminated. Generated intake-absent SDK dist directories were removed after packaging; Electron output retained.
+- No install/GUI/profile launch, user-data/provider/credential/migration/reset action, commit/push/merge/release/deployment. User functional verification remains pending; terminal return not eligible.
+
+## DR-006 — User-verified reopened recovery finalization checkpoint (2026-09-18)
+- Explicit current-result verification and finalization authority: “it works. i tested it. now we could finalize the ticket”. This applies to the DR-005 Electron candidate containing IR-002; no historical acceptance is reused.
+- Fresh post-acceptance fetch reconfirmed ticket HEAD and `origin/requirements/flat-agent-organization-model` at `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd` with zero ahead/behind. The verified source therefore did not change; no renewed verification or extra executable rerun is required.
+- Private ignored API state, test DB files, build audit and the exact tested DMG/ZIP were copied to `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` under mode 0700. Ninety-one files and 147 file/directory copy checks passed; the private manifest and contents are not repository artifacts. DMG/ZIP hashes remain the DR-005 values.
+- Ticket archive, exact staging, ticket commit/push, target integration/push and cleanup are now authorized and in progress. The user-tested application is still running from the task worktree and will not be terminated by Delivery; safe worktree/local-branch cleanup remains pending until it exits normally. No version/tag/release/publication/deployment is required.

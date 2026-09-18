@@ -45,10 +45,11 @@ No live startup trace, user DB/log inspection, runtime restart, acceptance tests
 
 ## Supplement inventory
 
-- bootstrap-handoff.md — bootstrap evidence, Solution Designer-owned, completed; context only.
+- bootstrap-handoff.md — current reopened bootstrap evidence plus historical bootstrap reference, Solution Designer-owned, completed; context only.
 - validation/publication-order-probe.cjs and .log — factual diagnostic for REQ-001/002; not behavior-defining or acceptance tests.
 - User screenshots above — observed UI states, user-owned; not a timing benchmark.
-- requirements-doc.md — SR-001 sole proposed behavior authority, Ready for Approval.
+- validation/reopen-r1/README.md and two sanitized JSON files — reopened actual warm-browser and cold-owner evidence; factual, not behavior-defining.
+- requirements-doc.md — SR-001/SR-002 approved behavior authority, clarified but unchanged by SR-004 recovery.
 
 ## E-006 — Post-approval render boundary investigation
 
@@ -63,3 +64,50 @@ Reconfirmed isolated HEAD6f15f446d6 and only ticket-owned untracked docs/probe. 
 Refinement to E-002/user explanation: workspaceGroups assignment makes raw state available, not a guaranteed DOM publication by itself. Other existing topology refreshes can expose that slice during post-processing; final fetchTree refresh is another display barrier. Design must publish the cached navigation projection at each accepted-family boundary. The prior isolated probe proves raw scheduling dependency only; real-store/projection/render validation is mandatory, not inferred from that probe.
 
 No intended behavior changed by this discovery. No production/test changes. A preliminary read accidentally used default checkout for a projection file; that unrelated content was excluded, and the actual file and Org-only projection were re-read at the pinned isolated worktree above.
+
+## E-007 — Reopened failure and current workspace
+
+On 2026-09-18 the user reported that the finalized fix still does not resolve the real cold-start symptom: under the `autobyteus-workspace-superrepo` workspace, Team history becomes visible and `Software Development Department` AgentOrg history remains absent for more than ten seconds. The user explicitly requested reopening this same ticket, moving its archive back to `in-progress`, creating a fresh worktree from the latest base, and reproducing through a browser frontend backed by the Electron-started server.
+
+Fresh fetch resolved `origin/requirements/flat-agent-organization-model` to `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`. Dedicated reopened worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen`, branch `codex/org-history-startup-latency-reopen`; archived package moved from `tickets/done/org-history-startup-latency` to this canonical `tickets/in-progress/org-history-startup-latency`. The old remote ticket branch is preserved and is not the reopened branch.
+
+This is material evidence against DR-002/DR-003 terminal effectiveness, not a new intended behavior. Prior source/tests/evidence remain historical inputs. Requirements SR-001/SR-002 stay approved; DS-001 needs revision. No user data repair, migration, app termination, Git commit/push/finalization or release was performed.
+
+## E-008 — Actual browser against Electron backend: warm path is fast
+
+The current latest-base Electron app was already running its embedded server on port `29695` with data root `/Users/normy/.autobyteus/server-data`. A Nuxt frontend from the reopened worktree was started on `51283` and pointed at that embedded server through a metadata-only HTTP observer on `51282`; websocket endpoints remained direct to the embedded server. A fresh Chromium page at a 1980×1240 viewport installed a pre-document MutationObserver, expanded `autobyteus-workspace-superrepo` as soon as the row existed, and observed the actual sidebar.
+
+Sanitized result (`validation/reopen-r1/warm-browser-observation.json`): workspace row at 819.4 ms after probe install, Team history group at 899.5 ms, AgentOrg history group at 934.9 ms; AgentOrg was 35.4 ms after Team and 114.2 ms after workspace expansion. The corresponding real-profile requests completed in 64.3 ms (`ListWorkspaceRunHistory`), 69.8 ms (`ListCollaborationRootHistory`) and 63.3 ms (`GetWorkspaceRunHistory`). This correctly followed the user's requested browser/frontend-to-Electron-backend reproduction path.
+
+It does **not** reproduce the residual delay because the long-running Electron backend had already initialized the AgentOrg history catalog. It disproves an always-present post-response DOM delay on the current code and narrows the defect to a cold/first-read path. Raw user-derived response bodies, Chromium profile and screenshot remain ignored local evidence and are not part of the ticket.
+
+## E-009 — Cold exact-owner reproduction: duplicate readiness rebuild takes 26.657 seconds
+
+`server-runtime.ts:188–212` runs app-data migrations and then awaits `new RootRunPackageReadinessIndex(memoryDir).rebuild()` **before** the HTTP server listens. `RootRunPackageReadinessIndex` keeps that result in process-global state keyed by resolved memory directory (`root-run-package-readiness-index.ts:54–72,174–193`). Its `awaitReady()` returns immediately when initialized; its `rebuild()` always begins a new full snapshot generation.
+
+The first AgentOrg history read takes the opposite path from Team history:
+
+- `agent-org-run-history-catalog-service.ts:85–99` calls `this.packages.rebuild()` during first initialization, then reads admitted Org trees and rewrites the derived index.
+- `team-run-history-catalog-service.ts:230–247` calls `this.packageCatalog.awaitReady()` and reuses the current shared readiness generation, while reading its index concurrently.
+- `agent-org-run-package-catalog.ts` already exposes both `awaitReady()` and `rebuild()` over the same shared `RootRunPackageReadinessIndex`; no new interface is needed.
+
+An exact packaged-source, read-only probe in a fresh Node process executed one readiness rebuild against the same real memory root. It took **26,657.10125 ms**, admitted 307 Team packages and 17 AgentOrg packages, and retained 219 diagnostics. The probe did not invoke the server, migrations, catalog/index writers, providers or mutations. Only duration/counts are retained in `validation/reopen-r1/cold-readiness-probe.json`.
+
+This reproduces a delay larger than the user's >10-second report in the exact blocking owner. `ListWorkspaceRunHistory` can return Team history through the already-ready Team catalog while `ListCollaborationRootHistory` waits for the AgentOrg catalog's second full readiness generation. The first implementation correctly publishes whichever response arrives, but cannot display AgentOrg before this unnecessarily delayed response exists.
+
+## E-010 — Root cause and minimal safe boundary
+
+Root cause: local initialization asymmetry. Startup already establishes the authoritative readiness generation. Team history awaits/reuses it; AgentOrg history unconditionally rebuilds it again. The residual bug is therefore not a remaining frontend publication barrier, missing polling interval, Org tree size, migration repair requirement, or need for an index/schema redesign.
+
+The minimal safe boundary is to make AgentOrg history initialization use the existing `AgentOrgRunPackageCatalog.awaitReady()` contract. That preserves strict validation:
+
+- normal server startup has already completed a valid generation before listen, so first history reads reuse it;
+- isolated/tests/alternate callers with no initialized generation still cause `awaitReady()` to build one lazily;
+- current `admitCurrent`/`excludeCurrent` mutation revisions and subsequent row/tree/index logic remain unchanged;
+- no stale-response, frontend generation, activity, selection, history content or migration behavior changes.
+
+A durable test must inject a package catalog with separately observable `awaitReady` and `rebuild` methods, prove first AgentOrg initialization calls `awaitReady` exactly once and never forces `rebuild`, and retain a no-preinitialized-generation integration/control demonstrating that strict readiness still occurs lazily. Actual API/E2E must restart an isolated server or otherwise reset the process-global readiness/catalog generation before the first browser history read; a warm browser or the previous one-Agent/one-Team/one-Org fixture cannot validate this regression.
+
+## Reopened evidence boundary and next action
+
+The user-required browser path has been exercised, and the exact cold owner has been reproduced read-only without stopping the user's Electron process. The original `runHistoryLoadActions` changes remain correct and should not be reverted. DS-REV-002 should supersede the frontend-only DS-001 for the residual defect, retaining prior frontend regressions as preservation coverage and adding the server initialization fix/test. Classification remains Small / Low unless implementation reveals that the shared readiness generation cannot be reused safely.

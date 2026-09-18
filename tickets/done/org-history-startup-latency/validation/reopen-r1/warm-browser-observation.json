@@ -1,0 +1,32 @@
+{
+  "ticket": "ORG-HISTORY-LATENCY-20260917-001",
+  "round": "reopen-r1",
+  "method": "Fresh headless Chromium page against the reopened-worktree Nuxt frontend; frontend HTTP routed through a metadata-only observer to the already-running latest-base Electron backend; exact real profile was read by the backend, but no response body or profile content is retained here.",
+  "backend": {
+    "kind": "latest-base Electron embedded server",
+    "port": 29695,
+    "state": "already warm before this browser observation"
+  },
+  "frontendPort": 51283,
+  "observerPort": 51282,
+  "browserViewport": { "width": 1980, "height": 1240 },
+  "milestonesMsFromDocumentProbe": {
+    "workspaceRow": 819.4,
+    "teamHistoryGroup": 899.5,
+    "agentOrgHistoryGroup": 934.9,
+    "teamAfterWorkspaceExpansion": 78.8,
+    "agentOrgAfterWorkspaceExpansion": 114.2,
+    "agentOrgAfterTeam": 35.4
+  },
+  "transportMs": {
+    "ListWorkspaceRunHistory": 64.3,
+    "ListCollaborationRootHistory": 69.8,
+    "GetWorkspaceRunHistory": 63.3
+  },
+  "result": "The residual delay does not reproduce once the embedded server's AgentOrg history catalog is warm; Team and AgentOrg groups appear in the same sub-second startup interval. This narrows the user-reported defect to a cold/first-request path rather than the already-fixed accepted-response publication path.",
+  "limitations": [
+    "Not a restart of the user's Electron process.",
+    "No universal latency SLA inferred.",
+    "Raw screenshot, response bodies, and user history names are not included in this durable evidence file."
+  ]
+}

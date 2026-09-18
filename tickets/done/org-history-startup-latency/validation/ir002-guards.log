@@ -1,0 +1,21 @@
+== git diff --check ==
+PASS
+
+== application source/test diff stat ==
+ .../agent-org-run-history-catalog-service.ts       |  2 +-
+ .../agent-org-run-history-catalog-service.test.ts  | 52 ++++++++++++++++++++--
+ .../collaboration-root-history-readiness.test.ts   |  7 ++-
+ .../root-run-package-readiness-index.test.ts       | 19 +++++++-
+ 4 files changed, 73 insertions(+), 7 deletions(-)
+
+== changed application source/test paths ==
+autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts
+autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts
+autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-readiness.test.ts
+autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts
+
+== production source effective nonempty lines ==
+112
+
+== IR-001 preservation ==
+PASS: all 4 historical IR-001 files match

@@ -1,0 +1,164 @@
+{
+  "ticket": "ORG-HISTORY-LATENCY-20260917-001",
+  "revision": "API-REV-002-seed",
+  "isolatedRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/.local/api-history-latency",
+  "histories": {
+    "run_history_index.json": [
+      {
+        "runId": "latency_agent_6a7477bb658a40f0980744fe808ec7ed",
+        "agentDefinitionId": "latency-agent",
+        "agentName": "Latency Agent",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/.local/api-history-latency/data/temp_workspace",
+        "summary": "Reply exactly: LATENCY-AGENT-R2",
+        "createdAt": "2026-09-18T04:34:16.454Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-09-18T04:34:38.493Z"
+      }
+    ],
+    "team_run_history_index.json": [
+      {
+        "teamRunId": "latency_team_8573f2095ac242b188665a08eb0a2915",
+        "teamDefinitionId": "latency-team",
+        "teamDefinitionName": "Latency Team",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/.local/api-history-latency/data/temp_workspace",
+        "summary": "Reply exactly: LATENCY-TEAM-R2",
+        "createdAt": "2026-09-18T04:34:58.836Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-09-18T04:35:19.588Z"
+      }
+    ],
+    "agent_org_run_history_index.json": [
+      {
+        "orgRunId": "latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5",
+        "orgDefinitionId": "latency-org",
+        "orgDefinitionName": "Latency Org",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/.local/api-history-latency/data/temp_workspace",
+        "summary": "Reply exactly: LATENCY-ORG-R2",
+        "createdAt": "2026-09-18T04:35:27.672Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-09-18T04:37:39.685Z"
+      }
+    ]
+  },
+  "expectedVisibleReplies": [
+    "LATENCY-AGENT-R2",
+    "LATENCY-TEAM-R2",
+    "LATENCY-ORG-R2"
+  ],
+  "providerMetadataLines": 6,
+  "providerRequests": 3,
+  "providerResponses": 3,
+  "fileCount": 22,
+  "files": [
+    {
+      "path": "agents/latency-agent/agent-config.json",
+      "size": 191,
+      "sha256": "ed7f44373f1deef336dc5222e61ff7f0967bb932c5402bd016f7e98c560c2625"
+    },
+    {
+      "path": "agents/latency-agent/agent.md",
+      "size": 226,
+      "sha256": "ec189c451e8b412df6b939a9754ba6f4f4ae24f2d14ec7196e1e04b7c65ce0a7"
+    },
+    {
+      "path": "agent-teams/latency-team/team-config.json",
+      "size": 322,
+      "sha256": "9f1940163164bf2c8264c3d5d67442245bbe430bd5a6492dcc1a2b674a9bc666"
+    },
+    {
+      "path": "agent-teams/latency-team/team.md",
+      "size": 207,
+      "sha256": "3e0a178e760ac3a5e3bac953a529984a7d989e23884197ea092033d169732949"
+    },
+    {
+      "path": "agent-orgs/latency-org/org-config.json",
+      "size": 443,
+      "sha256": "7899a8a96a8514e79e3878a85394ffa4d44281adf2dff27d5598e1a9d60d35c9"
+    },
+    {
+      "path": "agent-orgs/latency-org/org.md",
+      "size": 206,
+      "sha256": "1fd560aca7b8370c806fa9451ca6e186f27f355eee51e46f2c5724cd7e37dde5"
+    },
+    {
+      "path": "memory/agent_org_run_history_index.json",
+      "size": 477,
+      "sha256": "1561b6afa636a01ceb004cae15d99490f8b4a280a610781e4e9a31d02bacfb01"
+    },
+    {
+      "path": "memory/agent_orgs/latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5/agent_org_communication_messages.json",
+      "size": 135,
+      "sha256": "c3798cb79db1ee3a69a544ae1607a35cbf9933640b5c88464995dae2e2f4d8d7"
+    },
+    {
+      "path": "memory/agent_orgs/latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5/agent_org_run_execution_tree.json",
+      "size": 2897,
+      "sha256": "76a9040c598ac2521a2e401eef2fe9f5c500b294752bf477db1a39d948c73c31"
+    },
+    {
+      "path": "memory/agent_orgs/latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5/agent_org_task_delegation_records.json",
+      "size": 134,
+      "sha256": "c71b13ffec582dbeeb2ac579d486e60962f2e2f8fd3f1f91ff17387bd1411ad8"
+    },
+    {
+      "path": "memory/agent_orgs/latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5/latency_agent_af761300825e4641862d117d174b2bbd/raw_traces_active.jsonl",
+      "size": 8994,
+      "sha256": "a06120e5b2ad494a8d7fa708c6fcb8752c1cb03bed23789f8c88d5149e42b1e7"
+    },
+    {
+      "path": "memory/agent_orgs/latency_org_3ede46f6f7824d9d956fc5e4ff16b1f5/latency_agent_af761300825e4641862d117d174b2bbd/working_context_snapshot.json",
+      "size": 9458,
+      "sha256": "5bca7f17bed1aebf52bca97c0585540e2c219862fc04a18a8748542c6b026dbf"
+    },
+    {
+      "path": "memory/agent_teams/latency_team_8573f2095ac242b188665a08eb0a2915/latency_agent_e836d7d7d4d14e7f8fd67023dd46e951/raw_traces_active.jsonl",
+      "size": 8995,
+      "sha256": "343fd8384cd047ebeffa8bcea7b18bec4f81f132c0713b4f4e6aa3423c6dea45"
+    },
+    {
+      "path": "memory/agent_teams/latency_team_8573f2095ac242b188665a08eb0a2915/latency_agent_e836d7d7d4d14e7f8fd67023dd46e951/working_context_snapshot.json",
+      "size": 9459,
+      "sha256": "c1efaf09e1a37c407b350888c817f9967888d7ad8f0c3406385e171039e5a444"
+    },
+    {
+      "path": "memory/agent_teams/latency_team_8573f2095ac242b188665a08eb0a2915/task_delegation_records.json",
+      "size": 110,
+      "sha256": "81bc1ea0fb3d1f352d894407e7c7a06ac46a04d8133a83beeaef1dcf87f0b587"
+    },
+    {
+      "path": "memory/agent_teams/latency_team_8573f2095ac242b188665a08eb0a2915/team_communication_messages.json",
+      "size": 111,
+      "sha256": "a6d4eeb59a20805c45b8462489d0d08588d2e95bea114f0eefbe1ea5589829c4"
+    },
+    {
+      "path": "memory/agent_teams/latency_team_8573f2095ac242b188665a08eb0a2915/team_run_execution_tree.json",
+      "size": 1450,
+      "sha256": "4a61ad2c705f7630c9580ed097215d0c949f5896210f896997efc3effef6a9ee"
+    },
+    {
+      "path": "memory/agents/latency_agent_6a7477bb658a40f0980744fe808ec7ed/raw_traces_active.jsonl",
+      "size": 3362,
+      "sha256": "fef81d0accf9573e99fdc1d67b4745ed526b6f0a8bae8cc967a5b26f20280bb3"
+    },
+    {
+      "path": "memory/agents/latency_agent_6a7477bb658a40f0980744fe808ec7ed/run_metadata.json",
+      "size": 867,
+      "sha256": "631af7da73d3d593e98f94240666ad551a02b357ce10091c380c1c8c66b3ff3d"
+    },
+    {
+      "path": "memory/agents/latency_agent_6a7477bb658a40f0980744fe808ec7ed/working_context_snapshot.json",
+      "size": 3827,
+      "sha256": "946a66f4cfbdf82f77ae83cb452d1be2973e7e5dd56adce0f800edf6c5fe6fe9"
+    },
+    {
+      "path": "memory/run_history_index.json",
+      "size": 476,
+      "sha256": "49677d0712691f6a36919aba833c676f3be5b5b928b1604c5cbab68fe7d1f22c"
+    },
+    {
+      "path": "memory/team_run_history_index.json",
+      "size": 484,
+      "sha256": "799848ba9c5e915e883e8479bc04810d6023b159f4cc9b287a28b8a6cd166449"
+    }
+  ]
+}

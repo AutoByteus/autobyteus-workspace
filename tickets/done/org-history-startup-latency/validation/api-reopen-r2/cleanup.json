@@ -1,0 +1,16 @@
+{
+  "at": "2026-09-18T04:45:36Z",
+  "ownedBrowserTabClosed": true,
+  "ownedPortsClosed": {
+    "51181": true,
+    "51182": true,
+    "51183": true
+  },
+  "generatedSdkDistRemoved": {
+    "autobyteus-application-sdk-contracts/dist": true,
+    "autobyteus-application-backend-sdk/dist": true
+  },
+  "isolatedDataRetainedForEvidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/.local/api-history-latency",
+  "userProfileOrServerTouched": false,
+  "gitFinalizationPerformed": false
+}

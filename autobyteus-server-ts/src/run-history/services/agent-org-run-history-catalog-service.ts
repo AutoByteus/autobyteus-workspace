@@ -86,7 +86,7 @@ export class AgentOrgRunHistoryCatalogService {
     if (this.initialized) return;
     await this.withQueue(async () => {
       if (this.initialized) return;
-      await this.packages.rebuild();
+      await this.packages.awaitReady();
       const persisted = new Map((await this.index.readIndex()).map((row) => [row.orgRunId, row]));
       const next = new Map<string, AgentOrgRunIndexRowRecord>();
       for (const orgRunId of this.packages.listAdmitted()) {

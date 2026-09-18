@@ -1,63 +1,127 @@
 # API/E2E execution coverage report — ORG-HISTORY-LATENCY-20260917-001
 
 ## Latest authoritative result
-**API-REV-001 — Pass; validation confidence95.0% (not a pass rate).** Initial baseline, prior result/confidence N/A. All critical approved AC-001–003 directly covered at their appropriate boundaries; no new scoped failure. Broader validation Required and completed. Small / Low; Direct Low-Risk; successful route Delivery. Proportional test-code review **Not Required — direct low-risk route**. No commit, merge, push, release or Electron certification authorized.
 
-## Authority and execution basis
-Canonical ticket directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency`. Requirements approved SR-001 via SR-002, SR-003/DS-001, implementation IR-001. Read full requirements-doc, investigation-notes, design-spec, solution-revision-record, solution-handoff, bootstrap-handoff, implementation-handoff/revision and validation README/evidence. Architecture/source review and Delivery re-entry: N/A — not applicable. Current branch codex/org-history-startup-latency, HEAD/base6f15f446d6a56004caa15e70f4d8e68cba6eb9bc plus uncommitted candidate. Four implementation manifest entries exact both intake and final. Canonical coverage investigation and ledger initialized before execution and reconciled here; no prior result inferred. Scope is independent publication of existing history families, not all application correctness.
+**API-REV-002 — Pass; validation confidence 97.4% (not a test pass rate).** This reopened round directly validates IR-002's cold server-readiness correction. Historical API-REV-001 Pass / 95.0% remains valid only for byte-identical IR-001 frontend publication and unchanged recovery/selection behavior; it was not used as proof of the corrected cold backend owner.
 
-Discovery: autobyteus-web/AGENTS.md, README.md, ARCHITECTURE.md, package.json, vitest.config.mts; autobyteus-server-ts/AGENTS.md, README.md, package.json. Current TS scripts supersede historical Python architecture prose. Existing mutation/selection/runtime owners untouched. Legacy/compatibility check clean: remove barrier outright, no fallback/version shim or compatibility-only tests. Persisted-data transition Not Affected; current owned histories directly usable without repair/reset. Official fresh test DB initialization is setup only.
+Broader validation was **Required and completed**. Classification remains **Small / Low**, direct route. Proportional test-code review is **Not Required — direct low-risk route**. No commit, stage, push, merge, release, deployment, Electron certification, migration or user-profile/server/data operation was performed.
+
+## Authority and scope
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen`
+- Branch/base: `codex/org-history-startup-latency-reopen` / `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`
+- Current authority: approved SR-004 / DS-REV-002 and IR-002, with SR-001/SR-002, SR-003/DS-001 and IR-001 retained.
+- Architecture review: `N/A — not applicable` by Small/Low classification.
+- Source review: `N/A — not applicable` by direct route.
+- Persisted-data transition: Not Affected. Current history packages remain directly readable; no compatibility branch, fallback, repair or migration was added.
+
+IR-002 changes one production call in `AgentOrgRunHistoryCatalogService.ensureInitialized()`: the first AgentOrg history catalog initialization now reuses the existing shared readiness generation with `AgentOrgRunPackageCatalog.awaitReady()` instead of unconditionally requesting a second `rebuild()`. Startup readiness, strict Team/Org validation, GraphQL contracts, derived indexes and the IR-001 frontend path remain unchanged.
 
 ## Repository execution
-Working directory `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web`:
-1. `pnpm test:nuxt components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts --run` —9/1 Pass, validation/api-live/narrow.log.
-2. `pnpm test:nuxt components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts components/workspace/history/__tests__/WorkspaceTransientExecutionRow.task-monitor.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryRetainedTeamStatus.spec.ts stores/__tests__/agentOrgRetainedRecovery.spec.ts --run` —136/10 Pass, scoped.log. Includes first9, not145unique.
-3. From worktree `pnpm --dir autobyteus-server-ts build` — production compile/shared prerequisites/Prisma/sanitized bootstrap Pass, server-build.log.
-4. Final `git diff --check` exit0; final-integrity.json confirms4/4 hashes unchanged.
 
-Supplied—not independently rerun—broader13file208test result190pass/18fail/16unhandled errors, original-loader control same18 identities/16errors in unchanged WorkspaceAgentRunsTreePanel, regressions and WorkspaceAgentOrgActivityPublication. Known old mocks/expectations qualified by upstream baseline comparison; not a global suite Pass or source defect inferred. Supplied production frontend16-route build Pass; API used real Nuxt app, not a fresh production frontend build claim. Strict vue-tsc absent; no global typecheck/clean-baseline claim.
+Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen`.
 
-## Changed boundary / ledger reconciliation
-|Case|Authority and real boundary|Result and evidence|
-|---|---|---|
-|R01|AC001–003 response→real initialized store/projection→production sidebar; generation/error/lifecycle owners|Pass136tests; narrow9 includes before-disclosure assertions and pending scoped expansion. No durable API edits.|
-|B01|AC001/003 normal existing-history startup|Pass actual browser normal focused startup; exact Agent/Team/Org groups, Org conversation Offline; focused-normal-startup-* and timing-summary.json. Backend1ms each; response-to-first-observed DOM <=172ms workspace,171ms Org. Initial app/navigation cost ~2823ms to groups, not backend delay; no universal SLA/speedup claim.|
-|B02|AC001 independently accepted families versus unrelated queries/avatar enrichment|Pass org-first-* while workspace history+scoped query+all3catalogs+workspace descriptor held; Org group/root/direct/mounted tree visible and expandable. Reverse workspace-first-* shows stopped Agent/Team groups/run labels while Org+scoped query+catalogs held. No extra successful refresh can mask first publication. Both release normally.|
-|B03|AC002/003 quiet failures/recovery and stopped data|Pass both503family directions via normal polling; prior rows/error truthful, selection/draft/conversation/System Activity retained. Next actual success clears error without reload/resend. Mounted never-used leaf Offline/empty and returning guide restores draft. quiet-*-dom/transport, mounted-unused-offline-dom, preservation-proof. Attachment-specific subcheck Not Tested.|
-|B04|AC001/003 real active reconciliation|Pass real Agent/Team/Org seeded with3 actual provider replies; Team resume response held~6.4s during reload, Org selected Idle/reply and groups render while global loading remains; release completes Team/Agent reconnection with exact replies, no fourth request. Member projection requests occurred after release, not independently blocked. active-hydration-*, active-reconnected-dom, agent-reconnected-dom.|
-|C01|AC003 preservation and environment|Pass16 persistent data hashes,6 authored hashes,4 incoming manifest hashes unchanged. Actual API active flags false after UI Stops; provider requests remain3. cleanup.json records services/tab/ports cleaned.|
+1. Verified `validation/ir002-source-manifest.json`: **4/4 entries exact** at intake and final (`validation/api-reopen-r2/intake-manifest-check.json`, `final-integrity.json`).
+2. Initial server attempt was setup-only: two files / 11 tests passed while the mixed-history file could not resolve an intake-absent generated shared SDK package. This was not a product failure (`server-focused.log`).
+3. Ran documented `pnpm --dir autobyteus-server-ts prepare:shared`; then the three changed owner files passed **12/12**:
+   - `agent-org-run-history-catalog-service.test.ts`
+   - `root-run-package-readiness-index.test.ts`
+   - `collaboration-root-history-readiness.test.ts`
+   Evidence: `server-focused-after-setup.log`.
+4. Independently reran the unchanged IR-001 frontend preservation scope with `pnpm test:nuxt ... --run`: **10 files / 136 tests passed** (`web-preservation.log`).
+5. Carried the supplied current server production build Pass (`validation/ir002-server-build.log`): shared builds, Prisma generation, `tsc -p tsconfig.build.json`, managed asset copy and sanitized built-in Agent bootstrap smoke all passed.
+6. Final `git diff --check` passed. The two intake-absent generated SDK `dist` directories were removed after execution.
 
-Ledger initialized before execution, meaningful checkpoints and completed cases recorded before moving to next; setup/B04 ran before B01 because real histories and active evidence needed. User upload interruption preserved evidence; no case inferred completed from missing state. All planned primary cases reconciled; optional attachment subcheck Not Tested. No case still running.
+No API/E2E-owned durable test was added, updated or removed. The changed repository tests are implementation-owned. The temporary `cold-observer.mjs` and `launch-cold.py` validate the real process lifecycle without changing application behavior; they are execution evidence, not durable product tests.
 
-## Broader validation and environment
-Required to close live response→mounted production DOM, actual recovery/provider/data gap. macOS Darwin arm64, Node22.23.1, pnpm10.28.2, Nuxt3.21.1 CLI3.33.1 from actual running path; Chrome extension browser, zh-CN UI, viewport1512x862. Browser exact build not collected; DOM evaluation disallowed navigator, not a product defect. Browser-equivalent desktop renderer only; no shell/IPC/package claim or user desktop action.
+## Actual environment and user-realistic setup
 
-Fresh owned data/HOME `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency`. Test-only ports51181 backend,51182 transparent proxy,51183 Nuxt, unused discovery51184. Exact startup commands/PIDs in cleanup.json and replay launch.py. Production backend health ready; normal browser frontend. Credentials imported using official built secret CLI from previously user-authorized source into new isolated DB:9added/0replaced; value-free preview attached. No source .env contents, key, DB or secrets attached.
+Owned isolated root: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/.local/api-history-latency`.
 
-Six deterministic authored Agent/Team/Org files in api-live/fixtures. Runtime histories created via ordinary catalog Run/Send, never fabricated runtime trees: one Agent, one standalone Team lead, Org direct guide plus never-used mounted squad/lead. Three actual gpt-5.4-mini replies through OpenAI, metadata observer records only model/status/time and delegates actual fetch. All actual app mutations through browser controls. Backend logs/HTTP read results corroborate; no direct API command substituted for UI.
+- Backend `127.0.0.1:51181`, transparent observation proxy `51182`, Nuxt frontend `51183`; isolated HOME/data/SQLite.
+- Chrome extension browser; normal application routes and visible controls only.
+- Credentials were imported into the fresh isolated database using the user-authorized official secret importer. Secret values were never read or written into evidence.
+- Synthetic authored `Latency Agent`, `Latency Team` and `Latency Org` packages were copied only into the isolated root. The Org contains a direct Agent and a mounted Team.
+- Runtime state was created through ordinary frontend Run, Send and Stop journeys. No direct GraphQL mutation, store injection or fabricated history/tree file substituted for user actions.
+- Three actual `gpt-5.4-mini` sends produced exact replies `LATENCY-AGENT-R2`, `LATENCY-TEAM-R2` and `LATENCY-ORG-R2`, then all roots were stopped through the UI.
 
-Transparent proxy holds actual complete replies or injects explicit503 failures; never replaces successful response bytes. This is controlled network timing, not a fake server/provider/history. Test data volume1Agent+1Team+1Org, not user's unknown larger workload. Exact full/focused generation adversarial permutations proven by current durable real-owner tests with controlledIO, not claimed live races. Successful initial empty API responses captured separately; pending/error states tested live distinctly. No server restart required by this frontend publication scope.
+## Case results and evidence
 
-## Preservation and limits
-After UI Stop of owned roots,16 history indices/execution trees/contexts/traces/message/task files unchanged through all normal/delayed/error/inspection operations;6 authored configs/instructions unchanged. Existing IDs and UI grouping/status matched actual returned trees. Provider requests remain exactly3 intentional setup Sends; no provider calls from listing or inspection, actual APIs report stopped. No private source/user histories reused. Attachment picker failed at extension permission; no completed upload and **no actual attachment-specific preservation claim**. Attachment path is unchanged; core data-preservation evidence plus existing owners covers the changed read/publication boundary. Full scale cold-start/backend full-tree cost, all-provider/Electron behavior outside scope; no claim to have explained user's exact10seconds.
+| Case | Result | Direct evidence |
+| --- | --- | --- |
+| R02 — manifest/repository coverage | Pass | 4/4 manifest exact; 12/12 server owner tests; 136/136 frontend preservation tests; production server build carried Pass |
+| B05 — one cold readiness generation | Pass | Fresh backend PID 9296: one startup `rebuild()` from `startConfiguredServer`, 8 ms duration, one Team and one Org admitted; first workspace/Org catalog reads made two already-initialized `awaitReady()` calls and zero post-startup rebuilds |
+| B06 — cold normal browser | Pass | From `about:blank`, normal Chrome navigation rendered Agent, Team and Org rows plus the selected retained Org reply within a 6,188 ms AX-observation upper bound. Workspace history returned/released in 4/5 ms; collaboration-root history returned/released in 22/22 ms |
+| B07 — identity/status/no-start/preservation | Pass | Standalone Agent and Team, Org direct guide, mounted Team and mounted lead retained exact labels/IDs and rendered Offline; all three conversations reopened; provider metadata remained empty; 22/22 compared files byte-identical |
+| C02 — cleanup/reconciliation | Pass | Browser tab closed, exact owned services stopped, ports 51181–51183 closed, generated SDK outputs removed, canonical artifacts updated |
+
+### Cold readiness proof
+
+Authoritative cold run 3:
+
+- startup rebuild start/end: `2026-09-18T04:42:48.613Z` / `04:42:48.621Z`
+- server listen: `2026-09-18T04:42:48.773Z`
+- rebuild calls in the actual backend process: **1**
+- readiness calls during first mixed history: **2**, both with `initializedBefore:true`
+- post-startup rebuild calls: **0**
+- admitted families after startup: Team **1**, AgentOrg **1**
+
+The observer was imported before the application and wrapped the existing methods only to record starts/ends/callers, delegating each call unchanged. Worker subprocess `observer-ready` lines were excluded by the backend PID recorded by the launcher. Two earlier fresh-process runs showed the same one-rebuild/no-second-rebuild shape and remain supporting evidence.
+
+Evidence:
+- `validation/api-reopen-r2/cold-generation-summary.json`
+- `validation/api-reopen-r2/cold-run3-readiness-events.jsonl`
+- `validation/api-reopen-r2/cold-run3-transport.jsonl`
+- `validation/api-reopen-r2/cold-run3-backend.log`
+
+### Browser and preservation proof
+
+The authoritative Chrome journey started from a blank tab after a fresh server process. The final accessibility state contained:
+
+- `Latency Agent`, stopped run `Reply exactly: LATENCY-AGENT-R2`, original run ID suffix and Offline conversation with exact reply;
+- `Latency Team`, stopped run `Reply exactly: LATENCY-TEAM-R2`, `/lead` Offline with exact reply;
+- `Latency Org`, stopped run `Reply exactly: LATENCY-ORG-R2`, direct `/guide` Offline with exact reply;
+- mounted `/squad` Team Offline and `/squad/lead` Offline without activating the never-used member.
+
+The 6,188 ms number is the upper bound from navigation start to the first repeated accessibility observation containing Team, Org and exact retained Org reply. It is not paint timing, a benchmark or a universal SLA. The representative dataset is deliberately small and isolated; no claim is made about a user's much larger production history.
+
+The cold process logged zero provider metadata calls. Before/after SHA-256 comparison covered 22 authored and persisted history/index/tree/context/trace/message/task files; no hash changed. Exact run IDs are recorded in `seed-before-cold.json`. Historical API-REV-001 live 503 recovery and active reconnection remain applicable to the byte-identical frontend, while current direct owner tests cover readiness failure/no-publication and generation authority.
+
+Evidence:
+- `validation/api-reopen-r2/seed-before-cold.json`
+- `validation/api-reopen-r2/seed-provider-metadata.jsonl`
+- `validation/api-reopen-r2/cold-generation-summary.json`
+- `validation/api-reopen-r2/preservation-after-cold.json`
+- `validation/api-reopen-r2/cold-run3-provider-metadata.jsonl`
 
 ## Confidence scorecard
-Confidence, not pass percentage; simple arithmetic mean.
-|Category|Post-repository|Final|New support / residual|
-|---|---:|---:|---|
-|Requirements/AC proof|75%|95%|Every critical publication/failure/preservation behavior covered live+real-owner concurrency; no universal timing scope.|
-|Changed-boundary directness|75%|95%|Actual accepted API response through cached projection to visible sidebar both orders, catalogs and active resume held.|
-|Cross-boundary realism/mock gap|75%|95%|Actual server/SQLite/native provider/WebSocket/UI; only fault/timing controlled; rare races owner tests.|
-|Environment/config/identity/fixtures|95%|95%|Fresh isolated real packages/UI-created histories, exact IDs/hash preservation; representative not production volume.|
-|Failures/edges/lifecycle/recovery|90%|95%|Both live503families recover, active reconnect, stopped inspection; full/focused and empty validated in direct owner suites.|
-|User surface/browser/desktop|50%|95%|Normal production UI controls, disclosure/selection/draft/Activity; shell not applicable, optional upload not completed.|
-|Durable regression quality|95%|95%|9direct publication regressions +127 adjacent; decisive existing red-before-patch supplied, no duplicate test added.|
-Post-repository79.3%; final95.0%; gain15.7points. No applicable category below90%;95%target met. Remaining uncertainty bounded as above, no unproven critical changed behavior.
 
-## Coverage/artifacts/cleanup
-API-owned durable coverage added/updated/removed: **None**. Incoming test files preserved, not claimed API-authored. Temporary launch.py/proxy.mjs/provider-observer.mjs, synthetic fixtures, DOM/screenshots/transport logs retained under validation/api-live with README replay. API did not edit source/tests or add alternate application routes. Initial wrong working-directory setup failed before execution; copied observer ownership guard initially rejected new path before server startup, corrected temporary harness only. These are recorded setup corrections, not application failures.
+Confidence is the simple mean of applicable categories, not a pass percentage.
 
-Stopped six exact owned processes (backend844,proxy99477,frontend99784 and3children), closed owned tab1211480705; ports51181–51183 have no listeners. Removed only two intake-absent untracked SDK dist prerequisites. Other ignored builds/private test data retained isolated; no user process/profile/data reset or private package action. All other-owner changes preserved; no staging/commit. Eventual integration target origin/requirements/flat-agent-organization-model, NOT personal.
+| Category | Initial reopened | Final | Evidence / residual |
+| --- | ---: | ---: | --- |
+| Requirement and AC proof | 75% | 98% | One startup generation, first mixed read, visible retained rows and nonactivation directly proven; no production-scale SLA claim |
+| Changed-boundary directness | 75% | 100% | Instrumented actual compiled process distinguishes startup `rebuild` from first-read `awaitReady` |
+| Cross-boundary integration realism | 70% | 98% | Real server/SQLite/proxy/Nuxt/Chrome plus provider-created histories; observer records and delegates only |
+| Environment/config/identity fidelity | 90% | 98% | Fresh isolated normal packages, exact IDs and current generated clients; representative rather than production volume |
+| Failure/edge/lifecycle/recovery | 90% | 95% | Current failure/generation owner tests plus unchanged historical live recovery/reconnection; current live failure was not reinjected |
+| User surface/browser/desktop | 55% | 95% | Normal Chrome routes/controls, cold sidebar render and inspection; no Electron-shell or paint-timing claim |
+| Durable regression quality | 95% | 98% | Focused red/green lifecycle owners and preserved 136-test frontend scope; no redundant API test added |
 
-## Outcome/routing
-No failure classification or failure IDs. Direct Small/Low Pass→Delivery after fresh current-rule lookup. Architecture/source/test review N/A or Not Required as classified, never implied Pass. Full cumulative upstream plus canonical investigation/report/ledger/API-REV-001 and evidence accompany handoff. Delivery owns any authorized finalization; this report grants none.
+Initial reopened confidence: **78.6%**. Final confidence: **97.4%**. All applicable categories are at least 95%, every critical changed acceptance criterion has direct proof, and no scoped failure remains.
+
+## Residuals and qualifications
+
+- The browser timing is a normal-user accessibility observation upper bound, not performance tracing or a universal latency guarantee.
+- Data volume is one Agent, one Team and one Org; full production-scale package traversal remains outside this narrow fix.
+- The actual browser run did not inject readiness failure; deterministic failure/no-publication is covered by the real owner service tests, and unchanged historical API-REV-001 covers live frontend recovery.
+- Browser validation proves the web-equivalent renderer path, not Electron shell/packaging.
+- No global strict Vue/server typecheck cleanliness is claimed beyond the supplied production server build and focused test scopes.
+
+These residuals do not leave a critical IR-002 acceptance criterion unproven.
+
+## Cleanup and routing
+
+Cleanup evidence: `validation/api-reopen-r2/cleanup.json`. Owned Chrome tab `1211480835` was closed. Owned backend/proxy/frontend processes were stopped and ports 51181–51183 have no listeners. Generated `autobyteus-application-sdk-contracts/dist` and `autobyteus-application-backend-sdk/dist` prerequisites were removed. Isolated data/evidence was retained for reproducibility. User application/profile/server/data and external packages were untouched.
+
+Outcome: **Pass**. Direct Small/Low route to Delivery after fresh handoff-rule lookup. Test-code review: **Not Required — direct low-risk route**. Eventual integration target remains `origin/requirements/flat-agent-organization-model`, not personal; this report grants no Git or release authority.

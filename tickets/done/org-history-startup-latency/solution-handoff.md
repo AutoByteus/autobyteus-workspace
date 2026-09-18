@@ -2,43 +2,84 @@
 
 ## Result
 
-Architecture Design Complete, SR-003 / DS-001, Small / Low. Requirements SR-001 explicitly approved SR-002. This is a NEW ticket, not a reopening of prior history/settings/migration tickets. No implementation or acceptance Pass asserted.
+Architecture Design Complete — reopened recovery `SR-004 / DS-REV-002`, **Small / Low**. Requirements SR-001 remain explicitly approved through SR-002; intended behavior is unchanged. The previous DR-002/DR-003 terminal effectiveness is superseded for this latency outcome by the user's real failure report. This is the same ticket/package, not a new feature and not a replay of finalization.
 
-## Request and approval
+## Original request and current recovery authority
 
-User reports latest base Electron displays Agent/Team history then Org history >10 seconds later; asks analysis/new ticket and comparison with personal nested-Team pattern. Presented independent-family visibility with preserved reconnection/selection/error/data behavior, excluding migration/storage redesign. User: “Yeah, I completely agree. I think the response should, the each history family should display as soon as the response is ready. Just because now you see like it's showing agent and team history immediately, right? After it's received. You should at that point also show agent org history.” Full approval in requirements-doc.md.
+Original approved outcome: each history family should display as soon as its own response is ready, without unrelated family/enrichment work, while preserving errors, selection, reconnection and data. User quote is in `requirements-doc.md`.
+
+Current trigger: the user reports that the latest-base Electron still shows AgentOrg history more than ten seconds after Team history for `Software Development Department`, asks to move this archived ticket back to `in-progress`, use a fresh base worktree, and actually reproduce through a browser frontend backed by the Electron-started server. The user explicitly corrected the investigation method toward that browser path. No new behavior choice was introduced; renewed approval is not required.
 
 ## Workspace / base / target
 
-- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency
-- Branch: codex/org-history-startup-latency
-- Fresh bootstrap base and current HEAD: 6f15f446d6a56004caa15e70f4d8e68cba6eb9bc
-- Origin base/finalization target: origin/requirements/flat-agent-organization-model, NOT personal.
-- User profile/running application, base outputs and unrelated org-history-resume-offline-analysis untouched. No commit/push/build/finalization/release authorized by requirements approval.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen`
+- Branch: `codex/org-history-startup-latency-reopen`
+- Fresh bootstrap base/current HEAD before implementation: `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`
+- Tracked/finalization target: `origin/requirements/flat-agent-organization-model`, **not** `personal`
+- Canonical package: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency`
+- Historical remote ticket branch remains preserved; use the reopened branch, do not overwrite history silently.
+- User's Electron/backend/profile was not stopped, reset, repaired or mutated. No commit/push/build/finalization/release authorization or claim.
 
-## Evidence and selected design
+## Reproduction and root cause
 
-Existing runHistoryLoadActions waits for BOTH queries, publishes raw workspace rows, awaits avatar loading/live Agent/Team hydration, then publishes raw Org rows. Three-case unmodified scheduler probe confirms dependency; NOT measured user's ten seconds. Pinned personal5645b49d6 source publishes nested-Team workspace slice before enrichment; no old-runtime replay.
+1. **Requested actual browser path:** reopened-worktree Nuxt frontend was run against the already-running latest-base Electron embedded backend. Fresh Chromium auto-expanded the exact real workspace. On this warm backend, Team appeared at899.5ms and AgentOrg at934.9ms (35.4ms later); `ListCollaborationRootHistory` completed in69.8ms. Therefore current frontend publication is effective once the server catalog is initialized; warm/browser-only rechecks cannot reproduce the cold defect.
+2. **Exact cold owner:** startup already calls `RootRunPackageReadinessIndex.rebuild()` before listen. First `AgentOrgRunHistoryCatalogService` initialization calls `packages.rebuild()` again. A fresh-process, exact packaged, read-only rebuild against the same package population took26,657.10125ms (307Team/17Org packages;219diagnostics). Team history instead calls `awaitReady()` and reuses the established generation.
+3. **Failure mechanism:** Team history responds through the ready Team catalog while the AgentOrg mixed-history response is blocked on a duplicate full readiness scan. IR-001 cannot render a response that has not arrived. This explains why small isolated fixtures and a warm server passed while the user's cold-start symptom remained.
 
-Post-approval source investigation additionally found cached navigationProjection: fetchTree currently refreshes it only on full completion. Merely moving raw Org assignment is insufficient. DS-001 requires each accepted family to synchronously publish through existing store.refreshRunNavigationTopology (add required method to loader's structural store type); keep final wrapper refresh to incorporate later enrichment. Projector already supports Org-only workspaces before workspace catalogs. Do not create second projector/cache or new reactive rebuild watcher.
+Sanitized evidence:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/validation/reopen-r1/warm-browser-observation.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/validation/reopen-r1/cold-readiness-probe.json`
 
-Run same two existing queries concurrently with family-local acceptance/error handlers. Org captured generation guards all Org writes/publication/recovery dispatch. Await both branches including workspace avatar/reconciliation to preserve loading and completion lifecycle, but do not gate visible rows. Keep focused refresh, strict parser, existing recovery/reconnect and selection ownership. No backend/API/persistence/migration changes.
+## Selected design
 
-## Expected downstream output and validation
+Preserve the integrated frontend independent-family publication. In `AgentOrgRunHistoryCatalogService.ensureInitialized()`, replace the forced `AgentOrgRunPackageCatalog.rebuild()` with the already-existing `awaitReady()` contract.
 
-Implement DS-001 in existing isolated worktree, preserve approved REQ-001–003/AC-001–003. Durable actual-store/projection + rendered sidebar regression must observe ready family's DOM before deferred other query/avatar/hydration settles; initialize projection first (lazy read otherwise masks gap). Preserve failure/empty/quiet/focused-vs-full generation cases and active reconciliation. Actual isolated browser startup evidence must distinguish query timing and DOM publication; expand/select history normally, retained IDs/selection/status/history, no provider inference from listing. Do not use user app/private profile for fixtures.
+This is safe because:
+- normal server startup has already completed strict shared readiness before listen;
+- if no generation exists, `awaitReady()` lazily creates/awaits one, so strict admission is not skipped;
+- Team history already uses this contract;
+- the AgentOrg queue, admitted Org tree reads, index projection/write, active snapshot selection, errors and identities remain unchanged.
 
-Small/Low direct routing is supported by one existing loader/type surface and reused synchronous store/projection, not a new concurrency policy. Escalate Design Impact for runtime/recovery/generation authority changes, backend/schema/index redesign or broader framework. Exact user timing remains unmeasured; backend reads full trees and could retain independent cost, not preapproved redesign. No Product design request, no architecture/source review Pass claimed.
+Expected production delta is one backend owner file plus focused tests. Do not add timeouts, extra refreshes, prewarming requests, unvalidated fallbacks, index/schema redesign or frontend changes. Do not remove explicit `rebuild()` from the family facade globally.
 
-## Cumulative canonical artifacts (absolute paths)
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/requirements-doc.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/investigation-notes.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/design-spec.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/solution-revision-record.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/bootstrap-handoff.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/validation/publication-order-probe.cjs
-- /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/validation/publication-order-probe.log
+## Required implementation and validation
+
+Implementation:
+- add a failing durable test with distinguishable `awaitReady`/`rebuild` spies;
+- first AgentOrg initialization must call `awaitReady` once and `rebuild` zero times;
+- preserve summary/restore/index sequencing and concurrent initialization;
+- retain/prove lazy strict readiness when no startup generation exists;
+- run focused server tests/build and existing frontend history publication preservation tests.
+
+API/E2E:
+- validate a **cold first read** with a fresh isolated process or reset process-global readiness/catalog state; a warm browser is insufficient;
+- record listen, first workspace-history response, first mixed AgentOrg response and first visible Team/AgentOrg rows through the normal browser UI;
+- prove no second readiness generation begins on first AgentOrg history read using a deterministic counter/test seam, not only wall-clock timing;
+- preserve prior failure/generation/selection/inactive/no-inference checks;
+- do not use or mutate the user's live profile as a public fixture.
+
+No universal millisecond SLA is claimed. The acceptance boundary is removal of the duplicate readiness generation plus existing immediate response publication. If implementation requires changing readiness ownership, startup order, strict admission, persistence, GraphQL or frontend/runtime contracts, return `Design Impact` rather than broaden locally.
+
+## Classification
+
+- `task_size`: Small
+- `architectural_risk`: Low
+- Reason: one incorrect existing method choice inside an existing catalog owner; exact reusable comparator contract already exists; no interface/schema/storage/migration/lifecycle change.
+- Architecture review: not required under the direct Small/Low route unless an escalation trigger occurs.
+
+## Cumulative canonical artifacts
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/requirements-doc.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/solution-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/bootstrap-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/validation/reopen-r1/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/validation/reopen-r1/warm-browser-observation.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/tickets/in-progress/org-history-startup-latency/validation/reopen-r1/cold-readiness-probe.json`
+
+Historical IR/API/Delivery artifacts remain in the same cumulative ticket directory as prior-basis evidence. They do not claim coverage of SR-004/DS-REV-002.
 
 ## Routing
 
-Fresh get_handoff_rules succeeded. Sole matching rule: Architecture Design Complete, Small/Medium and Low → /software_engineering_team/implementation_engineer. Selected direct implementation route; Product Requested, High/Large review and Delivery evidence-gap rules do not match. No architecture review required by this rule, not a review Pass. Notification follows persistence; actual send_message_to result is transport authority.
+Fresh `get_handoff_rules` selected the sole matching rule for `Architecture Design Complete` with `task_size=Small` and `architectural_risk=Low`: `/software_engineering_team/implementation_engineer`. The Product Design, Large/High architecture-review and Delivery receipt-gap rules do not match. Direct implementation is the selected route; no duplicate delegation or additional recipient. Actual `send_message_to` confirmation is the transport authority.
