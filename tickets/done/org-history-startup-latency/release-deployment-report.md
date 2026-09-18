@@ -1,13 +1,17 @@
-# Current DR-006 — Verified finalization checkpoint (2026-09-18)
+# Authoritative DR-006 — Delivery / Finalization Completed (2026-09-18)
 
-## Gate state
-Explicit reopened-result functional verification: Completed. User statement: “it works. i tested it. now we could finalize the ticket”. Fresh target check: unchanged at `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`. Docs sync: Completed. Repository finalization: In progress. Safe cleanup: Pending because the verified application still runs from the dedicated worktree; Delivery will not terminate it.
+## Completion gates
+Docs sync Completed. Explicit user verification Completed: “it works. i tested it. now we could finalize the ticket”. Repository finalization Completed. Safe cleanup Completed after the task-worktree application exited normally. Successful terminal handoff is eligible.
 
-## Preservation and release scope
-Private ignored API/test state, build audit and exact tested DMG/ZIP are preserved in `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` under mode 0700; 91 files and 147 copy checks passed. The private manifest/contents are excluded from Git. Version bump, tag, signed release, publication, deployment and rollout are Not required/not authorized. The DR-005 unsigned local Electron artifacts are test outputs, not published release assets.
+Package commit `00cf38b64eee8c4ebfff0291935dd4f5030090d0` is remotely verified on `codex/org-history-startup-latency-reopen` and was fast-forwarded/pushed to `requirements/flat-agent-organization-model`. The archived ticket is under `tickets/done/org-history-startup-latency/`. The dedicated worktree/local branch were removed and pruned; remote ticket provenance retained. Personal was untouched. Base-worktree unrelated generated SDK outputs and the separate analysis ticket were preserved.
 
-## Remaining operation
-Archive and exact commit/push, update and push the recorded target, verify remote refs, then perform safe task-worktree/local-branch cleanup after the application exits normally. Terminal completion is not eligible until those operations complete.
+Private ignored state and tested archives are retained outside Git at `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` (0700; 91 files; 147 checks passed). No private manifest/content was staged.
+
+## Release/deployment decision
+Release notes, version bump, tag, signing/notarization, publication, deployment and rollout are Not required/not authorized. The DR-005 unsigned local package is a user-tested artifact, not a published release. Persisted data is Directly Usable—No Migration; no user profile/data reset, history repair, credential/provider action or service deployment occurred.
+
+## Validation and residuals
+Small / Low / Direct; API-REV-002 Pass at 97.4% validation confidence. Current owner 12/3 and unchanged frontend preservation 136/10 passed; supplied server build passed. Actual fresh process proved one startup rebuild, two initialized awaits, zero post-startup rebuilds, visible retained histories, zero provider metadata calls and 22/22 file preservation. Representative scale/accessibility timing/current failure-not-reinjected/global-clean/all-profile limits remain. User DR-005 Electron success is scoped functional verification, not all-platform/all-provider certification.
 
 ---
 

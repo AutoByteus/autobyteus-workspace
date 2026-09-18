@@ -1,8 +1,19 @@
-# Current DR-006 — User-verified recovery; repository finalization in progress (2026-09-18)
+# Authoritative DR-006 — Delivery Completed (2026-09-18)
 
-The user verified the exact DR-005 Electron candidate: “it works. i tested it. now we could finalize the ticket”. This is explicit verification and finalization authority for reopened IR-002. A fresh post-acceptance fetch found the ticket and target unchanged at `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`; no source change, renewed verification or additional rerun is needed.
+ORG-HISTORY-LATENCY-20260917-001; Small / Low / Direct. The user verified the exact DR-005 Electron candidate and authorized finalization: “it works. i tested it. now we could finalize the ticket”. Current authority is approved SR-001/SR-002 and SR-004/DS-REV-002; IR-002; API-REV-002 Pass at 97.4% validation confidence, not a test pass rate. Architecture/source review N/A and proportional API test review Not Required because API/E2E changed no durable test code.
 
-The private isolated API state, test DB, build audit and exact tested DMG/ZIP are preserved outside Git under `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` (0700; 91 files; 147 copy checks passed). Private contents and manifest are not attached or staged. Finalization will archive the ticket, exact-stage the reviewed source/tests, canonical doc and ticket evidence, push the ticket branch, integrate and push `requirements/flat-agent-organization-model`, then clean the dedicated worktree/local branch only after the running user-tested application exits normally. Delivery will not terminate that process. No release, version, tag, publication or deployment is required.
+## Repository and cleanup receipt
+- Fresh post-acceptance fetch remained `d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd`; the user-verified source did not change. Four of four IR-002 manifest entries remained exact. No renewed verification or extra rerun was required.
+- Archived ticket and exact-staged 88 reviewed/documentation/evidence paths. Package commit `00cf38b64eee8c4ebfff0291935dd4f5030090d0` was pushed to `codex/org-history-startup-latency-reopen`, then fast-forwarded and pushed to `requirements/flat-agent-organization-model`; both remote refs were verified at the package commit. Personal was untouched.
+- The user-tested task application exited normally. The dedicated worktree and local ticket branch were removed and registrations pruned; the remote ticket branch remains as durable package provenance.
+- Private ignored API/test state, build audit and exact tested DMG/ZIP are preserved outside Git at `/Users/normy/autobyteus_org/delivery-retained/ORG-HISTORY-LATENCY-20260917-001-DR006` (0700; 91 files; 147 copy checks passed). Private contents/manifest were never staged. Unrelated base-worktree SDK outputs and the separate in-progress analysis ticket remain untouched.
+
+## Delivered result and limits
+The first AgentOrg history catalog read now reuses the strict process-local collaboration-root readiness generation via `awaitReady()` rather than forcing another Team+AgentOrg package scan. Startup strictness, lazy first-generation fallback, derived history indexing, frontend publication, identities, persistence and Directly Usable—No Migration behavior remain unchanged. Current server owner 12 tests/3 files, unchanged frontend preservation 136/10 and supplied server build passed. Actual fresh-process acceptance observed one startup rebuild, two initialized awaits, zero post-startup rebuilds, retained Agent/Team/Org histories, zero provider metadata calls and 22/22 file preservation.
+
+Residuals remain explicit: representative isolated data, accessibility-observation upper bound rather than paint/SLA, current live failure not reinjected, no global-clean/all-profile certification. The user’s successful DR-005 Electron test supplies the scoped Electron functional verification; it is not an all-platform/all-provider certification. Version bump, tag, signed release, publication, deployment and rollout were not required. Rollback requires a separately reviewed revert; never repair or delete user history destructively.
+
+This is the authoritative terminal completion package. Solution Designer may verify it and return the engineering result through the applicable parent/standalone rule.
 
 ---
 
