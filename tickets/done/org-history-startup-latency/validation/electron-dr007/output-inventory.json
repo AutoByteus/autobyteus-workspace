@@ -1,0 +1,37 @@
+{
+  "source_revision": "4ce5978c45cbdd3a52e7cb47ab7a40f06bb88e80",
+  "output_directory": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist",
+  "app_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "files": [
+    {
+      "name": "AutoByteus_enterprise_macos-arm64-1.4.69.dmg",
+      "size": 467937238,
+      "sha256": "68986628d74c10ae82e6d8b8bba5b2301fcf8508f2d76077e8b7ee4a95a3606b"
+    },
+    {
+      "name": "AutoByteus_enterprise_macos-arm64-1.4.69.dmg.blockmap",
+      "size": 490111,
+      "sha256": "e317a0d88cf705e01a7a0cd8ef5ccfaf2ec54700a64128dfbcc4060f89f5a199"
+    },
+    {
+      "name": "AutoByteus_enterprise_macos-arm64-1.4.69.zip",
+      "size": 462739233,
+      "sha256": "f96e17de0d5fae5a55f84bda85081586fcedd6d63179ccb3282a454324728d73"
+    },
+    {
+      "name": "AutoByteus_enterprise_macos-arm64-1.4.69.zip.blockmap",
+      "size": 477426,
+      "sha256": "1e1ddc21e0cb7e78288dc1e02dc167314860ed017a54c9a6ca59ba44f8cc89f5"
+    },
+    {
+      "name": "builder-debug.yml",
+      "size": 813,
+      "sha256": "ed385e8fd8a1f1805f2961879c48eed5566a9dd37ac549d14f4690f4df26af80"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 561,
+      "sha256": "95dfd6aaad94e701b8ce2b005aa3fdfe576c4fed616e1637c37eca354b70962a"
+    }
+  ]
+}

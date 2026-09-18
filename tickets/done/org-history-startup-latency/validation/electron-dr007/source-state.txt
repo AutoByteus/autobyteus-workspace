@@ -1,0 +1,6 @@
+branch=requirements/flat-agent-organization-model
+source_revision=4ce5978c45cbdd3a52e7cb47ab7a40f06bb88e80
+remote_target=4ce5978c45cbdd3a52e7cb47ab7a40f06bb88e80
+build_command=AUTOBYTEUS_BUILD_FLAVOR=enterprise CSC_IDENTITY_AUTO_DISCOVERY=false NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+started_utc=2026-09-18T06:19:55Z
+previous_electron_dist=preserved
