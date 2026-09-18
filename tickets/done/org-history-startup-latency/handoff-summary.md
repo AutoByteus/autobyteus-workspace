@@ -10,7 +10,7 @@ AutoByteus 1.4.69 / Electron 42.4.1 / enterprise macOS arm64 passed the README-d
   - SHA-256 `f96e17de0d5fae5a55f84bda85081586fcedd6d63179ccb3282a454324728d73`
 - App: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
-The previous base output was preserved. Transient npm registry reset warnings recovered automatically. Signing/notarization, installation, GUI launch, release, publication and deployment were not performed. Full build evidence: `validation/electron-dr007/README.md`. DR-006 repository finalization and terminal eligibility remain complete; this is a supplemental requested local build with no source delta.
+The previous base Electron output was preserved. The two preexisting untracked generated SDK output directories were retained but refreshed by the canonical build prerequisite and remain excluded from Git; the separate analysis ticket was untouched. Transient npm registry reset warnings recovered automatically. Signing/notarization, installation, GUI launch, release, publication and deployment were not performed. Full build evidence: `validation/electron-dr007/README.md`. DR-006 repository finalization and terminal eligibility remain complete; this is a supplemental requested local build with no source delta.
 
 ---
 

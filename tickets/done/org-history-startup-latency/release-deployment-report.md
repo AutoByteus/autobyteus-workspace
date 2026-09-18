@@ -2,7 +2,7 @@
 
 DR-006 repository finalization and safe cleanup remain Completed. At the user's subsequent request, Delivery refreshed the recorded base and built AutoByteus 1.4.69 enterprise macOS arm64 from revision `4ce5978c45cbdd3a52e7cb47ab7a40f06bb88e80`. Build plus DMG/ZIP, terminal spawn, architecture/version, ASAR equality, IR-002 packaged identity and manifest checks passed. Artifacts and hashes are recorded in `validation/electron-dr007/README.md`.
 
-This is an unsigned/unnotarized local test build, not a release. No version/tag/signing/publication/deployment/rollout, install, GUI/profile launch, provider/credential or persisted-data action occurred. Prior base output and unrelated base untracked state were preserved. Transient registry reset warnings recovered automatically. Delivery Completed remains the authoritative outcome.
+This is an unsigned/unnotarized local test build, not a release. No version/tag/signing/publication/deployment/rollout, install, GUI/profile launch, provider/credential or persisted-data action occurred. Prior base Electron output was preserved. The two preexisting untracked generated SDK output directories were retained but refreshed by the canonical build prerequisite and remain excluded from Git; the separate analysis ticket was untouched. Transient registry reset warnings recovered automatically. Delivery Completed remains the authoritative outcome.
 
 ---
 
