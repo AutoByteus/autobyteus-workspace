@@ -28,3 +28,8 @@ User tested the task-worktree Electron build successfully. Canonical docs/source
 
 ## DR-003 completed finalization
 Verified package d830832f6 archived, integrated and pushed; safe cleanup complete. No canonical doc delta after DR001 and no migration/release doc duty. Tested task build preserved externally; base Electron not rebuilt. Earlier holds superseded by current handoff/release headers.
+
+## DR-004 latest-base Electron build supplement
+At the user’s post-finalization request, Delivery freshly fetched and confirmed the base worktree branch requirements/flat-agent-organization-model was current with origin at bcf92fcbe9ebbbac6bb8f97014fbb1a791c5d1a8, built the enterprise macOS arm64 Electron package there, then fetched again and reconfirmed that source revision remained the latest remote state. No production or canonical-doc delta was introduced; DR-001’s docs decision remains authoritative.
+
+Canonical preparation and packaging passed. DMG/ZIP integrity, the packaged terminal runtime and actual node-pty spawn probe, arm64/version metadata, and 239/239 generated Electron/renderer files against app.asar passed. Signing/notarization was skipped; nothing was installed, launched, published, released or deployed. The prior base output was preserved locally before replacement, no process was terminated, and unrelated untracked base items were retained. Full receipt: validation/electron-dr004/README.md.
