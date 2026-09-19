@@ -79,6 +79,14 @@ in-flight generation, or lazily start one strict generation when startup has
 not established it. A first AgentOrg history read must not force a second full
 Team-and-AgentOrg package scan after startup readiness has already completed.
 
+The shared generation is structural: it enforces exact Team/AgentOrg family
+placement, required and retired package manifests, execution trees, task
+sidecars, and communication sidecars. It does not enumerate or read member
+`raw_traces_active.jsonl`, rotated `raw_traces_*.jsonl`, or context-file bytes.
+Whole-history attachment-locator conversion and validation belongs to the
+one-time migration; exact file availability is checked when that file is
+requested.
+
 Readiness failure rejects the history operation; it is not converted into a
 successful empty result and cannot publish unvalidated index rows. After
 readiness succeeds, the AgentOrg catalog retains its existing serialized
@@ -435,7 +443,19 @@ Important identity/storage rules:
   fixed-depth family cutover. Current flat Team V2 packages remain native with
   zero writes; supported former multi-Team packages become AgentOrg V1 packages
   and index rows. Preflight, atomic replacement/rename, reread validation, and
-  deterministic restart Retry precede target-only admission.
+  deterministic restart Retry precede target-only admission. Two exact
+  root-local outcomes remain failed item details, contribute to `failedCount`,
+  and produce terminal `SUCCEEDED_WITH_WARNINGS` only when no fatal outcome is
+  present: a missing required legacy `team_run_execution_tree.json` before a
+  candidate plan exists (the source is unchanged), and a repository-typed
+  malformed/conflicting legacy token-attribution-data rejection (the root SQL
+  transaction rolls back and the affected Org remains locally guarded). The
+  shared runner skips that terminal warning on later startups. Root/family/tree
+  structural faults, SQL/query/update faults, changed preconditions, strict
+  reread or dependency failures, and every other sidecar, locator, writer,
+  commit, index, cleanup, postcondition or unknown failure remain `FAILED` and
+  retryable; global token discovery and any other fatal outcome dominate
+  warnings.
 - required startup app-data migration
   `20260706_remove_global_skill_discovery_mode` rewrites persisted
   `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
@@ -758,10 +778,17 @@ historical traces or replay a migration to backfill them.
 
 Org attachments resolve stored root plus exact AgentRun ownership and physical
 file membership, not the currently selected logical address. Root package
-readiness validates current references statelessly before admission. Only the
-existing initial family migration may transform proven prior locators; normal
-history, projection and Open do not perform repairs, runtime activation or legacy
-route fallback. See [AgentOrg](agent_orgs.md#exact-context-files-and-saved-references)
+readiness admits current structural authorities without scanning saved
+attachment references or historical traces. Only the existing initial family
+migration may transform and validate proven prior locators. Normal history,
+projection and Open do not perform repairs, runtime activation or legacy route
+fallback; an exact attachment request resolves its current owner, safe stored
+filename/path, and file existence, returning a request-scoped error if the bytes
+are unavailable. Final Team attachment access returns `400` for a malformed
+member address or unsafe stored filename and `404` for a shaped but absent or
+mis-correlated exact member/file. Unexpected access failures remain server
+errors rather than being hidden as client outcomes. See
+[AgentOrg](agent_orgs.md#exact-context-files-and-saved-references)
 for cutover inventory and saved-locator preservation constraints.
 
 ## Collaboration Root Restore / Projection Contract

@@ -1,0 +1,6 @@
+post-cleanup timestamp: 2026-09-18T10:43:34.882099+00:00
+ports 51381/51383: closed (lsof empty)
+owned node processes: 0
+
+generated SDK dist: absent
+browser sessions: 0 (browser tool list_tabs)

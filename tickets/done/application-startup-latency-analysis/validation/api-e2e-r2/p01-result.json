@@ -1,0 +1,90 @@
+{
+  "scenarioId": "P01",
+  "result": "Pass",
+  "acceptanceCriteria": [
+    "AC-001",
+    "AC-003",
+    "AC-005",
+    "AC-006",
+    "AC-007"
+  ],
+  "isolatedProfile": ".local/api-startup-profile-r2",
+  "firstCorrectedStartup": {
+    "healthMs": 6425.083,
+    "underRepresentativeThreshold": true,
+    "statusBefore": "FAILED",
+    "attemptsBefore": 27,
+    "statusAfter": "SUCCEEDED_WITH_WARNINGS",
+    "attemptsAfter": 28,
+    "summary": "Scanned 526; migrated 0; skipped 518; failed 8.",
+    "failedCount": 8,
+    "allEightIdentitiesAndReasonsPersisted": true,
+    "sourceRootsUnchanged": true,
+    "newTargetsCreated": 0,
+    "readinessRawTraceReads": 0,
+    "externalFetches": 0,
+    "providerOrInferenceStarts": 0,
+    "logicalDatabaseChange": "Only app_data_migration_records changed. The corrected flat-family record became terminal and a separate previously NOT_RUN history-summary migration recorded its first successful no-op result; all other 20 SQLite tables remained exact."
+  },
+  "warningRootIds": [
+    "team_classroomsimulation_1ad20b5a",
+    "team_classroomsimulation_3629e668",
+    "team_classroomsimulation_77474497",
+    "team_classroomsimulation_7ebcecc4",
+    "team_classroomsimulation_8661ebcb",
+    "team_northstar-operating-company_6af4b5ba",
+    "team_software-engineering-team_359ede01",
+    "team_video-tutorial-creation-team_48955b3c"
+  ],
+  "stableStarts": [
+    {
+      "run": "p01-stable-1",
+      "healthMs": 3210.487,
+      "readinessRawTraceReads": 0,
+      "externalFetches": 0
+    },
+    {
+      "run": "p01-stable-2",
+      "healthMs": 2555.66,
+      "readinessRawTraceReads": 0,
+      "externalFetches": 0
+    },
+    {
+      "run": "p01-stable-3",
+      "healthMs": 2562.309,
+      "readinessRawTraceReads": 0,
+      "externalFetches": 0
+    }
+  ],
+  "terminalStability": {
+    "allUnderRepresentativeThreshold": true,
+    "attemptsStableAt": 28,
+    "timestampsStable": true,
+    "logPathStable": true,
+    "targetsStable": true,
+    "allProfileCategoriesByteExactAfterFirst": true,
+    "laterReadOnlyBrowserProfileCategoriesByteExact": true
+  },
+  "typedTokenAndFatalControls": {
+    "commandResult": "5 files / 66 tests Pass",
+    "typedMalformedOrConflictingData": "SUCCEEDED_WITH_WARNINGS with exact SQL rollback and affected-Org local readiness rejection",
+    "unrelatedRootUsability": true,
+    "unexpectedSqlStructuralAndUnknownFaultsRemainFatal": true,
+    "fatalPrecedenceOverWarnings": true,
+    "terminalSkipCovered": true,
+    "qualification": "These destructive/corrupt states are executable repository fixtures using real SQLite/manager boundaries because they are not safely user-authorable through the frontend."
+  },
+  "primaryEvidence": [
+    "p01-ledger-before.json",
+    "p01-ledger-after-first.json",
+    "p01-ledger-after-stable.json",
+    "p01-terminal-warning-log.txt",
+    "p01-before-roots.json",
+    "p01-after-first-roots.json",
+    "p01-db-logical-comparison.json",
+    "p01-terminal-stability.json",
+    "token-warning-fatal-executable.log",
+    "browser-history-attachment-proof.json",
+    "browser-readonly-preservation.json"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "ticket": "APP-STARTUP-LATENCY-20260918-001",
+  "implementationRevision": "IR-002",
+  "allPreserved": true,
+  "entries": [
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "ir001CandidateSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "ir002CandidateSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "unchangedFromIr001": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-package-context-file-validation.ts",
+      "ir001CandidateSha256": null,
+      "ir002CandidateSha256": null,
+      "unchangedFromIr001": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "ir001CandidateSha256": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "ir002CandidateSha256": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "unchangedFromIr001": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "ir001CandidateSha256": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "ir002CandidateSha256": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "unchangedFromIr001": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "ir001CandidateSha256": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "ir002CandidateSha256": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "unchangedFromIr001": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "ir001CandidateSha256": "ae3a221efd2f0e3886096430906d5f00b7709d1792f6b8ad5cd5c8b7a1ec0347",
+      "ir002CandidateSha256": "ae3a221efd2f0e3886096430906d5f00b7709d1792f6b8ad5cd5c8b7a1ec0347",
+      "unchangedFromIr001": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "entries": 11,
+  "allMatch": true,
+  "checks": [
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "expectedState": "present",
+      "expected": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "actual": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-package-context-file-validation.ts",
+      "expectedState": "deleted",
+      "expected": null,
+      "actual": null,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+      "expectedState": "present",
+      "expected": "0c4f7d7a62e8b0cdaed762a0e6ee6b639175e05c340627c4ea5b24d8faaad55d",
+      "actual": "0c4f7d7a62e8b0cdaed762a0e6ee6b639175e05c340627c4ea5b24d8faaad55d",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+      "expectedState": "present",
+      "expected": "4163c626a81ee178649539e89c6c6223bc47817b2ca798ee318a6697bbc77ea3",
+      "actual": "4163c626a81ee178649539e89c6c6223bc47817b2ca798ee318a6697bbc77ea3",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "expectedState": "present",
+      "expected": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "actual": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "expectedState": "present",
+      "expected": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "actual": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/context-files/context-file-owner-resolver.test.ts",
+      "expectedState": "present",
+      "expected": "8ba92ada6a6c3806e877777a9b38e10c56b7d001a351227fb937e10d6c9be3ac",
+      "actual": "8ba92ada6a6c3806e877777a9b38e10c56b7d001a351227fb937e10d6c9be3ac",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts",
+      "expectedState": "present",
+      "expected": "d4986c9e09571a42cd044b9d43ccfd211e0cd9f1f00c264e2b9df3906edbd2f9",
+      "actual": "d4986c9e09571a42cd044b9d43ccfd211e0cd9f1f00c264e2b9df3906edbd2f9",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "expectedState": "present",
+      "expected": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "actual": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/run_history.md",
+      "expectedState": "present",
+      "expected": "fb07c3279931ba99f826dd8fc918c3e4dca5dfa26c32c3ec77d4dbea69a6bc1a",
+      "actual": "fb07c3279931ba99f826dd8fc918c3e4dca5dfa26c32c3ec77d4dbea69a6bc1a",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "expectedState": "present",
+      "expected": "ae3a221efd2f0e3886096430906d5f00b7709d1792f6b8ad5cd5c8b7a1ec0347",
+      "actual": "ae3a221efd2f0e3886096430906d5f00b7709d1792f6b8ad5cd5c8b7a1ec0347",
+      "match": true
+    }
+  ]
+}

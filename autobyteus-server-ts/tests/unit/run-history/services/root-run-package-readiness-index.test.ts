@@ -54,6 +54,26 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
 };
 
 describe('RootRunPackageReadinessIndex', () => {
+  it('admits structurally valid Team and Org roots without reading historical raw-trace payloads', async () => {
+    const memoryDir = await temporaryMemory();
+    const teamPackage = await writeTeam(memoryDir, 'team-payload-independent');
+    const orgPackage = await writeOrg(memoryDir, 'org-payload-independent');
+    const historicalPayload = Buffer.alloc(2 * 1024 * 1024, 0x7b);
+    await fs.mkdir(path.join(teamPackage, 'team-payload-independent-agent'), { recursive: true });
+    await fs.mkdir(path.join(orgPackage, 'org-payload-independent-agent'), { recursive: true });
+    await fs.writeFile(path.join(teamPackage, 'team-payload-independent-agent', 'raw_traces_active.jsonl'), historicalPayload);
+    await fs.writeFile(path.join(orgPackage, 'org-payload-independent-agent', 'raw_traces_000001.jsonl'), historicalPayload);
+    const readFile = vi.spyOn(fs, 'readFile');
+
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    await index.rebuild();
+
+    expect(index.listAdmitted('agent_team')).toEqual(['team-payload-independent']);
+    expect(index.listAdmitted('agent_org')).toEqual(['org-payload-independent']);
+    expect(index.listDiagnostics()).toEqual([]);
+    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toEqual([]);
+  });
+
   it('lazily shares one strict awaitReady generation across Team and Org facades', async () => {
     const memoryDir = await temporaryMemory();
     await writeTeam(memoryDir, 'team-lazy');

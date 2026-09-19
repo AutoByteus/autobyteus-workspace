@@ -1,0 +1,60 @@
+{
+  "probeKind": "read-only exact packaged readiness rebuild",
+  "sourceRevision": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "memoryRootRedacted": true,
+  "writesOrMutationsRequested": false,
+  "durationMs": 29524.027,
+  "admittedTeamCount": 307,
+  "admittedOrgCount": 17,
+  "diagnosticCount": 219,
+  "readAggregate": {
+    "calls": 11739,
+    "bytes": 5873157043,
+    "rawTraceCalls": 5695,
+    "rawTraceBytes": 5764604776,
+    "mebibytes": 5601.079,
+    "rawTraceMebibytes": 5497.556
+  },
+  "stageAggregates": {
+    "listFamilyEntries": {
+      "count": 2,
+      "totalMs": 18.993,
+      "meanMs": 9.497,
+      "p50Ms": 8.391,
+      "p95Ms": 8.391,
+      "maxMs": 10.602
+    },
+    "inspectTeam": {
+      "count": 526,
+      "totalMs": 457.169,
+      "meanMs": 0.869,
+      "p50Ms": 0.522,
+      "p95Ms": 2.371,
+      "maxMs": 19.221
+    },
+    "inspectOrg": {
+      "count": 17,
+      "totalMs": 22.402,
+      "meanMs": 1.318,
+      "p50Ms": 0.722,
+      "p95Ms": 4.599,
+      "maxMs": 6.425
+    },
+    "contextValidateTeam": {
+      "count": 825,
+      "totalMs": 28298.674,
+      "meanMs": 34.301,
+      "p50Ms": 11.787,
+      "p95Ms": 128.752,
+      "maxMs": 1221.141
+    },
+    "contextValidateOrg": {
+      "count": 34,
+      "totalMs": 728.622,
+      "meanMs": 21.43,
+      "p50Ms": 2.12,
+      "p95Ms": 65.899,
+      "maxMs": 261.423
+    }
+  }
+}

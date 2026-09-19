@@ -1,0 +1,149 @@
+{
+  "base": "http://127.0.0.1:51381",
+  "cases": [
+    {
+      "name": "team_valid_before",
+      "path": "/rest/team-runs/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/members/%2Fsolution_designer/context-files/ctx_e14b3d2aed9f__image.png",
+      "expected": 200,
+      "status": 200,
+      "pass": true,
+      "bytes": 721550,
+      "sha256": "78bccbfbac19772765ead13f272648d630daab50e8e1f8aa7a5c0501816550d7",
+      "contentType": null,
+      "bodyPreview": null
+    },
+    {
+      "name": "team_malformed_member",
+      "path": "/rest/team-runs/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/members/not-rooted/context-files/ctx_e14b3d2aed9f__image.png",
+      "expected": 400,
+      "status": 400,
+      "pass": true,
+      "bytes": 111,
+      "sha256": "94699ff2c1bf23391480953b0c8dd5a0aa5e5c7c0577f0bd7ca573a8bb65d1ea",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"AgentTeam address 'not-rooted' is invalid: a canonical rooted value beginning with '/' is required\"}"
+    },
+    {
+      "name": "team_unsafe_filename",
+      "path": "/rest/team-runs/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/members/%2Fsolution_designer/context-files/..%2Fsecret.txt",
+      "expected": 400,
+      "status": 400,
+      "pass": true,
+      "bytes": 39,
+      "sha256": "84803539c45fb18692cc4087202238e8bd43d0b2d79eab09bf380c01101ed16f",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"storedFilename is invalid.\"}"
+    },
+    {
+      "name": "team_missing_owner",
+      "path": "/rest/team-runs/missing-containing-team/members/%2Fsolution_designer/context-files/ctx_e14b3d2aed9f__image.png",
+      "expected": 404,
+      "status": 404,
+      "pass": true,
+      "bytes": 28,
+      "sha256": "c83c32a31b1bb4db9aeb9be31de9b148405ee68f0867bda039a833d8a4e186d9",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"File not found.\"}"
+    },
+    {
+      "name": "team_cross_owner_member",
+      "path": "/rest/team-runs/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/members/%2FStudentStudyGroup%2Fstudent_one/context-files/ctx_e14b3d2aed9f__image.png",
+      "expected": 404,
+      "status": 404,
+      "pass": true,
+      "bytes": 28,
+      "sha256": "c83c32a31b1bb4db9aeb9be31de9b148405ee68f0867bda039a833d8a4e186d9",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"File not found.\"}"
+    },
+    {
+      "name": "team_missing_exact_file",
+      "path": "/rest/team-runs/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/members/%2Fsolution_designer/context-files/ctx_missing__exact.png",
+      "expected": 404,
+      "status": 404,
+      "pass": true,
+      "bytes": 28,
+      "sha256": "c83c32a31b1bb4db9aeb9be31de9b148405ee68f0867bda039a833d8a4e186d9",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"File not found.\"}"
+    },
+    {
+      "name": "team_valid_after",
+      "path": "/rest/team-runs/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/members/%2Fsolution_designer/context-files/ctx_e14b3d2aed9f__image.png",
+      "expected": 200,
+      "status": 200,
+      "pass": true,
+      "bytes": 721550,
+      "sha256": "78bccbfbac19772765ead13f272648d630daab50e8e1f8aa7a5c0501816550d7",
+      "contentType": null,
+      "bodyPreview": null
+    },
+    {
+      "name": "org_valid_before",
+      "path": "/rest/agent-org-runs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/agent-runs/student_one_600a8c0f902c4bfb87c03e6bbb73aae5/context-files/ctx_c2e359d21475__image.png",
+      "expected": 200,
+      "status": 200,
+      "pass": true,
+      "bytes": 480646,
+      "sha256": "36e5e2a3630968a5033a837fe78c8986bff0ef5aa5e1c4f9e5cbb40603175a80",
+      "contentType": null,
+      "bodyPreview": null
+    },
+    {
+      "name": "org_unsafe_filename",
+      "path": "/rest/agent-org-runs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/agent-runs/student_one_600a8c0f902c4bfb87c03e6bbb73aae5/context-files/..%2Fsecret.txt",
+      "expected": 400,
+      "status": 400,
+      "pass": true,
+      "bytes": 39,
+      "sha256": "84803539c45fb18692cc4087202238e8bd43d0b2d79eab09bf380c01101ed16f",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"storedFilename is invalid.\"}"
+    },
+    {
+      "name": "org_missing_owner",
+      "path": "/rest/agent-org-runs/missing-org/agent-runs/student_one_600a8c0f902c4bfb87c03e6bbb73aae5/context-files/ctx_c2e359d21475__image.png",
+      "expected": 404,
+      "status": 404,
+      "pass": true,
+      "bytes": 28,
+      "sha256": "c83c32a31b1bb4db9aeb9be31de9b148405ee68f0867bda039a833d8a4e186d9",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"File not found.\"}"
+    },
+    {
+      "name": "org_cross_owner_agent",
+      "path": "/rest/agent-org-runs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/agent-runs/api_e2e_engineer_450b25f17f2245fe89b9c52cd17038ae/context-files/ctx_c2e359d21475__image.png",
+      "expected": 404,
+      "status": 404,
+      "pass": true,
+      "bytes": 28,
+      "sha256": "c83c32a31b1bb4db9aeb9be31de9b148405ee68f0867bda039a833d8a4e186d9",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"File not found.\"}"
+    },
+    {
+      "name": "org_missing_exact_file",
+      "path": "/rest/agent-org-runs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/agent-runs/student_one_600a8c0f902c4bfb87c03e6bbb73aae5/context-files/ctx_missing__exact.png",
+      "expected": 404,
+      "status": 404,
+      "pass": true,
+      "bytes": 28,
+      "sha256": "c83c32a31b1bb4db9aeb9be31de9b148405ee68f0867bda039a833d8a4e186d9",
+      "contentType": null,
+      "bodyPreview": "{\"detail\":\"File not found.\"}"
+    },
+    {
+      "name": "org_valid_after",
+      "path": "/rest/agent-org-runs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/agent-runs/student_one_600a8c0f902c4bfb87c03e6bbb73aae5/context-files/ctx_c2e359d21475__image.png",
+      "expected": 200,
+      "status": 200,
+      "pass": true,
+      "bytes": 480646,
+      "sha256": "36e5e2a3630968a5033a837fe78c8986bff0ef5aa5e1c4f9e5cbb40603175a80",
+      "contentType": null,
+      "bodyPreview": null
+    }
+  ],
+  "allPass": true
+}

@@ -1,5 +1,3 @@
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import { RootPackageContextFileValidation } from "./root-package-context-file-validation.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
@@ -222,23 +220,6 @@ export class RootRunPackageReadinessIndex {
       if (team) await this.inspectTeam(candidate, rootRunId, team);
       if (org) await this.inspectOrg(candidate, rootRunId, org);
     }
-    const attachments = new RootPackageContextFileValidation(this.memoryDir, candidate, () => appConfigProvider.config.getBaseUrl());
-    // Settle dependency exclusions before publishing. Each pass removes at least one candidate.
-    let excluded: boolean;
-    do {
-      excluded = false;
-      for (const family of ["agent_team", "agent_org"] as const) {
-        const admitted = family === "agent_team" ? candidate.admittedTeams : candidate.admittedOrgs;
-        for (const id of admitted) {
-          try { await attachments.validate(family, id); }
-          catch (error) {
-            admitted.delete(id); excluded = true;
-            const directory = family === "agent_team" ? teamById.get(id)!.packagePath : orgById.get(id)!.packagePath;
-            this.record(candidate, family, id, directory, "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
-          }
-        }
-      }
-    } while (excluded);
     return candidate;
   }
 

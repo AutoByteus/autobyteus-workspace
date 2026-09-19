@@ -133,9 +133,9 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(await fs.readFile(targetFile, 'utf8')).toBe(bytes);
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
-    // Required byte loss is diagnosed even when the only reference lives in a complete archive.
+    // Required byte loss is now request-scoped after the migration has proved its committed target.
     await fs.unlink(path.join(e.target, 'task', 'context_files', filename));
-    await readiness.rebuild(); expect(readiness.listAdmitted('agent_org')).toEqual([]);
+    await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
 
   it.each(['image', 'retired'])('rejects invalid present file-only %s facts before writing/moving the initial package', async type => {
@@ -207,8 +207,8 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(rows[0].media.images).toEqual([current('lead')]); expect(rows[0].content).toBe(uri); expect(rows[1].media.images).toEqual(['https://foreign.test' + uri]);
     await expect(fs.stat(path.join(e.target, treeName))).rejects.toMatchObject({ code: 'ENOENT' });
     const readiness = new RootRunPackageReadinessIndex(e.memory);
-    // Relative current reference to an unknown exact ID is never admitted, even without retired authorities.
-    await put(file, trace(current('missing'))); await readiness.rebuild(); expect(readiness.listAdmitted('agent_org')).toEqual([]);
+    // Post-migration payload availability is request-scoped; readiness remains structural.
+    await put(file, trace(current('missing'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
     await put(file, trace(current('lead'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
 });

@@ -40,6 +40,7 @@ const directories = async (root: string): Promise<string[]> => (await fs.readdir
 /** Metadata only. No standalone inventory and no sidecar/trace discovery here. */
 export class AgentOrgHistoryCandidatePlanner {
   readonly failures = new Map<string, string>();
+  readonly missingExecutionTreeWarnings = new Map<string, string>();
   readonly flatRoots = new Set<string>();
   readonly collisions = new Set<string>();
   private readonly layout: AgentMemoryLayout;
@@ -60,7 +61,27 @@ export class AgentOrgHistoryCandidatePlanner {
       try {
         assertMigrationRootId(id);
         const source = this.layout.getTeamDirPath({ rootTeamRunId: id, ancestorTeamRunIds: [] });
-        const raw = await readMigrationJson(getTeamRunExecutionTreePath(source));
+        const executionTreePath = getTeamRunExecutionTreePath(source);
+        let raw: unknown;
+        try {
+          raw = await readMigrationJson(executionTreePath);
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+            const sourceStillExists = await fs.stat(source)
+              .then((stat) => stat.isDirectory())
+              .catch((sourceError: NodeJS.ErrnoException) => {
+                if (sourceError.code === "ENOENT") return false;
+                throw sourceError;
+              });
+            if (!sourceStillExists) throw error;
+            this.missingExecutionTreeWarnings.set(
+              id,
+              "Required legacy Team execution tree 'team_run_execution_tree.json' is missing; source was not migrated.",
+            );
+            continue;
+          }
+          throw error;
+        }
         let flat = false;
         try { validateTeamRunExecutionTreePayload(raw, id); flat = true; } catch { /* released nested source */ }
         if (flat) { this.flatRoots.add(id); continue; }

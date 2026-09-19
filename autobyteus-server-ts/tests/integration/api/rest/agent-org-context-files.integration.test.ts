@@ -63,6 +63,26 @@ afterEach(async () => {
 });
 
 describe('exact Org attachment REST with actual stored-only identity and filesystem', () => {
+  it('returns request-scoped errors for missing, unsafe and cross-owner final files', async () => {
+    const missing = await app.inject({
+      method: 'GET',
+      url: '/rest/agent-org-runs/org/agent-runs/configured-direct/context-files/ctx_missing__notes.txt',
+    });
+    expect(missing.statusCode).toBe(404);
+    expect((await app.inject({
+      method: 'GET',
+      url: '/rest/agent-org-runs/wrong-org/agent-runs/configured-direct/context-files/ctx_missing__notes.txt',
+    })).statusCode).toBe(404);
+    expect((await app.inject({
+      method: 'GET',
+      url: `/rest/agent-org-runs/org/agent-runs/configured-direct/context-files/${encodeURIComponent('../secret.txt')}`,
+    })).statusCode).toBe(400);
+    expect((await app.inject({
+      method: 'GET',
+      url: '/rest/agent-org-runs/org/agent-runs/configured-lead/context-files/ctx_missing__notes.txt',
+    })).statusCode).toBe(404);
+  });
+
   it('uploads/opens/removes/finalizes distinct bytes for repeated configured/task addresses; retains saved owner across views/reopen', async () => {
     const retained: { locator: string; text: string; file: string }[] = [];
     for (const id of ['configured-direct', 'retained-direct', 'configured-lead', 'retained-lead']) {

@@ -1,0 +1,396 @@
+{
+  "run": "launch-2",
+  "port": 51382,
+  "launchedAt": "2026-09-18T10:00:50.570886+00:00",
+  "serverPid": 30287,
+  "firstHealthMs": 2184.234,
+  "healthStatus": 200,
+  "healthBody": "{\"status\":\"ok\",\"message\":\"Server is running\"}",
+  "healthAttemptCount": 42,
+  "healthAttempts": [
+    {
+      "elapsedMs": 9.664,
+      "durationMs": 7.01,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 60.81,
+      "durationMs": 0.345,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 113.255,
+      "durationMs": 0.324,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 167.651,
+      "durationMs": 0.384,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 222.07,
+      "durationMs": 0.347,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 273.596,
+      "durationMs": 0.316,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 328.948,
+      "durationMs": 0.316,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 380.768,
+      "durationMs": 0.348,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 433.231,
+      "durationMs": 0.337,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 484.247,
+      "durationMs": 0.323,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 535.35,
+      "durationMs": 0.301,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 586.451,
+      "durationMs": 0.329,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 641.524,
+      "durationMs": 0.342,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 695.214,
+      "durationMs": 0.342,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 747.082,
+      "durationMs": 0.375,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 798.837,
+      "durationMs": 0.354,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 849.905,
+      "durationMs": 0.379,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 901.755,
+      "durationMs": 0.359,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 957.139,
+      "durationMs": 0.351,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1008.212,
+      "durationMs": 0.365,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1063.575,
+      "durationMs": 0.325,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1115.251,
+      "durationMs": 0.389,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1170.648,
+      "durationMs": 0.326,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1226.018,
+      "durationMs": 0.337,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1277.972,
+      "durationMs": 0.298,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1328.552,
+      "durationMs": 0.269,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1383.189,
+      "durationMs": 0.302,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1434.551,
+      "durationMs": 0.337,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1486.952,
+      "durationMs": 0.313,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1541.594,
+      "durationMs": 0.352,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1596.955,
+      "durationMs": 0.338,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1650.211,
+      "durationMs": 0.449,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1705.59,
+      "durationMs": 0.335,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1757.31,
+      "durationMs": 0.344,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1809.152,
+      "durationMs": 0.433,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1860.521,
+      "durationMs": 0.296,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1911.026,
+      "durationMs": 0.361,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1966.418,
+      "durationMs": 0.342,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 2016.817,
+      "durationMs": 0.304,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 2072.184,
+      "durationMs": 0.331,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 2123.068,
+      "durationMs": 0.311,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 2184.222,
+      "durationMs": 9.719,
+      "status": 200
+    }
+  ],
+  "processExitBeforeHealth": null,
+  "finalExitCode": 0,
+  "observerEventCounts": {
+    "app-data-migrations-end": 1,
+    "app-data-migrations-start": 1,
+    "observer-ready": 1,
+    "process-start": 3,
+    "readiness-end": 1,
+    "readiness-start": 1
+  },
+  "rawTraceReads": [],
+  "externalFetches": [],
+  "readiness": [
+    {
+      "sequence": 5,
+      "pid": 30287,
+      "at": "2026-09-18T10:00:51.952Z",
+      "uptimeMs": 1364.037,
+      "type": "readiness-start",
+      "id": "readiness-5",
+      "memoryDirRedacted": true
+    },
+    {
+      "sequence": 6,
+      "pid": 30287,
+      "at": "2026-09-18T10:00:52.329Z",
+      "uptimeMs": 1741.764,
+      "type": "readiness-end",
+      "id": "readiness-5",
+      "admittedTeams": 518,
+      "admittedOrgs": 17,
+      "diagnostics": 8
+    }
+  ],
+  "migrations": [
+    {
+      "sequence": 3,
+      "pid": 30287,
+      "at": "2026-09-18T10:00:51.842Z",
+      "uptimeMs": 1254.577,
+      "type": "app-data-migrations-start",
+      "id": "migrations-3"
+    },
+    {
+      "sequence": 4,
+      "pid": 30287,
+      "at": "2026-09-18T10:00:51.951Z",
+      "uptimeMs": 1363.601,
+      "type": "app-data-migrations-end",
+      "id": "migrations-3",
+      "statuses": [
+        {
+          "migrationId": "20260727_custom_provider_v1_secret_migration",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260706_remove_global_skill_discovery_mode",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260517_team_run_metadata_member_tree",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260814_team_run_execution_tree_v1",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260823_repair_team_agent_memory_layout",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260824_team_run_execution_tree_v2",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260819_token_usage_run_records_v1",
+          "status": "SUCCEEDED",
+          "attempts": 6,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260901_agent_org_flat_team_families_v1",
+          "status": "FAILED",
+          "attempts": 25,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260617_raw_trace_rotation_layout",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260707_raw_trace_active_file_name",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260905_agent_org_history_first_message_summary_v1",
+          "status": "NOT_RUN",
+          "attempts": 0,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260701_team_communication_projection_addresses",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260623_remove_self_evolution_run_metadata",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260521_team_run_history_index_v2",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260521_run_history_index_v2",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1,
+          "detailCount": null
+        },
+        {
+          "migrationId": "20260803_custom_provider_readable_identity",
+          "status": "SUCCEEDED_WITH_WARNINGS",
+          "attempts": 1,
+          "detailCount": null
+        }
+      ]
+    }
+  ]
+}

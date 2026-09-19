@@ -1,0 +1,40 @@
+IR-005 guard checks
+--- git diff --check ---
+PASS git diff --check
+--- IR-005 production delta from preserved IR-004 candidate ---
+8	2	/tmp/ir005-agent-org-flat-team-families-v1-app-data-migration.pre.ts => autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts
+--- effective non-empty changed production lines ---
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts 242
+--- warning detail aggregation boundary ---
+PASS both terminal-warning dispositions retain every sorted detail; non-warning cap remains in place
+--- representative durable regression ---
+PASS eight identities/reasons, count, no-write and unchanged-source/zero-target assertions present
+--- manifest / preservation proof ---
+PASS manifest candidate hashes exact 20
+PASS protected IR-001 through IR-004 entries exact 18
+retained prior evidence 37
+--- test/build summaries ---
+PASS baseline regression, 88 focused tests, 3 adjacent tests, and prepared build
+--- generated worktree outputs ---
+PASS shared/generated dist removed
+--- cumulative diff stat ---
+ autobyteus-server-ts/docs/modules/agent_orgs.md    |  35 ++-
+ autobyteus-server-ts/docs/modules/run_history.md   |  37 ++-
+ autobyteus-server-ts/src/api/rest/context-files.ts |  37 ++-
+ ...org-flat-team-families-v1-app-data-migration.ts |  55 +++-
+ .../agent-org-history-candidate-plan.ts            |  23 +-
+ .../agent-org-token-attribution-repository.ts      |  34 ++-
+ .../agent-org-token-attribution-transition.ts      |  13 +-
+ .../services/context-file-owner-resolver.ts        |  12 +-
+ .../root-package-context-file-validation.ts        |  94 -------
+ .../services/root-run-package-readiness-index.ts   |  19 --
+ .../agent-org-context-files.integration.test.ts    |  20 ++
+ .../api/rest/context-files.integration.test.ts     |  84 +++++-
+ ...ent-org-context-file-locator-transition.test.ts |   8 +-
+ ...lat-team-families-v1-app-data-migration.test.ts | 288 ++++++++++++++++++++-
+ .../agent-org-token-attribution-transition.test.ts |  18 +-
+ .../app-data-migration-runner.test.ts              |  55 ++++
+ .../context-file-owner-resolver.test.ts            |  29 ++-
+ .../root-run-package-readiness-index.test.ts       |  20 ++
+ 18 files changed, 697 insertions(+), 184 deletions(-)
+GUARD_EXIT_CODE=0

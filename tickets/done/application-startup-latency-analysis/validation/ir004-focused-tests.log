@@ -1,0 +1,203 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification
+FAMILY_MIGRATION_IO_ONLY {"addedExcludedBytes":22020096,"small":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":3.074999999999818},"large":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":1.1075419999997393}}
+
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification 3740ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > reconciles only a retained Team index row without reopening current Org history 111ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through authority interruption, then retries 150ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through rename-before interruption, then retries 158ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through rename-after interruption, then retries 114ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through org-index-after interruption, then retries 120ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through team-index-before interruption, then retries 125ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through team-index-after interruption, then retries 118ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through retirement interruption, then retries 137ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains referrer markers when a cross-candidate token dependency fails, including cycles 153ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains referrer markers when a cross-candidate sidecar dependency fails, including cycles 136ms
+stdout | tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > changes exactly three fields, preserves accounting/checkpoint bytes and negative controls, and keeps replay/advancement neutral 138ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > finds stale SQL after all history sources are gone and performs zero history-content or index writes 77ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies wrong-root source data after whole-root rollback and keeps the local readiness guard 99ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies mixed-summary source data after whole-root rollback and keeps the local readiness guard 93ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies scalar-only source data after whole-root rollback and keeps the local readiness guard 90ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies extra-claimant source data after whole-root rollback and keeps the local readiness guard 98ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies malformed source data after whole-root rollback and keeps the local readiness guard 96ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > includes settled direct-task and task-Team members without materializing runtimes 83ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > rolls back an actual SQLite UPDATE failure after an earlier member update 93ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > uses the current token boundary after real package loading and rejects before scope build; inspection stays available 81ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > does not normalize a malformed current attribution into a ready result 23ms
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > preserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > preserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move 144ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > transforms file-only user facts in actual complete nested archive paths and preserves current no-op/archive metadata 75ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > rejects invalid present file-only image facts before writing/moving the initial package 6ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > rejects invalid present file-only retired facts before writing/moving the initial package 6ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > fails missing owner proof before any record write, preserves bytes and withholds admission 7ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > fails ambiguous owner proof before any record write, preserves bytes and withholds admission 7ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > retries a partially committed locator file without re-encoding or duplicating traces, then completes the original rename 86ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > requires committed locator outcome plus strict reread: indeterminate 75ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > requires committed locator outcome plus strict reread: after-commit 71ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > requires committed locator outcome plus strict reread: reread-mismatch 90ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > finishes target-only interrupted cleanup with known Org locators, leaves foreign URLs/prose untouched and rejects invalid current targets 83ms
+stdout | tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > leaves flat, nested and invalid authored packages unchanged while runtime migration remains independent 68ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > keeps a native flat Team V2 package a strict zero-write cohort 10ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > records a missing required legacy Team execution tree as an unchanged terminal warning with no plan effects 4ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > keeps a missing-tree warning nonterminal when any existing fatal candidate failure is present 3ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > records a typed token-data rejection as a terminal warning and blocks candidate completion 41ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > keeps typed token warnings nonterminal when any token root has an untyped failure 91ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > makes a candidate that depends on a token-warning root fatally incomplete 94ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > keeps a non-ENOENT required-tree read failure fatal and retryable 4ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > keeps concurrent source-root disappearance fatal rather than treating it as a missing-tree warning 3ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > converts one organization-like Team V2 package by direct family rename and transfers history 77ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > accepts the exact predecessor V1-to-released-V2 output before converting it to Org V1 83ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > rejects a released V2 member with an unrecognized compatibility field before mutation 11ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > fails closed on a sidecar correlation mismatch without creating the Org family 8ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > reports a family collision without modifying either package 7ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > cleans retired Team authorities from a completely written current Org package on restart 57ms
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:59939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > rejects true duplicate concurrent retry attempts 6ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > treats stale RUNNING records as retryable 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > keeps ordinary recent persisted RUNNING records protected by the timestamp guard 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > lists registered migrations that do not have DB records 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > classifies public recovery from execution policy, scheduling, status, and staleness 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > requires restart for manual execution of a startup-only migration 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > retries a startup-only FAILED record only through the next ordinary startup 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > retries a startup-only RUNNING record only through the next ordinary startup 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > keeps a startup-only warning terminal without advertising recovery 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > does not rewrite terminal missing-tree and typed-token warning details on later pending runs 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > attempts, persists, and returns every required result without an aggregate startup throw 2ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > blocks a failed dependent before attempt creation and continues independent migrations 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > admits a dependent when its prerequisite is SUCCEEDED 3ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > admits a dependent when its prerequisite is SUCCEEDED_WITH_WARNINGS 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > rejects manual dependent execution when its prerequisite is FAILED 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > rejects manual dependent execution when its prerequisite is RUNNING 0ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > rejects manual dependent execution when its prerequisite is NOT_RUN 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > rejects invalid prerequisite topology at registry construction 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > accepts persisted SUCCEEDED and SUCCEEDED_WITH_WARNINGS results without rerunning them 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > exposes warning results for manual retry and records a successful retry attempt 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > persists only the canonical summary while preserving the full attempt log 1ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > stores and logs the canonical zero-count summary for a thrown failure 1ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types an unexpected claimant as root-local legacy data rejection 2ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types unparseable identity JSON as root-local legacy data rejection 1ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types migration-invalid parsed identity null as data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types migration-invalid parsed identity [] as data rejection 1ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types migration-invalid parsed identity {} as data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types migration-invalid parsed identity {"rootTeamRunIds":null} as data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types migration-invalid parsed identity {"rootTeamRunIds":[]} as data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > types a conflicting legacy attribution tuple as data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > does not type query failure as source-data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > does not type update failure as source-data rejection 1ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > does not type precondition failure as source-data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > does not type strict reread failure as source-data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts > AgentOrgTokenAttributionRepository data rejection boundary > does not type unknown transaction failure as source-data rejection 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition-classification.test.ts > AgentOrgTokenAttributionTransition result classification > routes only typed repository data rejection to warnings 3ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition-classification.test.ts > AgentOrgTokenAttributionTransition result classification > routes untyped per-root failures to failures 1ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition-classification.test.ts > AgentOrgTokenAttributionTransition result classification > keeps root identity validation fatal 0ms
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition-classification.test.ts > AgentOrgTokenAttributionTransition result classification > keeps global token-root discovery attempt-fatal 1ms
+
+ Test Files  7 passed (7)
+      Tests  87 passed (87)
+   Start at  02:12:16
+   Duration  14.44s (transform 2.22s, setup 44ms, import 5.92s, tests 7.29s, environment 1ms)
+

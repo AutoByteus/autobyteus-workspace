@@ -1,4 +1,5 @@
 import { AgentOrgTokenAttributionTransition } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.js";
+import { AgentOrgTokenAttributionDataRejection } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.js";
 const emptyTokens = (memory: string) => new AgentOrgTokenAttributionTransition(memory, {
   async *listClaimedRoots() {}, async convertRoot() { return 0; },
 });
@@ -9,6 +10,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AppConfig } from "../../../src/config/app-config.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgFlatTeamFamiliesV1AppDataMigration } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
+import { AgentOrgHistoryCandidatePlanner } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.js";
 import { TeamRunExecutionTreeV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
@@ -40,8 +42,8 @@ const createEnvironment = async () => {
     teamDefinitions,
     orgDefinitions,
     layout: new AgentMemoryLayout(memoryDir),
-    migration: (writer?: AtomicRunPackageFileCommitWriter) =>
-      new AgentOrgFlatTeamFamiliesV1AppDataMigration(memoryDir, config, writer, emptyTokens(memoryDir)),
+    migration: (writer?: AtomicRunPackageFileCommitWriter, tokens = emptyTokens(memoryDir)) =>
+      new AgentOrgFlatTeamFamiliesV1AppDataMigration(memoryDir, config, writer, tokens),
   };
 };
 
@@ -131,6 +133,22 @@ const writeLegacyOrgDefinition = async (env: Awaited<ReturnType<typeof createEnv
 };
 const detailCount = (result: Awaited<ReturnType<AgentOrgFlatTeamFamiliesV1AppDataMigration["execute"]>>, id: string) =>
   Number(result.summary.details.find((detail) => detail.itemId === id)?.message.match(/Count: (\d+)/)?.[1] ?? 0);
+const snapshotDirectory = async (dir: string): Promise<Record<string, Readonly<{
+  bytes: string;
+  ino: number;
+  mtimeMs: number;
+}>>> => {
+  const files: Record<string, Readonly<{ bytes: string; ino: number; mtimeMs: number }>> = {};
+  for (const item of await fs.readdir(dir, { withFileTypes: true })) {
+    const file = path.join(dir, item.name);
+    if (item.isDirectory()) Object.assign(files, await snapshotDirectory(file));
+    else {
+      const stat = await fs.stat(file);
+      files[file] = { bytes: (await fs.readFile(file)).toString("base64"), ino: stat.ino, mtimeMs: stat.mtimeMs };
+    }
+  }
+  return files;
+};
 
 describe("AgentOrg flat-Team family startup migration", () => {
   it("leaves flat, nested and invalid authored packages unchanged while runtime migration remains independent", async () => {
@@ -138,21 +156,12 @@ describe("AgentOrg flat-Team family startup migration", () => {
     const source = await writeLegacyOrgDefinition(env, true);
     const flat = path.join(env.teamDefinitions, "flat");
     await fs.mkdir(flat); await fs.writeFile(path.join(flat, "team-config.json"), json({ coordinatorMemberName: "lead", members: [{ memberName: "lead", ref: "agent", refType: "agent", refScope: "shared" }], handoffs: [] }));
-    const snapshot = async (dir: string): Promise<Record<string, string>> => {
-      const files: Record<string, string> = {};
-      for (const item of await fs.readdir(dir, { withFileTypes: true })) {
-        const file = path.join(dir, item.name);
-        if (item.isDirectory()) Object.assign(files, await snapshot(file));
-        else files[file] = await fs.readFile(file, "base64");
-      }
-      return files;
-    };
-    const before = await snapshot(env.teamDefinitions);
+    const before = await snapshotDirectory(env.teamDefinitions);
     const runId = "independent-org";
     await writeTeamPackage(env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] }), runId, orgLikeTree(runId));
     const writer = new AtomicRunPackageFileCommitWriter(), writes = vi.spyOn(writer, "write");
     expect((await env.migration(writer).execute()).status).toBe("SUCCEEDED");
-    expect(await snapshot(env.teamDefinitions)).toEqual(before);
+    expect(await snapshotDirectory(env.teamDefinitions)).toEqual(before);
     expect(await fs.readdir(env.orgDefinitions)).toEqual([]);
     expect(writes.mock.calls.every(([request]) => request.file !== "definition" && !request.filePath.startsWith(source))).toBe(true);
     await fs.access(getAgentOrgRunExecutionTreePath(env.layout.getOrgDirPath(runId)));
@@ -168,6 +177,259 @@ describe("AgentOrg flat-Team family startup migration", () => {
     expect((await fs.readdir(directory)).sort()).toEqual(beforeFiles);
     for (const file of before) { const target = path.join(directory, file.name); expect(await fs.readFile(target)).toEqual(file.bytes); const stat = await fs.stat(target); expect(stat.ino).toBe(file.stat.ino); expect(stat.mtimeMs).toBe(file.stat.mtimeMs); }
     await expect(fs.access(env.layout.getOrgDirPath(runId))).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("records a missing required legacy Team execution tree as an unchanged terminal warning with no plan effects", async () => {
+    const env = await createEnvironment();
+    const runId = "missing-tree-run";
+    const source = env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
+    await fs.mkdir(source, { recursive: true });
+    await fs.writeFile(path.join(source, "retained-source.txt"), "unchanged\n", "utf8");
+    const before = await snapshotDirectory(source);
+    const sourceStat = await fs.stat(source);
+    const writer = new AtomicRunPackageFileCommitWriter();
+    const writes = vi.spyOn(writer, "write");
+
+    const planner = new AgentOrgHistoryCandidatePlanner(env.memoryDir);
+    const selection = await planner.plan();
+    expect(selection.plans).toEqual([]);
+    expect(planner.failures).toEqual(new Map());
+    expect(planner.missingExecutionTreeWarnings).toEqual(new Map([[
+      runId,
+      "Required legacy Team execution tree 'team_run_execution_tree.json' is missing; source was not migrated.",
+    ]]));
+
+    const result = await env.migration(writer).execute();
+
+    expect(result).toMatchObject({
+      status: "SUCCEEDED_WITH_WARNINGS",
+      summary: {
+        scannedCount: 1,
+        migratedCount: 0,
+        skippedCount: 0,
+        failedCount: 1,
+        details: [{
+          itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
+          status: "FAILED",
+          message: expect.stringContaining(runId),
+        }],
+      },
+      errorMessage: expect.stringContaining("source directories remain unchanged"),
+    });
+    expect(result.errorMessage).not.toContain("require correction and restart");
+    expect(writes).not.toHaveBeenCalled();
+    expect(await snapshotDirectory(source)).toEqual(before);
+    const afterSourceStat = await fs.stat(source);
+    expect(afterSourceStat.ino).toBe(sourceStat.ino);
+    expect(afterSourceStat.mtimeMs).toBe(sourceStat.mtimeMs);
+    await expect(fs.access(env.layout.getOrgDirPath(runId))).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("retains every identity and reason for the representative eight missing-tree warnings", async () => {
+    const env = await createEnvironment();
+    const runIds = Array.from({ length: 8 }, (_, index) => `missing-tree-${index + 1}`);
+    const reason = "Required legacy Team execution tree 'team_run_execution_tree.json' is missing; source was not migrated.";
+    const sources = runIds.map((runId) => env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] }));
+    for (const [index, source] of sources.entries()) {
+      await fs.mkdir(source, { recursive: true });
+      await fs.writeFile(path.join(source, "retained-source.txt"), `unchanged-${index + 1}\n`, "utf8");
+    }
+    const before = await Promise.all(sources.map(snapshotDirectory));
+    const writer = new AtomicRunPackageFileCommitWriter();
+    const writes = vi.spyOn(writer, "write");
+
+    const result = await env.migration(writer).execute();
+    const detail = result.summary.details.find((item) => item.itemId === "FAILED_MISSING_TEAM_EXECUTION_TREE");
+
+    expect(result).toMatchObject({
+      status: "SUCCEEDED_WITH_WARNINGS",
+      summary: { scannedCount: 8, migratedCount: 0, skippedCount: 0, failedCount: 8 },
+      errorMessage: expect.stringContaining("source directories remain unchanged"),
+    });
+    expect(detail).toEqual({
+      itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
+      status: "FAILED",
+      message: `Count: 8. Examples: ${runIds.join(", ")}. Reasons: ${runIds.map(() => reason).join(" | ")}.`,
+    });
+    expect(writes).not.toHaveBeenCalled();
+    for (const [index, source] of sources.entries()) {
+      expect(await snapshotDirectory(source)).toEqual(before[index]);
+      await expect(fs.access(env.layout.getOrgDirPath(runIds[index]!))).rejects.toMatchObject({ code: "ENOENT" });
+    }
+  });
+
+  it("keeps a missing-tree warning nonterminal when any existing fatal candidate failure is present", async () => {
+    const env = await createEnvironment();
+    const missingRunId = "missing-tree-run";
+    await fs.mkdir(env.layout.getTeamDirPath({ rootTeamRunId: missingRunId, ancestorTeamRunIds: [] }), { recursive: true });
+    const invalidRunId = "malformed-tree-run";
+    const invalidSource = env.layout.getTeamDirPath({ rootTeamRunId: invalidRunId, ancestorTeamRunIds: [] });
+    await fs.mkdir(invalidSource, { recursive: true });
+    await fs.writeFile(getTeamRunExecutionTreePath(invalidSource), "{not-json\n", "utf8");
+
+    const result = await env.migration().execute();
+
+    expect(result.status).toBe("FAILED");
+    expect(result.summary).toMatchObject({ scannedCount: 2, failedCount: 2 });
+    expect(detailCount(result, "FAILED_MISSING_TEAM_EXECUTION_TREE")).toBe(1);
+    expect(detailCount(result, "FAILED_RUNTIME")).toBe(1);
+    expect(result.errorMessage).toContain("require correction and restart");
+  });
+
+  it("records a typed token-data rejection as a terminal warning and blocks candidate completion", async () => {
+    const env = await createEnvironment();
+    const runId = "token-warning-run";
+    const source = env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
+    await writeTeamPackage(source, runId, orgLikeTree(runId));
+    const tokens = new AgentOrgTokenAttributionTransition(env.memoryDir, {
+      async *listClaimedRoots() {},
+      async convertRoot() { throw new AgentOrgTokenAttributionDataRejection("legacy identity is malformed"); },
+    });
+
+    const result = await env.migration(undefined, tokens).execute();
+    const target = env.layout.getOrgDirPath(runId);
+
+    expect(result).toMatchObject({
+      status: "SUCCEEDED_WITH_WARNINGS",
+      summary: { failedCount: 1, details: [{
+        itemId: "FAILED_TOKEN_DATA_REJECTION",
+        status: "FAILED",
+        message: expect.stringContaining("legacy identity is malformed"),
+      }] },
+      errorMessage: expect.stringContaining("affected roots remain locally unavailable"),
+    });
+    expect(result.errorMessage).not.toContain("require correction and restart");
+    await expect(fs.access(source)).rejects.toMatchObject({ code: "ENOENT" });
+    await fs.access(getTeamRunExecutionTreePath(target));
+    expect(await new TeamRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
+    expect(await new AgentOrgRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
+  });
+
+  it("keeps typed token warnings nonterminal when any token root has an untyped failure", async () => {
+    const env = await createEnvironment();
+    for (const runId of ["token-warning-run", "token-fatal-run"]) {
+      await writeTeamPackage(
+        env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] }),
+        runId,
+        orgLikeTree(runId),
+      );
+    }
+    const tokens = new AgentOrgTokenAttributionTransition(env.memoryDir, {
+      async *listClaimedRoots() {},
+      async convertRoot(orgRunId) {
+        if (orgRunId === "token-warning-run") throw new AgentOrgTokenAttributionDataRejection("rejected token data");
+        throw new Error("database write failed");
+      },
+    });
+
+    const result = await env.migration(undefined, tokens).execute();
+
+    expect(result.status).toBe("FAILED");
+    expect(result.summary.failedCount).toBe(2);
+    expect(detailCount(result, "FAILED_TOKEN_DATA_REJECTION")).toBe(1);
+    expect(detailCount(result, "FAILED_TOKEN")).toBe(1);
+    expect(result.errorMessage).toContain("require correction and restart");
+    for (const runId of ["token-warning-run", "token-fatal-run"]) {
+      await fs.access(getTeamRunExecutionTreePath(env.layout.getOrgDirPath(runId)));
+    }
+  });
+
+  it("makes a candidate that depends on a token-warning root fatally incomplete", async () => {
+    const env = await createEnvironment();
+    const ownerId = "token-warning-owner";
+    const dependentId = "dependent-root";
+    const ownerSource = env.layout.getTeamDirPath({ rootTeamRunId: ownerId, ancestorTeamRunIds: [] });
+    const dependentSource = env.layout.getTeamDirPath({ rootTeamRunId: dependentId, ancestorTeamRunIds: [] });
+    await writeTeamPackage(ownerSource, ownerId, orgLikeTree(ownerId));
+    await writeTeamPackage(dependentSource, dependentId, orgLikeTree(dependentId));
+    const filename = "ctx_dependency__proof.txt";
+    await fs.mkdir(path.join(ownerSource, `${ownerId}-director`, "context_files"), { recursive: true });
+    await fs.writeFile(path.join(ownerSource, `${ownerId}-director`, "context_files", filename), "proof", "utf8");
+    const locator = `/rest/team-runs/${ownerId}/members/${encodeURIComponent("/director")}/context-files/${filename}`;
+    const traceDir = path.join(dependentSource, `${dependentId}-director`);
+    await fs.mkdir(traceDir, { recursive: true });
+    await fs.writeFile(path.join(traceDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+      id: "dependent-reference",
+      trace_type: "user",
+      content: locator,
+      media: { images: [locator] },
+    })}\n`, "utf8");
+    const tokens = new AgentOrgTokenAttributionTransition(env.memoryDir, {
+      async *listClaimedRoots() {},
+      async convertRoot(orgRunId) {
+        if (orgRunId === ownerId) throw new AgentOrgTokenAttributionDataRejection("owner token data rejected");
+        return 0;
+      },
+    });
+
+    const result = await env.migration(undefined, tokens).execute();
+
+    expect(result.status).toBe("FAILED");
+    expect(detailCount(result, "FAILED_TOKEN_DATA_REJECTION")).toBe(1);
+    expect(detailCount(result, "FAILED_RUNTIME")).toBe(1);
+    expect(result.summary.details.find((detail) => detail.itemId === "FAILED_RUNTIME")?.message)
+      .toContain(`Referenced candidate '${ownerId}' has incomplete target effects.`);
+    expect(result.errorMessage).toContain("require correction and restart");
+    for (const runId of [ownerId, dependentId]) {
+      await fs.access(getTeamRunExecutionTreePath(env.layout.getOrgDirPath(runId)));
+    }
+  });
+
+  it("keeps a non-ENOENT required-tree read failure fatal and retryable", async () => {
+    const env = await createEnvironment();
+    const runId = "unreadable-tree-run";
+    const source = env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
+    const treePath = getTeamRunExecutionTreePath(source);
+    await writeTeamPackage(source, runId, flatTree(runId));
+    const readFile = fs.readFile.bind(fs);
+    const read = vi.spyOn(fs, "readFile").mockImplementation(async (...args: any[]) => {
+      if (String(args[0]) === treePath) {
+        throw Object.assign(new Error("injected access denial"), { code: "EACCES" });
+      }
+      return (readFile as any)(...args);
+    });
+
+    let result: Awaited<ReturnType<AgentOrgFlatTeamFamiliesV1AppDataMigration["execute"]>>;
+    try {
+      result = await env.migration().execute();
+    } finally {
+      read.mockRestore();
+    }
+
+    expect(result.status).toBe("FAILED");
+    expect(result.summary.failedCount).toBe(1);
+    expect(detailCount(result, "FAILED_RUNTIME")).toBe(1);
+    expect(detailCount(result, "FAILED_MISSING_TEAM_EXECUTION_TREE")).toBe(0);
+    expect(result.errorMessage).toContain("require correction and restart");
+  });
+
+  it("keeps concurrent source-root disappearance fatal rather than treating it as a missing-tree warning", async () => {
+    const env = await createEnvironment();
+    const runId = "concurrent-source-loss";
+    const source = env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
+    const treePath = getTeamRunExecutionTreePath(source);
+    await writeTeamPackage(source, runId, flatTree(runId));
+    const readFile = fs.readFile.bind(fs);
+    const read = vi.spyOn(fs, "readFile").mockImplementation(async (...args: any[]) => {
+      if (String(args[0]) === treePath) {
+        await fs.rm(source, { recursive: true, force: true });
+        throw Object.assign(new Error("injected concurrent source loss"), { code: "ENOENT", path: treePath });
+      }
+      return (readFile as any)(...args);
+    });
+
+    let result: Awaited<ReturnType<AgentOrgFlatTeamFamiliesV1AppDataMigration["execute"]>>;
+    try {
+      result = await env.migration().execute();
+    } finally {
+      read.mockRestore();
+    }
+
+    expect(result.status).toBe("FAILED");
+    expect(result.summary.failedCount).toBe(1);
+    expect(detailCount(result, "FAILED_RUNTIME")).toBe(1);
+    expect(detailCount(result, "FAILED_MISSING_TEAM_EXECUTION_TREE")).toBe(0);
+    expect(result.errorMessage).toContain("require correction and restart");
   });
 
   it("converts one organization-like Team V2 package by direct family rename and transfers history", async () => {

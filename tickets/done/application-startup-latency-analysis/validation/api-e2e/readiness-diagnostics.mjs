@@ -1,0 +1,18 @@
+import { createHash } from 'node:crypto';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { readFile } from 'node:fs/promises';
+const worktree=process.cwd();
+const memoryDir=resolve('.local/api-startup-profile/memory');
+const url=pathToFileURL(resolve('autobyteus-server-ts/dist/run-history/services/root-run-package-readiness-index.js')).href;
+const {RootRunPackageReadinessIndex,resetRootRunPackageReadinessIndex}=await import(url);
+resetRootRunPackageReadinessIndex(memoryDir);
+const index=new RootRunPackageReadinessIndex(memoryDir);
+await index.rebuild();
+const hash=x=>createHash('sha256').update(String(x)).digest('hex').slice(0,16);
+const diagnostics=index.listDiagnostics();
+const [teamPublished,orgPublished]=await Promise.all([readFile(resolve(memoryDir,'team_run_history_index.json'),'utf8').then(JSON.parse),readFile(resolve(memoryDir,'agent_org_run_history_index.json'),'utf8').then(JSON.parse)]);
+const teamIds=new Set(teamPublished.map(x=>x.teamRunId)); const orgIds=new Set(orgPublished.map(x=>x.orgRunId));
+const normalized=diagnostics.map((d)=>{const kind=d.rootSubjectKind??d.family??d.subjectKind??null;const id=d.rootRunId??d.runId??d.rootPath??JSON.stringify(d);return {family:kind,code:d.code??null,rootIdHash:hash(id),absentFromPublishedIndex:kind==='agent_team'?!teamIds.has(id):kind==='agent_org'?!orgIds.has(id):null,keys:Object.keys(d).sort()}});
+const result={probe:'separate read-only strict readiness diagnostic corroboration',writesRequested:false,admittedTeams:index.listAdmitted('agent_team').length,admittedOrgs:index.listAdmitted('agent_org').length,diagnosticCount:diagnostics.length,diagnosticCodeCounts:Object.fromEntries([...new Set(normalized.map(x=>`${x.family}:${x.code}`))].sort().map(k=>[k,normalized.filter(x=>`${x.family}:${x.code}`===k).length])),diagnostics:normalized};
+process.stdout.write(JSON.stringify(result,null,2)+'\n');

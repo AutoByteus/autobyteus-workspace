@@ -1,0 +1,46 @@
+IR-003 guard checks
+--- git diff --check ---
+PASS git diff --check
+--- migration-only source diff ---
+24	5	autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts
+22	1	autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts
+--- effective non-empty source lines ---
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts 112
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts 224
+--- shared runner source unchanged ---
+PASS runner source unchanged
+--- exact warning owner references ---
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:49:    status: "SUCCEEDED" | "FAILED" | "SUCCEEDED_WITH_WARNINGS";
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:236:    persist("anytime-warning", "SUCCEEDED_WITH_WARNINGS");
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:243:    persist("startup-warning", "SUCCEEDED_WITH_WARNINGS");
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:396:      status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:416:      status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:428:      status: "SUCCEEDED_WITH_WARNINGS" as const,
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:435:          itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:455:      status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:462:      status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:552:  it.each(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"] as const)(
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:637:  it("accepts persisted SUCCEEDED and SUCCEEDED_WITH_WARNINGS results without rerunning them", async () => {
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:643:      ["m-warning", "SUCCEEDED_WITH_WARNINGS"],
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:668:      { migrationId: "m-warning", status: "SUCCEEDED_WITH_WARNINGS" },
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:683:                status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:697:        status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts:736:          status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:205:    expect(planner.missingExecutionTreeWarnings).toEqual(new Map([[
+autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:213:      status: "SUCCEEDED_WITH_WARNINGS",
+autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:220:          itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
+autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:249:    expect(detailCount(result, "FAILED_MISSING_TEAM_EXECUTION_TREE")).toBe(1);
+autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:278:    expect(detailCount(result, "FAILED_MISSING_TEAM_EXECUTION_TREE")).toBe(0);
+autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:307:    expect(detailCount(result, "FAILED_MISSING_TEAM_EXECUTION_TREE")).toBe(0);
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts:35:  | "FAILED_MISSING_TEAM_EXECUTION_TREE";
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts:75:    this.scanned = plans.length + planner.flatRoots.size + failures.size + planner.missingExecutionTreeWarnings.size;
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts:77:    for (const [id, reason] of planner.missingExecutionTreeWarnings) {
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts:78:      this.add("FAILED_MISSING_TEAM_EXECUTION_TREE", id, reason);
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts:209:        if (name === "FAILED_MISSING_TEAM_EXECUTION_TREE") warningCount += value.count;
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts:222:        ? "SUCCEEDED_WITH_WARNINGS"
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts:43:  readonly missingExecutionTreeWarnings = new Map<string, string>();
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts:77:            this.missingExecutionTreeWarnings.set(
+--- prior source/test preservation ---
+PASS all protected IR-001/IR-002 source/tests exact
+protectedEntries= 9
+retainedPriorEvidence= 23

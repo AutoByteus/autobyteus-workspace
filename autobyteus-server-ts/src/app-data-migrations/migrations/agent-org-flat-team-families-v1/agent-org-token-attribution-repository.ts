@@ -11,6 +11,30 @@ export interface OrgTokenAttributionRepository {
   listClaimedRoots(): AsyncIterable<string>;
   convertRoot(orgRunId: string, agentRunIds: readonly string[]): Promise<number>;
 }
+
+/** A root-local rejection of legacy token data. Operational failures stay untyped. */
+export class AgentOrgTokenAttributionDataRejection extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AgentOrgTokenAttributionDataRejection";
+  }
+}
+
+const readLegacyIdentity = (row: RawRecord): Record<string, unknown> => {
+  let identity: unknown;
+  try {
+    identity = JSON.parse(row.identity_summary_json);
+  } catch {
+    throw new AgentOrgTokenAttributionDataRejection(`Token identity for '${row.run_id}' is not valid JSON.`);
+  }
+  if (!identity || typeof identity !== "object" || Array.isArray(identity)
+    || !("rootTeamRunIds" in identity) || !identity.rootTeamRunIds
+    || typeof identity.rootTeamRunIds !== "object" || Array.isArray(identity.rootTeamRunIds)) {
+    throw new AgentOrgTokenAttributionDataRejection(`Malformed token identity for '${row.run_id}'.`);
+  }
+  return identity as Record<string, unknown>;
+};
+
 /** Migration-only SQL authority. Never roundtrip accounting through a domain codec/upsert. */
 export class AgentOrgTokenAttributionRepository implements OrgTokenAttributionRepository {
   constructor(private readonly client: PrismaClient = rootPrismaClient) {}
@@ -32,7 +56,9 @@ export class AgentOrgTokenAttributionRepository implements OrgTokenAttributionRe
       const rows = new Map<string, RawRecord>();
       const claimants = await tx.$queryRaw<RawRecord[]>`SELECT * FROM token_usage_run_records WHERE root_team_run_id = ${orgRunId}`;
       for (const row of claimants) {
-        if (!members.has(row.run_id)) throw new Error(`Unexpected token claimant '${row.run_id}' for Org '${orgRunId}'.`);
+        if (!members.has(row.run_id)) {
+          throw new AgentOrgTokenAttributionDataRejection(`Unexpected token claimant '${row.run_id}' for Org '${orgRunId}'.`);
+        }
         rows.set(row.run_id, row);
       }
       const ids = [...members];
@@ -42,14 +68,12 @@ export class AgentOrgTokenAttributionRepository implements OrgTokenAttributionRe
       }
       let changed = 0;
       for (const row of rows.values()) {
-        const identity: unknown = JSON.parse(row.identity_summary_json);
-        if (!identity || typeof identity !== "object" || Array.isArray(identity)) throw new Error(`Malformed token identity for '${row.run_id}'.`);
-        const summary = identity as Record<string, unknown>;
+        const summary = readLegacyIdentity(row);
         const tuple = { rootTeamRunId: row.root_team_run_id, rootAttributionStatus: row.root_attribution_status, identitySummary: summary };
         if (isAgentOrgTokenAttributionReady(tuple)) continue;
         if (row.root_team_run_id !== orgRunId || row.root_attribution_status !== "single"
           || !isDeepStrictEqual(summary.rootTeamRunIds, { status: "single", value: orgRunId })) {
-          throw new Error(`Conflicting token attribution for Agent '${row.run_id}' in Org '${orgRunId}'.`);
+          throw new AgentOrgTokenAttributionDataRejection(`Conflicting token attribution for Agent '${row.run_id}' in Org '${orgRunId}'.`);
         }
         const nextIdentity = JSON.stringify({ ...summary, rootTeamRunIds: { status: "unknown" } });
         const count = await tx.$executeRaw`UPDATE token_usage_run_records

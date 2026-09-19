@@ -1,0 +1,45 @@
+BASE_REVISION=4e84b76a918253da22fd4a382c653cb47744dc6c
+BRANCH=codex/application-startup-latency-analysis
+IR001_STARTUP_PRESERVED=true
+DELETED_VALIDATOR_PRESENT=no
+REMAINING_VALIDATOR_REFERENCES:
+TEAM_ROUTE_CATCH_SCOPES:
+    return sendFile(filePath, reply);
+  });
+
+  app.get<{
+    Params: { teamRunId: string; memberAddress: string; storedFilename: string };
+  }>("/team-runs/:teamRunId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
+    let owner;
+    try {
+      owner = parseFinalContextFileOwnerDescriptor({
+        kind: "team_member_final",
+        teamRunId: request.params.teamRunId,
+        memberAddress: request.params.memberAddress,
+      });
+    } catch (error) {
+      if (error instanceof ContextFileDescriptorError || error instanceof CollaborationContractError) {
+        return reply.code(400).send({ detail: error.message });
+      }
+      throw error;
+    }
+    try {
+      const filePath = await readService.getFinalFilePath(owner, request.params.storedFilename);
+      if (!filePath) return reply.code(404).send({ detail: "File not found." });
+      return sendFile(filePath, reply);
+    } catch (error) {
+      if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
+      if (error instanceof TeamContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
+      throw error;
+    }
+  });
+
+  app.get<{ Params: OrgFileParams }>("/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/:storedFilename", async (request, reply) => {
+    try {
+      const { orgRunId, agentRunId, storedFilename } = request.params;
+      const owner = parseFinalContextFileOwnerDescriptor({ kind: "org_member_final", orgRunId, agentRunId });
+CHANGED_SOURCE_EFFECTIVE_LINES:
+autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts 308
+autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts 80
+autobyteus-server-ts/src/api/rest/context-files.ts 240
+DIFF_CHECK:

@@ -18,6 +18,9 @@ type Locations = {
 /** A shaped but absent exact Org member is distinct from an invalid request. */
 export class OrgContextFileOwnerNotFoundError extends Error {}
 
+/** A shaped but absent exact Team member is distinct from an invalid request. */
+export class TeamContextFileOwnerNotFoundError extends Error {}
+
 export class ContextFileOwnerResolver {
   private readonly locations: Locations;
   constructor(input: { locations: Locations }) {
@@ -73,8 +76,13 @@ export class ContextFileOwnerResolver {
       return { ...owner, rootSubjectKind: "agent_org", rootRunId: location.rootRunId,
         ancestorTeamRunIds: [...location.ancestorTeamRunIds], memoryDir: location.memoryDir };
     }
-    if (!location || "rootSubjectKind" in location && location.rootSubjectKind !== "agent_team") {
-      throw new Error(`Unable to resolve context-file owner member '${owner.memberAddress}' for collaboration root '${owner.teamRunId}'.`);
+    if (!location
+      || "rootSubjectKind" in location && location.rootSubjectKind !== "agent_team"
+      || location.containingTeamRunId !== owner.teamRunId
+      || location.memberAddress !== owner.memberAddress) {
+      throw new TeamContextFileOwnerNotFoundError(
+        `Unable to resolve context-file owner member '${owner.memberAddress}' for collaboration root '${owner.teamRunId}'.`,
+      );
     }
     return { ...owner, rootTeamRunId: "rootRunId" in location ? location.rootRunId : location.rootTeamRunId,
       ancestorTeamRunIds: [...location.ancestorTeamRunIds], agentRunId: location.agentRunId, memoryDir: location.memoryDir };

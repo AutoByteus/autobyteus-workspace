@@ -1,0 +1,185 @@
+{
+  "ticket": "APP-STARTUP-LATENCY-20260918-001",
+  "deliveryRevision": "DR-001",
+  "recordedAt": "2026-09-19",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis",
+  "ticketBranch": "codex/application-startup-latency-analysis",
+  "checkedBaseRemote": "origin/requirements/flat-agent-organization-model",
+  "headRevision": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "remoteBaseRevision": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "aheadBehind": {
+    "ahead": 0,
+    "behind": 0
+  },
+  "mergeBase": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "integrationMethod": "Already current",
+  "newBaseCommitsIntegrated": false,
+  "executableCheckRerun": false,
+  "noRerunRationale": "The fetched target and candidate HEAD were identical, so the API-REV-002 validated implementation state did not change during the delivery refresh.",
+  "manifestRevision": "IR-005",
+  "manifestBaseRevision": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "manifestEntryCount": 20,
+  "allManifestEntriesExact": true,
+  "checks": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "5296dbe6f8ec832fd0ca207dc6736d61c5f91c06a0e36d24a0976e58088cb678",
+      "actualCandidateSha256": "5296dbe6f8ec832fd0ca207dc6736d61c5f91c06a0e36d24a0976e58088cb678",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/run_history.md",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "0f34c6307a3c6b5dbefb26800442ef89214bde467d4d3644418a10f9b230af8e",
+      "actualCandidateSha256": "0f34c6307a3c6b5dbefb26800442ef89214bde467d4d3644418a10f9b230af8e",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "4163c626a81ee178649539e89c6c6223bc47817b2ca798ee318a6697bbc77ea3",
+      "actualCandidateSha256": "4163c626a81ee178649539e89c6c6223bc47817b2ca798ee318a6697bbc77ea3",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "73b6786817c53f3ae4ae201ddd7d75e960cfd8e979d89834798df47fcbfaf0ac",
+      "actualCandidateSha256": "73b6786817c53f3ae4ae201ddd7d75e960cfd8e979d89834798df47fcbfaf0ac",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "7117297e25eb8795fe7e2a010213752c7d3827f6c221049cb841fc0beff71be1",
+      "actualCandidateSha256": "7117297e25eb8795fe7e2a010213752c7d3827f6c221049cb841fc0beff71be1",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "b65955f41caeece5d0621cf79dc60633746178f60cff77e79625126875589820",
+      "actualCandidateSha256": "b65955f41caeece5d0621cf79dc60633746178f60cff77e79625126875589820",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "e41bcf43dfd75c103d2ee262ab1f641ba98ad012925b916c13bd3dab00ba06f4",
+      "actualCandidateSha256": "e41bcf43dfd75c103d2ee262ab1f641ba98ad012925b916c13bd3dab00ba06f4",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "0c4f7d7a62e8b0cdaed762a0e6ee6b639175e05c340627c4ea5b24d8faaad55d",
+      "actualCandidateSha256": "0c4f7d7a62e8b0cdaed762a0e6ee6b639175e05c340627c4ea5b24d8faaad55d",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-package-context-file-validation.ts",
+      "expectedState": "deleted",
+      "actualState": "deleted",
+      "expectedCandidateSha256": null,
+      "actualCandidateSha256": null,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "actualCandidateSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "actualCandidateSha256": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "d4986c9e09571a42cd044b9d43ccfd211e0cd9f1f00c264e2b9df3906edbd2f9",
+      "actualCandidateSha256": "d4986c9e09571a42cd044b9d43ccfd211e0cd9f1f00c264e2b9df3906edbd2f9",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "actualCandidateSha256": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "211dfe88070d954337cf6414856828d6db90db9c7035580c841c068d8f958a81",
+      "actualCandidateSha256": "211dfe88070d954337cf6414856828d6db90db9c7035580c841c068d8f958a81",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "6a121c510c5fd2edd41a7f274e8c1c3277902f22aab5940f47d3fd414b1c9bf6",
+      "actualCandidateSha256": "6a121c510c5fd2edd41a7f274e8c1c3277902f22aab5940f47d3fd414b1c9bf6",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-token-attribution-transition-classification.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "af1e9d7c8e5259e2eea5ed027f812031ccab9d5310870d22e00f9c110d1e6dbc",
+      "actualCandidateSha256": "af1e9d7c8e5259e2eea5ed027f812031ccab9d5310870d22e00f9c110d1e6dbc",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "5a4cdec91700597a26cef8a1a334e5b8bd26950ffcc764536ea0780d4f49b50d",
+      "actualCandidateSha256": "5a4cdec91700597a26cef8a1a334e5b8bd26950ffcc764536ea0780d4f49b50d",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "0ac5a3d01f6179b9f08554d64fcb075c9c93d6b85e886cee7b1318f2a52dacbc",
+      "actualCandidateSha256": "0ac5a3d01f6179b9f08554d64fcb075c9c93d6b85e886cee7b1318f2a52dacbc",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/context-files/context-file-owner-resolver.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "8ba92ada6a6c3806e877777a9b38e10c56b7d001a351227fb937e10d6c9be3ac",
+      "actualCandidateSha256": "8ba92ada6a6c3806e877777a9b38e10c56b7d001a351227fb937e10d6c9be3ac",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "expectedState": "present",
+      "actualState": "present",
+      "expectedCandidateSha256": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "actualCandidateSha256": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "match": true
+    }
+  ]
+}

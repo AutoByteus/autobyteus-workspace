@@ -423,6 +423,61 @@ describe("AppDataMigrationRunner", () => {
     expect(execute).not.toHaveBeenCalled();
   });
 
+  it("does not rewrite terminal missing-tree and typed-token warning details on later pending runs", async () => {
+    const execute = vi.fn(async () => ({
+      status: "SUCCEEDED_WITH_WARNINGS" as const,
+      summary: {
+        scannedCount: 2,
+        migratedCount: 0,
+        skippedCount: 0,
+        failedCount: 2,
+        details: [{
+          itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
+          status: "FAILED" as const,
+          message: "Count: 1. Source remains unchanged.",
+        }, {
+          itemId: "FAILED_TOKEN_DATA_REJECTION",
+          status: "FAILED" as const,
+          message: "Count: 1. Root remains locally unavailable.",
+        }],
+      },
+      errorMessage: "Two root-local items were not migrated.",
+    }));
+    const repository = new InMemoryMigrationRepository();
+    const definition = {
+      ...createDefinition("startup-warning-transition", execute),
+      executionPolicy: "STARTUP_ONLY" as const,
+    };
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([definition]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runPending()).resolves.toMatchObject([{
+      migrationId: definition.id,
+      status: "SUCCEEDED_WITH_WARNINGS",
+      attempts: 1,
+      recoveryAction: AppDataMigrationRecoveryAction.NONE,
+    }]);
+    const terminalRecord = structuredClone(await repository.getRecord(definition.id));
+    await expect(runner.runPending()).resolves.toMatchObject([{
+      migrationId: definition.id,
+      status: "SUCCEEDED_WITH_WARNINGS",
+      attempts: 1,
+      recoveryAction: AppDataMigrationRecoveryAction.NONE,
+    }]);
+
+    expect(execute).toHaveBeenCalledOnce();
+    expect(await repository.getRecord(definition.id)).toEqual(terminalRecord);
+    expect(terminalRecord).toMatchObject({
+      attempts: 1,
+      startedAt: expect.any(Date),
+      completedAt: expect.any(Date),
+      logPath: expect.any(String),
+    });
+  });
+
   it("attempts, persists, and returns every required result without an aggregate startup throw", async () => {
     const repository = new InMemoryMigrationRepository();
     const executions: string[] = [];

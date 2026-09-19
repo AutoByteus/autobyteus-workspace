@@ -1,0 +1,40 @@
+{
+  "caseId": "P01",
+  "result": "Fail",
+  "acceptanceCriteria": [
+    "AC-003",
+    "AC-005",
+    "AC-006"
+  ],
+  "profile": "owned isolated representative clone",
+  "comparison": "profile-isolated-before.json vs profile-isolated-after.json",
+  "unchanged": {
+    "definitions": true,
+    "rawTraces": true,
+    "contextFiles": true,
+    "historyAndRuntime": true,
+    "configuration": true
+  },
+  "database": {
+    "unchanged": false,
+    "path": "db/production.db",
+    "sizeBefore": 875474944,
+    "sizeAfter": 875474944,
+    "sha256Before": "9f6a63cf17cc0a071c6e097d504113611a87baa5484349e1c5cfe7e6bef5fbee",
+    "sha256After": "ec3acfec189ea5dd9e0b729bc9856aef6ad54edb090a34448302e7ccba20c4ad",
+    "observedLogicalCause": {
+      "table": "app_data_migration_records",
+      "migrationId": "20260901_agent_org_flat_team_families_v1",
+      "attemptsBefore": 23,
+      "attemptsAfterThreeAcceptanceLaunches": 26,
+      "attemptsAfterBrowserBackendLaunch": 27,
+      "statusAfter": "FAILED",
+      "summaryAfter": "Scanned 526; migrated 0; skipped 518; failed 8.",
+      "targetDataMigrated": 0
+    }
+  },
+  "expected": "AC-003 requires that no database bytes are modified by startup while AC-006 preserves the failed migration warning.",
+  "observed": "Each fresh startup retried the existing failed migration and durably updated its attempt/timestamp ledger row. All source-history, trace, context-file, definition, history/runtime and configuration bytes remained unchanged; no target migration item was rewritten.",
+  "preliminaryClassification": "Requirement Gap",
+  "classificationReason": "The approved package simultaneously requires the failed migration attempt/warning to repeat and all database bytes to remain unchanged. The observed mutation is pre-existing migration-ledger bookkeeping, not the reviewed readiness or attachment-source delta. Focused failure-origin review is required."
+}

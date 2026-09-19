@@ -66,17 +66,31 @@ describe("Org attribution: isolated actual SQL and current token store", () => {
     expect((await e.repository.getByRunId("org-direct"))?.rootTeamRunId).toBeNull();
   });
 
-  it.each(["wrong-root", "mixed-summary", "scalar-only", "extra-claimant", "malformed"])("rolls back the whole exact root for %s and safely retries", async (failure) => {
+  it.each(["wrong-root", "mixed-summary", "scalar-only", "extra-claimant", "malformed"])("warning-classifies %s source data after whole-root rollback and keeps the local readiness guard", async (failure) => {
     const e = await fixture(); const { target } = await writeNestedRoot(e.memory);
     await e.store.recordObservation(observation("org-direct")); await e.store.recordObservation(observation("org-lead"));
+    await e.store.recordObservation(observation("unrelated", null));
     const valid = await e.client.tokenUsageRunRecord.findUniqueOrThrow({ where: { runId: "org-lead" } });
     if (failure === "extra-claimant") await e.store.recordObservation(observation("not-in-tree"));
     else await e.client.tokenUsageRunRecord.update({ where: { runId: "org-lead" }, data: failure === "wrong-root" ? { rootTeamRunId: "another" }
       : failure === "scalar-only" ? { rootTeamRunId: null }
       : { identitySummaryJson: failure === "malformed" ? "not json" : JSON.stringify({ ...JSON.parse(valid.identitySummaryJson), rootTeamRunIds: { status: "mixed" } }) } });
     const before = await rows(e);
-    expect((await e.migrate()).status).toBe("FAILED"); expect(await rows(e)).toEqual(before);
+    const result = await e.migrate();
+    expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+    expect(result.summary.failedCount).toBe(1);
+    expect(result.summary.details).toContainEqual(expect.objectContaining({
+      itemId: "FAILED_TOKEN_DATA_REJECTION",
+      status: "FAILED",
+      message: expect.stringContaining("AgentOrgTokenAttributionDataRejection"),
+    }));
+    expect(result.errorMessage).toContain("affected roots remain locally unavailable");
+    expect(await rows(e)).toEqual(before);
     await fs.access(path.join(target, "team_run_execution_tree.json"));
+    await expect(e.store.assertAgentOrgRecordsReady({ orgRunId: "org", agentRunIds: ["org-direct", "org-lead"] }))
+      .rejects.toThrow("AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY");
+    await expect(e.store.assertAgentOrgRecordsReady({ orgRunId: "unrelated-root", agentRunIds: ["unrelated"] }))
+      .resolves.toBeUndefined();
     if (failure === "extra-claimant") await e.client.tokenUsageRunRecord.delete({ where: { runId: "not-in-tree" } });
     else await e.client.tokenUsageRunRecord.update({ where: { runId: "org-lead" }, data: { rootTeamRunId: valid.rootTeamRunId, identitySummaryJson: valid.identitySummaryJson } });
     expect((await e.migrate()).status).toBe("SUCCEEDED");

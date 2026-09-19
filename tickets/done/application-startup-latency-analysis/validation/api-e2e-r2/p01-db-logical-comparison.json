@@ -1,0 +1,54 @@
+{
+  "before": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/db/production.db",
+  "after": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/db/production.db",
+  "tableCount": 21,
+  "changedTableCount": 1,
+  "changedTables": [
+    {
+      "table": "app_data_migration_records",
+      "before": {
+        "rowCount": 24,
+        "sha256": "11c3a4b682e38b7007df6bf9b69e62af94b1105f23c12f52934d8e83db76df19",
+        "columns": [
+          "id",
+          "migration_id",
+          "display_name",
+          "status",
+          "attempts",
+          "started_at",
+          "completed_at",
+          "summary",
+          "error_message",
+          "log_path",
+          "created_at",
+          "updated_at"
+        ],
+        "primaryKey": [
+          "id"
+        ]
+      },
+      "after": {
+        "rowCount": 25,
+        "sha256": "42d8e3cd5fc0018eea74412fdf014509e5ebbd757dc357554c0cf88f425fc8b8",
+        "columns": [
+          "id",
+          "migration_id",
+          "display_name",
+          "status",
+          "attempts",
+          "started_at",
+          "completed_at",
+          "summary",
+          "error_message",
+          "log_path",
+          "created_at",
+          "updated_at"
+        ],
+        "primaryKey": [
+          "id"
+        ]
+      }
+    }
+  ],
+  "allOtherTablesUnchanged": true
+}

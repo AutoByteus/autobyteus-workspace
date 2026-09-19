@@ -337,12 +337,33 @@ Successful migration ledger records retain ordinary skip semantics: no version
 marker, successful-record detection/reopening hook or automatic ledger reset was
 added. Normal readers remain current-only, with no repair on access.
 
+Two root-local conditions are terminal warning items. First, a legacy Team root
+that lacks its required `team_run_execution_tree.json` before a candidate plan
+exists produces no target, token or index effect and its source directory remains
+unchanged. Second, explicitly classified malformed or conflicting legacy token
+attribution data rolls back that root's SQL transaction; the root is not reported
+as token-migrated and remains locally unavailable through
+`AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`. Both remain failed item details and
+contribute to `failedCount`. If these are the only failures, the migration returns
+`SUCCEEDED_WITH_WARNINGS` and the shared startup runner skips the terminal record
+on later launches. Unrelated roots remain usable.
+
+All root/family/tree structural failures, SQL query/update failures, changed
+update preconditions, strict reread failures, dependency failures, and other
+locator, writer, commit, index, cleanup, concurrency, postcondition or unknown
+failures remain `FAILED` and retryable. Global token discovery remains
+attempt-fatal, and any fatal failure dominates root-local warnings. Warning
+classification comes from the migration repository's typed data check, never
+from a root key or error-message string.
+
 Before restoring an Org runtime, `TokenUsageRunStore.assertAgentOrgRecordsReady`
 checks existing records for the exact tree Agent IDs, in batches, before scope
 construction/provider startup. Incompatible ownership is rejected with
 `AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`; absent usage records are not fabricated.
-The separate startup attachment-readiness scan is unchanged. Candidate-only
-migration I/O does not imply a global startup-speed guarantee.
+Normal root-package readiness remains strict for current family, manifest,
+tree, task and message authorities, but does not repeat the migration's
+whole-history attachment-locator audit or read raw-trace payloads. Candidate-only
+migration I/O remains owned by the one-time transition.
 
 The later required startup migration
 `20260905_agent_org_history_first_message_summary_v1` reconciles only empty
@@ -399,9 +420,13 @@ referenced from a candidate permits owner-tree metadata and attachment stat
 checks, not enumeration or rewriting of that owner's history. No global
 cross-cohort reference repair is promised. Strict source/target package and unique physical-file
 proof precede writes. Committed atomic writes, strict reread, root move and
-cleanup must succeed; current packages are zero-write. Readiness checks saved
-context references before admitting the affected package, without a second
-cache, legacy parser, repair path or backfill of absent associations.
+cleanup must succeed; current packages are zero-write. Normal readiness checks
+structural authorities without opening saved traces or checking every referenced
+file. Exact current attachment access instead resolves the requested root and
+AgentRun, validates the safe stored filename/path, and checks that one file.
+Missing bytes return a request-scoped `404` and do not hide the otherwise valid
+Org root. No second cache, legacy parser, repair path or backfill of absent
+associations is introduced.
 
 **Before actual installation cutover:** Architecture must adjudicate the real
 installation inventory and any already-completed/intermediate migration state

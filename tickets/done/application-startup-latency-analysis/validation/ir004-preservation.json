@@ -1,0 +1,226 @@
+{
+  "ticket": "APP-STARTUP-LATENCY-20260918-001",
+  "implementationRevision": "IR-004",
+  "allProtectedIr001Ir002Ir003SourceAndTestsPreserved": true,
+  "protectedEntries": [
+    {
+      "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+      "ir003CandidateSha256": "4163c626a81ee178649539e89c6c6223bc47817b2ca798ee318a6697bbc77ea3",
+      "ir004CandidateSha256": "4163c626a81ee178649539e89c6c6223bc47817b2ca798ee318a6697bbc77ea3",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts",
+      "ir003CandidateSha256": "7117297e25eb8795fe7e2a010213752c7d3827f6c221049cb841fc0beff71be1",
+      "ir004CandidateSha256": "7117297e25eb8795fe7e2a010213752c7d3827f6c221049cb841fc0beff71be1",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+      "ir003CandidateSha256": "0c4f7d7a62e8b0cdaed762a0e6ee6b639175e05c340627c4ea5b24d8faaad55d",
+      "ir004CandidateSha256": "0c4f7d7a62e8b0cdaed762a0e6ee6b639175e05c340627c4ea5b24d8faaad55d",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-package-context-file-validation.ts",
+      "ir003CandidateSha256": null,
+      "ir004CandidateSha256": null,
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "ir003CandidateSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "ir004CandidateSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "ir003CandidateSha256": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "ir004CandidateSha256": "0fd94e05cc3cacba4462951d19ca6274e29fbedfa6b4dfb2ff5ea5a81c28e78b",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts",
+      "ir003CandidateSha256": "d4986c9e09571a42cd044b9d43ccfd211e0cd9f1f00c264e2b9df3906edbd2f9",
+      "ir004CandidateSha256": "d4986c9e09571a42cd044b9d43ccfd211e0cd9f1f00c264e2b9df3906edbd2f9",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "ir003CandidateSha256": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "ir004CandidateSha256": "5f6aad97bdf3bd44c8560a4cecfda198229f43b84b370fa1610d889a24a20549",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/context-files/context-file-owner-resolver.test.ts",
+      "ir003CandidateSha256": "8ba92ada6a6c3806e877777a9b38e10c56b7d001a351227fb937e10d6c9be3ac",
+      "ir004CandidateSha256": "8ba92ada6a6c3806e877777a9b38e10c56b7d001a351227fb937e10d6c9be3ac",
+      "unchangedFromIr003": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "ir003CandidateSha256": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "ir004CandidateSha256": "6fc619a9368e7131ddcee78423eec57f8ae2a0db0a9940ed9f6213006150a7bd",
+      "unchangedFromIr003": true
+    }
+  ],
+  "intentionalCumulativeUpdates": [
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts"
+  ],
+  "retainedPriorEvidence": [
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-adjacent-tests.log",
+      "sha256": "6a1fef45f1c1b9da40dd27d1d650c7d0952f3f7329e714ca77c91b1306904e54",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-baseline-regression.log",
+      "sha256": "c069e46a781016b709a5717e9eae83f8c9c9c9af2b9aac739d1809eba3a54602",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-focused-tests.log",
+      "sha256": "1b0cada1e77675adfe674a3725594984d79933f9b3a507cb2ed142e175fa7c7b",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-guards.log",
+      "sha256": "1758d9601458c851356e905d160ef78e81e14a0983ee10f174b62e55d6525f35",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-install.log",
+      "sha256": "aaa7f5093dacc83bc2bf8ff06a1abe368fe480ed6a8ea3bf4e9c750fe51eb9d5",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-prepare.log",
+      "sha256": "94b6ae5cf6d0b1e5e2c346c64c1a2c739ed8da17ef80ed97467a8d3508380c4e",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-preservation.json",
+      "sha256": "819365aade7610a5e2e7199abf0f6412eca9ea0aad304bc4bec42740c82ff20e",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-readiness-cold-readonly-probe.mjs",
+      "sha256": "37b35602f94ed8f452787b561960110664f2312694bbac2edb38b5755ffca7bf",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-readiness-run1.json",
+      "sha256": "72c870ea73abced163ad57e0431cbca9f68f5ee24c9cc3f4f545ffcf44723909",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-readiness-run2.json",
+      "sha256": "33bb1f920f5f02e2e0843396b71a85e5857d2c726373548e7e7fc6174fc05ba5",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-readiness-run3.json",
+      "sha256": "464555b617da6691329d56b5b574eddc4e0bed549909f878d87907f850b2cba1",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-readiness-summary.json",
+      "sha256": "f50030cfae64ccc1b05ad5e98421b0645b5321c389d6b00c1f309576dec0944f",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-server-build.log",
+      "sha256": "a42c6ba80d6f70e5a6aa0603319943c830a5809232dcf735690a2b69637728b3",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-source-manifest.json",
+      "sha256": "391fc26d5fc3a37d5b1ba2ed73633088b1f70fd0c93fed8e06a18e52ab7cdada",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir001-team-baseline.log",
+      "sha256": "f8ff40a37c1de18ee280011fb9c68f9d5c743b6a4263a2b9e35dec6079684c5a",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-adjacent-tests.log",
+      "sha256": "16c4f6fc4aecb048981553207c27b3fada6033cd8a8d39873da600f0ff68d46c",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-baseline-regression.log",
+      "sha256": "360315db0b5f4bb70e6518e539acccd327cfdccca3dce698cd8ea6055973595b",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-focused-tests.log",
+      "sha256": "049b88926db2ae088d2859ed2d52f7fb94a8a898026ef474e9bc13b7a732cea0",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-guards.log",
+      "sha256": "f47bd7cf717ebb0a20e108be288b4e3d1019523efd3f87a50594dc4bdb83511b",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-preservation.json",
+      "sha256": "c185c9db3a8d1d62b88beb1549235d4e24b95624880e88a2bb7ccde8d4db07de",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-server-build.log",
+      "sha256": "2776f47423a0d5bc5ea4ee988d74b9aeb3e1e1532e25b2d0ed5ef3146969d283",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-source-manifest.json",
+      "sha256": "5133a44a0649cbb8b145b9cca1a1256bd9464b16cba8afa0253e85210806c216",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir002-team-route-final.log",
+      "sha256": "3ccb72e9e5f3eef9ce0551bf883bca3225ef5061eff7be9d06fe3c418394ec3d",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-adjacent-tests.log",
+      "sha256": "e2fa5c32245909b2bd43d27cf0e4d70b7f1f1f056c057d0e0055c38bef612e14",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-baseline-regression.log",
+      "sha256": "50620544c0ce284faef7be5092aa6cab474376abcd6dfab20b377979319a49b7",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-focused-tests.log",
+      "sha256": "937f3c5d7598c3d9f62a80bf6430bbcb1f0069b96511bb7879fc6dc73300d822",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-guards.log",
+      "sha256": "45871899a9c107e6f6df3a79923b49aafd222bba3b6bd0005e70f26e7c0ad536",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-preservation.json",
+      "sha256": "550a7b341853520871c7745c7e0736770a0936e8d179f47e11745cd7963e27ec",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-server-build.log",
+      "sha256": "b958bd539419f2ca102950f208510ce382cc6ce8e2ebb6d1767c47f3dcb73b75",
+      "state": "retained"
+    },
+    {
+      "path": "tickets/in-progress/application-startup-latency-analysis/validation/ir003-source-manifest.json",
+      "sha256": "4b13e994e5b6525aec8ef835a20a76a4e8729b20c2e887467e676dc881de4697",
+      "state": "retained"
+    }
+  ]
+}

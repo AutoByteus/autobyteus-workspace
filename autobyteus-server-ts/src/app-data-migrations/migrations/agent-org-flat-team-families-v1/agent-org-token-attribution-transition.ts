@@ -3,7 +3,11 @@ import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/ag
 import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../run-history/store/agent-org-run-execution-tree-schema.js";
 import { assertMigrationRootId, migrationPathExists, readMigrationJson, type HistoryCandidatePlan } from "./agent-org-history-candidate-plan.js";
-import { AgentOrgTokenAttributionRepository, type OrgTokenAttributionRepository } from "./agent-org-token-attribution-repository.js";
+import {
+  AgentOrgTokenAttributionDataRejection,
+  AgentOrgTokenAttributionRepository,
+  type OrgTokenAttributionRepository,
+} from "./agent-org-token-attribution-repository.js";
 
 /** Independent token-source discovery; never enumerates or reads histories. */
 export class AgentOrgTokenAttributionTransition {
@@ -12,6 +16,7 @@ export class AgentOrgTokenAttributionTransition {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
   async execute(plans: readonly HistoryCandidatePlan[], blocked: ReadonlyMap<string, string>) {
+    const warnings = new Map<string, string>();
     const failures = new Map<string, string>();
     const changed = new Map<string, number>();
     const indexes = new Map(plans.map((plan) => [plan.id, plan.index]));
@@ -34,8 +39,10 @@ export class AgentOrgTokenAttributionTransition {
           index = new AgentOrgExecutionIndex(tree);
         }
         changed.set(id, await this.repository.convertRoot(id, index.listAgents().map((agent) => agent.agentRunId)));
-      } catch (error) { failures.set(id, String(error)); }
+      } catch (error) {
+        (error instanceof AgentOrgTokenAttributionDataRejection ? warnings : failures).set(id, String(error));
+      }
     }
-    return { failures, changed };
+    return { warnings, failures, changed };
   }
 }

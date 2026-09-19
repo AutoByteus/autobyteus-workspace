@@ -31,8 +31,13 @@ export const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_
 
 type Disposition =
   | "SKIPPED_FLAT_TEAM_RUN_ZERO_WRITE" | "MIGRATED_ORG_RUN" | "CLEANED_CURRENT_ORG"
-  | "MIGRATED_ORG_TOKENS" | "FAILED_TOKEN" | "MIGRATED_ORG_HISTORY" | "FAILED_RUNTIME" | "FAILED_HISTORY" | "FAILED_FAMILY_CONFLICT";
+  | "MIGRATED_ORG_TOKENS" | "FAILED_TOKEN" | "FAILED_TOKEN_DATA_REJECTION" | "MIGRATED_ORG_HISTORY" | "FAILED_RUNTIME" | "FAILED_HISTORY" | "FAILED_FAMILY_CONFLICT"
+  | "FAILED_MISSING_TEAM_EXECUTION_TREE";
 type Count = { count: number; examples: string[]; reasons: string[] };
+const terminalWarningDispositions = new Set<Disposition>([
+  "FAILED_MISSING_TEAM_EXECUTION_TREE",
+  "FAILED_TOKEN_DATA_REJECTION",
+]);
 
 const errorReason = (error: unknown): string => error instanceof Error ? error.message : String(error);
 export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrationDefinition {
@@ -63,7 +68,8 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
       // An unreadable history index must not suppress independent current-Org SQL work.
       try {
         const result = await this.tokens.execute([], new Map());
-        this.scanned += result.failures.size + result.changed.size;
+        this.scanned += result.warnings.size + result.failures.size + result.changed.size;
+        for (const [id, reason] of result.warnings) this.add("FAILED_TOKEN_DATA_REJECTION", id, reason);
         for (const [id, reason] of result.failures) this.add("FAILED_TOKEN", id, reason);
         for (const [id, count] of result.changed) if (count) this.add("MIGRATED_ORG_TOKENS", id, `${count} records corrected.`);
       } catch (tokenError) { this.add("FAILED_TOKEN", this.memoryDir, errorReason(tokenError)); }
@@ -71,8 +77,11 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
     }
     const { plans } = selection;
     const failures = new Map(planner.failures);
-    this.scanned = plans.length + planner.flatRoots.size + failures.size;
+    this.scanned = plans.length + planner.flatRoots.size + failures.size + planner.missingExecutionTreeWarnings.size;
     for (const id of planner.flatRoots) this.add("SKIPPED_FLAT_TEAM_RUN_ZERO_WRITE", id);
+    for (const [id, reason] of planner.missingExecutionTreeWarnings) {
+      this.add("FAILED_MISSING_TEAM_EXECUTION_TREE", id, reason);
+    }
     for (const [id, reason] of failures) this.add(planner.collisions.has(id) ? "FAILED_FAMILY_CONFLICT" : "FAILED_RUNTIME", id, reason);
     this.locatorTransition = new AgentOrgContextFileLocatorTransition(this.memoryDir, this.writer, () => this.config.getBaseUrl());
     try { await this.locatorTransition.prepareAndCommit(plans); }
@@ -95,7 +104,10 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
     this.failDependencies(failures);
     try {
       const tokenResult = await this.tokens.execute(plans, failures);
-      this.scanned += tokenResult.failures.size + tokenResult.changed.size;
+      this.scanned += tokenResult.warnings.size + tokenResult.failures.size + tokenResult.changed.size;
+      for (const [id, reason] of tokenResult.warnings) {
+        failures.set(id, reason); this.add("FAILED_TOKEN_DATA_REJECTION", id, reason);
+      }
       for (const [id, reason] of tokenResult.failures) { failures.set(id, reason); this.add("FAILED_TOKEN", id, reason); }
       for (const [id, count] of tokenResult.changed) if (count) this.add("MIGRATED_ORG_TOKENS", id, `${count} records corrected without accounting changes.`);
     } catch (error) {
@@ -190,23 +202,48 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
     current.count += 1;
     current.examples.push(path.isAbsolute(example) ? path.relative(this.memoryDir, example).split(path.sep).join("/") : example);
     if (reason) current.reasons.push(reason);
-    current.examples.sort(); current.examples.splice(5);
-    current.reasons.sort(); current.reasons.splice(5);
+    current.examples.sort(); current.reasons.sort();
+    if (!terminalWarningDispositions.has(disposition)) {
+      current.examples.splice(5); current.reasons.splice(5);
+    }
     this.counts.set(disposition, current);
   }
   private result(): AppDataMigrationExecutionResult {
-    let migratedCount = 0, skippedCount = 0, failedCount = 0;
+    let migratedCount = 0, skippedCount = 0, failedCount = 0, missingTreeWarningCount = 0, tokenDataWarningCount = 0, fatalFailedCount = 0;
     const details: AppDataMigrationItemDetail[] = [];
     for (const [name, value] of [...this.counts].sort(([a], [b]) => a.localeCompare(b))) {
       const failed = name.startsWith("FAILED_");
       const skipped = name.startsWith("SKIPPED_");
-      if (failed) failedCount += value.count; else if (skipped) skippedCount += value.count; else migratedCount += value.count;
+      if (failed) {
+        failedCount += value.count;
+        if (name === "FAILED_MISSING_TEAM_EXECUTION_TREE") missingTreeWarningCount += value.count;
+        else if (name === "FAILED_TOKEN_DATA_REJECTION") tokenDataWarningCount += value.count;
+        else fatalFailedCount += value.count;
+      } else if (skipped) skippedCount += value.count;
+      else migratedCount += value.count;
       details.push({
         itemId: name,
         status: failed ? "FAILED" : skipped ? "SKIPPED" : "MIGRATED",
         message: `Count: ${value.count}.${value.examples.length ? ` Examples: ${value.examples.join(", ")}.` : ""}${value.reasons.length ? ` Reasons: ${value.reasons.join(" | ")}.` : ""}`,
       });
     }
-    return { status: failedCount ? "FAILED" : "SUCCEEDED", summary: { scannedCount: this.scanned, migratedCount, skippedCount, failedCount, details }, errorMessage: failedCount ? `${failedCount} flat-Team/AgentOrg runtime/history item(s) require correction and restart.` : null };
+    const warningCount = missingTreeWarningCount + tokenDataWarningCount;
+    const status = fatalFailedCount
+      ? "FAILED"
+      : warningCount
+        ? "SUCCEEDED_WITH_WARNINGS"
+        : "SUCCEEDED";
+    const warningReasons = [
+      missingTreeWarningCount
+        ? `${missingTreeWarningCount} legacy Team source item(s) were not migrated because the required execution tree is missing; source directories remain unchanged.`
+        : null,
+      tokenDataWarningCount
+        ? `${tokenDataWarningCount} AgentOrg token-attribution item(s) were rejected without committed token changes; affected roots remain locally unavailable.`
+        : null,
+    ].filter((reason): reason is string => reason !== null).join(" ");
+    const errorMessage = fatalFailedCount
+      ? `${failedCount} flat-Team/AgentOrg runtime/history item(s) require correction and restart.`
+      : warningCount ? warningReasons : null;
+    return { status, summary: { scannedCount: this.scanned, migratedCount, skippedCount, failedCount, details }, errorMessage };
   }
 }

@@ -1,0 +1,36 @@
+{
+  "result": "Pass",
+  "executionMode": "Normal Chrome against owned Nuxt 51483 and compiled backend 51481",
+  "profile": ".local/api-startup-profile-r2",
+  "team": {
+    "definition": "Software Engineering Team",
+    "historySummaryPrefix": "Currently in the token statistics",
+    "selectedMember": "solution_designer",
+    "attachmentButton": "Open image.png",
+    "attachmentUrl": "http://127.0.0.1:51481/rest/team-runs/software_engineering_team_4dab4182f72849b989494754ad79f03a/members/%2Fsolution_designer/context-files/ctx_91a98260defe__image.png",
+    "imageComplete": true,
+    "naturalWidth": 3024,
+    "naturalHeight": 1886,
+    "screenshots": [
+      "team-history-attachment.png",
+      "team-attachment-open.png"
+    ]
+  },
+  "agentOrg": {
+    "orgRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "selectedMemberAddress": "/StudentStudyGroup/student_one",
+    "conversationMarker": "can you see this image?",
+    "attachmentButton": "Open image.png",
+    "attachmentUrl": "http://127.0.0.1:51481/rest/agent-org-runs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/agent-runs/student_one_600a8c0f902c4bfb87c03e6bbb73aae5/context-files/ctx_c2e359d21475__image.png",
+    "imageComplete": true,
+    "naturalWidth": 3012,
+    "naturalHeight": 1892,
+    "openResult": "A new browser tab opened on the exact REST URL with title ctx_c2e359d21475__image.png (3012×1892).",
+    "screenshots": [
+      "org-history-attachment.png",
+      "org-attachment-open.png"
+    ]
+  },
+  "readOnlyPreservation": "browser-readonly-preservation.json reports every tracked profile category exact after the journeys.",
+  "providerOrInferenceSend": false
+}
