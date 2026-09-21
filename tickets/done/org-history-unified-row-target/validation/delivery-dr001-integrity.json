@@ -6,7 +6,7 @@
   "fetchedTarget": "9a0d2c3fd0d13a28e00e8649c515a7d56c673a32",
   "aheadBehind": "0/0",
   "integrationResult": "Already current",
-  "manifestPath": "tickets/in-progress/org-history-unified-row-target/validation/ir001-source-manifest.json",
+  "manifestPath": "tickets/done/org-history-unified-row-target/validation/ir001-source-manifest.json",
   "manifestFiles": [
     {
       "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
