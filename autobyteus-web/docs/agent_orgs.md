@@ -357,18 +357,19 @@ Normal quiet refresh, selection, disclosure and stopped-run non-activation remai
 unchanged. This is a frontend scheduling change, not a migration, backend index
 redesign, fixed latency guarantee or measurement of a particular user's startup.
 
-Each individual Org run has two coordinated native disclosure surfaces. The
-primary summary row toggles that exact run's hierarchy while retaining its
-existing open/select action. The dedicated chevron remains disclosure-only and
-does not navigate or select. Both controls support pointer and native
-Enter/Space activation and expose the current `aria-expanded` state; the primary
-row publishes `aria-controls` only while its hierarchy is rendered. Either
-surface can collapse active or stopped, selected or unselected runs without
-inspection, Stop or runtime activation. Collapse preserves the selected
-conversation and draft, mounted-Team expansion and sibling run state. History
-refresh does not undo a manual collapse. Stop remains a separate isolated action;
-explicit member navigation can reveal its owning hierarchy. Expansion state is
-local UI state, not persisted across application restart.
+Each individual Org run has one native primary summary control containing its
+chevron, lifecycle dot and summary. Pointer activation on either the text or
+chevron pixels and native Enter/Space activation all follow the same exact path:
+toggle that run's hierarchy, then retain its existing open/select action once.
+The presentational chevron is not a second focus target or independently labeled
+button. Only the primary control exposes `aria-expanded` and publishes
+`aria-controls` while its hierarchy is rendered. The control can collapse active
+or stopped, selected or unselected runs without inspection, Stop or runtime
+activation. Collapse preserves the selected conversation and draft, mounted-Team
+expansion and sibling run state. History refresh does not undo a manual collapse.
+Stop remains a separate isolated sibling action; explicit member navigation can
+reveal its owning hierarchy. Expansion state is local UI state, not persisted
+across application restart.
 
 - A new AgentOrg row displays `New - <AgentOrg name>` until the first
   successfully accepted non-empty external user message reaches an exact

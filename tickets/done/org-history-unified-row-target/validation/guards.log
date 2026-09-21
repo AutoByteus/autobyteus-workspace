@@ -1,0 +1,49 @@
+ORG-HISTORY-UNIFIED-ROW-20260921-001 IR-001 implementation guards
+
+## git diff --check
+PASS
+
+## product/test diff
+autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+
+## diff stat
+ .../history/WorkspaceAgentOrgHistoryCollection.vue | 18 ++---
+ .../__tests__/WorkspaceAgentOrgDisclosure.spec.ts  | 77 +++++++++++++++-------
+ .../WorkspaceHistoryFamilyPublication.spec.ts      | 23 ++++++-
+ 3 files changed, 81 insertions(+), 37 deletions(-)
+
+## production component effective non-empty lines
+186
+PASS: 186 <= 500
+
+## production component delta
+7	11	autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+PASS: below the 220 changed-line assessment trigger
+
+## obsolete parallel-control guard
+PASS: no direct chevron toggle handler or dedicated disclosure button remains
+38:              @click="openRun(run)"
+44:                :data-test="`agent-org-run-disclosure-${run.rootRunId}`"
+45:                aria-hidden="true"
+84:                <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+111:                <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+117:                <span class="ml-2 mr-1 h-3.5 w-3.5" aria-hidden="true" />
+
+## forbidden production-scope guard
+autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+PASS: only the designed AgentOrg history renderer changed in production
+
+## generated-output status
+ M autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+ M autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+ M autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+PASS: no lock or generated contract/build output is modified or untracked
+
+## local validation summary
+focused unified-row/sidebar boundary: 17/17 PASS
+exact pre-change regression substitution: expected FAIL (6 of 8 cases)
+adjacent clean subset: 87/87 PASS
+broad adjacent: 18 failures and 16 errors reproduced exactly on pre-change component (qualified baseline fixture/lifecycle drift)
+Nuxt production build: PASS, 16 routes prerendered

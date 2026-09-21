@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts (8 tests) 83ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (11 tests) 124ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests) 136ms
+
+ Test Files  3 passed (3)
+      Tests  28 passed (28)
+   Start at  09:18:23
+   Duration  6.28s (transform 3.49s, setup 15.36s, collect 1.07s, tests 342ms, environment 668ms, prepare 452ms)
+

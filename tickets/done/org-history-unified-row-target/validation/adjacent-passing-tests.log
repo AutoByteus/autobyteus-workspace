@@ -1,0 +1,116 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceTransientExecutionRow.task-monitor.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-web
+
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceTransientExecutionRow.task-monitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceTransientExecutionRow.task-monitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests) 7ms
+ ✓ components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts (32 tests) 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceTransientExecutionRow.task-monitor.spec.ts (3 tests) 26ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts (8 tests) 6ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (5 tests) 6ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts (8 tests) 84ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (11 tests) 122ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests) 126ms
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel> 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel> 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel> 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView> 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test) 121ms
+stderr | components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts (2 tests) 2ms
+
+ Test Files  10 passed (10)
+      Tests  87 passed (87)
+   Start at  09:07:07
+   Duration  7.44s (transform 3.92s, setup 47.57s, collect 3.71s, tests 504ms, environment 2.35s, prepare 1.78s)
+

@@ -1,0 +1,19 @@
+{
+  "database": {
+    "kind": "file",
+    "size": 875474944,
+    "sha256": "3276680a0181c1033224b09c0818a8ea179a7eeb516a064df27ac2dd58b2169f"
+  },
+  "stoppedOrg": {
+    "kind": "tree",
+    "fileCount": 121,
+    "bytes": 89393966,
+    "aggregateSha256": "f791ff6564159ba4155d1bb2c0b6c5af23e6e693be11ebb719e700da7304f9ce"
+  },
+  "teamComparator": {
+    "kind": "tree",
+    "fileCount": 34,
+    "bytes": 19742686,
+    "aggregateSha256": "a4bf5858d56618938f337205e603d340fc252729fd39d6bf3aef7e21f98198b6"
+  }
+}

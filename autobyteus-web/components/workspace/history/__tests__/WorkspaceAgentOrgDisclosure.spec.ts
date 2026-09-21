@@ -4,7 +4,6 @@ import { describe, expect, it, vi } from 'vitest';
 import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
-import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
 import type { AgentOrgHistoryDefinitionGroup } from '~/stores/runHistoryTypes';
 import type { WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts';
@@ -86,20 +85,31 @@ const harness = (active = true, selected = true) => {
 };
 
 describe('Org disclosure through real tree and rendered hierarchy', () => {
-  it.each([[true,true],[true,false],[false,true],[false,false]])('isolates disclosure active=%s selected=%s across refresh', async (active, selected) => {
+  it.each([[true,true],[true,false],[false,true],[false,false]])('preserves selection and draft state through unified row disclosure active=%s selected=%s', async (active, selected) => {
     const {wrapper, tree, history, selectedOrg, draft, actions, group} = harness(active, selected);
     await nextTick();
     const selectedBefore = selectedOrg.value;
     const conversation = draft.conversation;
-    const disclosure = wrapper.get('[data-test="agent-org-run-disclosure-org-run"]');
+    const primary = wrapper.get('[data-test="agent-org-run-open-org-run"]');
+    const chevron = primary.get('[data-test="agent-org-run-disclosure-org-run"]');
     const children = () => wrapper.get('[data-test="agent-org-run-children-org-run"]');
-    expect(disclosure.attributes('aria-expanded')).toBe('true');
+    expect(primary.element.tagName).toBe('BUTTON');
+    expect(primary.attributes('type')).toBe('button');
+    expect(primary.attributes('role')).toBe('treeitem');
+    expect(primary.attributes('tabindex')).toBeUndefined();
+    expect(chevron.element.closest('button')).toBe(primary.element);
+    expect(chevron.attributes('tabindex')).toBeUndefined();
+    expect(chevron.attributes('role')).toBeUndefined();
+    expect(chevron.attributes('aria-expanded')).toBeUndefined();
+    expect(chevron.attributes('aria-hidden')).toBe('true');
+    expect(primary.attributes('aria-expanded')).toBe('true');
     expect(children().isVisible()).toBe(true);
     expect(wrapper.get('[data-test="agent-org-agent-row-implementation-run"]').attributes('aria-selected')).toBe(String(selected));
-    await disclosure.trigger('click');
-    expect(disclosure.attributes('aria-expanded')).toBe('false');
+    await chevron.trigger('click');
+    expect(primary.attributes('aria-expanded')).toBe('false');
     expect(wrapper.find('[data-test="agent-org-run-children-org-run"]').exists()).toBe(false);
-    expect(disclosure.attributes('aria-controls')).toBeUndefined();
+    expect(primary.attributes('aria-controls')).toBeUndefined();
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledExactlyOnceWith(group.runs[0]);
     history.navigationTopologyRevision++;
     group.runs[0] = { ...group.runs[0]!, summary: 'Refreshed history' };
     await nextTick();
@@ -109,52 +119,71 @@ describe('Org disclosure through real tree and rendered hierarchy', () => {
     expect(selectedOrg.value).toBe(selectedBefore);
     expect(draft.conversation).toBe(conversation);
     expect(draft.text).toBe('Unsaved work');
-    for (const action of Object.values(actions)) expect(action).not.toHaveBeenCalled();
-    await disclosure.trigger('click');
+    for (const [name, action] of Object.entries(actions)) {
+      if (name !== 'onOpenAgentOrgRun') expect(action).not.toHaveBeenCalled();
+    }
+    await primary.get('span.truncate').trigger('click');
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
     expect(children().isVisible()).toBe(true);
     expect(wrapper.get('[data-test="agent-org-agent-row-implementation-run"]').isVisible()).toBe(true);
     wrapper.unmount();
   });
 
-  it.each([true, false])('toggles from the primary row while keeping Stop, mounted Team and selection reveal separate active=%s', async (active) => {
+  it.each([true, false])('uses one primary path from summary and chevron while isolating Stop active=%s', async (active) => {
     const {wrapper, tree, selectedOrg, actions, group} = harness(active);
-    const disclosure = wrapper.get('[data-test="agent-org-run-disclosure-org-run"]');
     const primary = wrapper.get('[data-test="agent-org-run-open-org-run"]');
-    await disclosure.trigger('click');
+    const chevron = primary.get('[data-test="agent-org-run-disclosure-org-run"]');
+    const summary = primary.get('span.truncate');
+    const toggle = vi.spyOn(tree, 'toggleAgentOrgRun');
+    expect(wrapper.find('button[data-test="agent-org-run-disclosure-org-run"]').exists()).toBe(false);
+    expect(wrapper.findAll('[data-test="agent-org-run-open-org-run"]')).toHaveLength(1);
+    expect(primary.element.tagName).toBe('BUTTON');
+    expect(primary.attributes('type')).toBe('button');
+    expect(primary.attributes('role')).toBe('treeitem');
+    expect(primary.attributes('tabindex')).toBeUndefined();
+    expect(chevron.element.closest('button')).toBe(primary.element);
+    expect(chevron.attributes('tabindex')).toBeUndefined();
+    expect(chevron.attributes('aria-label')).toBeUndefined();
+    expect(chevron.attributes('aria-hidden')).toBe('true');
+    await summary.trigger('click');
     expect(primary.attributes('aria-expanded')).toBe('false');
     expect(primary.attributes('aria-controls')).toBeUndefined();
-    expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
-    await primary.trigger('click');
+    expect(toggle).toHaveBeenCalledExactlyOnceWith('org-run');
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledExactlyOnceWith(group.runs[0]);
+    await chevron.trigger('click');
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
     expect(primary.attributes('aria-expanded')).toBe('true');
     expect(primary.attributes('aria-controls')).toBe('org-hierarchy-ws-org-run');
-    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledExactlyOnceWith(group.runs[0]);
+    expect(toggle).toHaveBeenCalledTimes(2);
+    expect(toggle).toHaveBeenLastCalledWith('org-run');
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
+    expect(actions.onOpenAgentOrgRun).toHaveBeenLastCalledWith(group.runs[0]);
     await primary.trigger('click');
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(false);
     expect(primary.attributes('aria-expanded')).toBe('false');
     expect(primary.attributes('aria-controls')).toBeUndefined();
-    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
+    expect(toggle).toHaveBeenCalledTimes(3);
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(3);
     expect(actions.onOpenAgentOrgRun).toHaveBeenLastCalledWith(group.runs[0]);
     if (active) {
       await wrapper.get('button[aria-label="Stop Agent Org"]').trigger('click');
       expect(actions.onTerminateAgentOrg).toHaveBeenCalledExactlyOnceWith(group.runs[0]);
       expect(tree.isAgentOrgRunExpanded('org-run')).toBe(false);
-      expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
+      expect(toggle).toHaveBeenCalledTimes(3);
+      expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(3);
     } else expect(wrapper.find('button[aria-label="Stop Agent Org"]').exists()).toBe(false);
-    await disclosure.trigger('click');
+    await chevron.trigger('click');
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
-    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
+    expect(toggle).toHaveBeenCalledTimes(4);
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(4);
     await wrapper.get('[data-test="agent-org-team-row-mounted-team-run"]').trigger('click');
     expect(tree.isAgentOrgTeamExpanded('org-run', '/software')).toBe(false);
     expect(actions.onSelectAgentOrgMember).toHaveBeenCalledWith(group.runs[0], '/software');
-    await disclosure.trigger('click');
+    await primary.trigger('click');
     selectedOrg.value = {...selectedOrg.value!, selection: {kind:'agent_execution', agentRunId:'new-task-run'}};
     await nextTick();
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
     expect(tree.isAgentOrgTeamExpanded('org-run', '/software')).toBe(true);
-    await localizationRuntime.setPreference('zh-CN'); await nextTick();
-    expect(disclosure.attributes('aria-label')).toContain('折叠');
-    await localizationRuntime.setPreference('en');
     wrapper.unmount();
   });
 
@@ -163,7 +192,7 @@ describe('Org disclosure through real tree and rendered hierarchy', () => {
     selectedOrg.value = {rootRunId: 'org-run', focusAddress: null, selection: null};
     await nextTick();
     expect(tree.isAgentOrgRunSelected('org-run')).toBe(true);
-    await wrapper.get('[data-test="agent-org-run-disclosure-org-run"]').trigger('click');
+    await wrapper.get('[data-test="agent-org-run-open-org-run"]').trigger('click');
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(false);
     expect(tree.isAgentOrgRunSelected('org-run')).toBe(true);
     wrapper.unmount();

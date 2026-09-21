@@ -1,0 +1,839 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+[dotenv@17.3.1] injecting env (0) from .local/api-unified-row-profile/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.15                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:90215) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T07:23:41.066Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-21T07:23:41.520Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T07:23:41.526Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1789975421539,"pid":90215,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50110"}
+{"level":30,"time":1789975421563,"pid":90215,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51681"}
+[2026-09-21T07:23:41.563Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+[2026-09-21T07:23:41.564Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51681
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 6 items.
+Found 6 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 6 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[09/21/26 09:23:42] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'speak'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'remote_health_check'
+Successfully registered tool definition: 'remote_list_audio_models'
+Successfully registered tool definition: 'remote_list_image_models'
+Successfully registered tool definition: 'remote_list_video_models'
+Successfully registered tool definition: 'remote_generate_image'
+Successfully registered tool definition: 'remote_generate_video'
+Successfully registered tool definition: 'remote_find_target_coordinates'
+Successfully registered tool definition: 'remote_edit_image'
+Successfully registered tool definition: 'remote_generate_speech'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'ssh_health_check'
+Successfully registered tool definition: 'ssh_open_session'
+Successfully registered tool definition: 'ssh_session_exec'
+Successfully registered tool definition: 'ssh_close_session'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'aliyun_ssh_health_check'
+Successfully registered tool definition: 'aliyun_ssh_open_session'
+Successfully registered tool definition: 'aliyun_ssh_session_exec'
+Successfully registered tool definition: 'aliyun_ssh_close_session'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'download_audio'
+Successfully registered tool definition: 'download_video'
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+[dotenv@17.3.1] injecting env (0) from .local/api-unified-row-profile/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:92576) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T07:25:56.745Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-21T07:25:57.196Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T07:25:57.203Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1789975557213,"pid":92576,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50166"}
+{"level":30,"time":1789975557239,"pid":92576,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51681"}
+[2026-09-21T07:25:57.239Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+[2026-09-21T07:25:57.240Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51681
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 6 items.
+Found 6 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 6 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[09/21/26 09:25:57] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'speak'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'remote_health_check'
+Successfully registered tool definition: 'remote_list_audio_models'
+Successfully registered tool definition: 'remote_list_image_models'
+Successfully registered tool definition: 'remote_list_video_models'
+Successfully registered tool definition: 'remote_generate_image'
+Successfully registered tool definition: 'remote_generate_video'
+Successfully registered tool definition: 'remote_find_target_coordinates'
+Successfully registered tool definition: 'remote_edit_image'
+Successfully registered tool definition: 'remote_generate_speech'
+Processing request of type ListToolsRequest
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+[dotenv@17.3.1] injecting env (0) from .local/api-unified-row-profile/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51681
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51681
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:93018) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T07:26:11.420Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-21T07:26:11.846Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T07:26:11.851Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1789975571860,"pid":93018,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50181"}
+{"level":30,"time":1789975571884,"pid":93018,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51681"}
+[2026-09-21T07:26:11.884Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+[2026-09-21T07:26:11.885Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51681
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 6 items.
+Found 6 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 6 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[09/21/26 09:26:12] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'speak'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'remote_health_check'
+Successfully registered tool definition: 'remote_list_audio_models'
+Successfully registered tool definition: 'remote_list_image_models'
+Successfully registered tool definition: 'remote_list_video_models'
+Successfully registered tool definition: 'remote_generate_image'
+Successfully registered tool definition: 'remote_generate_video'
+Successfully registered tool definition: 'remote_find_target_coordinates'
+Successfully registered tool definition: 'remote_edit_image'
+Successfully registered tool definition: 'remote_generate_speech'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'ssh_health_check'
+Successfully registered tool definition: 'ssh_open_session'
+Successfully registered tool definition: 'ssh_session_exec'
+Successfully registered tool definition: 'ssh_close_session'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'aliyun_ssh_health_check'
+Successfully registered tool definition: 'aliyun_ssh_open_session'
+Successfully registered tool definition: 'aliyun_ssh_session_exec'
+Successfully registered tool definition: 'aliyun_ssh_close_session'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'download_audio'
+Successfully registered tool definition: 'download_video'
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Created metadata-only FileSystemWorkspace at /Users/normy/2026-07-18-hackathon.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_company_operation.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_private_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-com-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-investor-applications.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-m1-qwen38-27b.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-manga-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-marketing-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-private-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-skills.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-social-media.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-tutorial-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/browser_docker.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/model-eval-analysis.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/repository_prisma.
+Created metadata-only FileSystemWorkspace at /Users/normy/church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/2026-05-25-roma-fuqi-church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/bible_children_manga_book.
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_job_search.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_projects/german_online_practice.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+Created metadata-only FileSystemWorkspace at /Users/normy/2026-07-18-hackathon.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_company_operation.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_private_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-com-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-investor-applications.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-m1-qwen38-27b.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-manga-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-marketing-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-private-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-skills.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-social-media.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-tutorial-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/browser_docker.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/model-eval-analysis.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/repository_prisma.
+Created metadata-only FileSystemWorkspace at /Users/normy/church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/2026-05-25-roma-fuqi-church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/bible_children_manga_book.
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_job_search.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_projects/german_online_practice.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+Created terminal session 6e1c89f3-39ec-4cb1-bbba-0eb707f61b4a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 6e1c89f3-39ec-4cb1-bbba-0eb707f61b4a
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/department_head_e4063bf956e64332a2eb264227aca43a/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/product_design_prototyping_team_793d135375ab492bae9aad167d9e19e0/prototype_bootstrapper_ec76565855464d7d905337c8d9cc2d19/raw_traces_active.jsonl
+Closed PTY session 6e1c89f3-39ec-4cb1-bbba-0eb707f61b4a
+Terminal WebSocket disconnected: 6e1c89f3-39ec-4cb1-bbba-0eb707f61b4a
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Created terminal session 04d54bea-e8f0-4999-94cc-3aaf80b4eb03 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 04d54bea-e8f0-4999-94cc-3aaf80b4eb03
+Terminal websocket attached for cwd /Users/normy
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/test_teacher_c1d9f84b60d546fda4f9adfc77290e71/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/student_study_group_6b965a7177ce4b4b81bc3e03f7f26c76/student_one_7cf150105bd241b2a2f35d17e1226ab4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/student_study_group_6b965a7177ce4b4b81bc3e03f7f26c76/student_two_bcc35c24996b4537af576b628ae624a3/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/test_teacher_c1d9f84b60d546fda4f9adfc77290e71/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/student_study_group_6b965a7177ce4b4b81bc3e03f7f26c76/student_one_7cf150105bd241b2a2f35d17e1226ab4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/student_study_group_6b965a7177ce4b4b81bc3e03f7f26c76/student_two_bcc35c24996b4537af576b628ae624a3/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/test_teacher_c1d9f84b60d546fda4f9adfc77290e71/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/student_study_group_6b965a7177ce4b4b81bc3e03f7f26c76/student_one_7cf150105bd241b2a2f35d17e1226ab4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9/student_study_group_6b965a7177ce4b4b81bc3e03f7f26c76/student_two_bcc35c24996b4537af576b628ae624a3/raw_traces_active.jsonl
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/.env
+[dotenv@17.3.1] injecting env (0) from .local/api-unified-row-profile/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51681
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51681
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:99696) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T07:34:59.673Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-21T07:35:00.088Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T07:35:00.093Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1789976100102,"pid":99696,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50657"}
+{"level":30,"time":1789976100128,"pid":99696,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51681"}
+[2026-09-21T07:35:00.128Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+[2026-09-21T07:35:00.128Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51681
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 6 items.
+Found 6 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 6 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[09/21/26 09:35:00] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'speak'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'remote_health_check'
+Successfully registered tool definition: 'remote_list_audio_models'
+Successfully registered tool definition: 'remote_list_image_models'
+Successfully registered tool definition: 'remote_list_video_models'
+Successfully registered tool definition: 'remote_generate_image'
+Successfully registered tool definition: 'remote_generate_video'
+Successfully registered tool definition: 'remote_find_target_coordinates'
+Successfully registered tool definition: 'remote_edit_image'
+Successfully registered tool definition: 'remote_generate_speech'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'ssh_health_check'
+Successfully registered tool definition: 'ssh_open_session'
+Successfully registered tool definition: 'ssh_session_exec'
+Successfully registered tool definition: 'ssh_close_session'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'aliyun_ssh_health_check'
+Successfully registered tool definition: 'aliyun_ssh_open_session'
+Successfully registered tool definition: 'aliyun_ssh_session_exec'
+Successfully registered tool definition: 'aliyun_ssh_close_session'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'download_audio'
+Successfully registered tool definition: 'download_video'
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Created terminal session 69f2b288-1ce1-44d1-92f1-fd702b267e67 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 69f2b288-1ce1-44d1-92f1-fd702b267e67
+Terminal websocket attached for cwd /Users/normy
+Created metadata-only FileSystemWorkspace at /Users/normy/2026-07-18-hackathon.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_company_operation.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_private_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-com-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-investor-applications.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-m1-qwen38-27b.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-manga-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-marketing-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-private-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-skills.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-social-media.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-tutorial-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/browser_docker.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/model-eval-analysis.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/repository_prisma.
+Created metadata-only FileSystemWorkspace at /Users/normy/church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/2026-05-25-roma-fuqi-church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/bible_children_manga_book.
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_job_search.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_projects/german_online_practice.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/department_head_e4063bf956e64332a2eb264227aca43a/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory/agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/product_design_prototyping_team_793d135375ab492bae9aad167d9e19e0/prototype_bootstrapper_ec76565855464d7d905337c8d9cc2d19/raw_traces_active.jsonl
+Closed PTY session 69f2b288-1ce1-44d1-92f1-fd702b267e67
+Terminal WebSocket disconnected: 69f2b288-1ce1-44d1-92f1-fd702b267e67

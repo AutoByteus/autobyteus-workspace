@@ -1,0 +1,154 @@
+{
+  "package": "ORG-HISTORY-UNIFIED-ROW-20260921-001",
+  "round": "API-REV-001",
+  "surface": "normal Chrome against owned Nuxt 51683 and corrected isolated backend 51681",
+  "stoppedOrgId": "software_development_department_75403d5130584669869fdd59725f6b3e",
+  "b01": {
+    "initial": {
+      "primaryCount": 1,
+      "chevronCount": 1,
+      "chevronButtonCount": 0,
+      "tag": "BUTTON",
+      "type": "button",
+      "role": "treeitem",
+      "expanded": "true",
+      "controls": "org-hierarchy-workspace%3A%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo-software_development_department_75403d5130584669869fdd59725f6b3e",
+      "chevronParent": "agent-org-run-open-software_development_department_75403d5130584669869fdd59725f6b3e",
+      "chevronTabindex": null,
+      "chevronAriaHidden": "true",
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "children": 1,
+      "content": true
+    },
+    "summaryClick": {
+      "expanded": "false",
+      "controls": null,
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "children": 0,
+      "content": true
+    },
+    "chevronClick": {
+      "expanded": "true",
+      "controls": "org-hierarchy-workspace%3A%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo-software_development_department_75403d5130584669869fdd59725f6b3e",
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "children": 1,
+      "content": true,
+      "controlsMatches": true
+    }
+  },
+  "b02": {
+    "space": {
+      "expanded": "false",
+      "controls": null,
+      "children": 0,
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "focused": true,
+      "content": true
+    },
+    "enter": {
+      "expanded": "true",
+      "controls": "org-hierarchy-workspace%3A%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo-software_development_department_75403d5130584669869fdd59725f6b3e",
+      "children": 1,
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "focused": true,
+      "content": true,
+      "controlsMatches": true
+    },
+    "primaryAria": {
+      "expanded": "true",
+      "controls": "org-hierarchy-workspace%3A%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo-software_development_department_75403d5130584669869fdd59725f6b3e",
+      "selected": "true",
+      "current": "true"
+    },
+    "chevronIndependentAria": {
+      "expanded": null,
+      "controls": null,
+      "label": null,
+      "tabindex": null
+    }
+  },
+  "b03": {
+    "created": {
+      "activeId": "nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9",
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=nested-classroom-test&orgRunId=nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9&mode=active",
+      "expanded": "true",
+      "stopCount": 1,
+      "model": "qwen3.5-27b:lmstudio@127.0.0.1:1234",
+      "sendPerformed": false
+    },
+    "activeCollapsed": {
+      "expanded": "false",
+      "children": 0,
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=nested-classroom-test&orgRunId=nested_classroom_test_org_83cd05328a684dafbdb7df3f633384b9&mode=active"
+    },
+    "differentStoppedSelected": {
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "activeExpanded": "false",
+      "activeChildren": 0,
+      "stoppedContent": true
+    },
+    "afterStop": {
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "selectedUrlUnchanged": true,
+      "activeExpanded": "false",
+      "activeChildren": 0,
+      "stopCount": 0,
+      "activeStatus": "Stopped",
+      "stoppedContent": true,
+      "orgPrimaryCount": 2
+    }
+  },
+  "b04": {
+    "initial": {
+      "expanded": "false",
+      "url": "http://127.0.0.1:51683/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history",
+      "text": "Currently in the token statistics, we have, yeah, in token statistics, we have like a, on the set..."
+    },
+    "afterFirst": {
+      "expanded": "true",
+      "url": "http://127.0.0.1:51683/workspace",
+      "outerMain": "S\nsolution_designer\nOffline\nProvider context compaction boundary recorded\nCOMPLETED\nTurn: 01a02acc-d6a7-75f3-9145-0d906433fe03 · Provider: codex\nS\nsolution_designer\nrun_bash\n· /bin/bash -lc \"cat .codex/skills/solution-designer/SKILL.md && printf '\\\\n---STATUS---\\\\n' && git -C /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics status --short && printf '\\\\n---REQ HITS---\\\\n' && rg -n \\\"snapshot|immutable|60 seconds|focus|consum|used this month|usage over time|pace\\\" /Users",
+      "memberRows": 0
+    },
+    "afterSecond": {
+      "expanded": "false",
+      "url": "http://127.0.0.1:51683/workspace",
+      "outerMain": "S\nsolution_designer\nOffline\nProvider context compaction boundary recorded\nCOMPLETED\nTurn: 01a02acc-d6a7-75f3-9145-0d906433fe03 · Provider: codex\nS\nsolution_designer\nrun_bash\n· /bin/bash -lc \"cat .codex/skills/solution-designer/SKILL.md && printf '\\\\n---STATUS---\\\\n' && git -C /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics status --short && printf '\\\\n---REQ HITS---\\\\n' && rg -n \\\"snapshot|immutable|60 seconds|focus|consum|used this month|usage over time|pace\\\" /Users",
+      "memberRows": 0
+    }
+  },
+  "browserConsoleWarningsOrErrors": [
+    {
+      "level": "warn",
+      "message": "[Vue Router warn]: uncaught error during route navigation:",
+      "timestamp": "2026-09-21T07:29:13.675Z",
+      "url": "http://127.0.0.1:51683/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router/dist/devtools-EWN81iOl.mjs?v=0fb47da5"
+    },
+    {
+      "level": "error",
+      "message": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:51683/_nuxt/pages/workspace.vue",
+      "timestamp": "2026-09-21T07:29:13.675Z",
+      "url": "http://127.0.0.1:51683/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router/dist/vue-router.mjs"
+    },
+    {
+      "level": "error",
+      "message": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:51683/_nuxt/pages/workspace.vue",
+      "timestamp": "2026-09-21T07:29:13.676Z",
+      "url": "http://127.0.0.1:51683/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/nuxt.js?v=0fb47da5"
+    },
+    {
+      "level": "warn",
+      "message": "[Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:51683/_nuxt/pages/workspace.vue",
+      "timestamp": "2026-09-21T07:29:13.677Z",
+      "url": "http://127.0.0.1:51683/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router/dist/devtools-EWN81iOl.mjs?v=0fb47da5"
+    },
+    {
+      "level": "error",
+      "message": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:51683/_nuxt/pages/workspace.vue",
+      "timestamp": "2026-09-21T07:29:13.678Z",
+      "url": "http://127.0.0.1:51683/_nuxt/plugins/uiErrorCapture.client.ts"
+    }
+  ],
+  "transientDevImportErrorsAllAt": "2026-09-21T07:29:13Z before successful stabilized workspace interactions",
+  "sendOrInferencePerformed": false
+}

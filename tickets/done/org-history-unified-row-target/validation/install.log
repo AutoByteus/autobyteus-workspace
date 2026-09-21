@@ -1,0 +1,21 @@
+Scope: all 14 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1718
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1718, reused 1155, downloaded 0, added 0
+Progress: resolved 1718, reused 1716, downloaded 0, added 269
+Progress: resolved 1718, reused 1716, downloaded 0, added 556
+Progress: resolved 1718, reused 1716, downloaded 0, added 699
+Progress: resolved 1718, reused 1716, downloaded 0, added 907
+Progress: resolved 1718, reused 1716, downloaded 0, added 1320
+Progress: resolved 1718, reused 1716, downloaded 0, added 1718, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Done in 8.6s using pnpm v10.28.2

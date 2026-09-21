@@ -1,0 +1,18 @@
+--- candidate backend boundary ---
+--- datasource/listen ---
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+[2026-09-21T07:23:41.563Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+[2026-09-21T07:25:57.239Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db/production.db"
+[2026-09-21T07:26:11.884Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db/production.db"
+[2026-09-21T07:35:00.128Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51681

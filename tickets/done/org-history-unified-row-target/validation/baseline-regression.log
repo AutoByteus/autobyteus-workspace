@@ -1,0 +1,101 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts (8 tests | 6 failed) 61ms
+   × Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=true selected=true 24ms
+     → Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-emerald-500" aria-label="Running"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+   × Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=true selected=false 5ms
+     → Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-emerald-500" aria-label="Running"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+   × Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=false selected=true 4ms
+     → Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300" aria-label="Stopped"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+   × Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=false selected=false 5ms
+     → Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300" aria-label="Stopped"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+   × Org disclosure through real tree and rendered hierarchy > uses one primary path from summary and chevron while isolating Stop active=true 4ms
+     → Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-emerald-500" aria-label="Running"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+   × Org disclosure through real tree and rendered hierarchy > uses one primary path from summary and chevron while isolating Stop active=false 3ms
+     → Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300" aria-label="Stopped"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+   ✓ Org disclosure through real tree and rendered hierarchy > also collapses a selected root without changing selection 8ms
+   ✓ Org disclosure through real tree and rendered hierarchy > reactively renders Org avatars and isolates late old-URL failures 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=true selected=true
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=true selected=false
+Error: Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-emerald-500" aria-label="Running"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+ ❯ DOMWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts:94:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=false selected=true
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > preserves selection and draft state through unified row disclosure active=false selected=false
+Error: Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300" aria-label="Stopped"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+ ❯ DOMWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts:94:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > uses one primary path from summary and chevron while isolating Stop active=true
+Error: Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-emerald-500" aria-label="Running"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+ ❯ DOMWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts:135:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > uses one primary path from summary and chevron while isolating Stop active=false
+Error: Unable to get [data-test="agent-org-run-disclosure-org-run"] within: <button data-v-c3addd28="" type="button" data-test="agent-org-run-open-org-run" class="flex min-w-0 flex-1 items-center text-left" aria-expanded="true" aria-controls="org-hierarchy-ws-org-run" aria-selected="false" role="treeitem"><span data-v-c3addd28="" class="mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300" aria-label="Stopped"></span><span data-v-c3addd28="" class="truncate font-medium">Deliver current package</span></button>
+ ❯ DOMWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts:135:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+   Start at  09:13:04
+   Duration  5.04s (transform 2.85s, setup 4.32s, collect 198ms, tests 61ms, environment 128ms, prepare 114ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+BASELINE_TEST_EXIT_CODE=1
+Expected baseline failure reproduced with the final IR-001 regression.

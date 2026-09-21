@@ -18,6 +18,18 @@ vi.mock('~/services/runHydration/runContextHydrationService', () => ({ hydrateLi
 vi.mock('vue-router', () => ({ useRoute: () => ({ query: {} }), useRouter: () => ({ push: vi.fn(), replace: vi.fn() }) }));
 const deferred = () => { let resolve!: (x?: any) => void; let reject!: (x: any) => void; const promise = new Promise<any>((r,j) => { resolve=r; reject=j; }); return {promise,resolve,reject}; };
 const orgResponse = (id = 'org-history') => ({ data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({ rootRunId:id, workspaceRootPath:'/fixture', definitionName:'History Org' })] } });
+const orgInspectionResponse = (id = 'org-history') => {
+  const row = buildAgentOrgHistoryRow({ rootRunId:id, workspaceRootPath:'/fixture', definitionName:'History Org' });
+  return { data: { getAgentOrgRunInspection: {
+    schema_version: 1, root_subject_kind: 'agent_org', root_run_id: id,
+    root_org: {
+      base_change_sequence: 0, is_active: false, execution_tree: row.org,
+      task_records: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, records: [] },
+      communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] },
+      agent_statuses: [],
+    },
+  } } };
+};
 const workspaceResponse = (active = false) => ({ data: { listWorkspaceRunHistory: [historyWorkspaceFixture(active)] } });
 let workspace: ReturnType<typeof deferred>, org: ReturnType<typeof deferred>, avatar: ReturnType<typeof deferred>, catalog: ReturnType<typeof deferred>, hydration: ReturnType<typeof deferred>;
 let wrapper: ReturnType<typeof mount> | undefined;
@@ -31,11 +43,17 @@ beforeEach(() => {
   vi.spyOn(useAgentOrgDefinitionStore(),'fetchAll').mockImplementation(() => catalog.promise);
   vi.spyOn(useAgentRunStore(),'connectToAgentStream').mockImplementation(() => undefined);
   io.hydrate.mockImplementation(() => hydration.promise);
-  io.query.mockImplementation(({ query }) => {
+  io.query.mockImplementation(({ query, variables }) => {
     const name=query.definitions.find((d:any)=>d.name)?.name.value;
     if(name==='ListWorkspaceRunHistory') return workspace.promise;
     if(name==='ListCollaborationRootHistory') return org.promise;
     if(name==='GetWorkspaceRunHistory') return catalog.promise.then(()=>({data:{workspaceRunHistory:historyWorkspaceFixture()}}));
+    if(name==='GetAgentOrgRunInspection') return orgInspectionResponse();
+    if(name==='GetAgentOrgMemberRunProjection') return { data: { getAgentOrgMemberRunProjection: {
+      agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
+      summary: 'History member', lastActivityAt: '2026-09-03T00:00:00.000Z',
+      conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+    } } };
     throw Error('Unexpected query '+name);
   });
 });
@@ -77,7 +95,8 @@ describe('independent family publication through real initialized Pinia projecti
       expect(orgIds()).toEqual(['org-history']);
       await wrapper!.get('[data-test="agent-org-definition-org-definition"]').trigger('click');
       expect(wrapper!.find('[data-test="agent-org-run-open-org-history"]').exists()).toBe(true);
-      await wrapper!.get('[data-test="agent-org-run-disclosure-org-history"]').trigger('click');
+      await wrapper!.get('[data-test="agent-org-run-open-org-history"]').trigger('click');
+      await flushPromises();
       expect(wrapper!.find('[data-test="agent-org-agent-row-writer-org-history"]').exists()).toBe(true);
     } else expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs[0]?.runId).toBe('agent-history');
     expect(io.hydrate).not.toHaveBeenCalled();expect(useAgentRunStore().connectToAgentStream).not.toHaveBeenCalled();

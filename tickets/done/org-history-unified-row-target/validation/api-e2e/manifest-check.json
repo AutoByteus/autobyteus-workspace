@@ -1,0 +1,24 @@
+{
+  "packageIdentifier": "ORG-HISTORY-UNIFIED-ROW-20260921-001",
+  "allMatch": true,
+  "files": [
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "expected": "3ab623096351b4bb2051e88549fbb82804fd1f3da1219514891223cc98e74638",
+      "actual": "3ab623096351b4bb2051e88549fbb82804fd1f3da1219514891223cc98e74638",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+      "expected": "d27d4ecab4775f1d7b257dd159b1d10576d80b9d69b5d0e15c3216731485cc28",
+      "actual": "d27d4ecab4775f1d7b257dd159b1d10576d80b9d69b5d0e15c3216731485cc28",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "expected": "7aadb7864224e37ebb517a069c962003ca0fd0e29d277be7a9a1a722d7ef755c",
+      "actual": "7aadb7864224e37ebb517a069c962003ca0fd0e29d277be7a9a1a722d7ef755c",
+      "match": true
+    }
+  ]
+}

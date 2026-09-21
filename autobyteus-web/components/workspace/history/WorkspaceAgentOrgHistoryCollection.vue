@@ -27,17 +27,6 @@
           <div class="group/org-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50">
             <button
               type="button"
-              class="mr-1 inline-flex h-5 w-5 flex-none items-center justify-center rounded text-gray-400 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-indigo-500"
-              :data-test="`agent-org-run-disclosure-${run.rootRunId}`"
-              :aria-expanded="isRunExpanded(run.rootRunId)"
-              :aria-controls="isRunExpanded(run.rootRunId) ? hierarchyId(run.rootRunId) : undefined"
-              :aria-label="t(isRunExpanded(run.rootRunId) ? 'workspace.agentOrg.history.collapseRun' : 'workspace.agentOrg.history.expandRun', { name: run.summary || group.name })"
-              @click.stop="state.toggleAgentOrgRun?.(run.rootRunId)"
-            >
-              <Icon icon="heroicons:chevron-down-20-solid" class="h-3.5 w-3.5 transition-transform" :class="isRunExpanded(run.rootRunId) ? '' : '-rotate-90'" />
-            </button>
-            <button
-              type="button"
               :data-test="`agent-org-run-open-${run.rootRunId}`"
               class="flex min-w-0 flex-1 items-center text-left"
               :class="isRunSelected(run.rootRunId) ? 'text-indigo-900' : ''"
@@ -48,6 +37,13 @@
               role="treeitem"
               @click="openRun(run)"
             >
+              <Icon
+                icon="heroicons:chevron-down-20-solid"
+                class="mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform"
+                :class="isRunExpanded(run.rootRunId) ? '' : '-rotate-90'"
+                :data-test="`agent-org-run-disclosure-${run.rootRunId}`"
+                aria-hidden="true"
+              />
               <span class="mr-1.5 h-2 w-2 flex-none rounded-full" :class="run.isActive ? 'bg-emerald-500' : 'bg-gray-300'" :aria-label="run.isActive ? t('workspace.agentOrg.history.running') : t('workspace.agentOrg.history.stopped')" />
               <span class="truncate font-medium">{{ run.summary || t('workspace.agentOrg.history.newRun', { name: group.name }) }}</span>
             </button>

@@ -1,0 +1,16 @@
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
