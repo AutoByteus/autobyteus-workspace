@@ -10,21 +10,22 @@
 - Supplemental task artifacts: Current-state evidence under `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/evidence/`; no behavior-defining UI/UX supplement.
 - Design review report: `N/A — not applicable` (independent architecture review was not selected).
 - Architecture review revision record: `N/A — not applicable`.
-- Triggering rework report, revision record, or evidence, when applicable: Initial implementation; triggering architecture handoff is `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/architecture-handoff.md`.
+- Prior direct-route validation: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md` and `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-revision-record.md` (`API-REV-001`, Pass / 95.0%).
+- Triggering rework report, revision record, or evidence, when applicable: Delivery Local Fix `DR-002`; `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/delivery-revision-record.md`, `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/release-deployment-report.md`, and `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/delivery-evidence/dr-002/electron-build-start-attempt.md`.
 
 ## Current Implementation Summary
 
-The current implementation makes Agent Org list/detail membership identity role-based and deterministic. List chips synchronously format the enclosing Org member's `memberName` and own no network lifecycle. Detail rows retain their Org membership identity; mounted Team coordinator and nested handoff roles come from one existing admitted endpoint-catalog query. Create/edit keeps definition names in selection contexts and retains the full exact ID/scope/owner/Team-child reference validator. Agent/Team catalog loading is initiated by this experience only for create/edit. The obsolete shallow reference reader and reload refresh token are removed.
+The current implementation makes Agent Org list/detail membership identity role-based and deterministic. List chips synchronously format the enclosing Org member's `memberName` and own no network lifecycle. Detail rows retain their Org membership identity; mounted Team coordinator and nested handoff roles come from one existing admitted endpoint-catalog query. An incomplete detail catalog now enters the existing localized unavailable state directly rather than constructing an untranslated caught error. Create/edit keeps definition names in selection contexts and retains the full exact ID/scope/owner/Team-child reference validator. Agent/Team catalog loading is initiated by this experience only for create/edit. The obsolete shallow reference reader and reload refresh token are removed.
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Local Fix — Delivery DR-002`.
 - Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002`.
 - Related solution revision IDs: `SR-005` (`SR-004` approved requirements baseline).
 - Related architecture-review revision IDs: N/A.
 - Related code-review revision IDs: N/A.
-- Related API/E2E revision IDs: N/A.
-- Related delivery revision IDs: N/A.
-- Triggering finding IDs: N/A.
+- Related API/E2E revision IDs: `API-REV-001` (prior Pass / 95.0%; focused revalidation required for `IR-002`).
+- Related delivery revision IDs: `DR-002`.
+- Triggering finding IDs: `M-014` unresolved product literal in `AgentOrgExperience.vue#script-1`.
 
 ## Routing Classification (Mandatory)
 
@@ -32,7 +33,7 @@ The current implementation makes Agent Org list/detail membership identity role-
 - Architecture risk (`Low`/`High`): `Low`.
 - Design classification section / evidence reference: `design-spec.md`, “Task Size And Architectural Risk”; frontend-only change using existing contracts with no schema, persistence, ownership-policy, or deployment change.
 - Classification confirmed or changed: `Confirmed`.
-- Evidence and rationale for confirmation or change: Implementation stayed within the designed frontend components/services/utilities/tests/docs; reused the existing endpoint query; made no backend or persisted-data change; focused tests, production build, and browser inspection passed. No new contract or ownership impact was discovered.
+- Evidence and rationale for confirmation or change: The Local Fix replaces one constructed internal error with direct publication of the already-designed unavailable state and adds one focused regression. It preserves the endpoint query, role-label/reader boundaries, contracts, persistence, and ownership model. Localization guards/audit and 53 focused assertions pass. No new contract or ownership impact was discovered.
 - Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Direct API/E2E`.
 - Lightweight implementation self-review completed for the direct route: `Yes`.
 - New design impact or escalation trigger: `None`.
@@ -43,7 +44,7 @@ The current implementation makes Agent Org list/detail membership identity role-
 | --- | --- | --- | --- |
 | `BEH-001` | List chips use formatted Org-local roles from first frame and issue no exact member-name reads; existing card/search/actions remain. | `AgentOrgExperience.vue` → `AgentOrgCatalogMemberChips.vue` → `utils/collaboration/memberRoleLabel.ts`; shallow loader and refresh-key path removed from `agentOrgDefinitionReferences.ts`. | Implemented. Visible and aria labels share one role value; casing is preserved; invalid roles use the localized type fallback. |
 | `BEH-002` | Detail direct rows use Org roles; Team coordinator/nested endpoint labels use Team-local roles; refs remain action identities only. | Membership-aware `directAgentMembers`/`orgTeamMembers` in `AgentOrgExperience.vue`; `services/agentOrgDefinition/agentOrgEndpointCatalog.ts`; endpoint-to-handoff mapping keyed by mounted address with definition ID corroboration. | Implemented. Direct rows never wait for topology. One aggregate request is used only when mounted Teams require secondary topology. |
-| `BEH-003` | Reload/reference failure/route or binding changes cannot rename labels; stale topology is rejected; authoring validation remains exact. | Org store Reload only; detail topology watcher keyed by view/Org/revision/mounted Teams/binding with cleanup; create/edit-only full-reference watcher retains `loadAgentOrgDefinitionReferences`; authoring catalogs load only in authoring views. | Implemented. Deferred failure/route/binding tests pass; full-reader, Org-return Team detail, authoring, and run-config regressions pass. |
+| `BEH-003` | Reload/reference failure/route or binding changes cannot rename labels; stale topology is rejected; authoring validation remains exact. | Org store Reload only; detail topology watcher keyed by view/Org/revision/mounted Teams/binding with cleanup; incomplete topology publishes the localized unavailable state directly; create/edit-only full-reference watcher retains `loadAgentOrgDefinitionReferences`; authoring catalogs load only in authoring views. | Implemented. Deferred failure/route/binding and incomplete-catalog tests pass; full-reader, Org-return Team detail, authoring, and run-config regressions pass. |
 
 ## Key Files Or Areas
 
@@ -85,7 +86,7 @@ The current implementation makes Agent Org list/detail membership identity role-
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: `AgentOrgExperience.vue` is 497 effective non-empty lines after the change; its net source delta is +128/-21, below the changed-line split signal. New formatter and endpoint adapter each own one narrow concern.
+- Notes: `AgentOrgExperience.vue` remains 497 effective non-empty lines after `IR-002`; the Local Fix is a one-line production control-flow replacement, below the changed-line split signal. New formatter and endpoint adapter each continue to own one narrow concern.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -111,6 +112,9 @@ The current implementation makes Agent Org list/detail membership identity role-
 - `corepack pnpm --filter @autobyteus/application-sdk-contracts build && corepack pnpm -C autobyteus-web build` — completed; 16 routes prerendered.
 - Targeted TypeScript scan of changed service/utility production files — no changed-file errors.
 - `corepack pnpm -C autobyteus-web exec nuxi typecheck` — did not pass because the repository baseline reports 794 unrelated workspace/test/fixture errors; error filtering found no changed production path error after the adapter correction. This is not claimed as a typecheck pass.
+- `IR-002`: `corepack pnpm -C autobyteus-web guard:web-boundary` and `guard:localization-boundary` — passed.
+- `IR-002`: `corepack pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings; only the existing package module-type warning remains.
+- `IR-002`: focused Agent Org role-label, detail-topology, authoring, full-reference, endpoint-adapter, and formatter suite — **8 files / 53 tests passed**. This includes a new incomplete-catalog assertion for the localized unavailable state.
 - `git diff --check` — clean.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -120,7 +124,7 @@ The current implementation makes Agent Org list/detail membership identity role-
 - Existing design system, shared components, and adjacent product surfaces reviewed: Existing Agent Org cards/detail markup, localized chip semantics, `HandoffManager`, Agent Team list/detail role behavior, shared store/query patterns, and project `AGENTS.md`/README guidance.
 - Project development / preview instructions and rendered surface used: Nuxt development renderer at `/agent-orgs`, exercised in headless system Chromium with deterministic GraphQL fixtures.
 - States, layouts, viewports, and interactions inspected: Successful list and detail at 1440×1000 and 768×1000; list visible/aria labels; search/card layout; View Details navigation; direct member rows; Team coordinator; Handoff endpoints; operation ledger. Loading, unavailable, route-stale, binding-stale, no-Team, localization fallback, Reload, and authoring states were additionally exercised in focused component tests.
-- Visual or interaction issues found and corrected: No post-implementation visual defect remained. Role casing/humanization, chip wrapping, detail hierarchy, coordinator text, Handoff labels, and narrow stacking matched the established surface.
+- Visual or interaction issues found and corrected: No post-implementation visual defect remained. Role casing/humanization, chip wrapping, detail hierarchy, coordinator text, Handoff labels, and narrow stacking matched the established surface. `IR-002` makes no layout or copy change; focused component rendering confirms incomplete topology still shows the existing localized, ID-free alert while direct roles remain visible.
 - Supporting evidence and remaining unverified states or limitations: Screenshots: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/evidence/implementation-list-1440.png`, `implementation-detail-1440.png`, `implementation-list-768.png`, and `implementation-detail-768.png`. Failure/loading states were asserted through component rendering but not captured in a real-backend browser. This is implementation self-validation, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios

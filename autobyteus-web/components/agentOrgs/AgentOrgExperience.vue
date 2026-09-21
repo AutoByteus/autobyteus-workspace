@@ -414,8 +414,8 @@ watch(() => JSON.stringify([
   detailTopologyLoading.value = true
   try {
     const catalog = await loadAgentOrgEndpointCatalog(selectedOrg.value.id)
-    if (!endpointCatalogCoversDetail(catalog, members)) throw new Error('Incomplete Agent Org endpoint catalog response.')
     if (!current) return
+    if (!endpointCatalogCoversDetail(catalog, members)) { detailTopologyUnavailable.value = true; return }
     detailTopology.value = catalog
   } catch {
     if (!current) return

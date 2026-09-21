@@ -1,0 +1,22 @@
+
+> autobyteus@1.4.72 build:electron:linux /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux
+
+
+> autobyteus@1.4.72 guard:web-boundary /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.72 guard:localization-boundary /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.72 audit:localization-literals /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Unresolved product literals found.
+M-014	components/agentOrgs/AgentOrgExperience.vue#script-1	Incomplete Agent Org endpoint catalog response.	unresolved
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

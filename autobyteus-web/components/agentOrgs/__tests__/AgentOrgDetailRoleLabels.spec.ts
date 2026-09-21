@@ -86,6 +86,17 @@ describe('Agent Org detail role labels', () => {
     expect(wrapper.find('[role="alert"]').exists()).toBe(true)
   })
 
+  it('uses localized unavailable feedback when the topology response is incomplete', async () => {
+    const incomplete = endpointCatalog(alpha, 'Architecture_Lead')
+    state.query.mockResolvedValue({ data: { agentOrgEndpointCatalog: { ...incomplete, from: [] } } })
+    wrapper = mount(AgentOrgExperience); await flushPromises()
+    expect(wrapper.text()).toContain('Research Lead')
+    expect(wrapper.text()).toContain('Delivery Team')
+    expect(wrapper.text()).toContain('Team role details are unavailable')
+    expect(wrapper.text()).not.toContain('alpha-opaque-team')
+    expect(wrapper.find('[role="alert"]').exists()).toBe(true)
+  })
+
   it('retires late topology after route and backend-binding changes', async () => {
     const alphaRequest = deferred(); const betaOldBinding = deferred(); const betaCurrentBinding = deferred()
     state.query.mockImplementation(({ variables }) => variables.id === 'alpha' ? alphaRequest.promise
