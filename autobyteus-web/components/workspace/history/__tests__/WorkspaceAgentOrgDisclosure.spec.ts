@@ -116,19 +116,34 @@ describe('Org disclosure through real tree and rendered hierarchy', () => {
     wrapper.unmount();
   });
 
-  it.each([true, false])('keeps title, Stop, mounted Team and explicit selection reveal separate active=%s', async (active) => {
+  it.each([true, false])('toggles from the primary row while keeping Stop, mounted Team and selection reveal separate active=%s', async (active) => {
     const {wrapper, tree, selectedOrg, actions, group} = harness(active);
     const disclosure = wrapper.get('[data-test="agent-org-run-disclosure-org-run"]');
+    const primary = wrapper.get('[data-test="agent-org-run-open-org-run"]');
     await disclosure.trigger('click');
-    await wrapper.get('[data-test="agent-org-run-open-org-run"]').trigger('click');
+    expect(primary.attributes('aria-expanded')).toBe('false');
+    expect(primary.attributes('aria-controls')).toBeUndefined();
+    expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
+    await primary.trigger('click');
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
+    expect(primary.attributes('aria-expanded')).toBe('true');
+    expect(primary.attributes('aria-controls')).toBe('org-hierarchy-ws-org-run');
     expect(actions.onOpenAgentOrgRun).toHaveBeenCalledExactlyOnceWith(group.runs[0]);
-    await wrapper.get('[data-test="agent-org-run-open-org-run"]').trigger('click');
-    expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
+    await primary.trigger('click');
+    expect(tree.isAgentOrgRunExpanded('org-run')).toBe(false);
+    expect(primary.attributes('aria-expanded')).toBe('false');
+    expect(primary.attributes('aria-controls')).toBeUndefined();
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
+    expect(actions.onOpenAgentOrgRun).toHaveBeenLastCalledWith(group.runs[0]);
     if (active) {
       await wrapper.get('button[aria-label="Stop Agent Org"]').trigger('click');
       expect(actions.onTerminateAgentOrg).toHaveBeenCalledExactlyOnceWith(group.runs[0]);
+      expect(tree.isAgentOrgRunExpanded('org-run')).toBe(false);
+      expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
     } else expect(wrapper.find('button[aria-label="Stop Agent Org"]').exists()).toBe(false);
+    await disclosure.trigger('click');
+    expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
+    expect(actions.onOpenAgentOrgRun).toHaveBeenCalledTimes(2);
     await wrapper.get('[data-test="agent-org-team-row-mounted-team-run"]').trigger('click');
     expect(tree.isAgentOrgTeamExpanded('org-run', '/software')).toBe(false);
     expect(actions.onSelectAgentOrgMember).toHaveBeenCalledWith(group.runs[0], '/software');

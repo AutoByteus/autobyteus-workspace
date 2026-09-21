@@ -1,0 +1,7 @@
+=== generated outputs ===
+absent autobyteus-application-sdk-contracts/dist
+absent autobyteus-application-backend-sdk/dist
+=== git status ===
+ M autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+ M autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+?? tickets/in-progress/org-history-row-toggle/

@@ -1,0 +1,19 @@
+{
+  "packageIdentifier": "ORG-HISTORY-ROW-TOGGLE-20260920-001",
+  "implementationRevision": "IR-001",
+  "baseRevision": "aef459e8474550439e9e34bbbce98b04a3d9b754",
+  "files": [
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "baseSha256": "fe0fb4c9528ee83956d7432cf565861b04ac1ed24da67800f34de7db0044acfe",
+      "candidateSha256": "3dcc8100c40c72ad2a6e028b9131298cd9be9f6f3473517d5f0ebb12593f7004",
+      "change": "Primary AgentOrg history-row activation now toggles exact disclosure state in both directions and exposes accurate ARIA disclosure state."
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+      "baseSha256": "9c59bbfb2181ed9973ab3403203ed123e4ddd3ef87128e5548f86096aa52bd3a",
+      "candidateSha256": "dabb228edf4776d30abf273199e603e63a074e5b8b990e109266fd73eaf8fe44",
+      "change": "Rendered regression proves primary-row expand/collapse, exact open delegation, ARIA state, chevron-only disclosure, and Stop isolation."
+    }
+  ]
+}

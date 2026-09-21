@@ -1,0 +1,59 @@
+IR-001 baseline substitution: exact pre-implementation AgentOrg history collection with the current rendered row-toggle regression.
+Expected result: nonzero because the primary row is one-way and lacks primary-button disclosure ARIA state.
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts (8 tests | 2 failed | 6 skipped) 29ms
+   ↓ Org disclosure through real tree and rendered hierarchy > isolates disclosure active=true selected=true across refresh
+   ↓ Org disclosure through real tree and rendered hierarchy > isolates disclosure active=true selected=false across refresh
+   ↓ Org disclosure through real tree and rendered hierarchy > isolates disclosure active=false selected=true across refresh
+   ↓ Org disclosure through real tree and rendered hierarchy > isolates disclosure active=false selected=false across refresh
+   × Org disclosure through real tree and rendered hierarchy > toggles from the primary row while keeping Stop, mounted Team and selection reveal separate active=true 23ms
+     → expected undefined to be 'false' // Object.is equality
+   × Org disclosure through real tree and rendered hierarchy > toggles from the primary row while keeping Stop, mounted Team and selection reveal separate active=false 5ms
+     → expected undefined to be 'false' // Object.is equality
+   ↓ Org disclosure through real tree and rendered hierarchy > also collapses a selected root without changing selection
+   ↓ Org disclosure through real tree and rendered hierarchy > reactively renders Org avatars and isolates late old-URL failures
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > toggles from the primary row while keeping Stop, mounted Team and selection reveal separate active=true
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts > Org disclosure through real tree and rendered hierarchy > toggles from the primary row while keeping Stop, mounted Team and selection reveal separate active=false
+AssertionError: expected undefined to be 'false' // Object.is equality
+
+- Expected: 
+"false"
+
++ Received: 
+undefined
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts:124:49
+    122|     const primary = wrapper.get('[data-test="agent-org-run-open-org-ru…
+    123|     await disclosure.trigger('click');
+    124|     expect(primary.attributes('aria-expanded')).toBe('false');
+       |                                                 ^
+    125|     expect(primary.attributes('aria-controls')).toBeUndefined();
+    126|     expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 skipped (8)
+   Start at  20:09:48
+   Duration  5.58s (transform 2.92s, setup 4.80s, collect 183ms, tests 29ms, environment 208ms, prepare 152ms)
+
+BASELINE_TEST_EXIT_CODE=1
+Expected baseline failure reproduced.

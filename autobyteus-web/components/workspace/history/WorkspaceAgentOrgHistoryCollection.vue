@@ -42,6 +42,8 @@
               class="flex min-w-0 flex-1 items-center text-left"
               :class="isRunSelected(run.rootRunId) ? 'text-indigo-900' : ''"
               :aria-current="isRunSelected(run.rootRunId) ? 'true' : undefined"
+              :aria-expanded="isRunExpanded(run.rootRunId)"
+              :aria-controls="isRunExpanded(run.rootRunId) ? hierarchyId(run.rootRunId) : undefined"
               :aria-selected="isRunSelected(run.rootRunId)"
               role="treeitem"
               @click="openRun(run)"
@@ -177,7 +179,7 @@ const rowsFor = (run: AgentOrgRunHistoryItem) => projectAgentOrgHistoryRows({
   isTeamExpanded: (address) => isTeamExpanded(run.rootRunId, address),
 })
 const openRun = (run: AgentOrgRunHistoryItem) => {
-  if (!isRunExpanded(run.rootRunId)) props.state.toggleAgentOrgRun?.(run.rootRunId)
+  props.state.toggleAgentOrgRun?.(run.rootRunId)
   return props.actions.onOpenAgentOrgRun?.(run)
 }
 const selectTeam = (run: AgentOrgRunHistoryItem, address: string) => {

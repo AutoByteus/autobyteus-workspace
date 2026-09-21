@@ -1,0 +1,84 @@
+{
+  "package": "ORG-HISTORY-ROW-TOGGLE-20260920-001",
+  "round": "API-REV-001",
+  "surface": "normal Chrome against owned Nuxt and backend services",
+  "profile": ".local/api-row-toggle-profile (copy-on-write isolated clone; provider keys blanked)",
+  "stoppedOrg": {
+    "runId": "software_development_department_75403d5130584669869fdd59725f6b3e",
+    "definitionId": "software-development-department",
+    "primaryMouse": {
+      "startingSelection": "memberAddress=/software-engineering-team/solution-designer",
+      "firstActivation": {
+        "ariaExpanded": "true",
+        "ariaControls": "org-hierarchy-workspace%3A%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo-software_development_department_75403d5130584669869fdd59725f6b3e",
+        "childrenPresent": 1,
+        "openedUrl": "http://127.0.0.1:51583/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history"
+      },
+      "secondActivation": {
+        "ariaExpanded": "false",
+        "ariaControls": null,
+        "childrenPresent": 0,
+        "selectedUrlUnchanged": "http://127.0.0.1:51583/workspace?rootSubjectKind=agent_org&definitionId=software-development-department&orgRunId=software_development_department_75403d5130584669869fdd59725f6b3e&mode=history"
+      },
+      "siblingHelloStayedCollapsed": true
+    },
+    "keyboard": {
+      "space": {
+        "fromExpandedToCollapsed": true,
+        "ariaExpanded": "false",
+        "ariaControls": null,
+        "childrenPresent": 0,
+        "selectedUrlUnchanged": true
+      },
+      "enter": {
+        "fromCollapsedToExpanded": true,
+        "ariaExpanded": "true",
+        "controlsMatchesRenderedHierarchyId": true,
+        "childrenPresent": 1,
+        "selectedUrlUnchanged": true
+      }
+    },
+    "chevron": {
+      "startingUrlEqualsEndingUrl": true,
+      "disclosureChangedWithoutNavigation": true,
+      "primaryAriaMirroredDisclosure": true
+    }
+  },
+  "activeOrg": {
+    "fixture": "Nested Classroom Test Org",
+    "runId": "nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac",
+    "createdThroughUi": true,
+    "rootModel": "OpenAI / gpt-5.6-sol",
+    "providerSendPerformed": false,
+    "primaryCollapsedThenExpanded": true,
+    "expandedControlsMatchedHierarchyId": true,
+    "stopIsolation": {
+      "selectedDifferentStoppedOrgBeforeStop": "software_development_department_75403d5130584669869fdd59725f6b3e",
+      "activeRowCollapsedBeforeStop": true,
+      "selectedUrlUnchangedAfterStop": true,
+      "rowStayedCollapsed": true,
+      "stopControlRemoved": true,
+      "rowBecameStopped": true
+    }
+  },
+  "teamComparator": {
+    "definition": "Software Engineering Team",
+    "historyRow": "hello",
+    "firstActivationExpandedAndSelectedFirstMember": true,
+    "secondActivationCollapsed": true,
+    "selectedSolutionDesignerContentRemainedRendered": true,
+    "urlRemainedWorkspace": true
+  },
+  "runtimeBoundary": {
+    "browserConsoleWarningsOrErrors": [],
+    "catalogOnlyLocalModelDiscovery": [
+      "LM Studio catalog lookup at loopback",
+      "Ollama catalog lookup at loopback returned unavailable"
+    ],
+    "providerOrInferenceMarkers": [],
+    "serverErrors": [],
+    "trackedDatabaseUnchanged": true,
+    "existingStoppedOrgTreeUnchanged": true,
+    "existingTeamComparatorTreeUnchanged": true
+  }
+}

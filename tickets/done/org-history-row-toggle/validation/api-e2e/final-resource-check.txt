@@ -1,0 +1,6 @@
+=== final owned resource check ===
+port51581=closed
+port51583=closed
+ownedProfile=removed
+sdkContractsDist=removed
+backendSdkDist=removed

@@ -1,0 +1,9 @@
+Scope: 4 of 14 workspace projects
+autobyteus-agent-presentation-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-agent-presentation-contracts build: Done
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+...byteus-collaboration-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts build: Done
+...byteus-collaboration-stream-contracts build: Done

@@ -1,0 +1,17 @@
+{
+  "allExact": true,
+  "files": [
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "expected": "3dcc8100c40c72ad2a6e028b9131298cd9be9f6f3473517d5f0ebb12593f7004",
+      "actual": "3dcc8100c40c72ad2a6e028b9131298cd9be9f6f3473517d5f0ebb12593f7004",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+      "expected": "dabb228edf4776d30abf273199e603e63a074e5b8b990e109266fd73eaf8fe44",
+      "actual": "dabb228edf4776d30abf273199e603e63a074e5b8b990e109266fd73eaf8fe44",
+      "exact": true
+    }
+  ]
+}

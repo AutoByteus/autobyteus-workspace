@@ -1,0 +1,31 @@
+Scope: all 14 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1718
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   ╭──────────────────────────────────────────────╮
+   │                                              │
+   │     Update available! 10.28.2 → 12.5.1.      │
+   │     Changelog: https://pnpm.io/v/12.5.1      │
+   │   To update, run: corepack use pnpm@12.5.1   │
+   │                                              │
+   ╰──────────────────────────────────────────────╯
+
+Progress: resolved 1718, reused 1716, downloaded 0, added 11
+Progress: resolved 1718, reused 1716, downloaded 0, added 319
+Progress: resolved 1718, reused 1716, downloaded 0, added 605
+Progress: resolved 1718, reused 1716, downloaded 0, added 712
+Progress: resolved 1718, reused 1716, downloaded 0, added 926
+Progress: resolved 1718, reused 1716, downloaded 0, added 1315
+Progress: resolved 1718, reused 1716, downloaded 0, added 1717
+Progress: resolved 1718, reused 1716, downloaded 0, added 1718, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Done in 8.9s using pnpm v10.28.2
