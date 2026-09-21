@@ -96,9 +96,13 @@ After the personal push and successful build:
   verified absent;
 - `git worktree prune -n -v` returned no stale entry.
 
-The named delivery stash is restored after the delivery-record commit/push.
-Final preservation hashes and the exact clean-versus-unrelated status are checked
-in the terminal finalization step. No user profile, running server, database,
+The named delivery stash was restored after the delivery-record commit/push and
+then dropped normally. `package.json` returned to its exact baseline SHA-256
+`724eb4a7e004688184c596a4f38139cce9b6c71ab63a40d274a194dfcfd72e92`.
+The three unrelated untracked directories retained their baseline file counts
+of 17, 22, and 19. Final `git status --short` contained only the restored
+`package.json` modification and those three pre-existing untracked directories;
+no delivery file remained unstaged. No user profile, running server, database,
 conversation, credential, provider, migration, installation, or deployment was
 changed.
 
