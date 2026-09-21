@@ -8,6 +8,8 @@
 | DR-002 | User requested README-guided Electron build and launch | DR-001 Awaiting Explicit User Verification | Blocked — Packaging Local Fix | Build/start evidence, handoff summary, release/deployment report, docs-sync continuation |
 | DR-003 | API-REV-002 corrected candidate returned for Electron retry | DR-002 Blocked — Packaging Local Fix | Awaiting Explicit User Verification — Electron Running | Corrected validation, Electron package/launch evidence, handoff and release/deployment report |
 | DR-004 | User verified DR-003 and authorized finalization plus release | DR-003 Awaiting Explicit User Verification | Explicit User Verification Completed — Finalization In Progress | User-verification record, release notes, finalization plan, canonical reports |
+| DR-005 | DR-004 finalization authorization | DR-004 Finalization In Progress | Repository Finalization Completed | Archived ticket, ticket commit/push, target merge/push evidence |
+| DR-006 | DR-005 finalized target and explicit release authorization | DR-005 Repository Finalization Completed | Delivery Completed — v1.4.73 Released | Stable release, rollout verification, safe cleanup, terminal reports |
 
 ## Revision Entries
 
@@ -82,3 +84,39 @@
 - Why this delivery revision was recorded: preserve the explicit acceptance and release authorization without prematurely claiming repository or public-release completion.
 - Next recipient/action: Delivery completes ticket archival, repository finalization, documented `v1.4.73` release, workflow/rollout verification and safe cleanup.
 - Remaining blockers, rollback concerns, or untested scope: no active blocker. Do not move a published tag; forward-correct any later release issue.
+
+
+### DR-005 — repository finalization completed
+
+- Delivery round and trigger: continue the explicitly authorized DR-004 finalization after the post-acceptance target refresh remained unchanged.
+- Triggering upstream report, verification, or evidence: user acceptance, archived ticket state, clean ticket branch, and `origin/personal@5c799109075c4ddaa25e0ea1a3cd9573d006f565`.
+- Prior authoritative result: `DR-004 Explicit User Verification Completed — Finalization In Progress`
+- Current authoritative result: **Repository Finalization Completed**
+- Docs sync report: `docs-sync-report.md` — Pass; no post-verification behavior or documentation change was required.
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: the accepted branch was already current after the post-acceptance fetch; ticket commit `dca3ada9dcc03775eafccc8f9d6a5686e4e807be` was pushed, then merged without force into `personal` as `b3373ed8bd6a46a91595858a4fad467bb81e3494`, whose parents are the refreshed target and ticket commit. `origin/personal` matched the merge before release.
+- User verification/finalization state: explicit verification completed; ticket archived; ticket branch commit/push and target merge/push completed.
+- Terminal return to `/solution_designer`: `Not yet eligible — separately authorized release remained applicable`
+- Terminal return message/reference: N/A
+- Why this delivery revision was recorded: repository finalization is a distinct completed gate and must not be inferred from the later tag or public artifacts.
+- Next recipient/action: Delivery performs and verifies the authorized stable `v1.4.73` release, then completes safe cleanup.
+- Remaining blockers, rollback concerns, or untested scope: no blocker. A public tag must never be moved; any release fault after publication requires a forward correction.
+
+
+### DR-006 — stable v1.4.73 release and delivery completion
+
+- Delivery round and trigger: execute the explicitly authorized stable release after DR-005 repository finalization.
+- Triggering upstream report, verification, or evidence: user release request, archived `release-notes.md`, clean finalized `personal`, and absent preflight tag `v1.4.73`.
+- Prior authoritative result: `DR-005 Repository Finalization Completed`
+- Current authoritative result: **Delivery Completed — v1.4.73 Released**
+- Docs sync report: `docs-sync-report.md` — Pass / Final; long-lived docs and release notes match the shipped behavior.
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: repository finalization remained intact; canonical helper created release commit `80e17e469b4418556dd46af22ebaf32516296125` and annotated tag object `a286776612b0a6aa98022aa5d064cddab42d732a`, which targets the release commit.
+- User verification/finalization state: completed. The stable public release is non-draft/non-prerelease with 21 uploaded nonempty assets. All five tag-triggered workflows succeeded, updater metadata and checksums passed, Docker `1.4.73` and `latest` resolve to the same multi-architecture manifest, and iOS uploaded to App Store Connect. The ticket worktree and local/remote ticket branches were safely removed.
+- Terminal return to `/solution_designer`: `Eligible — Delivery Completed`
+- Terminal return message/reference: pending the rule-authorized terminal message sent after this final documentation commit is pushed.
+- Why this delivery revision was recorded: make the release, rollout, qualification boundaries, and cleanup independently auditable instead of equating tag creation with delivery completion.
+- Next recipient/action: use `get_handoff_rules` and send the authoritative terminal completion package to the single matching recipient.
+- Remaining blockers, rollback concerns, or untested scope: none. Apple review/storefront availability is external and not claimed. The finite synthetic-fixture/Ubuntu Chromium residuals remain as already classified by API-REV-002 and were supplemented by the user-verified packaged Electron run.
