@@ -1,0 +1,13 @@
+{
+  "orgRunId": "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97",
+  "entryPoint": "normal Chrome exact AgentOrg history row",
+  "precondition": {"selected": true, "ariaExpanded": "true", "archiveEnabled": true, "mode": "history"},
+  "action": "click exact Archive Agent Org history control",
+  "observed": {
+    "targetRowCount": 0,
+    "orgGroupCountChangedFrom": 4,
+    "orgGroupCountChangedTo": 3,
+    "route": "http://127.0.0.1:51783/workspace",
+    "emptySelectionRendered": true
+  }
+}

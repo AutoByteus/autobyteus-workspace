@@ -1,0 +1,840 @@
+{
+  "capturedAt": "2026-09-21T13:51:39.055106+00:00",
+  "files": {
+    "agent-orgs/aorg-validation-org/org-config.json": {
+      "sha256": "5a966a476698b5eb9607e92815e2553574d376d79accc061f67a971f635d2b8a",
+      "size": 629
+    },
+    "agent-orgs/aorg-validation-org/org.md": {
+      "sha256": "40bc56c647a1fc8726aacedad4434e78b885099e73abaaf5fa2c112165b02c76",
+      "size": 212
+    },
+    "agent-teams/aorg-validation-team/team-config.json": {
+      "sha256": "1c544787c40e59981738556c8e2d31b4f10e8c609e9507adb985aac0666ba256",
+      "size": 449
+    },
+    "agent-teams/aorg-validation-team/team.md": {
+      "sha256": "97e0c89c6e77662e0866b621defd75a81b6ebb3dda31a8901164cf87d83ff164",
+      "size": 193
+    },
+    "agents/aorg-validation-agent/agent-config.json": {
+      "sha256": "028a45042f9bda6401c4dd66fcffbcd2ebd808e4fdca31ed03f2f8406aa77add",
+      "size": 390
+    },
+    "agents/aorg-validation-agent/agent.md": {
+      "sha256": "c3b8e62fd15601fb8784bbd6cf6179cdcd350f3883b06c253c776e7ab4b720c4",
+      "size": 740
+    },
+    "agents/autobyteus-memory-compactor/agent-config.json": {
+      "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "size": 275
+    },
+    "agents/autobyteus-memory-compactor/agent.md": {
+      "sha256": "cf057a5fcc0736183b451d667a4bd9d47c65d8172ed65755d6973f503b5d284f",
+      "size": 2891
+    },
+    "agents/autobyteus-retrospective-skill-improver/agent-config.json": {
+      "sha256": "a389c222f3e42e3e8f4cf54e14610034ea24b2b8695cb0ce8900aebee74c17cf",
+      "size": 354
+    },
+    "agents/autobyteus-retrospective-skill-improver/agent.md": {
+      "sha256": "19285601d2a22224e6ef15b5999588212c69b685c3385e769dbf521efd596106",
+      "size": 1520
+    },
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/SKILL.md": {
+      "sha256": "68360b7d316b93e59189901bd0c1787e4f7f680670e01805e7e2c447c2e299c6",
+      "size": 4132
+    },
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/examples.md": {
+      "sha256": "3904fa1c9d4a7f501534cfccdcd98074b0c5974cdde5e46decad1f1c53334e38",
+      "size": 1744
+    },
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/high-signal-trace-patterns.md": {
+      "sha256": "d063db52711dc1d9261135c909d3ac704dbe84980c7fa4581f186fba16ebe672",
+      "size": 1655
+    },
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/package-improvement-playbook.md": {
+      "sha256": "ea81af072d1da35eb9fe56dcbf4e3d2e4a03916453a35d170336c61b5387ea61",
+      "size": 1283
+    },
+    "application-packages/platform/applications/.gitkeep": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "applications/_global/db/orchestration.sqlite": {
+      "sha256": "f0d160fdecd1e7847acba3025eb2c852a52766e6880e3730a4eb6640b8f52a4d",
+      "size": 16384
+    },
+    "db/development.db": {
+      "sha256": "0014f48b0f0e63ea03c1a770414eeccc6723596edd3266e75868bfd4c516d4ab",
+      "size": 274432
+    },
+    "db/development.db.secret.key": {
+      "sha256": "877a4300f19a4773b011418e3ff61453366f920393208422902e4124aa77d03b",
+      "size": 32
+    },
+    "memory/agent_org_run_history_index.json": {
+      "sha256": "f9b44fd4d36bfe7c0860682583536ac33c1c46d5fa1c29403c6e23b3cf9d2ff1",
+      "size": 1865
+    },
+    "memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/agent_org_communication_messages.json": {
+      "sha256": "9cd06c4eb9f2e9c38376130a262a0e8c2cb2f1638f818308a7b0deab0ebb23ea",
+      "size": 143
+    },
+    "memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/agent_org_run_execution_tree.json": {
+      "sha256": "e920a4bd1ffda53aba04ecb36349fa675c2e3d8e4cf3d5e53ccaeeb6295afc81",
+      "size": 6004
+    },
+    "memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/agent_org_task_delegation_records.json": {
+      "sha256": "6e8c487f446207f6819353e605bf1a360e87aed6b67612c804b1b7c1b40ae821",
+      "size": 142
+    },
+    "memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/agent_org_communication_messages.json": {
+      "sha256": "afa4214e56a2487e0e35333546bd8f4637479fc0dd1c3d30d3c5dbca6aa11886",
+      "size": 143
+    },
+    "memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/agent_org_run_execution_tree.json": {
+      "sha256": "4ba3562c0146c3766a472a08aa6f214f40b047e17fd005323e44dcdc8641ad80",
+      "size": 6004
+    },
+    "memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/agent_org_task_delegation_records.json": {
+      "sha256": "a8bb08bb6910de0c6599f40299bb09a5976e744aee24e3c8165abbc5d5764b83",
+      "size": 142
+    },
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_communication_messages.json": {
+      "sha256": "240e980b239fb223db93e4250ec29717de094038e4e0ac3e12a588916763ed48",
+      "size": 143
+    },
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_run_execution_tree.json": {
+      "sha256": "b44c391381f076e47101fc2444b1b61c2ed2709757d233d87b7607a65002a56e",
+      "size": 6004
+    },
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_task_delegation_records.json": {
+      "sha256": "e705e66e2da30c92f7a4b317b604c70cafd0d7ac220635e90cba0ae05c7552e7",
+      "size": 142
+    },
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_communication_messages.json": {
+      "sha256": "6f877c3ccde94a9fe6dab35b18f9cc40d87f5135f1887db16d3a71b83bbebd74",
+      "size": 143
+    },
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_run_execution_tree.json": {
+      "sha256": "8d02130380fadc141111bfbb642c4a20f8c3c034ab53fe99fdcc44eb86fd807c",
+      "size": 6004
+    },
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_task_delegation_records.json": {
+      "sha256": "41dc95592ade747133139e68e167fc27e7117c39ffae1038b3403db9d04ff7e6",
+      "size": 142
+    },
+    "memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/task_delegation_records.json": {
+      "sha256": "48bcba63d5d2171ae7ae41bb7dfef41e9ab0525ad1088edf8607932ec5f04340",
+      "size": 118
+    },
+    "memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/team_communication_messages.json": {
+      "sha256": "75ec5cae463048602ffe6025aba4ee24e00904f7f5ef6563e4cc4b5caf40c4f9",
+      "size": 119
+    },
+    "memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/team_run_execution_tree.json": {
+      "sha256": "dc2203a303fb4fdfb60824b7d318e3834e9a05e84c7bb8ba926b20999d0d55b5",
+      "size": 2940
+    },
+    "memory/run_history_index.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size": 3
+    },
+    "memory/team_run_history_index.json": {
+      "sha256": "a3b3af9ed5f42d3381c434ccacdf66d275b9b42687a893be138c5e7182350684",
+      "size": 480
+    }
+  },
+  "parsed": {
+    "memory/agent_org_run_history_index.json": [
+      {
+        "archivedAt": null,
+        "createdAt": "2026-09-21T13:49:07.427Z",
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6",
+        "summary": "",
+        "terminatedAt": null,
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+      },
+      {
+        "archivedAt": null,
+        "createdAt": "2026-09-21T13:48:55.904Z",
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_d9d486990e7a4b68818361502fa15974",
+        "summary": "",
+        "terminatedAt": "2026-09-21T13:48:56.580Z",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+      },
+      {
+        "archivedAt": null,
+        "createdAt": "2026-09-21T13:48:43.651Z",
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+        "summary": "",
+        "terminatedAt": "2026-09-21T13:48:44.354Z",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+      },
+      {
+        "archivedAt": null,
+        "createdAt": "2026-09-21T13:48:22.101Z",
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97",
+        "summary": "",
+        "terminatedAt": "2026-09-21T13:48:29.010Z",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+      }
+    ],
+    "memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/agent_org_run_execution_tree.json": {
+      "applicationBinding": null,
+      "archivedAt": null,
+      "createdAt": "2026-09-21T13:48:22.101Z",
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "defaultLaunchConfiguration": {
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "runtimeKind": "autobyteus",
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/direct",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_16c292d7210c4f5d876ef90c2fe88c9c",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/later",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_68cb829416824cb2889621516ae823b0",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/unused",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_9bddb6af3ebf4d99ae974bd499d03532",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/team",
+            "coordinatorAddress": "/team/lead",
+            "defaultLaunchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "description": null,
+            "members": [
+              {
+                "address": "/team/lead",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_df169798eda74826956ae16cf44cfc39",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/worker",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_21a34c31a36645aab5540b619c7a2b87",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/unused",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_cc3edf40ca4b4f3dad9f35f242004de4",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              }
+            ],
+            "role": null,
+            "taskExecutions": [],
+            "teamDefinitionId": "aorg-validation-team",
+            "teamRunId": "aorg_validation_team_1e33015576374939923d2d4661444479"
+          }
+        ],
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97",
+        "taskExecutions": []
+      },
+      "schemaVersion": 1,
+      "subjectKind": "agent_org"
+    },
+    "memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/agent_org_run_execution_tree.json": {
+      "applicationBinding": null,
+      "archivedAt": null,
+      "createdAt": "2026-09-21T13:49:07.427Z",
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "defaultLaunchConfiguration": {
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "runtimeKind": "autobyteus",
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/direct",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_36438d541960414f98875dfcac4d8a3f",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/later",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_a7998bb20f3240fcb0e18ade6adacbcc",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/unused",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_97156fb3b4574ecd8573d3441c9d05ef",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/team",
+            "coordinatorAddress": "/team/lead",
+            "defaultLaunchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "description": null,
+            "members": [
+              {
+                "address": "/team/lead",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_bba1cb264f474483a000930f1fdf3ef5",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/worker",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_a82bc500de06452a87db78380fe9ec14",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/unused",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_8418447915c349be91fac3473965f68c",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              }
+            ],
+            "role": null,
+            "taskExecutions": [],
+            "teamDefinitionId": "aorg-validation-team",
+            "teamRunId": "aorg_validation_team_907bc80a287f457da6f739c95b2450a9"
+          }
+        ],
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6",
+        "taskExecutions": []
+      },
+      "schemaVersion": 1,
+      "subjectKind": "agent_org"
+    },
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_run_execution_tree.json": {
+      "applicationBinding": null,
+      "archivedAt": null,
+      "createdAt": "2026-09-21T13:48:55.904Z",
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "defaultLaunchConfiguration": {
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "runtimeKind": "autobyteus",
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/direct",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_e003253ff4604f88bb88a0b01aba45d3",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/later",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_b906b501ad0e43e5872ba825589fe861",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/unused",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_c63efc1477f74464bc90b021487eef22",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/team",
+            "coordinatorAddress": "/team/lead",
+            "defaultLaunchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "description": null,
+            "members": [
+              {
+                "address": "/team/lead",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_24ec70f21e08433f9777408b78c1c58b",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/worker",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_8358c8ef40d34b07a5581132bf0e1d28",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/unused",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_b8362e2caacf41bc8a9d7cf551059076",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              }
+            ],
+            "role": null,
+            "taskExecutions": [],
+            "teamDefinitionId": "aorg-validation-team",
+            "teamRunId": "aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f"
+          }
+        ],
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_d9d486990e7a4b68818361502fa15974",
+        "taskExecutions": []
+      },
+      "schemaVersion": 1,
+      "subjectKind": "agent_org"
+    },
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_run_execution_tree.json": {
+      "applicationBinding": null,
+      "archivedAt": null,
+      "createdAt": "2026-09-21T13:48:43.651Z",
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "defaultLaunchConfiguration": {
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "runtimeKind": "autobyteus",
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/direct",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_afc4599810ed444b956aa3802a2533c6",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/later",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_d613162f17d84ea9ade29740371b0242",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/unused",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/team",
+            "coordinatorAddress": "/team/lead",
+            "defaultLaunchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "description": null,
+            "members": [
+              {
+                "address": "/team/lead",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_c5c5c8825324421bbc261db588fafa87",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/worker",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "/team/unused",
+                "agentDefinitionId": "aorg-validation-agent",
+                "agentRunId": "aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": false,
+                  "llmConfig": null,
+                  "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+                  "runtimeKind": "autobyteus",
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              }
+            ],
+            "role": null,
+            "taskExecutions": [],
+            "teamDefinitionId": "aorg-validation-team",
+            "teamRunId": "aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f"
+          }
+        ],
+        "orgDefinitionId": "aorg-validation-org",
+        "orgDefinitionName": "AORG Validation Org",
+        "orgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+        "taskExecutions": []
+      },
+      "schemaVersion": 1,
+      "subjectKind": "agent_org"
+    },
+    "memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/team_run_execution_tree.json": {
+      "applicationBinding": null,
+      "archivedAt": null,
+      "createdAt": "2026-09-21T13:47:46.093Z",
+      "handoffs": [],
+      "rootTeam": {
+        "address": "/",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "runtimeKind": "autobyteus",
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_81c04cddf276461bb58b099a76d8d3f7",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/worker",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_e8655248618f4249925046b432fc1e15",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "/unused",
+            "agentDefinitionId": "aorg-validation-agent",
+            "agentRunId": "aorg_validation_agent_78a77c5d797c49afaecf40d1158074ca",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+              "llmConfig": null,
+              "llmModelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+              "runtimeKind": "autobyteus",
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          }
+        ],
+        "taskExecutions": [],
+        "teamDefinitionId": "aorg-validation-team",
+        "teamDefinitionName": "AORG Validation Team",
+        "teamRunId": "aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd"
+      },
+      "schemaVersion": 2
+    },
+    "memory/run_history_index.json": [],
+    "memory/team_run_history_index.json": [
+      {
+        "archivedAt": null,
+        "createdAt": "2026-09-21T13:47:46.093Z",
+        "summary": "",
+        "teamDefinitionId": "aorg-validation-team",
+        "teamDefinitionName": "AORG Validation Team",
+        "teamRunId": "aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd",
+        "terminatedAt": "2026-09-21T13:47:53.437Z",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+      }
+    ]
+  },
+  "profile": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile"
+}

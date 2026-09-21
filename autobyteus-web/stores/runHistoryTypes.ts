@@ -276,6 +276,21 @@ export interface ArchiveStoredTeamRunMutationData {
   };
 }
 
+export interface DeleteStoredAgentOrgRunMutationData {
+  deleteStoredAgentOrgRun: {
+    success: boolean;
+    message: string;
+    orgRunId: string | null;
+  };
+}
+
+export interface ArchiveStoredAgentOrgRunMutationData {
+  archiveStoredAgentOrgRun: {
+    success: boolean;
+    message: string;
+    orgRunId: string | null;
+  };
+}
 
 export interface GetTaskDelegationRecordsQueryData {
   getTaskDelegationRecords: unknown[];

@@ -53,7 +53,7 @@ export class AgentOrgRunService {
     admission: Pick<DefinitionAdmissionService, "requireAvailable">;
     modelSelectionValidator: RunModelSelectionValidator;
     modelSelectionOptions: Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
-    history: Pick<AgentOrgRunHistoryCatalogService, "initialize" | "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary">;
+    history: Pick<AgentOrgRunHistoryCatalogService, "initialize" | "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
   }>) {}
 
   getRunModelConfig(orgRunId: string) {
@@ -168,6 +168,14 @@ export class AgentOrgRunService {
     const terminated = await this.dependencies.manager.terminate(normalized);
     if (terminated) await this.dependencies.history.recordTerminated(normalized);
     return terminated;
+  }
+
+  archiveStoredRun(orgRunId: string) {
+    return this.dependencies.history.archiveStored(required(orgRunId, "orgRunId"));
+  }
+
+  deleteStoredRun(orgRunId: string) {
+    return this.dependencies.history.deleteStored(required(orgRunId, "orgRunId"));
   }
 
   getActive(agentOrgRunId: string): AgentOrgRun | null {

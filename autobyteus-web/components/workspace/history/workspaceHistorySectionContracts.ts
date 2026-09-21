@@ -42,6 +42,8 @@ export interface WorkspaceHistorySectionState {
   isAgentOrgRunSelected?: (rootRunId: string) => boolean;
   isAgentOrgMemberSelected?: (rootRunId: string, address: string, agentRunId?: string) => boolean;
   isAgentOrgTerminating?: (rootRunId: string) => boolean;
+  isAgentOrgDeleting?: (rootRunId: string) => boolean;
+  isAgentOrgArchiving?: (rootRunId: string) => boolean;
   agentOrgTerminationError?: (rootRunId: string) => string | null;
   agentOrgContextFor?: (rootRunId: string) => AgentOrgExecutionContext | null;
 }
@@ -91,4 +93,6 @@ export interface WorkspaceHistorySectionActions {
   onSelectAgentOrgMember?: (run: AgentOrgRunHistoryItem, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
   onInspectAgentOrgExecution?: (run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
   onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onArchiveAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
+  onDeleteAgentOrg?: (run: AgentOrgRunHistoryItem) => void;
 }

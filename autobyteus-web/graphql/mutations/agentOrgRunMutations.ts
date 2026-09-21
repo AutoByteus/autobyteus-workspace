@@ -24,3 +24,15 @@ export const UpdateStoppedAgentOrgRunModelConfigs = gql`
     }
   }
 `
+
+export const ArchiveStoredAgentOrgRun = gql`
+  mutation ArchiveStoredAgentOrgRun($orgRunId: String!) {
+    archiveStoredAgentOrgRun(orgRunId: $orgRunId) { success message orgRunId }
+  }
+`;
+
+export const DeleteStoredAgentOrgRun = gql`
+  mutation DeleteStoredAgentOrgRun($orgRunId: String!) {
+    deleteStoredAgentOrgRun(orgRunId: $orgRunId) { success message orgRunId }
+  }
+`;

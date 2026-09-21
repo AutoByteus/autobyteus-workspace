@@ -47,18 +47,44 @@
               <span class="mr-1.5 h-2 w-2 flex-none rounded-full" :class="run.isActive ? 'bg-emerald-500' : 'bg-gray-300'" :aria-label="run.isActive ? t('workspace.agentOrg.history.running') : t('workspace.agentOrg.history.stopped')" />
               <span class="truncate font-medium">{{ run.summary || t('workspace.agentOrg.history.newRun', { name: group.name }) }}</span>
             </button>
-            <button
-              v-if="run.isActive"
-              type="button"
-              class="ml-1 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-              :title="t('workspace.agentOrg.history.stopLabel')"
-              :aria-label="t('workspace.agentOrg.history.stopLabel')"
-              :disabled="isTerminating(run.rootRunId)"
-              @click.stop="actions.onTerminateAgentOrg?.(run)"
-            >
-              <Icon icon="heroicons:stop-20-solid" class="h-3.5 w-3.5" />
-            </button>
-            <span class="ml-2 text-xs text-gray-400">{{ relative(run.createdAt) }}</span>
+            <div class="ml-2 flex flex-none items-center gap-1">
+              <button
+                v-if="run.isActive"
+                type="button"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                :title="t('workspace.agentOrg.history.stopLabel')"
+                :aria-label="t('workspace.agentOrg.history.stopLabel')"
+                :disabled="isTerminating(run.rootRunId)"
+                @click.stop="actions.onTerminateAgentOrg?.(run)"
+              >
+                <Icon icon="heroicons:stop-20-solid" class="h-3.5 w-3.5" />
+              </button>
+              <button
+                v-if="!run.isActive"
+                type="button"
+                :data-test="`agent-org-run-archive-${run.rootRunId}`"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/org-row:opacity-100 md:group-focus-within/org-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                :title="t('workspace.agentOrg.history.archiveLabel')"
+                :aria-label="t('workspace.agentOrg.history.archiveLabel')"
+                :disabled="isArchiving(run.rootRunId) || isDeleting(run.rootRunId)"
+                @click.stop="actions.onArchiveAgentOrg?.(run)"
+              >
+                <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+              </button>
+              <button
+                v-if="!run.isActive"
+                type="button"
+                :data-test="`agent-org-run-delete-${run.rootRunId}`"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/org-row:opacity-100 md:group-focus-within/org-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                :title="t('workspace.agentOrg.history.deleteLabel')"
+                :aria-label="t('workspace.agentOrg.history.deleteLabel')"
+                :disabled="isDeleting(run.rootRunId) || isArchiving(run.rootRunId)"
+                @click.stop="actions.onDeleteAgentOrg?.(run)"
+              >
+                <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
+              </button>
+              <span class="ml-1 text-xs text-gray-400">{{ relative(run.createdAt) }}</span>
+            </div>
           </div>
           <p v-if="terminationError(run.rootRunId)" class="px-7 py-1 text-xs text-red-600" role="alert">
             {{ terminationError(run.rootRunId) }}
@@ -153,6 +179,8 @@ const isRunSelected = (rootRunId: string) => props.state.isAgentOrgRunSelected?.
 const isMemberSelected = (rootRunId: string, address: string, agentRunId?: string) => props.state.isAgentOrgMemberSelected?.(rootRunId, address, agentRunId) ?? false
 const isTeamExpanded = (rootRunId: string, address: string) => props.state.isAgentOrgTeamExpanded?.(rootRunId, address) ?? false
 const isTerminating = (rootRunId: string) => props.state.isAgentOrgTerminating?.(rootRunId) ?? false
+const isDeleting = (rootRunId: string) => props.state.isAgentOrgDeleting?.(rootRunId) ?? false
+const isArchiving = (rootRunId: string) => props.state.isAgentOrgArchiving?.(rootRunId) ?? false
 const terminationError = (rootRunId: string) => props.state.agentOrgTerminationError?.(rootRunId) ?? null
 const label = (address: string) => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
 const initials = (address: string) => label(address).split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')

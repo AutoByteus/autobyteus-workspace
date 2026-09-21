@@ -69,6 +69,12 @@ Collaboration-root operations:
 - `listCollaborationRootHistory`, which returns explicit `agent_team` or
   `agent_org` roots through family-specific strict loaders.
 
+AgentOrg stored-run operations (owned by the AgentOrg run resolver rather than
+the mixed collaboration-root reader):
+
+- `archiveStoredAgentOrgRun(orgRunId)`
+- `deleteStoredAgentOrgRun(orgRunId)`
+
 ## Collaboration Root Package Readiness
 
 Team and AgentOrg history packages share one process-local strict readiness
@@ -186,18 +192,27 @@ Archive is a non-destructive visibility action:
   `team_run_execution_tree.json`, then projects that fact into
   `memory/team_run_history_index.json` through
   `TeamRunHistoryCatalogService`.
-- Archive keeps the run metadata/Team package, raw traces, projections, member
-  directories, and catalog/index rows on disk.
-- Archive rejects active runs/teams and invalid or path-unsafe ids before
-  catalog or metadata read/write.
-- Existing standalone or team catalog rows with no `archivedAt` are visible by
-  default.
+- `archiveStoredAgentOrgRun(orgRunId)` writes one canonical `archivedAt` into
+  the AgentOrg V1 execution tree and projects it into
+  `memory/agent_org_run_history_index.json` through
+  `AgentOrgRunHistoryCatalogService`.
+- Archive keeps the run metadata/Team or AgentOrg package, raw traces,
+  projections, member directories, and catalog/index rows on disk.
+- Archive rejects active roots and invalid or path-unsafe ids before catalog or
+  package mutation. AgentOrg admission is serialized in the manager's exact-root
+  lifecycle lane, so a stale stopped client cannot race a restore.
+- Existing standalone, Team, or AgentOrg catalog rows with no `archivedAt` are
+  visible by default.
 
 Permanent delete remains a separate destructive action. `deleteStoredRun` and
 `deleteStoredTeamRun` remove the persisted run/team storage and corresponding
-history index entries instead of only hiding the row. The current product slice
-does not expose an archived-list or unarchive GraphQL/UI path; archived data
-remains retained on disk for future recovery tooling.
+history index entries instead of only hiding the row.
+`deleteStoredAgentOrgRun(orgRunId)` likewise removes only the confirmed exact
+stopped AgentOrg package and its AgentOrg index row. It does not delete the
+AgentOrg definition, referenced Agent/Team definitions, workspace registration,
+providers, or sibling histories. The current product slice does not expose an
+archived-list or unarchive GraphQL/UI path; archived data remains retained on
+disk for future recovery tooling. No migration is introduced.
 
 ## Workspace Registry Interaction
 

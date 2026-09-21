@@ -88,9 +88,9 @@
 
     <ConfirmationModal
       :show="showDeleteConfirmation"
-      title=""
+      :title="deleteConfirmationTitle"
       :message="deleteConfirmationMessage"
-      confirm-button-text="Delete"
+      :confirm-button-text="deleteConfirmationConfirmText"
       variant="danger"
       typography-size="large"
       @confirm="confirmDeleteRun"
@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
@@ -157,6 +157,7 @@ const runHistoryStore = useRunHistoryStore();
 const agentOrgRunStore = useAgentOrgRunStore();
 const agentOrgContextsStore = useAgentOrgContextsStore();
 const route = useRoute() as ReturnType<typeof useRoute> | undefined;
+const router = useRouter();
 const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
@@ -235,16 +236,22 @@ const {
   terminatingRunIds,
   deletingRunIds,
   deletingTeamIds,
+  deletingAgentOrgIds,
   archivingRunIds,
   archivingTeamIds,
+  archivingAgentOrgIds,
   showDeleteConfirmation,
+  deleteConfirmationTitle,
+  deleteConfirmationConfirmText,
   deleteConfirmationMessage,
   onTerminateRun,
   onTerminateTeam,
   onArchiveRun,
   onArchiveTeam,
+  onArchiveAgentOrg,
   onDeleteRun,
   onDeleteTeam,
+  onDeleteAgentOrg,
   closeDeleteConfirmation,
   confirmDeleteRun,
 } = useWorkspaceHistoryMutations({
@@ -256,8 +263,14 @@ const {
   },
   deleteRun: (runId: string) => runHistoryStore.deleteRun(runId),
   deleteTeamRun: (teamRunId: string) => runHistoryStore.deleteTeamRun(teamRunId),
+  deleteAgentOrgRun: (orgRunId: string) => runHistoryStore.deleteAgentOrgRun(orgRunId),
   archiveRun: (runId: string) => runHistoryStore.archiveRun(runId),
   archiveTeamRun: (teamRunId: string) => runHistoryStore.archiveTeamRun(teamRunId),
+  archiveAgentOrgRun: (orgRunId: string) => runHistoryStore.archiveAgentOrgRun(orgRunId),
+  onAgentOrgMutationSuccess: async (orgRunId: string) => {
+    if (route?.query.rootSubjectKind !== 'agent_org' || String(route.query.orgRunId || '').trim() !== orgRunId) return;
+    await router.replace({ path: '/workspace' });
+  },
   addToast: addWorkspaceToast,
   stopPendingTeamIds,
 });
@@ -379,6 +392,8 @@ const sectionState: WorkspaceHistorySectionState = {
   isAgentOrgRunSelected: treeState.isAgentOrgRunSelected,
   isAgentOrgMemberSelected: treeState.isAgentOrgMemberSelected,
   isAgentOrgTerminating: (rootRunId: string) => Boolean(agentOrgContextsStore.operations[rootRunId]) || agentOrgRunStore.terminatingRunIds.has(rootRunId),
+  isAgentOrgDeleting: (rootRunId: string) => Boolean(deletingAgentOrgIds.value[rootRunId]),
+  isAgentOrgArchiving: (rootRunId: string) => Boolean(archivingAgentOrgIds.value[rootRunId]),
   agentOrgTerminationError: (rootRunId: string) => agentOrgRunStore.terminationErrors[rootRunId] ?? agentOrgContextsStore.errorFor(rootRunId),
   agentOrgContextFor: (rootRunId: string) => agentOrgContextsStore.contextFor(rootRunId),
 };
@@ -422,6 +437,8 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onInspectAgentOrgExecution: (run, agentRunId, memberAddress) => executeSubjectAction({
     rootSubjectKind: 'agent_org', rootRunId: run.rootRunId, action: 'inspect', agentRunId, memberAddress,
   }),
+  onArchiveAgentOrg,
+  onDeleteAgentOrg,
   onTerminateAgentOrg: (run) => executeSubjectAction({
     rootSubjectKind: 'agent_org', rootRunId: run.rootRunId, action: 'stop',
   }).catch(() => undefined),

@@ -187,6 +187,7 @@ const {
   agentDefinitionStoreMock,
   agentContextsStoreMock,
   teamContextsStoreMock,
+  agentOrgContextsStoreMock,
   selectionStoreMock,
   agentRunConfigStoreMock,
   teamRunConfigStoreMock,
@@ -295,6 +296,10 @@ const {
       createRunFromTemplate: vi.fn().mockReturnValue('temp-123'),
       getRun: vi.fn((id: string) => runs.get(id)),
     },
+    agentOrgContextsStoreMock: {
+      disconnect: vi.fn(),
+      reconcileRetainedHistory: vi.fn(),
+    },
     teamContextsStoreMock: {
       teams,
       get allTeamRuns() {
@@ -385,6 +390,10 @@ vi.mock('~/stores/agentContextsStore', () => ({
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({
   useAgentTeamContextsStore: () => teamContextsStoreMock,
+}));
+
+vi.mock('~/stores/agentOrgContextsStore', () => ({
+  useAgentOrgContextsStore: () => agentOrgContextsStoreMock,
 }));
 
 vi.mock('~/stores/agentSelectionStore', () => ({
@@ -2618,6 +2627,48 @@ describe('runHistoryStore', () => {
     expect(archived).toBe(false);
     expect(flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0]?.teamRunId).toBe('team-1');
     expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["archive", "archiveStoredAgentOrgRun"],
+    ["delete", "deleteStoredAgentOrgRun"],
+  ] as const)("%sAgentOrgRun prunes and disconnects only the exact root after authoritative success", async (kind, resultKey) => {
+    mutateMock.mockResolvedValueOnce({
+      data: { [resultKey]: { success: true, message: "completed", orgRunId: "org-target" } },
+      errors: [],
+    });
+    const store = useRunHistoryStore();
+    store.agentOrgHistory = parseAgentOrgHistoryItems([
+      buildAgentOrgHistoryRow({ rootRunId: "org-target" }),
+      buildAgentOrgHistoryRow({ rootRunId: "org-sibling" }),
+    ]);
+    const refreshSpy = vi.spyOn(store, "refreshTreeQuietly").mockResolvedValue(undefined);
+
+    const changed = kind === "archive"
+      ? await store.archiveAgentOrgRun("org-target")
+      : await store.deleteAgentOrgRun("org-target");
+
+    expect(changed).toBe(true);
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({ variables: { orgRunId: "org-target" } }));
+    expect(store.agentOrgHistory.map((run) => run.rootRunId)).toEqual(["org-sibling"]);
+    expect(agentOrgContextsStoreMock.disconnect).toHaveBeenCalledExactlyOnceWith("org-target");
+    expect(refreshSpy).toHaveBeenCalledOnce();
+  });
+
+  it("keeps AgentOrg rows and contexts when mutation fails or returns a mismatched identity", async () => {
+    mutateMock.mockResolvedValueOnce({
+      data: { archiveStoredAgentOrgRun: { success: false, message: "active", orgRunId: null } }, errors: [],
+    }).mockResolvedValueOnce({
+      data: { deleteStoredAgentOrgRun: { success: true, message: "wrong", orgRunId: "org-other" } }, errors: [],
+    });
+    const store = useRunHistoryStore();
+    store.agentOrgHistory = parseAgentOrgHistoryItems([buildAgentOrgHistoryRow({ rootRunId: "org-target" })]);
+
+    await expect(store.archiveAgentOrgRun("org-target")).resolves.toBe(false);
+    await expect(store.deleteAgentOrgRun("org-target")).resolves.toBe(false);
+
+    expect(store.agentOrgHistory.map((run) => run.rootRunId)).toEqual(["org-target"]);
+    expect(agentOrgContextsStoreMock.disconnect).not.toHaveBeenCalled();
   });
 
 });

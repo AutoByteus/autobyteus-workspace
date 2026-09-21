@@ -29,8 +29,10 @@ import {
   type RunHistorySelectionMode,
 } from '~/stores/runHistoryLoadActions';
 import {
+  archiveAgentOrgRunInHistoryStore,
   archiveRunInHistoryStore,
   archiveTeamRunInHistoryStore,
+  deleteAgentOrgRunFromHistoryStore,
   deleteRunFromHistoryStore,
   deleteTeamRunFromHistoryStore,
 } from '~/stores/runHistoryMutationActions';
@@ -403,6 +405,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
     async archiveTeamRun(teamRunId: string): Promise<boolean> {
       const changed = await archiveTeamRunInHistoryStore(this, teamRunId);
       if (changed) this.refreshRunNavigationTopology('team-archive');
+      return changed;
+    },
+
+    async deleteAgentOrgRun(orgRunId: string): Promise<boolean> {
+      const changed = await deleteAgentOrgRunFromHistoryStore(this, orgRunId);
+      if (changed) this.refreshRunNavigationTopology('agent-org-delete');
+      return changed;
+    },
+
+    async archiveAgentOrgRun(orgRunId: string): Promise<boolean> {
+      const changed = await archiveAgentOrgRunInHistoryStore(this, orgRunId);
+      if (changed) this.refreshRunNavigationTopology('agent-org-archive');
       return changed;
     },
 

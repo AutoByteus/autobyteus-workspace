@@ -38,6 +38,10 @@ export type AgentOrgCollaborationRecordsSnapshot = Readonly<{
   messages: AgentOrgCommunicationMessagesFileV1;
 }>;
 
+export type InactiveAgentOrgHistoryMutationResult<T> =
+  | Readonly<{ kind: "managed" }>
+  | Readonly<{ kind: "completed"; value: T }>;
+
 /** Org-family lifecycle/registry owner. Mounted Teams never enter the Team root manager. */
 export class AgentOrgRunManager {
   private static instance: AgentOrgRunManager | null = null;
@@ -143,6 +147,17 @@ export class AgentOrgRunManager {
     return Object.freeze({ tasks, messages });
   }
   listActiveOrgRunIds(): readonly string[] { return Object.freeze([...this.active.keys()].filter((id) => this.getActive(id))); }
+
+  withInactiveHistoryMutation<T>(
+    orgRunIdInput: string,
+    operation: () => Promise<T>,
+  ): Promise<InactiveAgentOrgHistoryMutationResult<T>> {
+    const orgRunId = required(orgRunIdInput, "orgRunId");
+    return this.withTransition(orgRunId, async () => {
+      if (this.active.has(orgRunId)) return Object.freeze({ kind: "managed" as const });
+      return Object.freeze({ kind: "completed" as const, value: await operation() });
+    });
+  }
 
   getInspection(orgRunIdInput: string): Promise<Readonly<{
     orgRunId: string;

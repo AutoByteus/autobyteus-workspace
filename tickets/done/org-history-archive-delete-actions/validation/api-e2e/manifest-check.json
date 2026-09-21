@@ -1,0 +1,214 @@
+{
+  "revision": "IR-002",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "expectedSha256": "184f912d76705d52581f40a33a8b0620dbba9aa3817a9757ad1ac138bb9fe6d0",
+      "actualSha256": "184f912d76705d52581f40a33a8b0620dbba9aa3817a9757ad1ac138bb9fe6d0",
+      "expectedBytes": 27986,
+      "actualBytes": 27986,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/run_history.md",
+      "expectedSha256": "076a24a3d42e5c5562b559386707da642c1ab6019bc7c3307fe5de2268b71713",
+      "actualSha256": "076a24a3d42e5c5562b559386707da642c1ab6019bc7c3307fe5de2268b71713",
+      "expectedBytes": 52585,
+      "actualBytes": 52585,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "expectedSha256": "f7457edbd4eba5a2a6337a4303e5553a1b685d2533bd0286c552b1e564a327cf",
+      "actualSha256": "f7457edbd4eba5a2a6337a4303e5553a1b685d2533bd0286c552b1e564a327cf",
+      "expectedBytes": 21063,
+      "actualBytes": 21063,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "expectedSha256": "cd18bbf6cad78e8c61671d95d7a965e9f8a300fb12af8f24d35c4de03078f4c8",
+      "actualSha256": "cd18bbf6cad78e8c61671d95d7a965e9f8a300fb12af8f24d35c4de03078f4c8",
+      "expectedBytes": 13762,
+      "actualBytes": 13762,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "expectedSha256": "bd29ea5e9c3d37534855c2656d2f1a0b2aff2f67fc77d2e4f77a7c54116abb57",
+      "actualSha256": "bd29ea5e9c3d37534855c2656d2f1a0b2aff2f67fc77d2e4f77a7c54116abb57",
+      "expectedBytes": 10722,
+      "actualBytes": 10722,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts",
+      "expectedSha256": "bb393857cbc8118b3649f1c324f2925f34c5c452ceaa5b8faa1dfc57cbe641a4",
+      "actualSha256": "bb393857cbc8118b3649f1c324f2925f34c5c452ceaa5b8faa1dfc57cbe641a4",
+      "expectedBytes": 15527,
+      "actualBytes": 15527,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts",
+      "expectedSha256": "71ba47d5832edf96571e015675e37ebc6e8ef49741d59faa58a9bec5d5dbbe79",
+      "actualSha256": "71ba47d5832edf96571e015675e37ebc6e8ef49741d59faa58a9bec5d5dbbe79",
+      "expectedBytes": 8019,
+      "actualBytes": 8019,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+      "expectedSha256": "52c465b34fdf41d01354bbad6e1cc1d12ff4307291ab4b15d1d6188ba1d4cbce",
+      "actualSha256": "52c465b34fdf41d01354bbad6e1cc1d12ff4307291ab4b15d1d6188ba1d4cbce",
+      "expectedBytes": 3800,
+      "actualBytes": 3800,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-run-model-config.test.ts",
+      "expectedSha256": "49f32334eb40e7023d7bc31d170b1bb77374b22b1104478e4b3699f60f31864e",
+      "actualSha256": "49f32334eb40e7023d7bc31d170b1bb77374b22b1104478e4b3699f60f31864e",
+      "expectedBytes": 4953,
+      "actualBytes": 4953,
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts",
+      "expectedSha256": "d32a666772d653e8b148419771a0bd2d17df9a049cce1c02a43a33ac766965eb",
+      "actualSha256": "d32a666772d653e8b148419771a0bd2d17df9a049cce1c02a43a33ac766965eb",
+      "expectedBytes": 9822,
+      "actualBytes": 9822,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "expectedSha256": "2f7b48ee33c01997190f54e900a48fc8aed1d67f9fc203050f1c0941054908de",
+      "actualSha256": "2f7b48ee33c01997190f54e900a48fc8aed1d67f9fc203050f1c0941054908de",
+      "expectedBytes": 17128,
+      "actualBytes": 17128,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "expectedSha256": "0f24c810da1f81fbb903f894200cfbacabec13cdeec22e0fe0b41ccb46bcd45f",
+      "actualSha256": "0f24c810da1f81fbb903f894200cfbacabec13cdeec22e0fe0b41ccb46bcd45f",
+      "expectedBytes": 20208,
+      "actualBytes": 20208,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+      "expectedSha256": "16389d5318ae5495c431db6fd08d9a2a6437ff7f711f92bff7795539e8668ce7",
+      "actualSha256": "16389d5318ae5495c431db6fd08d9a2a6437ff7f711f92bff7795539e8668ce7",
+      "expectedBytes": 15387,
+      "actualBytes": 15387,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts",
+      "expectedSha256": "4a19996792b48f65819b2ee6b13fbc3bd2a29f8b7d124ce504483e62e5e9acec",
+      "actualSha256": "4a19996792b48f65819b2ee6b13fbc3bd2a29f8b7d124ce504483e62e5e9acec",
+      "expectedBytes": 92232,
+      "actualBytes": 92232,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+      "expectedSha256": "8acb12e8560ecab966d2c32cb46662f206ef70d45c1df0eed4ef42a28d306970",
+      "actualSha256": "8acb12e8560ecab966d2c32cb46662f206ef70d45c1df0eed4ef42a28d306970",
+      "expectedBytes": 5159,
+      "actualBytes": 5159,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+      "expectedSha256": "e67d4f9dc41bcf780d1b0ce81ea6399a10c4670f05a609bb860ff86d1cf34135",
+      "actualSha256": "e67d4f9dc41bcf780d1b0ce81ea6399a10c4670f05a609bb860ff86d1cf34135",
+      "expectedBytes": 4906,
+      "actualBytes": 4906,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceHistoryMutations.ts",
+      "expectedSha256": "2d4777ae731438ccfb13b30de6f246306a891e5fc564b4aba5020a27a34fc47c",
+      "actualSha256": "2d4777ae731438ccfb13b30de6f246306a891e5fc564b4aba5020a27a34fc47c",
+      "expectedBytes": 11560,
+      "actualBytes": 11560,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "expectedSha256": "74a2f94ee813fe665d711d7a85485a9e31d9127cb0b957d4f732d0948ad216e1",
+      "actualSha256": "74a2f94ee813fe665d711d7a85485a9e31d9127cb0b957d4f732d0948ad216e1",
+      "expectedBytes": 32570,
+      "actualBytes": 32570,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+      "expectedSha256": "5115953d5d11c5ee4eb99e53d22edbafeb76fafdbeee00e83d6d5626d22e020e",
+      "actualSha256": "5115953d5d11c5ee4eb99e53d22edbafeb76fafdbeee00e83d6d5626d22e020e",
+      "expectedBytes": 1323,
+      "actualBytes": 1323,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "expectedSha256": "675e5fa2250092549da4fc30ec1945b30660ba5be4827fe8d95e00098bd01290",
+      "actualSha256": "675e5fa2250092549da4fc30ec1945b30660ba5be4827fe8d95e00098bd01290",
+      "expectedBytes": 28974,
+      "actualBytes": 28974,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "expectedSha256": "b6c3cef4d62a143b35286dc9aea5cb0c600b4fd3f838582d7d6cc72312d8520c",
+      "actualSha256": "b6c3cef4d62a143b35286dc9aea5cb0c600b4fd3f838582d7d6cc72312d8520c",
+      "expectedBytes": 28887,
+      "actualBytes": 28887,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "expectedSha256": "1f66f5333e2bd40e474dc9d5e6f6737540fcba3690beb4e31c08285bbb9bfa19",
+      "actualSha256": "1f66f5333e2bd40e474dc9d5e6f6737540fcba3690beb4e31c08285bbb9bfa19",
+      "expectedBytes": 94394,
+      "actualBytes": 94394,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryMutationActions.ts",
+      "expectedSha256": "99aeeef30d29e2cbc1fc8d77ed48273be73265cdd3b303501f4cce06b437686b",
+      "actualSha256": "99aeeef30d29e2cbc1fc8d77ed48273be73265cdd3b303501f4cce06b437686b",
+      "expectedBytes": 9169,
+      "actualBytes": 9169,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "expectedSha256": "b60a326138750e88263bdf55af07a8e9ca7e58020fd3e61d88fe71f9b1a349d3",
+      "actualSha256": "b60a326138750e88263bdf55af07a8e9ca7e58020fd3e61d88fe71f9b1a349d3",
+      "expectedBytes": 21716,
+      "actualBytes": 21716,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryTypes.ts",
+      "expectedSha256": "727c36a7ad360fa28e63e8d45f2bf889bacfb644bb510eab9cb45a314c2998ea",
+      "actualSha256": "727c36a7ad360fa28e63e8d45f2bf889bacfb644bb510eab9cb45a314c2998ea",
+      "expectedBytes": 7902,
+      "actualBytes": 7902,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue",
+      "expectedSha256": "851e3039a9d0b226eb975f632fb3800e3f796deb4dd5f2d3a1605dde26b2e99c",
+      "actualSha256": "851e3039a9d0b226eb975f632fb3800e3f796deb4dd5f2d3a1605dde26b2e99c",
+      "expectedBytes": 10346,
+      "actualBytes": 10346,
+      "match": true
+    }
+  ],
+  "allMatch": true
+}

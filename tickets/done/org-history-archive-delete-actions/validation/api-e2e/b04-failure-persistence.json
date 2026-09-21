@@ -1,0 +1,29 @@
+{
+  "after": {
+    "memory/agent_org_run_history_index.json": "3dd9c267b33255538f682f2362f885e077f251d983ad0850bb6a469498b65484",
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_communication_messages.json": "240e980b239fb223db93e4250ec29717de094038e4e0ac3e12a588916763ed48",
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_run_execution_tree.json": "b44c391381f076e47101fc2444b1b61c2ed2709757d233d87b7607a65002a56e",
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_task_delegation_records.json": "e705e66e2da30c92f7a4b317b604c70cafd0d7ac220635e90cba0ae05c7552e7"
+  },
+  "allHashesExact": true,
+  "before": {
+    "files": {
+      "memory/agent_org_run_history_index.json": "3dd9c267b33255538f682f2362f885e077f251d983ad0850bb6a469498b65484",
+      "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_communication_messages.json": "240e980b239fb223db93e4250ec29717de094038e4e0ac3e12a588916763ed48",
+      "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_run_execution_tree.json": "b44c391381f076e47101fc2444b1b61c2ed2709757d233d87b7607a65002a56e",
+      "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_task_delegation_records.json": "e705e66e2da30c92f7a4b317b604c70cafd0d7ac220635e90cba0ae05c7552e7"
+    },
+    "originalMode": "0o755"
+  },
+  "indexRow": {
+    "archivedAt": null,
+    "createdAt": "2026-09-21T13:48:55.904Z",
+    "orgDefinitionId": "aorg-validation-org",
+    "orgDefinitionName": "AORG Validation Org",
+    "orgRunId": "aorg_validation_org_d9d486990e7a4b68818361502fa15974",
+    "summary": "",
+    "terminatedAt": "2026-09-21T13:48:56.580Z",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+  },
+  "treeArchivedAt": null
+}
