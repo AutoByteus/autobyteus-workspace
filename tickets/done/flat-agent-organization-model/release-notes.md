@@ -1,38 +1,40 @@
-# AORG-FLAT-TEAM-001 — task-branch completion notes
+# AORG-FLAT-TEAM-001 — personal integration notes
 
-Status: successful with user-accepted known issues; not a public release.
-Finalization target: `requirements/flat-agent-organization-model` only.
+Status: **complete and integrated into `personal`** after explicit user testing
+and acceptance. This is a repository integration and local verification build,
+not a public release.
+
+## Delivered cumulative capability
 
 - Flat coordinator-led Teams and coordinator-free AgentOrg composition with
-  exact configured/task identities, Messages/Tasks, history and retained inspection.
+  exact configured/task identities, Messages/Tasks, history, and retained
+  inspection.
 - Strict field-free definitions with authored `org_local`, exact owned authoring
-  and return navigation; separate unchanged runtime-tree versions/internal tags.
-- Observational history, deliberate configured continuation and retained Stop;
+  and return navigation, plus separate runtime-tree versions/internal tags.
+- Observational history, deliberate configured continuation, retained Stop, and
   scoped physical-read freshness across Org history/root/member acquisition.
-- Exact Org root+AgentRun attachment ownership and non-media recorded file facts
-  through initial/cold/earlier-page/complete-archive presentation.
+- Exact Org root and AgentRun attachment ownership, saved file facts, readable
+  catalog/member presentation, stopped-run configuration, and responsive
+  history loading/disclosure behavior from the cumulative follow-up line.
 
-## Accepted, not fixed
+## Finalization
 
-1. One native DeepSeek standalone desktop first text Send chip uses draft404;
-   normal reload/reselect obtains final200 and original bytes. No durable loss
-   or independent narrow/Org/task failure inferred.
-2. Eager pre-message Team Idle/green rather than original Offline/unstarted.
-3. One mounted publication navigated to a prior Team; follow-up did not reproduce.
+- Accepted feature tip `ad2115e4b9347764e0c09accf231ef0ec7d41af3`
+  merged into `personal` as `92b5d8c4bfb04d6d52944c3b3b107541fc652feb`.
+- Main worktree updated and AutoByteus `1.4.69` personal macOS arm64 Electron
+  DMG/ZIP rebuilt successfully.
+- Feature worktree and local/remote feature branches removed after verified push.
 
-`known-issues.md` carries exact references for Requirements-owned separate future
-issues. None has been created or approved by this finalization. Separate-link
-text/JSON opening is accepted existing behavior, not another defect.
+## Historical evidence boundary
 
-## Validation and operation boundary
+DR-010's API-REV-038 Fail/CRR-091 accepted-issue record remains historically
+accurate and is not relabeled as a clean API pass. The present completion is the
+user's acceptance of the later cumulative feature line plus successful personal
+integration/build. Consult the individual follow-up tickets and their API/review
+records for their exact evidence and residual limits.
 
-API38 executed 34 main repository commands, 436 disjoint files and 2,708 tests;
-all planned journeys/cleanup completed. Its original **Fail / 85.6%** and
-38 Pass / 3 observed Fail / 1 N/A groups remain unchanged. CRR091 user acceptance
-and CRR092 three-file test review make the current package successful with
-exceptions, not a clean API38 Pass. No redundant API rerun.
+## Release boundary
 
-No version/tag, AppImage rebuild, Electron restart, release workflow, deployment,
-backfill or migration execution. Architecture must decide IR049's actual
-installation inventory before cutover. Branch and worktree are retained as the
-user's future fix base; `personal` is not merged or pushed.
+No version bump, release tag, public publication, notarization, installation,
+deployment, migration execution, backfill, or rollout was requested or performed.
+The local app is ad-hoc signed and intended for verification use.
