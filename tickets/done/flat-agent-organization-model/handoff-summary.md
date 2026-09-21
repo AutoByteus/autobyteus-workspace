@@ -1,90 +1,67 @@
-# Delivery Handoff Summary — DR-011
+# Delivery Handoff Summary — DR-012
 
 ## Current result
 
-**Delivery Completed — complete flat AgentOrg feature line integrated into
-`personal`, verified, rebuilt, and cleaned up.**
+**Delivery Completed — stable AutoByteus v1.4.71 published and verified.**
 
-The user explicitly reported that the complete AgentOrg flat-organization ticket
-works in the feature-base worktree and authorized finalization to the original
-bootstrap target, `origin/personal`. This supersedes DR-010's deliberate
-task-branch-only finalization boundary. It does not rewrite the historical
-API-REV-038 Fail result or the three issues accepted in CRR-091; those records
-remain accurate for the package tested at that time.
+The user accepted the complete flat AgentOrg feature line, previously authorized
+its DR-011 integration into `origin/personal`, and now explicitly requested a
+new public version. Classification remains **Large / High / Reviewed**. DR-012
+adds public release completion without relabeling any historical review or API
+result.
 
-## Authority and scope
+## Published package
 
-- Cumulative classification: **Large / High / Reviewed**.
-- Accepted feature tip: `ad2115e4b9347764e0c09accf231ef0ec7d41af3` on
-  `origin/requirements/flat-agent-organization-model`.
-- Pre-merge target: `origin/personal@5645b49d6f51faa60bd3545bc8e3f0e7e3f96793`.
-- The target was an ancestor of the feature tip; divergence was 311 feature
-  commits and zero target-only commits. No conflict or changed user-facing
-  state was introduced by target refresh.
-- Integration used an explicit non-fast-forward merge. Merge commit
-  `92b5d8c4bfb04d6d52944c3b3b107541fc652feb` was pushed and matched
-  `origin/personal`; its tree exactly matches the accepted feature tip.
-- The user explicitly accepted the whole cumulative feature line and authorized
-  this target merge. No renewed verification was required because integration
-  added no target-only code.
+- GitHub release:
+  <https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.71>
+- Release commit: `e8b6c3b41f54de4226c98662b6c040ef1e125edf`
+- Tag object: `7a6125fa285d91efe201ca3f6571b290a7c6a904`
+- State: stable, published, non-draft, non-prerelease
+- Assets: 21 nonempty uploads
 
-## Post-integration validation and package
+Successful release surfaces:
 
-The repository-standard Apple Silicon Electron package was built from the main
-`personal` worktree at the verified merge commit using:
+- Desktop Windows x64, macOS x64/arm64, Linux x64/arm64;
+- signed Android APK;
+- iOS archive/upload to App Store Connect;
+- generic Node messaging-gateway package and managed manifest;
+- server container for linux/amd64 and linux/arm64, with `1.4.71` and `latest`
+  resolving to the same manifest digest.
 
-```sh
-NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
-```
+Updater files, artifact references/sizes, Android/gateway checksums, gateway
+metadata, the managed manifest, Docker tag parity, and multi-architecture image
+membership were independently verified after publication.
 
-Result: **Pass** for AutoByteus `1.4.69`, personal flavor, macOS arm64.
+## Recovery truth
 
-- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.69.dmg`
-  - 468,085,787 bytes
-  - SHA-256 `9c2757728bd47ff6373f6fc1c3024298ca3219866a653a301156cdcf792328e4`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.69.zip`
-  - 462,741,319 bytes
-  - SHA-256 `a2303459527e9bbbef9be14c2bb7404612261e51b3cff2950fb20bc5fb8a36a2`
-- App: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+The initial `v1.4.70` attempt was not published. Artifact hygiene rejected 1,110
+tracked paths over 200 characters. Raw ticket evidence was checksum-archived,
+removed from the Git tree, and replaced with durable archive notices. The next
+hygiene scan passed all 31,360 tracked paths.
 
-The DMG verified as valid, the ZIP archive passed integrity testing, the app
-executable is Mach-O arm64, and packaged terminal/helper validation including a
-real `node-pty` spawn probe passed. The app is ad-hoc signed locally with no Team
-ID; it is not Developer-ID signed, notarized, installed, published, or released.
+For v1.4.71, initial Android and Docker jobs exposed packaging-only issues. The
+Android action was updated to v4 in
+`83e213174b75a5d3d666e70fb03f4a3486cd83ba`; Docker was taught the two new
+contract workspaces in `2a11ed7aaac45128276820a570206df2df9c8bfe`.
+Both recovery runs succeeded. The stable tag was not moved.
 
-## Documentation and preservation
+## Scope and limits
 
-- Canonical product documentation already matched the cumulative accepted
-  feature tip. DR-011 therefore changes only delivery/finalization records and
-  release notes; it does not invent another product behavior revision.
-- The main worktree's unrelated modified `package.json` was protected in the
-  exact delivery stash while merging, documenting, and building, then restored
-  byte-for-byte. The unrelated `.article-work/`, Brief Studio `dist/`, and
-  Socratic Math Teacher `dist/` directories were never staged or removed.
-- Generated SDK build prerequisites were removed by exact path after packaging.
-  No blanket cleanup or user data/profile mutation was performed.
+The iOS workflow proves upload to App Store Connect, not App Store approval or
+storefront availability. Public artifacts/images were published, but no local
+app installation, user server deployment, environment rollout, user-profile
+mutation, or migration execution occurred.
 
-## Repository cleanup
+Unrelated local state was isolated from release commits and is restored only
+after the final docs push. The final Solution Designer receipt records the exact
+terminal `origin/personal` commit and preservation check so this document does
+not require a self-referential hash.
 
-Finalization cleanup is complete:
+## Canonical evidence
 
-- feature worktree
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base`
-  removed and pruned;
-- local branch `requirements/flat-agent-organization-model` deleted;
-- remote branch `origin/requirements/flat-agent-organization-model` deleted;
-- `git worktree prune -n -v` reports no stale entry.
-
-The archived ticket remains at
-`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/flat-agent-organization-model`.
-
-## Release and terminal route
-
-Repository integration and the requested local Electron build are complete.
-Version bump, tag, public release, notarization, deployment, installation,
-migration execution, and rollout are **Not required** and were not performed.
-The exact final documentation commit/push is supplied in the terminal message to
-Solution Designer, avoiding a self-referential commit hash in this file.
-
-Canonical evidence:
-`delivery-evidence/dr-011/finalization-and-personal-electron-build.md`.
+- Release/deployment report:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/flat-agent-organization-model/release-deployment-report.md`
+- Release evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/flat-agent-organization-model/delivery-evidence/dr-012/release-v1.4.71.md`
+- User-facing release notes:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/flat-agent-organization-model/release-notes.md`

@@ -360,3 +360,60 @@ or release/terminal handoff.
 - Terminal return: eligible after final remote equality and preservation checks;
   send the authoritative cumulative completion package to Solution Designer for
   receipt verification and terminal return without replaying finalization.
+
+### DR-012 — stable v1.4.71 published with release recovery
+
+- Trigger: after accepting/finalizing the complete flat AgentOrg feature line,
+  the user explicitly requested a new public version. Large / High / Reviewed
+  classification and the cumulative user verification remain unchanged.
+- Prior authoritative result: DR-011 Delivery Completed for personal integration
+  and local Electron packaging. DR-012 adds the separately authorized public
+  release/publication surface; it does not rewrite historical review/API results.
+- Current result: **Delivery Completed — stable v1.4.71 published and verified**.
+- Release commit `e8b6c3b41f54de4226c98662b6c040ef1e125edf`;
+  annotated tag object `7a6125fa285d91efe201ca3f6571b290a7c6a904`;
+  stable GitHub release
+  `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.71`.
+- Initial v1.4.70 attempt is truthfully retained as unpublished: Desktop/Android
+  failed or remaining workflows were cancelled after the tracked-path hygiene
+  gate found 1,110 paths over 200 characters. The annotated tag remains, but no
+  GitHub release or Docker `1.4.70` tag exists.
+- Recovery: raw validation evidence was archived with checksums and removed from
+  the Git tree in `35a1fb816a72a28353bb29fe204008ba098513e9`;
+  the subsequent hygiene scan passed 31,360 paths with maximum length 199.
+- Required release surfaces are successful: Desktop
+  `35586415979`, iOS App Store Connect `35586415950`, Messaging Gateway
+  `35586415751`, Android recovery `35586707639`, and Server Docker recovery
+  `35586953949`.
+- Android's initial external-action failure was recovered by
+  `83e213174b75a5d3d666e70fb03f4a3486cd83ba`; Docker's initial missing-workspace
+  packaging failure was recovered by
+  `2a11ed7aaac45128276820a570206df2df9c8bfe`. Both are release-infrastructure
+  fixes after the tagged product commit, not user-feature revisions.
+- GitHub release verification: stable/non-draft, 21 nonempty uploaded assets;
+  updater YAML version/references/sizes, Android and gateway checksums, gateway
+  metadata and managed manifest all pass.
+- Docker Hub verification: `1.4.71` and `latest` share manifest digest
+  `sha256:d6710356c74c6c36286738d09eba48d55af883c4600e35985c65329a4796bedb`
+  and contain linux/amd64 plus linux/arm64.
+- iOS qualification: the workflow successfully archived and uploaded to App
+  Store Connect; no App Store review approval or storefront availability is
+  claimed.
+- Deployment boundary: public release artifacts/images were published; no local
+  app installation, user-environment server rollout, profile/data mutation, or
+  user migration execution was performed.
+- Docs sync: Pass — public release notes already describe the shipped behavior;
+  only delivery/release records and release evidence require DR-012 updates.
+- Preservation: unrelated modified `package.json` and three untracked work areas
+  were protected in the exact named stash and external archive throughout
+  release commits. They are restored after the final documentation push and
+  verified byte/count exact; no blanket staging.
+- Evidence:
+  `delivery-evidence/dr-012/release-v1.4.71.md`.
+- Repository completion metadata: committed and pushed to `origin/personal`
+  after this entry; exact final tip is reported in the terminal Solution
+  Designer message to avoid a self-referential record.
+- Terminal return: eligible after final remote equality, artifact publication,
+  Docker verification, and unrelated-state restoration checks; send the
+  authoritative cumulative completion package to Solution Designer without
+  replaying release operations.

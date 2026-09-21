@@ -1,103 +1,108 @@
-# Delivery / Release / Deployment Report — DR-011
+# Delivery / Release / Deployment Report — DR-012
 
 ## Result
 
-**Delivery Completed.** The user accepted the complete cumulative flat AgentOrg
-feature line, changed the finalization target from the DR-010 task branch to the
-original bootstrap target `origin/personal`, and requested a fresh Electron build
-from the updated main worktree.
+**Delivery Completed — AutoByteus v1.4.71 is publicly released.** The user
+explicitly requested a new version after accepting the complete flat AgentOrg
+feature line. Classification remains **Large / High / Reviewed**.
 
-Classification remains **Large / High / Reviewed**. DR-011 is a repository and
-packaging completion round; it does not alter historical review/API results.
+This round publishes the DR-011-accepted implementation. It does not overwrite
+historical review, API/E2E, limitation, or accepted-issue records.
 
-## User verification
+## Stable release
 
-Completed. The user stated that the complete ticket was tested from the feature
-base worktree and everything appeared to work, then explicitly authorized merge
-to `origin/personal`. This resolves the feature-line finalization hold. Historical
-API-REV-038 Fail/CRR-091 accepted-issue evidence remains preserved rather than
-being relabeled as a clean API pass.
+- Release commit: `e8b6c3b41f54de4226c98662b6c040ef1e125edf`.
+- Annotated tag: `v1.4.71` (tag object
+  `7a6125fa285d91efe201ca3f6571b290a7c6a904`).
+- GitHub release:
+  <https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.71>.
+- State: published, stable, non-draft, non-prerelease.
+- Published at: `2026-09-21T10:03:58Z`.
+- GitHub assets: 21 uploaded, all nonempty.
 
-## Repository finalization
+Successful workflow results:
 
-- Feature tip: `ad2115e4b9347764e0c09accf231ef0ec7d41af3`.
-- Refreshed target: `origin/personal@5645b49d6f51faa60bd3545bc8e3f0e7e3f96793`.
-- Pre-merge relation: target was an ancestor; 311 feature commits ahead and zero
-  target-only commits.
-- Merge method: `git merge --no-ff --no-edit
-  origin/requirements/flat-agent-organization-model`.
-- Merge commit: `92b5d8c4bfb04d6d52944c3b3b107541fc652feb`.
-- Merge tree: exactly equal to the accepted feature tip.
-- Push: completed normally; `origin/personal` matched the merge commit.
-- Completion records: committed and pushed after the merge; exact terminal tip
-  is reported to Solution Designer after remote verification.
+| Surface | Run | Result |
+| --- | --- | --- |
+| Desktop: Windows, macOS x64/arm64, Linux x64/arm64 | [35586415979](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35586415979) | Success |
+| iOS archive/upload | [35586415950](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35586415950) | Success |
+| Messaging Gateway | [35586415751](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35586415751) | Success |
+| Android signed APK recovery | [35586707639](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35586707639) | Success |
+| Server multi-architecture Docker recovery | [35586953949](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35586953949) | Success |
 
-No force push or history rewrite was used.
+## Recovery history
+
+The canonical `1.4.70` attempt encountered repository artifact hygiene before a
+release was published. Its Desktop and Android runs failed; the other three
+workflows were cancelled. The `v1.4.70` annotated tag remains as an audit
+marker, but GitHub has no corresponding release and Docker Hub has no server
+tag `1.4.70`.
+
+Delivery archived the raw ticket evidence, removed 3,582 tracked raw evidence
+entries, added durable archive notices, and passed the release hygiene scan over
+31,360 tracked paths (maximum 199 characters). Archive locations and SHA-256
+values are recorded in the DR-012 evidence.
+
+Two v1.4.71 workflow-local blockers were repaired and rerun without moving the
+published tag:
+
+- Android `setup-android@v3` tried to install obsolete SDK package `tools`.
+  Commit `83e213174b75a5d3d666e70fb03f4a3486cd83ba` updates to v4; recovery passed.
+- The server Dockerfile omitted two new workspace contract packages. Commit
+  `2a11ed7aaac45128276820a570206df2df9c8bfe` adds them to dependency, build, and
+  runtime stages; recovery passed from that post-tag packaging commit.
+
+These are release-infrastructure corrections. The tagged production application
+source used by the public desktop/mobile/messaging artifacts was not rewritten.
+
+## Publication verification
+
+- All four updater YAMLs declare `1.4.71`; their referenced asset names exist
+  and their declared sizes match GitHub.
+- Android and messaging-gateway checksum files match the published asset
+  digests.
+- Messaging metadata and the managed release manifest name version/tag
+  `1.4.71` / `v1.4.71` and resolve to uploaded assets.
+- Docker tags `autobyteus/autobyteus-server:1.4.71` and `:latest` share digest
+  `sha256:d6710356c74c6c36286738d09eba48d55af883c4600e35985c65329a4796bedb`.
+- The Docker manifest includes linux/amd64 and linux/arm64.
+
+The iOS job's success establishes archive and upload to App Store Connect. It
+does not establish App Store review approval or public storefront availability.
 
 ## Documentation synchronization
 
-**Pass — delivery records updated; no further product-doc impact.** The accepted
-feature tip already contains the cumulative canonical server/web AgentOrg, Team,
-history, execution, and artifact documentation. Since the personal merge added
-no target-only implementation and changed no behavior, DR-011 updates only:
+**Pass — release records updated; no further product-doc impact.** The public
+release notes already describe the accepted AgentOrg capabilities and
+compatibility boundaries. DR-012 updates the delivery revision record, handoff
+summary, docs-sync report, release/deployment report, and durable release
+evidence. No product behavior or durable test source is changed by Delivery.
 
-- `delivery-revision-record.md`;
-- `handoff-summary.md`;
-- `release-deployment-report.md`;
-- `release-notes.md`;
-- `docs-sync-report.md`;
-- `delivery-evidence/dr-011/finalization-and-personal-electron-build.md`.
+## Deployment and rollback boundary
 
-Older delivery/review/API artifacts remain historical authorities for their own
-rounds. No prior Fail, limitation, or accepted issue is silently rewritten.
+GitHub desktop/mobile/gateway artifacts and the Docker images are publicly
+published. No desktop app was installed, no user server was upgraded, no
+database or profile was changed, no migration was executed against user data,
+and no environment-specific rollout was performed.
 
-## Electron build
+Rollback remains explicit: do not move the immutable release tag. A corrective
+release would use a new version; server consumers can pin the prior known image
+tag/digest. No automatic user-data rollback is implied.
 
-From `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`:
+## Preservation and repository state
 
-```sh
-NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
-```
+The unrelated main-worktree `package.json` modification plus `.article-work/`
+and two application `dist/` trees were protected before release commits in a
+named stash and checksum archive. They are restored only after the final DR-012
+documentation push and verified against their exact baseline. No blanket
+staging or unrelated cleanup is permitted.
 
-Completed with exit 0 for personal flavor, AutoByteus `1.4.69`, macOS arm64.
-
-| Artifact | Size | SHA-256 |
-| --- | ---: | --- |
-| `electron-dist/AutoByteus_personal_macos-arm64-1.4.69.dmg` | 468,085,787 | `9c2757728bd47ff6373f6fc1c3024298ca3219866a653a301156cdcf792328e4` |
-| `electron-dist/AutoByteus_personal_macos-arm64-1.4.69.zip` | 462,741,319 | `a2303459527e9bbbef9be14c2bb7404612261e51b3cff2950fb20bc5fb8a36a2` |
-
-`hdiutil verify` passed, `unzip -tq` reported no errors, the app binary is
-Mach-O arm64, and packaged terminal/helper checks including a real `node-pty`
-spawn passed. The app uses local ad-hoc signing with no Team ID. It is not
-Developer-ID signed or notarized.
-
-## Release / publication / deployment
-
-**Not required; not performed.** This round performs repository integration and
-a local verification build only. There is no version bump, tag, GitHub release,
-publication, notarization, installation, deployment, migration execution,
-backfill, reset, or rollout.
-
-Rollback visibility: repository rollback, if ever authorized, would revert the
-personal merge rather than mutate installed/user data. No deployed state changed.
-
-## Cleanup and preservation
-
-- Feature worktree removed and pruned.
-- Local and remote `requirements/flat-agent-organization-model` branches removed
-  after the personal push was verified.
-- Generated SDK `dist/` prerequisites created by packaging removed by exact path.
-- Unrelated modified `package.json` protected in a named stash during finalization
-  and restored byte-for-byte afterward.
-- Unrelated untracked `.article-work/`, Brief Studio `dist/`, and Socratic Math
-  Teacher `dist/` directories preserved and never staged.
-- No blanket staging or cleanup, and no user server/profile/data mutation.
-
-Evidence:
-`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/flat-agent-organization-model/delivery-evidence/dr-011/finalization-and-personal-electron-build.md`.
+Canonical evidence:
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/flat-agent-organization-model/delivery-evidence/dr-012/release-v1.4.71.md`.
 
 ## Terminal handoff
 
-Eligible after the delivery-record commit matches `origin/personal`. Send the
-authoritative cumulative completion package to Solution Designer for receipt
-verification and terminal return; do not replay finalization.
+Eligible after the DR-012 documentation commit equals `origin/personal`, the
+protected unrelated state is restored exactly, and the final status contains no
+delivery-owned residue. Return the authoritative completion package to Solution
+Designer; do not replay release or publication operations.
