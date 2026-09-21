@@ -14,7 +14,7 @@ vi.mock('vue-router', () => ({ useRoute: () => io.route, useRouter: () => ({ pus
 vi.mock('~/composables/useRunActions', () => ({ useRunActions: () => ({ prepareTeamRun: vi.fn() }) }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/windowNodeContextStore', () => ({
-  useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true }),
+  useWindowNodeContextStore: () => ({ bindingRevision: 0, waitForBoundBackendReady: async () => true }),
 }))
 
 const makeAgent = (id: string, name: string, ownershipScope = 'SHARED', extra = {}) => ({
@@ -74,6 +74,19 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
         if (exactError && field === 'agentTeamDefinition') { observer.error(new Error('Exact read unavailable')); return }
         let value: any
         if (field === 'agentOrgDefinitions') value = [org, ...otherOrgs]
+        else if (field === 'agentOrgEndpointCatalog') value = {
+          from: [
+            { kind: 'agent', address: '/direct', memberName: 'direct', definitionId: 'owned-direct', coordinatorAddress: null, coordinatorMemberName: null },
+            { kind: 'agent', address: '/team/lead', memberName: 'lead', definitionId: 'team-local-agent:owned-team:owned-lead', coordinatorAddress: null, coordinatorMemberName: null },
+            { kind: 'agent', address: '/team/worker', memberName: 'worker', definitionId: 'shared-worker', coordinatorAddress: null, coordinatorMemberName: null },
+          ],
+          to: [
+            { kind: 'agent', address: '/direct', memberName: 'direct', definitionId: 'owned-direct', coordinatorAddress: null, coordinatorMemberName: null },
+            { kind: 'agent', address: '/team/lead', memberName: 'lead', definitionId: 'team-local-agent:owned-team:owned-lead', coordinatorAddress: null, coordinatorMemberName: null },
+            { kind: 'agent', address: '/team/worker', memberName: 'worker', definitionId: 'shared-worker', coordinatorAddress: null, coordinatorMemberName: null },
+            { kind: 'agent_team', address: '/team', memberName: 'team', definitionId: 'owned-team', coordinatorAddress: '/team/lead', coordinatorMemberName: 'lead' },
+          ],
+        }
         else if (field === 'agentTeamDefinitions') value = [{ ...makeTeam(), id: 'same-name-shared-team', ownershipScope: 'SHARED', ownerOrgId: null }]
         else if (field === 'agentDefinitions') value = [makeAgent('shared-worker', 'Worker'), makeAgent('same-name-shared-agent', 'Local direct')]
         else if (field === 'agentTeamDefinition') value = team
@@ -101,11 +114,12 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
   }
   const mutations = () => calls.filter(c => c.field === 'updateAgentOrgDefinition')
 
-  it('resolves exact owned detail/coordinator and saves/reopens without adding owned definitions to shared catalogs', async () => {
+  it('uses endpoint roles on detail and exact owned references for editing without catalog insertion', async () => {
     const before = structuredClone(org); const router = await open('org-list')
     await wrapper!.findAll('button').find(b => b.text().includes('View Details'))!.trigger('click'); await flushPromises()
-    expect(wrapper!.text()).toContain('Coordinator: Exact coordinator')
-    expect(wrapper!.text()).toContain('Local direct'); expect(wrapper!.text()).toContain('Local research')
+    expect(wrapper!.text()).toContain('Coordinator: lead')
+    expect(wrapper!.text()).not.toContain('Local direct'); expect(wrapper!.text()).not.toContain('Local research')
+    expect(calls.filter(call => ['agentDefinition', 'agentTeamDefinition'].includes(call.field))).toHaveLength(0)
     expect(wrapper!.text()).not.toContain('Unavailable')
     await wrapper!.findAll('button').find(b => b.text() === 'Edit')!.trigger('click'); await flushPromises()
     await wrapper!.get('textarea').setValue('Description-only edit')

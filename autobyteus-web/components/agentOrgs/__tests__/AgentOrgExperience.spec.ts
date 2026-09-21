@@ -59,7 +59,19 @@ const { route, push, org, orgStore, agentStore, teamStore } = vi.hoisted(() => {
   }
 })
 
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: any) => ({ data: { agentDefinition: agentStore.getAgentDefinitionById(variables.id), agentTeamDefinition: teamStore.getCatalogAgentTeamDefinitionById(variables.id) } }) }) }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async () => ({ data: { agentOrgEndpointCatalog: {
+  from: [
+    { kind: 'agent', address: '/requirements_engineer', memberName: 'requirements_engineer', definitionId: 'requirements-agent', coordinatorAddress: null, coordinatorMemberName: null },
+    { kind: 'agent', address: '/software_engineering/architecture_designer', memberName: 'architecture_designer', definitionId: 'architecture-agent', coordinatorAddress: null, coordinatorMemberName: null },
+    { kind: 'agent', address: '/software_engineering/implementation_engineer', memberName: 'implementation_engineer', definitionId: 'implementation-agent', coordinatorAddress: null, coordinatorMemberName: null },
+  ],
+  to: [
+    { kind: 'agent', address: '/requirements_engineer', memberName: 'requirements_engineer', definitionId: 'requirements-agent', coordinatorAddress: null, coordinatorMemberName: null },
+    { kind: 'agent', address: '/software_engineering/architecture_designer', memberName: 'architecture_designer', definitionId: 'architecture-agent', coordinatorAddress: null, coordinatorMemberName: null },
+    { kind: 'agent', address: '/software_engineering/implementation_engineer', memberName: 'implementation_engineer', definitionId: 'implementation-agent', coordinatorAddress: null, coordinatorMemberName: null },
+    { kind: 'agent_team', address: '/software_engineering', memberName: 'software_engineering', definitionId: 'software-team', coordinatorAddress: '/software_engineering/architecture_designer', coordinatorMemberName: 'architecture_designer' },
+  ],
+} } }) }) }))
 
 vi.mock('vue-router', () => ({ useRoute: () => route, useRouter: () => ({ push }) }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => orgStore }))
@@ -81,8 +93,8 @@ describe('AgentOrgExperience', () => {
 
     expect(wrapper.text()).toContain('Featured organizations')
     expect(wrapper.text()).toContain('Software Development Department')
-    expect(wrapper.text()).toContain('Requirements Engineer')
-    expect(wrapper.text()).toContain('Software Engineering')
+    expect(wrapper.text()).toContain('requirements engineer')
+    expect(wrapper.text()).toContain('software engineering')
     expect(wrapper.text()).toContain('Run')
     expect(wrapper.text()).not.toContain('Last run')
     expect(wrapper.text()).not.toContain('No coordinator')
@@ -102,7 +114,7 @@ describe('AgentOrgExperience', () => {
   it('shows same-identity Teams, their coordinator, and ordered From/To/When detail', async () => {
     const wrapper = await mountExperience('org-detail', org.id)
 
-    expect(wrapper.text()).toContain('Coordinator: Architecture Designer')
+    expect(wrapper.text()).toContain('Coordinator: architecture designer')
     expect(wrapper.text()).toContain('/requirements_engineer')
     expect(wrapper.text()).toContain('/software_engineering')
     expect(wrapper.text().indexOf('Requirements are approved.')).toBeLessThan(wrapper.text().indexOf('Architecture may begin.'))
@@ -151,7 +163,7 @@ describe('AgentOrgExperience', () => {
 
       const detail = await mountExperience('org-detail', org.id)
       expect(detail.text()).toContain('返回智能体组织')
-      expect(detail.text()).toContain('协调员：Architecture Designer')
+      expect(detail.text()).toContain('协调员：architecture designer')
       expect(detail.text()).toContain('交接规则')
       expect(detail.text()).toContain('来源')
       expect(detail.text()).toContain('目标')

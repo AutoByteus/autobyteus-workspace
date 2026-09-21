@@ -37,7 +37,7 @@ vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: () => ({ query: mockQuery, mutate: mockMutate, cache: { updateQuery: vi.fn() } }),
 }))
 vi.mock('~/stores/windowNodeContextStore', () => ({
-  useWindowNodeContextStore: () => ({ waitForBoundBackendReady: vi.fn().mockResolvedValue(true) }),
+  useWindowNodeContextStore: () => ({ bindingRevision: 0, waitForBoundBackendReady: vi.fn().mockResolvedValue(true) }),
 }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentStore }))
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => teamStore }))
