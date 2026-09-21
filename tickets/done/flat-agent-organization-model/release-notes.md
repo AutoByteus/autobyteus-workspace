@@ -1,40 +1,26 @@
-# AORG-FLAT-TEAM-001 — personal integration notes
+## What's New
 
-Status: **complete and integrated into `personal`** after explicit user testing
-and acceptance. This is a repository integration and local verification build,
-not a public release.
+- Build Agent Orgs from standalone Agents and flat Agent Teams, including coordinator-free organizations, local Org-owned members, and shared reusable definitions.
+- Create, import, browse, run, stop, reopen, and continue Agent Org work from the normal catalog and workspace experience.
+- Configure stopped Agent Orgs and their members before continuing, while preserving conversation history, activity, tasks, files, and model settings.
 
-## Delivered cumulative capability
+## Improvements
 
-- Flat coordinator-led Teams and coordinator-free AgentOrg composition with
-  exact configured/task identities, Messages/Tasks, history, and retained
-  inspection.
-- Strict field-free definitions with authored `org_local`, exact owned authoring
-  and return navigation, plus separate runtime-tree versions/internal tags.
-- Observational history, deliberate configured continuation, retained Stop, and
-  scoped physical-read freshness across Org history/root/member acquisition.
-- Exact Org root and AgentRun attachment ownership, saved file facts, readable
-  catalog/member presentation, stopped-run configuration, and responsive
-  history loading/disclosure behavior from the cumulative follow-up line.
+- Agent Org catalogs now show readable Agent and Team names, optional avatars, accurate member icons, and usable details without requiring prior inspection.
+- History loads earlier during startup and uses a single accessible row target for mouse, keyboard, and disclosure interaction.
+- Stopping a run retains its Activity details and draft so completed work remains inspectable offline.
+- Flat Team packages tolerate omitted optional presentation metadata while still rejecting genuinely missing member references.
+- Org-owned Team-local Agents resolve correctly for direct and mounted execution.
 
-## Finalization
+## Fixes
 
-- Accepted feature tip `ad2115e4b9347764e0c09accf231ef0ec7d41af3`
-  merged into `personal` as `92b5d8c4bfb04d6d52944c3b3b107541fc652feb`.
-- Main worktree updated and AutoByteus `1.4.69` personal macOS arm64 Electron
-  DMG/ZIP rebuilt successfully.
-- Feature worktree and local/remote feature branches removed after verified push.
+- Legacy nested-Team migration now records per-run warnings without blocking application startup when an individual historical run cannot be converted safely.
+- Startup no longer repeatedly rebuilds Agent Org package readiness while loading workspace and organization history.
+- Stopped Org and Team configuration reads the latest canonical model settings before Save, copy, or continuation.
+- Org history disclosure, selection, Stop actions, sibling rows, and retained content no longer interfere with one another.
 
-## Historical evidence boundary
+## Compatibility Notes
 
-DR-010's API-REV-038 Fail/CRR-091 accepted-issue record remains historically
-accurate and is not relabeled as a clean API pass. The present completion is the
-user's acceptance of the later cumulative feature line plus successful personal
-integration/build. Consult the individual follow-up tickets and their API/review
-records for their exact evidence and residual limits.
-
-## Release boundary
-
-No version bump, release tag, public publication, notarization, installation,
-deployment, migration execution, backfill, or rollout was requested or performed.
-The local app is ad-hoc signed and intended for verification use.
+- Existing standalone Agent and flat Team histories remain available without destructive rewriting.
+- Invalid definitions with genuinely missing referenced members remain excluded rather than partially loaded.
+- Keep frontend and backend components on the same release version when using the new Agent Org execution and configuration behavior.
