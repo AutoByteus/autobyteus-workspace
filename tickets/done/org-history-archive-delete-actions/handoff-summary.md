@@ -1,78 +1,80 @@
-# Delivery Handoff Summary — DR-001
+# Delivery Handoff Summary — DR-003
 
-## Current result
+## Authoritative Result
 
-**Awaiting Explicit User Verification.** The Medium / High / Reviewed AgentOrg
-history Archive/Delete package is integrated against the latest tracked
-`origin/personal`, documented, independently validated, and freshly packaged as
-a local macOS arm64 Electron candidate.
+**Delivery Completed.** `ORG-HISTORY-ARCHIVE-DELETE-20260921-001` was explicitly
+user-tested, finalized to `personal`, released publicly as stable `v1.4.72`,
+verified across every tag-triggered workflow and applicable rollout, and safely
+cleaned up.
 
-## Cumulative authority
+## Cumulative Authority
 
-- Package: `ORG-HISTORY-ARCHIVE-DELETE-20260921-001`.
-- Requirements/design: approved `SR-001` / `SR-002`; `ARCH-REV-001` Pass.
-- Implementation: current `IR-002`.
-- Source review: `CRR-002` Pass, 9.5/10 (94.7/100), no open finding.
-- API/E2E: `API-REV-001` Pass at 97.4% validation confidence; broader validation
+- Classification / route: Medium / High / Reviewed.
+- Requirements/design: approved SR-001/SR-002; ARCH-REV-001 Pass.
+- Implementation: IR-002.
+- Source review: CRR-002 Pass, 9.5/10 (94.7/100), no open finding.
+- API/E2E: API-REV-001 Pass at 97.4% validation confidence; broader validation
   completed.
-- Proportional successful API-test review: `CRR-003` Not Applicable because
+- Proportional successful API-test review: CRR-003 Not Applicable because
   API/E2E changed no durable repository test file.
+- User verification: “its working. lets finalize and release a new version”.
 
 Validated behavior includes stopped top-level AgentOrg Archive and confirmed
 exact Delete, active/managed-root protection, canonical archive timestamps,
 localized English/Simplified Chinese confirmation, keyboard/cancel/pending
 behavior, determinate failure retention and deliberate retry, success-only
-row/context/topology/route cleanup, and exact preservation of siblings,
-definitions, workspaces, and providers.
+row/context/topology/route cleanup, and preservation of siblings, definitions,
+workspaces, and provider state.
 
-## Integration state
+## Repository Finalization
 
-- Finalization target: `origin/personal`.
-- Refreshed base:
-  `8db5101f413a88216b90d55ec563e3b5f80b1c9b`.
-- Reviewed package checkpoint:
-  `d27ad524591639219a9083813c2a21b7b19b5d4a`.
-- Base relation: `origin/personal` is the direct parent; zero newer base commits
-  existed, so integration was already current and no merge-triggered source
-  rerun was needed.
-- IR-002 source manifest: 26/26 exact at Delivery intake.
+- Accepted ticket commit:
+  `5d6031a6e6cab10691d8a29846e0530dde520a33`.
+- Finalization target at the post-verification refresh:
+  `origin/personal@8db5101f413a88216b90d55ec563e3b5f80b1c9b`.
+- Non-fast-forward merge:
+  `81039433fd3c208e4ed091a4b8966a8d8a0ac772`.
+- Release commit and current `origin/personal`:
+  `8af2ec935028f9fe7bc912b6bd2b9552c625c253`.
+- Archived ticket:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/org-history-archive-delete-actions`.
+- Dedicated ticket worktree and local/remote ticket branches: removed after
+  verified release completion.
 
-## Electron candidate
+## Stable Release v1.4.72
 
-Build command from `autobyteus-web`:
+- Public release:
+  https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.72
+- Annotated tag object:
+  `6459cb99b13494a5cd19190254bbfa3aaabec13f`.
+- Tag target:
+  `8af2ec935028f9fe7bc912b6bd2b9552c625c253`.
+- State: non-draft, non-prerelease, 21 nonempty assets.
+- Desktop: macOS arm64/x64, Windows x64, Linux arm64/x64 builds and publication
+  succeeded. Updater YAML reports 1.4.72 and its asset sizes match release data.
+- Android: APK and SHA-256 sidecar published successfully.
+- iOS: build/test/archive/upload to App Store Connect succeeded; Apple review or
+  storefront availability is not claimed.
+- Messaging Gateway: archive, metadata, checksum and release manifest published.
+- Docker: `autobyteus/autobyteus-server:1.4.72` and `:latest` share digest
+  `sha256:c5bbd4b3b1f0b85f8b08803bb0389a5360a51c81f1e272fc2c00658e466f06f9`
+  and expose active linux/amd64 and linux/arm64 images.
 
-```sh
-NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* \
-  DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
-```
+All five tag-triggered workflows completed successfully; no manual rerun or tag
+movement occurred. Exact URLs and asset evidence are in
+`delivery-evidence/dr-003/release-v1.4.72.md`.
 
-Result: Pass for AutoByteus Enterprise `1.4.71`, macOS arm64.
+## Preservation And Qualifications
 
-- DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.71.dmg`
-  - 467,950,864 bytes
-  - SHA-256 `644337aba1ab0f055a3a875d0db0bade97f73e9d891f5dbaf8375d8035b665b9`
-- ZIP:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.71.zip`
-  - 462,753,602 bytes
-  - SHA-256 `f53cdd3b28f0e748b84796cc57e1a5008c8d5e8bf8bf1b699538e10fcdb88559`
-- Unpacked app:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+Unrelated main-worktree content was archived before finalization, restored after
+release, and verified byte-exact. The archive is
+`/Users/normy/.codex/delivery-archives/ORG-HISTORY-ARCHIVE-DELETE-v1.4.72-20260921T143627Z/unrelated-main-worktree-state.tar.gz`
+with SHA-256
+`0665053561128eab0d95b9a895b857bf4a723eced8c92efebcd5444fb5b48de4`.
 
-DMG verification passed; ZIP testing reported no errors; the executable is
-Mach-O arm64. This local candidate is ad-hoc signed with no Team ID and is not
-notarized, published, installed, or released.
-
-## Verification hold and limits
-
-The user must test this current package and explicitly accept it before Delivery
-moves the ticket to `done`, pushes the task branch, merges `personal`, cleans the
-worktree/branches, or performs any release action.
-
-No Electron-shell feature behavior is claimed because no shell boundary changed.
-Catastrophic post-removal compensation uncertainty was not destructively induced
+No Electron-shell-specific feature claim is added because no shell boundary
+changed. Catastrophic post-removal compensation was not destructively induced
 live and remains covered by reviewed owner tests. Provider generation is
-intentionally not certified because Archive/Delete must not invoke providers and
-absence was proven. Existing direct server no-emit and standalone Nuxt typecheck
-tooling limitations remain qualified; production builds passed.
-
+intentionally not certified because the actions must not invoke providers and
+absence was proven. Existing direct server no-emit and standalone Nuxt
+standalone-typecheck tooling limits remain qualified; production builds passed.

@@ -1,67 +1,64 @@
-# Documentation Synchronization — DR-001
+# Documentation Synchronization — DR-003
 
 ## Scope
 
 - Ticket: `ORG-HISTORY-ARCHIVE-DELETE-20260921-001`.
-- Trigger: CRR-003 handoff after CRR-002 source Pass and API-REV-001 Pass.
-- Bootstrap base reference: `origin/personal` at
+- Classification and route: Medium / High / Reviewed.
+- Cumulative gates: approved SR-001/SR-002; ARCH-REV-001 Pass; IR-002;
+  CRR-002 source Pass at 9.5/10 (94.7/100); API-REV-001 Pass at 97.4%
+  validation confidence; CRR-003 proportional test review Not Applicable
+  because API/E2E changed no durable repository test file.
+- Initial integrated base: `origin/personal` at
   `8db5101f413a88216b90d55ec563e3b5f80b1c9b`.
-- Integrated base reference used for docs sync: the same refreshed
-  `origin/personal` revision; it was already the exact parent of checkpoint
-  `d27ad524591639219a9083813c2a21b7b19b5d4a`.
-- Post-integration verification reference: IR-002 manifest 26/26 exact and fresh
-  Electron build evidence in `delivery-evidence/dr-001/electron-build.md`.
+- Final merge: `81039433fd3c208e4ed091a4b8966a8d8a0ac772`.
+- Release state: `personal` and annotated tag `v1.4.72` resolve through release
+  commit `8af2ec935028f9fe7bc912b6bd2b9552c625c253`.
 
-## Why Docs Were Updated
+## Long-Lived Documentation Result
 
-- Summary: the feature introduces supported Archive and confirmed permanent
-  Delete commands for stopped top-level AgentOrg history roots, including
-  lifecycle admission, exact persistence ownership, client reconciliation, and
-  deliberate exclusions.
-- Why this belongs in long-lived docs: future server/web maintainers must not
-  treat AgentOrg history as read-only, bypass the manager transition lane, or
-  infer that Delete removes definitions/workspaces/sibling roots.
-
-## Long-Lived Docs Reviewed
-
-| Doc Path | Why It Was Reviewed | Result | Notes |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/agent_orgs.md` | Public AgentOrg lifecycle and GraphQL boundary | Updated | Documents stopped exact-root Archive/Delete, manager admission, catalog ownership, retained archive package, and non-target preservation. |
-| `autobyteus-server-ts/docs/modules/run_history.md` | Canonical stored-history behavior | Updated | Extends archive/delete semantics to AgentOrg tree/index packages and records direct-use/no-migration behavior. |
-| `autobyteus-web/docs/agent_orgs.md` | User-facing history controls and client reconciliation | Updated | Documents stopped-only actions, confirmation, pending/failure truth, exact route/context cleanup, and exclusions. |
-| `autobyteus-web/docs/agent_teams.md` | Team behavior is the comparator but not changed | No change | Existing Team Archive/Delete documentation remains accurate. |
-| `autobyteus-web/docs/electron_packaging.md` | Candidate package process | No change | Existing build instructions remain accurate; no shell contract changed. |
-
-## Docs Updated
-
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/agent_orgs.md` | Runtime/API | Added stored AgentOrg Archive/Delete commands and exact ownership/lifecycle boundaries. | Prevent unsafe out-of-lane destructive mutations and overbroad deletion assumptions. |
-| `autobyteus-server-ts/docs/modules/run_history.md` | Persistence | Added AgentOrg archive/delete tree/index/package semantics and no-migration boundary. | Preserve canonical history behavior and acceptable-loss rules. |
-| `autobyteus-web/docs/agent_orgs.md` | Product interaction | Added stopped-only controls, localized confirmation, success-only cleanup, failure retention, and exclusions. | Keep the supported UI and client-state contract explicit. |
-
-## Durable Design / Runtime Knowledge Promoted
-
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
-| --- | --- | --- | --- |
-| Lifecycle admission | Both destructive stored-history commands run inside the exact-root manager transition and reject managed roots without activation. | `design-spec.md`, `implementation-handoff.md`, API report | Server AgentOrg doc |
-| Persistence ownership | The AgentOrg history catalog alone owns tree/index/package mutation and bounded compensation. | Design and implementation handoff | Server AgentOrg/run-history docs |
-| Archive versus Delete | Archive retains the exact package; confirmed Delete removes only the exact stopped package/index row. | Requirements AC-002/AC-003 | Server and web AgentOrg docs |
-| Client reconciliation | Exact row/context/topology/selected route retire only after authoritative success; failure retains them. | Requirements REQ-006/007; API B04/B05 | Web AgentOrg doc |
-
-## Removed / Replaced Components Recorded
-
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| Doc Path | Result | Durable truth synchronized |
 | --- | --- | --- |
-| AgentOrg catalog delete pre-check outside the manager lane | Exact-root `withInactiveHistoryMutation` admission around catalog-owned mutation | Server AgentOrg doc |
-| Parallel nullable confirmation IDs | One subject-discriminated Agent/Team/AgentOrg delete target | Web AgentOrg doc and design spec |
+| `autobyteus-server-ts/docs/modules/agent_orgs.md` | Updated by IR-001/IR-002 and verified by Delivery | Stopped exact-root Archive/Delete, manager admission, catalog ownership, archive retention, and non-target preservation. |
+| `autobyteus-server-ts/docs/modules/run_history.md` | Updated by IR-001/IR-002 and verified by Delivery | AgentOrg tree/index/package archive/delete semantics and Directly Usable — No Migration behavior. |
+| `autobyteus-web/docs/agent_orgs.md` | Updated by IR-001/IR-002 and verified by Delivery | Stopped-only controls, localized confirmation, pending/failure truth, success-only exact cleanup, and explicit exclusions. |
+| `autobyteus-web/docs/agent_teams.md` | No change required | Existing Team Archive/Delete behavior remains the accurate comparator. |
+| `autobyteus-web/docs/electron_packaging.md` | No change required | The standard packaging/release process remained accurate; no shell contract changed. |
 
-## Delivery Continuation
+## Durable Knowledge Promoted
 
-- Result: Pass.
-- Next delivery action: offer the current Electron candidate for explicit user
-  verification; do not finalize or push before acceptance.
-- Notes: the documented residuals remain explicit: no changed Electron-shell
-  boundary, no provider-generation certification, and no live catastrophic
-  compensation destruction.
+- Archive and Delete operate only on stopped top-level AgentOrg history roots and
+  are admitted within the exact-root manager transition lane.
+- The history catalog owns tree/index/package mutation and bounded compensation.
+- Archive preserves the complete exact package; confirmed Delete permanently
+  removes only the selected exact package and index row.
+- Client row, context, topology and selected-route cleanup occurs only after
+  authoritative success; determinate failure retains them for deliberate retry.
+- Definitions, referenced Agents/Teams, workspaces, sibling histories and
+  provider state are outside deletion ownership.
+- Existing stored packages are directly usable; no migration is introduced.
 
+## Replaced Concepts
+
+| Previous concept | Current canonical behavior |
+| --- | --- |
+| AgentOrg history is effectively read-only | Stopped top-level roots expose Archive and confirmed Delete. |
+| Catalog delete pre-check outside the manager lane | Exact-root `withInactiveHistoryMutation` admission wraps catalog-owned mutation. |
+| Parallel nullable confirmation identifiers | One subject-discriminated Agent/Team/AgentOrg delete target. |
+
+## Delivery-Owned Documentation
+
+- `delivery-revision-record.md`: DR-001 candidate baseline, DR-002 finalization,
+  DR-003 release completion.
+- `handoff-summary.md`: final cumulative delivery receipt.
+- `release-deployment-report.md`: repository, release, rollout, cleanup and
+  rollback evidence.
+- `release-notes.md`: curated end-user release notes used by the release helper.
+- `delivery-evidence/dr-001/electron-build.md`: user-tested local candidate.
+- `delivery-evidence/dr-002/finalization.md`: target integration and preservation.
+- `delivery-evidence/dr-003/release-v1.4.72.md`: public release verification.
+
+## Result
+
+**Pass / Complete.** The final integrated and released state is represented in
+canonical project docs and the ticket-local delivery records. No documentation
+blocker remains.
