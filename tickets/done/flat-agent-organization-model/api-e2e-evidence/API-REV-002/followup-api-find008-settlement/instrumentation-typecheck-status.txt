@@ -1,4 +1,0 @@
-Command: pnpm exec tsc --noEmit -p tsconfig.build.json
-Working directory: /tmp/aorg-api-find008-settlement-probe/autobyteus-server-ts
-Exit code: 0
-Output: none (successful no-emit typecheck)

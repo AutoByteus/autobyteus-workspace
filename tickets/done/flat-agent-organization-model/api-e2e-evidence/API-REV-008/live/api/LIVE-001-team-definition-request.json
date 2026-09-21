@@ -1,1 +1,0 @@
-{"query":"query TeamDefinition { agentTeamDefinitions { id name description category instructions coordinatorMemberName nodes { memberName ref refScope } handoffs { from to rules } } }"}

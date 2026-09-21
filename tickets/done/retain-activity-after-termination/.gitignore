@@ -1,0 +1,2 @@
+# Raw runtime snapshots are preserved outside Git; keep compact proofs/reports tracked.
+/validation/api-runtime/final-memory/

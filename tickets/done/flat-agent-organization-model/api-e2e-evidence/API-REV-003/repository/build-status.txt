@@ -1,2 +1,0 @@
-server_build=0
-web_build=0

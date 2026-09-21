@@ -1,3 +1,0 @@
-query WrongOrg($orgRunId:String!,$memberAddress:String!,$agentRunId:String!){
- getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$memberAddress,agentRunId:$agentRunId){agentRunId memberAddress}
-}
