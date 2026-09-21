@@ -11,16 +11,17 @@ independently launchable and keep their own coordinator and Team-local handoffs.
 
 `AgentOrgExperience.vue` provides list, detail, create, and edit views.
 
-- Catalog member chips read the exact definition name for both shared and
-  Org-owned Agents/Teams. While a reference is pending or unavailable, they show
-  the readable Org member role (or localized type), never its internal ID.
-  Reload refreshes referenced names even when the Org revision has not changed.
-  These immediate reads do not traverse Team children, populate public catalogs,
-  activate runtimes, or replace full detail/launch validation.
+- Catalog member chips use the readable Org-local `memberName` role (or localized
+  type fallback) as their only label source. They do not read referenced Agent or
+  Team definitions, and Reload updates a role label only when the refreshed Org
+  membership changes.
 - Member selection has separate Agent and Team tabs.
 - A referenced Team remains a reference to the admitted Team definition; the Org
   editor does not copy or mutate it.
-- Detail shows direct Agents and mounted Teams, including each Team coordinator.
+- Detail uses the same Org-local roles for direct Agents and mounted Teams. When
+  mounted Team topology is present, one admitted Org endpoint-catalog read supplies
+  Team-local coordinator and nested endpoint roles. Loading or failure of that
+  secondary topology never changes a direct member label or exposes a definition ID.
 - Org-owned handoffs use explicit **From**, **To**, and ordered **When**
   conditions.
 - Handoff sources are exact Agents. Destinations may be an Agent or a mounted
@@ -81,8 +82,9 @@ does not guarantee that affected history can subsequently launch or restore.
 ### Exact Owned References
 
 Authored Org-local references use `org_local`; GraphQL/internal ownership tags
-keep their separate existing vocabulary. Cold Org detail/Edit resolves exact
-owned Team and Agent references independently of shared-catalog eligibility.
+keep their separate existing vocabulary. Cold Org Edit, enclosing Org launch,
+and Org-return Team detail resolve exact owned Team and Agent references
+independently of shared-catalog eligibility.
 Saving waits for complete, identity-correlated references and preserves ordered
 handoffs, member values, optional-field omission and expected revision. Exact
 owned reads stay fresh without inserting owned Agents into the shared catalog.
@@ -533,7 +535,7 @@ unchanged. Root observation and member readiness remain separate responsibilitie
 snapshot. A `null` result is a catalog miss, not proof that a definition is absent
 from storage. These getters do not query or add owned definitions to the catalog.
 
-Org detail/editor, Org-owned Team detail and enclosing Org launch use
+Org editor, Org-owned Team detail and enclosing Org launch use
 `loadAgentOrgDefinitionReferences` for exact, scope/owner-validated references.
 Its required `AgentOrgReferenceCatalogLookup` callbacks,
 `getCatalogAgentById` and `getCatalogTeamById`, supply only eligible catalog
@@ -542,3 +544,9 @@ local to its view and does not change shared/application catalog membership.
 Reading a definition does not grant shared visibility, independent mutation or
 new standalone run permissions. This boundary does not change the existing
 independent Run/Edit policy for owned Teams.
+
+Read-only Org detail does not use the full definition graph for labels. Direct
+rows retain their owning membership objects, while mounted Team coordinator and
+handoff roles come from `agentOrgEndpointCatalog(id)`. Agent and Team catalogs
+are loaded by the Agent Org experience only for create/edit selection and full
+draft validation, not for list/detail browsing.

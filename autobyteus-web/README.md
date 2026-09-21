@@ -538,6 +538,27 @@ For either probe, use `--port <port>` to pin the port. If automatic browser disc
 Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Agent Org Role-Label Browser Probe
+
+The Agent Org list/detail role-label regression has a self-starting full-stack
+probe. It writes current-format Agent, Team, Team-local Agent, and Org packages
+only under a temporary data root; starts an owned built backend and Nuxt server;
+and runs Chromium against the real GraphQL boundary. It verifies stable visible
+and accessible Org roles, zero exact-reference reads while browsing, aggregate
+Team-role topology, ID-free transport/incomplete failure handling, stale-detail
+retirement, preserved definition-name authoring selectors, unchanged fixture
+bytes, and owned cleanup:
+
+```bash
+pnpm test:e2e:agent-org-role-labels -- --output-dir test-results/agent-org-role-labels
+```
+
+Use `--scenario list|detail|failure|lifecycle` for one independently meaningful
+case. After the backend has already been built in the current worktree,
+`--skip-server-build` avoids rebuilding it. If automatic browser discovery does
+not find Chrome/Chromium, pass `--browser-executable <path>` or set
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:
@@ -558,6 +579,7 @@ pnpm codegen
 - `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
 - `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
 - `pnpm test:e2e:task-agent-monitor-visibility`: Run the self-starting exact task hydration and settlement-fallback browser probe
+- `pnpm test:e2e:agent-org-role-labels`: Run the self-starting real-backend Agent Org role-label probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

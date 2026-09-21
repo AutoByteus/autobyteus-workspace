@@ -30,6 +30,8 @@ const messages = {
   'agentOrgs.experience.detail.members': 'Members',
   'agentOrgs.experience.detail.agentsCount': 'Agents ({{count}})',
   'agentOrgs.experience.detail.teamsCount': 'Teams ({{count}})',
+  'agentOrgs.experience.detail.topologyLoading': 'Loading Team roles…',
+  'agentOrgs.experience.detail.topologyUnavailable': 'Team role details are unavailable for this organization.',
   'agentOrgs.experience.form.editTitle': 'Edit {{name}}',
   'agentOrgs.experience.form.description': 'Add Agents and Teams, then configure handoffs.',
   'agentOrgs.experience.form.basics': 'Basics',

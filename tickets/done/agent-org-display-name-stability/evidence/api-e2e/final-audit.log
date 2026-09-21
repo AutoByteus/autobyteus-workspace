@@ -1,0 +1,36 @@
+## probe syntax
+## package manifest
+node tests/e2e/agent-org-role-labels-probe.mjs
+## diff check
+## successful built server evidence
+
+
+> autobyteus-server-ts@0.1.1 build /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+## status before generated-output cleanup
+ M autobyteus-web/README.md
+ M autobyteus-web/package.json
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs
+?? tickets/in-progress/agent-org-display-name-stability/api-e2e-coverage-investigation.md
+?? tickets/in-progress/agent-org-display-name-stability/api-e2e-test-case-ledger.md
+?? tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/
+## status after generated-output cleanup
+ M autobyteus-web/README.md
+ M autobyteus-web/package.json
+?? autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs
+?? tickets/in-progress/agent-org-display-name-stability/api-e2e-coverage-investigation.md
+?? tickets/in-progress/agent-org-display-name-stability/api-e2e-test-case-ledger.md
+?? tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/
+## final diff check
+## implementation HEAD
+0944fe664bd05cde0d9f2b36f9066708ca064f1f

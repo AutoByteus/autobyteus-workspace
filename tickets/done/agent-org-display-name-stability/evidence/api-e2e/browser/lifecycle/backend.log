@@ -1,0 +1,234 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts
+App data directory: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/.env
+Loading environment from: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:41103
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:41103
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data
+DB DIRECTORY: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "agent-org-role-labels.db" at "file:/tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/db/agent-org-role-labels.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:28249) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T16:19:25.577Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-agent-org-role-labels-rlKoOJ/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 4 items.
+Populating agent definition cache for the first time...
+[2026-09-21T16:19:25.783Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T16:19:25.788Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 4 items.
+{"level":30,"time":1790007565795,"pid":28249,"hostname":"78e6239f4e66","msg":"Server listening at http://127.0.0.1:33103"}
+{"level":30,"time":1790007565831,"pid":28249,"hostname":"78e6239f4e66","msg":"Server listening at http://127.0.0.1:41103"}
+[2026-09-21T16:19:25.831Z] [INFO] [server.runtime] Server listening on 127.0.0.1:41103
+[2026-09-21T16:19:25.833Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:41103
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-09-21T16:19:39.604Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-21T16:19:39.754Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts
+App data directory: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/.env
+Loading environment from: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:44847
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:44847
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data
+DB DIRECTORY: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "agent-org-role-labels.db" at "file:/tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/db/agent-org-role-labels.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:28777) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T16:20:14.750Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-agent-org-role-labels-pnVpWc/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 4 items.
+Populating agent definition cache for the first time...
+[2026-09-21T16:20:14.930Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T16:20:14.932Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 4 items.
+{"level":30,"time":1790007614940,"pid":28777,"hostname":"78e6239f4e66","msg":"Server listening at http://127.0.0.1:36989"}
+{"level":30,"time":1790007614976,"pid":28777,"hostname":"78e6239f4e66","msg":"Server listening at http://127.0.0.1:44847"}
+[2026-09-21T16:20:14.976Z] [INFO] [server.runtime] Server listening on 127.0.0.1:44847
+[2026-09-21T16:20:14.978Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:44847
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-09-21T16:20:28.404Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-21T16:20:28.628Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,0 +1,29 @@
+# Requirements Approval Request — Agent Org Display-Name Stability
+
+- Package: `AGENT-ORG-DISPLAY-NAME-STABILITY-20260921-001`
+- Current solution revision: `SR-005`; approved requirements baseline: `SR-004`
+- Status: `Approved`
+- Result classification: Historical approval record; architecture result is recorded separately
+- Original request: Bootstrap one ticket from current `personal`, determine why Agent Org list/detail member names visibly change after navigation, and design a correct fix.
+- Current goal: Obtain explicit approval that local role/member names are the authoritative Agent Org browsing labels, then produce the architecture design and task-size/risk classification.
+- Workspace: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability`
+- Branch/base/target: `requirements/agent-org-display-name-stability` from fresh `origin/personal@8af2ec935028f9fe7bc912b6bd2b9552c625c253`; target `origin/personal`.
+- Root cause: This is not CSS uppercasing. List cards first humanize Org `memberName`, then replace it with exact referenced definition names after per-member queries. Detail reduces membership to refs, so opaque IDs can appear until full reference data replaces them.
+- User's revised direction: Agent Orgs already define local member roles. List and detail should display those role/member names, like the Team list, rather than referenced Agent/Team definition names or temporary internal IDs.
+- Proposed intended behavior: Direct Agent Org chips and detail rows always derive their label from the owning Org member's `memberName`, humanized by replacing `_`/`-` separators with spaces without forced title/uppercase transformation. Team coordinator or nested Team endpoint labels, when shown, use Team-local `memberName`/`coordinatorMemberName`. Reference completion, failure, Reload, and context changes never rename those labels.
+- Request/API implication: The existing Agent Org response already includes `memberName`, so no backend display-name enrichment is required. The list performs zero per-member Agent/Team queries for labels. Detail may retain reference reads only for evidenced non-label topology, validation, handoff, edit, navigation, or launch needs; they cannot control member labels or expose refs as names.
+- Preserved behavior: Stable IDs for navigation/actions, exact owner/scope validation, Team topology safeguards, authoring selectors using definition names, handoffs, list/search/actions, member order/type, launch readiness, stale-result rejection, package bytes, and read-only browsing.
+- Scope: Frontend list/detail label source, role formatting, display-only request removal, safe narrowing of reference-service consumers, tests, and documentation. No API enrichment, persistence/migration change, identity/address change, broad layout redesign, global cache, catalog insertion, or runtime activation.
+- Approval received: The user's 2026-09-21 message explicitly approved using `memberName` like the Agent Team list/detail and removing redundant asynchronous name lookups. This approves SR-004, including readable humanized roles and retaining only evidenced non-label structural reads.
+- Supported scenarios: `SCN-001` Agent Org catalog navigation; `SCN-002` Agent Org detail navigation; `SCN-003` reference settlement/failure, Reload, route change, and backend-binding lifecycle.
+- Open risks and evidence uncertainty: `ASM-001` (the reported long detail value is source-inferred to be a member/coordinator ref fallback because no detail screenshot was supplied); `ASM-002` (humanized rather than raw snake-case role rendering); `UNK-001` (remaining full-reference consumers); `RSK-001` (do not remove structural validation); `RSK-002` (detail view models must retain membership context); `RSK-003` (authoring selectors retain definition identity names).
+- Expected output after approval: Completed in `design-spec.md` under SR-005; classified `Medium` / `Low`.
+- Canonical artifacts:
+  - `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/requirements-doc.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/investigation-notes.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/solution-revision-record.md`
+- Current-state evidence:
+  - `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/evidence/agent-org-list-provisional-labels.png`
+  - `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/evidence/agent-org-list-canonical-labels.png`
+- Blocker / next action: None for requirements. See `architecture-handoff.md` for the implementation-ready result.
+- Handoff-rule evaluation: At the SR-004 approval-hold stage, no rule matched and no downstream message was sent. SR-005 architecture routing is recorded in `architecture-handoff.md`.

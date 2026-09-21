@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-09-21T17:40:30.360Z",
+  "scenario": "failure",
+  "platform": "linux-arm64",
+  "node": "v22.23.2",
+  "browserExecutable": "/usr/bin/chromium",
+  "workspaceDir": "/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability",
+  "operations": [],
+  "browserEvents": [],
+  "scenarios": {},
+  "fixture": {
+    "beforeHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "cfb193a843cc5d67a0d13d07a16e8fd1cfab2ff3b5e17e68770e9385c79c132b",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/team-config.json": "dc4cb227f571aaf65878eb634a9ec116d8d8ddc634d481ccf7b5f38a42c12dbc",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "45db6b591e33ccccf522e26c4b0136abff17cf8ac3593bc4e131040f6a57a2d1",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "e9412ab4e06d72da5bcf4976bcae7a4e623087b27e70f642ad0f1119c345cb78",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    },
+    "definitionFileCount": 16
+  },
+  "cleanup": {
+    "frontend": {
+      "status": "not-started"
+    },
+    "backend": {
+      "status": "terminated",
+      "pid": 36646,
+      "exitCode": 1,
+      "signalCode": null
+    },
+    "ownedRoot": {
+      "status": "removed",
+      "path": "/tmp/autobyteus-agent-org-role-labels-4Mf1Io"
+    }
+  },
+  "failures": [
+    {
+      "message": "Timed out waiting for backend health: backend exited 1/null",
+      "stack": "Error: Timed out waiting for backend health: backend exited 1/null\n    at waitFor (file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:111:9)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:639:3"
+    }
+  ],
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:37883",
+    "frontendUrl": "http://127.0.0.1:36779"
+  },
+  "completedAt": "2026-09-21T17:42:31.444Z",
+  "result": "Fail"
+}

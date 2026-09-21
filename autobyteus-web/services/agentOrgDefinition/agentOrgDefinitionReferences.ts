@@ -61,24 +61,6 @@ const createReferenceReader = (result: AgentOrgDefinitionReferences, catalogLook
   return read
 }
 
-// Immediate definitions for catalog labels, not full-graph validity or launch readiness.
-export async function loadAgentOrgMemberReferences(
-  orgId: string, members: readonly AgentOrgMember[],
-): Promise<AgentOrgDefinitionReferences> {
-  const result: AgentOrgDefinitionReferences = { agents: {}, teams: {}, unavailable: [] }
-  const read = createReferenceReader(result, { getCatalogAgentById: () => null, getCatalogTeamById: () => null })
-  await Promise.all(members.map(async member => {
-    if (member.refType === 'AGENT') {
-      const agent = await read(member.ref, member.refScope, orgId, 'agent')
-      if (agent) result.agents[member.ref] = agent
-    } else {
-      const team = await read<TeamSummary & Ownership>(member.ref, member.refScope, orgId, 'team')
-      if (team) result.teams[member.ref] = team
-    }
-  }))
-  return result
-}
-
 // A complete selected-Org graph for detail/authoring/launch, not catalog insertion.
 export async function loadAgentOrgDefinitionReferences(
   orgId: string, members: readonly AgentOrgMember[], catalogLookup: AgentOrgReferenceCatalogLookup,

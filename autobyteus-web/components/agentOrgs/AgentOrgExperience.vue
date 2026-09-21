@@ -1,8 +1,10 @@
 <template>
   <div class="h-full overflow-auto bg-slate-50" data-test="agent-org-experience">
     <div :key="`${view}:${selectedOrg.id}`" class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
-      <p v-if="referencesLoading && view !== 'org-list'" class="mb-4 text-sm text-slate-600" role="status">{{ t('agentOrgs.experience.form.referencesLoading') }}</p>
-      <p v-if="references.unavailable.length" class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">{{ t('agentOrgs.experience.form.referencesUnavailable', { refs: references.unavailable.join(', ') }) }}</p>
+      <p v-if="view === 'org-detail' && detailTopologyLoading" class="mb-4 text-sm text-slate-600" role="status">{{ t('agentOrgs.experience.detail.topologyLoading') }}</p>
+      <p v-if="view === 'org-detail' && detailTopologyUnavailable" class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">{{ t('agentOrgs.experience.detail.topologyUnavailable') }}</p>
+      <p v-if="isAuthoringView && referencesLoading" class="mb-4 text-sm text-slate-600" role="status">{{ t('agentOrgs.experience.form.referencesLoading') }}</p>
+      <p v-if="isAuthoringView && references.unavailable.length" class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">{{ t('agentOrgs.experience.form.referencesUnavailable', { refs: references.unavailable.join(', ') }) }}</p>
       <template v-if="view === 'org-list'">
         <header class="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
           <h1 class="sr-only">{{ t('agentOrgs.experience.catalog.title') }}</h1>
@@ -45,7 +47,7 @@
                   </div>
                 </div>
 
-                <AgentOrgCatalogMemberChips :org="org" :refresh-key="catalogRefreshKey" />
+                <AgentOrgCatalogMemberChips :org="org" />
 
               </article>
             </div>
@@ -83,17 +85,17 @@
             <div class="border-b border-slate-200 px-5 py-4"><h2 class="text-xl font-semibold text-slate-900">{{ t('agentOrgs.experience.detail.members') }}</h2></div>
             <div class="grid divide-y divide-slate-100 lg:grid-cols-2 lg:divide-x lg:divide-y-0">
               <div class="p-5">
-                <div class="mb-4 flex items-center gap-2"><Icon icon="heroicons:user-20-solid" class="h-5 w-5 text-slate-500" /><h3 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.detail.agentsCount', { count: directAgents.length }) }}</h3></div>
-                <ul class="space-y-3"><li v-for="agent in directAgents" :key="agent.id" class="flex items-center gap-3 rounded-lg border border-slate-200 p-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">{{ agent.initials }}</span><p class="min-w-0 truncate text-sm font-semibold text-slate-900">{{ agent.name }}</p></li></ul>
+                <div class="mb-4 flex items-center gap-2"><Icon icon="heroicons:user-20-solid" class="h-5 w-5 text-slate-500" /><h3 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.detail.agentsCount', { count: directAgentMembers.length }) }}</h3></div>
+                <ul class="space-y-3"><li v-for="agent in directAgentMembers" :key="agent.key" class="flex items-center gap-3 rounded-lg border border-slate-200 p-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">{{ agent.initials }}</span><p class="min-w-0 truncate text-sm font-semibold text-slate-900">{{ agent.label }}</p></li></ul>
               </div>
               <div class="p-5">
-                <div class="mb-4 flex items-center gap-2"><Icon icon="heroicons:user-group-20-solid" class="h-5 w-5 text-blue-600" /><h3 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.detail.teamsCount', { count: referencedTeams.length }) }}</h3></div>
-                <ul class="space-y-3"><li v-for="team in referencedTeams" :key="team.id" class="rounded-lg border border-blue-200 bg-blue-50/50 p-3"><div class="flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-blue-700"><Icon icon="heroicons:user-group-20-solid" class="h-5 w-5" /></span><div class="min-w-0 flex-1"><p class="truncate text-sm font-semibold text-slate-900">{{ team.name }}</p><p class="truncate text-xs text-slate-500">{{ t('agentOrgs.experience.member.coordinator', { name: agentById(team.coordinatorId).name }) }}</p></div><button type="button" class="text-xs font-semibold text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="openTeam(team.id)">{{ t('agentOrgs.experience.actions.view') }}</button></div></li></ul>
+                <div class="mb-4 flex items-center gap-2"><Icon icon="heroicons:user-group-20-solid" class="h-5 w-5 text-blue-600" /><h3 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.detail.teamsCount', { count: orgTeamMembers.length }) }}</h3></div>
+                <ul class="space-y-3"><li v-for="team in orgTeamMembers" :key="team.key" class="rounded-lg border border-blue-200 bg-blue-50/50 p-3"><div class="flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-blue-700"><Icon icon="heroicons:user-group-20-solid" class="h-5 w-5" /></span><div class="min-w-0 flex-1"><p class="truncate text-sm font-semibold text-slate-900">{{ team.label }}</p><p v-if="team.coordinatorLabel" class="truncate text-xs text-slate-500">{{ t('agentOrgs.experience.member.coordinator', { name: team.coordinatorLabel }) }}</p></div><button type="button" class="text-xs font-semibold text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="openTeam(team.ref)">{{ t('agentOrgs.experience.actions.view') }}</button></div></li></ul>
               </div>
             </div>
           </section>
 
-          <div v-show="!referencesLoading"><HandoffManager :model-value="detailOrgHandoffs" :from-options="detailOrgHandoffOptions.from" :to-options="detailOrgHandoffOptions.to" mode="view" scope="org" /></div>
+          <div v-show="!detailTopologyLoading && !detailTopologyUnavailable"><HandoffManager :model-value="detailOrgHandoffs" :from-options="detailOrgHandoffOptions.from" :to-options="detailOrgHandoffOptions.to" mode="view" scope="org" /></div>
         </div>
       </template>
 
@@ -171,9 +173,16 @@ import { useRoute, useRouter } from 'vue-router'
 import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.vue'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
+import {
+  loadAgentOrgEndpointCatalog,
+  type AgentOrgEndpointCatalog,
+  type AgentOrgEndpointCatalogItem,
+} from '~/services/agentOrgDefinition/agentOrgEndpointCatalog'
 import { useLocalization } from '~/composables/useLocalization'
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { formatMemberRoleLabel } from '~/utils/collaboration/memberRoleLabel'
 import {
   useAgentOrgDefinitionStore,
   type AgentOrgDefinition,
@@ -198,9 +207,9 @@ const { t } = useLocalization()
 const orgStore = useAgentOrgDefinitionStore()
 const agentStore = useAgentDefinitionStore()
 const teamStore = useAgentTeamDefinitionStore()
+const windowContext = useWindowNodeContextStore()
 const search = ref('')
 const reloading = ref(false)
-const catalogRefreshKey = ref(0)
 const saved = ref(false)
 const saveError = ref('')
 const saving = ref(false)
@@ -223,6 +232,9 @@ const formMembers = ref<AgentOrgMember[]>([])
 const formOrgHandoffs = ref<EditableHandoff[]>([])
 const references = ref<AgentOrgDefinitionReferences>({ agents: {}, teams: {}, unavailable: [] })
 const referencesLoading = ref(false)
+const detailTopology = ref<AgentOrgEndpointCatalog>({ from: [], to: [] })
+const detailTopologyLoading = ref(false)
+const detailTopologyUnavailable = ref(false)
 
 const emptyOrg: AgentOrgDefinition = {
   id: '', name: '', description: '', instructions: '', revision: '', members: [], handoffs: [],
@@ -231,8 +243,11 @@ const view = computed<OrgView>(() => {
   const candidate = String(route.query.view || 'org-list') as OrgView
   return ['org-list', 'org-detail', 'org-create', 'org-edit'].includes(candidate) ? candidate : 'org-list'
 })
+const isAuthoringView = computed(() => view.value === 'org-create' || view.value === 'org-edit')
 const selectedOrg = computed(() => orgStore.byId(String(route.query.id || '')) ?? emptyOrg)
 const orgInitials = (name: string): string => name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() || '').join('') || 'AO'
+const memberRoleLabel = (member: AgentOrgMember): string => formatMemberRoleLabel(member.memberName)
+  || t(member.refType === 'AGENT_TEAM' ? 'agentOrgs.experience.member.teamFallback' : 'agentOrgs.experience.member.agentFallback')
 const toAgentView = (definition: Pick<AgentDefinition, 'id' | 'name' | 'description'> | null | undefined, fallbackId: string): AgentView => {
   const name = definition?.name || fallbackId
   return { id: definition?.id || fallbackId, name, description: definition?.description || '', initials: orgInitials(name) }
@@ -253,8 +268,21 @@ const catalogSections = computed(() => {
   if (search.value.trim()) return filteredOrgs.value.length ? [{ id: 'search', title: '', orgs: filteredOrgs.value }] : []
   return catalogOrgs.value.length ? [{ id: 'featured', title: t('agentOrgs.experience.catalog.featured'), orgs: catalogOrgs.value }] : []
 })
-const directAgents = computed(() => selectedOrg.value.members.filter((member) => member.refType === 'AGENT').map((member) => agentById(member.ref)))
-const referencedTeams = computed(() => selectedOrg.value.members.filter((member) => member.refType === 'AGENT_TEAM').map((member) => teamById(member.ref)))
+const directAgentMembers = computed(() => selectedOrg.value.members.filter((member) => member.refType === 'AGENT').map((member) => {
+  const label = memberRoleLabel(member)
+  return { key: `${member.memberName}:${member.ref}`, ref: member.ref, label, initials: orgInitials(label) }
+}))
+const orgTeamMembers = computed(() => selectedOrg.value.members.filter((member) => member.refType === 'AGENT_TEAM').map((member) => {
+  const address = `/${member.memberName}`
+  const endpoint = detailTopology.value.to.find((item) => item.kind === 'agent_team'
+    && item.address === address && item.definitionId === member.ref)
+  return {
+    key: `${member.memberName}:${member.ref}`,
+    ref: member.ref,
+    label: memberRoleLabel(member),
+    coordinatorLabel: endpoint?.coordinatorMemberName ? formatMemberRoleLabel(endpoint.coordinatorMemberName) : '',
+  }
+}))
 const availableAgents = computed(() => agentStore.sharedAgentDefinitions.map((agent) => toAgentView(agent, agent.id)))
 const availableTeams = computed(() => teamStore.sharedAgentTeamDefinitions.map((team) => teamById(team.id)))
 const formAgentIds = computed(() => formMembers.value.filter((member) => member.refType === 'AGENT').map((member) => member.ref))
@@ -269,7 +297,7 @@ const uniqueMemberName = (raw: string): string => {
   for (let suffix = 2; formMembers.value.some((member) => member.memberName.toLowerCase() === candidate.toLowerCase()); suffix += 1) candidate = `${stem}_${suffix}`
   return candidate
 }
-const buildHandoffOptions = (members: readonly AgentOrgMember[]) => {
+const buildFormHandoffOptions = (members: readonly AgentOrgMember[]) => {
   const from: HandoffEndpointOption[] = []
   const to: HandoffEndpointOption[] = []
   for (const member of members) {
@@ -289,9 +317,58 @@ const buildHandoffOptions = (members: readonly AgentOrgMember[]) => {
   }
   return { from, to }
 }
-const detailOrgHandoffOptions = computed(() => buildHandoffOptions(selectedOrg.value.members))
+const directRoleHandoffOptions = (members: readonly AgentOrgMember[]) => {
+  const options = members.filter((member) => member.refType === 'AGENT').map((member): HandoffEndpointOption => ({
+    id: member.memberName, kind: 'agent', label: memberRoleLabel(member), address: `/${member.memberName}`,
+    group: t('agentOrgs.experience.form.directAgentsGroup'),
+  }))
+  return { from: options, to: options }
+}
+const toDetailEndpointOption = (
+  endpoint: AgentOrgEndpointCatalogItem, members: readonly AgentOrgMember[],
+): HandoffEndpointOption | null => {
+  const directMember = members.find((member) => `/${member.memberName}` === endpoint.address)
+  if (directMember) {
+    const expectedKind = directMember.refType === 'AGENT' ? 'agent' : 'agent_team'
+    if (endpoint.kind !== expectedKind || endpoint.definitionId !== directMember.ref) return null
+    return {
+      id: endpoint.address, kind: endpoint.kind === 'agent_team' ? 'team' : 'agent', label: memberRoleLabel(directMember),
+      address: endpoint.address, group: t(endpoint.kind === 'agent_team' ? 'agentOrgs.experience.form.teamsGroup' : 'agentOrgs.experience.form.directAgentsGroup'),
+      ...(endpoint.coordinatorAddress ? { coordinatorAddress: endpoint.coordinatorAddress } : {}),
+    }
+  }
+  const teamMember = members.find((member) => member.refType === 'AGENT_TEAM'
+    && endpoint.address.startsWith(`/${member.memberName}/`))
+  if (!teamMember || endpoint.kind !== 'agent') return null
+  const teamLabel = memberRoleLabel(teamMember)
+  const nestedLabel = formatMemberRoleLabel(endpoint.memberName) || t('agentOrgs.experience.member.agentFallback')
+  return {
+    id: endpoint.address, kind: 'agent', label: `${teamLabel} / ${nestedLabel}`, address: endpoint.address,
+    group: t('agentOrgs.experience.form.teamGroup', { name: teamLabel }),
+  }
+}
+const endpointCatalogCoversDetail = (catalog: AgentOrgEndpointCatalog, members: readonly AgentOrgMember[]): boolean => members.every((member) => {
+  const address = `/${member.memberName}`
+  const kind = member.refType === 'AGENT' ? 'agent' : 'agent_team'
+  const destinations = catalog.to.filter((item) => item.address === address && item.kind === kind && item.definitionId === member.ref)
+  if (destinations.length !== 1) return false
+  if (member.refType === 'AGENT') return catalog.from.some((item) => item.address === address && item.kind === 'agent' && item.definitionId === member.ref)
+  const coordinatorAddress = destinations[0]?.coordinatorAddress
+  return Boolean(coordinatorAddress
+    && catalog.from.some((item) => item.kind === 'agent' && item.address === coordinatorAddress)
+    && catalog.to.some((item) => item.kind === 'agent' && item.address === coordinatorAddress))
+})
+const detailOrgHandoffOptions = computed(() => {
+  const members = selectedOrg.value.members
+  if (!members.some((member) => member.refType === 'AGENT_TEAM')) return directRoleHandoffOptions(members)
+  const map = (endpoint: AgentOrgEndpointCatalogItem) => toDetailEndpointOption(endpoint, members)
+  return {
+    from: detailTopology.value.from.map(map).filter((option): option is HandoffEndpointOption => Boolean(option)),
+    to: detailTopology.value.to.map(map).filter((option): option is HandoffEndpointOption => Boolean(option)),
+  }
+})
 const detailOrgHandoffs = computed(() => toEditableHandoffs(selectedOrg.value.handoffs))
-const formOrgHandoffOptions = computed(() => buildHandoffOptions(formMembers.value))
+const formOrgHandoffOptions = computed(() => buildFormHandoffOptions(formMembers.value))
 
 const hydrateForm = (): void => {
   const org = selectedOrg.value
@@ -306,19 +383,49 @@ const hydrateForm = (): void => {
   saved.value = false; saveError.value = ''; memberPickerOpen.value = false; memberPickerTab.value = 'agents'; memberSearch.value = ''
 }
 watch([view, () => route.query.id, () => selectedOrg.value.id], hydrateForm, { immediate: true })
-const referencedMembers = computed(() => view.value === 'org-list' ? []
-  : view.value === 'org-detail' ? selectedOrg.value.members : formMembers.value)
-watch(() => JSON.stringify([selectedOrg.value.id, selectedOrg.value.revision, referencedMembers.value]), async (_, __, onCleanup) => {
+watch(() => JSON.stringify([
+  view.value, selectedOrg.value.id, selectedOrg.value.revision, formMembers.value, windowContext.bindingRevision,
+]), async (_, __, onCleanup) => {
   let current = true
   onCleanup(() => { current = false })
-  referencesLoading.value = true
   references.value = { agents: {}, teams: {}, unavailable: [] }
-  const resolved = await loadAgentOrgDefinitionReferences(selectedOrg.value.id, referencedMembers.value, {
+  referencesLoading.value = false
+  if (!isAuthoringView.value) return
+  referencesLoading.value = true
+  const resolved = await loadAgentOrgDefinitionReferences(selectedOrg.value.id, formMembers.value, {
     getCatalogAgentById: agentStore.getAgentDefinitionById, getCatalogTeamById: teamStore.getCatalogAgentTeamDefinitionById,
   })
   if (!current) return
   references.value = resolved
   referencesLoading.value = false
+}, { immediate: true })
+watch(() => JSON.stringify([
+  view.value, selectedOrg.value.id, selectedOrg.value.revision, windowContext.bindingRevision,
+  selectedOrg.value.members.filter((member) => member.refType === 'AGENT_TEAM')
+    .map(({ memberName, ref, refScope }) => [memberName, ref, refScope]),
+]), async (_, __, onCleanup) => {
+  let current = true
+  onCleanup(() => { current = false })
+  detailTopology.value = { from: [], to: [] }
+  detailTopologyLoading.value = false
+  detailTopologyUnavailable.value = false
+  const members = selectedOrg.value.members
+  if (view.value !== 'org-detail' || !selectedOrg.value.id || !members.some((member) => member.refType === 'AGENT_TEAM')) return
+  detailTopologyLoading.value = true
+  try {
+    const catalog = await loadAgentOrgEndpointCatalog(selectedOrg.value.id)
+    if (!current) return
+    if (!endpointCatalogCoversDetail(catalog, members)) { detailTopologyUnavailable.value = true; return }
+    detailTopology.value = catalog
+  } catch {
+    if (!current) return
+    detailTopologyUnavailable.value = true
+  } finally {
+    if (current) detailTopologyLoading.value = false
+  }
+}, { immediate: true })
+watch(isAuthoringView, (authoring) => {
+  if (authoring) void Promise.allSettled([agentStore.fetchAllAgentDefinitions(), teamStore.fetchAllAgentTeamDefinitions()])
 }, { immediate: true })
 const go = (nextView: OrgView, id?: string) => router.push({ path: '/agent-orgs', query: { view: nextView, ...(id ? { id } : {}) } })
 watch([view, () => route.query.id], () => { deleteTarget.value = null; deleteError.value = ''; deleteNotice.value = '' }, { flush: 'sync' })
@@ -348,7 +455,7 @@ const confirmDelete = async () => {
 }
 const openTeam = (id: string) => router.push({ path: '/agent-teams', query: { view: 'team-detail', id, returnToOrg: selectedOrg.value.id } })
 const openLaunch = (id: string) => router.push({ path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: id, mode: 'configuration' } })
-const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.fetchAll(true) } finally { reloading.value = false; catalogRefreshKey.value += 1 } }
+const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.fetchAll(true) } finally { reloading.value = false } }
 const openMemberPicker = (): void => { memberPickerTab.value = 'agents'; memberSearch.value = ''; memberPickerOpen.value = true }
 const closeMemberPicker = (): void => { memberPickerOpen.value = false; memberSearch.value = '' }
 const addMember = (ref: string, refType: AgentOrgMember['refType'], displayName: string): void => {
@@ -401,6 +508,6 @@ const saveOrg = async (): Promise<void> => {
   } catch (error) { if (generation === formGeneration) saveError.value = error instanceof Error ? error.message : String(error) } finally { saving.value = false }
 }
 onMounted(async () => {
-  await Promise.allSettled([orgStore.fetchAll(), agentStore.fetchAllAgentDefinitions(), teamStore.fetchAllAgentTeamDefinitions()])
+  await Promise.allSettled([orgStore.fetchAll()])
 })
 </script>

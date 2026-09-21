@@ -1,0 +1,42 @@
+## probe syntax
+## package manifest
+node tests/e2e/agent-org-role-labels-probe.mjs
+## forbidden literal absence
+literal absent
+## browser terminal result
+true
+## diff check
+## status before generated-output cleanup
+ M autobyteus-web/README.md
+ M autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-test-case-ledger.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/round-2/
+## status after generated-output cleanup
+ M autobyteus-web/README.md
+ M autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-test-case-ledger.md
+?? tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/round-2/
+## final diff check
+## implementation HEAD
+2761befdb3b201322316c948494c89d5dbe8019e
+## electron-dist
+absent (Delivery owns package retry)
+## canonical artifact audit
+tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md:21:- Current API/E2E Revision ID: `API-REV-002`
+tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md:223:- Result: `Pass`
+tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md:224:- Final validation confidence: `95.0%`
+tickets/in-progress/agent-org-display-name-stability/api-e2e-revision-record.md:8:| `API-REV-002` | Implementation Engineer Local Fix / `IR-002` / round 2 | `SR-005`, `IR-002`, `DR-002` / `M-014`; prior `API-REV-001` | Pass / 95.0% | Pass / 95.0% |
+tickets/in-progress/agent-org-display-name-stability/api-e2e-revision-record.md:33:### API-REV-002 — Localized incomplete-topology revalidation
+## final syntax and diff
+## final status
+ M autobyteus-web/README.md
+ M autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-revision-record.md
+ M tickets/in-progress/agent-org-display-name-stability/api-e2e-test-case-ledger.md
+?? tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/round-2/

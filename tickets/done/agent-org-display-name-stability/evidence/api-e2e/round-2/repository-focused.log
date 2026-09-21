@@ -1,0 +1,65 @@
+
+> autobyteus@1.4.72 test:nuxt /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/collaboration/__tests__/memberRoleLabel.spec.ts services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+
+stderr | components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaboration/__tests__/memberRoleLabel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaboration/__tests__/memberRoleLabel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/collaboration/__tests__/memberRoleLabel.spec.ts > formatMemberRoleLabel > formats "research_group" as "research group" without changing casing 1ms
+ ✓ utils/collaboration/__tests__/memberRoleLabel.spec.ts > formatMemberRoleLabel > formats "Architecture-Designer" as "Architecture Designer" without changing casing 0ms
+ ✓ utils/collaboration/__tests__/memberRoleLabel.spec.ts > formatMemberRoleLabel > formats "  QA__lead---West  " as "QA lead West" without changing casing 0ms
+ ✓ utils/collaboration/__tests__/memberRoleLabel.spec.ts > formatMemberRoleLabel > formats "sharedWorker" as "sharedWorker" without changing casing 0ms
+ ✓ utils/collaboration/__tests__/memberRoleLabel.spec.ts > formatMemberRoleLabel > formats " __-- " as "" without changing casing 0ms
+ ✓ services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts > loadAgentOrgEndpointCatalog > loads a fresh typed endpoint projection 2ms
+ ✓ services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts > loadAgentOrgEndpointCatalog > rejects blank Org ID 1ms
+ ✓ services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts > loadAgentOrgEndpointCatalog > rejects GraphQL errors 0ms
+ ✓ services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts > loadAgentOrgEndpointCatalog > rejects missing catalog 0ms
+ ✓ services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts > loadAgentOrgEndpointCatalog > rejects malformed endpoint 0ms
+ ✓ services/agentOrgDefinition/__tests__/agentOrgEndpointCatalog.spec.ts > loadAgentOrgEndpointCatalog > captures the bound client before awaiting the request 0ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > keeps direct roles stable while the aggregate Team topology settles 30ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > retains direct roles and shows ID-free unavailable feedback when topology fails 13ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > uses localized unavailable feedback when the topology response is incomplete 19ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > retires late topology after route and backend-binding changes 19ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > does not load endpoint topology for a direct-Agent-only detail 8ms
+ ✓ components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts > Agent Org catalog role labels > renders stable casing-preserving member roles without any reference or catalog query 25ms
+ ✓ components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts > Agent Org catalog role labels > keeps role labels stable through Reload and preserves list actions and search 38ms
+ ✓ components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts > Agent Org catalog role labels > updates only when refreshed membership changes and never exposes refs 10ms
+ ✓ components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts > Agent Org catalog role labels > uses localized type-only fallback for unusable roles and supports empty cards 9ms
+
+ Test Files  4 passed (4)
+      Tests  20 passed (20)
+   Start at  17:38:43
+   Duration  11.77s (transform 5.64s, setup 37.40s, collect 917ms, tests 181ms, environment 4.22s, prepare 2.00s)

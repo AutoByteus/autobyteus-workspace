@@ -30,6 +30,8 @@ const messages = {
   'agentOrgs.experience.detail.members': '成员',
   'agentOrgs.experience.detail.agentsCount': '智能体（{{count}}）',
   'agentOrgs.experience.detail.teamsCount': '团队（{{count}}）',
+  'agentOrgs.experience.detail.topologyLoading': '正在加载团队角色…',
+  'agentOrgs.experience.detail.topologyUnavailable': '此组织的团队角色详情暂不可用。',
   'agentOrgs.experience.form.editTitle': '编辑 {{name}}',
   'agentOrgs.experience.form.description': '添加智能体和团队，然后配置交接规则。',
   'agentOrgs.experience.form.basics': '基本信息',

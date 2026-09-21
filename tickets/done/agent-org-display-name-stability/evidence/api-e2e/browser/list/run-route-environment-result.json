@@ -1,0 +1,1677 @@
+{
+  "startedAt": "2026-09-21T16:10:33.322Z",
+  "scenario": "list",
+  "platform": "linux-arm64",
+  "node": "v22.23.2",
+  "browserExecutable": "/usr/bin/chromium",
+  "workspaceDir": "/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability",
+  "operations": [
+    {
+      "label": "list-en",
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.323Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.332Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.332Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.335Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.336Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.337Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:55.339Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:10:56.246Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.979Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.982Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.983Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.986Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.986Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.988Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:02.989Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:08.052Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:08.052Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:13.040Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:13.040Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:18.052Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:18.052Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:23.040Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:23.040Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:28.041Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:28.041Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:33.036Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:33.037Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:38.042Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:38.042Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:43.038Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:43.038Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:48.044Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:48.044Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:53.044Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:53.044Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:58.041Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:11:58.041Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:03.038Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:03.038Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:08.046Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:08.047Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:13.047Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:13.048Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:18.042Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:18.042Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:23.047Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:23.047Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:28.046Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:28.046Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:33.037Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:33.037Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:38.039Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:38.041Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:43.044Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:43.044Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:48.040Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:48.040Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:53.041Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:41981/graphql",
+      "requestedAt": "2026-09-21T16:12:53.041Z",
+      "status": 200,
+      "errors": []
+    }
+  ],
+  "browserEvents": [
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "list-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/layouts/default.vue?vue&type=style&index=0&lang.css net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/composables/useAccessibleDrawer.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/layout/LeftSidebarStrip.vue net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/composables/useLeftPanel.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/AppLeftPanel.vue net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/composables/layout/useResponsiveWorkspaceShell.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/stores/appLayoutStore.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/lexicographicSortSchema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@unhead+vue@2.1.4_vue@3.5.28_typescript@5.9.3_/node_modules/@unhead/vue/dist/utils.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/symbol-observable@4.0.0/node_modules/symbol-observable/es/ponyfill.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/findBreakingChanges.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/MaxIntrospectionDepthRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/http/iterators/async.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueDirectiveNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/ExecutableDefinitionsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/introspection.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/masking/maskOperation.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/custom/NoDeprecatedCustomRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/source.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/getOperationRootType.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/assertName.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/valueFromASTUntyped.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/custom/NoSchemaIntrospectionCustomRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/definition.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/LoneAnonymousOperationRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/validate.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/error/locatedError.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/http/iterators/reader.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/ValidationContext.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/ValuesOfCorrectTypeRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/ast.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/VariablesAreInputTypesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@wry+context@0.7.4/node_modules/@wry/context/lib/index.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/SingleFieldSubscriptionsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/NoUndefinedVariablesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueFragmentNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueEnumValueNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/valueFromAST.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/jsutils/isPromise.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/KnownTypeNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/ohash@2.0.11/node_modules/ohash/dist/crypto/js/index.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueDirectivesPerLocationRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/separateOperations.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/schema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/index.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/buildClientSchema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/buildASTSchema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/predicates.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/ScalarLeafsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/typeFromAST.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueFieldDefinitionNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@unhead+vue@2.1.4_vue@3.5.28_typescript@5.9.3_/node_modules/@unhead/vue/dist/shared/vue.eRs8ydhm.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/optimism@0.18.1/node_modules/optimism/lib/helpers.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/getOperationAST.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/OverlappingFieldsCanBeMergedRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/components/server-placeholder.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/ohash@2.0.11/node_modules/ohash/dist/shared/ohash.D__AXeF1.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/printSchema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/assertValidName.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/KnownArgumentNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/astFromValue.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueTypeNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/cache/inmemory/object-canon.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/KnownDirectivesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/directives.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/NoFragmentCyclesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/getIntrospectionQuery.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/extendSchema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/values.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/FragmentsOnCompositeTypesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/jsutils/devAssert.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/LoneSchemaDefinitionRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/parser.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/location.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/typeComparators.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/lexer.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/introspectionFromSchema.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/PossibleFragmentSpreadsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/concatAST.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/validate.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/kinds.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/FieldsOnCorrectTypeRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/error/GraphQLError.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueVariableNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@vue+apollo-composable@4.2.2_@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0._ddb4a148d3052c797d7ede4983388318/node_modules/@vue/apollo-composable/dist/index.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/masking/utils.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueOperationTypesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/scalars.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/masking/maskFragment.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/http/iterators/nodeStream.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/tokenKind.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/stripIgnoredCharacters.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueArgumentNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/KnownFragmentNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/VariablesInAllowedPositionRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/printLocation.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueOperationNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/directiveLocation.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@wry+caches@1.0.1/node_modules/@wry/caches/lib/strong.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@wry+caches@1.0.1/node_modules/@wry/caches/lib/weak.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueInputFieldNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/jsutils/Path.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/ProvidedRequiredArgumentsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/PossibleTypeExtensionsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/printer.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/NoUnusedFragmentsRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/resolveSchemaCoordinate.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/components/injections.js?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/http/iterators/promise.js?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/subscribe.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/error/syntaxError.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/specifiedRules.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/TypeInfo.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/scripts.mjs?v=97007129 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/NoUnusedVariablesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/UniqueArgumentDefinitionNamesRule.mjs?v=7d3957e3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "list-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/utils/eventMonitorFilePaths/absoluteFilePathAction.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/utils/voiceInputCapture.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/conversation/segments/renderer/MermaidDiagram.vue?vue&type=style&index=0&lang.css net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/node_modules/.cache/vite/client/deps/vue-pdf-embed.js?v=d59a190a net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/conversation/segments/MediaSegment.vue?vue&type=style&index=0&scoped=54b76784&lang.css net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/conversation/segments/renderer/MermaidDiagramViewer.vue net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/utils/markdownMath.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/node_modules/.cache/vite/client/deps/chunk-RZ55PUNP.js?v=1e5833e6 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/node_modules/.cache/vite/client/deps/@mdit_plugin-katex.js?v=3ad21a01 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/utils/markdownItPrism.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/conversation/ToolCallIndicator.vue?vue&type=style&index=0&scoped=5dd26201&lang.css net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/node_modules/.cache/vite/client/deps/dompurify.js?v=54058bd7 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/utils/remoteAccess/authorizedResourceUrl.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/node_modules/.cache/vite/client/deps/markdown-it.js?v=2eb83a13 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/services/mermaidService.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/conversation/segments/EditFileCommandSegment.vue?vue&type=style&index=0&scoped=b85618d5&lang.css net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/stores/extensionsStore.ts net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/node_modules/.cache/vite/client/deps/katex.js?v=4ee25ec3 net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:35641/_nuxt/components/conversation/segments/ThinkSegment.vue?vue&type=style&index=0&scoped=ac63a114&lang.css net::ERR_ABORTED"
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "list-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "scenarios": {},
+  "fixture": {
+    "beforeHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "cfb193a843cc5d67a0d13d07a16e8fd1cfab2ff3b5e17e68770e9385c79c132b",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/team-config.json": "dc4cb227f571aaf65878eb634a9ec116d8d8ddc634d481ccf7b5f38a42c12dbc",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "45db6b591e33ccccf522e26c4b0136abff17cf8ac3593bc4e131040f6a57a2d1",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "e9412ab4e06d72da5bcf4976bcae7a4e623087b27e70f642ad0f1119c345cb78",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    },
+    "definitionFileCount": 16
+  },
+  "cleanup": {
+    "frontend": {
+      "status": "terminated",
+      "pid": 24686,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "backend": {
+      "status": "terminated",
+      "pid": 24588,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "ownedRoot": {
+      "status": "removed",
+      "path": "/tmp/autobyteus-agent-org-role-labels-n5JSxV"
+    }
+  },
+  "failures": [
+    {
+      "message": "page.waitForURL: Timeout 120000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n============================================================",
+      "stack": "page.waitForURL: Timeout 120000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n  navigated to \"http://127.0.0.1:35641/agent-orgs?view=org-list\"\n============================================================\n    at runListScenario (/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:369:16)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:623:50"
+    }
+  ],
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:41981",
+    "frontendUrl": "http://127.0.0.1:35641"
+  },
+  "completedAt": "2026-09-21T16:12:56.765Z",
+  "result": "Fail"
+}
