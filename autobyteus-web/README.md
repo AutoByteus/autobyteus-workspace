@@ -545,8 +545,9 @@ probe. It writes current-format Agent, Team, Team-local Agent, and Org packages
 only under a temporary data root; starts an owned built backend and Nuxt server;
 and runs Chromium against the real GraphQL boundary. It verifies stable visible
 and accessible Org roles, zero exact-reference reads while browsing, aggregate
-Team-role topology, ID-free failure handling, stale-detail retirement, preserved
-definition-name authoring selectors, unchanged fixture bytes, and owned cleanup:
+Team-role topology, ID-free transport/incomplete failure handling, stale-detail
+retirement, preserved definition-name authoring selectors, unchanged fixture
+bytes, and owned cleanup:
 
 ```bash
 pnpm test:e2e:agent-org-role-labels -- --output-dir test-results/agent-org-role-labels

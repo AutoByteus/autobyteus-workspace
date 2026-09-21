@@ -449,32 +449,64 @@ const runDetailScenario = async (browser, frontendUrl) => {
 };
 
 const runFailureScenario = async (browser, frontendUrl) => {
-  const { context, page } = await createPage(browser, 'failure-en');
-  await page.route('**/graphql', async (route) => {
-    if (operationName(route.request()) === 'GetAgentOrgEndpointCatalog') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ data: { agentOrgEndpointCatalog: null }, errors: [{ message: `Unavailable ${fixture.alpha.teamRef}` }] }),
-      });
-      return;
-    }
-    await route.continue();
-  });
-  try {
-    const beforeExact = exactReadCount();
-    await page.goto(`${frontendUrl}/agent-orgs?view=org-detail&id=${fixture.alpha.id}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+  const assertUnavailableDetail = async (page, exactReadsBefore) => {
     const alert = page.getByRole('alert').filter({ hasText: 'Team role details are unavailable' });
     await alert.waitFor({ state: 'visible', timeout: timeoutMs });
     const text = await page.locator('[data-test="agent-org-experience"]').innerText();
-    assert(text.includes(fixture.alpha.directLabel) && text.includes(fixture.alpha.teamLabel), 'Topology failure removed direct role labels', text);
-    assert(!text.includes(fixture.alpha.directRef) && !text.includes(fixture.alpha.teamRef), 'Topology failure exposed an opaque ref', text);
-    assert(!text.includes(fixture.alpha.directDefinitionName) && !text.includes(fixture.alpha.teamDefinitionName), 'Topology failure substituted definition names', text);
-    assert(exactReadCount() === beforeExact, 'Failed read-only detail issued exact reference reads', evidence.operations);
-    await page.screenshot({ path: path.join(outputDir, 'detail-failure-en.png'), fullPage: true });
-    evidence.scenarios['AORG-E2E-005-failure'] = { alert: await alert.innerText(), directLabelsRetained: true, exactReads: 0 };
+    assert(text.includes(fixture.alpha.directLabel) && text.includes(fixture.alpha.teamLabel), 'Unavailable topology removed direct role labels', text);
+    assert(!text.includes(fixture.alpha.directRef) && !text.includes(fixture.alpha.teamRef), 'Unavailable topology exposed an opaque ref', text);
+    assert(!text.includes(fixture.alpha.directDefinitionName) && !text.includes(fixture.alpha.teamDefinitionName), 'Unavailable topology substituted definition names', text);
+    assert(exactReadCount() === exactReadsBefore, 'Unavailable read-only detail issued exact reference reads', evidence.operations);
+    return alert.innerText();
+  };
+
+  const transport = await createPage(browser, 'failure-en');
+  await transport.page.route('**/graphql', async (route) => {
+    if (operationName(route.request()) !== 'GetAgentOrgEndpointCatalog') return route.continue();
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ data: { agentOrgEndpointCatalog: null }, errors: [{ message: `Unavailable ${fixture.alpha.teamRef}` }] }),
+    });
+  });
+  try {
+    const beforeExact = exactReadCount();
+    await transport.page.goto(`${frontendUrl}/agent-orgs?view=org-detail&id=${fixture.alpha.id}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+    const alert = await assertUnavailableDetail(transport.page, beforeExact);
+    assert(operationCount('GetAgentOrgEndpointCatalog', 'failure-en') === 1, 'Transport failure page issued an unexpected aggregate request count', evidence.operations);
+    await transport.page.screenshot({ path: path.join(outputDir, 'detail-failure-en.png'), fullPage: true });
+    evidence.scenarios['AORG-E2E-005-failure'] = { transportError: { alert, directLabelsRetained: true, exactReads: 0 } };
   } finally {
-    await context.close();
+    await transport.context.close();
+  }
+
+  const incomplete = await createPage(browser, 'incomplete-en');
+  let liveFromCount;
+  await incomplete.page.route('**/graphql', async (route) => {
+    if (operationName(route.request()) !== 'GetAgentOrgEndpointCatalog') return route.continue();
+    const response = await route.fetch();
+    const body = await response.json();
+    const catalog = body?.data?.agentOrgEndpointCatalog;
+    assert(catalog && Array.isArray(catalog.from) && catalog.from.length > 0, 'Live endpoint catalog did not contain the expected source topology', body);
+    liveFromCount = catalog.from.length;
+    body.data.agentOrgEndpointCatalog = { ...catalog, from: [] };
+    await route.fulfill({ response, json: body });
+  });
+  try {
+    const beforeExact = exactReadCount();
+    await incomplete.page.goto(`${frontendUrl}/agent-orgs?view=org-detail&id=${fixture.alpha.id}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+    const alert = await assertUnavailableDetail(incomplete.page, beforeExact);
+    assert(operationCount('GetAgentOrgEndpointCatalog', 'incomplete-en') === 1, 'Incomplete topology page issued an unexpected aggregate request count', evidence.operations);
+    await incomplete.page.screenshot({ path: path.join(outputDir, 'detail-incomplete-en.png'), fullPage: true });
+    evidence.scenarios['AORG-E2E-005-failure'].incompleteCatalog = {
+      alert,
+      directLabelsRetained: true,
+      exactReads: 0,
+      liveFromCount,
+      deliveredFromCount: 0,
+    };
+  } finally {
+    await incomplete.context.close();
   }
 };
 

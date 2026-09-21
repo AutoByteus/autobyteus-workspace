@@ -7,7 +7,7 @@
 - Execution coverage report: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md` (to be created for completed round)
 - API/E2E revision record: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-revision-record.md` (to be created as `API-REV-001`)
 - Ledger scope and reason: seven independently meaningful repository/live/browser/build cases, including long-running server build/startup and browser lifecycle execution
-- Last updated: 2026-09-21 — round 1 reconciled after sequence 22
+- Last updated: 2026-09-21 — round 2 reconciled after sequence 32
 
 ## Planned Cases
 
@@ -20,6 +20,15 @@
 | `AORG-E2E-005` | Endpoint failure remains role-based and ID-free | REQ-003/005 / AC-002/004 | Browser failure injection over live stack | durable browser probe | 5 | Truthful unavailable state |
 | `AORG-E2E-006` | Late route response retirement and authoring-only exact reads/selectors | REQ-003/005/006 / AC-003–005 | Production router/store/browser | durable browser probe | 6 | Lifecycle and preserved authoring |
 | `AORG-E2E-007` | Production build and final hygiene | REQ-006 / AC-005 | Nuxt build, syntax/diff/status audit | build/audit commands | 7 | No whole-repository typecheck claim |
+
+## Round 2 Planned Delta — IR-002 / DR-002 M-014
+
+| Reused Case ID | Round-2 Case / Journey | Requirement / Trigger IDs | Boundary | Planned Entry Point | Order |
+| --- | --- | --- | --- | --- | --- |
+| `AORG-E2E-007` | Recheck mandatory boundary/localization guards and literal audit | `DR-002` / `M-014`; AC-004/005 | Packaging preflight / source audit | three web scripts | 1 |
+| `AORG-E2E-001` | Recheck formatter/adapter/list/detail suite including incomplete catalog | `IR-002`; REQ-002/003/005; AC-002–004 | Vitest component/service | focused four-file suite | 2 |
+| `AORG-E2E-005` | Recheck transport error and add incomplete-catalog localized browser state | `IR-002`; `M-014`; REQ-003/005; AC-002/004 | Chromium → Nuxt → live GraphQL with deterministic response alteration | updated durable probe | 3 |
+| `AORG-E2E-007` | Current production build and final audit | REQ-006; AC-005 | Nuxt build/repository hygiene | build/syntax/diff/status audit | 4 |
 
 ## Execution Events
 
@@ -58,12 +67,30 @@
 
 | 22 | `AORG-E2E-007` | 2026-09-21T16:22:31Z | Completed | `corepack pnpm -C autobyteus-web build`; probe syntax + package manifest + server-build evidence + `git diff --check` + status audit | Production build and API/E2E additions pass; generated outputs removed | Pass: Nuxt 3.21.1 production build completed and prerendered 16 routes; current server build evidence includes sanitized built-in bootstrap smoke pass; syntax/manifest/diff checks passed; two build-generated untracked `dist/` trees removed; only intended API/E2E/doc artifacts remain untracked/modified | Pass | `evidence/api-e2e/build.log`, `evidence/api-e2e/final-audit.log`, `evidence/api-e2e/browser/list/server-build.log` | Reconcile ledger into round report and create `API-REV-001` |
 
+| 23 | `AORG-E2E-007` (round 2) | 2026-09-21T17:37:45Z | Started | `guard:web-boundary`; `guard:localization-boundary`; `audit:localization-literals` | Delivery `M-014` is absent and all mandatory preflight guards pass | Commands starting | N/A | `evidence/api-e2e/round-2/localization-guards.log` | Await completion |
+
+| 24 | `AORG-E2E-007` (round 2) | 2026-09-21T17:38:20Z | Completed | Three mandatory preflight commands; exit 0 | Delivery `M-014` absent and guards pass | Pass: web-boundary and localization-boundary guards passed; localization-literal audit passed with zero unresolved findings. Existing `MODULE_TYPELESS_PACKAGE_JSON` warning remains non-failing. | Pass | `evidence/api-e2e/round-2/localization-guards.log` | Start changed-boundary focused suite |
+| 25 | `AORG-E2E-001` (round 2) | 2026-09-21T17:38:43Z | Started | focused four-file Nuxt suite with `--run --reporter=verbose` | Direct formatter/adapter/list/detail coverage, including incomplete catalog, passes | Command starting | N/A | `evidence/api-e2e/round-2/repository-focused.log` | Await completion |
+
+| 26 | `AORG-E2E-001` (round 2) | 2026-09-21T17:39:30Z | Completed | Four focused files; exit 0 | Direct changed branch and unchanged formatter/adapter/list/detail behavior pass | Pass: 4 files / 20 tests, including localized incomplete-catalog alert, stable direct roles, ID absence, complete/error/stale/binding/no-Team topology, zero-query list, and adapter validation | Pass | `evidence/api-e2e/round-2/repository-focused.log` | Update durable `AORG-E2E-005` and run targeted browser evidence |
+
+| 27 | `AORG-E2E-005` (round 2) | 2026-09-21T17:40:29Z | Started | updated durable probe `--scenario failure --skip-server-build` | Both GraphQL transport error and live-response incomplete catalog render the localized ID-free unavailable state with stable direct roles and zero exact reads | Command starting | N/A | `evidence/api-e2e/round-2/browser/failure/` | Await completion |
+
+| 28 | `AORG-E2E-005` (round 2) | 2026-09-21T17:42:53Z | Checkpoint | First round-2 browser invocation used `--skip-server-build` | Browser failure/incomplete pages execute | Setup stopped before frontend/browser: the prior built backend existed, but the round-1 cleanup had correctly removed its generated workspace `@autobyteus/application-sdk-contracts/dist`, so the built server exited with `ERR_MODULE_NOT_FOUND`. No scenario assertion ran; owned backend/temp root cleaned. | N/A | `evidence/api-e2e/round-2/browser/failure/server-runtime-dependency-result.json`, `backend.log` | Rerun without `--skip-server-build` so the durable probe builds current runtime dependencies |
+
+| 29 | `AORG-E2E-005` (round 2) | 2026-09-21T17:42:59Z | Started | updated durable probe `--scenario failure` with default current-server build | Current full-stack runtime plus both failure pages pass | Command starting | N/A | `evidence/api-e2e/round-2/browser/failure/` | Await completion |
+
+| 30 | `AORG-E2E-005` (round 2) | 2026-09-21T17:44:19Z | Completed | Updated durable failure probe with default current-server build; exit 0 | Transport error and incomplete catalog produce identical localized safe output | Pass: both pages displayed `Team role details are unavailable for this organization.`, retained direct role labels, exposed no refs/definition names, made 0 exact reads, and each made 1 aggregate request. Incomplete page started from live catalog `from` count 2 and delivered count 0. Fixture hashes 16/16 unchanged; processes/root cleaned. | Pass | `evidence/api-e2e/round-2/browser/failure/agent-org-role-labels-result.json`, `detail-failure-en.png`, `detail-incomplete-en.png`, runtime/build logs | Start current production build/audit |
+| 31 | `AORG-E2E-007` (round 2) | 2026-09-21T17:44:19Z | Started | current production Nuxt build followed by probe syntax, manifest, diff, status, evidence, and generated-output cleanup audit | Current source builds and round-2 durable/report changes are hygienic | Command starting | N/A | `evidence/api-e2e/round-2/build.log`, `final-audit.log` | Await completion |
+
+| 32 | `AORG-E2E-007` (round 2) | 2026-09-21T17:45:26Z | Completed | Nuxt production build plus syntax/manifest/literal/result/diff/status/cleanup audit | Current source and durable changes build cleanly; no API-owned generated residue remains | Pass: production build completed and prerendered 16 routes; probe syntax, manifest, forbidden-literal absence, terminal JSON, and diff checks passed; build-generated SDK/contracts `dist/` removed; implementation HEAD `2761befdb`; no Electron artifact created or claimed | Pass | `evidence/api-e2e/round-2/build.log`, `evidence/api-e2e/round-2/final-audit.log` | Reconcile round 2 and append `API-REV-002` |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: sequence 22 — `AORG-E2E-007` Pass
-- Last completed case and result: `AORG-E2E-007` / Pass
-- Cases still running, interrupted, or not started: none
-- Next case or recovery action: none; round 1 is complete and ready for direct-route Delivery handoff
-- Interruption, context-compression, or rerun note: first attempt stopped at setup; second found an API-owned assertion-scope defect; third found an unrelated workspace-guard prerequisite for Run navigation. The list case is narrowed to its material boundary and fixture hash scope; the first detail attempt exposed an accessible-name locator defect and the first lifecycle attempt exposed a legitimate duplicate-text locator; no implementation failure classified
-- Reconciled into execution coverage report: `Yes` — `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-execution-coverage-report.md` (`API-REV-001`)
-- Reconciliation note for any case missing a terminal result: none; all seven planned cases have terminal `Pass` results
+- Last durably recorded event: sequence 32 — round 2 `AORG-E2E-007` Pass
+- Last completed case and result: round 2 `AORG-E2E-007` / Pass
+- Cases still running, interrupted, or not started: none; all round-2 planned executions have terminal Pass results
+- Next case or recovery action: none; return the focused Pass package to Delivery for Electron package/launch retry
+- Interruption, context-compression, or rerun note: round 1 is fully reconciled in `API-REV-001`; round 2 reuses relevant case IDs and starts from `IR-002` / `DR-002` evidence without inferring a current Pass
+- Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md` / `API-REV-002`
+- Reconciliation note for any case missing a terminal result: none; audit, focused suite, targeted browser scenario, and build/audit passed

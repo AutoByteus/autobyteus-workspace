@@ -1,0 +1,161 @@
+[40042:0921/175352.884446:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-09-21T17:53:53.010Z] [INFO] [electron] Application started
+[2026-09-21T17:53:53.145Z] [INFO] [electron] Creating server manager for platform: linux
+[40042:0921/175353.376301:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[40042:0921/175353.376453:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[40042:0921/175353.376556:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-09-21T17:53:53.439Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:34485
+[40042:0921/175353.498182:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[2026-09-21T17:53:53.533Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+[2026-09-21T17:53:53.534Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-09-21T17:53:53.534Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-09-21T17:53:53.535Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-09-21T17:53:53.535Z] [INFO] [electron.server.base-server-manager] App data directory: /root/.autobyteus/server-data
+[2026-09-21T17:53:53.540Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-09-21T17:53:53.553Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-09-21T17:53:53.558Z] [INFO] [electron] Login shell PATH: /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex-path:/root/.codex/tmp/arg0/codex-arg0UvoIYx:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[2026-09-21T17:53:53.558Z] [INFO] [electron] Using PATH from login shell
+[2026-09-21T17:53:53.558Z] [INFO] [electron] Starting server with port: 29695
+[2026-09-21T17:53:53.559Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:29695
+[2026-09-21T17:53:53.559Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-09-21T17:53:53.559Z] [INFO] [electron] App data directory: /root/.autobyteus/server-data
+[2026-09-21T17:53:53.559Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+[40042:0921/175353.626457:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[40042:0921/175353.627332:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[40042:0921/175353.645375:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[2026-09-21T17:53:53.726Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-09-21T17:53:53.727Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] App data directory: /root/.autobyteus/server-data
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] Config file path: /root/.autobyteus/server-data/.env
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /root/.autobyteus/server-data/.env
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (1) from ../../../../../../../../../../../root/.autobyteus/server-data/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-09-21T17:53:53.728Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:29695
+[2026-09-21T17:53:53.729Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-09-21T17:53:53.729Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-09-21T17:53:53.729Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-09-21T17:53:53.730Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-09-21T17:53:53.730Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-09-21T17:53:53.730Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /root/.autobyteus/server-data
+[2026-09-21T17:53:53.730Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /root/.autobyteus/server-data/db
+[2026-09-21T17:53:53.730Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /root/.autobyteus/server-data/logs
+[2026-09-21T17:53:53.730Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /root/.autobyteus/server-data/download
+[2026-09-21T17:53:53.731Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /root/.autobyteus/server-data/memory
+[2026-09-21T17:53:53.731Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-09-21T17:53:53.731Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-09-21T17:53:55.930Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:53:55.949Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:53:56.248Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-09-21T17:53:56.952Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-09-21T17:53:56.958Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+[2026-09-21T17:53:57.336Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-09-21T17:53:57.340Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/root/.autobyteus/server-data/db/production.db"
+[2026-09-21T17:53:57.378Z] [INFO] [electron.embedded-server.stdout] 24 migrations found in prisma/migrations
+[2026-09-21T17:53:57.386Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-09-21T17:53:57.452Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-09-21T17:53:57.493Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-09-21T17:53:57.538Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 20 predefined settings
+[2026-09-21T17:53:57.539Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T17:53:57.539Z] [INFO] [electron.embedded-server.stdout] [2026-09-21T17:53:57.538Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T17:53:57.930Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:53:58.392Z] [ERROR] [electron.embedded-server.stderr] DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+[2026-09-21T17:53:58.399Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-09-21T17:53:58.401Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-09-21T17:53:58.465Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-09-21T17:53:58.466Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /home/autobyteus/workspace
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-09-21T17:53:58.470Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-09-21T17:53:58.471Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-09-21T17:53:58.472Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-09-21T17:53:58.472Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-09-21T17:53:58.472Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-09-21T17:53:58.472Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-09-21T17:53:58.472Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-09-21T17:53:58.472Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-09-21T17:53:58.473Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-09-21T17:53:58.489Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-09-21T17:53:58.490Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-09-21T17:53:58.491Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-09-21T17:53:58.491Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-09-21T17:53:58.491Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-09-21T17:53:58.492Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-09-21T17:53:58.493Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-09-21T17:53:58.493Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-09-21T17:53:58.493Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-09-21T17:53:58.493Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-09-21T17:53:58.495Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-09-21T17:53:58.495Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-09-21T17:53:58.495Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-09-21T17:53:58.512Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-09-21T17:53:58.559Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 51 items.
+[2026-09-21T17:53:58.559Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-09-21T17:53:58.559Z] [INFO] [electron.embedded-server.stdout] [2026-09-21T17:53:58.559Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T17:53:58.583Z] [INFO] [electron.embedded-server.stdout] [2026-09-21T17:53:58.582Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+[2026-09-21T17:53:58.603Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 51 items.
+[2026-09-21T17:53:58.610Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1790013238610,"pid":40125,"hostname":"78e6239f4e66","msg":"Server listening at http://127.0.0.1:38683"}
+[2026-09-21T17:53:58.647Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1790013238647,"pid":40125,"hostname":"78e6239f4e66","msg":"Server listening at http://0.0.0.0:29695"}
+[2026-09-21T17:53:58.647Z] [INFO] [electron.embedded-server.stdout] [2026-09-21T17:53:58.647Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+[2026-09-21T17:53:58.656Z] [INFO] [electron.embedded-server.stdout] [2026-09-21T17:53:58.655Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:29695
+[2026-09-21T17:53:58.657Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-09-21T17:53:58.661Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-09-21T17:53:58.661Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-09-21T17:53:58.661Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-09-21T17:53:58.661Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-09-21T17:53:58.662Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-09-21T17:53:58.663Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-09-21T17:53:58.663Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-09-21T17:53:58.663Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-09-21T17:53:58.663Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 28 LLM models into cache.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-09-21T17:53:58.664Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-09-21T17:53:58.888Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-09-21T17:53:58.889Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-09-21T17:53:58.889Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-09-21T17:53:58.966Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:53:58.968Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-09-21T17:53:59.035Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:53:59.037Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-09-21T17:53:59.271Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:53:59.273Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-09-21T17:54:01.538Z] [WARN] [electron] [updater] APPIMAGE env is not defined, current application is not an AppImage
+[2026-09-21T17:54:05.078Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-21T17:54:05.081Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

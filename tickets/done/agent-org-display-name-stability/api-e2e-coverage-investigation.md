@@ -10,17 +10,17 @@
 - Design Review Report: `N/A — not applicable` (independent architecture review was not selected for the `Medium`/`Low` package)
 - Architecture Review Revision Record: `N/A — not applicable`
 - Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/implementation-revision-record.md` (`IR-001`)
+- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/implementation-revision-record.md` (`IR-002`)
 - Code Review Report: `N/A — not applicable` (direct low-risk route)
 - Code Review Revision Record: `N/A — not applicable`
-- Delivery Revision Record: `N/A — initial validation, not delivery re-entry`
-- Relevant Delivery Revision IDs: N/A
+- Delivery Revision Record: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-002` (`M-014` localization-literal package gate)
 - API/E2E Revision Record (created after the first completed result): `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-revision-record.md` (`API-REV-001`)
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002`
 - API/E2E Test-Case Ledger: `/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 1 — initial direct-route validation
-- Trigger: Implementation Engineer handoff for package `AGENT-ORG-DISPLAY-NAME-STABILITY-20260921-001`, implementation revision `IR-001`, commit `0944fe664`
-- Prior Investigation Reviewed: N/A — no prior API/E2E investigation or revision record exists
+- Current Investigation Round: 2 — focused direct-route Local Fix revalidation
+- Trigger: Implementation Engineer handoff for `IR-002`, commit `2761befdb`, resolving Delivery `DR-002` / `M-014`
+- Prior Investigation Reviewed: `Yes` — round 1 investigation/report, `API-REV-001` Pass / 95.0%, ledger, and the Delivery `DR-002` failure evidence were read before selecting this delta plan
 - Latest Authoritative Investigation: this file
 
 ## Routing Classification
@@ -35,6 +35,10 @@
 
 The approved behavior makes local role identity authoritative on Agent Org browsing surfaces. List and direct-detail labels must be the enclosing Org member's casing-preserving, separator-humanized `memberName`; Team coordinator and nested endpoint labels must be Team-local roles from the admitted endpoint catalog. Reference definition names and opaque refs must never occupy those label positions. The list must make zero per-member exact Agent/Team reads. Reload, reference completion/failure, route retirement, and backend-binding retirement must not rename an unchanged membership. Read-only detail may make one aggregate endpoint-catalog read only when mounted Team topology is needed. Create/edit, Org-return Team detail, run configuration, and launch readiness must retain the existing exact ID/scope/owner/Team-child validator. Search, list/detail navigation, Run, Team View/Back, edit/delete, handoffs, ordering/types, ownership policy, persistence, and package bytes remain unchanged. Persisted data is `Not Affected`; no compatibility path or migration is permitted.
 
+### Round 2 Local Fix Delta
+
+Delivery `DR-002` did not produce or launch an Electron package because the mandatory localization-literal audit stopped on the constructed English error `Incomplete Agent Org endpoint catalog response.` (`M-014`). `IR-002` changes only the incomplete-but-structurally-valid detail catalog branch: after the existing stale-request retirement guard, it sets the existing localized `detailTopologyUnavailable` state directly rather than throwing a hard-coded message into the common catch. The complete-catalog, transport-error, stale-response, list, authoring, launch, API, persistence, and shell boundaries are unchanged. Focused revalidation must therefore recheck the audit first, prove both transport-error and incomplete-catalog browser states through `AORG-E2E-005`, rerun the direct detail lifecycle suite, and confirm the production web build. Full Electron packaging/launch remains Delivery-owned after API/E2E returns.
+
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
@@ -44,6 +48,7 @@ The approved behavior makes local role identity authoritative on Agent Org brows
 | `BEH-002` / direct detail labels | Changed | `REQ-002`, `REQ-003`, `REQ-005`; `DS-002` | Prove direct rows render before topology settles and never show refs/definition names. |
 | Team coordinator/nested endpoint presentation | Changed | `REQ-002`, `REQ-005`; `DS-003` | Prove one live aggregate catalog produces Team-local coordinator/handoff roles and mounted address separation. |
 | Detail topology pending/failure/stale lifecycle | Changed | `REQ-003`, `REQ-005`; `DS-003` | Prove loading/unavailable output is truthful and ID-free; component coverage must prove late route/binding responses retire. |
+| `IR-002` incomplete detail catalog localization branch | Changed | Delivery `DR-002` / `M-014`; `IR-002` | Recheck localization guards/audit, the new focused component assertion, and a durable browser interception that returns live response data with incomplete topology while retaining role labels and hiding identities. |
 | Full exact reference validation and authoring/launch consumers | Preserved | `REQ-005`, `REQ-006`; `DS-005`; implementation handoff | Re-run full-reader, authoring, Team-return, run-config, launch, and action regressions; in browser, prove edit is the only Agent Org experience route that activates authoring catalog/reference operations. |
 | API schema, backend resolver, persistence, ownership, deployment | Preserved | `SR-005`; design/implementation transition checks | No backend source change. Use live GraphQL/admission/persisted packages to prove the reused contract, not a schema migration. |
 
@@ -140,6 +145,7 @@ The approved behavior makes local role identity authoritative on Agent Org brows
 | Scenario ID | Existing Path / Scenario | Required Update | Requirement / AC / Design Evidence | Notes |
 | --- | --- | --- | --- | --- |
 | `AORG-E2E-007` | `autobyteus-web/package.json`, `autobyteus-web/README.md` E2E catalog | Add discoverable script and short setup/evidence description | Project durable-execution convention | No production behavior change |
+| `AORG-E2E-005` / round 2 | `autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs` failure scenario | Retain the existing transport-error state and add a second page that starts from the real endpoint response, removes required topology, and proves the localized ID-free unavailable state | `IR-002`; `DR-002` / `M-014`; REQ-003/005; AC-002/004 | Directly exercises the changed incomplete-catalog control-flow rather than treating the new unit assertion as sufficient authority |
 
 ## Durable Coverage To Remove
 
@@ -153,6 +159,17 @@ No API/E2E-owned removal is planned. Obsolete assertions were already removed in
 | 2 | Same runner on 12 affected authoring/actions/full-reference/Team-return/run-config/launch/store/localization files | worktree | `AORG-E2E-002`: preserved exact validation and supported consumers | Pass — 12 files / 90 tests | `evidence/api-e2e/repository-regression.log` |
 | 3 | `corepack pnpm -C autobyteus-web test:e2e:agent-org-role-labels --skip-server-build --scenario <list|detail|failure|lifecycle>` | worktree / owned temp backend+Nuxt+Chromium | `AORG-E2E-003`–`006`: live transport, persisted definitions, list/detail/failure/stale/authoring | Pass — all 4 live scenarios | `evidence/api-e2e/browser/*/agent-org-role-labels-result.json` |
 | 4 | `corepack pnpm -C autobyteus-web build`; probe syntax/manifest, successful built-server evidence, `git diff --check`, status/cleanup audit | worktree | `AORG-E2E-007`: integration/build and repository hygiene | Pass — 16 routes prerendered; audit clean | `evidence/api-e2e/build.log`, `evidence/api-e2e/final-audit.log`, `evidence/api-e2e/browser/list/server-build.log` |
+
+### Round 2 Focused Revalidation Plan And Results
+
+| Order | Reused Case ID | Command / Entry Point | Boundary | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `AORG-E2E-007` | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | Recheck Delivery `M-014` first; unresolved product literal count must be zero | Pass — all guards; zero unresolved literals | `evidence/api-e2e/round-2/localization-guards.log` |
+| 2 | `AORG-E2E-001` | Focused formatter/adapter/list/detail Nuxt suite, including the new incomplete catalog assertion | Direct component/adapter regression for `IR-002` and unchanged role/lifecycle behavior | Pass — 4 files / 20 tests | `evidence/api-e2e/round-2/repository-focused.log` |
+| 3 | `AORG-E2E-005` | Updated durable failure probe with real-backend transport-error and incomplete-catalog pages | Browser-localized failure semantics, ID/definition absence, direct roles, zero exact reads | Pass — both pages; 0 exact reads; clean owned cleanup | `evidence/api-e2e/round-2/browser/failure/agent-org-role-labels-result.json` |
+| 4 | `AORG-E2E-007` | Current Nuxt production build, probe syntax, diff/status/generated-output audit | Current source compiles and remains repository-clean; Electron packaging intentionally returns to Delivery | Pass — 16 routes; clean final audit | `evidence/api-e2e/round-2/build.log`, `final-audit.log` |
+
+Round 2 begins from the prior authoritative `API-REV-001` Pass / 95.0%, but that confidence is not automatically carried over as a current result. The Local Fix affects one already-covered failure branch, so no untouched list/success/lifecycle case is rerun in the live browser unless focused evidence exposes a regression.
 
 ## Test-Case Ledger Plan
 
@@ -179,7 +196,7 @@ The live list case asserts that the admitted Org card retains an enabled Run con
 
 Initial live attempts exposed only API/E2E-owned harness assumptions: Corepack shims were needed for a nested bare `pnpm`; fixture assertions needed scoping away from server-managed built-ins; the Run navigation was narrowed away from unrelated no-workspace middleware while retaining its enabled control and existing exact-router component proof; fixture immutability was narrowed to the pre-start fixture set; and semantic locators were corrected for a glyph-bearing accessible name and legitimate duplicate authoring identity text. Each checkpoint and preserved result is recorded in the ledger. None contradicted the implementation or approved behavior.
 
-## Post-Repository Confidence Scorecard
+### Round 1 Historical Post-Repository Confidence Scorecard
 
 This checkpoint reflects `AORG-E2E-001` and `AORG-E2E-002` after the durable probe was added but before its live browser/API execution. It intentionally does not award live-boundary confidence from unexecuted code.
 
@@ -200,7 +217,7 @@ This checkpoint reflects `AORG-E2E-001` and `AORG-E2E-002` after the durable pro
 - Default clean-confidence target of `95%` met: `No`
 - Material residual risks: real GraphQL serialization/admission, current persisted packages, browser first/settled state, app-shell operation selection, and live route/failure lifecycle were not yet independently exercised.
 
-## Broader Validation Decision
+### Round 1 Historical Broader Validation Decision
 
 - Decision: `Required`
 - Selected execution mode: `Browser` plus live API/process evidence
@@ -208,6 +225,37 @@ This checkpoint reflects `AORG-E2E-001` and `AORG-E2E-002` after the durable pro
 - Why selected mode improves confidence: an isolated built backend, Nuxt proxy, normal persisted definition readers, and Chromium exercise every material changed boundary without touching user state or invoking provider/runtime work.
 - Expected confidence: at least 95%, with no category below 90%, if all critical scenarios pass.
 - Browser-specific rationale: this is web-equivalent renderer UI; browser is the project-preferred surface. Electron shell behavior is unchanged and actual desktop execution would add cost without closing a material gap.
+
+## Post-Repository Confidence Scorecard
+
+This round-2 checkpoint follows the three mandatory localization/boundary guards and the direct four-file suite. It preserves prior live evidence only for untouched paths and does not treat it as proof of the new incomplete-catalog branch.
+
+| Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | Zero unresolved literals and 20 direct formatter/adapter/list/detail assertions, including the new localized incomplete response | Browser output for the new branch is not yet observed | Targeted failure browser scenario |
+| Changed-boundary execution directness | 95% | The exact `IR-002` branch executed in the component test; complete, error, incomplete, stale, and no-Team cases passed | No production-router browser entry into incomplete state yet | Chromium incomplete-response page |
+| Cross-boundary integration realism and mock gap | 90% | Prior real backend/Nuxt/GraphQL evidence remains valid for unchanged catalog success/error boundaries | New incomplete response is only mocked in Vitest | Alter a response fetched from the live endpoint |
+| Environment, configuration, identity, and fixture fidelity | 90% | Prior isolated current-format fixture remains current and source contracts are unchanged | Current `IR-002` source has not yet run in that environment | Reuse durable full-stack probe |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | Direct tests cover transport failure, incomplete response, stale route/binding, and direct-only detail | New incomplete state lacks browser evidence | Run transport-error plus incomplete browser pages |
+| User-surface, browser, and desktop-shell confidence | 90% | Prior Chromium directly proved the unchanged renderer; the new component DOM shows role labels and localized alert | Current branch not yet browser-rendered; package remains Delivery-owned | Targeted Chromium; Delivery retries Electron build |
+| Durable regression coverage quality and relevance | 90% | Existing self-starting probe is valid and all prior scenarios passed | Failure scenario currently covers only GraphQL error | Update and execute `AORG-E2E-005` |
+
+- Overall post-repository confidence: `91.4%`
+- Calculation method: simple average of `(95 + 95 + 90 + 90 + 90 + 90 + 90) / 7`
+- Every critical acceptance criterion directly proven: `Yes` at the focused component/API boundary; browser directness for the changed failure branch remains the confidence gap
+- Any applicable category below `90%`: `No`
+- Default clean-confidence target of `95%` met: `No`
+- Material residual risks: the changed incomplete-catalog branch has not yet been exercised through the real app shell/router/GraphQL client, and the durable failure probe does not yet protect it.
+
+## Broader Validation Decision
+
+- Decision: `Required`
+- Selected execution mode: targeted `Browser` plus live API/process evidence
+- Specific confidence gap: the round-1 durable failure probe injects a GraphQL transport error and therefore does not execute `IR-002`'s incomplete-but-structurally-valid response branch.
+- Why selected mode improves confidence: modifying a response obtained from the real endpoint retains real admission/transport shape while directly entering the changed branch in the production router/component.
+- Expected confidence: restore at least 95%, with no category below 90%, if the audit, focused suite, targeted browser case, and production build pass.
+- Browser-specific rationale: the delta is web-equivalent renderer control flow. Actual Electron packaging is not needed to prove it and is explicitly retained by Delivery after revalidation.
+- Execution result: `Pass` — the updated durable failure scenario exercised both the existing transport-error state and the `IR-002` incomplete-catalog state against the live stack; final confidence returned to 95.0%.
 
 ## Desktop Application Validation Decision
 
@@ -221,12 +269,12 @@ This checkpoint reflects `AORG-E2E-001` and `AORG-E2E-002` after the durable pro
 
 ## Live Environment And Fixture Plan
 
-- Startup: build current server; create temp root and migrate owned SQLite; write current-format definition packages; start built backend on free loopback port; start Nuxt with `BACKEND_NODE_BASE_URL` on another free port; start isolated Chromium.
-- Environment: `APP_ENV=development`, owned `DATABASE_URL` and app-data paths, English/Chinese isolated browser contexts, UTC, system Chromium.
+- Startup: build the current server/runtime dependencies; create temp root and migrate owned SQLite; write current-format definition packages; start built backend on a free loopback port; start Nuxt with `BACKEND_NODE_BASE_URL` on another free port; start isolated Chromium.
+- Environment: `APP_ENV=development`, owned `DATABASE_URL` and app-data paths, English isolated browser contexts, UTC, system Chromium.
 - Readiness: backend `/rest/health`, frontend route 2xx, admitted Org card visible.
-- Fixtures: two direct Agents, two Teams with Team-local coordinator Agents, two Orgs whose role names and coordinator roles deliberately differ from all definition names; no provider credentials or activation.
-- Journeys: list first/settled/reload/search and action availability; delayed detail topology; Team View/Back; failed topology; route retirement; edit selector/exact reads; Chinese accessibility fallback if applicable.
-- Evidence: result JSON with GraphQL requests/responses and DOM snapshots, screenshots, server/frontend logs, definition hashes, process cleanup.
+- Fixtures: reuse the round-1 two-Agent/two-Team/two-Org catalog; the Alpha catalog must contain required live source topology before the test removes it. No provider credentials or activation.
+- Journeys: one GraphQL-error detail and one incomplete-catalog detail derived from the real endpoint response; both must retain direct role labels, expose no refs/definition names, render the existing localized alert, make one aggregate request and zero exact reads.
+- Evidence: terminal result JSON with GraphQL requests/responses, screenshots for both failure pages, server/frontend/build logs, definition hashes, and process cleanup.
 - Cleanup: close contexts/browser; stop only owned detached process groups; remove owned temp data root; retain non-secret ticket evidence.
 
 ## Temporary Executable Validation Plan
@@ -250,9 +298,9 @@ None. The material browser/live boundary belongs in durable repository coverage 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — add live Agent Org role-label browser probe and script/docs entry; no API-owned removal
-- Post-repository confidence: `84.3%`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — update the existing durable `AORG-E2E-005` failure scenario for incomplete-catalog coverage; remove none
+- Post-repository confidence: `91.4%`
 - Broader validation decision: `Required`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
-- Notes: all seven cases subsequently passed. The final round-level result and `95.0%` confidence are authoritative in `api-e2e-execution-coverage-report.md`; this investigation preserves the mandatory pre-broader checkpoint and selection rationale.
+- Notes: round 2 completed: audit, focused tests, targeted live browser evidence, and production build passed. `API-REV-002` and the current execution report are authoritative; Delivery retains the Electron package/launch retry.
