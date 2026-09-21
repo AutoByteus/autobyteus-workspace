@@ -85,6 +85,85 @@ describe("AgentOrgRunManager lifecycle", () => {
     expect((candidates[0]!.terminate as unknown as ReturnType<typeof vi.fn>)).not.toHaveBeenCalled();
   });
 
+  it("admits only unmanaged roots and does not invoke inactive-history work for a managed root", async () => {
+    const manager = new AgentOrgRunManager({
+      memoryDir: memoryDir(),
+      scopeBuilder: { build: vi.fn(async (input: { onTerminated?: () => void }) =>
+        fakeRun("org-managed", input.onTerminated)) } as unknown as AgentOrgExecutionScopeBuilder,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(),
+    });
+    await manager.create(fixture("org-managed"));
+    const blocked = vi.fn(async () => "should-not-run");
+
+    await expect(manager.withInactiveHistoryMutation("org-managed", blocked)).resolves.toEqual({ kind: "managed" });
+    expect(blocked).not.toHaveBeenCalled();
+
+    const admitted = vi.fn(async () => "archived");
+    await expect(manager.withInactiveHistoryMutation("org-inactive", admitted)).resolves.toEqual({
+      kind: "completed", value: "archived",
+    });
+    expect(admitted).toHaveBeenCalledOnce();
+  });
+
+  it("serializes inactive-history work with same-root lifecycle transitions", async () => {
+    let releaseFirst!: () => void;
+    const firstGate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+    const events: string[] = [];
+    const manager = new AgentOrgRunManager({
+      memoryDir: memoryDir(),
+      scopeBuilder: { build: vi.fn() } as unknown as AgentOrgExecutionScopeBuilder,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(),
+    });
+
+    const first = manager.withInactiveHistoryMutation("org-serialized", async () => {
+      events.push("first-start");
+      await firstGate;
+      events.push("first-end");
+      return 1;
+    });
+    await vi.waitFor(() => expect(events).toEqual(["first-start"]));
+    const second = manager.withInactiveHistoryMutation("org-serialized", async () => {
+      events.push("second-start");
+      return 2;
+    });
+    await Promise.resolve();
+    expect(events).toEqual(["first-start"]);
+
+    releaseFirst();
+    await expect(Promise.all([first, second])).resolves.toEqual([
+      { kind: "completed", value: 1 },
+      { kind: "completed", value: 2 },
+    ]);
+    expect(events).toEqual(["first-start", "first-end", "second-start"]);
+  });
+
+  it("rejects stale inactive-history work after a queued same-root create becomes managed", async () => {
+    let releaseBuild!: () => void;
+    const buildGate = new Promise<void>((resolve) => { releaseBuild = resolve; });
+    const buildStarted = vi.fn();
+    const manager = new AgentOrgRunManager({
+      memoryDir: memoryDir(),
+      scopeBuilder: {
+        build: vi.fn(async (input: { onTerminated?: () => void }) => {
+          buildStarted();
+          await buildGate;
+          return fakeRun("org-racing", input.onTerminated);
+        }),
+      } as unknown as AgentOrgExecutionScopeBuilder,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(),
+    });
+
+    const create = manager.create(fixture("org-racing"));
+    await vi.waitFor(() => expect(buildStarted).toHaveBeenCalledOnce());
+    const mutationBody = vi.fn(async () => "must-not-run");
+    const mutation = manager.withInactiveHistoryMutation("org-racing", mutationBody);
+
+    releaseBuild();
+    await expect(create).resolves.toBeTruthy();
+    await expect(mutation).resolves.toEqual({ kind: "managed" });
+    expect(mutationBody).not.toHaveBeenCalled();
+  });
+
   it("closes new root admission without disturbing the active Org", async () => {
     const build = vi.fn(async (input: { onTerminated?: () => void }) => fakeRun("org-active", input.onTerminated));
     const manager = new AgentOrgRunManager({

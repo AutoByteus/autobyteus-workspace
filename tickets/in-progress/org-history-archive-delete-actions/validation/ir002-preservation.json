@@ -1,0 +1,36 @@
+{
+  "revision": "IR-002",
+  "baseline": "IR-001",
+  "currentFileCount": 26,
+  "changedSinceBaseline": [
+    "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts",
+    "autobyteus-web/composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+    "autobyteus-web/composables/useWorkspaceHistoryMutations.ts"
+  ],
+  "unchangedSinceBaseline": [
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+    "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+    "autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts",
+    "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+    "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-run-model-config.test.ts",
+    "autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts",
+    "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+    "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    "autobyteus-web/docs/agent_orgs.md",
+    "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+    "autobyteus-web/localization/messages/en/workspace.ts",
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+    "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "autobyteus-web/stores/runHistoryMutationActions.ts",
+    "autobyteus-web/stores/runHistoryStore.ts",
+    "autobyteus-web/stores/runHistoryTypes.ts",
+    "autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue"
+  ],
+  "removedSinceBaseline": []
+}

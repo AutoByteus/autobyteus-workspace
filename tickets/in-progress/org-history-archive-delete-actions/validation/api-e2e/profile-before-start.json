@@ -1,0 +1,37 @@
+{
+  "profile": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile",
+  "definitions": [
+    {
+      "path": "agents/aorg-validation-agent/agent-config.json",
+      "size": 390,
+      "sha256": "028a45042f9bda6401c4dd66fcffbcd2ebd808e4fdca31ed03f2f8406aa77add"
+    },
+    {
+      "path": "agents/aorg-validation-agent/agent.md",
+      "size": 740,
+      "sha256": "c3b8e62fd15601fb8784bbd6cf6179cdcd350f3883b06c253c776e7ab4b720c4"
+    },
+    {
+      "path": "agent-teams/aorg-validation-team/team-config.json",
+      "size": 449,
+      "sha256": "1c544787c40e59981738556c8e2d31b4f10e8c609e9507adb985aac0666ba256"
+    },
+    {
+      "path": "agent-teams/aorg-validation-team/team.md",
+      "size": 193,
+      "sha256": "97e0c89c6e77662e0866b621defd75a81b6ebb3dda31a8901164cf87d83ff164"
+    },
+    {
+      "path": "agent-orgs/aorg-validation-org/org-config.json",
+      "size": 629,
+      "sha256": "5a966a476698b5eb9607e92815e2553574d376d79accc061f67a971f635d2b8a"
+    },
+    {
+      "path": "agent-orgs/aorg-validation-org/org.md",
+      "size": 212,
+      "sha256": "40bc56c647a1fc8726aacedad4434e78b885099e73abaaf5fa2c112165b02c76"
+    }
+  ],
+  "memory": [],
+  "databaseExists": false
+}

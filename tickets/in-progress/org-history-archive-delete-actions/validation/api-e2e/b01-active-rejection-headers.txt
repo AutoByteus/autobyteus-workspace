@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 302
+Date: Mon, 21 Sep 2026 13:53:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+

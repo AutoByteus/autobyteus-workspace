@@ -54,6 +54,13 @@ export class AgentOrgRunMutationResult {
 }
 
 @ObjectType()
+export class AgentOrgStoredRunMutationResult {
+  @Field(() => Boolean) success!: boolean;
+  @Field(() => String) message!: string;
+  @Field(() => String, { nullable: true }) orgRunId?: string | null;
+}
+
+@ObjectType()
 export class AgentOrgMemberRunProjectionPayload {
   @Field(() => String) agentRunId!: string;
   @Field(() => String) memberAddress!: string;
@@ -199,6 +206,30 @@ export class AgentOrgRunResolver {
       return { success: true, message: "Agent organization run restored successfully.", agentOrgRunId: run.orgRunId };
     } catch (error) {
       return { success: false, message: message(error), agentOrgRunId: null };
+    }
+  }
+
+  @Mutation(() => AgentOrgStoredRunMutationResult)
+  async archiveStoredAgentOrgRun(
+    @Arg("orgRunId", () => String) orgRunId: string,
+  ): Promise<AgentOrgStoredRunMutationResult> {
+    try {
+      const result = await this.service.archiveStoredRun(orgRunId);
+      return { ...result, orgRunId: result.success ? orgRunId.trim() : null };
+    } catch (error) {
+      return { success: false, message: message(error), orgRunId: null };
+    }
+  }
+
+  @Mutation(() => AgentOrgStoredRunMutationResult)
+  async deleteStoredAgentOrgRun(
+    @Arg("orgRunId", () => String) orgRunId: string,
+  ): Promise<AgentOrgStoredRunMutationResult> {
+    try {
+      const result = await this.service.deleteStoredRun(orgRunId);
+      return { ...result, orgRunId: result.success ? orgRunId.trim() : null };
+    } catch (error) {
+      return { success: false, message: message(error), orgRunId: null };
     }
   }
 

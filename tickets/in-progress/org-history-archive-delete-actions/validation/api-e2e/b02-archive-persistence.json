@@ -1,0 +1,26 @@
+{
+  "agentHistoryChanges": [],
+  "archivedAtExactMatch": true,
+  "baselineMissingFiles": [],
+  "changedFiles": [
+    "memory/agent_org_run_history_index.json",
+    "memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/agent_org_run_execution_tree.json"
+  ],
+  "databaseChanges": [],
+  "definitionChanges": [],
+  "indexArchivedAt": "2026-09-21T13:54:53.648Z",
+  "packageExists": true,
+  "siblingAgentOrgPackageChanges": [],
+  "targetCommunicationUnchanged": true,
+  "targetOrgRunId": "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97",
+  "targetTaskLedgerUnchanged": true,
+  "teamHistoryChanges": [],
+  "treeArchivedAt": "2026-09-21T13:54:53.648Z",
+  "treeSemanticDifferences": [
+    {
+      "after": "2026-09-21T13:54:53.648Z",
+      "before": null,
+      "path": "/archivedAt"
+    }
+  ]
+}

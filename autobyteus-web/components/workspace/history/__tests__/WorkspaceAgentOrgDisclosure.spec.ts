@@ -69,12 +69,19 @@ const harness = (active = true, selected = true) => {
     getTeamNavigationAncestry: () => null, getTeamMemberNavigationAncestorRowKeys: () => [],
     getAgentOrgNavigationAncestry: () => ({ workspaceId: 'ws', definitionId: 'org-definition', teamAddresses: ['/software'] }),
   });
-  const actions = { onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn() };
+  const actions = { onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
   const definitions = ref<{id: string; avatarUrl?: string | null}[]>([]);
   let tree: ReturnType<typeof useWorkspaceHistoryTreeState>;
   let avatars: ReturnType<typeof useRunHistoryAvatarState>;
   const wrapper = mount(defineComponent({ setup() {
     tree = useWorkspaceHistoryTreeState({ runHistoryStore: history, selectionStore: {selectedType: null, selectedRunId: null}, selectedAgentOrg: selectedOrg });
+    Object.assign(tree, {
+      isAgentOrgDeleting: () => false,
+      isAgentOrgArchiving: () => false,
+      isAgentOrgTerminating: () => false,
+      agentOrgTerminationError: () => null,
+      agentOrgContextFor: () => null,
+    });
     if (!selected) {
       tree.toggleAgentOrgDefinition('ws', 'org-definition'); tree.toggleAgentOrgRun('org-run'); tree.toggleAgentOrgTeam('org-run', '/software');
     }
@@ -185,6 +192,37 @@ describe('Org disclosure through real tree and rendered hierarchy', () => {
     expect(tree.isAgentOrgRunExpanded('org-run')).toBe(true);
     expect(tree.isAgentOrgTeamExpanded('org-run', '/software')).toBe(true);
     wrapper.unmount();
+  });
+
+  it("renders stopped-only accessible Archive/Delete controls and isolates their clicks from disclosure", async () => {
+    const stopped = harness(false);
+    const primary = stopped.wrapper.get('[data-test="agent-org-run-open-org-run"]');
+    const archive = stopped.wrapper.get('[data-test="agent-org-run-archive-org-run"]');
+    const remove = stopped.wrapper.get('[data-test="agent-org-run-delete-org-run"]');
+    expect(archive.attributes('aria-label')).toBe('Archive Agent Org history');
+    expect(remove.attributes('aria-label')).toBe('Delete Agent Org history permanently');
+    expect(stopped.wrapper.find('button[aria-label="Stop Agent Org"]').exists()).toBe(false);
+    const expanded = primary.attributes('aria-expanded');
+
+    await archive.trigger('click');
+    await remove.trigger('click');
+
+    expect(stopped.actions.onArchiveAgentOrg).toHaveBeenCalledExactlyOnceWith(stopped.group.runs[0]);
+    expect(stopped.actions.onDeleteAgentOrg).toHaveBeenCalledExactlyOnceWith(stopped.group.runs[0]);
+    expect(stopped.actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
+    expect(primary.attributes('aria-expanded')).toBe(expanded);
+    Object.assign(stopped.tree, { isAgentOrgDeleting: () => true });
+    stopped.wrapper.vm.$forceUpdate();
+    await nextTick();
+    expect(stopped.wrapper.get('[data-test="agent-org-run-archive-org-run"]').attributes('disabled')).toBeDefined();
+    expect(stopped.wrapper.get('[data-test="agent-org-run-delete-org-run"]').attributes('disabled')).toBeDefined();
+    stopped.wrapper.unmount();
+
+    const active = harness(true);
+    expect(active.wrapper.find('[data-test="agent-org-run-archive-org-run"]').exists()).toBe(false);
+    expect(active.wrapper.find('[data-test="agent-org-run-delete-org-run"]').exists()).toBe(false);
+    expect(active.wrapper.get('button[aria-label="Stop Agent Org"]')).toBeTruthy();
+    active.wrapper.unmount();
   });
 
   it('also collapses a selected root without changing selection', async () => {

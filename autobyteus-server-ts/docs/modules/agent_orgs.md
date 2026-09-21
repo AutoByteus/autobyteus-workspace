@@ -296,6 +296,24 @@ record families are sufficient; this inspection query adds no persisted family
 or migration. Live settlement publishes the complete updated view, retiring live
 task rows without discarding retained inspection or introducing a second cache.
 
+### Stopped History Archive And Delete
+
+Stopped top-level AgentOrg history roots support two subject-explicit commands:
+
+- `archiveStoredAgentOrgRun(orgRunId)` records one canonical archive timestamp
+  in the V1 execution tree and projects it into the AgentOrg history index. The
+  complete package remains on disk and the inactive row leaves the default
+  history view.
+- `deleteStoredAgentOrgRun(orgRunId)` permanently removes only the confirmed
+  exact AgentOrg package and its index row.
+
+Both commands execute inside the manager's exact-root lifecycle transition and
+reject an active or otherwise managed root without restoring it or starting any
+provider. The catalog remains the only tree/index/package mutation and
+compensation owner. Delete does not remove the AgentOrg definition, referenced
+Agent/Team definitions, workspace registration, sibling roots, or external
+state. There is no unarchive/trash UI or data migration in this capability.
+
 ## Migration And External Publication
 
 Required startup migration
@@ -447,6 +465,7 @@ Definition GraphQL operations:
 Run GraphQL operations:
 
 - `createAgentOrgRun`, `restoreAgentOrgRun`, `terminateAgentOrgRun`
+- `archiveStoredAgentOrgRun`, `deleteStoredAgentOrgRun` (stopped exact root)
 - `getAgentOrgRunInspection` (read-only retained package, distinct from Restore)
 - `getAgentOrgMemberRunProjection`
 - `getAgentOrgMemberEventMonitorActiveTracePage`

@@ -1,0 +1,29 @@
+{
+  "surface": "normal Chrome against owned Nuxt 51783 and owned backend 51781",
+  "initialUrl": "http://127.0.0.1:51783/workspace?rootSubjectKind=agent_org&definitionId=aorg-validation-org&orgRunId=aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6&mode=active",
+  "activeGuard": {
+    "orgRunId": "aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6",
+    "openControlCount": 1,
+    "archiveControlCount": 0,
+    "deleteControlCount": 0,
+    "stopControlCount": 1,
+    "ariaCurrent": "true",
+    "ariaExpanded": "true"
+  },
+  "stoppedRows": {
+    "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97": {"archive": 1, "delete": 1},
+    "aorg_validation_org_f0c166744146487f8e7e61bae8558979": {"archive": 1, "delete": 1},
+    "aorg_validation_org_d9d486990e7a4b68818361502fa15974": {"archive": 1, "delete": 1}
+  },
+  "adjacentStoppedTeam": {"archive": 1, "delete": 1},
+  "keyboardIsolation": {
+    "targetOrgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+    "Enter": {"openedDialogCount": 1, "ariaLabel": "Delete Agent Org history permanently"},
+    "Space": {"openedDialogCount": 1, "ariaLabel": "Delete Agent Org history permanently"},
+    "dialogText": "Delete Agent Org history permanently / Delete this Agent Org history permanently? This removes only this run and cannot be undone. / Cancel / Delete Agent Org history permanently",
+    "bothCancelled": true,
+    "urlUnchanged": true,
+    "activeSelectionUnchanged": true,
+    "targetRowRetained": true
+  }
+}

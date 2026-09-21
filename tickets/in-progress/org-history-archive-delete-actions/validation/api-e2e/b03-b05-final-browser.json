@@ -1,0 +1,18 @@
+{
+  "authorizedDisposableDelete": {
+    "orgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+    "visibleLabel": "New - AORG Validation Org",
+    "profile": ".local/api-archive-delete-profile",
+    "origin": "created by this validation through normal UI"
+  },
+  "action": "clicked the real zh-CN localized confirmation action after user authorization",
+  "observed": {
+    "route": "http://127.0.0.1:51783/workspace",
+    "deletedRowCount": 0,
+    "orgGroupCount": 1,
+    "remainingActiveRowCount": 1,
+    "remainingActiveStopCount": 1,
+    "remainingActiveArchiveCount": 0,
+    "adjacentTeamGroupCount": 1
+  }
+}

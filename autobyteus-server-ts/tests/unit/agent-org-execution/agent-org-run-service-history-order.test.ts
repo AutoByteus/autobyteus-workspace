@@ -49,4 +49,23 @@ describe("AgentOrgRunService history ordering", () => {
     await service.recordRunActivity(run as never, { summary: "First accepted input" });
     expect(recordRunSummary).toHaveBeenCalledWith({ orgRunId: run.orgRunId, summary: "First accepted input" });
   });
+
+  it("delegates stored archive and delete through the AgentOrg history owner without activation", async () => {
+    const archiveStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `archived ${orgRunId}` }));
+    const deleteStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `deleted ${orgRunId}` }));
+    const manager = { restore: vi.fn(), create: vi.fn(), terminate: vi.fn() };
+    const service = new AgentOrgRunService({
+      manager,
+      history: { archiveStored, deleteStored },
+    } as never);
+
+    await expect(service.archiveStoredRun(" org-run ")).resolves.toEqual({ success: true, message: "archived org-run" });
+    await expect(service.deleteStoredRun(" org-run ")).resolves.toEqual({ success: true, message: "deleted org-run" });
+    expect(archiveStored).toHaveBeenCalledExactlyOnceWith("org-run");
+    expect(deleteStored).toHaveBeenCalledExactlyOnceWith("org-run");
+    expect(manager.restore).not.toHaveBeenCalled();
+    expect(manager.create).not.toHaveBeenCalled();
+    expect(manager.terminate).not.toHaveBeenCalled();
+  });
+
 });

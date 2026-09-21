@@ -1,0 +1,56 @@
+{
+  "activeIndexRow": {
+    "archivedAt": null,
+    "createdAt": "2026-09-21T13:49:07.427Z",
+    "orgDefinitionId": "aorg-validation-org",
+    "orgDefinitionName": "AORG Validation Org",
+    "orgRunId": "aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6",
+    "summary": "",
+    "terminatedAt": null,
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+  },
+  "activePackageFilesAllExact": true,
+  "agentHistoryIndexExact": true,
+  "applicationAndWorkspaceAllExact": true,
+  "archivedRows": {
+    "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97": {
+      "archivedAt": "2026-09-21T13:54:53.648Z",
+      "createdAt": "2026-09-21T13:48:22.101Z",
+      "orgDefinitionId": "aorg-validation-org",
+      "orgDefinitionName": "AORG Validation Org",
+      "orgRunId": "aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97",
+      "summary": "",
+      "terminatedAt": "2026-09-21T13:48:29.010Z",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+    },
+    "aorg_validation_org_d9d486990e7a4b68818361502fa15974": {
+      "archivedAt": "2026-09-21T14:01:53.523Z",
+      "createdAt": "2026-09-21T13:48:55.904Z",
+      "orgDefinitionId": "aorg-validation-org",
+      "orgDefinitionName": "AORG Validation Org",
+      "orgRunId": "aorg_validation_org_d9d486990e7a4b68818361502fa15974",
+      "summary": "",
+      "terminatedAt": "2026-09-21T13:48:56.580Z",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace"
+    }
+  },
+  "changedFiles": [
+    "memory/agent_org_run_history_index.json",
+    "memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/agent_org_run_execution_tree.json",
+    "memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/agent_org_run_execution_tree.json"
+  ],
+  "databaseAllExact": true,
+  "definitionsAllExact": true,
+  "deletedBaselinePackageFilesMissing": [
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_communication_messages.json",
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_run_execution_tree.json",
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_task_delegation_records.json"
+  ],
+  "deletedIndexRowPresent": false,
+  "deletedOrgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+  "deletedPackageExists": false,
+  "otherBaselineFilesMissing": [],
+  "teamHistoryAllExact": true,
+  "unexpectedChangedFiles": [],
+  "unexpectedNewFiles": []
+}

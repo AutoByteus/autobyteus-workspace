@@ -2,17 +2,25 @@ import { getApolloClient } from '~/utils/apolloClient';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import {
   ArchiveStoredRun,
   ArchiveStoredTeamRun,
   DeleteStoredRun,
   DeleteStoredTeamRun,
 } from '~/graphql/mutations/runHistoryMutations';
+import {
+  ArchiveStoredAgentOrgRun,
+  DeleteStoredAgentOrgRun,
+} from '~/graphql/mutations/agentOrgRunMutations';
 import type {
+  ArchiveStoredAgentOrgRunMutationData,
   ArchiveStoredRunMutationData,
   ArchiveStoredTeamRunMutationData,
+  DeleteStoredAgentOrgRunMutationData,
   DeleteStoredRunMutationData,
   DeleteStoredTeamRunMutationData,
+  AgentOrgRunHistoryItem,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
   TeamRunResumeConfigPayload,
@@ -27,6 +35,7 @@ type RunHistoryMutationStoreLike = {
   resumeConfigByRunId: Record<string, RunResumeConfigPayload>;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
   workspaceGroups: RunHistoryWorkspaceGroup[];
+  agentOrgHistory: AgentOrgRunHistoryItem[];
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
@@ -58,6 +67,14 @@ const cleanupStoredRunLocalState = (
   if (store.selectedRunId === runId) {
     store.selectedRunId = null;
   }
+};
+
+const cleanupStoredAgentOrgRunLocalState = (
+  store: RunHistoryMutationStoreLike,
+  orgRunId: string,
+): void => {
+  store.agentOrgHistory = store.agentOrgHistory.filter((run) => run.rootRunId !== orgRunId);
+  useAgentOrgContextsStore().disconnect(orgRunId);
 };
 
 const cleanupStoredTeamRunLocalState = (
@@ -221,6 +238,58 @@ export const archiveTeamRunInHistoryStore = async (
     return true;
   } catch (error: any) {
     console.error(`Failed to archive team run '${normalizedTeamRunId}':`, error);
+    return false;
+  }
+};
+
+export const deleteAgentOrgRunFromHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  orgRunId: string,
+): Promise<boolean> => {
+  const normalizedOrgRunId = orgRunId.trim();
+  if (!normalizedOrgRunId) return false;
+
+  try {
+    const client = getApolloClient();
+    const { data, errors } = await client.mutate<DeleteStoredAgentOrgRunMutationData>({
+      mutation: DeleteStoredAgentOrgRun,
+      variables: { orgRunId: normalizedOrgRunId },
+    });
+    if (errors?.length) throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
+    const result = data?.deleteStoredAgentOrgRun;
+    if (!result?.success || result.orgRunId !== normalizedOrgRunId) return false;
+
+    cleanupStoredAgentOrgRunLocalState(store, normalizedOrgRunId);
+    await store.refreshTreeQuietly();
+    return true;
+  } catch (error) {
+    console.error(`Failed to delete AgentOrg run '${normalizedOrgRunId}':`, error);
+    return false;
+  }
+};
+
+export const archiveAgentOrgRunInHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  orgRunId: string,
+): Promise<boolean> => {
+  const normalizedOrgRunId = orgRunId.trim();
+  if (!normalizedOrgRunId) return false;
+
+  try {
+    const client = getApolloClient();
+    const { data, errors } = await client.mutate<ArchiveStoredAgentOrgRunMutationData>({
+      mutation: ArchiveStoredAgentOrgRun,
+      variables: { orgRunId: normalizedOrgRunId },
+    });
+    if (errors?.length) throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
+    const result = data?.archiveStoredAgentOrgRun;
+    if (!result?.success || result.orgRunId !== normalizedOrgRunId) return false;
+
+    cleanupStoredAgentOrgRunLocalState(store, normalizedOrgRunId);
+    await store.refreshTreeQuietly();
+    return true;
+  } catch (error) {
+    console.error(`Failed to archive AgentOrg run '${normalizedOrgRunId}':`, error);
     return false;
   }
 };

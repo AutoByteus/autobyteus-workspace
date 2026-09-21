@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 const routerHarness = vi.hoisted(() => ({
   route: { query: {} as Record<string, string> },
@@ -281,13 +282,15 @@ const {
         return ancestors;
       }),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
-      selectTreeRun: vi.fn().mockResolvedValue(undefined),
-      createDraftRun: vi.fn().mockResolvedValue('temp-2'),
+      selectTreeRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
+      createDraftRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
       createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),
       archiveRun: vi.fn().mockResolvedValue(true),
       archiveTeamRun: vi.fn().mockResolvedValue(true),
+      deleteAgentOrgRun: vi.fn().mockResolvedValue(true),
+      archiveAgentOrgRun: vi.fn().mockResolvedValue(true),
     },
     workspaceStoreMock: {
       workspaces: {
@@ -300,6 +303,7 @@ const {
       removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
     },
     selectionStoreMock: {
+      beginSelectionIntent: vi.fn(() => ({ isCurrent: () => true })),
       selectedType: null as string | null,
       selectedRunId: null as string | null,
       selectRun: vi.fn(),
@@ -393,7 +397,8 @@ vi.mock('~/composables/useToasts', () => ({
 }));
 
 describe('WorkspaceAgentRunsTreePanel', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    await localizationRuntime.setPreference('en');
     setActivePinia(createPinia());
     vi.clearAllMocks();
     orgCatalog.definitions = [];
@@ -479,11 +484,15 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     delete (window as any).electronAPI;
   });
 
-  const mountComponent = () => mount(WorkspaceAgentRunsTreePanel, {
+  const mountComponent = (options: {
+    realConfirmationModal?: boolean;
+    attachTo?: Element;
+  } = {}) => mount(WorkspaceAgentRunsTreePanel, {
+    ...(options.attachTo ? { attachTo: options.attachTo } : {}),
     global: {
       stubs: {
         Icon: { template: '<span class="icon-stub" />' },
-        ConfirmationModal: {
+        ...(!options.realConfirmationModal ? { ConfirmationModal: {
           props: ['show'],
           template: `
             <div v-if="show" data-test="delete-confirmation-modal">
@@ -503,7 +512,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
               </button>
             </div>
           `,
-        },
+        } } : {}),
       },
     },
   });
@@ -971,6 +980,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         teamRunId: 'team-1',
         memberAddress: '/engineering_org/implementation_engineer',
       }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
     expect(wrapper.find(childSelector).exists()).toBe(true);
   });
@@ -990,6 +1000,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         teamRunId: 'team-1',
         memberAddress: '/engineering_org/implementation_engineer',
       }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
     expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(true);
     expect(
@@ -1063,6 +1074,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({ runId: 'run-1', source: 'history' }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
     expect(wrapper.emitted('run-selected')).toEqual([
       [{ type: 'agent', runId: 'run-1' }],
@@ -1080,10 +1092,11 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await createButtons[0]!.trigger('click');
     await flushPromises();
 
-    expect(runHistoryStoreMock.createDraftRun).toHaveBeenCalledWith({
+    expect(runHistoryStoreMock.createDraftRun).toHaveBeenCalledWith(expect.objectContaining({
       workspaceRootPath: '/ws/a',
       agentDefinitionId: 'agent-def-1',
-    });
+      selectionIntent: expect.any(Object),
+    }));
     expect(wrapper.emitted('run-created')).toEqual([
       [{ type: 'agent', definitionId: 'agent-def-1' }],
     ]);
@@ -1289,6 +1302,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         memberAddress: '/solution_designer',
         agentRunId: 'member-run-1',
       }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
   });
 
@@ -1493,6 +1507,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         teamRunId: 'team-1',
         memberAddress: '/super_agent',
       }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
     expect(wrapper.emitted('run-selected')).toContainEqual([
       { type: 'team', runId: 'team-1' },
@@ -1537,7 +1552,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryStoreMock.selectTreeRun.mockClear();
     runHistoryStoreMock.selectTreeRun
       .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
-      .mockResolvedValueOnce(undefined);
+      .mockResolvedValueOnce({ disposition: 'committed' });
 
     const selector = '[data-test="workspace-team-member-team-1-/super_agent"]';
     await wrapper.get(selector).trigger('click');
@@ -1558,7 +1573,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       teamRunId: 'team-1',
       memberAddress: '/super_agent',
       agentRunId: 'member-run-1',
-    }));
+    }), expect.objectContaining({ selectionIntent: expect.any(Object) }));
   });
 
   it('keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team', async () => {
@@ -2268,6 +2283,87 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(addToastMock).toHaveBeenCalledWith('Failed to delete run. Please try again.', 'error');
   });
+  it("archives and confirms deletion of stopped AgentOrg roots with exact selected-route cleanup", async () => {
+    const launch = { runtimeKind: "codex_app_server", llmModelIdentifier: "model", llmConfig: null,
+      autoExecuteTools: false, skillAccessMode: "PRELOADED_ONLY", workspaceRootPath: "/ws/a" };
+    const orgRun = {
+      stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
+      createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
+      executionTree: { schemaVersion: 1, subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
+          orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+    };
+    runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun] }];
+    routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-stopped", mode: "history" };
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    const definition = wrapper.get('[data-test="agent-org-definition-org-def"]');
+    if (definition.attributes('aria-expanded') !== 'true') await definition.trigger('click');
+    await nextTick();
+
+    await wrapper.get('[data-test="agent-org-run-archive-org-stopped"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.archiveAgentOrgRun).toHaveBeenCalledExactlyOnceWith("org-stopped");
+    expect(routerHarness.replace).toHaveBeenCalledWith({ path: "/workspace" });
+    expect(addToastMock).toHaveBeenCalledWith("Agent Org history archived.", "success");
+
+    routerHarness.replace.mockClear();
+    routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-sibling", mode: "history" };
+    await wrapper.get('[data-test="agent-org-run-delete-org-stopped"]').trigger('click');
+    await nextTick();
+    expect((wrapper.vm as any).deleteConfirmationTitle).toBe('Delete Agent Org history permanently');
+    expect((wrapper.vm as any).deleteConfirmationConfirmText).toBe('Delete Agent Org history permanently');
+    expect((wrapper.vm as any).deleteConfirmationMessage).toContain("only this run");
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.deleteAgentOrgRun).toHaveBeenCalledExactlyOnceWith("org-stopped");
+    expect(routerHarness.replace).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith("Agent Org history deleted permanently.", "success");
+    wrapper.unmount();
+  });
+
+  it('renders the real AgentOrg Delete confirmation action and dialog name in zh-CN', async () => {
+    await localizationRuntime.setPreference('zh-CN');
+    const launch = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model', llmConfig: null,
+      autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/ws/a' };
+    const orgRun = {
+      stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
+      createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
+      executionTree: { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def',
+          orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+    };
+    runHistoryState.nodes[0].agentOrgDefinitions = [{
+      stableKey: 'org-def', definitionId: 'org-def', name: 'Org', runs: [orgRun],
+    }];
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const wrapper = mountComponent({ realConfirmationModal: true, attachTo: host });
+
+    try {
+      await flushPromises();
+      await expandWorkspace(wrapper);
+      const definition = wrapper.get('[data-test="agent-org-definition-org-def"]');
+      if (definition.attributes('aria-expanded') !== 'true') await definition.trigger('click');
+      await nextTick();
+      await wrapper.get('[data-test="agent-org-run-delete-org-stopped"]').trigger('click');
+      await flushPromises();
+
+      const dialog = document.body.querySelector<HTMLElement>('[role="dialog"]');
+      expect(dialog).not.toBeNull();
+      expect(dialog?.getAttribute('aria-label')).toBe('永久删除智能体组织历史记录');
+      expect(dialog?.textContent).toContain('要永久删除此智能体组织历史记录吗？');
+      const visibleActions = Array.from(dialog?.querySelectorAll('button') ?? [])
+        .map((button) => button.textContent?.trim());
+      expect(visibleActions).toContain('永久删除智能体组织历史记录');
+    } finally {
+      wrapper.unmount();
+      host.remove();
+      await localizationRuntime.setPreference('en');
+    }
+  });
+
   it('fetches Org metadata nonfatally and keeps history available on catalog failure', async () => {
     orgCatalog.fetchAll.mockRejectedValueOnce(new Error('catalog unavailable'));
     orgCatalog.definitions = reactive([]);

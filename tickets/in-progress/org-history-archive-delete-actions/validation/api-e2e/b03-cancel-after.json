@@ -1,0 +1,18 @@
+{
+  "memory/agent_org_run_history_index.json": {
+    "sha256": "3dd9c267b33255538f682f2362f885e077f251d983ad0850bb6a469498b65484",
+    "size": 1887
+  },
+  "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_communication_messages.json": {
+    "sha256": "6f877c3ccde94a9fe6dab35b18f9cc40d87f5135f1887db16d3a71b83bbebd74",
+    "size": 143
+  },
+  "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_run_execution_tree.json": {
+    "sha256": "8d02130380fadc141111bfbb642c4a20f8c3c034ab53fe99fdcc44eb86fd807c",
+    "size": 6004
+  },
+  "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_task_delegation_records.json": {
+    "sha256": "41dc95592ade747133139e68e167fc27e7117c39ffae1038b3403db9d04ff7e6",
+    "size": 142
+  }
+}

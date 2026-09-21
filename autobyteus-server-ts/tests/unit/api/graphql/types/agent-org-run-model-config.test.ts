@@ -4,7 +4,8 @@ import { createRequire } from 'node:module';
 const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
-const io = vi.hoisted(() => ({ getRunModelConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunModelConfigs: vi.fn() }));
+const io = vi.hoisted(() => ({ getRunModelConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunModelConfigs: vi.fn(),
+  archiveStoredRun: vi.fn(), deleteStoredRun: vi.fn() }));
 vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io }));
 vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => ({}) }));
 import { SkillAccessMode } from 'autobyteus-ts/agent/context/skill-access-mode.js';
@@ -35,4 +36,24 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
     expect(saved.errors).toBeUndefined(); expect(io.updateStoppedRunModelConfigs).toHaveBeenCalledWith(input);
     expect(saved.data?.updateStoppedAgentOrgRunModelConfigs).toMatchObject({ success: true, canonical: tree });
   });
+
+  it("exposes subject-explicit stored AgentOrg archive/delete mutations with exact result identity", async () => {
+    const schema = await buildSchema({ resolvers: [AgentOrgRunResolver], validate: false });
+    io.archiveStoredRun.mockResolvedValue({ success: true, message: "archived" });
+    io.deleteStoredRun.mockResolvedValue({ success: false, message: "active" });
+    const archived = await graphql({ schema, source: `mutation($orgRunId: String!) {
+      archiveStoredAgentOrgRun(orgRunId: $orgRunId) { success message orgRunId }
+    }`, variableValues: { orgRunId: "org-run" } });
+    const deleted = await graphql({ schema, source: `mutation($orgRunId: String!) {
+      deleteStoredAgentOrgRun(orgRunId: $orgRunId) { success message orgRunId }
+    }`, variableValues: { orgRunId: "org-run" } });
+
+    expect(archived.errors).toBeUndefined();
+    expect(archived.data?.archiveStoredAgentOrgRun).toEqual({ success: true, message: "archived", orgRunId: "org-run" });
+    expect(deleted.errors).toBeUndefined();
+    expect(deleted.data?.deleteStoredAgentOrgRun).toEqual({ success: false, message: "active", orgRunId: null });
+    expect(io.archiveStoredRun).toHaveBeenCalledExactlyOnceWith("org-run");
+    expect(io.deleteStoredRun).toHaveBeenCalledExactlyOnceWith("org-run");
+  });
+
 });

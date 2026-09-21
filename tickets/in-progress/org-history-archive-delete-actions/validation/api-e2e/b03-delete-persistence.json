@@ -1,0 +1,11 @@
+{
+  "deletedBaselinePackageFilesMissing": [
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_communication_messages.json",
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_run_execution_tree.json",
+    "memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/agent_org_task_delegation_records.json"
+  ],
+  "deletedIndexRowPresent": false,
+  "deletedOrgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+  "deletedPackageExists": false,
+  "otherBaselineFilesMissing": []
+}

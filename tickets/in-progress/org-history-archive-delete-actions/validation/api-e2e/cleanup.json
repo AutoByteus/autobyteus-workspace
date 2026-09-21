@@ -1,0 +1,58 @@
+{
+  "gitStatus": [
+    " M autobyteus-server-ts/docs/modules/agent_orgs.md",
+    " M autobyteus-server-ts/docs/modules/run_history.md",
+    " M autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+    " M autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+    " M autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+    " M autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts",
+    " M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts",
+    " M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+    " M autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-run-model-config.test.ts",
+    " M autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts",
+    " M autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+    " M autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+    " M autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+    " M autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts",
+    " M autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    " M autobyteus-web/composables/useWorkspaceHistoryMutations.ts",
+    " M autobyteus-web/docs/agent_orgs.md",
+    " M autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+    " M autobyteus-web/localization/messages/en/workspace.ts",
+    " M autobyteus-web/localization/messages/zh-CN/workspace.ts",
+    " M autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    " M autobyteus-web/stores/runHistoryMutationActions.ts",
+    " M autobyteus-web/stores/runHistoryStore.ts",
+    " M autobyteus-web/stores/runHistoryTypes.ts",
+    " M autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue",
+    "?? autobyteus-web/composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+    "?? tickets/in-progress/org-history-archive-delete-actions/"
+  ],
+  "noUnexpectedValidationDistInGitStatus": true,
+  "ownedBrowserTabClosed": true,
+  "ownedProcessSessionsStopped": true,
+  "portsListening": {
+    "51781": false,
+    "51783": false
+  },
+  "preexistingSharedDistRetained": {
+    "autobyteus-agent-presentation-contracts/dist": true,
+    "autobyteus-collaboration-stream-contracts/dist": true,
+    "autobyteus-team-stream-contracts/dist": true
+  },
+  "runtimeServerLogRetained": true,
+  "sourceManifestAllExact": true,
+  "validationOwnedPathsAbsent": {
+    ".local/api-archive-delete-profile": true,
+    "autobyteus-application-backend-sdk/dist": true,
+    "autobyteus-application-sdk-contracts/dist": true,
+    "autobyteus-server-ts/dist": true,
+    "autobyteus-server-ts/node_modules": true,
+    "autobyteus-ts/dist": true,
+    "autobyteus-web/.nuxt": true,
+    "autobyteus-web/.output": true,
+    "autobyteus-web/dist": true,
+    "autobyteus-web/node_modules": true,
+    "node_modules": true
+  }
+}

@@ -1,0 +1,287 @@
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-21T13:42:45.530Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-21T13:42:45.638Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-21T13:42:45.638Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1789998165643,"pid":69261,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58993"}
+{"level":30,"time":1789998165666,"pid":69261,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51781"}
+[2026-09-21T13:42:45.667Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51781
+[2026-09-21T13:42:45.667Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51781
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 0cb386a5-8fd1-4f22-9581-d30102b0b43f for workspace temp_ws_default
+Created file explorer session 0cb386a5-8fd1-4f22-9581-d30102b0b43f for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 0cb386a5-8fd1-4f22-9581-d30102b0b43f for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+FileExplorerSession closed: 0cb386a5-8fd1-4f22-9581-d30102b0b43f
+Closed file explorer session 0cb386a5-8fd1-4f22-9581-d30102b0b43f. Active sessions: 0
+File explorer WebSocket disconnected: 0cb386a5-8fd1-4f22-9581-d30102b0b43f
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 65d57b6d-c5b8-43df-8c65-1ea004b23404 for workspace temp_ws_default
+Created file explorer session 65d57b6d-c5b8-43df-8c65-1ea004b23404 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 65d57b6d-c5b8-43df-8c65-1ea004b23404 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/aorg_validation_agent_81c04cddf276461bb58b099a76d8d3f7/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/aorg_validation_agent_e8655248618f4249925046b432fc1e15/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/aorg_validation_agent_78a77c5d797c49afaecf40d1158074ca/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+FileExplorerSession closed: 65d57b6d-c5b8-43df-8c65-1ea004b23404
+Closed file explorer session 65d57b6d-c5b8-43df-8c65-1ea004b23404. Active sessions: 0
+File explorer WebSocket disconnected: 65d57b6d-c5b8-43df-8c65-1ea004b23404
+Agent team websocket attached for team run aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd
+Created agent session 6f5c4bb6-f66d-4595-b92a-7a5660ec7eb2 for run aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd
+Agent Team WebSocket connected: session=6f5c4bb6-f66d-4595-b92a-7a5660ec7eb2, run=aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/aorg_validation_agent_81c04cddf276461bb58b099a76d8d3f7/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_teams/aorg_validation_team_abe0be511c7a4e28a5e63e36e049bbdd/aorg_validation_agent_81c04cddf276461bb58b099a76d8d3f7/raw_traces_active.jsonl
+Closed agent session 6f5c4bb6-f66d-4595-b92a-7a5660ec7eb2
+Resolved configured temp workspace root to TempWorkspace.
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_16c292d7210c4f5d876ef90c2fe88c9c/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_68cb829416824cb2889621516ae823b0/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_9bddb6af3ebf4d99ae974bd499d03532/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_cc3edf40ca4b4f3dad9f35f242004de4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_21a34c31a36645aab5540b619c7a2b87/raw_traces_active.jsonl
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 0704d5ed-c916-4f26-9388-a0106ac019c2 for workspace temp_ws_default
+Created file explorer session 0704d5ed-c916-4f26-9388-a0106ac019c2 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 0704d5ed-c916-4f26-9388-a0106ac019c2 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_df169798eda74826956ae16cf44cfc39/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_16c292d7210c4f5d876ef90c2fe88c9c/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_68cb829416824cb2889621516ae823b0/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_9bddb6af3ebf4d99ae974bd499d03532/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_df169798eda74826956ae16cf44cfc39/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_21a34c31a36645aab5540b619c7a2b87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_cc3edf40ca4b4f3dad9f35f242004de4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_16c292d7210c4f5d876ef90c2fe88c9c/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_68cb829416824cb2889621516ae823b0/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_agent_9bddb6af3ebf4d99ae974bd499d03532/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_df169798eda74826956ae16cf44cfc39/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_21a34c31a36645aab5540b619c7a2b87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_03fb0a2fd18544e9be3cd7a385c46e97/aorg_validation_team_1e33015576374939923d2d4661444479/aorg_validation_agent_cc3edf40ca4b4f3dad9f35f242004de4/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+FileExplorerSession closed: 0704d5ed-c916-4f26-9388-a0106ac019c2
+Closed file explorer session 0704d5ed-c916-4f26-9388-a0106ac019c2. Active sessions: 0
+File explorer WebSocket disconnected: 0704d5ed-c916-4f26-9388-a0106ac019c2
+Resolved configured temp workspace root to TempWorkspace.
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_afc4599810ed444b956aa3802a2533c6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_d613162f17d84ea9ade29740371b0242/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_c5c5c8825324421bbc261db588fafa87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4/raw_traces_active.jsonl
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: db57a1b5-694d-4640-a7ab-c242644185ae for workspace temp_ws_default
+Created file explorer session db57a1b5-694d-4640-a7ab-c242644185ae for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: db57a1b5-694d-4640-a7ab-c242644185ae for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_afc4599810ed444b956aa3802a2533c6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_d613162f17d84ea9ade29740371b0242/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_c5c5c8825324421bbc261db588fafa87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_afc4599810ed444b956aa3802a2533c6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_d613162f17d84ea9ade29740371b0242/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_c5c5c8825324421bbc261db588fafa87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+FileExplorerSession closed: db57a1b5-694d-4640-a7ab-c242644185ae
+Closed file explorer session db57a1b5-694d-4640-a7ab-c242644185ae. Active sessions: 0
+File explorer WebSocket disconnected: db57a1b5-694d-4640-a7ab-c242644185ae
+Resolved configured temp workspace root to TempWorkspace.
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_e003253ff4604f88bb88a0b01aba45d3/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_b906b501ad0e43e5872ba825589fe861/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_c63efc1477f74464bc90b021487eef22/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_24ec70f21e08433f9777408b78c1c58b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_8358c8ef40d34b07a5581132bf0e1d28/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_b8362e2caacf41bc8a9d7cf551059076/raw_traces_active.jsonl
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e5603e62-3c25-494b-8683-9e994d546407 for workspace temp_ws_default
+Created file explorer session e5603e62-3c25-494b-8683-9e994d546407 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: e5603e62-3c25-494b-8683-9e994d546407 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_e003253ff4604f88bb88a0b01aba45d3/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_b906b501ad0e43e5872ba825589fe861/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_c63efc1477f74464bc90b021487eef22/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_24ec70f21e08433f9777408b78c1c58b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_8358c8ef40d34b07a5581132bf0e1d28/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_b8362e2caacf41bc8a9d7cf551059076/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_e003253ff4604f88bb88a0b01aba45d3/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_b906b501ad0e43e5872ba825589fe861/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_c63efc1477f74464bc90b021487eef22/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_24ec70f21e08433f9777408b78c1c58b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_8358c8ef40d34b07a5581132bf0e1d28/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_b8362e2caacf41bc8a9d7cf551059076/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+FileExplorerSession closed: e5603e62-3c25-494b-8683-9e994d546407
+Closed file explorer session e5603e62-3c25-494b-8683-9e994d546407. Active sessions: 0
+File explorer WebSocket disconnected: e5603e62-3c25-494b-8683-9e994d546407
+Resolved configured temp workspace root to TempWorkspace.
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_36438d541960414f98875dfcac4d8a3f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_a7998bb20f3240fcb0e18ade6adacbcc/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_97156fb3b4574ecd8573d3441c9d05ef/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_bba1cb264f474483a000930f1fdf3ef5/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_a82bc500de06452a87db78380fe9ec14/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_8418447915c349be91fac3473965f68c/raw_traces_active.jsonl
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: b1dd8c98-2100-4813-beb2-e5ec911b6331 for workspace temp_ws_default
+Created file explorer session b1dd8c98-2100-4813-beb2-e5ec911b6331 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: b1dd8c98-2100-4813-beb2-e5ec911b6331 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_36438d541960414f98875dfcac4d8a3f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_a7998bb20f3240fcb0e18ade6adacbcc/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_97156fb3b4574ecd8573d3441c9d05ef/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_bba1cb264f474483a000930f1fdf3ef5/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_a82bc500de06452a87db78380fe9ec14/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_8418447915c349be91fac3473965f68c/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/temp_workspace
+FileExplorerSession closed: b1dd8c98-2100-4813-beb2-e5ec911b6331
+Closed file explorer session b1dd8c98-2100-4813-beb2-e5ec911b6331. Active sessions: 0
+File explorer WebSocket disconnected: b1dd8c98-2100-4813-beb2-e5ec911b6331
+Created terminal session 122226d1-e006-4356-8a93-4692e8f8bce2 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 122226d1-e006-4356-8a93-4692e8f8bce2
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_afc4599810ed444b956aa3802a2533c6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_d613162f17d84ea9ade29740371b0242/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_c5c5c8825324421bbc261db588fafa87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4/raw_traces_active.jsonl
+Created terminal session a9dfb615-1736-4aa1-b616-2bbcfaa1e075 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a9dfb615-1736-4aa1-b616-2bbcfaa1e075
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 122226d1-e006-4356-8a93-4692e8f8bce2
+Terminal WebSocket disconnected: 122226d1-e006-4356-8a93-4692e8f8bce2
+Closed PTY session a9dfb615-1736-4aa1-b616-2bbcfaa1e075
+Terminal WebSocket disconnected: a9dfb615-1736-4aa1-b616-2bbcfaa1e075
+Created terminal session 0ccc878c-6e6d-417b-9bdf-0400ae881cb3 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0ccc878c-6e6d-417b-9bdf-0400ae881cb3
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_afc4599810ed444b956aa3802a2533c6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_d613162f17d84ea9ade29740371b0242/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_c5c5c8825324421bbc261db588fafa87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_e003253ff4604f88bb88a0b01aba45d3/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_b906b501ad0e43e5872ba825589fe861/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_agent_c63efc1477f74464bc90b021487eef22/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_24ec70f21e08433f9777408b78c1c58b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_8358c8ef40d34b07a5581132bf0e1d28/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_d9d486990e7a4b68818361502fa15974/aorg_validation_team_800e3ec0f53a4708a41982e79fb82d7f/aorg_validation_agent_b8362e2caacf41bc8a9d7cf551059076/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_afc4599810ed444b956aa3802a2533c6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_d613162f17d84ea9ade29740371b0242/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_agent_96e632ced6e04bf89fae0b46763ada7b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_c5c5c8825324421bbc261db588fafa87/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_43b674f487b2497d8535d36ec5f3de4f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_f0c166744146487f8e7e61bae8558979/aorg_validation_team_da138a0e393543f7aed4bb965e90cb8f/aorg_validation_agent_ec09890724d84aa0a98e02af946c87b4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_36438d541960414f98875dfcac4d8a3f/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_a7998bb20f3240fcb0e18ade6adacbcc/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_agent_97156fb3b4574ecd8573d3441c9d05ef/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_bba1cb264f474483a000930f1fdf3ef5/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_a82bc500de06452a87db78380fe9ec14/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-archive-delete-actions/.local/api-archive-delete-profile/memory/agent_orgs/aorg_validation_org_66cb23a2f6844c3f914ac0ddaee091f6/aorg_validation_team_907bc80a287f457da6f739c95b2450a9/aorg_validation_agent_8418447915c349be91fac3473965f68c/raw_traces_active.jsonl
+Closed PTY session 0ccc878c-6e6d-417b-9bdf-0400ae881cb3
+Terminal WebSocket disconnected: 0ccc878c-6e6d-417b-9bdf-0400ae881cb3
+[2026-09-21T14:08:04.313Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-09-21T14:08:04.335Z] [INFO] [server.runtime] Server closed cleanly.

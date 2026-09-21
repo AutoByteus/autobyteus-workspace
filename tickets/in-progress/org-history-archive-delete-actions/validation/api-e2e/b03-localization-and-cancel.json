@@ -1,0 +1,23 @@
+{
+  "targetOrgRunId": "aorg_validation_org_f0c166744146487f8e7e61bae8558979",
+  "english": {
+    "selectedHistoryRoute": true,
+    "dialogAriaLabel": "Delete Agent Org history permanently",
+    "dialogText": "Delete Agent Org history permanently / Delete this Agent Org history permanently? This removes only this run and cannot be undone. / Cancel / Delete Agent Org history permanently",
+    "cancelled": true,
+    "rowRouteSelectionRetained": true,
+    "indexAndPackageHashesExactBeforeAfter": true
+  },
+  "localeChange": {
+    "surface": "real /settings?section=language page",
+    "selection": "zh-CN",
+    "activeLocale": "简体中文",
+    "returnedThroughVisibleBackToWorkspace": true
+  },
+  "zhCN": {
+    "selectedHistoryRoute": true,
+    "dialogAriaLabel": "永久删除智能体组织历史记录",
+    "dialogText": "永久删除智能体组织历史记录 / 要永久删除此智能体组织历史记录吗？此操作仅删除本次运行，且无法撤销。 / 取消 / 永久删除智能体组织历史记录",
+    "cancelledForSafetyBeforeDestructiveFinalStep": true
+  }
+}

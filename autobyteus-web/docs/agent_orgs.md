@@ -371,6 +371,22 @@ Stop remains a separate isolated sibling action; explicit member navigation can
 reveal its owning hierarchy. Expansion state is local UI state, not persisted
 across application restart.
 
+An inactive top-level AgentOrg row also exposes Team-aligned **Archive** and
+**Delete** actions. Archive is non-destructive: it hides the row from default
+history only after the server has durably updated the AgentOrg tree and index.
+Delete opens an AgentOrg-specific confirmation and permanently removes only the
+exact stopped run package after authoritative success. Active roots remain
+Stop-only. Both action buttons are independently focusable and named, stop row
+click propagation, and disable conflicting work while pending.
+
+After a successful Archive or Delete the client prunes only that root, retires
+its exact retained context, refreshes history, and leaves `/workspace` only when
+the removed root owns the current route. A rejected or failed command preserves
+the row, route, selection, context, and all siblings and shows failure feedback.
+These actions never delete an Org definition, referenced Agent/Team definitions,
+workspace registration, providers, or unrelated history. No archived-history
+browser, unarchive path, migration, or mounted-member lifecycle action is added.
+
 - A new AgentOrg row displays `New - <AgentOrg name>` until the first
   successfully accepted non-empty external user message reaches an exact
   configured direct Agent or an Agent inside a mounted Team.

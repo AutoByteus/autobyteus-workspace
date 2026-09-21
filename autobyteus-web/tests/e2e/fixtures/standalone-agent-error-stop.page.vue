@@ -201,8 +201,10 @@ const mutations = useWorkspaceHistoryMutations({
   removeDraftRun: async () => false,
   deleteRun: async () => false,
   deleteTeamRun: async () => false,
+  deleteAgentOrgRun: async () => false,
   archiveRun: async () => false,
   archiveTeamRun: async () => false,
+  archiveAgentOrgRun: async () => false,
   addToast: (message, type) => {
     toastSequence += 1;
     toasts.value.push({ sequence: toastSequence, message, type });
