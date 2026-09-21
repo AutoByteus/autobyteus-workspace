@@ -4,8 +4,8 @@
 
 - Ticket: `ORG-HISTORY-ROW-TOGGLE-20260920-001`
 - Task size / architectural risk / route: `Small / Low / Direct`
-- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle`
-- Ticket branch: `codex/org-history-row-toggle`
+- Archived package: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-history-row-toggle`
+- Former ticket worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle` / `codex/org-history-row-toggle` (safely removed after target push)
 - Finalization target: `origin/requirements/flat-agent-organization-model` (not `personal`)
 - Delivery revision: `DR-002`
 
@@ -56,6 +56,9 @@
 
 - Explicit user verification/finalization authorization: `Received` on 2026-09-21 — “now finalize like you did earlier”.
 - Ticket state: archived to `tickets/done/org-history-row-toggle` before the ticket commit.
-- Repository finalization: `In progress`; fresh post-acceptance fetch confirmed ticket `HEAD` and target still equal at `aef459e8474550439e9e34bbbce98b04a3d9b754`, so no renewed verification was required.
+- Candidate commit: `c2b64742bf082da128163757235f777339616a63` (`fix: toggle agent org history rows`).
+- Repository finalization: `Completed`; the ticket branch was pushed, `requirements/flat-agent-organization-model` fast-forwarded from `aef459e8474550439e9e34bbbce98b04a3d9b754` to the candidate commit, and the target was pushed to `origin`.
 - Release/publication/deployment: `Not required` for this unreleased requirements-branch integration.
-- Safe cleanup: held until ticket commit/push and target integration/push succeed.
+- Safe cleanup: `Completed`; no task-worktree process was running, the dedicated worktree was removed, the local and remote ticket branches were deleted, and worktree metadata was pruned.
+- Finalization evidence: `validation/delivery-dr002-finalization.md`.
+- Delivery result: `Delivery Completed`; eligible for the rule-selected terminal return to Solution Designer after final target verification.
