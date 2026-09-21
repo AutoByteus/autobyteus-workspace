@@ -1,0 +1,2078 @@
+{
+  "startedAt": "2026-09-21T16:08:48.353Z",
+  "scenario": "list",
+  "platform": "linux-arm64",
+  "node": "v22.23.2",
+  "browserExecutable": "/usr/bin/chromium",
+  "workspaceDir": "/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability",
+  "operations": [
+    {
+      "label": "list-en",
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.099Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.102Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "northstar-operating-company",
+            "name": "Northstar Operating Company",
+            "description": "A realistic fictional SaaS company simulation with an executive leadership team and Org-mounted department Teams.",
+            "instructions": "This Agent Org simulates the executive operating model of a fictional B2B SaaS company, Northstar Operating Company.\n\nThe Org is intentionally modeled like a real leadership team: the CEO works directly with C-suite peers and the chief of staff, while department-level execution lives in Org-mounted flat Teams.\n\n## Operating Model\n\n- `ceo` owns final company-level prioritization and executive decisions.\n- `chief_of_staff` owns synthesis, decision logs, meeting prep, follow-up tracking, and cross-functional coordination.\n- `cto`, `cpo`, `cmo`, `cro`, `coo`, `cfo`, and `chief_people_officer` represent executive-level department leadership.\n- `engineering_org`, `product_org`, `marketing_org`, `revenue_org`, `operations_org`, and `finance_people_org` are mounted Teams for department-level diagnosis, planning, and execution detail.\n- `finance_people_org` is an intentionally lean shared-services group: the CFO and Chief People Officer remain the executive owners, while `vp_finance` coordinates operational finance, people, talent, and legal/compliance work.\n\n## Handoff Protocol\n\n- Each member owns the responsibility listed in its role definition; do not silently absorb a downstream specialist's work.\n- When the responsibility is complete or blocked, call `get_handoff_rules` and use the returned conditional rules as the routing table.\n- Send the result with `send_message_to` to the exact returned `recipient_address`, including status, decision or artifact, assumptions, open risks, and the next action.\n- Do not invent a recipient from memory or hard-code a downstream route. If no returned rule applies, finish with a clear result and leave company-level decisions to `ceo` and department-level decisions to the relevant Team coordinator.\n\n## Example Routing\n\n- Company strategy, priority conflicts, board narrative, or cross-functional tradeoffs -> `ceo`.\n- Executive meeting prep, synthesis, operating rhythm, or follow-up -> `chief_of_staff`.\n- Technology strategy or architecture risk -> `cto`; engineering execution planning -> `engineering_org`.\n- Product strategy or roadmap tradeoffs -> `cpo`; discovery/design details -> `product_org`.\n- Positioning, brand, demand generation, campaigns, or social channels -> `cmo`; marketing execution detail -> `marketing_org`.\n- Revenue targets, sales pipeline, retention, or GTM alignment -> `cro`; sales/CS/partnership details -> `revenue_org`.\n- Process, systems, customer operations, or execution cadence -> `coo`; operating-detail work -> `operations_org`.\n- Budget, unit economics, runway, hiring plan economics, or compliance -> `cfo` / `chief_people_officer`; execution detail -> `finance_people_org`.\n\nMounted Team members can be addressed by rooted addresses such as `/engineering_org/platform_engineering_manager`, `/product_org/ux_research_lead`, `/marketing_org/linkedin_marketer`, or `/revenue_org/customer_success_lead`.\n\n## Simulation Rules\n\n- Treat Northstar as fictional. Do not claim access to real company data.\n- When facts are missing, state assumptions clearly and proceed with a realistic operating-company model.\n- Prefer business-useful artifacts: decision memo, operating plan, owner map, risk register, launch plan, budget scenario, org diagnosis, or meeting brief.\n- Keep outputs executive-practical: decision, rationale, assumptions, owner, risks, next steps, and check-in cadence.\n- When a request needs department depth, route to the relevant mounted Team instead of making shallow executive-level guesses.\n\n## Package Model\n\nThis Org contains direct executive Agents and six flat Teams. There is no Org-level runtime coordinator. Select `/ceo` for executive intake; the CEO retains the decision responsibilities above. Each mounted Team keeps its own coordinator and local Agents. `org-config.json` owns the cross-member handoffs.\n",
+            "category": "business-simulation",
+            "avatarUrl": null,
+            "revision": "7fe146c611795eef369ef51dfab1633ade88516e0beb31bc3624d1055c7a2916",
+            "handoffs": [
+              {
+                "from": "/ceo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When executive synthesis, meeting preparation, decision logging, or follow-up tracking is needed."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cto",
+                "rules": [
+                  "When technology strategy, architecture risk, or a company-level technical tradeoff needs an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cpo",
+                "rules": [
+                  "When product strategy, roadmap prioritization, or product tradeoffs need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cmo",
+                "rules": [
+                  "When positioning, brand, demand generation, or marketing investment decisions need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cro",
+                "rules": [
+                  "When revenue targets, pipeline, retention, expansion, or GTM alignment need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/coo",
+                "rules": [
+                  "When process, systems, customer operations, or execution cadence need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cfo",
+                "rules": [
+                  "When budget, unit economics, runway, or capital allocation need a finance decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/chief_people_officer",
+                "rules": [
+                  "When hiring plans, organizational health, or people strategy need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/engineering_org",
+                "rules": [
+                  "When a company request needs engineering execution detail rather than only executive strategy."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/product_org",
+                "rules": [
+                  "When a company request needs product discovery, design, or roadmap detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/marketing_org",
+                "rules": [
+                  "When a company request needs marketing execution detail, campaign planning, or channel work."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/revenue_org",
+                "rules": [
+                  "When a company request needs sales, customer-success, partnership, pipeline, or expansion detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/operations_org",
+                "rules": [
+                  "When a company request needs operating-process, customer-operations, vendor, or analytics detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/finance_people_org",
+                "rules": [
+                  "When a company request needs budget execution, people operations, talent, or compliance detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/ceo",
+                "rules": [
+                  "When an executive brief, decision log, meeting synthesis, or follow-up plan is ready for company-level action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/engineering_org",
+                "rules": [
+                  "When technology strategy is ready to be translated into engineering execution, delivery, infrastructure, or release work."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/ceo",
+                "rules": [
+                  "When a technical risk or architecture recommendation requires a company-level prioritization or tradeoff decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/product_org",
+                "rules": [
+                  "When product strategy is ready for discovery, research, design, or roadmap execution detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/ceo",
+                "rules": [
+                  "When a product roadmap or product-market tradeoff requires company-level prioritization."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cmo",
+                "rules": [
+                  "When a product launch or product truth requires positioning, audience, or enablement input."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/marketing_org",
+                "rules": [
+                  "When marketing strategy is ready for integrated department planning and specialist execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/ceo",
+                "rules": [
+                  "When positioning, brand investment, or a material marketing budget tradeoff requires company-level approval."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/cpo",
+                "rules": [
+                  "When marketing positioning or launch work requires verified product capabilities, roadmap context, or product readiness."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/cro",
+                "rules": [
+                  "When a marketing plan requires sales enablement, lead-stage agreement, or revenue follow-up."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/revenue_org",
+                "rules": [
+                  "When revenue strategy is ready for sales, customer-success, partnership, pipeline, retention, or expansion execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/ceo",
+                "rules": [
+                  "When pricing, revenue strategy, or a company-resource tradeoff requires company-level prioritization."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/cmo",
+                "rules": [
+                  "When sales or customer feedback requires positioning, campaign, or demand-generation changes."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/operations_org",
+                "rules": [
+                  "When an operations strategy is ready for process, systems, customer-operations, vendor, or analytics execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/ceo",
+                "rules": [
+                  "When an operating-model or resource-allocation decision requires company-level prioritization."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/finance_people_org",
+                "rules": [
+                  "When finance strategy is ready for budgeting, controls, reporting, hiring-plan economics, or compliance execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/ceo",
+                "rules": [
+                  "When runway, capital allocation, unit economics, or a material budget decision requires company-level action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/finance_people_org",
+                "rules": [
+                  "When people strategy is ready for hiring, people operations, compensation, talent, or compliance execution through the shared-services group."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/ceo",
+                "rules": [
+                  "When an organizational, headcount, or people-risk decision requires company-level action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/cfo",
+                "rules": [
+                  "When a hiring plan or people investment requires finance validation and budget alignment."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/engineering_org/vp_engineering",
+                "to": "/cto",
+                "rules": [
+                  "When an engineering execution plan, technical risk assessment, or release recommendation is ready for executive technology review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_org/vp_product",
+                "to": "/cpo",
+                "rules": [
+                  "When a product discovery synthesis, roadmap recommendation, or design decision is ready for executive product review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_org/vp_product",
+                "to": "/cmo",
+                "rules": [
+                  "When product discovery or launch readiness produces positioning, audience, or enablement dependencies."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/vp_marketing",
+                "to": "/cmo",
+                "rules": [
+                  "When an integrated marketing plan, campaign portfolio, or performance recommendation is ready for executive review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/vp_marketing",
+                "to": "/cpo",
+                "rules": [
+                  "When the integrated marketing work requires product truth, launch readiness, or roadmap alignment."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/vp_marketing",
+                "to": "/cro",
+                "rules": [
+                  "When the integrated marketing work requires lead-quality agreement, sales enablement, or revenue follow-up."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/vp_sales",
+                "to": "/cro",
+                "rules": [
+                  "When a sales, customer-success, partnership, pipeline, retention, or expansion recommendation is ready for executive revenue review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/vp_sales",
+                "to": "/cmo",
+                "rules": [
+                  "When revenue execution produces market feedback or lead-quality findings that require marketing action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/operations_org/vp_operations",
+                "to": "/coo",
+                "rules": [
+                  "When an operating-process, customer-operations, vendor, or analytics recommendation is ready for executive operations review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/vp_finance",
+                "to": "/cfo",
+                "rules": [
+                  "When a finance, controls, reporting, or budget recommendation is ready for executive finance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/vp_finance",
+                "to": "/chief_people_officer",
+                "rules": [
+                  "When people-cost, hiring-plan, compensation, or organizational-health findings require people-strategy review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cto",
+                "rules": [
+                  "When a synthesized action item needs technical strategy, architecture, or engineering-risk ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cpo",
+                "rules": [
+                  "When a synthesized action item needs product strategy, roadmap, or customer-problem ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cmo",
+                "rules": [
+                  "When a synthesized action item needs positioning, brand, demand, or marketing-investment ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cro",
+                "rules": [
+                  "When a synthesized action item needs revenue, pipeline, retention, expansion, or GTM ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/coo",
+                "rules": [
+                  "When a synthesized action item needs operating-model, process, customer-operations, or execution ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cfo",
+                "rules": [
+                  "When a synthesized action item needs budget, runway, unit-economics, or capital-allocation ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/chief_people_officer",
+                "rules": [
+                  "When a synthesized action item needs organization, hiring, compensation, or people-risk ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a technical recommendation, risk decision, or architecture brief is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a product recommendation, roadmap decision, or product-market evidence package is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a positioning, brand, demand, or marketing-investment recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a revenue, pricing, pipeline, retention, or expansion recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When an operating-model, process, customer-operations, or execution recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a budget, runway, unit-economics, or capital-allocation recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When an organization, hiring, compensation, or people-risk recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/cpo",
+                "rules": [
+                  "When technical feasibility, platform capacity, security, or architecture constraints materially affect the product roadmap."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cto",
+                "rules": [
+                  "When a product bet or roadmap commitment needs architecture, capacity, security, or technical-feasibility assessment."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cro",
+                "rules": [
+                  "When product launch, adoption, packaging, or expansion decisions require revenue and customer-facing validation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/cpo",
+                "rules": [
+                  "When customer, win-loss, retention, or expansion evidence requires product investment or roadmap action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cfo",
+                "rules": [
+                  "When a product investment, roadmap commitment, or product operating plan needs financial validation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/cpo",
+                "rules": [
+                  "When financial planning or investment constraints materially affect product portfolio or roadmap choices."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/cfo",
+                "rules": [
+                  "When an operating-model, process, or capacity decision requires budget, cost, or resource validation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/coo",
+                "rules": [
+                  "When a financial control, budget decision, or resource constraint requires operating-process implementation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/coo",
+                "rules": [
+                  "When organization design, workforce capacity, or people-process changes require operating-model implementation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/coo",
+                "rules": [
+                  "When customer delivery, onboarding, retention, or expansion signals require operating-process changes."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/cro",
+                "rules": [
+                  "When customer-operations or service-quality findings require revenue, retention, or customer-success action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/engineering_org/infrastructure_security_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When a security, privacy, regulatory, or customer-commitment finding needs legal/compliance guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_org/platform_product_manager",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When an integration, privacy, permissions, data-use, or platform-policy decision needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/product_marketing_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When product claims, competitive claims, launch language, or sales-enablement material needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/brand_content_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When public claims, privacy-sensitive content, licensing, or policy risk needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/account_executive_manager",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When non-standard deal terms, security commitments, data terms, or commercial risk needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/customer_success_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When customer commitments, data handling, renewal terms, or service-risk obligations need legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/partnerships_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When a partner agreement, data-sharing term, co-marketing commitment, or ecosystem risk needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/operations_org/vendor_operations_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When vendor contracts, third-party risk, procurement terms, or operational obligations need legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/engineering_org/infrastructure_security_lead",
+                "rules": [
+                  "When the legal/compliance assessment for a security, privacy, or regulatory risk is complete and the infrastructure owner needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/product_org/platform_product_manager",
+                "rules": [
+                  "When the legal/compliance assessment for an integration, privacy, permissions, or data-use issue is complete and the platform-product owner needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/marketing_org/product_marketing_lead",
+                "rules": [
+                  "When the legal/compliance assessment for claims, launch language, or enablement material is complete and product marketing needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/marketing_org/brand_content_lead",
+                "rules": [
+                  "When the legal/compliance assessment for public content, licensing, or policy risk is complete and Brand & Content needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/revenue_org/account_executive_manager",
+                "rules": [
+                  "When the legal/compliance assessment for commercial terms or customer commitments is complete and the AE owner needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/revenue_org/customer_success_lead",
+                "rules": [
+                  "When the legal/compliance assessment for customer obligations or service risk is complete and Customer Success needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/revenue_org/partnerships_lead",
+                "rules": [
+                  "When the legal/compliance assessment for partner terms or data sharing is complete and Partnerships needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/operations_org/vendor_operations_lead",
+                "rules": [
+                  "When the legal/compliance assessment for vendor terms or third-party risk is complete and Vendor Operations needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "ceo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:ceo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "chief_of_staff",
+                "ref": "agent-org-owned-agent:northstar-operating-company:chief-of-staff",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cto",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cto",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cpo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cpo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cmo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cmo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cro",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cro",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "coo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:coo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cfo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cfo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "chief_people_officer",
+                "ref": "agent-org-owned-agent:northstar-operating-company:chief-people-officer",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "engineering_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:engineering-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "product_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:product-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "marketing_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:marketing-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "revenue_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:revenue-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "operations_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:operations-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "finance_people_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:finance-people-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "software-development-department",
+            "name": "Software Development Department",
+            "description": "A coordinator-free Agent Org containing a Solution Designer-led Software Engineering Team and an independent Product Design & Prototyping Team.",
+            "instructions": "The department is an Agent Org containing two shared Agent Teams. It has no\nOrg-level coordinator; each Team retains its own coordinator and workflow.\n\n## Ownership Boundaries\n\n- `software_engineering_team/solution_designer` owns investigation, supported\n  product scenarios, requirements, user-approval capture, architecture design,\n  solution revisions and upstream recovery. It coordinates the engineering\n  team and verifies the finalized delivery receipt.\n- `product_design_prototyping_team` independently owns its modes, separate\n  prototype projects, tickets, commits, user review and UI/UX artifacts.\n- The remaining Software Engineering specialists own independent architecture\n  review, implementation, code review, executable validation and delivery.\n\n## Department Contract\n\nSolution Designer accepts rough software requests and carries investigation into\nrequirements and, after explicit user approval, a proportionate architecture\ndesign. It classifies size/risk after completing that design, then applies the\nconfigured rules. Independent reviews remain conditional; design is not skipped.\n\nSolution Designer exchanges Product requests and returned evidence directly\nwith Product Prototyper. Requirements/design clarification and downstream\nrecovery stay with Solution Designer. Delivery Engineer returns finalized\ndelivery to Solution Designer, which verifies the receipt before returning\n`Terminal` to the user or caller when no handoff rule matches.\n\nDetailed work belongs to the member skills. The department's\n[org-config.json](org-config.json) owns cross-team recipient addresses and\nconditional rules; child teams own their internal routing policies.\n\n## Communication Convention\n\nEach working specialist finishes owned work, persists artifacts, classifies the\noutcome, calls `get_handoff_rules`, applies every matching rule and uses\n`send_message_to` with each exact returned `recipient_address`. Carry the stable package identifier\nand absolute artifact paths. Return the result to the caller when no rule\nmatches; stop after required handoffs. Do not use `delegate_task` as a substitute.\n",
+            "category": "software-engineering",
+            "avatarUrl": null,
+            "revision": "1fad33aab1cff36e25647a539f1a02d547a3c6e55e1b0fed55c4493fe352a60e",
+            "handoffs": [
+              {
+                "from": "/software_engineering_team/solution_designer",
+                "to": "/product_design_prototyping_team/product_prototyper",
+                "rules": [
+                  "When Solution Designer classifies the outcome as Product Design Requested because the user explicitly or after clarification asks Product Design & Prototyping to help understand or evolve an experience. This also applies to purpose Result Correction for missing or inconsistent evidence in a returned package from the same user-requested engagement; include the original user-request reference and precise gap without expanding scope. Send the user's requested outcome in the user's own terms, the focused decision, relevant requirement and behavior IDs, established constraints, non-goals, canonical requirements paths, and supplied existing-product context when applicable. Do not prescribe a Product Prototyper mode, Bootstrapper payload, repository, ticket, or implementation procedure; Product Prototyper selects and owns those."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_design_prototyping_team/product_prototyper",
+                "to": "/software_engineering_team/solution_designer",
+                "rules": [
+                  "When Product Prototyper classifies the outcome as Requirements Visualization Ready because the interactive visualizer revision, review URL, evidence, and open clarification questions are ready for Solution Designer and user review.",
+                  "When Product Prototyper classifies the outcome as Prototype Completed because the user-approved prototype and UI/UX package are ready for requirements integration.",
+                  "When Product Prototyper classifies the outcome as Requirement Impact because user feedback or prototype evidence requires a material requirements revision.",
+                  "When Product Prototyper classifies the outcome as Not Recommended because a prototype would not materially improve the decision and the rationale/evidence are ready.",
+                  "When Product Prototyper classifies the outcome as Blocked because prototype work cannot safely or accurately continue and Solution Designer must decide the next requirements path."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "product_design_prototyping_team",
+                "ref": "product-design-prototyping-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "software_engineering_team",
+                "ref": "software-engineering-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.103Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.106Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.106Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.108Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:34.109Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:38943/graphql",
+      "requestedAt": "2026-09-21T16:09:36.832Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "northstar-operating-company",
+            "name": "Northstar Operating Company",
+            "description": "A realistic fictional SaaS company simulation with an executive leadership team and Org-mounted department Teams.",
+            "instructions": "This Agent Org simulates the executive operating model of a fictional B2B SaaS company, Northstar Operating Company.\n\nThe Org is intentionally modeled like a real leadership team: the CEO works directly with C-suite peers and the chief of staff, while department-level execution lives in Org-mounted flat Teams.\n\n## Operating Model\n\n- `ceo` owns final company-level prioritization and executive decisions.\n- `chief_of_staff` owns synthesis, decision logs, meeting prep, follow-up tracking, and cross-functional coordination.\n- `cto`, `cpo`, `cmo`, `cro`, `coo`, `cfo`, and `chief_people_officer` represent executive-level department leadership.\n- `engineering_org`, `product_org`, `marketing_org`, `revenue_org`, `operations_org`, and `finance_people_org` are mounted Teams for department-level diagnosis, planning, and execution detail.\n- `finance_people_org` is an intentionally lean shared-services group: the CFO and Chief People Officer remain the executive owners, while `vp_finance` coordinates operational finance, people, talent, and legal/compliance work.\n\n## Handoff Protocol\n\n- Each member owns the responsibility listed in its role definition; do not silently absorb a downstream specialist's work.\n- When the responsibility is complete or blocked, call `get_handoff_rules` and use the returned conditional rules as the routing table.\n- Send the result with `send_message_to` to the exact returned `recipient_address`, including status, decision or artifact, assumptions, open risks, and the next action.\n- Do not invent a recipient from memory or hard-code a downstream route. If no returned rule applies, finish with a clear result and leave company-level decisions to `ceo` and department-level decisions to the relevant Team coordinator.\n\n## Example Routing\n\n- Company strategy, priority conflicts, board narrative, or cross-functional tradeoffs -> `ceo`.\n- Executive meeting prep, synthesis, operating rhythm, or follow-up -> `chief_of_staff`.\n- Technology strategy or architecture risk -> `cto`; engineering execution planning -> `engineering_org`.\n- Product strategy or roadmap tradeoffs -> `cpo`; discovery/design details -> `product_org`.\n- Positioning, brand, demand generation, campaigns, or social channels -> `cmo`; marketing execution detail -> `marketing_org`.\n- Revenue targets, sales pipeline, retention, or GTM alignment -> `cro`; sales/CS/partnership details -> `revenue_org`.\n- Process, systems, customer operations, or execution cadence -> `coo`; operating-detail work -> `operations_org`.\n- Budget, unit economics, runway, hiring plan economics, or compliance -> `cfo` / `chief_people_officer`; execution detail -> `finance_people_org`.\n\nMounted Team members can be addressed by rooted addresses such as `/engineering_org/platform_engineering_manager`, `/product_org/ux_research_lead`, `/marketing_org/linkedin_marketer`, or `/revenue_org/customer_success_lead`.\n\n## Simulation Rules\n\n- Treat Northstar as fictional. Do not claim access to real company data.\n- When facts are missing, state assumptions clearly and proceed with a realistic operating-company model.\n- Prefer business-useful artifacts: decision memo, operating plan, owner map, risk register, launch plan, budget scenario, org diagnosis, or meeting brief.\n- Keep outputs executive-practical: decision, rationale, assumptions, owner, risks, next steps, and check-in cadence.\n- When a request needs department depth, route to the relevant mounted Team instead of making shallow executive-level guesses.\n\n## Package Model\n\nThis Org contains direct executive Agents and six flat Teams. There is no Org-level runtime coordinator. Select `/ceo` for executive intake; the CEO retains the decision responsibilities above. Each mounted Team keeps its own coordinator and local Agents. `org-config.json` owns the cross-member handoffs.\n",
+            "category": "business-simulation",
+            "avatarUrl": null,
+            "revision": "7fe146c611795eef369ef51dfab1633ade88516e0beb31bc3624d1055c7a2916",
+            "handoffs": [
+              {
+                "from": "/ceo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When executive synthesis, meeting preparation, decision logging, or follow-up tracking is needed."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cto",
+                "rules": [
+                  "When technology strategy, architecture risk, or a company-level technical tradeoff needs an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cpo",
+                "rules": [
+                  "When product strategy, roadmap prioritization, or product tradeoffs need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cmo",
+                "rules": [
+                  "When positioning, brand, demand generation, or marketing investment decisions need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cro",
+                "rules": [
+                  "When revenue targets, pipeline, retention, expansion, or GTM alignment need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/coo",
+                "rules": [
+                  "When process, systems, customer operations, or execution cadence need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/cfo",
+                "rules": [
+                  "When budget, unit economics, runway, or capital allocation need a finance decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/chief_people_officer",
+                "rules": [
+                  "When hiring plans, organizational health, or people strategy need an executive owner."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/engineering_org",
+                "rules": [
+                  "When a company request needs engineering execution detail rather than only executive strategy."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/product_org",
+                "rules": [
+                  "When a company request needs product discovery, design, or roadmap detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/marketing_org",
+                "rules": [
+                  "When a company request needs marketing execution detail, campaign planning, or channel work."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/revenue_org",
+                "rules": [
+                  "When a company request needs sales, customer-success, partnership, pipeline, or expansion detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/operations_org",
+                "rules": [
+                  "When a company request needs operating-process, customer-operations, vendor, or analytics detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/ceo",
+                "to": "/finance_people_org",
+                "rules": [
+                  "When a company request needs budget execution, people operations, talent, or compliance detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/ceo",
+                "rules": [
+                  "When an executive brief, decision log, meeting synthesis, or follow-up plan is ready for company-level action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/engineering_org",
+                "rules": [
+                  "When technology strategy is ready to be translated into engineering execution, delivery, infrastructure, or release work."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/ceo",
+                "rules": [
+                  "When a technical risk or architecture recommendation requires a company-level prioritization or tradeoff decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/product_org",
+                "rules": [
+                  "When product strategy is ready for discovery, research, design, or roadmap execution detail."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/ceo",
+                "rules": [
+                  "When a product roadmap or product-market tradeoff requires company-level prioritization."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cmo",
+                "rules": [
+                  "When a product launch or product truth requires positioning, audience, or enablement input."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/marketing_org",
+                "rules": [
+                  "When marketing strategy is ready for integrated department planning and specialist execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/ceo",
+                "rules": [
+                  "When positioning, brand investment, or a material marketing budget tradeoff requires company-level approval."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/cpo",
+                "rules": [
+                  "When marketing positioning or launch work requires verified product capabilities, roadmap context, or product readiness."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/cro",
+                "rules": [
+                  "When a marketing plan requires sales enablement, lead-stage agreement, or revenue follow-up."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/revenue_org",
+                "rules": [
+                  "When revenue strategy is ready for sales, customer-success, partnership, pipeline, retention, or expansion execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/ceo",
+                "rules": [
+                  "When pricing, revenue strategy, or a company-resource tradeoff requires company-level prioritization."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/cmo",
+                "rules": [
+                  "When sales or customer feedback requires positioning, campaign, or demand-generation changes."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/operations_org",
+                "rules": [
+                  "When an operations strategy is ready for process, systems, customer-operations, vendor, or analytics execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/ceo",
+                "rules": [
+                  "When an operating-model or resource-allocation decision requires company-level prioritization."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/finance_people_org",
+                "rules": [
+                  "When finance strategy is ready for budgeting, controls, reporting, hiring-plan economics, or compliance execution."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/ceo",
+                "rules": [
+                  "When runway, capital allocation, unit economics, or a material budget decision requires company-level action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/finance_people_org",
+                "rules": [
+                  "When people strategy is ready for hiring, people operations, compensation, talent, or compliance execution through the shared-services group."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/ceo",
+                "rules": [
+                  "When an organizational, headcount, or people-risk decision requires company-level action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/cfo",
+                "rules": [
+                  "When a hiring plan or people investment requires finance validation and budget alignment."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/engineering_org/vp_engineering",
+                "to": "/cto",
+                "rules": [
+                  "When an engineering execution plan, technical risk assessment, or release recommendation is ready for executive technology review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_org/vp_product",
+                "to": "/cpo",
+                "rules": [
+                  "When a product discovery synthesis, roadmap recommendation, or design decision is ready for executive product review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_org/vp_product",
+                "to": "/cmo",
+                "rules": [
+                  "When product discovery or launch readiness produces positioning, audience, or enablement dependencies."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/vp_marketing",
+                "to": "/cmo",
+                "rules": [
+                  "When an integrated marketing plan, campaign portfolio, or performance recommendation is ready for executive review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/vp_marketing",
+                "to": "/cpo",
+                "rules": [
+                  "When the integrated marketing work requires product truth, launch readiness, or roadmap alignment."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/vp_marketing",
+                "to": "/cro",
+                "rules": [
+                  "When the integrated marketing work requires lead-quality agreement, sales enablement, or revenue follow-up."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/vp_sales",
+                "to": "/cro",
+                "rules": [
+                  "When a sales, customer-success, partnership, pipeline, retention, or expansion recommendation is ready for executive revenue review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/vp_sales",
+                "to": "/cmo",
+                "rules": [
+                  "When revenue execution produces market feedback or lead-quality findings that require marketing action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/operations_org/vp_operations",
+                "to": "/coo",
+                "rules": [
+                  "When an operating-process, customer-operations, vendor, or analytics recommendation is ready for executive operations review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/vp_finance",
+                "to": "/cfo",
+                "rules": [
+                  "When a finance, controls, reporting, or budget recommendation is ready for executive finance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/vp_finance",
+                "to": "/chief_people_officer",
+                "rules": [
+                  "When people-cost, hiring-plan, compensation, or organizational-health findings require people-strategy review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cto",
+                "rules": [
+                  "When a synthesized action item needs technical strategy, architecture, or engineering-risk ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cpo",
+                "rules": [
+                  "When a synthesized action item needs product strategy, roadmap, or customer-problem ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cmo",
+                "rules": [
+                  "When a synthesized action item needs positioning, brand, demand, or marketing-investment ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cro",
+                "rules": [
+                  "When a synthesized action item needs revenue, pipeline, retention, expansion, or GTM ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/coo",
+                "rules": [
+                  "When a synthesized action item needs operating-model, process, customer-operations, or execution ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/cfo",
+                "rules": [
+                  "When a synthesized action item needs budget, runway, unit-economics, or capital-allocation ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_of_staff",
+                "to": "/chief_people_officer",
+                "rules": [
+                  "When a synthesized action item needs organization, hiring, compensation, or people-risk ownership."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a technical recommendation, risk decision, or architecture brief is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a product recommendation, roadmap decision, or product-market evidence package is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cmo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a positioning, brand, demand, or marketing-investment recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a revenue, pricing, pipeline, retention, or expansion recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When an operating-model, process, customer-operations, or execution recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When a budget, runway, unit-economics, or capital-allocation recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/chief_of_staff",
+                "rules": [
+                  "When an organization, hiring, compensation, or people-risk recommendation is ready for executive cadence and follow-up tracking."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cto",
+                "to": "/cpo",
+                "rules": [
+                  "When technical feasibility, platform capacity, security, or architecture constraints materially affect the product roadmap."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cto",
+                "rules": [
+                  "When a product bet or roadmap commitment needs architecture, capacity, security, or technical-feasibility assessment."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cro",
+                "rules": [
+                  "When product launch, adoption, packaging, or expansion decisions require revenue and customer-facing validation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/cpo",
+                "rules": [
+                  "When customer, win-loss, retention, or expansion evidence requires product investment or roadmap action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cpo",
+                "to": "/cfo",
+                "rules": [
+                  "When a product investment, roadmap commitment, or product operating plan needs financial validation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/cpo",
+                "rules": [
+                  "When financial planning or investment constraints materially affect product portfolio or roadmap choices."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/cfo",
+                "rules": [
+                  "When an operating-model, process, or capacity decision requires budget, cost, or resource validation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cfo",
+                "to": "/coo",
+                "rules": [
+                  "When a financial control, budget decision, or resource constraint requires operating-process implementation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/chief_people_officer",
+                "to": "/coo",
+                "rules": [
+                  "When organization design, workforce capacity, or people-process changes require operating-model implementation."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/cro",
+                "to": "/coo",
+                "rules": [
+                  "When customer delivery, onboarding, retention, or expansion signals require operating-process changes."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/coo",
+                "to": "/cro",
+                "rules": [
+                  "When customer-operations or service-quality findings require revenue, retention, or customer-success action."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/engineering_org/infrastructure_security_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When a security, privacy, regulatory, or customer-commitment finding needs legal/compliance guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_org/platform_product_manager",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When an integration, privacy, permissions, data-use, or platform-policy decision needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/product_marketing_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When product claims, competitive claims, launch language, or sales-enablement material needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/marketing_org/brand_content_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When public claims, privacy-sensitive content, licensing, or policy risk needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/account_executive_manager",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When non-standard deal terms, security commitments, data terms, or commercial risk needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/customer_success_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When customer commitments, data handling, renewal terms, or service-risk obligations need legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/revenue_org/partnerships_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When a partner agreement, data-sharing term, co-marketing commitment, or ecosystem risk needs legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/operations_org/vendor_operations_lead",
+                "to": "/finance_people_org/legal_compliance_lead",
+                "rules": [
+                  "When vendor contracts, third-party risk, procurement terms, or operational obligations need legal/compliance review."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/engineering_org/infrastructure_security_lead",
+                "rules": [
+                  "When the legal/compliance assessment for a security, privacy, or regulatory risk is complete and the infrastructure owner needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/product_org/platform_product_manager",
+                "rules": [
+                  "When the legal/compliance assessment for an integration, privacy, permissions, or data-use issue is complete and the platform-product owner needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/marketing_org/product_marketing_lead",
+                "rules": [
+                  "When the legal/compliance assessment for claims, launch language, or enablement material is complete and product marketing needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/marketing_org/brand_content_lead",
+                "rules": [
+                  "When the legal/compliance assessment for public content, licensing, or policy risk is complete and Brand & Content needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/revenue_org/account_executive_manager",
+                "rules": [
+                  "When the legal/compliance assessment for commercial terms or customer commitments is complete and the AE owner needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/revenue_org/customer_success_lead",
+                "rules": [
+                  "When the legal/compliance assessment for customer obligations or service risk is complete and Customer Success needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/revenue_org/partnerships_lead",
+                "rules": [
+                  "When the legal/compliance assessment for partner terms or data sharing is complete and Partnerships needs the decision."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/finance_people_org/legal_compliance_lead",
+                "to": "/operations_org/vendor_operations_lead",
+                "rules": [
+                  "When the legal/compliance assessment for vendor terms or third-party risk is complete and Vendor Operations needs the guardrails."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "ceo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:ceo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "chief_of_staff",
+                "ref": "agent-org-owned-agent:northstar-operating-company:chief-of-staff",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cto",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cto",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cpo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cpo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cmo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cmo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cro",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cro",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "coo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:coo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cfo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cfo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "chief_people_officer",
+                "ref": "agent-org-owned-agent:northstar-operating-company:chief-people-officer",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "engineering_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:engineering-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "product_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:product-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "marketing_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:marketing-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "revenue_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:revenue-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "operations_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:operations-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "finance_people_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:finance-people-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "software-development-department",
+            "name": "Software Development Department",
+            "description": "A coordinator-free Agent Org containing a Solution Designer-led Software Engineering Team and an independent Product Design & Prototyping Team.",
+            "instructions": "The department is an Agent Org containing two shared Agent Teams. It has no\nOrg-level coordinator; each Team retains its own coordinator and workflow.\n\n## Ownership Boundaries\n\n- `software_engineering_team/solution_designer` owns investigation, supported\n  product scenarios, requirements, user-approval capture, architecture design,\n  solution revisions and upstream recovery. It coordinates the engineering\n  team and verifies the finalized delivery receipt.\n- `product_design_prototyping_team` independently owns its modes, separate\n  prototype projects, tickets, commits, user review and UI/UX artifacts.\n- The remaining Software Engineering specialists own independent architecture\n  review, implementation, code review, executable validation and delivery.\n\n## Department Contract\n\nSolution Designer accepts rough software requests and carries investigation into\nrequirements and, after explicit user approval, a proportionate architecture\ndesign. It classifies size/risk after completing that design, then applies the\nconfigured rules. Independent reviews remain conditional; design is not skipped.\n\nSolution Designer exchanges Product requests and returned evidence directly\nwith Product Prototyper. Requirements/design clarification and downstream\nrecovery stay with Solution Designer. Delivery Engineer returns finalized\ndelivery to Solution Designer, which verifies the receipt before returning\n`Terminal` to the user or caller when no handoff rule matches.\n\nDetailed work belongs to the member skills. The department's\n[org-config.json](org-config.json) owns cross-team recipient addresses and\nconditional rules; child teams own their internal routing policies.\n\n## Communication Convention\n\nEach working specialist finishes owned work, persists artifacts, classifies the\noutcome, calls `get_handoff_rules`, applies every matching rule and uses\n`send_message_to` with each exact returned `recipient_address`. Carry the stable package identifier\nand absolute artifact paths. Return the result to the caller when no rule\nmatches; stop after required handoffs. Do not use `delegate_task` as a substitute.\n",
+            "category": "software-engineering",
+            "avatarUrl": null,
+            "revision": "1fad33aab1cff36e25647a539f1a02d547a3c6e55e1b0fed55c4493fe352a60e",
+            "handoffs": [
+              {
+                "from": "/software_engineering_team/solution_designer",
+                "to": "/product_design_prototyping_team/product_prototyper",
+                "rules": [
+                  "When Solution Designer classifies the outcome as Product Design Requested because the user explicitly or after clarification asks Product Design & Prototyping to help understand or evolve an experience. This also applies to purpose Result Correction for missing or inconsistent evidence in a returned package from the same user-requested engagement; include the original user-request reference and precise gap without expanding scope. Send the user's requested outcome in the user's own terms, the focused decision, relevant requirement and behavior IDs, established constraints, non-goals, canonical requirements paths, and supplied existing-product context when applicable. Do not prescribe a Product Prototyper mode, Bootstrapper payload, repository, ticket, or implementation procedure; Product Prototyper selects and owns those."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/product_design_prototyping_team/product_prototyper",
+                "to": "/software_engineering_team/solution_designer",
+                "rules": [
+                  "When Product Prototyper classifies the outcome as Requirements Visualization Ready because the interactive visualizer revision, review URL, evidence, and open clarification questions are ready for Solution Designer and user review.",
+                  "When Product Prototyper classifies the outcome as Prototype Completed because the user-approved prototype and UI/UX package are ready for requirements integration.",
+                  "When Product Prototyper classifies the outcome as Requirement Impact because user feedback or prototype evidence requires a material requirements revision.",
+                  "When Product Prototyper classifies the outcome as Not Recommended because a prototype would not materially improve the decision and the rationale/evidence are ready.",
+                  "When Product Prototyper classifies the outcome as Blocked because prototype work cannot safely or accurately continue and Solution Designer must decide the next requirements path."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "product_design_prototyping_team",
+                "ref": "product-design-prototyping-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "software_engineering_team",
+                "ref": "software-engineering-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "list-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ],
+  "scenarios": {},
+  "fixture": {
+    "beforeHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "cfb193a843cc5d67a0d13d07a16e8fd1cfab2ff3b5e17e68770e9385c79c132b",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/team-config.json": "dc4cb227f571aaf65878eb634a9ec116d8d8ddc634d481ccf7b5f38a42c12dbc",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "45db6b591e33ccccf522e26c4b0136abff17cf8ac3593bc4e131040f6a57a2d1",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "e9412ab4e06d72da5bcf4976bcae7a4e623087b27e70f642ad0f1119c345cb78",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    },
+    "definitionFileCount": 16
+  },
+  "cleanup": {
+    "frontend": {
+      "status": "terminated",
+      "pid": 24026,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "backend": {
+      "status": "terminated",
+      "pid": 23928,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "ownedRoot": {
+      "status": "removed",
+      "path": "/tmp/autobyteus-agent-org-role-labels-DViqWT"
+    }
+  },
+  "failures": [
+    {
+      "message": "A list mutation snapshot contained a non-role label",
+      "details": {
+        "observedTexts": [
+          "Research Lead",
+          "Delivery Team",
+          "Quality Lead",
+          "Release Team",
+          "ceo",
+          "chief of staff",
+          "cto",
+          "cpo",
+          "cmo",
+          "cro",
+          "coo",
+          "cfo",
+          "chief people officer",
+          "engineering org",
+          "product org",
+          "marketing org",
+          "revenue org",
+          "operations org",
+          "finance people org",
+          "product design prototyping team",
+          "software engineering team",
+          "Quality Lead",
+          "Release Team",
+          "Research Lead",
+          "Delivery Team"
+        ],
+        "allowed": [
+          "Research Lead",
+          "Delivery Team",
+          "Quality Lead",
+          "Release Team"
+        ]
+      },
+      "stack": "Error: A list mutation snapshot contained a non-role label\n    at assert (file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:89:17)\n    at runListScenario (file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:358:5)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:616:50"
+    }
+  ],
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:38943",
+    "frontendUrl": "http://127.0.0.1:37867"
+  },
+  "completedAt": "2026-09-21T16:09:39.097Z",
+  "result": "Fail"
+}

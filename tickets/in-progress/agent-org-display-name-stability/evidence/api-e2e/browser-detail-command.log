@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.72 test:e2e:agent-org-role-labels /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web
+> node tests/e2e/agent-org-role-labels-probe.mjs --skip-server-build --scenario detail --output-dir /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/browser/detail
+
+Fail: /home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/tickets/in-progress/agent-org-display-name-stability/evidence/api-e2e/browser/detail/agent-org-role-labels-result.json
+ ELIFECYCLE  Command failed with exit code 1.

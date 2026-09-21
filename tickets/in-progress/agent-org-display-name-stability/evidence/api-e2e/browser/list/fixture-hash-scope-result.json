@@ -1,0 +1,611 @@
+{
+  "startedAt": "2026-09-21T16:13:48.527Z",
+  "scenario": "list",
+  "platform": "linux-arm64",
+  "node": "v22.23.2",
+  "browserExecutable": "/usr/bin/chromium",
+  "workspaceDir": "/home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability",
+  "operations": [
+    {
+      "label": "list-en",
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.414Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.417Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.418Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.421Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.421Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.422Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:04.423Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:05.325Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.374Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.377Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "49f2bfca3dc6013635d188cf6c45d7f727740fcb1a5ff79518cf4726155a90ae",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "90e5bba9c44ae4a6823fa05b65ffea83908b1a38fbcf6fe8acbe65d514599e74",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.378Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.382Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.382Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.383Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "list-zh-CN",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:37259/graphql",
+      "requestedAt": "2026-09-21T16:14:06.384Z",
+      "status": 200,
+      "errors": []
+    }
+  ],
+  "browserEvents": [
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "list-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "list-en",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "list-zh-CN",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "list-zh-CN",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "list-zh-CN",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "list-zh-CN",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "list-zh-CN",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "list-zh-CN",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "scenarios": {
+    "AORG-E2E-003-list": {
+      "initialLabels": [
+        "Research Lead",
+        "Delivery Team"
+      ],
+      "initialAria": [
+        "Agent Research Lead",
+        "Team Delivery Team"
+      ],
+      "reloadedLabels": [
+        "Research Lead",
+        "Delivery Team"
+      ],
+      "snapshots": [
+        {
+          "at": 2150.8000000715256,
+          "serialized": "[{\"testId\":\"org-member-agent-aorg-role-research-agent\",\"text\":\"Research Lead\",\"ariaLabel\":\"Agent Research Lead\"},{\"testId\":\"org-member-team-aorg-role-delivery-team\",\"text\":\"Delivery Team\",\"ariaLabel\":\"Team Delivery Team\"},{\"testId\":\"org-member-agent-aorg-role-quality-agent\",\"text\":\"Quality Lead\",\"ariaLabel\":\"Agent Quality Lead\"},{\"testId\":\"org-member-team-aorg-role-release-team\",\"text\":\"Release Team\",\"ariaLabel\":\"Team Release Team\"}]",
+          "labels": [
+            {
+              "testId": "org-member-agent-aorg-role-research-agent",
+              "text": "Research Lead",
+              "ariaLabel": "Agent Research Lead"
+            },
+            {
+              "testId": "org-member-team-aorg-role-delivery-team",
+              "text": "Delivery Team",
+              "ariaLabel": "Team Delivery Team"
+            },
+            {
+              "testId": "org-member-agent-aorg-role-quality-agent",
+              "text": "Quality Lead",
+              "ariaLabel": "Agent Quality Lead"
+            },
+            {
+              "testId": "org-member-team-aorg-role-release-team",
+              "text": "Release Team",
+              "ariaLabel": "Team Release Team"
+            }
+          ]
+        },
+        {
+          "at": 3108.5,
+          "serialized": "[{\"testId\":\"org-member-agent-aorg-role-quality-agent\",\"text\":\"Quality Lead\",\"ariaLabel\":\"Agent Quality Lead\"},{\"testId\":\"org-member-team-aorg-role-release-team\",\"text\":\"Release Team\",\"ariaLabel\":\"Team Release Team\"}]",
+          "labels": [
+            {
+              "testId": "org-member-agent-aorg-role-quality-agent",
+              "text": "Quality Lead",
+              "ariaLabel": "Agent Quality Lead"
+            },
+            {
+              "testId": "org-member-team-aorg-role-release-team",
+              "text": "Release Team",
+              "ariaLabel": "Team Release Team"
+            }
+          ]
+        },
+        {
+          "at": 3117.600000023842,
+          "serialized": "[{\"testId\":\"org-member-agent-aorg-role-research-agent\",\"text\":\"Research Lead\",\"ariaLabel\":\"Agent Research Lead\"},{\"testId\":\"org-member-team-aorg-role-delivery-team\",\"text\":\"Delivery Team\",\"ariaLabel\":\"Team Delivery Team\"}]",
+          "labels": [
+            {
+              "testId": "org-member-agent-aorg-role-research-agent",
+              "text": "Research Lead",
+              "ariaLabel": "Agent Research Lead"
+            },
+            {
+              "testId": "org-member-team-aorg-role-delivery-team",
+              "text": "Delivery Team",
+              "ariaLabel": "Team Delivery Team"
+            }
+          ]
+        }
+      ],
+      "runActionEnabled": true,
+      "getAgentOrgDefinitions": 2,
+      "exactReadsBeforeRun": 0
+    },
+    "AORG-E2E-003-list-zh-CN": {
+      "labels": [
+        "Research Lead",
+        "Delivery Team"
+      ],
+      "aria": [
+        "智能体 Research Lead",
+        "团队 Delivery Team"
+      ]
+    }
+  },
+  "fixture": {
+    "beforeHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "cfb193a843cc5d67a0d13d07a16e8fd1cfab2ff3b5e17e68770e9385c79c132b",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/team-config.json": "dc4cb227f571aaf65878eb634a9ec116d8d8ddc634d481ccf7b5f38a42c12dbc",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "45db6b591e33ccccf522e26c4b0136abff17cf8ac3593bc4e131040f6a57a2d1",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "e9412ab4e06d72da5bcf4976bcae7a4e623087b27e70f642ad0f1119c345cb78",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    },
+    "definitionFileCount": 16,
+    "afterHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agents/autobyteus-memory-compactor/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/autobyteus-memory-compactor/agent.md": "cf057a5fcc0736183b451d667a4bd9d47c65d8172ed65755d6973f503b5d284f",
+      "agents/autobyteus-retrospective-skill-improver/agent-config.json": "a389c222f3e42e3e8f4cf54e14610034ea24b2b8695cb0ce8900aebee74c17cf",
+      "agents/autobyteus-retrospective-skill-improver/agent.md": "19285601d2a22224e6ef15b5999588212c69b685c3385e769dbf521efd596106",
+      "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/examples.md": "3904fa1c9d4a7f501534cfccdcd98074b0c5974cdde5e46decad1f1c53334e38",
+      "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/high-signal-trace-patterns.md": "d063db52711dc1d9261135c909d3ac704dbe84980c7fa4581f186fba16ebe672",
+      "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/package-improvement-playbook.md": "ea81af072d1da35eb9fe56dcbf4e3d2e4a03916453a35d170336c61b5387ea61",
+      "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/SKILL.md": "68360b7d316b93e59189901bd0c1787e4f7f680670e01805e7e2c447c2e299c6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "cfb193a843cc5d67a0d13d07a16e8fd1cfab2ff3b5e17e68770e9385c79c132b",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/team-config.json": "dc4cb227f571aaf65878eb634a9ec116d8d8ddc634d481ccf7b5f38a42c12dbc",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "45db6b591e33ccccf522e26c4b0136abff17cf8ac3593bc4e131040f6a57a2d1",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "e9412ab4e06d72da5bcf4976bcae7a4e623087b27e70f642ad0f1119c345cb78",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "status": "terminated",
+      "pid": 25437,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "backend": {
+      "status": "terminated",
+      "pid": 25339,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "ownedRoot": {
+      "status": "removed",
+      "path": "/tmp/autobyteus-agent-org-role-labels-k2hAlk"
+    }
+  },
+  "failures": [
+    {
+      "message": "Normal reads changed persisted definition package bytes",
+      "stack": "Error: Normal reads changed persisted definition package bytes\n    at assert (file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:89:17)\n    at file:///home/autobyteus/workspace/.codex/worktrees/agent-org-display-name-stability/autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs:630:3"
+    }
+  ],
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:37259",
+    "frontendUrl": "http://127.0.0.1:35445"
+  },
+  "completedAt": "2026-09-21T16:14:06.827Z",
+  "result": "Fail"
+}
