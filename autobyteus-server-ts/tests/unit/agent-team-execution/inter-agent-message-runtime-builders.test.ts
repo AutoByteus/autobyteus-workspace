@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it } from "vitest";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type {
@@ -16,7 +17,7 @@ const participant = (input: {
 }): InterAgentMessageParticipant => ({
   kind: "agent",
   identity: {
-    rootTeamRunId: "team-1",
+    root: createTeamRootExecutionIdentity("team-1"),
     memberAddress: assertAgentTeamAddress(input.memberAddress),
     agentRunId: input.agentRunId,
   },

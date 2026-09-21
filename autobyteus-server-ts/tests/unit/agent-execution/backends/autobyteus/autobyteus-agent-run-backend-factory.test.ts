@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
@@ -20,7 +21,7 @@ import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/
 import { TASK_DELEGATION_TOOL_NAME_LIST } from "../../../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTeamContext } from "../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../../fixtures/current-team-run-fixtures.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../../src/built-in-agents/built-in-agent-registry.js";
 
@@ -67,7 +68,7 @@ type TaskAgentContextFacts = Readonly<{
   taskId: string;
 }>;
 
-const createMemberTeamContext = (
+const createMemberExecutionContext = (
   _teamBackendKind: TeamBackendKind,
   deliverInterAgentMessage: ReturnType<typeof vi.fn> = vi
     .fn()
@@ -75,23 +76,23 @@ const createMemberTeamContext = (
   taskAgentContext: TaskAgentContextFacts | null = null,
   sendMessageToEnabled = true,
 ) => {
-  const root = {
+  const taskCommands = Object.freeze({
+    root: createTeamRootExecutionIdentity("team-1"),
     delegateTask: vi.fn(async () => ({
       task_id: "task_0008",
       status: "active" as const,
       target_agent_run_id: "run-reviewer",
     })),
-  };
-  const taskRootResolver = Object.freeze({
-    resolveActiveRoot: vi.fn(async () => root as any),
+    submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
+    reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
   });
-  const context = testMemberTeamContext({
+  const context = testMemberExecutionContext({
     rootTeamRunId: "team-1",
     memberAddress: "/professor",
     agentRunId: taskAgentContext?.taskAgentRunId ?? "run-professor",
     teamInstruction: "Coordinate as a team.",
     deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
-    taskRootResolver,
+    taskCommands,
   });
   return context;
 };
@@ -342,7 +343,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext: createMemberTeamContext(TeamBackendKind.MIXED),
+        memberExecutionContext: createMemberExecutionContext(TeamBackendKind.MIXED),
       }),
       "run-professor",
     );
@@ -364,7 +365,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.systemPrompt).not.toContain("## Team Runtime");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual({
-      rootTeamRunId: "team-1",
+      root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/professor",
       agentRunId: "run-professor",
     });
@@ -416,7 +417,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext: createMemberTeamContext(
+        memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
           vi.fn().mockResolvedValue({ accepted: true }),
           null,
@@ -556,7 +557,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext: createMemberTeamContext(
+        memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
           deliverInterAgentMessage,
         ),
@@ -576,26 +577,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         reference_files: ["/tmp/server-reference.md"],
       }),
     ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","target_agent_run_id":null}');
-    expect(deliverInterAgentMessage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        rootTeamRunId: "team-1",
-        sender: expect.objectContaining({
-          participant: expect.objectContaining({
-            kind: "agent",
-            displayName: "professor",
-            identity: {
-              rootTeamRunId: "team-1",
-              memberAddress: "/professor",
-              agentRunId: "run-professor",
-            },
-          }),
-        }),
+    expect(deliverInterAgentMessage).toHaveBeenCalledWith({
         recipientAddress: "/writer",
         content: "Please investigate.",
         messageType: "direct_message",
         referenceFiles: ["/tmp/server-reference.md"],
-      }),
-    );
+    });
   });
 
   it("keeps the exact-run send_message_to selector on the canonical Team binding", async () => {
@@ -641,7 +628,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext: createMemberTeamContext(
+        memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
           vi.fn().mockResolvedValue({ accepted: true }),
           null,
@@ -672,22 +659,22 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       taskAgentRunId: "team-1__professor__task_0007",
       taskId: "task_0007",
     };
-    const taskRoot = {
+    const taskCommands = Object.freeze({
+      root: createTeamRootExecutionIdentity("team-1"),
       delegateTask: vi.fn(async () => ({
         task_id: "task_0008",
         status: "active" as const,
         target_agent_run_id: "run-reviewer",
       })),
-    };
-    const taskRootResolver = Object.freeze({
-      resolveActiveRoot: vi.fn(async () => taskRoot as any),
+      submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
+      reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
     });
-    const memberTeamContext = testMemberTeamContext({
+    const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
       memberAddress: "/professor",
       agentRunId: taskAgentContext.taskAgentRunId,
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-      taskRootResolver,
+      taskCommands,
     });
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
@@ -735,14 +722,14 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext,
+        memberExecutionContext,
       }),
       "run-professor",
     );
 
     const managedTeamContext = built.agentConfig.initialCustomData?.teamContext as Record<string, unknown>;
     expect(managedTeamContext).toEqual({
-      rootTeamRunId: "team-1",
+      root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/professor",
       agentRunId: "team-1__professor__task_0007",
     });
@@ -764,15 +751,11 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       recipient_address: "/reviewer",
       description: "Review the exact task result.",
     });
-    expect(taskRootResolver.resolveActiveRoot).toHaveBeenCalledTimes(1);
-    expect(taskRoot.delegateTask).toHaveBeenCalledWith(
+    expect(taskCommands.delegateTask).toHaveBeenCalledWith(
       {
-        identity: {
-          rootTeamRunId: "team-1",
-          memberAddress: "/professor",
-          agentRunId: "team-1__professor__task_0007",
-        },
-        rootResolver: taskRootResolver,
+        root: createTeamRootExecutionIdentity("team-1"),
+        memberAddress: "/professor",
+        agentRunId: "team-1__professor__task_0007",
       },
       {
         recipient_address: "/reviewer",

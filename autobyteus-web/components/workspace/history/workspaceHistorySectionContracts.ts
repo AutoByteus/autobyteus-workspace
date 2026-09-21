@@ -1,4 +1,6 @@
-import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { AgentOrgRunHistoryItem, TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
+import type { WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export interface WorkspaceHistorySectionState {
@@ -31,9 +33,23 @@ export interface WorkspaceHistorySectionState {
     teamRunId: string,
     memberAddress: string,
   ) => void;
+  isAgentOrgDefinitionExpanded?: (workspaceId: string, definitionId: string) => boolean;
+  toggleAgentOrgDefinition?: (workspaceId: string, definitionId: string) => void;
+  isAgentOrgRunExpanded?: (rootRunId: string) => boolean;
+  toggleAgentOrgRun?: (rootRunId: string) => void;
+  isAgentOrgTeamExpanded?: (rootRunId: string, address: string) => boolean;
+  toggleAgentOrgTeam?: (rootRunId: string, address: string) => void;
+  isAgentOrgRunSelected?: (rootRunId: string) => boolean;
+  isAgentOrgMemberSelected?: (rootRunId: string, address: string, agentRunId?: string) => boolean;
+  isAgentOrgTerminating?: (rootRunId: string) => boolean;
+  agentOrgTerminationError?: (rootRunId: string) => string | null;
+  agentOrgContextFor?: (rootRunId: string) => AgentOrgExecutionContext | null;
 }
 
 export interface WorkspaceHistoryAvatarBindings {
+  getOrgAvatarUrl: (definitionId: string) => string;
+  showOrgAvatar: (definitionId: string) => boolean;
+  onOrgAvatarError: (definitionId: string, failedUrl: string) => void;
   showAgentAvatar: (
     workspaceRootPath: string,
     agentDefinitionId: string,
@@ -47,8 +63,8 @@ export interface WorkspaceHistoryAvatarBindings {
   getAgentInitials: (agentName: string) => string;
   showTeamAvatar: (team: TeamTreeNode) => boolean;
   getTeamAvatarUrl: (team: TeamTreeNode) => string;
-  onTeamAvatarError: (team: TeamTreeNode) => void;
-  getTeamInitials: (teamName: string) => string;
+  onTeamAvatarError: (team: TeamTreeNode, failedUrl: string) => void;
+
   showTeamMemberAvatar: (member: TeamMemberTreeRow) => boolean;
   getTeamMemberAvatarUrl: (member: TeamMemberTreeRow) => string;
   onTeamMemberAvatarError: (member: TeamMemberTreeRow) => void;
@@ -71,4 +87,8 @@ export interface WorkspaceHistorySectionActions {
     member: TeamMemberFocusTarget,
     workspaceId?: string,
   ) => Promise<void> | void;
+  onOpenAgentOrgRun?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onSelectAgentOrgMember?: (run: AgentOrgRunHistoryItem, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onInspectAgentOrgExecution?: (run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
 }

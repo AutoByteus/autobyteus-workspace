@@ -14,9 +14,10 @@ const {
   },
   routeMock: {
     path: '/agents',
+    query: {} as Record<string, string>,
   },
   routerMock: {
-    push: vi.fn(),
+    push: vi.fn().mockResolvedValue(undefined),
   },
 }))
 
@@ -31,6 +32,8 @@ vi.mock('~/stores/applicationsCapabilityStore', () => ({
 
 vi.mock('~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue', () => ({
   default: {
+    name: 'WorkspaceAgentRunsTreePanel',
+    emits: ['run-selected', 'run-created'],
     template: '<div></div>',
   },
 }))
@@ -39,6 +42,8 @@ describe('AppLeftPanel Component', () => {
   beforeEach(() => {
     applicationsCapabilityStoreMock.isEnabled = false
     applicationsCapabilityStoreMock.ensureResolved.mockResolvedValue(null)
+    routeMock.path = '/agents'
+    routeMock.query = {}
     vi.clearAllMocks()
     window.localStorage.clear()
   })
@@ -117,5 +122,43 @@ describe('AppLeftPanel Component', () => {
     expect(primaryNavSection.style.height).toBe('56px')
 
     wrapper.unmount()
+  })
+
+  it('retires AgentOrg query ownership when a standalone Team row is selected', async () => {
+    routeMock.path = '/workspace'
+    routeMock.query = {
+      rootSubjectKind: 'agent_org',
+      definitionId: 'org-def',
+      orgRunId: 'org-run',
+      mode: 'active',
+    }
+    const wrapper = mount(AppLeftPanel, {
+      global: { stubs: { Icon: true } },
+    })
+
+    wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).vm.$emit(
+      'run-selected',
+      { type: 'team', runId: 'standalone-team-run' },
+    )
+    await nextTick()
+
+    expect(routerMock.push).toHaveBeenCalledOnce()
+    expect(routerMock.push).toHaveBeenCalledWith('/workspace')
+  })
+
+  it('does not replace an already plain standalone workspace route', async () => {
+    routeMock.path = '/workspace'
+    routeMock.query = {}
+    const wrapper = mount(AppLeftPanel, {
+      global: { stubs: { Icon: true } },
+    })
+
+    wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).vm.$emit(
+      'run-selected',
+      { type: 'team', runId: 'standalone-team-run' },
+    )
+    await nextTick()
+
+    expect(routerMock.push).not.toHaveBeenCalled()
   })
 })

@@ -27,11 +27,19 @@ type TeamStreamEgress = AgentStreamWebSocketEgress<TeamStreamServerMessage>;
 
 class AgentTeamSession extends AgentSession { get teamRunId(): string { return this.runId; } }
 
-const errorMessage = (code: string, message: string): TeamStreamServerMessage =>
+const errorMessage = (
+  code: string,
+  message: string,
+  agentRunId: string | null = null,
+  details?: string,
+): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({ type: "ERROR", payload: {
-    code, message, change_sequence: null, agent_run_id: null,
+    code, message, ...(details ? { details } : {}), change_sequence: null, agent_run_id: agentRunId,
     error_scope: null, error_effect: null, turn_id: null,
   } });
+
+const TEAM_SEND_MESSAGE_REJECTED = "TEAM_SEND_MESSAGE_REJECTED";
+const TEAM_SEND_MESSAGE_FAILED = "TEAM_SEND_MESSAGE_FAILED";
 
 /** One strict root TeamRun stream session using the snapshot/change-sequence barrier. */
 export class AgentTeamStreamHandler {
@@ -172,10 +180,27 @@ export class AgentTeamStreamHandler {
       context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
       metadata: { input_origin: "user_message", message_id: payload.message_id, dedupe_key: payload.dedupe_key },
     });
-    const result = await root.executeAgentCommand(agentRunId, { kind: "post_message", message });
+    let result;
+    try {
+      result = await root.executeAgentCommand(agentRunId, { kind: "post_message", message });
+    } catch (error) {
+      sink?.send(errorMessage(
+        TEAM_SEND_MESSAGE_FAILED,
+        error instanceof Error ? error.message : String(error),
+        agentRunId,
+      ));
+      return;
+    }
     if (!result.accepted) {
       if (result.code?.includes("TARGET") || result.code === "RUN_NOT_FOUND") {
-        this.sendInvalidTarget(sink, result.message ?? TEAM_COMMAND_INVALID_TARGET_MESSAGE);
+        this.sendInvalidTarget(sink, result.message ?? TEAM_COMMAND_INVALID_TARGET_MESSAGE, agentRunId);
+      } else {
+        sink?.send(errorMessage(
+          TEAM_SEND_MESSAGE_REJECTED,
+          result.message?.trim() || "The Team AgentRun did not accept the message.",
+          agentRunId,
+          result.code?.trim() || undefined,
+        ));
       }
       return;
     }
@@ -202,8 +227,12 @@ export class AgentTeamStreamHandler {
     return null;
   }
 
-  private sendInvalidTarget(sink: TeamStreamSink | null, message: string): void {
-    sink?.send(errorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message));
+  private sendInvalidTarget(
+    sink: TeamStreamSink | null,
+    message: string,
+    agentRunId: string | null = null,
+  ): void {
+    sink?.send(errorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message, agentRunId));
   }
 
   private unsubscribeSession(sessionId: string): void {

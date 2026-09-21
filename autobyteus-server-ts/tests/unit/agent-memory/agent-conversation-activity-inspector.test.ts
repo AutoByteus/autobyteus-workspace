@@ -63,7 +63,10 @@ describe("AgentConversationActivityInspector", () => {
     expect(inspector.inspect({ agentRunId: "run-1", memoryDir: runDir })).toEqual({ kind: "none" });
 
     const store = new RunMemoryFileStore(runDir);
-    await writeJsonl(store.getRawTracesPath(), [{ id: "tool-1", ts: 1, trace_type: "tool" }]);
+    await writeJsonl(store.getRawTracesPath(), [
+      { id: "system-1", ts: 1, trace_type: "system_instruction", content: "Retained instructions" },
+      { id: "tool-1", ts: 2, trace_type: "tool" },
+    ]);
     expect(inspector.inspect({ agentRunId: "run-1", memoryDir: runDir })).toEqual({ kind: "none" });
   });
 

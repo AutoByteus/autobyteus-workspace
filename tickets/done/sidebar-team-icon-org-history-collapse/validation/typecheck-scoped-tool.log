@@ -1,0 +1,29 @@
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 4, reused 2, downloaded 0, added 0
+Progress: resolved 8, reused 5, downloaded 1, added 0
+Progress: resolved 10, reused 7, downloaded 3, added 0
+Progress: resolved 16, reused 13, downloaded 3, added 0
+Progress: resolved 20, reused 17, downloaded 3, added 0
+Progress: resolved 21, reused 17, downloaded 3, added 0
+Packages: +22
+++++++++++++++++++++++
+Progress: resolved 41, reused 19, downloaded 3, added 22, done
+node:internal/modules/cjs/loader:671
+      throw e;
+      ^
+
+Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tsc' is not defined by "exports" in /Users/normy/Library/Caches/pnpm/dlx/c352990f7b98880e5f2056e170d7ab53aa5c28f02161e091e12fd9543045bd2b/1a0a73610ee-41e0/node_modules/.pnpm/vue-tsc@3.2.4_typescript@7.0.2/node_modules/typescript/package.json
+    at exportsNotFound (node:internal/modules/esm/resolve:314:10)
+    at packageExportsResolve (node:internal/modules/esm/resolve:661:9)
+    at resolveExports (node:internal/modules/cjs/loader:664:36)
+    at Function._findPath (node:internal/modules/cjs/loader:731:31)
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1415:27)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at Object.run (/Users/normy/Library/Caches/pnpm/dlx/c352990f7b98880e5f2056e170d7ab53aa5c28f02161e091e12fd9543045bd2b/1a0a73610ee-41e0/node_modules/.pnpm/vue-tsc@3.2.4_typescript@7.0.2/node_modules/vue-tsc/index.js:40:32)
+    at Object.<anonymous> (/Users/normy/Library/Caches/pnpm/dlx/c352990f7b98880e5f2056e170d7ab53aa5c28f02161e091e12fd9543045bd2b/1a0a73610ee-41e0/node_modules/.pnpm/vue-tsc@3.2.4_typescript@7.0.2/node_modules/vue-tsc/bin/vue-tsc.js:2:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10) {
+  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+
+Node.js v22.23.1

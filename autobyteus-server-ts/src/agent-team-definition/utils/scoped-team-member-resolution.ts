@@ -1,8 +1,5 @@
-import {
-  buildTeamLocalAgentDefinitionId,
-  buildTeamLocalTeamDefinitionId,
-} from "./team-local-definition-id.js";
-import type { AgentTeamDefinitionOwnershipScope, TeamMember } from "../domain/models.js";
+import { buildTeamLocalAgentDefinitionId } from "./team-local-definition-id.js";
+import type { AgentTeamDefinitionOwnershipScope, TeamMember } from "../domain/agent-team-definition.js";
 
 export type ScopedMemberResolutionContext = {
   containingTeamId: string;
@@ -55,18 +52,14 @@ const requireMemberScope = (member: Pick<TeamMember, "memberName" | "refScope">)
 
 const isApplicationOwnedContext = (context: ScopedMemberResolutionContext): boolean => (
   context.containingTeamOwnershipScope === "application_owned"
-  || (context.containingTeamOwnershipScope === "team_local" && Boolean(context.ownerApplicationId))
 );
 
 const assertApplicationOwnedScopeAllowed = (
   context: ScopedMemberResolutionContext,
-  member: Pick<TeamMember, "memberName" | "refType" | "refScope">,
+  member: Pick<TeamMember, "memberName" | "refScope">,
 ): void => {
   if (member.refScope !== "application_owned") {
     return;
-  }
-  if (member.refType === "agent") {
-    throw new Error(`Team member '${member.memberName}' cannot use refScope 'application_owned' for agent refs.`);
   }
   if (!isApplicationOwnedContext(context)) {
     throw new Error(
@@ -77,37 +70,14 @@ const assertApplicationOwnedScopeAllowed = (
 
 export const resolveScopedAgentMemberRef = (
   contextOrContainingTeamId: string | ScopedMemberResolutionContext,
-  member: Pick<TeamMember, "memberName" | "ref" | "refType" | "refScope">,
+  member: Pick<TeamMember, "memberName" | "ref" | "refScope">,
 ): string => {
-  if (member.refType !== "agent") {
-    throw new Error(`Team member '${member.memberName}' is not an agent member.`);
-  }
   const context = normalizeResolutionContext(contextOrContainingTeamId);
   const scope = requireMemberScope(member);
   assertApplicationOwnedScopeAllowed(context, member);
   const ref = normalizeRequiredString(member.ref, "agentDefinitionRef");
   if (scope === "team_local") {
     return buildTeamLocalAgentDefinitionId(
-      normalizeRequiredString(context.containingTeamId, "containingTeamId"),
-      ref,
-    );
-  }
-  return ref;
-};
-
-export const resolveScopedTeamMemberRef = (
-  contextOrContainingTeamId: string | ScopedMemberResolutionContext,
-  member: Pick<TeamMember, "memberName" | "ref" | "refType" | "refScope">,
-): string => {
-  if (member.refType !== "agent_team") {
-    throw new Error(`Team member '${member.memberName}' is not an agent_team member.`);
-  }
-  const context = normalizeResolutionContext(contextOrContainingTeamId);
-  const scope = requireMemberScope(member);
-  assertApplicationOwnedScopeAllowed(context, member);
-  const ref = normalizeRequiredString(member.ref, "teamDefinitionRef");
-  if (scope === "team_local") {
-    return buildTeamLocalTeamDefinitionId(
       normalizeRequiredString(context.containingTeamId, "containingTeamId"),
       ref,
     );

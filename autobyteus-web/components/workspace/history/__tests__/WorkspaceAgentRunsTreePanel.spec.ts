@@ -1,8 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { nextTick } from 'vue';
+import { nextTick, reactive } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+
+const routerHarness = vi.hoisted(() => ({
+  route: { query: {} as Record<string, string> },
+  push: vi.fn().mockResolvedValue(undefined),
+  replace: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('vue-router', () => ({
+  useRoute: () => routerHarness.route,
+  useRouter: () => ({
+    push: routerHarness.push,
+    replace: routerHarness.replace,
+  }),
+}));
 
 const flushPromises = async () => {
   await Promise.resolve();
@@ -126,9 +140,11 @@ const {
 
   const normalizeWorkspaceNode = (workspace: any): any => ({
     ...workspace,
+    stableKey: workspace.stableKey ?? `workspace:${workspace.workspaceRootPath}`,
     workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
     workspaceKind: workspace.workspaceKind ?? 'filesystem',
     canRemoveFromWorkspaces: workspace.canRemoveFromWorkspaces ?? true,
+    agentOrgDefinitions: workspace.agentOrgDefinitions ?? [],
   });
 
   const state = {
@@ -351,6 +367,9 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => agentDefinitionStoreMock,
 }));
 
+const orgCatalog = vi.hoisted(() => ({ definitions: [] as any[], fetchAll: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => orgCatalog }));
+
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
 }));
@@ -377,6 +396,9 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    orgCatalog.definitions = [];
+    orgCatalog.fetchAll.mockResolvedValue(undefined);
+    routerHarness.route.query = {};
     runHistoryState.loading = false;
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;
@@ -603,13 +625,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ];
   };
 
-  it('loads workspace list without eager history tree on mount', async () => {
+  it('loads the unified mixed history tree on mount', async () => {
     mountComponent();
     await flushPromises();
 
     expect(runHistoryStoreMock.loadWorkspaceCatalogForNavigation).toHaveBeenCalledTimes(1);
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
-    expect(runHistoryStoreMock.fetchTree).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
     expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
   });
 
@@ -634,7 +656,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     expect(runHistoryStoreMock.fetchWorkspaceHistory).toHaveBeenCalledWith('workspace:/ws/a');
-    expect(runHistoryStoreMock.fetchTree).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
     expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('true');
   });
 
@@ -977,7 +999,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ).toBe('true');
   });
 
-  it('refreshes expanded workspace history quietly on the background interval while mounted', async () => {
+  it('refreshes the unified mixed history quietly on the background interval while mounted', async () => {
     vi.useFakeTimers();
     try {
       const wrapper = mountComponent();
@@ -991,8 +1013,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).not.toHaveBeenCalled();
 
       await vi.advanceTimersByTimeAsync(5000);
-      expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
-      expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).toHaveBeenCalledWith('workspace:/ws/a');
+      expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
+      expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).not.toHaveBeenCalled();
       wrapper.unmount();
     } finally {
       vi.useRealTimers();
@@ -2246,4 +2268,23 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(addToastMock).toHaveBeenCalledWith('Failed to delete run. Please try again.', 'error');
   });
+  it('fetches Org metadata nonfatally and keeps history available on catalog failure', async () => {
+    orgCatalog.fetchAll.mockRejectedValueOnce(new Error('catalog unavailable'));
+    orgCatalog.definitions = reactive([]);
+    runHistoryState.nodes[0].agentOrgDefinitions = [{stableKey: 'org-def', definitionId: 'org-def', name: 'Retained Org', runs: []}];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    const header = () => wrapper.get('[data-test="agent-org-definition-org-def"]');
+    expect(header().text()).toContain('Retained Org');
+    expect(header().find('img').exists()).toBe(false);
+    orgCatalog.definitions.push({id: 'org-def', avatarUrl: '/arrived.png'});
+    await nextTick();
+    expect(header().get('img').attributes('src')).toBe('/arrived.png');
+    expect(orgCatalog.fetchAll).toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalled();
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
 });

@@ -1,0 +1,112 @@
+{
+  "api-migrated-direct": {
+    "userInputs": [
+      {
+        "id": "api-old-user",
+        "ts": 1788220800,
+        "turn_id": "api-old-turn",
+        "seq": 1,
+        "trace_type": "user",
+        "content": "Remember the secret word BLUEBERRY-915 for the next message. This is test history.",
+        "source_event": "AgentRun.postUserMessage",
+        "file_attachments": [
+          {
+            "uri": "/rest/agent-org-runs/api-migrated-org/agent-runs/api-migrated-worker/context-files/ctx_saved__retained-note.txt",
+            "file_type": "text",
+            "file_name": "retained-note.txt"
+          }
+        ]
+      },
+      {
+        "id": "rt_1789443559393",
+        "ts": 1789443559.393,
+        "turn_id": "turn_0001",
+        "seq": 1,
+        "trace_type": "user",
+        "content": "What secret word did I ask you to remember earlier? Reply with that word and MIGRATED-CONTINUATION-915 only. Do not call tools.",
+        "source_event": "LLMUserMessageReadyEvent",
+        "media": {
+          "images": [],
+          "audio": [],
+          "video": []
+        }
+      }
+    ],
+    "assistantReplies": [
+      {
+        "id": "api-old-reply",
+        "ts": 1788220801,
+        "turn_id": "api-old-turn",
+        "seq": 2,
+        "trace_type": "assistant",
+        "content": "I will remember BLUEBERRY-915.",
+        "source_event": "LLMCompleteResponseReceivedEvent"
+      },
+      {
+        "id": "rt_1789443588748_aafc8493-ce06-4128-adbb-88f3993555b4",
+        "ts": 1789443588.748,
+        "turn_id": "turn_0001",
+        "seq": 3,
+        "trace_type": "assistant",
+        "content": "\n\nBLUEBERRY-915 and MIGRATED-CONTINUATION-915",
+        "source_event": "LlmPhase"
+      }
+    ],
+    "uniqueTraceIds": true
+  },
+  "api-migrated-worker": {
+    "userInputs": [
+      {
+        "id": "rt_1789443614236",
+        "ts": 1789443614.236,
+        "turn_id": "turn_0001",
+        "seq": 1,
+        "trace_type": "user",
+        "content": "Reply MIGRATED-MOUNTED-915 only. Do not call tools.",
+        "source_event": "LLMUserMessageReadyEvent",
+        "media": {
+          "images": [],
+          "audio": [],
+          "video": []
+        }
+      }
+    ],
+    "assistantReplies": [
+      {
+        "id": "rt_1789443624374_2caddb22-214f-4ecd-b4c7-2a52f0e45f72",
+        "ts": 1789443624.374,
+        "turn_id": "turn_0001",
+        "seq": 3,
+        "trace_type": "assistant",
+        "content": "\n\nMIGRATED-MOUNTED-915",
+        "source_event": "LlmPhase"
+      }
+    ],
+    "uniqueTraceIds": true
+  },
+  "telemetry": {
+    "pid": 96133,
+    "at": "2026-09-15T03:41:24.372Z",
+    "active": [],
+    "pending": [],
+    "events": [
+      {
+        "method": "prepareRestoreAgentRun",
+        "runId": "api-migrated-direct",
+        "startedAt": "2026-09-15T03:39:19.320Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "api-migrated-direct"
+      },
+      {
+        "method": "prepareNewAgentRun",
+        "runId": "api-migrated-worker",
+        "startedAt": "2026-09-15T03:40:14.212Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "api-migrated-worker"
+      }
+    ]
+  },
+  "enclosingOrgDefinitionAbsent": true,
+  "enclosingMountedTeamDefinitionAbsent": true,
+  "qualification": "Direct used native restore. Mounted no prior raw conversation: normal first work prepareNewAgentRun under retained exact ID, not provider restore. No replay/dedup or old-provider-origin proof beyond observed user journey."
+}

@@ -1,0 +1,25 @@
+2026-09-01T21:59:57,254379220+00:00
+ports:
+none
+owned-pids:
+none
+browser-tabs: [] (AutoByteus list_tabs)
+fixture-hash:
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK

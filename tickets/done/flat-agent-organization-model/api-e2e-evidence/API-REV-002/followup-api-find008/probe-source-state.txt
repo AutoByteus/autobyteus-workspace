@@ -1,0 +1,15 @@
+artifact_head=895665929213ddf7c276c9a89af19b975935f128
+probe_worktree=/tmp/aorg-api-find008-correlated-probe
+captured_at=2026-09-01T20:56:00Z
+instrumentation_only=true
+ .../task/root-task-lifecycle-command-queue.ts      | 16 ++++++-
+ .../execution/task/root-task-lifecycle-engine.ts   | 23 ++++++++--
+ .../runtime/general-process-run-supervisor.ts      | 15 ++++++-
+ .../domain/root-team-run-materialization-gate.ts   | 12 ++++-
+ .../agent-team-execution/domain/root-team-run.ts   |  7 +++
+ .../task-delegation/team-task-lifecycle-adapter.ts | 10 ++++-
+ .../mcp/agent-tool-mcp-tool-executor.ts            |  9 ++++
+ .../src/agent-tools/mcp/agent-tools-mcp-routes.ts  | 52 ++++++++++++++++++----
+ .../task-delegation-tools-mcp-adapter-provider.ts  | 15 ++++++-
+ autobyteus-server-ts/src/server-runtime.ts         |  5 ++-
+ 10 files changed, 147 insertions(+), 17 deletions(-)

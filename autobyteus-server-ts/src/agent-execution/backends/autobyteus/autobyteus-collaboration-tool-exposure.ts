@@ -1,0 +1,49 @@
+import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
+import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import type { MemberExecutionContext } from "../../../agent-collaboration/execution/domain/member-execution-context.js";
+import { TASK_DELEGATION_TOOL_NAMES } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
+
+const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
+  "assign_task_to",
+  "create_task",
+  "create_tasks",
+  "get_my_tasks",
+  "get_task_plan_status",
+  "update_task_status",
+]);
+
+const REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES = new Set<string>([
+  ["mark", "task", "completed"].join("_"),
+  ["mark", "task", "failed"].join("_"),
+  ["accept", "task"].join("_"),
+]);
+
+export const isAutoByteusCollaborationMember = (
+  memberExecutionContext: MemberExecutionContext | null | undefined,
+): boolean => memberExecutionContext != null;
+
+export const resolveAutoByteusExecutionToolNames = (input: {
+  toolNames: Iterable<string> | null | undefined;
+  memberExecutionContext: MemberExecutionContext | null | undefined;
+}): string[] => {
+  const requestedToolNames = Array.from(input.toolNames ?? []);
+  if (!isAutoByteusCollaborationMember(input.memberExecutionContext)) {
+    return requestedToolNames;
+  }
+
+  return requestedToolNames.filter((toolName) => {
+    const normalizedToolName = toolName.trim();
+    if (LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES.has(normalizedToolName)) {
+      return false;
+    }
+    if (REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES.has(normalizedToolName)) {
+      return false;
+    }
+    if (TASK_DELEGATION_TOOL_NAMES.has(normalizedToolName)) {
+      return true;
+    }
+
+    const definition = defaultToolRegistry.getToolDefinition(normalizedToolName);
+    return definition?.category !== ToolCategory.TASK_MANAGEMENT;
+  });
+};

@@ -64,6 +64,7 @@ const conversationSemanticKey = (entry: RunProjectionConversationEntry): string 
     stableJson(entry.toolResult),
     normalizeText(entry.toolError),
     stableJson(entry.media),
+    ...(entry.fileAttachments?.length ? [stableJson(entry.fileAttachments)] : []),
   ].join("\0");
 
 const conversationEntriesCanMerge = (
@@ -91,6 +92,7 @@ const conversationRichnessScore = (entry: RunProjectionConversationEntry): numbe
     entry.toolResult,
     entry.toolError,
     entry.media,
+    entry.fileAttachments,
   ].filter(hasValue).length;
 
 const mergeConversationEntry = (

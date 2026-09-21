@@ -1,0 +1,38 @@
+{
+  "at": "2026-09-06T12:50:08.986Z",
+  "url": "http://127.0.0.1:3596/settings/",
+  "body": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAgent Packages\n\nLink a local package path or paste a public GitHub repository URL. GitHub packages are installed into app-managed storage, while local paths remain in place.\n\nResponse not successful: Received status code 400\nBuilt-in Storage\nBuilt-in | Shared Agents: 52 | Team-local Agents: 0 | Teams: 1 | Applications: 0\n/home/autobyteus/data\nBuilt-in package is platform managed.\nDefault\naorg-api-rev-002-agent-package\nLocal Path | Shared Agents: 4 | Team-local Agents: 0 | Teams: 2 | Applications: 0\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove\nautobyteus-agents\nLocal Path | Shared Agents: 8 | Team-local Agents: 54 | Teams: 14 | Applications: 0\n/home/autobyteus/workspace/autobyteus-agents\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove\nautobyteus-private-agents\nLocal Path | Shared Agents: 40 | Team-local Agents: 25 | Teams: 9 | Applications: 0\n/home/autobyteus/workspace/autobyteus-private-agents\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove\nPackage Path Or GitHub URL\nImport Package",
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "console",
+      "message": "Failed to reload agent team definitions: ApolloError: Response not successful: Received status code 400\n    at new t (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:60:153)\n    at http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:64:80001\n    at u (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:8520)\n    at http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:8402)\n    at Object.error (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:8530)\n    at S_ (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:1949)\n    at Yc (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:2318)\n    at t.error (http://127.0.0.1:3596/_nuxt/CBNhxvNd.js:59:2891)"
+    }
+  ],
+  "inputValue": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+  "buttons": [
+    "Back to Workspace",
+    "API Keys",
+    "Token Statistics",
+    "Messaging",
+    "Display",
+    "Language",
+    "Local Tools",
+    "MCP Servers",
+    "Application Packages",
+    "Agent Packages",
+    "Server Settings",
+    "Extensions",
+    "Updates",
+    "Reload",
+    " Remove ",
+    "Reload",
+    " Remove ",
+    "Reload",
+    " Remove ",
+    "Import Package"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "serverUrl": "http://127.0.0.1:50244",
+  "port": 50244,
+  "pid": 15327,
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001",
+  "database": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/db/aorg-api-rev001.db",
+  "cycle": 3
+}

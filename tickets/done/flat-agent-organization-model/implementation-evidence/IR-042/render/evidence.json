@@ -1,0 +1,167 @@
+{
+  "states": [
+    {
+      "name": "cold-narrow-before",
+      "overflow": false,
+      "target": "agent-director / live",
+      "history": "History rows: 0"
+    },
+    {
+      "name": "cold-narrow-exact-read-only",
+      "overflow": false,
+      "target": "agent-task-worker / read_only",
+      "history": "History rows: 1"
+    },
+    {
+      "name": "warm-narrow-exact-read-only",
+      "overflow": false,
+      "target": "agent-task-worker / read_only",
+      "history": "History rows: 1"
+    },
+    {
+      "name": "reload-desktop-before",
+      "overflow": false,
+      "target": "agent-director / live",
+      "history": "History rows: 0"
+    },
+    {
+      "name": "reload-desktop-exact-read-only",
+      "overflow": false,
+      "target": "agent-task-worker / read_only",
+      "history": "History rows: 1"
+    }
+  ],
+  "errors": [],
+  "queries": [
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "commands": [],
+  "assertions": [
+    "Current strict snapshot hydrates before any history query",
+    "Cold participant keyboard action loads one canonical history query",
+    "Exact settled non-coordinator becomes read_only without restore/input",
+    "Warm Back/action reuses history without another query",
+    "Reload resets history and still navigates without drawer",
+    "Desktop/narrow no pageerror/overflow"
+  ],
+  "limits": "Implementation fixture, actual strict stream/hydration/context, task UI, navigation action, history read and memory router; synthetic server responses. No drawer mounted. Not production provider/backend, full browser-history route or API/E2E signoff."
+}

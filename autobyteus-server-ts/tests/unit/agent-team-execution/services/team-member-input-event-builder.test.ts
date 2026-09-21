@@ -3,12 +3,12 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { MixedAgentMemberContext } from "../../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { FlatAgentExecutionContext } from "../../../../src/agent-team-execution/local/flat-team-execution-context.js";
 import { buildTeamMemberInputEventPayload } from "../../../../src/agent-team-execution/services/team-member-input-event-builder.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 describe("buildTeamMemberInputEventPayload", () => {
-  const memberContext = new MixedAgentMemberContext({
+  const memberContext = new FlatAgentExecutionContext({
     memberName: "solution_designer",
     memberPath: ["solution_designer"],
     memberRouteKey: "solution_designer",

@@ -1,0 +1,69 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: Agent Org
+  - generic: Catalog Alpha
+  - generic: Runtime
+  - combobox "Runtime":
+    - option "AutoByteus" [selected]
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - paragraph: Selects the runtime used by this organization run.
+  - generic: Default LLM Model
+  - button "Select a model":
+    - generic: Select a model
+  - paragraph: Used across the organization unless a placement is customized.
+  - generic: Workspace Directory
+  - tablist:
+    - tab "Existing" [selected]:
+      - generic: Existing
+    - tab "New":
+      - generic: New
+  - button "📁 Temp Workspace (Default) Default temporary workspace":
+    - generic: 📁 Temp Workspace (Default)
+    - generic: Default temporary workspace
+  - paragraph: "Workspace: Temp Workspace"
+  - generic: Auto approve tools
+  - paragraph: Automatically allows tool calls and access requests for this run.
+  - switch "Auto approve tools":
+    - generic: Auto approve tools
+  - button "Member overrides (4)":
+    - generic: Member overrides (4)
+  - alert: "Model configuration for /lead_agent is not ready: The selected model is unavailable for the current runtime."
+  - button "Run Agent Org" [disabled]
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Terminal" [selected]: Terminal
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - textbox "Terminal input"
+  - generic: ➜ Terminal initialized
+  - generic: The default interactive shell is now zsh.
+  - generic: "To update your account to use zsh, please run `chsh"
+  - generic: "-s /bin/zsh`."
+  - generic: For more details, please visit https://support.apple
+  - generic: .com/kb/HT208050.
+  - generic: ~ $

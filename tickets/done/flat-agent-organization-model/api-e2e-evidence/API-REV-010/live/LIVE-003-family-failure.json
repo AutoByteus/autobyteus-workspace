@@ -1,0 +1,92 @@
+{
+  "attempts": [
+    {
+      "at": "2026-09-04T14:28:58.006Z",
+      "mode": "org",
+      "op": "ListCollaborationRootHistory",
+      "url": "http://127.0.0.1:8589/graphql"
+    },
+    {
+      "at": "2026-09-04T14:29:08.009Z",
+      "mode": "workspace",
+      "op": "ListWorkspaceRunHistory",
+      "url": "http://127.0.0.1:8589/graphql"
+    }
+  ],
+  "events": [
+    {
+      "label": "baseline",
+      "at": "2026-09-04T14:28:52.978Z",
+      "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [
+        "New - APIREV8 组织 Ω"
+      ],
+      "red": [],
+      "workspaceSections": 4
+    },
+    {
+      "label": "org-failed-retained",
+      "at": "2026-09-04T14:28:58.031Z",
+      "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "historyText": "Workspaces\nResponse not successful: Received status code 500\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [
+        "New - APIREV8 组织 Ω"
+      ],
+      "red": [
+        "Response not successful: Received status code 500"
+      ],
+      "workspaceSections": 4
+    },
+    {
+      "label": "org-recovered",
+      "at": "2026-09-04T14:29:03.013Z",
+      "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [
+        "New - APIREV8 组织 Ω"
+      ],
+      "red": [],
+      "workspaceSections": 4
+    },
+    {
+      "label": "workspace-failed-retained",
+      "at": "2026-09-04T14:29:08.029Z",
+      "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "historyText": "Workspaces\nResponse not successful: Received status code 500\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [
+        "New - APIREV8 组织 Ω"
+      ],
+      "red": [
+        "Response not successful: Received status code 500"
+      ],
+      "workspaceSections": 4
+    },
+    {
+      "label": "workspace-recovered",
+      "at": "2026-09-04T14:29:13.012Z",
+      "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [
+        "New - APIREV8 组织 Ω"
+      ],
+      "red": [],
+      "workspaceSections": 4
+    }
+  ]
+}

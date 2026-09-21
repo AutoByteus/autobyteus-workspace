@@ -1,0 +1,100 @@
+- navigation:
+  - list:
+    - button "Back to workspace":
+      - generic: Back to Workspace
+    - button "API Keys":
+      - generic: API Keys
+    - button "Token Statistics":
+      - generic: Token Statistics
+    - button "Messaging":
+      - generic: Messaging
+    - button "Display":
+      - generic: Display
+    - button "Language":
+      - generic: Language
+    - button "Local Tools":
+      - generic: Local Tools
+    - button "MCP Servers":
+      - generic: MCP Servers
+    - button "Application Packages":
+      - generic: Application Packages
+    - button "Agent Packages":
+      - generic: Agent Packages
+    - button "Server Settings":
+      - generic: Server Settings
+    - button "Extensions":
+      - generic: Extensions
+    - button "Updates":
+      - generic: Updates
+- separator "Resize Settings menu"
+- heading "API Key Management" [level=2]
+- paragraph: Manage provider keys and provider-specific model discovery
+- navigation "Providers":
+  - generic: Providers
+  - button "Anthropic 6":
+    - generic: Anthropic
+    - generic: "6"
+  - button "AutoByteus 0":
+    - generic: AutoByteus
+    - generic: "0"
+  - button "DeepSeek 2":
+    - generic: DeepSeek
+    - generic: "2"
+  - button "Gemini 11":
+    - generic: Gemini
+    - generic: "11"
+  - button "GLM 1":
+    - generic: GLM
+    - generic: "1"
+  - button "Grok 1":
+    - generic: Grok
+    - generic: "1"
+  - button "Kimi 1":
+    - generic: Kimi
+    - generic: "1"
+  - button "LM Studio 15" [active]:
+    - generic: LM Studio
+    - generic: "15"
+  - button "MiniMax 1":
+    - generic: MiniMax
+    - generic: "1"
+  - button "Mistral 2":
+    - generic: Mistral
+    - generic: "2"
+  - button "Ollama Model count loading":
+    - generic: Ollama
+    - generic "Model count loading": —
+  - button "OpenAI 9":
+    - generic: OpenAI
+    - generic: "9"
+  - button "Qwen 6":
+    - generic: Qwen
+    - generic: "6"
+  - button "New Provider Model count loading":
+    - generic: New Provider
+    - generic "Model count loading": —
+- generic: LM Studio
+- generic: Not Configured
+- button "Reload Models":
+  - text: Reload Models
+- textbox "Enter API key..."
+- button:
+- button "Save Key" [disabled]
+- region "Models":
+  - heading "Models" [level=3]
+  - heading "LLM Models" [level=4]
+  - generic: deepseek-ocr:lmstudio@localhost:1234
+  - generic: google/gemma-4-26b-a4b:lmstudio@localhost:1234
+  - generic: google/gemma-4-31b:lmstudio@localhost:1234
+  - generic: mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234
+  - generic: qwen/qwen3.6-27b:lmstudio@localhost:1234
+  - generic: qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234
+  - generic: qwen/qwen3.8-27b:lmstudio@localhost:1234
+  - generic: qwen3.5-27b:lmstudio@localhost:1234
+  - generic: qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@localhost:1234
+  - generic: qwen3.6-27b:lmstudio@localhost:1234
+  - generic: qwen3.6-27b-mtplx-optimized-speed:lmstudio@localhost:1234
+  - generic: qwen3.6-27b-ud-mlx:lmstudio@localhost:1234
+  - generic: text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234
+  - generic: unsloth/gemma-4-26b-a4b-it:lmstudio@localhost:1234
+  - generic: unsloth/gemma-4-31b-it:lmstudio@localhost:1234

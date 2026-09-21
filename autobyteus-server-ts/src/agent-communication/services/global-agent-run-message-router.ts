@@ -12,7 +12,11 @@ import {
   buildDirectAgentRunInterAgentEvent,
   buildDirectAgentRunMessageId,
 } from "./global-agent-run-message-runtime-builders.js";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import {
+  ActiveCollaborationRootDirectory,
+  getActiveCollaborationRootDirectory,
+} from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
@@ -57,7 +61,7 @@ export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     grantRegistry?: DirectAgentRunMessageGrantRegistry;
-    teamRunManager?: Pick<AgentTeamRunManager, "getActiveTeamRun">;
+    activeRootDirectory?: ActiveCollaborationRootDirectory;
   } = {}) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -106,14 +110,14 @@ export class GlobalAgentRunMessageRouter {
       return result;
     }
 
-    const senderTeam = input.sender.memberTeamContext;
-    const targetTeam = targetRun.config.memberTeamContext;
+    const senderTeam = input.sender.memberExecutionContext;
+    const targetTeam = targetRun.config.memberExecutionContext;
     if (
       senderTeam &&
       targetTeam &&
-      senderTeam.identity.rootTeamRunId === targetTeam.identity.rootTeamRunId
+      sameRootExecutionIdentity(senderTeam.identity.root, targetTeam.identity.root)
     ) {
-      const root = this.teamRunManager.getActiveTeamRun(senderTeam.identity.rootTeamRunId);
+      const root = this.activeRootDirectory.resolve(senderTeam.identity.root);
       const result = root
         ? await root.deliverExactAgentMessage({
             sender: Object.freeze({
@@ -128,8 +132,8 @@ export class GlobalAgentRunMessageRouter {
           })
         : {
             accepted: false,
-            code: "TEAM_RUN_NOT_ACTIVE",
-            message: `RootTeamRun '${senderTeam.identity.rootTeamRunId}' is not active.`,
+            code: "COLLABORATION_ROOT_NOT_ACTIVE",
+            message: `Collaboration root '${senderTeam.identity.root.rootSubjectKind}:${senderTeam.identity.root.rootRunId}' is not active.`,
           } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         accepted: result.accepted,
@@ -235,13 +239,14 @@ export class GlobalAgentRunMessageRouter {
     return this.deps.agentRunManager ?? AgentRunManager.getInstance();
   }
 
+  private get activeRootDirectory(): ActiveCollaborationRootDirectory {
+    return this.deps.activeRootDirectory ?? getActiveCollaborationRootDirectory();
+  }
+
   private get grantRegistry(): DirectAgentRunMessageGrantRegistry {
     return this.deps.grantRegistry ?? getDirectAgentRunMessageGrantRegistry();
   }
 
-  private get teamRunManager(): Pick<AgentTeamRunManager, "getActiveTeamRun"> {
-    return this.deps.teamRunManager ?? AgentTeamRunManager.getInstance();
-  }
 }
 
 export const getGlobalAgentRunMessageRouter = (): GlobalAgentRunMessageRouter =>

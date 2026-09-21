@@ -9,6 +9,8 @@ import { buildDraftContextFileLocator } from "../domain/context-file-owner-types
 import { ContextFileLayout } from "../store/context-file-layout.js";
 import { ContextFileDraftCleanupService } from "./context-file-draft-cleanup-service.js";
 
+import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
+
 const allowedMimeTypes = new Set([
   "application/pdf",
   "text/csv",
@@ -75,6 +77,7 @@ export class ContextFileUploadService {
   constructor(
     private readonly layout: ContextFileLayout,
     private readonly cleanupService: ContextFileDraftCleanupService,
+    private readonly ownerResolver: ContextFileOwnerResolver,
   ) {}
 
   async uploadDraftAttachment(
@@ -85,6 +88,7 @@ export class ContextFileUploadService {
       throw new Error(`Unsupported file type: ${file.mimetype}`);
     }
 
+    await this.ownerResolver.validateDraftOwner(owner);
     await this.cleanupService.cleanupExpiredDrafts();
     await this.layout.ensureDraftOwnerDir(owner);
 

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702",
+  "records": [
+    {
+      "taskId": "task_b8ead1450b794edc971fee3f99845e8a",
+      "delegatorAgentRunId": "aorg_e2e_lead_c0c1997c7d5140d29c620b10af6bca4d",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_5ab11002e1574efcbda64bfe4bf0a68a"
+      },
+      "description": "Produce AORG-SETTLEMENT2-ANALYST-DRAFT-001 on the first line and one short validation sentence. Then formally call submit_task_result with that output; do not stop at ordinary assistant text. The reviewer will request one revision. If revision feedback arrives, change the first line to AORG-SETTLEMENT2-ANALYST-REVISED-001 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [
+        {
+          "submissionId": "submission_aa0a8deb8c22439eb05e406e8a63d607",
+          "message": "AORG-SETTLEMENT2-ANALYST-DRAFT-001\nValidation confirms the requested draft marker and concise format.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:39:48.276Z"
+        },
+        {
+          "reviewId": "review_4405b7d9ac1745cb9bafcefc31a639b8",
+          "reviewedSubmissionId": "submission_aa0a8deb8c22439eb05e406e8a63d607",
+          "decision": "request_revision",
+          "comment": "Change the first line to AORG-SETTLEMENT2-ANALYST-REVISED-001 and formally resubmit the same task with one short validation sentence.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:39:52.423Z"
+        }
+      ],
+      "createdAt": "2026-09-01T21:38:34.364Z"
+    }
+  ]
+}

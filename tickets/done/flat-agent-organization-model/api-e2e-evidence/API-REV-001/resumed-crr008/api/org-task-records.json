@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_12d450d507c447fda317be92ff257bcd",
+  "records": [
+    {
+      "taskId": "task_b77b569aeef2410c9eb3b0a723f18f9d",
+      "delegatorAgentRunId": "aorg_e2e_lead_e950212518c044a6a135d4299eaac444",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_d7edab2bdbd846b6a631b8027d988ee1"
+      },
+      "description": "Complete this deterministic validation task. Your required formal result is exactly: Organization task completed successfully. You must call submit_task_result with that exact formal result. Do not merely send an ordinary message. Done condition: the formal task result has been submitted.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [],
+      "createdAt": "2026-09-01T16:50:43.848Z"
+    }
+  ]
+}

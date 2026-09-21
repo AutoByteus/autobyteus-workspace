@@ -1,0 +1,4 @@
+recorded_at=2026-09-06T14:31:31.733578+00:00
+task_id=task_ce348550defc476aaefea3ade67ad46d
+delegator=/lead
+expected_assignee_agent_run=aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df

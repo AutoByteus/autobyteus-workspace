@@ -1,0 +1,31 @@
+=== before cleanup resource check ===
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+=== copied sensitive files ===
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/server-data/.env
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/server-data/db/production.db.secret.key
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/migration/idempotent-current/server-data/.env
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/migration/idempotent-current/server-data/db/production.db.secret.key
+=== git status before cleanup ===
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_orgs.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+ M tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+ M tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+ M tickets/in-progress/flat-agent-organization-model/release-notes.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-004/
+=== shared generated dist ===
+shared/server-contracts/dist absent
+shared/application-sdk-contracts/dist absent
+shared/application-backend/dist absent

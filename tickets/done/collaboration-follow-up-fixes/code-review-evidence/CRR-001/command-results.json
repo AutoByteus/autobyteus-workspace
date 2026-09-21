@@ -1,0 +1,145 @@
+[
+  {
+    "name": "autobyteus-application-sdk-contracts",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-sdk-contracts",
+    "command": [
+      "pnpm",
+      "build"
+    ],
+    "started": "2026-09-13T11:18:35.403220+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:18:37.400568+00:00"
+  },
+  {
+    "name": "autobyteus-application-frontend-sdk",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-frontend-sdk",
+    "command": [
+      "pnpm",
+      "build"
+    ],
+    "started": "2026-09-13T11:18:37.401461+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:18:39.877746+00:00"
+  },
+  {
+    "name": "autobyteus-application-backend-sdk",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-backend-sdk",
+    "command": [
+      "pnpm",
+      "build"
+    ],
+    "started": "2026-09-13T11:18:39.879831+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:18:41.771108+00:00"
+  },
+  {
+    "name": "final-server",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts",
+    "command": [
+      "pnpm",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-team-execution/configured-scope-readiness.test.ts",
+      "tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts",
+      "tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts",
+      "tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts",
+      "tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts",
+      "tests/unit/agent-org-execution/agent-org-task-publication.test.ts",
+      "tests/unit/agent-org-execution/agent-org-task-settlement-event-retirement.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-termination.test.ts",
+      "tests/unit/agent-team-execution/root-team-run-termination.test.ts",
+      "tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts",
+      "tests/unit/agent-team-execution/flat-team-execution-factory.test.ts",
+      "--maxWorkers=2"
+    ],
+    "started": "2026-09-13T11:18:41.774453+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:19:21.029393+00:00"
+  },
+  {
+    "name": "completion-web",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "test:nuxt",
+      "stores/__tests__/workspaceSelectionComposition.spec.ts",
+      "stores/__tests__/agentSelectionStore.spec.ts",
+      "stores/__tests__/runHistorySelectionActions.spec.ts",
+      "stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts",
+      "services/workspace/__tests__/workspaceNavigationService.spec.ts",
+      "services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts",
+      "services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+      "services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts",
+      "services/runSubmission/__tests__/localUserSubmission.spec.ts",
+      "components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+      "components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+      "--maxWorkers=2"
+    ],
+    "started": "2026-09-13T11:19:21.030718+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:20:40.401117+00:00"
+  },
+  {
+    "name": "final-server-typecheck",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "--noEmit",
+      "-p",
+      "tsconfig.build.json"
+    ],
+    "started": "2026-09-13T11:20:40.401704+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:20:53.120203+00:00"
+  },
+  {
+    "name": "final-web-boundary",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "guard:web-boundary"
+    ],
+    "started": "2026-09-13T11:20:53.121058+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:20:53.745023+00:00"
+  },
+  {
+    "name": "final-localization-boundary",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "guard:localization-boundary"
+    ],
+    "started": "2026-09-13T11:20:53.745932+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:20:54.288319+00:00"
+  },
+  {
+    "name": "source-whitespace",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "4d88ad1b687e513d7c87d2d91fed96fdd61de7ee",
+      "5710fdd5347bb1b3c464775dd9e32470c88a2ef5",
+      "--",
+      "autobyteus-web",
+      "autobyteus-server-ts"
+    ],
+    "started": "2026-09-13T11:20:54.289237+00:00",
+    "exit": 0,
+    "finished": "2026-09-13T11:20:54.347940+00:00"
+  }
+]

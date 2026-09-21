@@ -1,0 +1,7 @@
+{
+  "initialDesktop": {"viewport":[1510,801],"memberOverrides":{"label":"Member overrides (6)","expanded":false},"researchTeamVisible":false,"supportTeamVisible":false,"horizontalOverflow":false},
+  "outerOpen": {"researchTeam":{"label":"AORG E2E Research Squad TEAM /research-team Inherited","expanded":false},"supportTeam":{"label":"AORG E2E Support Pair TEAM /support-team Inherited","expanded":false},"directAgent":"AORG E2E Concierge /concierge"},
+  "agentExactOverride": {"address":"/research-team/analyst (visual breadcrumb research-team / analyst)","runtime":"codex_app_server","teamScopeLabelAfterAgentOnly":"Inherited"},
+  "teamOverrideAfterCollapseReopen": {"reasoningEffort":"high","teamScopeLabel":"Customized","exactAgentRuntime":"codex_app_server","siblingExpanded":false},
+  "narrow": {"viewport":[390,844],"documentScrollWidth":390,"clientWidth":390,"horizontalOverflow":false,"visibleUnlabeledButtons":0,"outerExpanded":true,"researchExpanded":true,"supportExpanded":false,"teamDraft":"high","agentDraft":"codex_app_server"}
+}

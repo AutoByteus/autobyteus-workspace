@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+  "records": [
+    {
+      "taskId": "task_86e53798eb61428286f121a8e3f61cc8",
+      "delegatorAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "recipientAddress": "/support-team",
+      "taskExecution": {
+        "teamRunId": "aorg_support_pair_819ec3a53a6642c291d66b49c77db768"
+      },
+      "description": "As the auto-approved parent task Team coordinator, remain active for recursive validation. Reply exactly APIREV15-AUTO-PARENT-TASK-TEAM-READY-001 and wait for a later message.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_692892a6318141f2aed3516f181040bb",
+          "message": "APIREV15-PARENT-FORMAL-RESULT-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T13:28:55.256Z"
+        },
+        {
+          "reviewId": "review_60015ac3d13343d79425af49be197112",
+          "reviewedSubmissionId": "submission_692892a6318141f2aed3516f181040bb",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T13:29:08.166Z"
+        }
+      ],
+      "createdAt": "2026-09-06T13:26:24.303Z"
+    },
+    {
+      "taskId": "task_6d172a834d8141cdbfc7fe2ff10bef99",
+      "delegatorAgentRunId": "aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3",
+      "recipientAddress": "/research-team",
+      "taskExecution": {
+        "teamRunId": "aorg_research_squad_e7ce4c70c40a4a12b37bc91a952cf13c"
+      },
+      "description": "As the recursively nested research Team coordinator, remain active for status validation. Reply exactly APIREV15-AUTO-NESTED-TASK-TEAM-READY-001 and wait for a later message.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_0e370f1a44a149129712216412019067",
+          "message": "APIREV15-NESTED-FORMAL-RESULT-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T13:28:23.205Z"
+        },
+        {
+          "reviewId": "review_fa2c4076ccb44250abf9f2e8d7b293c7",
+          "reviewedSubmissionId": "submission_0e370f1a44a149129712216412019067",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T13:28:29.199Z"
+        }
+      ],
+      "createdAt": "2026-09-06T13:26:53.806Z"
+    }
+  ]
+}

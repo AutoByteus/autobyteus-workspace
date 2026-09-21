@@ -36,6 +36,7 @@ describe('windowNodeContextStore', () => {
     expect(store.isEmbeddedWindow).toBe(false);
     expect(store.getBoundEndpoints().graphqlHttp).toBe('https://node.example.com/graphql');
     expect(store.getBoundEndpoints().teamWs).toBe('wss://node.example.com/ws/agent-team');
+    expect(store.getBoundEndpoints().orgWs).toBe('wss://node.example.com/ws/agent-org');
   });
 
   it('increments bindingRevision only when the bound node context actually changes', () => {

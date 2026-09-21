@@ -1,0 +1,86 @@
+{
+  "assertions": {
+    "orgFailureObserved": true,
+    "workspaceFailureObserved": true,
+    "orgRetainedTeamFamily": true,
+    "orgRetainedOrgFamily": false,
+    "orgRecovered": true,
+    "workspaceRetainedTeamFamily": true,
+    "workspaceRetainedOrgFamily": false,
+    "workspaceRecovered": true,
+    "singleUnifiedHistoryPanel": false
+  },
+  "attempts": [
+    {
+      "at": "2026-09-06T02:29:08.256Z",
+      "mode": "org",
+      "op": "ListCollaborationRootHistory",
+      "url": "http://127.0.0.1:8592/graphql"
+    },
+    {
+      "at": "2026-09-06T02:29:18.245Z",
+      "mode": "workspace",
+      "op": "ListWorkspaceRunHistory",
+      "url": "http://127.0.0.1:8592/graphql"
+    }
+  ],
+  "events": [
+    {
+      "label": "baseline",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [],
+      "sections": 6
+    },
+    {
+      "label": "org-failed-retained",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [
+        "Response not successful: Received status code 500"
+      ],
+      "sections": 6
+    },
+    {
+      "label": "org-recovered",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [],
+      "sections": 6
+    },
+    {
+      "label": "workspace-failed-retained",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [
+        "Response not successful: Received status code 500"
+      ],
+      "sections": 6
+    },
+    {
+      "label": "workspace-recovered",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [],
+      "sections": 6
+    }
+  ]
+}
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-003-family-failure.mjs:4
+const ev=[await snap('baseline')];mode='org';await p.waitForFunction(()=>[...document.querySelectorAll('.text-red-600')].some(e=>e.textContent?.includes('500')),null,{timeout:20000});ev.push(await snap('org-failed-retained'));mode=null;await p.waitForFunction(()=>![...document.querySelectorAll('.text-red-600')].some(e=>e.textContent?.includes('500')),null,{timeout:20000});ev.push(await snap('org-recovered'));mode='workspace';await p.waitForFunction(()=>[...document.querySelectorAll('.text-red-600')].some(e=>e.textContent?.includes('500')),null,{timeout:20000});ev.push(await snap('workspace-failed-retained'));mode=null;await p.waitForFunction(()=>![...document.querySelectorAll('.text-red-600')].some(e=>e.textContent?.includes('500')),null,{timeout:20000});ev.push(await snap('workspace-recovered'));await p.unroute('**/graphql');await p.screenshot({path:new URL('screenshots/LIVE-003-family-recovered.png',out).pathname,fullPage:true});const assertions={orgFailureObserved:attempts.some(x=>x.mode==='org'),workspaceFailureObserved:attempts.some(x=>x.mode==='workspace'),orgRetainedTeamFamily:ev[1].teamDefs.length>0,orgRetainedOrgFamily:ev[1].orgRoots.length>0,orgRecovered:ev[2].red.length===0,workspaceRetainedTeamFamily:ev[3].teamDefs.length>0,workspaceRetainedOrgFamily:ev[3].orgRoots.length>0,workspaceRecovered:ev[4].red.length===0,singleUnifiedHistoryPanel:ev.every(x=>x.workspaceSections===2)};await fs.writeFile(new URL('LIVE-003-family-failure.json',out),JSON.stringify({attempts,events:ev,assertions},null,2));console.log(JSON.stringify({assertions,attempts,events:ev.map(x=>({label:x.label,teamDefs:x.teamDefs,orgRoots:x.orgRoots,red:x.red,sections:x.workspaceSections}))},null,2));if(Object.values(assertions).some(v=>v!==true))throw new Error(`assertion failure ${JSON.stringify(assertions)}`);await b.close();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
+Error: assertion failure {"orgFailureObserved":true,"workspaceFailureObserved":true,"orgRetainedTeamFamily":true,"orgRetainedOrgFamily":false,"orgRecovered":true,"workspaceRetainedTeamFamily":true,"workspaceRetainedOrgFamily":false,"workspaceRecovered":true,"singleUnifiedHistoryPanel":false}
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-003-family-failure.mjs:4:1757
+
+Node.js v22.23.2

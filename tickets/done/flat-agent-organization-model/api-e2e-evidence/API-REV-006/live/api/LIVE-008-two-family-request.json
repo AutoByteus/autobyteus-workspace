@@ -1,0 +1,10 @@
+{
+  "query": "query Live008($orgRunId:String!,$orgMemberAddress:String!,$orgAgentRunId:String!,$teamRunId:String!,$teamAgentRunId:String!){ listCollaborationRootHistory { __typename ... on AgentOrgRootHistoryObject { root_subject_kind root_run_id created_at archived_at is_active summary org } ... on AgentTeamRootHistoryObject { root_subject_kind root_run_id } } getAgentOrgExecutionCheckpoint(orgRunId:$orgRunId){ orgRunId changeSequence hasOpenExecutionWork } getTeamRunExecutionCheckpoint(teamRunId:$teamRunId){ rootTeamRunId changeSequence hasOpenExecutionWork } getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$orgMemberAddress,agentRunId:$orgAgentRunId){ agentRunId memberAddress summary lastActivityAt conversation activities hasEarlierActiveTraceEvents } getTeamMemberRunProjection(teamRunId:$teamRunId,agentRunId:$teamAgentRunId){ agentRunId summary lastActivityAt conversation activities hasEarlierActiveTraceEvents } getTeamCommunicationMessages(teamRunId:$teamRunId){ messageId senderAgentRunId receiverAgentRunId content messageType createdAt referenceFiles{referenceId path type createdAt updatedAt} } getTaskDelegationRecords(teamRunId:$teamRunId){ taskId delegatorAgentRunId recipientAddress targetAgentRunId targetTeamRunId status description createdAt updates{kind submissionId reviewId reviewedSubmissionId decision content createdAt} } }",
+  "variables": {
+    "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+    "orgMemberAddress": "/research-team/lead",
+    "orgAgentRunId": "aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6",
+    "teamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+    "teamAgentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517"
+  }
+}

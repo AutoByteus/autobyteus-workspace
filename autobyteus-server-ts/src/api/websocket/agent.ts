@@ -11,6 +11,7 @@ import {
   authorizeRemoteAccessWebSocket,
   closeSocketForRemoteAccessRejection,
 } from "./remote-access-websocket-auth.js";
+import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -24,11 +25,13 @@ type AgentParams = {
 type TeamParams = {
   teamRunId: string;
 };
+type OrgParams = { orgRunId: string };
 
 export async function registerAgentWebsocket(
   app: FastifyInstance,
   agentHandler: AgentStreamHandler = getAgentStreamHandler(),
   teamHandler: AgentTeamStreamHandler = getAgentTeamStreamHandler(),
+  orgHandler?: AgentOrgStreamHandler,
 ): Promise<void> {
   app.get("/ws/agent/:runId", { websocket: true }, (connection: unknown, req) => {
     const socket = (connection as { socket?: unknown }).socket ?? connection;
@@ -150,5 +153,26 @@ export async function registerAgentWebsocket(
         error,
         req,
       ));
+  });
+
+  if (orgHandler) app.get("/ws/agent-org/:orgRunId", { websocket: true }, (connection: unknown, req) => {
+    const socket = (connection as { socket?: unknown }).socket ?? connection;
+    if (!socket || typeof (socket as { on?: unknown }).on !== "function") return;
+    void authorizeRemoteAccessWebSocket(req).then(async () => {
+      let sessionId: string | null = null;
+      const { orgRunId } = req.params as OrgParams;
+      const adapter: WebSocketConnection = {
+        send: (data) => (socket as { send(payload: string): void }).send(data),
+        close: (code) => (socket as { close(code?: number): void }).close(code),
+      };
+      sessionId = await orgHandler.connect(adapter, orgRunId);
+      (socket as { on(event: string, callback: (data: Buffer) => void): void }).on("message", (data) => {
+        if (sessionId) void orgHandler.handleMessage(sessionId, data.toString());
+      });
+      (socket as { on(event: string, callback: () => void): void }).on("close", () => {
+        if (sessionId) orgHandler.disconnect(sessionId);
+      });
+      (socket as { on(event: string, callback: (error: unknown) => void): void }).on("error", (cause) => logger.error(`AgentOrg websocket error: ${String(cause)}`));
+    }).catch((cause) => closeSocketForRemoteAccessRejection(socket as { close(code?: number, reason?: string): void }, cause, req));
   });
 }

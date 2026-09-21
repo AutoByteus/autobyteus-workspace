@@ -1,0 +1,23 @@
+[
+  "autobyteus-server-ts/docs/modules/agent_orgs.md",
+  "autobyteus-server-ts/docs/modules/agent_team_definition.md",
+  "autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts",
+  "autobyteus-web/docs/agent_artifacts.md",
+  "autobyteus-web/docs/agent_execution_architecture.md",
+  "autobyteus-web/docs/agent_orgs.md",
+  "autobyteus-web/docs/agent_teams.md",
+  "autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs",
+  "tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md",
+  "tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md",
+  "tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md",
+  "tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md",
+  "tickets/in-progress/flat-agent-organization-model/api-e2e-test-review-report.md",
+  "tickets/in-progress/flat-agent-organization-model/code-review-report.md",
+  "tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md",
+  "tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md",
+  "tickets/in-progress/flat-agent-organization-model/docs-sync-report.md",
+  "tickets/in-progress/flat-agent-organization-model/handoff-summary.md",
+  "tickets/in-progress/flat-agent-organization-model/release-deployment-report.md",
+  "tickets/in-progress/flat-agent-organization-model/release-notes.md"
+]

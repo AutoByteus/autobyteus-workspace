@@ -1,0 +1,11 @@
+{
+  "unchanged_reviewed_paths": 43,
+  "documentation_only_changes": [
+    {
+      "path": "autobyteus-web/docs/agent_teams.md",
+      "reviewed_sha256": "0c5c1bf736357e7a683f44c3ab97b49bd188e4ee4ed3305c58bf83758c90e687",
+      "delivery_sha256": "235ae21c93df721c882093ded4bc39c50c598010ac5019188bceb6b22ae91102",
+      "reason": "Documentation-only reachability qualification and sparse-copy invariant"
+    }
+  ]
+}

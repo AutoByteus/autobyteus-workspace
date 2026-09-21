@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_0d35518a8b204de69d9e5892d769f4d7",
+  "records": [
+    {
+      "taskId": "task_a74ec579d8d34fb58ca5788856b5486b",
+      "delegatorAgentRunId": "aorg_e2e_lead_05191864a4b2478485940f8bf1a6de06",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6"
+      },
+      "description": "First submit_task_result with first line AORG-ORG-TASK-INITIAL-003 and second line Org initial. When the delegator requests revision, use the same task and submit_task_result again with first line AORG-ORG-TASK-REVISED-003 and second line Org revised. Never review your own result and never create another task.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_fedba5195b0a4e898659ede5719a5018",
+          "message": "AORG-ORG-TASK-INITIAL-003\nOrg initial.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:36:03.337Z"
+        },
+        {
+          "reviewId": "review_404b9e948fa648d4844da52df7b9e139",
+          "reviewedSubmissionId": "submission_fedba5195b0a4e898659ede5719a5018",
+          "decision": "request_revision",
+          "comment": "Submit the required Org revised result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:36:11.137Z"
+        },
+        {
+          "submissionId": "submission_f8329fb0f3974fa0bf25bd8b393a253e",
+          "message": "AORG-ORG-TASK-REVISED-003\nOrg revised.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:37:02.961Z"
+        },
+        {
+          "reviewId": "review_36f0c1c8a2fd4c59847d3473276ae85b",
+          "reviewedSubmissionId": "submission_f8329fb0f3974fa0bf25bd8b393a253e",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:37:06.378Z"
+        }
+      ],
+      "createdAt": "2026-09-01T22:35:53.858Z"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+timestamp=2026-09-02T06:14:01Z
+head=b19c41e68c119f9a9590c5b04839454dae5f64b8
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json
+./agent-orgs/aorg-direct-agents-org/org.md
+./agent-orgs/aorg-mixed-org/org-config.json
+./agent-orgs/aorg-mixed-org/org.md
+./agents/aorg-analyst/agent-config.json
+./agents/aorg-analyst/agent.md
+./agents/aorg-concierge/agent-config.json
+./agents/aorg-concierge/agent.md
+./agents/aorg-lead/agent-config.json
+./agents/aorg-lead/agent.md
+./agents/aorg-verifier/agent-config.json
+./agents/aorg-verifier/agent.md
+./agent-teams/aorg-research-squad/team-config.json
+./agent-teams/aorg-research-squad/team.md
+./agent-teams/aorg-support-pair/team-config.json
+./agent-teams/aorg-support-pair/team.md
+./PACKAGE.sha256
+./README.md
+./TEST-MANIFEST.md

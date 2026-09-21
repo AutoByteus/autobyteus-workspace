@@ -8,12 +8,13 @@ import { TokenUsageContextEnricher } from '../../../../src/agent-execution/event
 import { TokenUsageSnapshotDeltaNormalizer } from '../../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js';
 import { TokenUsageComponentBasisResolver } from '../../../../src/token-usage/projections/token-usage-component-basis-resolver.js';
 import { TokenCostCalculator } from '../../../../src/token-usage/pricing/token-cost-calculator.js';
-import { MemberTeamContext } from '../../../../src/agent-team-execution/domain/member-team-context.js';
+import { MemberExecutionContext } from '../../../../src/agent-collaboration/execution/domain/member-execution-context.js';
+import { createTeamRootExecutionIdentity } from '../../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { RuntimeKind } from '../../../../src/runtime-management/runtime-kind-enum.js';
 import type { AgentRunEvent } from '../../../../src/agent-execution/domain/agent-run-event.js';
 import type { TokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
 import type { TokenPriceConfigProvider } from '../../../../src/token-usage/pricing/token-price-config-provider.js';
-import { testMemberTaskRootResolver } from '../../../fixtures/current-team-run-fixtures.js';
+import { testMemberTaskCommandCapability } from '../../../fixtures/current-team-run-fixtures.js';
 
 const runContext = new AgentRunContext({
   runId: 'member-run-1',
@@ -25,14 +26,14 @@ const runContext = new AgentRunContext({
     workspaceId: 'workspace-1',
     skillAccessMode: SkillAccessMode.NONE,
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    memberTeamContext: new MemberTeamContext({
+    memberExecutionContext: new MemberExecutionContext({
       identity: {
-        rootTeamRunId: 'team-run-1',
+        root: createTeamRootExecutionIdentity('team-run-1'),
         memberAddress: '/planner/worker',
         agentRunId: 'member-run-1',
       },
-      collaboration: { outgoingHandoffs: [] },
-      taskRootResolver: testMemberTaskRootResolver(),
+      collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
+      tasks: testMemberTaskCommandCapability('team-run-1'),
     }),
   }),
 });

@@ -4,7 +4,7 @@ import {
   hydrateLiveTeamRunContext,
   hydrateTeamRunContextForStreamRecovery,
 } from '../teamRunContextHydrationService';
-import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
 
 const {
   queryMock,
@@ -76,6 +76,27 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     expect(result.activityReplacements[0]?.activities).toEqual([
       expect.objectContaining({ activityId: projectedActivity.activityId }),
     ]);
+  });
+
+  it.each([true, false])('hydrates exact retained inspection under active=%s without using the live row list', async isActive => {
+    const retainedTree = structuredClone(tree);
+    retainedTree.root_team.task_executions.push({ kind: 'task_agent', address: '/member-a',
+      agent_run_id: 'retained-task', platform_agent_run_id: null, started_at: retainedTree.created_at,
+      settled_at: '2026-09-01T00:05:00.000Z' });
+    const record = testTaskRecord({ taskId: 'retained', delegatorAgentRunId: 'run-a', recipientAddress: '/member-a',
+      target: { agentRunId: 'retained-task' }, status: 'accepted' });
+    fetchTaskDelegationsMock.mockResolvedValue([record]);
+    queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
+      ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+      : { data: { getTeamRunResumeConfig: { teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });
+    const result = await hydrateLiveTeamRunContext({ teamRunId: 'team-live-recovery', agentRunId: 'retained-task',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null), ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null) });
+    const view = result.hydratedContext.view;
+    expect(result.focusedAgentRunId).toBe('retained-task');
+    expect(view.getFocusedAgentAccess()).toBe('read_only');
+    expect(view.isRootTeamActive()).toBe(isActive);
+    expect(view.getFocusedNavigationRow()?.task?.taskId).toBe('retained');
+    if (isActive) expect(view.listNavigationRows().some(row => row.agentRunId === 'retained-task')).toBe(false);
   });
 
   it('fails fast when the exact requested AgentRun projection is missing', async () => {

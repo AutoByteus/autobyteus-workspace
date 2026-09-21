@@ -229,14 +229,19 @@ export class TeamRunHistoryCatalogService {
   }
   private async ensureInitialized(): Promise<void> {
     if (this.state.initialized) return;
-    this.state.initPromise ??= this.indexStore.readIndex().then((rows) => {
-      this.state.rows = new Map(rows.filter((row) =>
-        !this.packageCatalog.isInitialized() || this.packageCatalog.isAdmitted(row.teamRunId),
-      ).map((row) => {
-        const normalized = normalizeRow(row);
-        return [normalized.teamRunId, normalized];
-      }));
+    this.state.initPromise ??= Promise.all([
+      this.packageCatalog.awaitReady(),
+      this.indexStore.readIndex(),
+    ]).then(([, rows]) => {
+      this.state.rows = new Map(rows.filter((row) => this.packageCatalog.isAdmitted(row.teamRunId))
+        .map((row) => {
+          const normalized = normalizeRow(row);
+          return [normalized.teamRunId, normalized];
+        }));
       this.state.initialized = true;
+    }).catch((error) => {
+      this.state.initPromise = null;
+      throw error;
     });
     await this.state.initPromise;
   }

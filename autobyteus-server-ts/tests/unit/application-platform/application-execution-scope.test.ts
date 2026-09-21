@@ -12,6 +12,7 @@ import type {
 import type { ApplicationAgentToolCapability } from "../../../src/application-agent-tools/services/application-agent-tool-capability.js";
 import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
 import type { ApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
+import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 const tempRoots: string[] = [];
 
@@ -149,7 +150,7 @@ describe("ApplicationExecutionScope", () => {
     scope.abortConstruction();
   });
 
-  it("projects configured Team members depth-first, excludes task nodes, and deep-freezes", async () => {
+  it("projects direct configured Team Agents, excludes task nodes, and deep-freezes", async () => {
     const { scope, kernel } = await createScope();
     const root = {
       teamRunId: "team-root",
@@ -157,12 +158,7 @@ describe("ApplicationExecutionScope", () => {
         rootTeam: {
           members: [
             { address: "/alpha", agentRunId: "agent-alpha" },
-            {
-              address: "/nested",
-              teamRunId: "team-nested",
-              members: [{ address: "/nested/beta", agentRunId: "agent-beta" }],
-              taskExecutions: [{ address: "/nested/task", agentRunId: "agent-task" }],
-            },
+            { address: "/beta", agentRunId: "agent-beta" },
           ],
           taskExecutions: [{ address: "/task", agentRunId: "agent-root-task" }],
         },
@@ -177,7 +173,7 @@ describe("ApplicationExecutionScope", () => {
       teamRunId: "team-root",
       members: [
         { memberAddress: "/alpha", agentRunId: "agent-alpha" },
-        { memberAddress: "/nested/beta", agentRunId: "agent-beta" },
+        { memberAddress: "/beta", agentRunId: "agent-beta" },
       ],
     });
     expect(Object.isFrozen(result)).toBe(true);
@@ -207,25 +203,25 @@ describe("ApplicationExecutionScope", () => {
       .mockReturnValueOnce({ authorizeIdentity } as never)
       .mockReturnValueOnce({ authorizeIdentity } as never)
       .mockReturnValueOnce(null);
-    const configured = {
-      rootTeamRunId: "team-root",
+    const configured = createCollaborationMemberExecutionIdentity({
+      root: createTeamRootExecutionIdentity("team-root"),
       memberAddress: "/writer",
       agentRunId: "writer-run",
-    } as const;
-    const dynamic = {
-      rootTeamRunId: "team-root",
+    });
+    const dynamic = createCollaborationMemberExecutionIdentity({
+      root: createTeamRootExecutionIdentity("team-root"),
       memberAddress: "/writer/task",
       agentRunId: "task-run",
-    } as const;
+    });
 
     await expect(scope.teamExecution.requireLiveTeamMember(configured)).resolves.toBeUndefined();
     await expect(scope.teamExecution.requireLiveTeamMember(dynamic)).resolves.toBeUndefined();
     expect(authorizeIdentity).toHaveBeenNthCalledWith(1, configured);
     expect(authorizeIdentity).toHaveBeenNthCalledWith(2, dynamic);
-    await expect(scope.teamExecution.requireLiveTeamMember({
+    await expect(scope.teamExecution.requireLiveTeamMember(createCollaborationMemberExecutionIdentity({
       ...configured,
-      rootTeamRunId: "stale-root",
-    })).rejects.toThrow("Root TeamRun 'stale-root' is not active.");
+      root: createTeamRootExecutionIdentity("stale-root"),
+    }))).rejects.toThrow("Root TeamRun 'stale-root' is not active.");
     scope.abortConstruction();
   });
 

@@ -1,0 +1,1680 @@
+{
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "checked_files": 239,
+  "all_match": true,
+  "entries": [
+    {
+      "path": "dist/electron/appDataPaths.js",
+      "size": 2260,
+      "source_sha256": "c6c318b5544d0f181c9b5b256f5fcd51dc1db3eb3efb43e5299df2772743013a",
+      "packed_sha256": "c6c318b5544d0f181c9b5b256f5fcd51dc1db3eb3efb43e5299df2772743013a",
+      "match": true
+    },
+    {
+      "path": "dist/electron/application/electronApplication.js",
+      "size": 20148,
+      "source_sha256": "3127f62fbb6b60f780861f91e118efe43f73511db9d1c7a920afb11515b1a2f0",
+      "packed_sha256": "3127f62fbb6b60f780861f91e118efe43f73511db9d1c7a920afb11515b1a2f0",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-bridge-auth-registry.js",
+      "size": 745,
+      "source_sha256": "e87b825a02ce3bd7a304cb4eed28504565dca2dbb1e926916beedbf5d7eecbaf",
+      "packed_sha256": "e87b825a02ce3bd7a304cb4eed28504565dca2dbb1e926916beedbf5d7eecbaf",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-bridge-server.js",
+      "size": 7939,
+      "source_sha256": "45a135773ca3e67e3f054abdf79157f7f79b5c22e8ca97e582a6e0e77ff20d31",
+      "packed_sha256": "45a135773ca3e67e3f054abdf79157f7f79b5c22e8ca97e582a6e0e77ff20d31",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-device-emulation.js",
+      "size": 4710,
+      "source_sha256": "b5b2ef083a1dd52d428ca8b118509d4ed26daab7969a37d6ba903041aa633846",
+      "packed_sha256": "b5b2ef083a1dd52d428ca8b118509d4ed26daab7969a37d6ba903041aa633846",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-dom-snapshot-script.js",
+      "size": 4043,
+      "source_sha256": "62e64bdcdb74ce68962407d5124e97e3c1c62f6af36db21d2d6a83afbd4727f8",
+      "packed_sha256": "62e64bdcdb74ce68962407d5124e97e3c1c62f6af36db21d2d6a83afbd4727f8",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-page-cleaner.js",
+      "size": 1001,
+      "source_sha256": "9ed8a16f2e835d3ed6ca74865d95c4b9d62526ad5b82498b1678ff4cdf051502",
+      "packed_sha256": "9ed8a16f2e835d3ed6ca74865d95c4b9d62526ad5b82498b1678ff4cdf051502",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-runtime.js",
+      "size": 3060,
+      "source_sha256": "0ad91d6c50c1a478556fe4cda39fc420c14a555c72a36b265aab8ab9c2bf98be",
+      "packed_sha256": "0ad91d6c50c1a478556fe4cda39fc420c14a555c72a36b265aab8ab9c2bf98be",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-screenshot-artifact-writer.js",
+      "size": 2162,
+      "source_sha256": "d8ed4e3ccdbc6611426e1cde4cd1b61bb61d73155a517a73f0d9f402155ed948",
+      "packed_sha256": "d8ed4e3ccdbc6611426e1cde4cd1b61bb61d73155a517a73f0d9f402155ed948",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-session-profile.js",
+      "size": 1315,
+      "source_sha256": "7129546ed708d7da850d3574e7eaba95f81687f6d559b8892939965d5d74eaf8",
+      "packed_sha256": "7129546ed708d7da850d3574e7eaba95f81687f6d559b8892939965d5d74eaf8",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-shell-controller.js",
+      "size": 11465,
+      "source_sha256": "c8e6ffc31cdf49ad6a10227e760f1d52c7d8b354c3acc52bbc98daf926efc0c8",
+      "packed_sha256": "c8e6ffc31cdf49ad6a10227e760f1d52c7d8b354c3acc52bbc98daf926efc0c8",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-manager.js",
+      "size": 18354,
+      "source_sha256": "03566e784b7958cd8a3c6d790857d07cf6d6d7e630af5b5226cf3cd88c7e5680",
+      "packed_sha256": "03566e784b7958cd8a3c6d790857d07cf6d6d7e630af5b5226cf3cd88c7e5680",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-navigation.js",
+      "size": 7219,
+      "source_sha256": "117624360c84960013ad16a59646dce22eeb78f350c9614ca2499070ae1ee2a4",
+      "packed_sha256": "117624360c84960013ad16a59646dce22eeb78f350c9614ca2499070ae1ee2a4",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-page-operations.js",
+      "size": 6388,
+      "source_sha256": "d45ff46e17c2e8ab62d3e7a5d6fb47154026e982d8bbc5f5cd297278300ec334",
+      "packed_sha256": "d45ff46e17c2e8ab62d3e7a5d6fb47154026e982d8bbc5f5cd297278300ec334",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-types.js",
+      "size": 332,
+      "source_sha256": "95f2ae757f185cf6c921ff1a538322f2ebc60a2e16905191502f281b98eaa0c4",
+      "packed_sha256": "95f2ae757f185cf6c921ff1a538322f2ebc60a2e16905191502f281b98eaa0c4",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/browser-view-factory.js",
+      "size": 1342,
+      "source_sha256": "d2a60cfc304fcbbf212f7fab950ac4423f2c48926ff7a1c810d1fd92b139eb42",
+      "packed_sha256": "d2a60cfc304fcbbf212f7fab950ac4423f2c48926ff7a1c810d1fd92b139eb42",
+      "match": true
+    },
+    {
+      "path": "dist/electron/browser/register-browser-shell-ipc-handlers.js",
+      "size": 2867,
+      "source_sha256": "66d6c9f49862f177af012ca1e61b5da2e86fd848a2110ca371a8a20bba7f6c9c",
+      "packed_sha256": "66d6c9f49862f177af012ca1e61b5da2e86fd848a2110ca371a8a20bba7f6c9c",
+      "match": true
+    },
+    {
+      "path": "dist/electron/extensionIpcHandlers.js",
+      "size": 2139,
+      "source_sha256": "c5df846e518c430b0f0f5349b661072a35b1236c162d705d50ac95b67bbcb86c",
+      "packed_sha256": "c5df846e518c430b0f0f5349b661072a35b1236c162d705d50ac95b67bbcb86c",
+      "match": true
+    },
+    {
+      "path": "dist/electron/extensions/extensionCatalog.js",
+      "size": 2886,
+      "source_sha256": "f0e809f0fc39c72b8ba33c66a380f41a64d26af3a78a80d7b59d44a8ed914be2",
+      "packed_sha256": "f0e809f0fc39c72b8ba33c66a380f41a64d26af3a78a80d7b59d44a8ed914be2",
+      "match": true
+    },
+    {
+      "path": "dist/electron/extensions/managedExtensionService.js",
+      "size": 14266,
+      "source_sha256": "9f004f34bdcfb720535ed7031791fc503939c89da260f20458148385c7682dd2",
+      "packed_sha256": "9f004f34bdcfb720535ed7031791fc503939c89da260f20458148385c7682dd2",
+      "match": true
+    },
+    {
+      "path": "dist/electron/extensions/types.js",
+      "size": 77,
+      "source_sha256": "d43aa81f5bc89faa359e0f97c814ba25155591ff078fbb9bfd40f8c7c9683230",
+      "packed_sha256": "d43aa81f5bc89faa359e0f97c814ba25155591ff078fbb9bfd40f8c7c9683230",
+      "match": true
+    },
+    {
+      "path": "dist/electron/extensions/voice-input/voiceInputRuntimeService.js",
+      "size": 14084,
+      "source_sha256": "1c470c184b054fc22275273af4b0911136191f99cfa66cd13764c3f5da4522ba",
+      "packed_sha256": "1c470c184b054fc22275273af4b0911136191f99cfa66cd13764c3f5da4522ba",
+      "match": true
+    },
+    {
+      "path": "dist/electron/extensions/voice-input/voiceInputRuntimeSupport.js",
+      "size": 7204,
+      "source_sha256": "0a76e727431020cb838447e266c1f9beaf164ecc1c9590d62ad3f85f9b3d4bd6",
+      "packed_sha256": "0a76e727431020cb838447e266c1f9beaf164ecc1c9590d62ad3f85f9b3d4bd6",
+      "match": true
+    },
+    {
+      "path": "dist/electron/launch-profile/e2eDataRootSafety.js",
+      "size": 6439,
+      "source_sha256": "d9f6c2de80571db59516494969a17aa52a836008409d4869cf778f70dc12199c",
+      "packed_sha256": "d9f6c2de80571db59516494969a17aa52a836008409d4869cf778f70dc12199c",
+      "match": true
+    },
+    {
+      "path": "dist/electron/launch-profile/e2eLaunchPreflight.js",
+      "size": 2251,
+      "source_sha256": "7ccfd35c80ec461fdd99eba7a9971ff826d2387ed5bfd40c6ee30e58846be63c",
+      "packed_sha256": "7ccfd35c80ec461fdd99eba7a9971ff826d2387ed5bfd40c6ee30e58846be63c",
+      "match": true
+    },
+    {
+      "path": "dist/electron/launch-profile/electronLaunchProfile.js",
+      "size": 5369,
+      "source_sha256": "3f8ef7a12874ae6f9fa5dcaf8b68d526635adc8364cf2fcc03bb6810b84caef2",
+      "packed_sha256": "3f8ef7a12874ae6f9fa5dcaf8b68d526635adc8364cf2fcc03bb6810b84caef2",
+      "match": true
+    },
+    {
+      "path": "dist/electron/launch-profile/electronLaunchProfilePaths.js",
+      "size": 4492,
+      "source_sha256": "e2de58ffe2b567e0f88a0af875e071e944d5db6b8fafb1965ab028b7d40b6183",
+      "packed_sha256": "e2de58ffe2b567e0f88a0af875e071e944d5db6b8fafb1965ab028b7d40b6183",
+      "match": true
+    },
+    {
+      "path": "dist/electron/local-file-protocol/file-byte-stream.js",
+      "size": 2386,
+      "source_sha256": "d8a910877de36fdf91bce359efbb9fdaebc724dc435d03b6547be303d24ae7db",
+      "packed_sha256": "d8a910877de36fdf91bce359efbb9fdaebc724dc435d03b6547be303d24ae7db",
+      "match": true
+    },
+    {
+      "path": "dist/electron/local-file-protocol/local-file-protocol.js",
+      "size": 1631,
+      "source_sha256": "cd8158065bbecd5339557605c7f1daa72c99ba67dfdd2cbf098eee6655002de7",
+      "packed_sha256": "cd8158065bbecd5339557605c7f1daa72c99ba67dfdd2cbf098eee6655002de7",
+      "match": true
+    },
+    {
+      "path": "dist/electron/local-file-protocol/local-file-response.js",
+      "size": 6109,
+      "source_sha256": "edfbd7af9762c809d911e827b65078ed61bf6f692fa7b569a47f3ad44643ad72",
+      "packed_sha256": "edfbd7af9762c809d911e827b65078ed61bf6f692fa7b569a47f3ad44643ad72",
+      "match": true
+    },
+    {
+      "path": "dist/electron/local-file-protocol/register-local-file-scheme.js",
+      "size": 614,
+      "source_sha256": "cec624328a138284e8f92ebdd48aba608db641fa1fa81c524e1f479f499f5110",
+      "packed_sha256": "cec624328a138284e8f92ebdd48aba608db641fa1fa81c524e1f479f499f5110",
+      "match": true
+    },
+    {
+      "path": "dist/electron/localFileValidation.js",
+      "size": 2755,
+      "source_sha256": "1797e8ec33001d626f106c9747810827f8402f9e3ca6693d6a0668f6bf3d8e7e",
+      "packed_sha256": "1797e8ec33001d626f106c9747810827f8402f9e3ca6693d6a0668f6bf3d8e7e",
+      "match": true
+    },
+    {
+      "path": "dist/electron/logger.js",
+      "size": 12194,
+      "source_sha256": "0d938c841ac463072a962d97f8afcb9f4390df340b1e0a5a4ccc0627234882cb",
+      "packed_sha256": "0d938c841ac463072a962d97f8afcb9f4390df340b1e0a5a4ccc0627234882cb",
+      "match": true
+    },
+    {
+      "path": "dist/electron/main.js",
+      "size": 3598,
+      "source_sha256": "224977e6b0f1c1b589a0397be9bcf6f27e4cc0e04276c496bfc7cc5343865ee8",
+      "packed_sha256": "224977e6b0f1c1b589a0397be9bcf6f27e4cc0e04276c496bfc7cc5343865ee8",
+      "match": true
+    },
+    {
+      "path": "dist/electron/nodeRegistryStore.js",
+      "size": 7626,
+      "source_sha256": "fb61a1b0cf88310b4f7df465a4cb9db7cf258a3cd88b8c86b130ecfb4e36bae4",
+      "packed_sha256": "fb61a1b0cf88310b4f7df465a4cb9db7cf258a3cd88b8c86b130ecfb4e36bae4",
+      "match": true
+    },
+    {
+      "path": "dist/electron/nodeRegistryTypes.js",
+      "size": 279,
+      "source_sha256": "65fa97a75c0922d4242972500ec7b0c6ea4ae2bd74559fd9e80d6a359e348ae3",
+      "packed_sha256": "65fa97a75c0922d4242972500ec7b0c6ea4ae2bd74559fd9e80d6a359e348ae3",
+      "match": true
+    },
+    {
+      "path": "dist/electron/preload.js",
+      "size": 6242,
+      "source_sha256": "a630e158a426cb4f5b8eecb86899fe517e9b85e8afa7c38faf5f8b92eb76a5e8",
+      "packed_sha256": "a630e158a426cb4f5b8eecb86899fe517e9b85e8afa7c38faf5f8b92eb76a5e8",
+      "match": true
+    },
+    {
+      "path": "dist/electron/rendererConsoleDiagnostics.js",
+      "size": 1147,
+      "source_sha256": "68e2645a21b317a078a1a267cf668c5b4235d29212899b2466117294c7563e2b",
+      "packed_sha256": "68e2645a21b317a078a1a267cf668c5b4235d29212899b2466117294c7563e2b",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/baseServerManager.js",
+      "size": 18031,
+      "source_sha256": "2e47e53efa5eefa5871bf72071962f24f9c96627d84b8501a7e205b26858acf3",
+      "packed_sha256": "2e47e53efa5eefa5871bf72071962f24f9c96627d84b8501a7e205b26858acf3",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/embeddedServerLaunchConfig.js",
+      "size": 77,
+      "source_sha256": "d43aa81f5bc89faa359e0f97c814ba25155591ff078fbb9bfd40f8c7c9683230",
+      "packed_sha256": "d43aa81f5bc89faa359e0f97c814ba25155591ff078fbb9bfd40f8c7c9683230",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/embeddedServerPlatformFatal.js",
+      "size": 2569,
+      "source_sha256": "4f55797b9161e1ce5e9307cd12f1506454f7623c04e007985b83eb4f47f497f6",
+      "packed_sha256": "4f55797b9161e1ce5e9307cd12f1506454f7623c04e007985b83eb4f47f497f6",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/linuxServerManager.js",
+      "size": 4237,
+      "source_sha256": "c79662c7510a7d4016b16501b9cfd1342bff1f90d2a0df91ea9e9bf5dcb72589",
+      "packed_sha256": "c79662c7510a7d4016b16501b9cfd1342bff1f90d2a0df91ea9e9bf5dcb72589",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/macOSServerManager.js",
+      "size": 4548,
+      "source_sha256": "1f3653dc911ee5548bbe88553c2dc5d00779f1926f68d2cec0fdff9af0f6b119",
+      "packed_sha256": "1f3653dc911ee5548bbe88553c2dc5d00779f1926f68d2cec0fdff9af0f6b119",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/prismaSqliteUrl.js",
+      "size": 216,
+      "source_sha256": "5e02e85baf4c14eea95ee55839bbf8d91c992de2c5f41328794c2db5ca66cd56",
+      "packed_sha256": "5e02e85baf4c14eea95ee55839bbf8d91c992de2c5f41328794c2db5ca66cd56",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/serverManagerFactory.js",
+      "size": 1328,
+      "source_sha256": "db5c0d11be2f646c6f24e938b04159929465f5ac3310cb2eda7aa022cc531cea",
+      "packed_sha256": "db5c0d11be2f646c6f24e938b04159929465f5ac3310cb2eda7aa022cc531cea",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/serverOutputLogging.js",
+      "size": 4166,
+      "source_sha256": "a0528ee989ed1ff0e61ed83f6cd9d0af0d799a677cf8f1e40e8f2128e0add407",
+      "packed_sha256": "a0528ee989ed1ff0e61ed83f6cd9d0af0d799a677cf8f1e40e8f2128e0add407",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/serverRuntimeEnv.js",
+      "size": 2087,
+      "source_sha256": "1ac0eaeb0d17d6d0e07789cdef74e99a65d74d6ee29d1dc4a64a34e3ef8a81eb",
+      "packed_sha256": "1ac0eaeb0d17d6d0e07789cdef74e99a65d74d6ee29d1dc4a64a34e3ef8a81eb",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/serverStatusManager.js",
+      "size": 7161,
+      "source_sha256": "c9a2e123d71b406e4291501651371db62142de284bd750b72e2acadabf699167",
+      "packed_sha256": "c9a2e123d71b406e4291501651371db62142de284bd750b72e2acadabf699167",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/services/AppDataService.js",
+      "size": 11739,
+      "source_sha256": "6474b5a38e65a7958a2d3578f1d687346daf32479713b84ac42be14b98b40803",
+      "packed_sha256": "6474b5a38e65a7958a2d3578f1d687346daf32479713b84ac42be14b98b40803",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/services/HealthChecker.js",
+      "size": 2713,
+      "source_sha256": "4b4674d5835d65d72dc1b8e4771c4c8f92832e254d6a4dab7ae0ef4423ba75ab",
+      "packed_sha256": "4b4674d5835d65d72dc1b8e4771c4c8f92832e254d6a4dab7ae0ef4423ba75ab",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/services/index.js",
+      "size": 501,
+      "source_sha256": "94f9c2d5e22c933370574f6b87c5a1b05254d1e4706dc0753199584ccd23ea5d",
+      "packed_sha256": "94f9c2d5e22c933370574f6b87c5a1b05254d1e4706dc0753199584ccd23ea5d",
+      "match": true
+    },
+    {
+      "path": "dist/electron/server/windowsServerManager.js",
+      "size": 8484,
+      "source_sha256": "2a1da1e4e493abf4fe49bf90df25fbcfd926780d1a5011a84c0eabee5f39aa10",
+      "packed_sha256": "2a1da1e4e493abf4fe49bf90df25fbcfd926780d1a5011a84c0eabee5f39aa10",
+      "match": true
+    },
+    {
+      "path": "dist/electron/shell/workspace-shell-window-registry.js",
+      "size": 2358,
+      "source_sha256": "d9a9f3919b97558ca7280548c7f97c3a389096c73d9d4de6918ba4b1f70deefe",
+      "packed_sha256": "d9a9f3919b97558ca7280548c7f97c3a389096c73d9d4de6918ba4b1f70deefe",
+      "match": true
+    },
+    {
+      "path": "dist/electron/shell/workspace-shell-window.js",
+      "size": 3428,
+      "source_sha256": "a76a82e491731ff259f984c274578cd53db9adc9c5fac59b2c9fc4357f4d8e5d",
+      "packed_sha256": "a76a82e491731ff259f984c274578cd53db9adc9c5fac59b2c9fc4357f4d8e5d",
+      "match": true
+    },
+    {
+      "path": "dist/electron/updater/appUpdateErrorClassifier.js",
+      "size": 3612,
+      "source_sha256": "feff584c8992b41f8a36c22161e0f43b2efc2ae69ab55b7c9cdb07757d8bf9a0",
+      "packed_sha256": "feff584c8992b41f8a36c22161e0f43b2efc2ae69ab55b7c9cdb07757d8bf9a0",
+      "match": true
+    },
+    {
+      "path": "dist/electron/updater/appUpdater.js",
+      "size": 12143,
+      "source_sha256": "f78c1f5d82c451d3a8cebab6b76c4526c6e8204fe9240eced7f13f9b2fa7e725",
+      "packed_sha256": "f78c1f5d82c451d3a8cebab6b76c4526c6e8204fe9240eced7f13f9b2fa7e725",
+      "match": true
+    },
+    {
+      "path": "dist/electron/utils/shellEnv.js",
+      "size": 3660,
+      "source_sha256": "ffe4447bbc8e9b3cb8c468a0878c02b4095ebcc424688533639dedce2c1f7cf6",
+      "packed_sha256": "ffe4447bbc8e9b3cb8c468a0878c02b4095ebcc424688533639dedce2c1f7cf6",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/200.html",
+      "size": 1512,
+      "source_sha256": "cf5a3e48ddebc0bd50b13e14f3c15769e7942f061da92ecc50d7c3e12b575591",
+      "packed_sha256": "cf5a3e48ddebc0bd50b13e14f3c15769e7942f061da92ecc50d7c3e12b575591",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/404.html",
+      "size": 1512,
+      "source_sha256": "4b60dd4723afb0d3278cb653cd4e1b67616ceb3ba5f5465f87b644fd6c077bfc",
+      "packed_sha256": "4b60dd4723afb0d3278cb653cd4e1b67616ceb3ba5f5465f87b644fd6c077bfc",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt",
+      "size": 26305,
+      "source_sha256": "399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3",
+      "packed_sha256": "399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/ConfirmationModal.CoeV6O6i.js",
+      "size": 2306,
+      "source_sha256": "c65361a6699f3005a2d9ea314d94a37031523bf52d8ca860ea382a115d2773c5",
+      "packed_sha256": "c65361a6699f3005a2d9ea314d94a37031523bf52d8ca860ea382a115d2773c5",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/ConfirmationModal.DtxxR2Ew.css",
+      "size": 201,
+      "source_sha256": "372d73d13fe2d05584e7745e8da08a75dbd1f72f7f934a73dc1b1fc74087074f",
+      "packed_sha256": "372d73d13fe2d05584e7745e8da08a75dbd1f72f7f934a73dc1b1fc74087074f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/DefinitionLaunchPreferencesSection.B4uhkLvJ.css",
+      "size": 281,
+      "source_sha256": "7e734b83a58c3abecc6f3c58e38739f7d0017eab06747ca436269db4ab0ff4bf",
+      "packed_sha256": "7e734b83a58c3abecc6f3c58e38739f7d0017eab06747ca436269db4ab0ff4bf",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/DefinitionLaunchPreferencesSection.vue.ZhnvdAkV.js",
+      "size": 8599,
+      "source_sha256": "087369709a3e863cbf0d6abee2070150682beb0bb487f91fbbf0384687039b8f",
+      "packed_sha256": "087369709a3e863cbf0d6abee2070150682beb0bb487f91fbbf0384687039b8f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/FileExplorerTabs.BrK5oVEn.css",
+      "size": 3202,
+      "source_sha256": "77379f3150cb653456007ec00e98773101a05806c44a85d356f7a827a457aea5",
+      "packed_sha256": "77379f3150cb653456007ec00e98773101a05806c44a85d356f7a827a457aea5",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/FileExplorerTabs.vue.B2zGI0af.js",
+      "size": 32159,
+      "source_sha256": "9c39ce9a3a40dcf67b59ed361b0a302c19cfb9ce7afa5ffd9184871d8737e0d3",
+      "packed_sha256": "9c39ce9a3a40dcf67b59ed361b0a302c19cfb9ce7afa5ffd9184871d8737e0d3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/FullScreenImageModal.BO-N6GU7.js",
+      "size": 4955,
+      "source_sha256": "a00b98577eeab5980b778eaab72bc1946ff9b49b3f3ed98c26624b7d079b49a8",
+      "packed_sha256": "a00b98577eeab5980b778eaab72bc1946ff9b49b3f3ed98c26624b7d079b49a8",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/FullScreenImageModal.aod6xn15.css",
+      "size": 350,
+      "source_sha256": "a42299b2577129150e2987e117a72463a2ffa6d46066abaece12c05ab1b801b3",
+      "packed_sha256": "a42299b2577129150e2987e117a72463a2ffa6d46066abaece12c05ab1b801b3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2",
+      "size": 28076,
+      "source_sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "packed_sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff",
+      "size": 33516,
+      "source_sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "packed_sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf",
+      "size": 63632,
+      "source_sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "packed_sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf",
+      "size": 12368,
+      "source_sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "packed_sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff",
+      "size": 7716,
+      "source_sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "packed_sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2",
+      "size": 6912,
+      "source_sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "packed_sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff",
+      "size": 7656,
+      "source_sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "packed_sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2",
+      "size": 6908,
+      "source_sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "packed_sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf",
+      "size": 12344,
+      "source_sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "packed_sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf",
+      "size": 19584,
+      "source_sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "packed_sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff",
+      "size": 13296,
+      "source_sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "packed_sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2",
+      "size": 11348,
+      "source_sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "packed_sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf",
+      "size": 19572,
+      "source_sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "packed_sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2",
+      "size": 11316,
+      "source_sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "packed_sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff",
+      "size": 13208,
+      "source_sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "packed_sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2",
+      "size": 25324,
+      "source_sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "packed_sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff",
+      "size": 29912,
+      "source_sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "packed_sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf",
+      "size": 51336,
+      "source_sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "packed_sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2",
+      "size": 16780,
+      "source_sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "packed_sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf",
+      "size": 32968,
+      "source_sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "packed_sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff",
+      "size": 19412,
+      "source_sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "packed_sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf",
+      "size": 33580,
+      "source_sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "packed_sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff",
+      "size": 19676,
+      "source_sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "packed_sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2",
+      "size": 16988,
+      "source_sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "packed_sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2",
+      "size": 26272,
+      "source_sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "packed_sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff",
+      "size": 30772,
+      "source_sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "packed_sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf",
+      "size": 53580,
+      "source_sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "packed_sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf",
+      "size": 31196,
+      "source_sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "packed_sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2",
+      "size": 16400,
+      "source_sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "packed_sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff",
+      "size": 18668,
+      "source_sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "packed_sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff",
+      "size": 18748,
+      "source_sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "packed_sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf",
+      "size": 31308,
+      "source_sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "packed_sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2",
+      "size": 16440,
+      "source_sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "packed_sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf",
+      "size": 24504,
+      "source_sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "packed_sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2",
+      "size": 12216,
+      "source_sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "packed_sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff",
+      "size": 14408,
+      "source_sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "packed_sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2",
+      "size": 12028,
+      "source_sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "packed_sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff",
+      "size": 14112,
+      "source_sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "packed_sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf",
+      "size": 22364,
+      "source_sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "packed_sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf",
+      "size": 19436,
+      "source_sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "packed_sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff",
+      "size": 12316,
+      "source_sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "packed_sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2",
+      "size": 10344,
+      "source_sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "packed_sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf",
+      "size": 16648,
+      "source_sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "packed_sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2",
+      "size": 9644,
+      "source_sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "packed_sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Script-Regular.D5yQViql.woff",
+      "size": 10588,
+      "source_sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "packed_sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size1-Regular.C195tn64.woff",
+      "size": 6496,
+      "source_sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "packed_sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf",
+      "size": 12228,
+      "source_sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "packed_sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2",
+      "size": 5468,
+      "source_sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "packed_sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf",
+      "size": 11508,
+      "source_sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "packed_sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2",
+      "size": 5208,
+      "source_sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "packed_sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff",
+      "size": 6188,
+      "source_sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "packed_sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff",
+      "size": 4420,
+      "source_sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "packed_sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf",
+      "size": 7588,
+      "source_sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "packed_sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff",
+      "size": 5980,
+      "source_sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "packed_sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf",
+      "size": 10364,
+      "source_sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "packed_sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2",
+      "size": 4928,
+      "source_sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "packed_sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff",
+      "size": 16028,
+      "source_sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "packed_sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2",
+      "size": 13568,
+      "source_sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "packed_sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf",
+      "size": 27556,
+      "source_sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "packed_sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/MobileRemoteAccessShell.vue._XaPf7ZW.js",
+      "size": 114049,
+      "source_sha256": "42bed872f34caf4667b784f0b8a04d305685a16e1dc9219c1d770b23e34d5816",
+      "packed_sha256": "42bed872f34caf4667b784f0b8a04d305685a16e1dc9219c1d770b23e34d5816",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/ModelConfigSection.vue.BjdMunqX.js",
+      "size": 18269,
+      "source_sha256": "988db92033e820e9e59abd2c6a029a6a199b69aa48a56d1f0cec18c0e4f63227",
+      "packed_sha256": "988db92033e820e9e59abd2c6a029a6a199b69aa48a56d1f0cec18c0e4f63227",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/RuntimeModelConfigFields.vue.DC5YdWDH.js",
+      "size": 9444,
+      "source_sha256": "efd2afc7e3891dfc0a0aa4e68ba48ce97240100d8c9a2aaba83c5238cec40b12",
+      "packed_sha256": "efd2afc7e3891dfc0a0aa4e68ba48ce97240100d8c9a2aaba83c5238cec40b12",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/SearchableSelect.vue.CVxS8m3K.js",
+      "size": 5843,
+      "source_sha256": "274eefb250035673b214940bb1b7845dfeadd3e3f9860bf8a357b8eb6a190d80",
+      "packed_sha256": "274eefb250035673b214940bb1b7845dfeadd3e3f9860bf8a357b8eb6a190d80",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/ToolsManagementWorkspace.vue.CHWodAuw.js",
+      "size": 50642,
+      "source_sha256": "5b2bf03e04d08f66f5b6a412b5cf0e66d77a9235f1e5bf030d90e398a160f24e",
+      "packed_sha256": "5b2bf03e04d08f66f5b6a412b5cf0e66d77a9235f1e5bf030d90e398a160f24e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/_basePickBy.B23NWyV6.js",
+      "size": 2597,
+      "source_sha256": "1ccc34bb266d72ff47dd1251b68c561cd4d1b88052bb60f02d77dfa6ed84045b",
+      "packed_sha256": "1ccc34bb266d72ff47dd1251b68c561cd4d1b88052bb60f02d77dfa6ed84045b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/_baseUniq.9RpCVFvS.js",
+      "size": 11903,
+      "source_sha256": "91192628c1f197960bb7c9da66ad8ab106a5101466cda2d0dcd1fbbb317b1faa",
+      "packed_sha256": "91192628c1f197960bb7c9da66ad8ab106a5101466cda2d0dcd1fbbb317b1faa",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/_commonjsHelpers.CE1G-McA.js",
+      "size": 755,
+      "source_sha256": "df711f06c8ecd70bc0a4c0a00936e7be2473fef133ba86c470caaed4bd438455",
+      "packed_sha256": "df711f06c8ecd70bc0a4c0a00936e7be2473fef133ba86c470caaed4bd438455",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/_id_.cyA8OWQe.js",
+      "size": 88846,
+      "source_sha256": "29edc9c2f0b6552f0f7821c1f2a8262514e5090e5c4953c02e0d55c3bf393aaf",
+      "packed_sha256": "29edc9c2f0b6552f0f7821c1f2a8262514e5090e5c4953c02e0d55c3bf393aaf",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agent-orgs.D6u-sgS9.js",
+      "size": 34875,
+      "source_sha256": "17330f67a336a958bbaebd9ff8a3d144f58a63a4eac5647f279000a0e0b5d41d",
+      "packed_sha256": "17330f67a336a958bbaebd9ff8a3d144f58a63a4eac5647f279000a0e0b5d41d",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agent-teams.CRtaS7LD.js",
+      "size": 50941,
+      "source_sha256": "47ba352329c3181e8dbbb329d5c622edb3caa6f442c3753e731f3456beedc073",
+      "packed_sha256": "47ba352329c3181e8dbbb329d5c622edb3caa6f442c3753e731f3456beedc073",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentDefinitionStore.BPO4kMC_.js",
+      "size": 12437,
+      "source_sha256": "93a2b4f22521db699d40e53e76541e349c0ec1103e7801d13cbb7770459ae71e",
+      "packed_sha256": "93a2b4f22521db699d40e53e76541e349c0ec1103e7801d13cbb7770459ae71e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentOrgDefinitionReferences.voyA8vll.js",
+      "size": 1886,
+      "source_sha256": "aec49eb5f1a07285303bea8a772a0faa24aaa7db894eb2f05deb40e6421ab8b6",
+      "packed_sha256": "aec49eb5f1a07285303bea8a772a0faa24aaa7db894eb2f05deb40e6421ab8b6",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentOrgDefinitionStore.CXo5Tkwa.js",
+      "size": 4120,
+      "source_sha256": "d98a546b1f9a11cd968e2f83bf16be7c5b2decc0d2c64bf1f653f24df165de92",
+      "packed_sha256": "d98a546b1f9a11cd968e2f83bf16be7c5b2decc0d2c64bf1f653f24df165de92",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentTeamContextsStore.DPqE-6sD.js",
+      "size": 513982,
+      "source_sha256": "b9d3b266cd98a30d066187d15bab96c04caee080c20fc8a7cd2f76f596f35452",
+      "packed_sha256": "b9d3b266cd98a30d066187d15bab96c04caee080c20fc8a7cd2f76f596f35452",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/agents.BpJYzr0s.js",
+      "size": 55182,
+      "source_sha256": "74e76753d26f0c4fd81c17d5177bd075ede035249b836e0316db4c73e65aec8a",
+      "packed_sha256": "74e76753d26f0c4fd81c17d5177bd075ede035249b836e0316db4c73e65aec8a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/api.CUQPLxX5.js",
+      "size": 938,
+      "source_sha256": "794b9cfa8c3cb4c4451b47160409073e775e3c79edc93385a5ad8eeba57cf089",
+      "packed_sha256": "794b9cfa8c3cb4c4451b47160409073e775e3c79edc93385a5ad8eeba57cf089",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/applicationAssetUrl.BxcXMT3m.js",
+      "size": 1823,
+      "source_sha256": "65b4b23073362df56ed3d02bdbf7d326bbc84d925bd4cac99fe10a86dd83a640",
+      "packed_sha256": "65b4b23073362df56ed3d02bdbf7d326bbc84d925bd4cac99fe10a86dd83a640",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/applicationStore.C9iyOvrS.js",
+      "size": 3830,
+      "source_sha256": "4532e63fa3378ac467dd3dda9b27e94716a9dc319fbf5c0c93008026d1ed8749",
+      "packed_sha256": "4532e63fa3378ac467dd3dda9b27e94716a9dc319fbf5c0c93008026d1ed8749",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/arc.TGQp5783.js",
+      "size": 3449,
+      "source_sha256": "564908e4130c40255a374ee21771707b12b0d8faca6d66ce77dd53936f1680d1",
+      "packed_sha256": "564908e4130c40255a374ee21771707b12b0d8faca6d66ce77dd53936f1680d1",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/architectureDiagram-VXUJARFQ.DsjWs7Ex.js",
+      "size": 148817,
+      "source_sha256": "d45d981f51a95a34c65b65437e57000e12ce3cb1e7bc45122eff01778a6d83cb",
+      "packed_sha256": "d45d981f51a95a34c65b65437e57000e12ce3cb1e7bc45122eff01778a6d83cb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/blockDiagram-VD42YOAC.TjVrBatV.js",
+      "size": 71965,
+      "source_sha256": "77828b6ec01cf565fe7d44a1111c4964b233fd23c4489217931b4a4122f0a4e6",
+      "packed_sha256": "77828b6ec01cf565fe7d44a1111c4964b233fd23c4489217931b4a4122f0a4e6",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/builds/latest.json",
+      "size": 71,
+      "source_sha256": "7d8c0e5627899b474a802bb64cf8aaafa1c0237b20002f8e71b7575e56b2a0d8",
+      "packed_sha256": "7d8c0e5627899b474a802bb64cf8aaafa1c0237b20002f8e71b7575e56b2a0d8",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/builds/meta/6a65c0c3-f04b-4fc0-b7f4-26db0606fb2b.json",
+      "size": 88,
+      "source_sha256": "b78ba77d85796c16f961cb20466bc0f1febc656ecdcf5ff71603b73124fdada5",
+      "packed_sha256": "b78ba77d85796c16f961cb20466bc0f1febc656ecdcf5ff71603b73124fdada5",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/c4Diagram-YG6GDRKO.CrkjnWsI.js",
+      "size": 70314,
+      "source_sha256": "1bba34ce2913f81bc0273c3b0742061399edabbb5dd1cd1128682f78f38e5073",
+      "packed_sha256": "1bba34ce2913f81bc0273c3b0742061399edabbb5dd1cd1128682f78f38e5073",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/channel.DEQyCCbx.js",
+      "size": 125,
+      "source_sha256": "f65e1555f32ff7c730b98c1003c28719fd480fe8cd90f1660713c8690b72698e",
+      "packed_sha256": "f65e1555f32ff7c730b98c1003c28719fd480fe8cd90f1660713c8690b72698e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-4BX2VUAB.DYtR7sx_.js",
+      "size": 239,
+      "source_sha256": "21d4551a3aaa47c48bf302b494ffdd7bca801a563a406e19054a6ab501a50e5b",
+      "packed_sha256": "21d4551a3aaa47c48bf302b494ffdd7bca801a563a406e19054a6ab501a50e5b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-55IACEB6.DJdpe27T.js",
+      "size": 247,
+      "source_sha256": "f4f3a214a696c7909f09d20e60994535aae437ad67d7b238c63797c9ada6c88d",
+      "packed_sha256": "f4f3a214a696c7909f09d20e60994535aae437ad67d7b238c63797c9ada6c88d",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-B4BG7PRW.CZIEfRgz.js",
+      "size": 45322,
+      "source_sha256": "3fbbc3199d8b93f4c625cebbb8f04a76a80e6e9ddc075b412c4c6899eb082e35",
+      "packed_sha256": "3fbbc3199d8b93f4c625cebbb8f04a76a80e6e9ddc075b412c4c6899eb082e35",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-DI55MBZ5.BUb_fPjx.js",
+      "size": 36356,
+      "source_sha256": "c143a89871c95bcb481675e1676c579c2af743969d377ab6c7383b6be7241575",
+      "packed_sha256": "c143a89871c95bcb481675e1676c579c2af743969d377ab6c7383b6be7241575",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-FMBD7UC4.CN_mNDJp.js",
+      "size": 378,
+      "source_sha256": "1198f6eb1d36bc06fd6bea31abff529d1c2e215e1bcd5c58a55853021cb80a1e",
+      "packed_sha256": "1198f6eb1d36bc06fd6bea31abff529d1c2e215e1bcd5c58a55853021cb80a1e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-QN33PNHL.7IpzVP1B.js",
+      "size": 518,
+      "source_sha256": "4caa88253b830a6f7c8b3df04bd8f7e9ce4a40acb38dc8e7eb5c68dfbffb420f",
+      "packed_sha256": "4caa88253b830a6f7c8b3df04bd8f7e9ce4a40acb38dc8e7eb5c68dfbffb420f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-QZHKN3VN.B-NNIJcd.js",
+      "size": 207,
+      "source_sha256": "4485f567ccee50fd81c95365f16c76c8be6e5e38cc0e24ba63ec46c5b6c03b5c",
+      "packed_sha256": "4485f567ccee50fd81c95365f16c76c8be6e5e38cc0e24ba63ec46c5b6c03b5c",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-TZMSLE5B.DiXJ4xQ7.js",
+      "size": 1449,
+      "source_sha256": "f2a87ccaf1a79d1f748ecf10f6288e5a0c89c12d00a47a7f4ff7f2d198d3e2ea",
+      "packed_sha256": "f2a87ccaf1a79d1f748ecf10f6288e5a0c89c12d00a47a7f4ff7f2d198d3e2ea",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/classDiagram-2ON5EDUG.mMolRX9G.js",
+      "size": 612,
+      "source_sha256": "93202bde1d943cb1ad2dcb64e9b4586156f73b3d9da6a4049131791df9bf71bb",
+      "packed_sha256": "93202bde1d943cb1ad2dcb64e9b4586156f73b3d9da6a4049131791df9bf71bb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/classDiagram-v2-WZHVMYZB.mMolRX9G.js",
+      "size": 612,
+      "source_sha256": "93202bde1d943cb1ad2dcb64e9b4586156f73b3d9da6a4049131791df9bf71bb",
+      "packed_sha256": "93202bde1d943cb1ad2dcb64e9b4586156f73b3d9da6a4049131791df9bf71bb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/clone.ByLOwpuY.js",
+      "size": 96,
+      "source_sha256": "8bc00ab860638e6b0d23f1cd01695e849af334bc5600097f3c0bf3cb35080524",
+      "packed_sha256": "8bc00ab860638e6b0d23f1cd01695e849af334bc5600097f3c0bf3cb35080524",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/cose-bilkent-S5V4N54A.BJpKCJs6.js",
+      "size": 81883,
+      "source_sha256": "5e6d88c7afc7911b7a4fd55935ec340e5dcef4e86db2f4a94cfa7e35d13fb305",
+      "packed_sha256": "5e6d88c7afc7911b7a4fd55935ec340e5dcef4e86db2f4a94cfa7e35d13fb305",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/cytoscape.esm.5J0xJHOV.js",
+      "size": 441644,
+      "source_sha256": "38944c926eef34939819338782c1f5a9000e0f4c92208d73d6eb1c5b57cb2695",
+      "packed_sha256": "38944c926eef34939819338782c1f5a9000e0f4c92208d73d6eb1c5b57cb2695",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/dagre-6UL2VRFP.CE2xK84A.js",
+      "size": 11187,
+      "source_sha256": "854a769a2d8f664c7b417230a8002fe6e35876d880b66906e860781093c8e931",
+      "packed_sha256": "854a769a2d8f664c7b417230a8002fe6e35876d880b66906e860781093c8e931",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/default.jK3vYDVL.js",
+      "size": 88063,
+      "source_sha256": "437f44b753c6e7f939ab6c756b5556ece01c64a24e8daa3185d3c84124fbb448",
+      "packed_sha256": "437f44b753c6e7f939ab6c756b5556ece01c64a24e8daa3185d3c84124fbb448",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/default.pB70Vdxh.css",
+      "size": 4067,
+      "source_sha256": "0e52c18d2d9c88c82e1a068bb93f39b123985b97b3e657d4018fd6cc35cf86e2",
+      "packed_sha256": "0e52c18d2d9c88c82e1a068bb93f39b123985b97b3e657d4018fd6cc35cf86e2",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/defaultLocale.DX6XiGOO.js",
+      "size": 4688,
+      "source_sha256": "0cefbd76f932c4eea4758d28169802589b1ad15b46607253de4bd82328998ece",
+      "packed_sha256": "0cefbd76f932c4eea4758d28169802589b1ad15b46607253de4bd82328998ece",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/diagram-PSM6KHXK.DuDvb6yU.js",
+      "size": 16051,
+      "source_sha256": "e5427bdb819ec9cc8fe2acf6eadcff99bb145abba09990f9f1281785d7e30762",
+      "packed_sha256": "e5427bdb819ec9cc8fe2acf6eadcff99bb145abba09990f9f1281785d7e30762",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/diagram-QEK2KX5R.Brkp2FIC.js",
+      "size": 6092,
+      "source_sha256": "b94f4f3d761de2e36443a7a9213aaf2f8c53b7296c330d4e6d060009b6bfd2ed",
+      "packed_sha256": "b94f4f3d761de2e36443a7a9213aaf2f8c53b7296c330d4e6d060009b6bfd2ed",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/diagram-S2PKOQOG.BM28eOhH.js",
+      "size": 4491,
+      "source_sha256": "c22028f4162ea875e99886dc0116e56feaacfb82607147c71bffe101ae5dd93c",
+      "packed_sha256": "c22028f4162ea875e99886dc0116e56feaacfb82607147c71bffe101ae5dd93c",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/entry.ClNXg2-q.css",
+      "size": 122899,
+      "source_sha256": "6ca6e9c4890bdd09f9b8f4cec865a1f6f90517a6c83bb1f915a4a7ed41808849",
+      "packed_sha256": "6ca6e9c4890bdd09f9b8f4cec865a1f6f90517a6c83bb1f915a4a7ed41808849",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/entry.RVRq3AjS.js",
+      "size": 1038765,
+      "source_sha256": "bb4510868cfa9b03ca0274a62ba5dbb638548e56589093cb08eb0bab3e31ae6d",
+      "packed_sha256": "bb4510868cfa9b03ca0274a62ba5dbb638548e56589093cb08eb0bab3e31ae6d",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/erDiagram-Q2GNP2WA.CYhLXMJw.js",
+      "size": 25421,
+      "source_sha256": "2f12c8ac5368098acd997986d31b9f790214266517515cbcf20283d0df044a81",
+      "packed_sha256": "2f12c8ac5368098acd997986d31b9f790214266517515cbcf20283d0df044a81",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/featuredCatalogItems.Bv4L8bhO.js",
+      "size": 2391,
+      "source_sha256": "bcb14c2521fe16203129dd490139c01e0f4348f81fed2febd2d344c1396dd26b",
+      "packed_sha256": "bcb14c2521fe16203129dd490139c01e0f4348f81fed2febd2d344c1396dd26b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/fileUploadStore.7OMP98jS.js",
+      "size": 516,
+      "source_sha256": "ac00ff20fe8a00341c639c7227b395da354ffd257c1711b78ccdafbf4fbf725d",
+      "packed_sha256": "ac00ff20fe8a00341c639c7227b395da354ffd257c1711b78ccdafbf4fbf725d",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/flowDiagram-NV44I4VS.5X9LWk1s.js",
+      "size": 60631,
+      "source_sha256": "97dfdd31eae54a83e5636b483b4b8491d464e36e831190cf02e4403841114345",
+      "packed_sha256": "97dfdd31eae54a83e5636b483b4b8491d464e36e831190cf02e4403841114345",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/ganttDiagram-JELNMOA3.BmjbpR3e.js",
+      "size": 68491,
+      "source_sha256": "7efaec0439abec6566c621a9bda62044b488425f41849b00cb7c02d06159082f",
+      "packed_sha256": "7efaec0439abec6566c621a9bda62044b488425f41849b00cb7c02d06159082f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/gitGraphDiagram-V2S2FVAM.DwOVGuic.js",
+      "size": 24317,
+      "source_sha256": "f0009c70c654b96d2576729522cfcd40f5f973af3d9f119aad9c9b5a4a29a120",
+      "packed_sha256": "f0009c70c654b96d2576729522cfcd40f5f973af3d9f119aad9c9b5a4a29a120",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/graph.D58l1d3l.js",
+      "size": 5932,
+      "source_sha256": "0f37b9e51e395f797d463790b83073d8d04003a47d43e7e35c09ccff2c5fa688",
+      "packed_sha256": "0f37b9e51e395f797d463790b83073d8d04003a47d43e7e35c09ccff2c5fa688",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/handoffs.IajwE1lb.js",
+      "size": 15631,
+      "source_sha256": "b4784ca02e2f4bb6ecbad5e8007576a5f0365428ab2e5dd932ce6202bfcc8bcf",
+      "packed_sha256": "b4784ca02e2f4bb6ecbad5e8007576a5f0365428ab2e5dd932ce6202bfcc8bcf",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/iconify.D5qDObf6.js",
+      "size": 18471,
+      "source_sha256": "287eda8b403d4ee5ed048039b18543a514c8521b498c8b384933eea22d9b8890",
+      "packed_sha256": "287eda8b403d4ee5ed048039b18543a514c8521b498c8b384933eea22d9b8890",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/index.CImW650C.js",
+      "size": 4773,
+      "source_sha256": "84cc47eebdbff4efb4c083e1db4407f98b2709a07ffacfd58bca66705301b791",
+      "packed_sha256": "84cc47eebdbff4efb4c083e1db4407f98b2709a07ffacfd58bca66705301b791",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/index.Cpt6W6Ki.js",
+      "size": 1246,
+      "source_sha256": "6ed82ddf13629bb808f59967ef47e5d141d0b40ba344ae2b99a77b511519e669",
+      "packed_sha256": "6ed82ddf13629bb808f59967ef47e5d141d0b40ba344ae2b99a77b511519e669",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/infoDiagram-HS3SLOUP.DOGoQvIA.js",
+      "size": 873,
+      "source_sha256": "b99dcc482da0aaa6639dc8a3f21daab28c8cb95ad97568957f09be5ec762dcdb",
+      "packed_sha256": "b99dcc482da0aaa6639dc8a3f21daab28c8cb95ad97568957f09be5ec762dcdb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/init.Gi6I4Gst.js",
+      "size": 147,
+      "source_sha256": "379fa880c14ad48f43b0c23ff56b30b2b808e8460fd9f9cad8bf7cb278c5b814",
+      "packed_sha256": "379fa880c14ad48f43b0c23ff56b30b2b808e8460fd9f9cad8bf7cb278c5b814",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/journeyDiagram-XKPGCS4Q.CtWy8NmP.js",
+      "size": 23723,
+      "source_sha256": "7604c99c808e21d8e5ce155f5e7ae049a88413322fc5f89c3583175fe2e76268",
+      "packed_sha256": "7604c99c808e21d8e5ce155f5e7ae049a88413322fc5f89c3583175fe2e76268",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/kanban-definition-3W4ZIXB7.Hhf_0Xw1.js",
+      "size": 20383,
+      "source_sha256": "0e7595e270cf26b1fb2b3f2dd0e27e947b719e331183838ec67a7cb55f1e8ce2",
+      "packed_sha256": "0e7595e270cf26b1fb2b3f2dd0e27e947b719e331183838ec67a7cb55f1e8ce2",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/layout.CMSG9R_w.js",
+      "size": 27398,
+      "source_sha256": "82a6ab7fbde293d8641cfafd3165377f3c082ccf724e2213ebc43ddc5a30ac5b",
+      "packed_sha256": "82a6ab7fbde293d8641cfafd3165377f3c082ccf724e2213ebc43ddc5a30ac5b",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/linear.Cu-xz-Rm.js",
+      "size": 5673,
+      "source_sha256": "26a8a2acd98c89e2041c9165d5eb955499b0a254803df8bc2cce96e2e00eed0f",
+      "packed_sha256": "26a8a2acd98c89e2041c9165d5eb955499b0a254803df8bc2cce96e2e00eed0f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/media.8QGPIfxK.js",
+      "size": 13270,
+      "source_sha256": "4d7680a30a071f6f148db8a9eb127d74b45ebf0f5144ccf9fd843e032476cb60",
+      "packed_sha256": "4d7680a30a071f6f148db8a9eb127d74b45ebf0f5144ccf9fd843e032476cb60",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/media.yjOJmL4q.css",
+      "size": 227,
+      "source_sha256": "9483f2f9728a4ed6592e228d329d0d42ed5fd0b2c31bcfa421ecb37bfcf2c9e3",
+      "packed_sha256": "9483f2f9728a4ed6592e228d329d0d42ed5fd0b2c31bcfa421ecb37bfcf2c9e3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/memory.B1KsW5lu.js",
+      "size": 46571,
+      "source_sha256": "a29d16b4e9e798a76b774bd0229617105c3ad76b849c7f87d2d79655b05c45d7",
+      "packed_sha256": "a29d16b4e9e798a76b774bd0229617105c3ad76b849c7f87d2d79655b05c45d7",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/mindmap-definition-VGOIOE7T.CT-A0CeP.js",
+      "size": 20219,
+      "source_sha256": "c43ddccdd5620479dffe8699ecd21d79551ebb1c8159d61754b2018d48d1921e",
+      "packed_sha256": "c43ddccdd5620479dffe8699ecd21d79551ebb1c8159d61754b2018d48d1921e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/mobile.oWpssNHT.js",
+      "size": 1394,
+      "source_sha256": "cfc304c0e45208c862d2f71aa7d09867a69b59f60407733232ff321a1563aaea",
+      "packed_sha256": "cfc304c0e45208c862d2f71aa7d09867a69b59f60407733232ff321a1563aaea",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/mobileWorkStore.B02LvUl6.js",
+      "size": 3556,
+      "source_sha256": "cb03fd2484acaea603b40c4e55a48365058a2986a1e0e57ea9b7fb8543b496da",
+      "packed_sha256": "cb03fd2484acaea603b40c4e55a48365058a2986a1e0e57ea9b7fb8543b496da",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/modelSelectionLabel.Cf0WUvpx.js",
+      "size": 8134,
+      "source_sha256": "22ff2fdb988e412433fdada38b90f373291198942c119d1faa58c2cca9ec5523",
+      "packed_sha256": "22ff2fdb988e412433fdada38b90f373291198942c119d1faa58c2cca9ec5523",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/nodes.Du0PZOq3.js",
+      "size": 74845,
+      "source_sha256": "3a9d2ad01c0363b1ba4be7dfa38aaab58c80efcb8ab33bac9ef2d15a66afa4f0",
+      "packed_sha256": "3a9d2ad01c0363b1ba4be7dfa38aaab58c80efcb8ab33bac9ef2d15a66afa4f0",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/ordinal.BYWQX77i.js",
+      "size": 1189,
+      "source_sha256": "2d709ed005d15eefb9082ea378bc864a8f043a1afae448cc87aa66b71b6c0eb8",
+      "packed_sha256": "2d709ed005d15eefb9082ea378bc864a8f043a1afae448cc87aa66b71b6c0eb8",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/pieDiagram-ADFJNKIX.D4tVTcKW.js",
+      "size": 5426,
+      "source_sha256": "8f8e11d52bb7f6fa4f3bf9099f356598d8bbaa63bb60a4ffab4f3e932f1d5dc8",
+      "packed_sha256": "8f8e11d52bb7f6fa4f3bf9099f356598d8bbaa63bb60a4ffab4f3e932f1d5dc8",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/qrCodeDataUrlService.BInqJ4D7.js",
+      "size": 25630,
+      "source_sha256": "e2f8723e7996fa57b23cf960fa2121f06300215f1750264575ca0ffbdc19dab5",
+      "packed_sha256": "e2f8723e7996fa57b23cf960fa2121f06300215f1750264575ca0ffbdc19dab5",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/quadrantDiagram-AYHSOK5B.XHXYoFwK.js",
+      "size": 34021,
+      "source_sha256": "8a1978fe25e56ab541374e0dc5a6d592de11b5df7025b581b49dcd0d58cb7cbb",
+      "packed_sha256": "8a1978fe25e56ab541374e0dc5a6d592de11b5df7025b581b49dcd0d58cb7cbb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/requirementDiagram-UZGBJVZJ.0l93QRfs.js",
+      "size": 30265,
+      "source_sha256": "d3c95fb6ed2cf457858a2cceb06416e9c28190081855d1f3bb1cc036fa3057b3",
+      "packed_sha256": "d3c95fb6ed2cf457858a2cceb06416e9c28190081855d1f3bb1cc036fa3057b3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/sankeyDiagram-TZEHDZUN.OAorByZ_.js",
+      "size": 22300,
+      "source_sha256": "2396dfe74f12d7c8a4d9a9dff70c6dc45e0e87d98a7757cffd5fed846b17b2de",
+      "packed_sha256": "2396dfe74f12d7c8a4d9a9dff70c6dc45e0e87d98a7757cffd5fed846b17b2de",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/sequenceDiagram-WL72ISMW.B0o6EP55.js",
+      "size": 97985,
+      "source_sha256": "7c5f06537893e295b028e704641d78fe36d6524148b3f732f8e92d666bfdb077",
+      "packed_sha256": "7c5f06537893e295b028e704641d78fe36d6524148b3f732f8e92d666bfdb077",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/serverSettings.BV2N925W.js",
+      "size": 8104,
+      "source_sha256": "950bec4bee511941ad47352f508afcb433396576db20dec0b958401b1c168a85",
+      "packed_sha256": "950bec4bee511941ad47352f508afcb433396576db20dec0b958401b1c168a85",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/settings.C_j_9X3K.js",
+      "size": 228,
+      "source_sha256": "9156ac43b984a4c4c3a7e71d51cdca6d1af6a306e66e4485e6e4754cd2da939f",
+      "packed_sha256": "9156ac43b984a4c4c3a7e71d51cdca6d1af6a306e66e4485e6e4754cd2da939f",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/settings.DNC7jDHo.js",
+      "size": 402182,
+      "source_sha256": "954f4657baaf4cd1c1d81b5b1ace9fe06de2c3450d74d740ba9827a1bf1868b9",
+      "packed_sha256": "954f4657baaf4cd1c1d81b5b1ace9fe06de2c3450d74d740ba9827a1bf1868b9",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/settings.DOZ4oBRp.css",
+      "size": 4291,
+      "source_sha256": "62ac57cb73f52fec6980c9633fb3e5de8b5788dd97f2c6904f5aa3bd1e45ba9a",
+      "packed_sha256": "62ac57cb73f52fec6980c9633fb3e5de8b5788dd97f2c6904f5aa3bd1e45ba9a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/skillImprovementCapabilityStore.i8Mrz3Wu.js",
+      "size": 4850,
+      "source_sha256": "48bd5d01735ed86b57d43adda3e67b818ef3bc20e21429c5eec34935846d1d24",
+      "packed_sha256": "48bd5d01735ed86b57d43adda3e67b818ef3bc20e21429c5eec34935846d1d24",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/skillStore.DYqneJuO.js",
+      "size": 8627,
+      "source_sha256": "006336a2c4fec5323f161df45cfdbaa65c3dd46fb518655385876884e5b00912",
+      "packed_sha256": "006336a2c4fec5323f161df45cfdbaa65c3dd46fb518655385876884e5b00912",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/skills.DGiWvju1.js",
+      "size": 17818,
+      "source_sha256": "79ac0d4e4f35915356cf84a3476f8d001bc4551a239fd43f168eed28d06fb8f1",
+      "packed_sha256": "79ac0d4e4f35915356cf84a3476f8d001bc4551a239fd43f168eed28d06fb8f1",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/skills.hZg4z6X7.css",
+      "size": 14024,
+      "source_sha256": "39a9dc1b3061df2946c19732ce11b19a0ec401fec262f1da14d673970849fc41",
+      "packed_sha256": "39a9dc1b3061df2946c19732ce11b19a0ec401fec262f1da14d673970849fc41",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/stateDiagram-FKZM4ZOC.Cy2f0kCN.js",
+      "size": 10568,
+      "source_sha256": "df21eca9c3366b8e5c1f4a6697619d3d3b40dfdf2ed810cbe6a2cc7eca6792cb",
+      "packed_sha256": "df21eca9c3366b8e5c1f4a6697619d3d3b40dfdf2ed810cbe6a2cc7eca6792cb",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/stateDiagram-v2-4FDKWEC3.B8g5TnF_.js",
+      "size": 573,
+      "source_sha256": "d86e0ff097a2aba188f3ed773644c9002da1c69e21089ce11da2cadfe8a50f50",
+      "packed_sha256": "d86e0ff097a2aba188f3ed773644c9002da1c69e21089ce11da2cadfe8a50f50",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/timeline-definition-IT6M3QCI.BKsN9VkL.js",
+      "size": 23771,
+      "source_sha256": "13be512a56b19abe88462061781f99d4387b405afbe40cbca13d84993ae439a4",
+      "packed_sha256": "13be512a56b19abe88462061781f99d4387b405afbe40cbca13d84993ae439a4",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/toolManagementStore.Du4flGAF.js",
+      "size": 9239,
+      "source_sha256": "a10c6709e8e2aa6a215a1a15cbd219fa98ed8dfc61f2438da44fa86906d6a3e8",
+      "packed_sha256": "a10c6709e8e2aa6a215a1a15cbd219fa98ed8dfc61f2438da44fa86906d6a3e8",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/tools.CMJ-KF61.js",
+      "size": 310,
+      "source_sha256": "0c24e6baea3eb45035d13721a17b95f08b98704e776d3352dce13454d87b54c3",
+      "packed_sha256": "0c24e6baea3eb45035d13721a17b95f08b98704e776d3352dce13454d87b54c3",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/treemap-GDKQZRPO.B2SKchsP.js",
+      "size": 452911,
+      "source_sha256": "1816baa35c82531afa8c0443983007de677af01034003f026b6d26cc7d61ff60",
+      "packed_sha256": "1816baa35c82531afa8c0443983007de677af01034003f026b6d26cc7d61ff60",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useEventMonitorFilePreview.BUFxVrOk.js",
+      "size": 3838,
+      "source_sha256": "e2446d45b6c18b7bd39ee533a855f844e8a2a6012d6e15db244c1a74c76fdb7e",
+      "packed_sha256": "e2446d45b6c18b7bd39ee533a855f844e8a2a6012d6e15db244c1a74c76fdb7e",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useNativeFolderDialog.BDyFQA4X.js",
+      "size": 797,
+      "source_sha256": "d3206089e3b1c4316eaa20b7dd4fe8c1aa468f3c6f07db1e29cf716de41df227",
+      "packed_sha256": "d3206089e3b1c4316eaa20b7dd4fe8c1aa468f3c6f07db1e29cf716de41df227",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useRightPanel.D0ULdNBi.js",
+      "size": 4978,
+      "source_sha256": "770f254fbd1eb4371e5839ef7a7ecf3317842bc346d41c191dd184da3fc69d61",
+      "packed_sha256": "770f254fbd1eb4371e5839ef7a7ecf3317842bc346d41c191dd184da3fc69d61",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useRuntimeScopedModelSelection.M1ilf06W.js",
+      "size": 3447,
+      "source_sha256": "aaf80ac590ebd90c3f2caa6414c86d12a0bea52ff64ac67ff94a43c3d072af1a",
+      "packed_sha256": "aaf80ac590ebd90c3f2caa6414c86d12a0bea52ff64ac67ff94a43c3d072af1a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useShellPrimaryNavigation.DhAeLExA.js",
+      "size": 7562,
+      "source_sha256": "178308d0caf6e4d24b531b0f8af709a5e3f699b49927bbcffa9fbcf945a0a742",
+      "packed_sha256": "178308d0caf6e4d24b531b0f8af709a5e3f699b49927bbcffa9fbcf945a0a742",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useTeamRunRuntimeCatalogSync.CYR_-KzE.css",
+      "size": 3512,
+      "source_sha256": "5f694144056ad845a05ced4fb4bbc5c9e79b4be69308cbfa0cf3b1ad94a1bf10",
+      "packed_sha256": "5f694144056ad845a05ced4fb4bbc5c9e79b4be69308cbfa0cf3b1ad94a1bf10",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useTeamRunRuntimeCatalogSync.RCe8-eUo.js",
+      "size": 85658,
+      "source_sha256": "09ddd5c1646dca8789dd7b6f1ec33b85bba80c5d27c88ccf362ed3b38b56421c",
+      "packed_sha256": "09ddd5c1646dca8789dd7b6f1ec33b85bba80c5d27c88ccf362ed3b38b56421c",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useWorkspaceFileExplorer.CFIcXH49.js",
+      "size": 3766011,
+      "source_sha256": "d031b3847fb74d9e3cb7b93160af6c27e75ab06dfdd242049ddb664db18a28cf",
+      "packed_sha256": "d031b3847fb74d9e3cb7b93160af6c27e75ab06dfdd242049ddb664db18a28cf",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/useWorkspaceFileExplorer.Kr8OOoy4.css",
+      "size": 50705,
+      "source_sha256": "8b1b36ecd23f3416c45401b988b38527026c9cb70897e7aa6ba72dab03725659",
+      "packed_sha256": "8b1b36ecd23f3416c45401b988b38527026c9cb70897e7aa6ba72dab03725659",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/voiceInputStore.Bo4XKUmq.js",
+      "size": 19135,
+      "source_sha256": "5d7f5899f913fbd37dcbf67711b0b1385b73af00e9514ffb00a8dfd060e30056",
+      "packed_sha256": "5d7f5899f913fbd37dcbf67711b0b1385b73af00e9514ffb00a8dfd060e30056",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/workspace.D_BM_T2O.css",
+      "size": 10540,
+      "source_sha256": "9c143a539cdad3741075e47cd1e895aa55bbc02255dae1d593aeb616676b64ea",
+      "packed_sha256": "9c143a539cdad3741075e47cd1e895aa55bbc02255dae1d593aeb616676b64ea",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/workspace.joZ7lPZc.js",
+      "size": 765513,
+      "source_sha256": "a38295ef8aa26162dcc63244197cd5fc5db1916e5ba62f36bf4d46ad4f63cc77",
+      "packed_sha256": "a38295ef8aa26162dcc63244197cd5fc5db1916e5ba62f36bf4d46ad4f63cc77",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/_nuxt/xychartDiagram-PRI3JC2R.elvOVFta.js",
+      "size": 40363,
+      "source_sha256": "1ab503d04d3c749f4e5d951f17e3428be14de5b8628ad6fa86bc6833f12c06bd",
+      "packed_sha256": "1ab503d04d3c749f4e5d951f17e3428be14de5b8628ad6fa86bc6833f12c06bd",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/autobyteus-icon.svg",
+      "size": 1153,
+      "source_sha256": "4beb7ce71c78ee575fee236b17052a1796440469b5e6831bc4b12aa5fbab1b2a",
+      "packed_sha256": "4beb7ce71c78ee575fee236b17052a1796440469b5e6831bc4b12aa5fbab1b2a",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/icons/autobyteus-mobile-192.png",
+      "size": 1749,
+      "source_sha256": "27d6e070b627d0615d4d837334db090cc938aa0eb5b7a43b7617187f1cba1804",
+      "packed_sha256": "27d6e070b627d0615d4d837334db090cc938aa0eb5b7a43b7617187f1cba1804",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/icons/autobyteus-mobile-512.png",
+      "size": 5607,
+      "source_sha256": "6334e131f169d03e0cbb8922812334c87a7d78a95b61a9f0d78fa5571d0a17c0",
+      "packed_sha256": "6334e131f169d03e0cbb8922812334c87a7d78a95b61a9f0d78fa5571d0a17c0",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/index.html",
+      "size": 1512,
+      "source_sha256": "4b60dd4723afb0d3278cb653cd4e1b67616ceb3ba5f5465f87b644fd6c077bfc",
+      "packed_sha256": "4b60dd4723afb0d3278cb653cd4e1b67616ceb3ba5f5465f87b644fd6c077bfc",
+      "match": true
+    },
+    {
+      "path": "dist/renderer/mobile.webmanifest",
+      "size": 713,
+      "source_sha256": "49c3fad92b6f02433f01810f02c2d864204b1ad6dc0fd2541e0b82400c5e0959",
+      "packed_sha256": "49c3fad92b6f02433f01810f02c2d864204b1ad6dc0fd2541e0b82400c5e0959",
+      "match": true
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "rootState": "stopped/inactive after final Stop",
+  "wrongAddress": {
+    "status": 200,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 107
+            }
+          ],
+          "path": [
+            "getAgentOrgMemberRunProjection"
+          ]
+        }
+      ]
+    }
+  },
+  "wrongRun": {
+    "status": 200,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 107
+            }
+          ],
+          "path": [
+            "getAgentOrgMemberRunProjection"
+          ]
+        }
+      ]
+    }
+  },
+  "validAfter": {
+    "status": 200,
+    "body": {
+      "data": {
+        "getAgentOrgMemberRunProjection": {
+          "agentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "memberAddress": "/apirev8_team/aorg_e2e_lead",
+          "summary": "Return exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the ...",
+          "hasEarlierActiveTraceEvents": false
+        }
+      }
+    }
+  },
+  "assertions": {
+    "wrongAddressRejected": true,
+    "wrongRunRejected": true,
+    "exactStoppedIdentityUsable": true,
+    "serverStayedReachable": true
+  }
+}

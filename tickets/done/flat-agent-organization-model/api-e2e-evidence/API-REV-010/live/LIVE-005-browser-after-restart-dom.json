@@ -1,0 +1,223 @@
+{
+  "url": "http://127.0.0.1:3589/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace-default\nSettings\nConnecting to Agent Org…\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n~ $  ",
+  "buttons": [
+    {
+      "text": "Agents",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Agent Teams",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Agent Orgs",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Skills",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Memory",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Nodes",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Add workspace",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Temp Workspace",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "false",
+      "disabled": false
+    },
+    {
+      "text": "workspace",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "true",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "A本\nAPIREV8 本地化 Team β\n(1)",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "false",
+      "disabled": false
+    },
+    {
+      "text": "APIREV8 组织 Ω\n(1)",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "true",
+      "disabled": false
+    },
+    {
+      "text": "New - APIREV8 组织 Ω",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "true",
+      "disabled": false
+    },
+    {
+      "text": "AE\naorg e2e concierge",
+      "aria": "aorg e2e concierge, offline",
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "apirev8 team",
+      "aria": "apirev8 team. Team status: Offline",
+      "title": "",
+      "test": null,
+      "expanded": "false",
+      "disabled": false
+    },
+    {
+      "text": "workspace-team",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "false",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "workspace-default",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": "false",
+      "disabled": false
+    },
+    {
+      "text": "Settings",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Files",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Terminal",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Activity",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Token",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "Artifacts",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "VNC Viewer",
+      "aria": null,
+      "title": "",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "aria": null,
+      "title": "Toggle Sidebar",
+      "test": null,
+      "expanded": null,
+      "disabled": false
+    }
+  ],
+  "tests": []
+}

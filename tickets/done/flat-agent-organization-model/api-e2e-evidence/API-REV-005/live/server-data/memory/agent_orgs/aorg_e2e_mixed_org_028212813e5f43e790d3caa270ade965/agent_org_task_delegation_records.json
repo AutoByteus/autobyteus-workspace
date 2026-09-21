@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_028212813e5f43e790d3caa270ade965",
+  "records": [
+    {
+      "taskId": "task_a8046819f5384e88a33c2aac40a8f5da",
+      "delegatorAgentRunId": "aorg_e2e_lead_41634375bf154510b08217595601a0a8",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_a6027675f12f4c8091207e6ea5704344"
+      },
+      "description": "Send one ordinary message to /concierge with content exactly APIREV5-MOUNTED-TASK-MESSAGE. Then call submit_task_result with exactly APIREV5-MOUNTED-SUBMISSION-V1 and one short sentence confirming mounted-Team routing. Do not review your own submission.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_871ef91c5c584f59a10dbffd33e0601a",
+          "message": "APIREV5-MOUNTED-SUBMISSION-V1\nMounted-Team routing was confirmed.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:31:21.843Z"
+        },
+        {
+          "reviewId": "review_7f4ab220a8304ddcb7baca345ba52386",
+          "reviewedSubmissionId": "submission_871ef91c5c584f59a10dbffd33e0601a",
+          "decision": "request_revision",
+          "comment": "APIREV5-MOUNTED-REVISION: resubmit as APIREV5-MOUNTED-SUBMISSION-V2",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:32:27.559Z"
+        },
+        {
+          "submissionId": "submission_7307158b8a184018836a68692450d278",
+          "message": "APIREV5-MOUNTED-SUBMISSION-V2\nMounted-Team routing remains confirmed.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:32:33.335Z"
+        },
+        {
+          "reviewId": "review_3ca7a8a0de434ef1b47d17e8c311cecd",
+          "reviewedSubmissionId": "submission_7307158b8a184018836a68692450d278",
+          "decision": "accept",
+          "comment": "APIREV5-MOUNTED-ACCEPTED",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:33:29.797Z"
+        }
+      ],
+      "createdAt": "2026-09-02T09:31:02.463Z"
+    }
+  ]
+}

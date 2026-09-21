@@ -1,0 +1,154 @@
+{
+  "runId": "aorg_e2e_direct_agents_org_9e6292c5584542e8bb0d74d02fc1e97a",
+  "lead": {
+    "address": "/lead",
+    "agentDefinitionId": "aorg-lead",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2",
+    "platformAgentRunId": "01a07678-7ec0-7d73-a5e9-7dcc9a8d4892",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default"
+    }
+  },
+  "verifier": {
+    "address": "/verifier",
+    "agentDefinitionId": "aorg-verifier",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_verifier_da675eaf8f694d85893e14989a825e9b",
+    "platformAgentRunId": "01a07678-7f7a-7181-9be6-cd1748d52d83",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default"
+    }
+  },
+  "durable": [
+    {
+      "messageId": "collabmsg_8pSrwPlU1jvcdmBpQTZMATJ-kgt_XCrx",
+      "senderAgentRunId": "aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2",
+      "receiverAgentRunId": "aorg_e2e_verifier_da675eaf8f694d85893e14989a825e9b",
+      "content": "APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt"
+      ],
+      "createdAt": "2026-09-06T11:28:42.116Z"
+    }
+  ],
+  "sender": {
+    "label": "sender-live-no-refocus",
+    "at": "2026-09-06T11:31:37.649Z",
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_9e6292c5584542e8bb0d74d02fc1e97a&mode=active",
+    "viewport": {
+      "width": 1502,
+      "height": 844
+    },
+    "header": "L\nlead - 8FC2\nIdle\nYou\nUse send_message_to exactly once with recipient_address `/verifier`, message `APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt`]. Do not call any other tool. After the successful tool result, reply exactly APIREV14-DIRECT-DIRECT-SENT-001.\nL\nlead",
+    "messagesHeader": "Messages\n1 Messages",
+    "sectionText": "Messages\n1 Messages\nMessage\nSep 6, 11:28 AM\n\nto verifier\n\n/verifier\n\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\ndirect-direct.txt\ndirect-direct.txt\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\n1\n2\nAPIREV14-REF-DIRECT-DIRECT-001",
+    "centerLeaves": [
+      "Use send_message_to exactly once with recipient_address `/verifier`, message `APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt`]. Do not call any other tool. After the successful tool result, reply exactly APIREV14-DIRECT-DIRECT-SENT-001.",
+      " · APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier",
+      "Use send_message_to exactly once with recipient_address `/verifier`, content `APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt`]. Do not call any other tool. After the successful tool result, reply exactly APIREV14-DIRECT-DIRECT-SENT-001."
+    ],
+    "inboundCenterLeaves": [],
+    "selected": [
+      {
+        "test": "agent-org-agent-row-aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2",
+        "aria": "lead, idle"
+      }
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(2)\nUse send_message_to exactly once with recipient_address `/verifier`, message `APIREV14-DIRECT-DIR...\n4m\nL\nlead\nV\nverifier\nNew - AORG E2E Direct Agents Org\n6m\nL\nlead\nV\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nL\nlead - 8FC2\nIdle\nYou\nUse send_message_to exactly once with recipient_address `/verifier`, message `APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt`]. Do not call any other tool. After the successful tool result, reply exactly APIREV14-DIRECT-DIRECT-SENT-001.\nL\nlead\nThinking\nsend_message_to\n· APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\nThinking\n\nMessage delivery failed: send_message_to rejected the message field and required content.\n\nYou\nUse send_message_to exactly once with recipient_address `/verifier`, content `APIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt`]. Do not call any other tool. After the successful tool result, reply exactly APIREV14-DIRECT-DIRECT-SENT-001.\nL\nlead\nThinking\nsend_message_to\n\nAPIREV14-DIRECT-DIRECT-SENT-001\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 11:28 AM\n\nto verifier\n\n/verifier\n\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\ndirect-direct.txt\ndirect-direct.txt\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\n1\n2\nAPIREV14-REF-DIRECT-DIRECT-001",
+    "scroll": {
+      "width": 1502,
+      "client": 1502
+    }
+  },
+  "receiver": {
+    "label": "receiver-exact-center-and-messages",
+    "at": "2026-09-06T11:31:38.073Z",
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_9e6292c5584542e8bb0d74d02fc1e97a&mode=active",
+    "viewport": {
+      "width": 1502,
+      "height": 844
+    },
+    "header": "V\nverifier - 5E9B\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat refs/direct-direct.txt'\nThinking",
+    "messagesHeader": "Messages\n1 Messages",
+    "sectionText": "Messages\n1 Messages\nMessage\nSep 6, 11:28 AM\n\nfrom lead\n\n/lead\n\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\ndirect-direct.txt\ndirect-direct.txt\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\n1\n2\nAPIREV14-REF-DIRECT-DIRECT-001",
+    "centerLeaves": [
+      "You received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt"
+    ],
+    "inboundCenterLeaves": [
+      "You received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt"
+    ],
+    "selected": [
+      {
+        "test": "agent-org-agent-row-aorg_e2e_verifier_da675eaf8f694d85893e14989a825e9b",
+        "aria": "verifier, idle"
+      }
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(2)\nUse send_message_to exactly once with recipient_address `/verifier`, message `APIREV14-DIRECT-DIR...\n4m\nL\nlead\nV\nverifier\nNew - AORG E2E Direct Agents Org\n6m\nL\nlead\nV\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nV\nverifier - 5E9B\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat refs/direct-direct.txt'\nThinking\n\nAPIREV14-DIRECT-DIRECT-MSG-001\nVERIFIED: reference file contains APIREV14-REF-DIRECT-DIRECT-001.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 11:28 AM\n\nfrom lead\n\n/lead\n\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\ndirect-direct.txt\ndirect-direct.txt\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\n1\n2\nAPIREV14-REF-DIRECT-DIRECT-001",
+    "scroll": {
+      "width": 1502,
+      "client": 1502
+    }
+  },
+  "reference": {
+    "label": "reference-opened",
+    "at": "2026-09-06T11:31:38.240Z",
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_9e6292c5584542e8bb0d74d02fc1e97a&mode=active",
+    "viewport": {
+      "width": 1502,
+      "height": 844
+    },
+    "header": "V\nverifier - 5E9B\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat refs/direct-direct.txt'\nThinking",
+    "messagesHeader": "Messages\n1 Messages",
+    "sectionText": "Messages\n1 Messages\nMessage\nSep 6, 11:28 AM\n\nfrom lead\n\n/lead\n\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\ndirect-direct.txt\ndirect-direct.txt\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt",
+    "centerLeaves": [
+      "You received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt"
+    ],
+    "inboundCenterLeaves": [
+      "You received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt"
+    ],
+    "selected": [
+      {
+        "test": "agent-org-agent-row-aorg_e2e_verifier_da675eaf8f694d85893e14989a825e9b",
+        "aria": "verifier, idle"
+      }
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(2)\nUse send_message_to exactly once with recipient_address `/verifier`, message `APIREV14-DIRECT-DIR...\n4m\nL\nlead\nV\nverifier\nNew - AORG E2E Direct Agents Org\n6m\nL\nlead\nV\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nV\nverifier - 5E9B\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2\nmessage:\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat refs/direct-direct.txt'\nThinking\n\nAPIREV14-DIRECT-DIRECT-MSG-001\nVERIFIED: reference file contains APIREV14-REF-DIRECT-DIRECT-001.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 11:28 AM\n\nfrom lead\n\n/lead\n\nAPIREV14-DIRECT-DIRECT-MSG-001 from /lead to /verifier\n\ndirect-direct.txt\ndirect-direct.txt\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-direct.txt",
+    "scroll": {
+      "width": 1502,
+      "client": 1502
+    }
+  },
+  "assertions": {
+    "exactCurrentRoot": true,
+    "durableExactlyOne": true,
+    "durableExactRunIds": true,
+    "durableExactReference": true,
+    "senderStayedSelectedForLiveUpdate": true,
+    "senderExactlyOneSentRow": true,
+    "senderNoInboundCenterEvent": true,
+    "receiverExactlyOneInboundCenterEvent": true,
+    "receiverExactlyOneReceivedRow": true,
+    "referenceInspectable": true,
+    "desktopNoHorizontalOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

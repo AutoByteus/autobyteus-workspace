@@ -1,0 +1,10 @@
+
+> autobyteus@1.4.69 guard:web-boundary /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Direct autobyteus-ts dependencies are not allowed in active autobyteus-web code:
+components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts:3: import { ContextFile } from '../../../../autobyteus-ts/src/agent/message/context-file';
+components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts:4: import { ContextFileType } from '../../../../autobyteus-ts/src/agent/message/context-file-type';
+components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts:5: import { RawTraceItem } from '../../../../autobyteus-ts/src/memory/models/raw-trace-item';
+components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts:6: import { partitionRawTraceAttachments } from '../../../../autobyteus-ts/src/memory/models/raw-trace-attachments';
+ ELIFECYCLE  Command failed with exit code 1.

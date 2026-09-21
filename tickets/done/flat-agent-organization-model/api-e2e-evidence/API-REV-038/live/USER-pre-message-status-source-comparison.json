@@ -1,0 +1,72 @@
+{
+  "at": "2026-09-13T01:54:17.598210+00:00",
+  "originalPin": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+  "currentHead": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "fetched": false,
+  "scope": "Source comparison plus actual current GUI no-message run and user-supplied original screenshot; NOT a separately hosted original build rerun",
+  "sources": [
+    {
+      "version": "original",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/original-manager.ts.txt",
+      "sha256": "53aad9d3222a0339d8936909cf7032397216eae504b5b5cca71f31242c2f46e5"
+    },
+    {
+      "version": "original",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/original-factory.ts.txt",
+      "sha256": "5933623e2212d053e9a3bb4c34e7105334563846ae83e25538b7c6c4446a2f7a"
+    },
+    {
+      "version": "original",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/original-handle.ts.txt",
+      "sha256": "698b6fd93a6a6a5da7861f09882a0e8a3a9b1b0ebca5480ccd55522bacc19123"
+    },
+    {
+      "version": "original",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/original-root-manager.ts.txt",
+      "sha256": "f66a74f69d0f42aa777ceca9f13a15d29826f24324f3fa7b2a95891533125471"
+    },
+    {
+      "version": "current",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/current-materializer.ts.txt",
+      "sha256": "3782a3652f7ec3c488df35d38686cadec96cfdc41ac84aa5881326bc522bcdb0"
+    },
+    {
+      "version": "current",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/current-factory.ts.txt",
+      "sha256": "bc44e1588c8afc83ba40754ae43f5da78afe7a5b7d7a742b6299d80dad4d7b46"
+    },
+    {
+      "version": "current",
+      "sourcePath": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/current-manager.ts.txt",
+      "sha256": "ddfcf905d4e7321025b8fe904e65c50678602faccca73cac6e95005ba79fcac1"
+    },
+    {
+      "version": "current",
+      "sourcePath": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/current-handle.ts.txt",
+      "sha256": "4d93b64cac1a94310eb4ded3709fb084fe55ddce837ac7b4e104a208569a3a94"
+    },
+    {
+      "version": "current",
+      "sourcePath": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+      "snapshot": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/user-status-source-comparison/current-codex-status.ts.txt",
+      "sha256": "c6de6bbbc913d2158fa6f8bd15263b0c3f47e668340d29c3b8ddb9525b64ef79"
+    }
+  ],
+  "findings": [
+    "Original MixedTeamRunBackendFactory.createBackendForNode constructs runtime context/manager/backend; it does not prepare all configured AgentRuns.",
+    "Original MixedTeamManager.getLeafAgentStatusSnapshots explicitly returns offline for configured members without handles even while root lifecycle is active. MixedAgentMemberHandle.ensureReady is reached on input/other Agent operation; fallback status is offline without agentRun.",
+    "Current standalone Team materializeTeamRoot explicitly passes prepareConfiguredAgents:true. FlatTeamExecutionFactory calls manager.prepareConfiguredActivation. Manager loops every configured member, prepares each AgentRun candidate and commits publication after durability.",
+    "Current actual GUI-created Codex Team has three bound idle members with zero user/assistant messages; this is not merely a fabricated green UI fallback."
+  ],
+  "classification": "Confirmed source-level launch/lifecycle difference; user-reported regression remains open for failure-origin and requirements/design authority review",
+  "authorityCaveat": "RER033 REQ004 expressly activates full Org scope; does not alone decide standalone-Team per-member eager versus lazy lifecycle. Current design DS014 describes configured Agent preparation for subject roots. Reconcile the preserved original-Team behavior/user clarification with this design; API owner must not change either implementation or approved requirements here.",
+  "remaining": "No hosted original-build rerun; original screenshot runtime/configuration not independently inspected; no claim all runtimes have identical Idle projection."
+}

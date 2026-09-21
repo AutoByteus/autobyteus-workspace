@@ -1,0 +1,72 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run pages/__tests__/org-definition-navigation.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | pages/__tests__/org-definition-navigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%5Cn%20%20%5C%22getServerSettings%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveStreamingContentFlushIntervalMs%22%2C%22%7B%5Cn%20%20%5C%22getServerSettings%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+Failed to fetch server settings: Error: Server did not return an effective compaction strategy id
+    at Proxy.fetchServerSettings (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/serverSettings.ts:240:17)
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+Failed to load featured catalog settings: Error: Server did not return an effective compaction strategy id
+    at Proxy.fetchServerSettings (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/serverSettings.ts:240:17)
+
+ ✓ pages/__tests__/org-definition-navigation.spec.ts (2 tests) 137ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  05:29:58
+   Duration  11.25s (transform 6.84s, setup 8.80s, collect 1.18s, tests 137ms, environment 432ms, prepare 298ms)
+

@@ -1,0 +1,142 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts services/teamExecution/__tests__/teamExecutionViewState.spec.ts services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts stores/__tests__/activeContextStore.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (8 tests) 20ms
+ ✓ services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts (3 tests) 7ms
+ ✓ services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts (4 tests) 14ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ stores/__tests__/activeContextStore.spec.ts (6 tests) 28ms
+ ❯ components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts (7 tests | 2 failed) 186ms
+   × shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=true without commands, restore or same-address substitution 67ms
+     → expected { Object (kind, context, ...) } to match object { access: 'read_only', …(3) }
+(57 matching properties omitted from actual)
+   × shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=false without commands, restore or same-address substitution 33ms
+     → expected { Object (kind, context, ...) } to match object { access: 'read_only', …(3) }
+(57 matching properties omitted from actual)
+   ✓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict missing failure 14ms
+   ✓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict wrong-projection failure 11ms
+   ✓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict unavailable failure 15ms
+   ✓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict root-replaced failure 10ms
+   ✓ shared task detail -> retained standalone Team inspection > repairs a live task focus on settlement, then retains deliberate read-only inspection through later task events 34ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts > shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=true without commands, restore or same-address substitution
+ FAIL  components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts > shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=false without commands, restore or same-address substitution
+AssertionError: expected { Object (kind, context, ...) } to match object { access: 'read_only', …(3) }
+(57 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -4,17 +4,27 @@
+      "agentRunId": "verifier-one",
+      "kind": "teamMember",
+      "memberAddress": "/verifier",
+      "teamRunId": "standalone-team",
+    },
+-   "context": {
+-     "state": {
++   "context": AgentContext {
++     "state": AgentRunState {
+        "conversation": {
+          "id": "verifier-one",
+          "messages": [
+-           ObjectContaining {
+-             "role": "assistant",
++           {
++             "isComplete": true,
++             "reasoning": null,
++             "segments": [
++               {
++                 "content": "Answer for verifier-one",
++                 "type": "text",
++               },
++             ],
++             "text": "Answer for verifier-one",
++             "timestamp": 1970-01-01T00:00:10.000Z,
++             "type": "ai",
+            },
+          ],
+        },
+        "runId": "verifier-one",
+      },
+
+ ❯ components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts:95:43
+     93|       expect(router.currentRoute.value.query.workspaceExecutionAgentRu…
+     94|       expect(useAgentSelectionStore().selectedRunId).toBe(ROOT);
+     95|       expect(store.activeWorkspaceTarget).toMatchObject({ access: 'rea…
+       |                                           ^
+     96|         context: { state: { runId: id, conversation: { id, messages: […
+     97|         browse: { kind: 'teamMember', teamRunId: ROOT, agentRunId: id,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 26 passed (28)
+   Start at  16:09:20
+   Duration  12.08s (transform 6.19s, setup 47.58s, collect 1.35s, tests 255ms, environment 4.86s, prepare 2.21s)
+
+ ELIFECYCLE  Command failed with exit code 1.

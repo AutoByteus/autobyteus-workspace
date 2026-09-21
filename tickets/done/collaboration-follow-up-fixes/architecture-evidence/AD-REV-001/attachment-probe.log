@@ -1,0 +1,28 @@
+{
+  "sourceFile": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/runSubmission/localUserSubmission.ts",
+  "sfcFile": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/conversation/UserMessage.vue",
+  "vueVersion": "3.5.28",
+  "scope": "actual current helper and SFC, installed Vue, synthetic reactive context; mocked monitor effect/history/stores; jsdom not hosted runtime/provider or acceptance",
+  "results": [
+    {
+      "control": false,
+      "handleIsReactive": false,
+      "sameProxy": false,
+      "beforeOpen": "http://127.0.0.1:29695/context-files/draft/ctx_1.txt",
+      "afterOpen": "http://127.0.0.1:29695/context-files/draft/ctx_1.txt",
+      "underlyingLocator": "/context-files/final/ctx_1.txt",
+      "revision": 2,
+      "messageCount": 1
+    },
+    {
+      "control": true,
+      "handleIsReactive": true,
+      "sameProxy": true,
+      "beforeOpen": "http://127.0.0.1:29695/context-files/draft/ctx_1.txt",
+      "afterOpen": "http://127.0.0.1:29695/context-files/final/ctx_1.txt",
+      "underlyingLocator": "/context-files/final/ctx_1.txt",
+      "revision": 2,
+      "messageCount": 1
+    }
+  ]
+}

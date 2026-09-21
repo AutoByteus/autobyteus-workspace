@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.63 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (13 tests) 1250ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  07:28:07
+   Duration  9.02s (transform 4.15s, setup 6.51s, collect 145ms, tests 1.25s, environment 493ms, prepare 296ms)
+

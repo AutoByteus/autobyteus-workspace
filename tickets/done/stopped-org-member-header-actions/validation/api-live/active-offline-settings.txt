@@ -1,0 +1,97 @@
+HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&orgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=active&memberAddress=/guide
+					20 container
+						21 container 智能体和团队
+							22 container 主要导航
+								23 Inhaltsliste
+									24 container
+										25 Button 智能体
+										26 Button 折叠左侧面板
+											27 Bild
+									28 Button 智能体团队
+									29 Button 智能体组织
+									30 Button 技能
+									31 Button 记忆
+									32 Button 节点
+							33 container
+								34 Kopfzeile Workspaces, Value: 3
+									35 Text Workspaces
+								36 Button 添加工作区
+								37 Button Temp Workspace
+								38 Text 组织
+								39 Button Config Lab (1)
+									40 Text Config Lab
+									41 Text (1)
+								42 Button 折叠 Config Lab 下的成员
+								43 Button 运行中 新建 - Config Lab
+									44 container 运行中
+									45 Text 新建 - Config Lab
+								46 Button 停止智能体组织
+								47 Text 刚刚
+								48 Gliederung Config Lab 执行层级
+									49 row (selected) guide, 离线, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+										50 Text G
+										51 Text guide
+									52 row squad. 团队状态：离线
+										53 Bild 团队状态：离线
+										54 Text squad
+							55 Button 设置
+						56 container
+							57 container
+								58 Kopfzeile 智能体配置, Value: 3
+									59 Text 智能体配置
+								60 Button 返回事件视图
+								61 Text 智能体定义
+								62 Text guide
+								63 Text Runtime
+								64 Pop-up-Button (disabled) Runtime, Value: AutoByteus
+								65 Text 运行时固定。替换模型的上下文容量不得小于已保存模型。
+								66 Text 法学硕士模式
+								67 Einblendmenü (disabled) OpenAI / gpt-5.4-mini
+								68 Text 运行时固定。替换模型的上下文容量不得小于已保存模型。
+								69 Text Thinking
+								70 Text 此历史运行未记录
+								71 Button 高级
+								72 container reasoning_effort
+									73 Text Reasoning Effort 
+									74 Text ⓘ
+								75 Text 此历史运行未记录
+								76 container reasoning_summary
+									77 Text Reasoning Summary 
+									78 Text ⓘ
+								79 Text 此历史运行未记录
+								80 Text 工作区目录
+								81 Titelgruppe
+									82 tab (selected, disabled) Existing, Value: 1
+									83 tab (disabled, settable, integer) New, Value: 0
+								84 Button (disabled) 📁 Temp Workspace (Default) Default temporary workspace
+									85 Text 📁 Temp Workspace (Default)
+									86 Text Default temporary workspace
+									87 Bild
+								88 Text 现有运行的工作区已固定。
+								89 Text 自动批准工具
+								90 Text Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。
+								91 Button (disabled) 自动批准工具
+								92 Text 请先停止此运行，再更改模型设置。
+								93 Button (disabled) 保存
+							94 Titelgruppe 工作区工具
+								95 tab (settable, integer) 文件, Value: 0
+								96 tab (selected) Description: 智能体组织, Value: 1
+									97 Text 组织
+								98 tab (settable, integer) 终端, Value: 0
+								99 tab (settable, integer) 活动, Value: 0
+								100 tab (settable, integer) Token, Value: 0
+								101 tab (settable, integer) 产物, Value: 0
+								102 tab (settable, integer) VNC 查看器, Value: 0
+							103 Button 切换侧边栏
+								104 Bild
+							105 container
+								106 Button 消息 0 消息
+									107 Kopfzeile 消息, Value: 3
+										108 Text 消息
+									109 Text 0 消息
+								110 Text 暂无团队消息
+								111 Text 已接受的智能体间消息及其引用文件会显示在这里。
+								112 Button 任务 0 个任务
+									113 Text 任务
+									114 Text 0 个任务
+			115 

@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-09-01T21:37:27.657Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/lead",
+      "to": "/analyst",
+      "rules": [
+        "When a request needs bounded analysis.",
+        "After the lead identifies the exact validation question."
+      ]
+    },
+    {
+      "from": "/analyst",
+      "to": "/verifier",
+      "rules": [
+        "When a completed analysis needs an independent check."
+      ]
+    }
+  ],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "teamRunId": "aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702",
+    "coordinatorAddress": "/lead",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentDefinitionId": "aorg-lead",
+        "role": null,
+        "description": null,
+        "agentRunId": "aorg_e2e_lead_c0c1997c7d5140d29c620b10af6bca4d",
+        "platformAgentRunId": "01a05ee7-d876-77f3-9406-87e6a12af3fd",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace"
+        }
+      },
+      {
+        "address": "/analyst",
+        "agentDefinitionId": "aorg-analyst",
+        "role": null,
+        "description": null,
+        "agentRunId": "aorg_e2e_analyst_dfb9e3cc0a6440b695ba1dd2d2d5ff47",
+        "platformAgentRunId": "01a05ee7-d8d7-7fc3-8cb9-56f1ad7f22f2",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace"
+        }
+      },
+      {
+        "address": "/verifier",
+        "agentDefinitionId": "aorg-verifier",
+        "role": null,
+        "description": null,
+        "agentRunId": "aorg_e2e_verifier_3951ccae72b2478199bcbc224dda108c",
+        "platformAgentRunId": "01a05ee7-d951-7720-8e2a-c230952e11ad",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace"
+        }
+      }
+    ],
+    "taskExecutions": [
+      {
+        "address": "/analyst",
+        "agentRunId": "aorg_e2e_analyst_5ab11002e1574efcbda64bfe4bf0a68a",
+        "platformAgentRunId": "01a05ee8-dd0d-76a1-86ea-337601157b05",
+        "startedAt": "2026-09-01T21:38:34.364Z",
+        "settledAt": "2026-09-01T21:40:07.441Z"
+      }
+    ]
+  }
+}

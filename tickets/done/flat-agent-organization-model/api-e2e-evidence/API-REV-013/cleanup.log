@@ -1,0 +1,52 @@
+timestamp=2026-09-06T02:31:17Z
+=== ports ===
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+=== owned processes ===
+=== browser tabs ===
+verified separately via AutoByteus list_tabs: []
+=== copied sensitive ===
+=== fixture hashes ===
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+=== source identity ===
+e3b3a840052cdb6cb8c552b3bf9d66ee233fc3bb
+source_is_ancestor=true
+=== diff check ===
+pass
+=== generated top-level shared outputs ===
+autobyteus-application-backend-sdk/dist absent
+autobyteus-application-sdk-contracts/dist absent
+=== status ===
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_orgs.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+ M tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+ M tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+ M tickets/in-progress/flat-agent-organization-model/release-notes.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-004/

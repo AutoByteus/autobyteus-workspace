@@ -1,5 +1,5 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentMemoryLocationService, getAgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -14,14 +14,15 @@ import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
 import { TeamRunIdentityAllocator } from "./team-run-identity-allocator.js";
 import {
-  TeamDefinitionTopologyPlanner,
+  FlatTeamTopologyPlanner,
   type TeamAgentLaunchInput,
   type TeamScopeLaunchInput,
-} from "./team-definition-topology-planner.js";
+} from "./flat-team-topology-planner.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
+import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -74,6 +75,7 @@ export class TeamRunService {
   private readonly teamIdentityAllocator: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
+  private readonly admission: Pick<DefinitionAdmissionService, "requireAvailable">;
 
   constructor(options: {
     agentTeamRunManager?: AgentTeamRunManager;
@@ -86,21 +88,24 @@ export class TeamRunService {
     teamRunIdentityAllocator?: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
     tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
       "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
+    definitionAdmissionService?: Pick<DefinitionAdmissionService, "requireAvailable">;
   } = {}) {
     this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
     this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
     this.catalog = options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
-    void (options.memoryLocationService ?? (options.memoryDir ? new AgentMemoryLocationService({ memoryDir: options.memoryDir }) : getAgentMemoryLocationService()));
     this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
       memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     });
     this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
     this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    this.admission = options.definitionAdmissionService ?? DefinitionAdmissionService.getInstance();
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
+    const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
+    if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
     const workspaces = new Map<string, Promise<string>>();
     const activateWorkspace = async (requestedPath: string | null | undefined): Promise<string | null> => {
       const requested = requestedPath?.trim() || null;
@@ -134,6 +139,7 @@ export class TeamRunService {
     })));
     const plan = await this.planner.buildPlan({
       teamDefinitionId: input.teamDefinitionId,
+      rootDefinition: admission.definition,
       teamConfigs,
       memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
@@ -152,8 +158,11 @@ export class TeamRunService {
     input: CreateTeamRunFromRootConfigInput,
   ): Promise<RootTeamRun> {
     const rootConfig = normalizePreset(input.rootConfig);
+    const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
+    if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
     const expanded = await this.planner.buildRootLaunchInputs({
       teamDefinitionId: required(input.teamDefinitionId, "teamDefinitionId"),
+      rootDefinition: admission.definition,
       rootConfig,
       memberConfigs: input.memberConfigs?.map((member) => ({
         ...member,
@@ -232,8 +241,8 @@ export class TeamRunService {
   private safeTerminate(teamRunId: string): Promise<void> {
     return this.manager.terminateTeamRun(teamRunId).then(() => undefined).catch(() => undefined);
   }
-  private get planner(): TeamDefinitionTopologyPlanner {
-    return new TeamDefinitionTopologyPlanner(
+  private get planner(): FlatTeamTopologyPlanner {
+    return new FlatTeamTopologyPlanner(
       this.definitions,
       this.teamIdentityAllocator,
       this.agentIdentityAllocator,

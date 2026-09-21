@@ -1,0 +1,26 @@
+{
+  "at": "2026-09-13T03:21:00.373395+00:00",
+  "id": "API-FIND-040",
+  "alias": "API38-NATIVE-LIVE-TEXT-OPEN",
+  "requirements": [
+    "REQ-034\u2013036",
+    "AC-029\u2013031/034",
+    "DS-041/042/044\u2013046",
+    "VAL-065/066/068",
+    "CF-02/03/08"
+  ],
+  "expected": "Immediately after successful first normal Send, Open resolves finalized saved text file without reload.",
+  "observed": "Actual sent chip targets deleted draft URL404; same conversation reload/reselect changes to finalized URL200 exactbytes.",
+  "severity": "Bounded user-visible access failure with reopen workaround; no durable loss",
+  "classification": "Preliminary Local Fix \u2014 implementation; introduced-versus-preexisting origin unassigned",
+  "scope": "Single actual GUI-created native DeepSeek standalone first text Send at desktop; same failure not observed on Org/task sends",
+  "acceptedByUser": false,
+  "evidence": [
+    "live/NATIVE-file-only-result.json",
+    "live/NATIVE-file-only-open-initial-live.json",
+    "live/NATIVE-file-only-open-reopened.json",
+    "live/NATIVE-agent-ui-first-prepare.json",
+    "live/NATIVE-file-only-interruption.json"
+  ],
+  "baselineClarification": "Shared opener/UserMessage/Files-autoswitch are byte-identical to locally pinned origin/personal5645b49. Destination behavior accepted by user. That source comparison does not establish whether the stale locator failure preexists."
+}

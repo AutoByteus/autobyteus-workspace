@@ -1,0 +1,381 @@
+Platform detection: Windows=false
+App root directory: /tmp/aorg-api-find008-settlement-probe/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/.env
+Loading environment from: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/.env
+[dotenv@17.3.1] injecting env (0) from ../../../home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8447
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /tmp/aorg-api-find008-settlement-probe/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8447
+APP ROOT DIRECTORY: /tmp/aorg-api-find008-settlement-probe/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement
+DB DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/db
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/db/production.db"
+
+SQLite database production.db created at file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/db/production.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:26815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T21:22:05.275Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-01T21:22:05.497Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-01T21:22:05.500Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788297725508,"pid":26815,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:38999"}
+{"level":30,"time":1788297725543,"pid":26815,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:8447"}
+[2026-09-01T21:22:05.543Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8447
+[2026-09-01T21:22:05.544Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8447
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788297727963,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1","method":"GET","url":"/health","statusCode":404,"elapsedMs":3.051667000167072,"msg":"http request completed"}
+{"level":40,"time":1788297728988,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-2","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6396249998360872,"msg":"http request completed"}
+{"level":40,"time":1788297730005,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-3","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3411659998819232,"msg":"http request completed"}
+{"level":40,"time":1788297731021,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-4","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.9532920001074672,"msg":"http request completed"}
+{"level":40,"time":1788297732051,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.261417000554502,"msg":"http request completed"}
+{"level":40,"time":1788297733063,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-6","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6752499993890524,"msg":"http request completed"}
+{"level":40,"time":1788297734084,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-7","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3627909999340773,"msg":"http request completed"}
+{"level":40,"time":1788297735107,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-8","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.1383330002427101,"msg":"http request completed"}
+{"level":40,"time":1788297736127,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-9","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.352207999676466,"msg":"http request completed"}
+{"level":40,"time":1788297737150,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-a","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.130291000008583,"msg":"http request completed"}
+{"level":40,"time":1788297738172,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-b","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.2595840003341436,"msg":"http request completed"}
+{"level":40,"time":1788297739182,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.45433299988508224,"msg":"http request completed"}
+{"level":40,"time":1788297740204,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.9581249998882413,"msg":"http request completed"}
+{"level":40,"time":1788297741228,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-e","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.1257080007344484,"msg":"http request completed"}
+{"level":40,"time":1788297742256,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.9395829997956753,"msg":"http request completed"}
+{"level":40,"time":1788297743283,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8870000001043081,"msg":"http request completed"}
+{"level":40,"time":1788297744300,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5610410002991557,"msg":"http request completed"}
+{"level":40,"time":1788297745311,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.27508299984037876,"msg":"http request completed"}
+{"level":40,"time":1788297746316,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.25650000013411045,"msg":"http request completed"}
+{"level":40,"time":1788297747322,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.264291999861598,"msg":"http request completed"}
+{"level":40,"time":1788297748333,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-l","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.097542000003159,"msg":"http request completed"}
+{"level":40,"time":1788297749352,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.881292000412941,"msg":"http request completed"}
+{"level":40,"time":1788297750381,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8320840001106262,"msg":"http request completed"}
+{"level":40,"time":1788297751398,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7695410000160336,"msg":"http request completed"}
+{"level":40,"time":1788297752426,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6265829997137189,"msg":"http request completed"}
+{"level":40,"time":1788297753442,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7408329993486404,"msg":"http request completed"}
+{"level":40,"time":1788297754454,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8608339997008443,"msg":"http request completed"}
+{"level":40,"time":1788297755463,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4724580002948642,"msg":"http request completed"}
+{"level":40,"time":1788297756481,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7775419997051358,"msg":"http request completed"}
+{"level":40,"time":1788297757494,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-u","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.075458999723196,"msg":"http request completed"}
+{"level":40,"time":1788297758503,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.45170800015330315,"msg":"http request completed"}
+{"level":40,"time":1788297759514,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6309169996529818,"msg":"http request completed"}
+{"level":40,"time":1788297760531,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8442909996956587,"msg":"http request completed"}
+{"level":40,"time":1788297761543,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-y","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.757124999538064,"msg":"http request completed"}
+{"level":40,"time":1788297762556,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7688340004533529,"msg":"http request completed"}
+{"level":40,"time":1788297763562,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-10","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.26312499959021807,"msg":"http request completed"}
+{"level":40,"time":1788297764572,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-11","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.410500000230968,"msg":"http request completed"}
+{"level":40,"time":1788297765584,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-12","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7360000004991889,"msg":"http request completed"}
+{"level":40,"time":1788297766604,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-13","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.725874999538064,"msg":"http request completed"}
+{"level":40,"time":1788297767612,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-14","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3689170004799962,"msg":"http request completed"}
+{"level":40,"time":1788297768641,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-15","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8007919993251562,"msg":"http request completed"}
+{"level":40,"time":1788297769647,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-16","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.28587500005960464,"msg":"http request completed"}
+{"level":40,"time":1788297770675,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-17","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8434999994933605,"msg":"http request completed"}
+{"level":40,"time":1788297771688,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-18","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7237909995019436,"msg":"http request completed"}
+{"level":40,"time":1788297772694,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-19","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2540000006556511,"msg":"http request completed"}
+{"level":40,"time":1788297773712,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.789707999676466,"msg":"http request completed"}
+{"level":40,"time":1788297774729,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7606669999659061,"msg":"http request completed"}
+{"level":40,"time":1788297775745,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7977090002968907,"msg":"http request completed"}
+{"level":40,"time":1788297776770,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8004999998956919,"msg":"http request completed"}
+{"level":40,"time":1788297777788,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7839170005172491,"msg":"http request completed"}
+{"level":40,"time":1788297778799,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5949590001255274,"msg":"http request completed"}
+{"level":40,"time":1788297779827,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8939169999212027,"msg":"http request completed"}
+{"level":40,"time":1788297780838,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8104999996721745,"msg":"http request completed"}
+{"level":40,"time":1788297781868,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7042500004172325,"msg":"http request completed"}
+{"level":40,"time":1788297782879,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6042090002447367,"msg":"http request completed"}
+{"level":40,"time":1788297783890,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5347089990973473,"msg":"http request completed"}
+{"level":40,"time":1788297784901,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.41300000064074993,"msg":"http request completed"}
+{"level":40,"time":1788297785925,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5691250003874302,"msg":"http request completed"}
+{"level":40,"time":1788297786954,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8489579996094108,"msg":"http request completed"}
+{"level":40,"time":1788297787977,"pid":26815,"hostname":"0d2d48492ef2","reqId":"req-1o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8317920006811619,"msg":"http request completed"}
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 1b0bb806-7a9c-46c0-9342-57f910b5a097 for workspace temp_ws_default
+Created file explorer session 1b0bb806-7a9c-46c0-9342-57f910b5a097 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 1b0bb806-7a9c-46c0-9342-57f910b5a097 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+[CodexAppServerClient] stderr: 2026-09-01T21:26:45.851087Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: 2026-09-01T21:27:33.827025Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_1f7eeda8c95b4636a522450e0d3024c3'.
+Published codex_app_server agent run 'aorg_e2e_analyst_ffccbe43ccd84cf1b1b403a038ec48bd'.
+Published codex_app_server agent run 'aorg_e2e_verifier_c7a1af1f3c7c49679b70d196fd57ab94'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+FileExplorerSession closed: 1b0bb806-7a9c-46c0-9342-57f910b5a097
+Closed file explorer session 1b0bb806-7a9c-46c0-9342-57f910b5a097. Active sessions: 0
+File explorer WebSocket disconnected: 1b0bb806-7a9c-46c0-9342-57f910b5a097
+Agent team websocket attached for team run aorg_e2e_research_squad_f35d812bf984490290de59d28df83334
+Created agent session f0c594e6-bb36-4f81-bfe7-95c673d7b048 for run aorg_e2e_research_squad_f35d812bf984490290de59d28df83334
+Agent Team WebSocket connected: session=f0c594e6-bb36-4f81-bfe7-95c673d7b048, run=aorg_e2e_research_squad_f35d812bf984490290de59d28df83334
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_analyst_ea9bdb6b009a45f5ae3874ecbdb3eb36'.
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 62fe5cd7-564d-4b88-b3eb-55bd9730350f for workspace temp_ws_default
+Created file explorer session 62fe5cd7-564d-4b88-b3eb-55bd9730350f for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 62fe5cd7-564d-4b88-b3eb-55bd9730350f for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_c0c1997c7d5140d29c620b10af6bca4d'.
+Published codex_app_server agent run 'aorg_e2e_analyst_dfb9e3cc0a6440b695ba1dd2d2d5ff47'.
+Published codex_app_server agent run 'aorg_e2e_verifier_3951ccae72b2478199bcbc224dda108c'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+FileExplorerSession closed: 62fe5cd7-564d-4b88-b3eb-55bd9730350f
+Closed file explorer session 62fe5cd7-564d-4b88-b3eb-55bd9730350f. Active sessions: 0
+File explorer WebSocket disconnected: 62fe5cd7-564d-4b88-b3eb-55bd9730350f
+Agent team websocket attached for team run aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702
+Created agent session 5d60de6c-0a7a-405d-a9d9-4cb7c86a9bf6 for run aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702
+Agent Team WebSocket connected: session=5d60de6c-0a7a-405d-a9d9-4cb7c86a9bf6, run=aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 8,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_analyst_5ab11002e1574efcbda64bfe4bf0a68a'.
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 00bad5dd-1252-42d3-81af-568eaa75bb4a for workspace temp_ws_default
+Created file explorer session 00bad5dd-1252-42d3-81af-568eaa75bb4a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 00bad5dd-1252-42d3-81af-568eaa75bb4a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_cd6c2471f8fd4cfdb40825a221a80b3c'.
+Published codex_app_server agent run 'aorg_e2e_analyst_13794a6347be4567b0ba89508e776fd4'.
+Published codex_app_server agent run 'aorg_e2e_verifier_3ba0cf4b49ec4b76b9b67744b3ad3894'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace
+FileExplorerSession closed: 00bad5dd-1252-42d3-81af-568eaa75bb4a
+Closed file explorer session 00bad5dd-1252-42d3-81af-568eaa75bb4a. Active sessions: 0
+File explorer WebSocket disconnected: 00bad5dd-1252-42d3-81af-568eaa75bb4a
+Agent team websocket attached for team run aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Created agent session 260a1c3b-9770-4c42-850b-3d25c8a38ba2 for run aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Agent Team WebSocket connected: session=260a1c3b-9770-4c42-850b-3d25c8a38ba2, run=aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_bd659b2ddf114805b2323f01d0b0c51c'.
+Closed agent session 260a1c3b-9770-4c42-850b-3d25c8a38ba2
+Closed agent session 5d60de6c-0a7a-405d-a9d9-4cb7c86a9bf6
+Closed agent session f0c594e6-bb36-4f81-bfe7-95c673d7b048
+Agent team websocket attached for team run aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Created agent session 79aaddaf-d824-4e51-8cc1-a1db365eaaac for run aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Agent Team WebSocket connected: session=79aaddaf-d824-4e51-8cc1-a1db365eaaac, run=aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Created terminal session 0fce6b7f-f6cb-4f0f-bd85-46293ab1294b using backend PtySession for target /root
+Terminal WebSocket connected: 0fce6b7f-f6cb-4f0f-bd85-46293ab1294b
+Terminal websocket attached for cwd /root
+Closed agent session 79aaddaf-d824-4e51-8cc1-a1db365eaaac
+Closed PTY session 0fce6b7f-f6cb-4f0f-bd85-46293ab1294b
+Terminal WebSocket disconnected: 0fce6b7f-f6cb-4f0f-bd85-46293ab1294b
+Agent team websocket attached for team run aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Created agent session 903a272c-ec21-416a-8b22-3a610ff9b4a6 for run aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Agent Team WebSocket connected: session=903a272c-ec21-416a-8b22-3a610ff9b4a6, run=aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38
+Created terminal session c5fc80f8-a09b-4f56-ab40-a5e882500eb1 using backend PtySession for target /root
+Terminal WebSocket connected: c5fc80f8-a09b-4f56-ab40-a5e882500eb1
+Terminal websocket attached for cwd /root
+Agent team websocket attached for team run aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702
+Created agent session 00575dab-0592-4e76-921b-3d8ef6fee63e for run aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702
+Agent Team WebSocket connected: session=00575dab-0592-4e76-921b-3d8ef6fee63e, run=aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702
+Agent team websocket attached for team run aorg_e2e_research_squad_f35d812bf984490290de59d28df83334
+Created agent session d0c53877-34dd-4ef4-bef7-29f558feb5d1 for run aorg_e2e_research_squad_f35d812bf984490290de59d28df83334
+Agent Team WebSocket connected: session=d0c53877-34dd-4ef4-bef7-29f558feb5d1, run=aorg_e2e_research_squad_f35d812bf984490290de59d28df83334
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_verifier_98ade7b2cdaa4b9aa79ec4b1a001f377'.
+[2026-09-01T21:54:09.368Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session d0c53877-34dd-4ef4-bef7-29f558feb5d1
+Closed agent session 00575dab-0592-4e76-921b-3d8ef6fee63e
+Closed agent session 903a272c-ec21-416a-8b22-3a610ff9b4a6
+Closed PTY session c5fc80f8-a09b-4f56-ab40-a5e882500eb1
+Terminal WebSocket disconnected: c5fc80f8-a09b-4f56-ab40-a5e882500eb1

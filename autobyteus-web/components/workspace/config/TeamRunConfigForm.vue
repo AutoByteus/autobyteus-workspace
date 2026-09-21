@@ -21,58 +21,24 @@
       @schema-state="forwardSchemaState"
     />
 
-    <div v-if="model.members.length" class="mt-4">
-      <button
-        type="button"
-        class="flex w-full items-center justify-between rounded-md px-1 py-2 text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-        data-test="team-member-overrides-toggle"
-        :aria-expanded="membersExpanded"
-        :aria-controls="memberOverridesPanelId"
-        @click="membersExpanded = !membersExpanded"
-      >
-        <span class="flex min-w-0 items-center gap-1.5">
-          <span class="truncate">
-            {{ t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override') }} ({{ memberCount }})
-          </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="h-4 w-4 flex-shrink-0 transform text-gray-600 transition-transform duration-300"
-            :class="membersExpanded ? '' : '-rotate-90'"
-            data-test="team-member-overrides-chevron"
-            aria-hidden="true"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </span>
-      </button>
-      <div
-        v-show="membersExpanded"
-        :id="memberOverridesPanelId"
-        class="mt-3"
-        data-test="team-member-overrides-panel"
-      >
-        <TeamMemberConfigTree
-          :member-nodes="model.members"
-          :disabled="isFormReadOnly"
-          :model-config-field-errors-by-address="modelConfigFieldErrorsByAddress"
-          @update-team="handleTeamUpdate"
-          @reset-team="handleTeamReset"
-          @update-agent="handleAgentUpdate"
-          @update:workspace-selection="forwardWorkspaceSelection"
-          @retry-runtime-catalog="retryRuntimeCatalog"
-          @update-existing-model-config="forwardExistingModelConfig"
-          @schema-state="forwardSchemaState"
-        />
-      </div>
-    </div>
+    <MemberOverridesDisclosure
+      :label="t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override')"
+      :count="memberCount"
+      test-prefix="team-member-overrides"
+    >
+      <TeamMemberConfigTree
+        :member-nodes="model.members"
+        :disabled="isFormReadOnly"
+        :model-config-field-errors-by-address="modelConfigFieldErrorsByAddress"
+        @update-team="handleTeamUpdate"
+        @reset-team="handleTeamReset"
+        @update-agent="handleAgentUpdate"
+        @update:workspace-selection="forwardWorkspaceSelection"
+        @retry-runtime-catalog="retryRuntimeCatalog"
+        @update-existing-model-config="forwardExistingModelConfig"
+        @schema-state="forwardSchemaState"
+      />
+    </MemberOverridesDisclosure>
 
     <div v-if="model.mode === 'existing'" class="flex items-center rounded p-2 text-xs" :class="model.modelConfigEditable ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'" data-test="team-run-existing-notice">
       <span aria-hidden="true" class="mr-1">{{ model.modelConfigEditable ? '●' : '🔒' }}</span>
@@ -85,15 +51,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
-import { computed, ref } from 'vue'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunFormMemberNode, TeamRunFormModel } from '~/types/agent/TeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
 import TeamScopeConfigEditor from './TeamScopeConfigEditor.vue'
 import TeamMemberConfigTree from './TeamMemberConfigTree.vue'
+import MemberOverridesDisclosure from './MemberOverridesDisclosure.vue'
 import { useLocalization } from '~/composables/useLocalization'
 
 const props = defineProps<{
@@ -105,11 +73,9 @@ const emit = defineEmits<{
   (e: 'edit-config', edit: TeamLaunchConfigEdit): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
   (e: 'update-existing-model-config', address: string, config: ExistingRunModelSelection, directlyEdited: boolean): void
-  (e: 'schema-state', address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
+  (e: 'schema-state', address: string, state: RuntimeModelConfigSchemaState): void
 }>()
 const { t } = useLocalization()
-const membersExpanded = ref(false)
-const memberOverridesPanelId = 'team-member-overrides-panel'
 const model = computed(() => props.model)
 const modelConfigFieldErrorsByAddress = computed(() => props.modelConfigFieldErrorsByAddress ?? {})
 const isFormReadOnly = computed(() => model.value.mode === 'existing'
@@ -151,7 +117,7 @@ const retryRuntimeCatalog = (runtimeKind: string) => {
 const forwardExistingModelConfig = (address: string, config: ExistingRunModelSelection, directlyEdited: boolean) => {
   if (model.value.mode === 'existing' && !isFormReadOnly.value) emit('update-existing-model-config', address, config, directlyEdited)
 }
-const forwardSchemaState = (address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }) => {
+const forwardSchemaState = (address: string, state: RuntimeModelConfigSchemaState) => {
   if (model.value.mode === 'existing') emit('schema-state', address, state)
 }
 </script>

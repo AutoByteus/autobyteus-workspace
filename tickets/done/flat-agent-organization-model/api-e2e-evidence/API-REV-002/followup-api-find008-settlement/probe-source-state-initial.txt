@@ -1,0 +1,13 @@
+895665929213ddf7c276c9a89af19b975935f128
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-command-queue.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-engine.ts
+ M autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-lifecycle-adapter.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+ M autobyteus-server-ts/src/server-runtime.ts
+?? autobyteus-server-ts/node_modules
+?? node_modules

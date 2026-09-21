@@ -1,0 +1,12 @@
+[
+  "autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts",
+  "autobyteus-web/services/runHydration/teamRunContextHydrationService.ts",
+  "autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts",
+  "autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts",
+  "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+  "autobyteus-web/stores/activeContextStore.ts",
+  "autobyteus-web/components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts",
+  "autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts",
+  "autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts",
+  "autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts"
+]

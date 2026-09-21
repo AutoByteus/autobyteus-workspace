@@ -59,4 +59,4 @@ export class ConfiguredMcpRegistryToolAdapter implements AgentToolMcpToolAdapter
 }
 
 export const resolveExecutionAgentId = (session: AgentToolMcpSession): string =>
-  session.owner.teamIdentity?.agentRunId.trim() || session.owner.runId;
+  session.owner.collaborationIdentity?.agentRunId.trim() || session.owner.runId;

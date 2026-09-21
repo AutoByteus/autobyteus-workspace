@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { buildTestTeamContext, testAgentNode, testSubTeamNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import {
+  buildTestTeamContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskRecord,
+} from '~/test-support/currentTeamTestFixtures';
+import { createPinia, setActivePinia } from 'pinia';
+import { markTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigStoreMock,
   agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock, agentTeamRunStoreMock } = vi.hoisted(() => {
@@ -19,13 +26,15 @@ const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigSto
     },
     teamRunConfigStoreMock: { setConfig: vi.fn() },
     agentRunConfigStoreMock: { clearConfig: vi.fn() },
-    selectionStoreMock: { clearSelection: vi.fn() },
+    selectionStoreMock: { selectedType: 'team', subject: null, beginSelectionIntent: vi.fn(() => ({ isCurrent: () => true })), clearSelection: vi.fn() },
     workspaceCenterViewStoreMock: { showConfig: vi.fn() },
     agentTeamRunStoreMock: {
       getTeamStreamRecoveryNotice: vi.fn(() => localState.recoveryNotice),
     },
   };
 });
+
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshTeamResumeConfig: async () => ({ teamRunId: 'team-1', executionTree: state.activeTeamContext.view.getExecutionTree() }), resolveWorkspaceMetadataByRootPath: async (path: string) => ({ workspaceId: 'ws-1', workspaceRootPath: path, displayName: 'Workspace', kind: 'filesystem' }) }) }));
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentDefinitionStoreMock }));
@@ -51,6 +60,7 @@ const buildTeamContext = (input: { focusedAgentRunId?: string; configuration?: R
 
 describe('TeamWorkspaceView current aggregate', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
     state.activeTeamContext = buildTeamContext();
     state.recoveryNotice = null;
@@ -59,16 +69,9 @@ describe('TeamWorkspaceView current aggregate', () => {
 
   const mountComponent = () => mount(TeamWorkspaceView, {
     global: { mocks: {
-      $t: (key: string, params?: Record<string, string>) => {
-        if (key === 'workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required') {
-          return 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.';
-        }
-        if (key === 'workspace.task_monitor.task') return 'Task';
-        if (key === 'workspace.task_monitor.lifecycle.in_progress') return 'In progress';
-        if (key === 'workspace.task_monitor.execution.idle') return 'Idle';
-        if (key === 'workspace.task_monitor.combined_status') return `${params?.lifecycle} · ${params?.execution}`;
-        return key;
-      },
+      $t: (key: string) => key === 'workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required'
+        ? 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.'
+        : key,
     }, stubs: {
       AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
       SkillImprovementComposerCta: {
@@ -87,7 +90,7 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.find('h4').text()).toBe('Professor');
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Running);
     expect(wrapper.get('img[alt="Professor avatar"]').attributes('src')).toBe('https://example.com/professor.png');
-    expect(wrapper.get('[data-test="team-event-monitor"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="agent-event-monitor"]').exists()).toBe(true);
     const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes()).toMatchObject({
       'data-kind': 'team-member', 'data-team-run-id': 'team-1', 'data-agent-run-id': 'professor-run',
@@ -102,7 +105,7 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('renders the focused task context with distinct lifecycle and execution status', () => {
+  it('renders focused task lifecycle and execution status over an authoritative empty projection', () => {
     state.activeTeamContext = buildTestTeamContext({
       teamRunId: 'team-1', teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
       rootChildren: [buildAgent('/Student', 'Student', 'student-run', 'agent-student-def')],
@@ -113,6 +116,7 @@ describe('TeamWorkspaceView current aggregate', () => {
       })],
     });
     state.activeTeamContext.view.getAgentContext('task-student-run').state.currentStatus = AgentStatus.Idle;
+    markTeamMemberProjectionAuthoritative(state.activeTeamContext, 'task-student-run');
 
     const wrapper = mountComponent();
 
@@ -120,6 +124,8 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.text()).toContain('Solve the retained task exactly');
     expect(wrapper.get('[data-test="team-workspace-task-status"]').text()).toBe('In progress · Idle');
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Idle);
+    expect(wrapper.get('[data-test="team-task-authoritative-empty"]').text())
+      .toBe('No activity recorded for this task yet.');
   });
 
   it('renders persistent actionable guidance while the selected Team stream requires recovery', () => {
@@ -160,6 +166,7 @@ describe('TeamWorkspaceView current aggregate', () => {
     const sourceConfig = state.activeTeamContext.view.getConfigurationView();
     const wrapper = mountComponent();
     await wrapper.get('[data-test="new-agent"]').trigger('click');
+    await flushPromises();
     const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
     expect(seed).toEqual(expect.objectContaining({ isLocked: false }));
     seed.rootConfig.llmConfig.nested.values.push('mutated');

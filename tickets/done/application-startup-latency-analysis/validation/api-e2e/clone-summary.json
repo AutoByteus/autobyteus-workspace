@@ -1,0 +1,7 @@
+{
+  "method": "APFS clone plus SQLite online backup",
+  "sourceRedacted": true,
+  "cloneMs": 182565,
+  "sqliteBackupMs": 4352,
+  "userServerSignaled": false
+}

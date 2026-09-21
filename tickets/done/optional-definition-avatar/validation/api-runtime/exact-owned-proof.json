@@ -1,0 +1,92 @@
+{
+  "omitted": {
+    "direct": {
+      "id": "agent-org-owned-agent:avatar-org-omitted:direct",
+      "name": "Avatar Owned Direct omitted",
+      "avatarUrl": null,
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "ownerOrgId": "avatar-org-omitted"
+    },
+    "owned": {
+      "id": "agent-org-owned-team:avatar-org-omitted:owned-team",
+      "name": "Avatar Owned Team omitted",
+      "avatarUrl": null,
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "ownerOrgId": "avatar-org-omitted",
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "avatar-agent-omitted",
+          "refScope": "SHARED"
+        }
+      ]
+    },
+    "local": {
+      "id": "team-local-agent:avatar-team-omitted:worker",
+      "name": "Avatar Local Worker omitted",
+      "avatarUrl": null,
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "avatar-team-omitted"
+    }
+  },
+  "null": {
+    "direct": {
+      "id": "agent-org-owned-agent:avatar-org-null:direct",
+      "name": "Avatar Owned Direct null",
+      "avatarUrl": null,
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "ownerOrgId": "avatar-org-null"
+    },
+    "owned": {
+      "id": "agent-org-owned-team:avatar-org-null:owned-team",
+      "name": "Avatar Owned Team null",
+      "avatarUrl": null,
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "ownerOrgId": "avatar-org-null",
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "avatar-agent-null",
+          "refScope": "SHARED"
+        }
+      ]
+    },
+    "local": {
+      "id": "team-local-agent:avatar-team-null:worker",
+      "name": "Avatar Local Worker null",
+      "avatarUrl": null,
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "avatar-team-null"
+    }
+  },
+  "supplied": {
+    "direct": {
+      "id": "agent-org-owned-agent:avatar-org-supplied:direct",
+      "name": "Avatar Owned Direct supplied",
+      "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "ownerOrgId": "avatar-org-supplied"
+    },
+    "owned": {
+      "id": "agent-org-owned-team:avatar-org-supplied:owned-team",
+      "name": "Avatar Owned Team supplied",
+      "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "ownerOrgId": "avatar-org-supplied",
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "avatar-agent-supplied",
+          "refScope": "SHARED"
+        }
+      ]
+    },
+    "local": {
+      "id": "team-local-agent:avatar-team-supplied:worker",
+      "name": "Avatar Local Worker supplied",
+      "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "avatar-team-supplied"
+    }
+  }
+}

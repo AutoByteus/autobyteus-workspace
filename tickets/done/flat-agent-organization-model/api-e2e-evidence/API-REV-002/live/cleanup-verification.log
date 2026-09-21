@@ -1,0 +1,34 @@
+API-REV-002 owned-resource cleanup verification
+2026-09-01T20:34:05Z
+-- owned listener check (8427,3427) --
+none
+-- every observed owned process pid --
+pid=4136: not running
+pid=4325: not running
+pid=4410: not running
+pid=6625: not running
+pid=4237: not running
+pid=4531: not running
+-- owned browser tabs --
+none (AutoByteus list_tabs returned an empty tab list)
+-- isolated generated DB secret cleanup --
+removed; no generated secret retained
+-- package integrity after run --
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK

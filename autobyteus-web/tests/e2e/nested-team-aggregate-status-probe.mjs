@@ -369,11 +369,11 @@ try {
   evidence.requests = [];
 
   const productRow = page.locator(PRODUCT_ROW_SELECTOR);
-  const productDot = productRow.locator('[data-test="nested-team-aggregate-status-dot"]');
+  const productDot = productRow.locator('[data-test="team-aggregate-status-dot"]');
   const siblingRow = page.locator(SIBLING_ROW_SELECTOR);
-  const siblingDot = siblingRow.locator('[data-test="nested-team-aggregate-status-dot"]');
+  const siblingDot = siblingRow.locator('[data-test="team-aggregate-status-dot"]');
   const emptyRow = page.locator(EMPTY_ROW_SELECTOR);
-  const emptyDot = emptyRow.locator('[data-test="nested-team-aggregate-status-dot"]');
+  const emptyDot = emptyRow.locator('[data-test="team-aggregate-status-dot"]');
 
   await runScenario(
     'NTAS-BR-001',
@@ -421,7 +421,7 @@ try {
       await page.evaluate((input) => window.__nestedTeamAggregateStatusProbe.setStatuses(input), cases[0].input);
       await waitFor('product aggregate running for layout screenshot', async () =>
         await productDot.getAttribute('data-status') === 'running');
-      assert(await productRow.locator('[data-test="nested-team-aggregate-status-dot"]').count() === 1,
+      assert(await productRow.locator('[data-test="team-aggregate-status-dot"]').count() === 1,
         'Stable nested Team row must render exactly one aggregate dot');
       assert(await page.locator(DEEP_ROW_SELECTOR).count() === 0, 'Collapsed Product Team must hide its descendants');
       await assertDot(emptyDot, { status: 'offline', label: 'Team status: Offline', placement: true });
@@ -432,18 +432,18 @@ try {
       const transientTaskTeam = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
       assert(await definitionRow.locator('[data-test="team-activity-dot"]').count() === 1,
         'Team-definition row must retain its binary activity dot');
-      assert(await definitionRow.locator('[data-test="nested-team-aggregate-status-dot"]').count() === 0,
+      assert(await definitionRow.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
         'Team-definition row must not receive an aggregate dot');
       assert(await teamRunRow.locator('[data-test="team-activity-dot"]').count() === 1,
         'Root TeamRun row must retain its binary activity dot');
-      assert(await teamRunRow.locator('[data-test="nested-team-aggregate-status-dot"]').count() === 0,
+      assert(await teamRunRow.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
         'Root TeamRun row must not receive an aggregate dot');
-      assert(await rootAgentRow.locator('[data-test="nested-team-aggregate-status-dot"]').count() === 0,
+      assert(await rootAgentRow.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
         'Stable Agent row must not receive an aggregate dot');
       assert(await rootAgentRow.locator('[aria-hidden="true"].h-2.w-2').count() === 1,
         'Stable Agent row must retain its exact solid Agent dot');
       assert(await transientTaskTeam.count() === 1, 'Transient task-Team row must remain present');
-      assert(await transientTaskTeam.locator('[data-test="nested-team-aggregate-status-dot"]').count() === 0,
+      assert(await transientTaskTeam.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
         'Transient task-Team row must not receive an aggregate dot');
 
       await page.evaluate((key) => window.__nestedTeamAggregateStatusProbe.setExpanded(key, true), PRODUCT_TEAM_KEY);
@@ -456,7 +456,7 @@ try {
       await page.screenshot({ path: expandedScreenshotPath, fullPage: true });
       return {
         presentations,
-        visibleAggregateCount: await page.locator('[data-test="nested-team-aggregate-status-dot"]').count(),
+        visibleAggregateCount: await page.locator('[data-test="team-aggregate-status-dot"]').count(),
         binaryActivityCount: await page.locator('[data-test="team-activity-dot"]').count(),
         screenshot: expandedScreenshotPath,
       };
@@ -483,7 +483,7 @@ try {
 
       await page.evaluate((key) => window.__nestedTeamAggregateStatusProbe.setExpanded(key, true), PRODUCT_TEAM_KEY);
       await page.locator(DEEP_ROW_SELECTOR).waitFor({ state: 'visible', timeout: timeoutMs });
-      const deepDot = page.locator(DEEP_ROW_SELECTOR).locator('[data-test="nested-team-aggregate-status-dot"]');
+      const deepDot = page.locator(DEEP_ROW_SELECTOR).locator('[data-test="team-aggregate-status-dot"]');
       await assertDot(deepDot, { status: 'initializing', label: 'Team status: Initializing', placement: true });
       assert(await page.locator('[data-member-address="/product_team/deep_team/task_worker"]').count() === 0,
         'Collapsed deep Team must hide its task-scoped Agent while its aggregate remains current');
@@ -519,7 +519,7 @@ try {
         urlBefore,
         urlAfter: page.url(),
       });
-      assert(await productRow.locator('[data-test="nested-team-aggregate-status-dot"]').count() === 1,
+      assert(await productRow.locator('[data-test="team-aggregate-status-dot"]').count() === 1,
         'Repeated no-op projection must not duplicate the aggregate dot');
       assert(await page.locator(DEEP_ROW_SELECTOR).count() === 0,
         'Live patch must not expand the collapsed Product Team');

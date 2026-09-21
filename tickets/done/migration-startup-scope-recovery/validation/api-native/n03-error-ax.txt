@@ -1,0 +1,28 @@
+Window: "Electron", App: Electron.
+0 Standardfenster Electron, Secondary Actions: Raise
+	1 container Electron
+		2 container
+			3 HTML-Inhalte 127.0.0.1:50572/settings
+				4 container
+					5 Text ❌
+					6 Kopfzeile Application Error, Value: 2
+						7 Text Application Error
+					8 Text Server process exited before health was available (code unknown)
+					9 Text Technical details: Server process exited before health was available (code unknown)
+					10 Text Health check: Healthy: ok
+					11 Text Logs available at: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus/logs/app.log
+					12 Button Restart Server
+					13 Button Check Server Health
+					14 Button Hide technical details
+					15 Button Show Advanced Recovery Options
+	16 Schließen-Taste
+	17 Taste „Vollbildmodus“ Help: mit dieser Taste wird auch das Fenster vergrößert, Secondary Actions: Fenster zoomen
+	18 Taste zum Minimieren
+19 menu bar
+	20 Electron
+	21 File
+	22 Edit
+	23 View
+	24 Window
+
+The focused UI element is 3 HTML-Inhalte 127.0.0.1:50572/settings

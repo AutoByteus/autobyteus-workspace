@@ -4,6 +4,7 @@ import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
 
+import type { ContextFileReference } from '../agent/message/context-file-reference.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
@@ -47,6 +48,7 @@ import { DEFAULT_MEMORY_COMPACTION_CONFIGURATION, type MemoryCompactionConfigura
 import type { TurnStartOrigin } from '../agent/event-inbox/agent-event-inbox-entry.js';
 import {
   buildNativeAssistantResponseTraces,
+  buildNativeUserMessageTrace,
   buildNativeToolCallTrace,
   buildNativeToolResultTrace,
   normalizeNativeToolCallBatch,
@@ -193,20 +195,9 @@ export class MemoryManager {
     return current;
   }
 
-  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string): void {
-    const trace = new RawTraceItem({
-      id: `rt_${Date.now()}`,
-      ts: Date.now() / 1000,
-      turnId,
-      seq: this.nextSeq(turnId),
-      traceType: 'user',
-      content: llmUserMessage.content,
-      sourceEvent,
-      media: {
-        images: llmUserMessage.image_urls ?? [],
-        audio: llmUserMessage.audio_urls ?? [],
-        video: llmUserMessage.video_urls ?? []
-      }
+  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[]): void {
+    const trace = buildNativeUserMessageTrace(llmUserMessage, {
+      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments,
     });
     this.store.add([trace]);
   }

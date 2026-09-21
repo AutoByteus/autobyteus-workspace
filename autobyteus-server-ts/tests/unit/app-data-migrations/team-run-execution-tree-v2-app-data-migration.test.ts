@@ -152,7 +152,7 @@ describe("TeamRunExecutionTreeV2AppDataMigration", () => {
     expect((source.rootTeam as Record<string, unknown>).defaultLaunchConfiguration).toBeUndefined();
   });
 
-  it("migrates V1 once, is idempotent on V2, and becomes admissible only after catalog rebuild", async () => {
+  it("migrates V1 once to the released recursive V2 predecessor without admitting it as current flat Team V2", async () => {
     const memoryDir = await makeMemory();
     const rootDir = await writePackage(memoryDir, v1Tree());
     const catalog = new TeamRunPackageCatalog(memoryDir);
@@ -168,7 +168,10 @@ describe("TeamRunExecutionTreeV2AppDataMigration", () => {
     expect(JSON.parse(migratedBytes)).toMatchObject({ schemaVersion: 2 });
 
     await catalog.rebuild();
-    expect(catalog.listAdmittedRootIds()).toEqual(["classroom-run"]);
+    expect(catalog.listAdmittedRootIds()).toEqual([]);
+    expect(catalog.getDiagnostics().get("classroom-run")).toContain(
+      "rootTeam.members[1] has unsupported or missing field(s)",
+    );
     await expect(migration.execute()).resolves.toMatchObject({
       status: "SUCCEEDED",
       summary: { scannedCount: 1, migratedCount: 0, skippedCount: 1, failedCount: 0 },

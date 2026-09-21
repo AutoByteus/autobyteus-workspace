@@ -47,18 +47,6 @@ const buildHarness = () => {
       },
       nodes: [
         { memberName: "Lead", refType: "agent", refScope: "shared", ref: "lead-agent" },
-        { memberName: "Review", refType: "agent_team", refScope: "shared", ref: "review-team" },
-      ],
-    }],
-    ["review-team", {
-      name: "Review Team",
-      coordinatorMemberName: "Reviewer",
-      defaultLaunchConfig: {
-        runtimeKind: "claude_agent_sdk",
-        llmModelIdentifier: "claude-sonnet",
-        llmConfig: { effort: "high" },
-      },
-      nodes: [
         { memberName: "Reviewer", refType: "agent", refScope: "shared", ref: "reviewer-agent" },
       ],
     }],
@@ -121,16 +109,6 @@ describe("application Team launch scope projection", () => {
           runtimeKind: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "root-team" },
         }),
       }),
-      expect.objectContaining({
-        teamAddress: "/Review",
-        displayName: "Review",
-        teamDefinitionId: "review-team",
-        runtimeKind: "claude_agent_sdk",
-        llmModelIdentifier: "claude-sonnet",
-        provenance: expect.objectContaining({
-          runtimeKind: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "review-team" },
-        }),
-      }),
     ]);
     expect(baseline.leaves).toEqual([
       expect.objectContaining({
@@ -139,9 +117,9 @@ describe("application Team launch scope projection", () => {
         llmModelIdentifier: "gpt-5.6-luna",
       }),
       expect.objectContaining({
-        memberAddress: "/Review/Reviewer",
-        runtimeKind: "claude_agent_sdk",
-        llmModelIdentifier: "claude-sonnet",
+        memberAddress: "/Reviewer",
+        runtimeKind: "codex_app_server",
+        llmModelIdentifier: "gpt-5.6-luna",
       }),
     ]);
   });
@@ -165,7 +143,7 @@ describe("application Team launch scope projection", () => {
           workspaceRootPath: "/workspace/team",
         },
         memberProfiles: [{
-          memberAddress: "/Review/Reviewer",
+          memberAddress: "/Reviewer",
           displayName: "Reviewer",
           agentDefinitionId: "reviewer-agent",
           runtimeKind: "claude_agent_sdk",
@@ -177,17 +155,10 @@ describe("application Team launch scope projection", () => {
 
     expect(effective.resourceKind).toBe("AGENT_TEAM");
     if (effective.resourceKind !== "AGENT_TEAM") throw new Error("Expected Team configuration.");
-    expect(effective.teamScopes).toHaveLength(2);
+    expect(effective.teamScopes).toHaveLength(1);
     expect(effective.teamScopes).toEqual(expect.arrayContaining([
       expect.objectContaining({
         teamAddress: "/",
-        runtimeKind: "autobyteus",
-        llmModelIdentifier: "shared-model",
-        llmConfig: { shared: true },
-        workspaceRootPath: "/workspace/team",
-      }),
-      expect.objectContaining({
-        teamAddress: "/Review",
         runtimeKind: "autobyteus",
         llmModelIdentifier: "shared-model",
         llmConfig: { shared: true },
@@ -202,7 +173,7 @@ describe("application Team launch scope projection", () => {
         llmConfig: { shared: true },
       }),
       expect.objectContaining({
-        memberAddress: "/Review/Reviewer",
+        memberAddress: "/Reviewer",
         runtimeKind: "claude_agent_sdk",
         llmModelIdentifier: "member-model",
         llmConfig: { member: true },

@@ -1,0 +1,39 @@
+{
+  "case": "LIVE-007",
+  "apiFind": "API-FIND-015 regression",
+  "surface": "AutoByteus open_tab 8 production renderer -> isolated real backend",
+  "preconditionedRestore": {
+    "orgRunId": "aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9",
+    "supportedJourney": "Refresh Agent Org history -> expand workspace -> expand inactive Org run -> select offline concierge",
+    "result": "whole Org active; same retained concierge AgentRun; both Team aggregates Idle",
+    "taskPanelTransition": "0 -> In progress without focus change",
+    "reasonNotUsedForFinalLifecycle": "retained launch had autoExecuteTools=false, so task submit required task-Agent focus for user approval"
+  },
+  "cleanRun": {
+    "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+    "teamRunId": "aorg_e2e_research_squad_5e5427c5d304400ca2eda172e118afab",
+    "teamFocus": "/research-team",
+    "runtime": "codex_app_server",
+    "model": "gpt-5.6-sol",
+    "autoExecuteTools": true,
+    "taskId": "task_b8e80da8c72b4207b4a1e6f7b5346561",
+    "taskAgentRunId": "aorg_e2e_analyst_b1d9385d0bb348e3ba1ff1cc6dcea623",
+    "recipientAddress": "/research-team/analyst",
+    "ordinaryMessage": {
+      "from": "/research-team/lead",
+      "to": "/concierge",
+      "content": "APIREV6-MOUNTED-FRESH-MESSAGE"
+    },
+    "taskPanelWithoutManualRefocus": [
+      "0 tasks",
+      "Awaiting review + APIREV6-MOUNTED-FRESH-V1",
+      "Awaiting review + revision + APIREV6-MOUNTED-FRESH-V2",
+      "Accepted + Result 2 accepted + APIREV6-MOUNTED-ACCEPTED"
+    ],
+    "manualFocusAwayBackUsed": false,
+    "transientRecovery": "A current-generation automatic stream recovery briefly rendered configuration and returned to the same active Org/Team focus with no notice; no user navigation or refocus was performed.",
+    "finalTransientTaskRows": 0,
+    "durableFinalStatus": "accepted",
+    "durableSettledAt": "2026-09-02T16:31:27.209Z"
+  }
+}

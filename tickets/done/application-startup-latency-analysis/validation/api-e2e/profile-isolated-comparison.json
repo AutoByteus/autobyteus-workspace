@@ -1,0 +1,103 @@
+{
+  "categories": {
+    "definitions": {
+      "before": {
+        "fileCount": 22,
+        "bytes": 27975,
+        "aggregateSha256": "1b966005eb9297d28e2215202937c32ffee67498a720d053fae1e09a0476cb68"
+      },
+      "after": {
+        "fileCount": 22,
+        "bytes": 27975,
+        "aggregateSha256": "1b966005eb9297d28e2215202937c32ffee67498a720d053fae1e09a0476cb68"
+      },
+      "changedFiles": [],
+      "unchanged": true
+    },
+    "raw_traces": {
+      "before": {
+        "fileCount": 6577,
+        "bytes": 6622505377,
+        "aggregateSha256": "8d687fcc30b7709bd92da973e566b213f6dce7dc9ff6ac80377087edc1f69f84"
+      },
+      "after": {
+        "fileCount": 6577,
+        "bytes": 6622505377,
+        "aggregateSha256": "8d687fcc30b7709bd92da973e566b213f6dce7dc9ff6ac80377087edc1f69f84"
+      },
+      "changedFiles": [],
+      "unchanged": true
+    },
+    "context_files": {
+      "before": {
+        "fileCount": 1107,
+        "bytes": 547486511,
+        "aggregateSha256": "482d00ae72b19fea6edd379624b18a86ad9cd11767154c881ca3faf86547e551"
+      },
+      "after": {
+        "fileCount": 1107,
+        "bytes": 547486511,
+        "aggregateSha256": "482d00ae72b19fea6edd379624b18a86ad9cd11767154c881ca3faf86547e551"
+      },
+      "changedFiles": [],
+      "unchanged": true
+    },
+    "history_and_runtime": {
+      "before": {
+        "fileCount": 5618,
+        "bytes": 294209275,
+        "aggregateSha256": "2d41ba7aaa9a0ded7690cc8ac119fcf0fd57148f78cbf605d405b1e5d5bb8181"
+      },
+      "after": {
+        "fileCount": 5618,
+        "bytes": 294209275,
+        "aggregateSha256": "2d41ba7aaa9a0ded7690cc8ac119fcf0fd57148f78cbf605d405b1e5d5bb8181"
+      },
+      "changedFiles": [],
+      "unchanged": true
+    },
+    "database": {
+      "before": {
+        "fileCount": 1,
+        "bytes": 875474944,
+        "aggregateSha256": "f6c55dfefdab5427c1492af688270117b619eaa1c91a1b77e128a3b88d0bb959"
+      },
+      "after": {
+        "fileCount": 1,
+        "bytes": 875474944,
+        "aggregateSha256": "572d046cfb035e76594aaa4804ba86163c6eca99da786bbcb3c4e5f8e0687108"
+      },
+      "changedFiles": [
+        {
+          "path": "db/production.db",
+          "change": "modified",
+          "before": {
+            "path": "db/production.db",
+            "size": 875474944,
+            "sha256": "9f6a63cf17cc0a071c6e097d504113611a87baa5484349e1c5cfe7e6bef5fbee"
+          },
+          "after": {
+            "path": "db/production.db",
+            "size": 875474944,
+            "sha256": "ec3acfec189ea5dd9e0b729bc9856aef6ad54edb090a34448302e7ccba20c4ad"
+          }
+        }
+      ],
+      "unchanged": false
+    },
+    "configuration": {
+      "before": {
+        "fileCount": 1,
+        "bytes": 3635,
+        "aggregateSha256": "f831b4fb51fa56e46fc29b8b619ab7696674bef136adc06b1a763c3e356ef374"
+      },
+      "after": {
+        "fileCount": 1,
+        "bytes": 3635,
+        "aggregateSha256": "f831b4fb51fa56e46fc29b8b619ab7696674bef136adc06b1a763c3e356ef374"
+      },
+      "changedFiles": [],
+      "unchanged": true
+    }
+  }
+}

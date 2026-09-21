@@ -1,0 +1,2 @@
+{"sequence":1,"pid":28685,"at":"2026-09-18T10:00:06.964Z","uptimeMs":21.758,"type":"process-start","argv":["/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts/dist/app.js","--data-dir","/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile","--host","127.0.0.1","--port","51381"],"isServer":true}
+{"sequence":2,"pid":28685,"at":"2026-09-18T10:00:07.995Z","uptimeMs":1048.599,"type":"observer-ready"}

@@ -1,0 +1,318 @@
+[
+  {
+    "request": {
+      "at": "2026-09-16T08:13:58.901Z",
+      "id": 63,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "CreateAgentOrgRun",
+        "variables": {
+          "input": {
+            "agentOrgDefinitionId": "readfix-alpha",
+            "rootConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace"
+            },
+            "teamOverrides": [],
+            "agentOverrides": []
+          }
+        },
+        "query": "mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {\n  createAgentOrgRun(input: $input) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:13:59.021Z",
+      "id": 63,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"createAgentOrgRun\":{\"success\":true,\"message\":\"Agent organization run created successfully.\",\"agentOrgRunId\":\"readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1\",\"__typename\":\"AgentOrgRunMutationResult\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:13:59.059Z",
+      "id": 65,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgRunInspection",
+        "variables": {
+          "orgRunId": "readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1"
+        },
+        "query": "query GetAgentOrgRunInspection($orgRunId: String!) {\n  getAgentOrgRunInspection(orgRunId: $orgRunId)\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:13:59.066Z",
+      "id": 65,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgRunInspection\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1\",\"schema_version\":1,\"root_org\":{\"base_change_sequence\":0,\"is_active\":true,\"execution_tree\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-16T08:13:58.969Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"]}],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"readfix-alpha\",\"orgDefinitionName\":\"Readfix Alpha\",\"orgRunId\":\"readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"agent-org-owned-agent:readfix-alpha:guide\",\"role\":null,\"description\":null,\"agentRunId\":\"readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"}},{\"address\":\"/group\",\"teamDefinitionId\":\"agent-org-owned-team:readfix-alpha:squad\",\"role\":null,\"description\":null,\"teamRunId\":\"readfix_alpha_squad_2afe8174b0524871b30fd0130432b4b8\",\"coordinatorAddress\":\"/group/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"},\"members\":[{\"address\":\"/group/lead\",\"agentDefinitionId\":\"team-local-agent:agent-org-owned-team%3Areadfix-alpha%3Asquad:worker\",\"role\":null,\"description\":null,\"agentRunId\":\"readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}},\"task_records\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"orgRunId\":\"readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1\",\"records\":[]},\"communication_messages\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"orgRunId\":\"readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1\",\"messages\":[]},\"agent_statuses\":[{\"member_address\":\"/guide\",\"agent_run_id\":\"readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06\",\"status\":\"offline\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null},{\"member_address\":\"/group/lead\",\"agent_run_id\":\"readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab\",\"status\":\"offline\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}]}}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:13:59.102Z",
+      "id": 68,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1",
+          "memberAddress": "/guide",
+          "agentRunId": "readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:13:59.106Z",
+      "id": 68,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06\",\"memberAddress\":\"/guide\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:13:59.103Z",
+      "id": 69,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1",
+          "memberAddress": "/group/lead",
+          "agentRunId": "readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:13:59.107Z",
+      "id": 69,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab\",\"memberAddress\":\"/group/lead\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:13:59.227Z",
+      "id": 72,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1",
+          "memberAddress": "/guide",
+          "agentRunId": "readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:13:59.230Z",
+      "id": 72,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06\",\"memberAddress\":\"/guide\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:13:59.237Z",
+      "id": 73,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1",
+          "memberAddress": "/group/lead",
+          "agentRunId": "readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:13:59.240Z",
+      "id": 73,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab\",\"memberAddress\":\"/group/lead\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:14:22.013Z",
+      "id": 99,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "CreateAgentOrgRun",
+        "variables": {
+          "input": {
+            "agentOrgDefinitionId": "readfix-beta",
+            "rootConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace"
+            },
+            "teamOverrides": [],
+            "agentOverrides": []
+          }
+        },
+        "query": "mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {\n  createAgentOrgRun(input: $input) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:14:22.136Z",
+      "id": 99,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"createAgentOrgRun\":{\"success\":true,\"message\":\"Agent organization run created successfully.\",\"agentOrgRunId\":\"readfix_beta_5a5172a18ee64e48acff25c6d89bb449\",\"__typename\":\"AgentOrgRunMutationResult\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:14:22.170Z",
+      "id": 101,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgRunInspection",
+        "variables": {
+          "orgRunId": "readfix_beta_5a5172a18ee64e48acff25c6d89bb449"
+        },
+        "query": "query GetAgentOrgRunInspection($orgRunId: String!) {\n  getAgentOrgRunInspection(orgRunId: $orgRunId)\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:14:22.172Z",
+      "id": 101,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgRunInspection\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"readfix_beta_5a5172a18ee64e48acff25c6d89bb449\",\"schema_version\":1,\"root_org\":{\"base_change_sequence\":0,\"is_active\":true,\"execution_tree\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-16T08:14:22.083Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"]}],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"readfix-beta\",\"orgDefinitionName\":\"Readfix Beta\",\"orgRunId\":\"readfix_beta_5a5172a18ee64e48acff25c6d89bb449\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"agent-org-owned-agent:readfix-beta:guide\",\"role\":null,\"description\":null,\"agentRunId\":\"readfix_beta_guide_364994d6309e4702a7435a2e2827e6df\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"}},{\"address\":\"/group\",\"teamDefinitionId\":\"agent-org-owned-team:readfix-beta:squad\",\"role\":null,\"description\":null,\"teamRunId\":\"readfix_beta_squad_ff3858e1ddb24586999c369ffb5c31a9\",\"coordinatorAddress\":\"/group/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"},\"members\":[{\"address\":\"/group/lead\",\"agentDefinitionId\":\"team-local-agent:agent-org-owned-team%3Areadfix-beta%3Asquad:worker\",\"role\":null,\"description\":null,\"agentRunId\":\"readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}},\"task_records\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"orgRunId\":\"readfix_beta_5a5172a18ee64e48acff25c6d89bb449\",\"records\":[]},\"communication_messages\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"orgRunId\":\"readfix_beta_5a5172a18ee64e48acff25c6d89bb449\",\"messages\":[]},\"agent_statuses\":[{\"member_address\":\"/guide\",\"agent_run_id\":\"readfix_beta_guide_364994d6309e4702a7435a2e2827e6df\",\"status\":\"offline\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null},{\"member_address\":\"/group/lead\",\"agent_run_id\":\"readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4\",\"status\":\"offline\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}]}}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:14:22.189Z",
+      "id": 104,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_beta_5a5172a18ee64e48acff25c6d89bb449",
+          "memberAddress": "/guide",
+          "agentRunId": "readfix_beta_guide_364994d6309e4702a7435a2e2827e6df"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:14:22.190Z",
+      "id": 104,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_beta_guide_364994d6309e4702a7435a2e2827e6df\",\"memberAddress\":\"/guide\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:14:22.189Z",
+      "id": 105,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_beta_5a5172a18ee64e48acff25c6d89bb449",
+          "memberAddress": "/group/lead",
+          "agentRunId": "readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:14:22.190Z",
+      "id": 105,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4\",\"memberAddress\":\"/group/lead\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:14:22.272Z",
+      "id": 108,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_beta_5a5172a18ee64e48acff25c6d89bb449",
+          "memberAddress": "/guide",
+          "agentRunId": "readfix_beta_guide_364994d6309e4702a7435a2e2827e6df"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:14:22.274Z",
+      "id": 108,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_beta_guide_364994d6309e4702a7435a2e2827e6df\",\"memberAddress\":\"/guide\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T08:14:22.273Z",
+      "id": 109,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "readfix_beta_5a5172a18ee64e48acff25c6d89bb449",
+          "memberAddress": "/group/lead",
+          "agentRunId": "readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4"
+        },
+        "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T08:14:22.274Z",
+      "id": 109,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"getAgentOrgMemberRunProjection\":{\"agentRunId\":\"readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4\",\"memberAddress\":\"/group/lead\",\"summary\":null,\"lastActivityAt\":null,\"conversation\":[],\"activities\":[],\"hasEarlierActiveTraceEvents\":false,\"__typename\":\"AgentOrgMemberRunProjectionPayload\"}}}"
+    }
+  }
+]

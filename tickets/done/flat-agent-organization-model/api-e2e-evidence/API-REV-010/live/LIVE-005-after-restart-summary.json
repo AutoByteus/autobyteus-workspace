@@ -1,0 +1,15 @@
+{
+  "orgActive": false,
+  "teamActive": false,
+  "teamMemberStatuses": [
+    "offline",
+    "offline"
+  ],
+  "durableTaskStatus": "accepted",
+  "durableTaskMarkers": [
+    "APIREV10-TASK-INITIAL-001",
+    "Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+    "APIREV10-TASK-REVISED-001",
+    null
+  ]
+}

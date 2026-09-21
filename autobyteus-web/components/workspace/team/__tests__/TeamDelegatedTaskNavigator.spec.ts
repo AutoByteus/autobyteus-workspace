@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import TeamDelegatedTaskNavigator from '../TeamDelegatedTaskNavigator.vue';
 
 const directed = (from: string, to: string) => ({
-  kind: 'directed', from: { kind: 'named', label: from }, to: { kind: 'named', label: to },
+  kind: 'directed', from: { kind: 'named', targetKind: 'unavailable', label: from }, to: { kind: 'named', targetKind: 'unavailable', label: to },
 });
 const ref = (referenceId: string, path: string) => ({
   referenceId, path, type: 'file', createdAt: '2026-08-20T10:00:00.000Z', updatedAt: '2026-08-20T10:00:00.000Z',
@@ -56,7 +56,7 @@ const taskTeamEntry = {
     },
     {
       kind: 'interruption', itemKey: 'task:task_0002:interruption:interruption-1', createdAt: '2026-08-20T11:18:00.000Z',
-      content: 'Root TeamRun terminated.', direction: { kind: 'system' }, referenceFiles: [],
+      content: 'Root TeamRun terminated.', direction: { kind: 'system', assignment: directed('delegator', 'assignee') }, referenceFiles: [],
     },
   ],
 };

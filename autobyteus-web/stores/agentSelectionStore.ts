@@ -9,7 +9,15 @@ export type RunSelectionSubject =
   | Readonly<{ kind: 'team_run'; rootTeamRunId: string }>
   | Readonly<{ kind: 'team_draft'; draftId: TeamLaunchDraftId }>;
 
-interface AgentSelectionState { subject: RunSelectionSubject | null }
+export type WorkspaceSelectionIntent = Readonly<{ isCurrent(): boolean }>;
+export type WorkspaceSelectionOutcome = Readonly<{ disposition: 'committed' | 'superseded' }>;
+export type SupersededSelection = Readonly<{ disposition: 'superseded' }>;
+
+interface AgentSelectionState {
+  subject: RunSelectionSubject | null;
+  // Ephemeral user intent only. Background publication and promotion do not change it.
+  selectionIntent: symbol | null;
+}
 
 const assertSelectionMutable = (): void => {
   const drafts = useTeamRunConfigStore();
@@ -19,7 +27,7 @@ const assertSelectionMutable = (): void => {
 };
 
 export const useAgentSelectionStore = defineStore('agentSelection', {
-  state: (): AgentSelectionState => ({ subject: null }),
+  state: (): AgentSelectionState => ({ subject: null, selectionIntent: null }),
   getters: {
     selectedType(state): SelectionType | null {
       return state.subject?.kind === 'agent_run' ? 'agent'
@@ -37,6 +45,13 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
     isTeamSelected(): boolean { return this.selectedType === 'team' || this.selectedType === 'team_draft'; },
   },
   actions: {
+    beginSelectionIntent(): WorkspaceSelectionIntent {
+      assertSelectionMutable();
+      const token = Symbol('workspace-selection');
+      this.selectionIntent = token;
+      return Object.freeze({ isCurrent: () => this.selectionIntent === token });
+    },
+    invalidateSelectionIntent(): void { this.selectionIntent = null; },
     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') {
       assertSelectionMutable();
       const normalized = runId.trim();

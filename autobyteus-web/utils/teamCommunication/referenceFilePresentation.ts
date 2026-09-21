@@ -1,4 +1,4 @@
-import type { TeamCommunicationReferenceFile } from '~/stores/teamCommunicationTypes';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 
 export function referenceFileName(filePath: string): string {
   const normalized = String(filePath || '').replace(/\\/g, '/');
@@ -11,7 +11,7 @@ export function referenceFileExtension(filePath: string): string {
   return dotIndex > 0 ? name.slice(dotIndex) : '';
 }
 
-export function referenceFileIcon(reference: TeamCommunicationReferenceFile): string {
+export function referenceFileIcon(reference: TeamReferenceFile): string {
   const ext = referenceFileExtension(reference.path);
   if (['.js', '.jsx', '.cjs', '.mjs'].includes(ext)) return 'vscode-icons:file-type-js';
   if (['.ts', '.tsx'].includes(ext)) return 'vscode-icons:file-type-typescript';

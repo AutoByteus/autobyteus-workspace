@@ -1,0 +1,133 @@
+{
+  "at": "2026-09-13T12:19:19.802901+00:00",
+  "revision": "API-REV-001",
+  "cases": [
+    {
+      "id": "REPO-SERVER",
+      "acceptance": "AC-001,002,006,008",
+      "result": "Pass",
+      "mode": "Durable / actual configured-scope composition and controlled runtime negatives",
+      "evidence": [
+        "repository/server-readiness.json",
+        "repository/server-preservation.json"
+      ],
+      "scope": "11 disjoint files / 56 tests; exact readiness, origin authorization, binding, task and Stop controls."
+    },
+    {
+      "id": "REPO-WEB",
+      "acceptance": "AC-003\u2013007",
+      "result": "Pass",
+      "mode": "Durable / actual Apollo-Pinia-selection and mounted chip, controlled transport",
+      "evidence": [
+        "repository/web-regressions.json",
+        "repository/web-preservation.json"
+      ],
+      "scope": "19 disjoint files / 167 tests; delayed explicit selection, lower-owner recovery, publication and canonical first-message controls."
+    },
+    {
+      "id": "SCN-001",
+      "acceptance": "AC-001,007",
+      "result": "Pass",
+      "mode": "Browser + live Codex Team / no-message inspection",
+      "evidence": [
+        "live/team-unused-steady.json",
+        "live/team-unused-disposition.json"
+      ],
+      "scope": "Normal Run; three unused members gray/Offline and unbound; no accepted work. Initial immediate aria initializing settles on same root."
+    },
+    {
+      "id": "SCN-007",
+      "acceptance": "AC-008,007",
+      "result": "Pass",
+      "mode": "Browser + live full Org / no-message inspection",
+      "evidence": [
+        "live/org-unused-result.json"
+      ],
+      "scope": "Initially unfocused complete direct/mounted scope, five unused Agents Offline/unbound, inspection does not start them."
+    },
+    {
+      "id": "SCN-002",
+      "acceptance": "AC-002,006,007",
+      "result": "Pass",
+      "mode": "Browser + real provider inter-Agent/Team ingress",
+      "evidence": [
+        "live/team-first-work-complete.json",
+        "live/org-first-work-result.json"
+      ],
+      "scope": "One human input per root; actual replies/deliveries to exact required members; unrelated reviewer / mounted peers still unbound."
+    },
+    {
+      "id": "SCN-003",
+      "acceptance": "AC-003,007",
+      "result": "Pass",
+      "mode": "Browser + normal real task/member publication / read-only writer tracing",
+      "evidence": [
+        "final/navigation-reconciliation.json",
+        "live/publication-desktop-disposition.json",
+        "live/publication-narrow-result.json"
+      ],
+      "scope": "Two distinct publication-only pulses preserve exact Org/member/conversation/draft; real task statuses/replies update; no selection intent or router write. Current functional Pass, historical cause remains UNASSIGNED."
+    },
+    {
+      "id": "SCN-004",
+      "acceptance": "AC-004,007",
+      "result": "Pass",
+      "mode": "Browser / explicit same-Org receiver leave and mounted-member return during real work",
+      "evidence": [
+        "live/publication-leave-result.json",
+        "final/navigation-reconciliation.json"
+      ],
+      "scope": "Exactly two deliberate intents/router pushes; selected identities follow choices, late publications do not redirect. No cross-root disposed-draft claim."
+    },
+    {
+      "id": "SCN-005",
+      "acceptance": "AC-005,007",
+      "result": "Pass",
+      "mode": "Browser + native AutoByteus / DeepSeek V4 Flash + real file HTTP",
+      "evidence": [
+        "live/native-first-result.json"
+      ],
+      "scope": "Actual chooser upload, first Send, real reply, immediate actual sent-chip Open returns final200 with original bytes; one accepted input."
+    },
+    {
+      "id": "SCN-006",
+      "acceptance": "AC-006,007",
+      "result": "Pass",
+      "mode": "Browser / live390 Open then normal reload/history reselect and Open",
+      "evidence": [
+        "live/native-reopen-result.json"
+      ],
+      "scope": "Same single accepted input, exact final locator and original bytes; no resend; existing separate-link behavior."
+    },
+    {
+      "id": "PRESERVE",
+      "acceptance": "AC-006; REQ-006",
+      "result": "Pass",
+      "mode": "Browser / actual Stop-retained-Restore plus repository negatives",
+      "evidence": [
+        "live/team-stop-result.json",
+        "live/team-restore-response.json",
+        "live/team-restore-result.json",
+        "live/final-ui-stops.json"
+      ],
+      "scope": "Same root/member identities, prior bindings/input retained; one new input and actual restored reply. Existing Restore preparation preserved; final owned root Stops succeed, task interruption/history truthful."
+    },
+    {
+      "id": "CLEANUP",
+      "acceptance": "QR-002",
+      "result": "Pass",
+      "mode": "Owned process, vault, filesystem and upstream integrity",
+      "evidence": [
+        "final/cleanup-integrity.json",
+        "final/process-cleanup.json",
+        "final/credential-cleanup.json",
+        "final/completion-integrity.json"
+      ],
+      "scope": "Only owned resources removed after sanitized archive; protected source/upstream unchanged, no staged/unmerged edits."
+    }
+  ],
+  "unstarted": [],
+  "running": [],
+  "blocked": [],
+  "historicalCause": "UNASSIGNED; current functional acceptance, no causal attribution"
+}

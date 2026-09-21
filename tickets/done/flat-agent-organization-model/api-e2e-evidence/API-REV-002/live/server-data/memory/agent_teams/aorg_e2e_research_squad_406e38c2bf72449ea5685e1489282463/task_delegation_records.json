@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_406e38c2bf72449ea5685e1489282463",
+  "records": [
+    {
+      "taskId": "task_cbd139cb628e49cdb38a5e95c5826cd8",
+      "delegatorAgentRunId": "aorg_e2e_lead_ba085468b828408abb166692912680fc",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_647ecebd7ced43fdbc02ff40a4cbf9ed"
+      },
+      "description": "Produce AORG-TEAM-TASK-DRAFT-002 on the first line and one short validation sentence. Then formally call submit_task_result with that output; do not stop at ordinary assistant text. The reviewer will request one revision. If revision feedback arrives, change the first line to AORG-TEAM-TASK-REVISED-002 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "submissionId": "submission_b2629427d16f4b2d9497e7db2f61a1fb",
+          "message": "AORG-TEAM-TASK-DRAFT-002\nValidation confirms the initial task output uses the required marker and concise format.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T19:54:54.938Z"
+        },
+        {
+          "reviewId": "review_488653cd733443e1bd3bfa9cbe780398",
+          "reviewedSubmissionId": "submission_b2629427d16f4b2d9497e7db2f61a1fb",
+          "decision": "request_revision",
+          "comment": "Change the first line to AORG-TEAM-TASK-REVISED-002 and formally resubmit the same task.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T19:55:02.323Z"
+        },
+        {
+          "interruptionId": "task_cbd139cb628e49cdb38a5e95c5826cd8_interruption_restart",
+          "reason": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+          "createdAt": "2026-09-01T20:11:06.828Z"
+        }
+      ],
+      "createdAt": "2026-09-01T19:54:46.106Z"
+    },
+    {
+      "taskId": "task_c455f19c67fe4a9582d49019a4f822c4",
+      "delegatorAgentRunId": "aorg_e2e_lead_ba085468b828408abb166692912680fc",
+      "recipientAddress": "/verifier",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_verifier_e8de47b91a8243b2ab2ecea5c39552f6"
+      },
+      "description": "Return AORG-TEAM-TASK-ACCEPT-002 on the first line and one short validation sentence, then formally call submit_task_result. After submission arrives, formally call review_task_result with decision accept. Do not request revision.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_43d1211425934031a7faa0251ea87c08",
+          "message": "AORG-TEAM-TASK-ACCEPT-002\nVerified: the requested deterministic marker and validation sentence are present.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T19:58:23.580Z"
+        },
+        {
+          "reviewId": "review_0763e55baca4482fa0ba985930512490",
+          "reviewedSubmissionId": "submission_43d1211425934031a7faa0251ea87c08",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T19:58:26.643Z"
+        }
+      ],
+      "createdAt": "2026-09-01T19:58:12.968Z"
+    }
+  ]
+}

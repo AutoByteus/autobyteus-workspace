@@ -1,0 +1,45 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    {
+      "memberName": "lead",
+      "ref": "aorg-lead",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "analyst",
+      "ref": "aorg-analyst",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "verifier",
+      "ref": "aorg-verifier",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/lead",
+      "to": "/analyst",
+      "rules": [
+        "When a request needs bounded analysis.",
+        "After the lead identifies the exact validation question."
+      ]
+    },
+    {
+      "from": "/analyst",
+      "to": "/verifier",
+      "rules": [
+        "When a completed analysis needs an independent check."
+      ]
+    }
+  ],
+  "avatarUrl": "https://example.invalid/aorg-e2e-research.png",
+  "defaultLaunchConfig": {
+    "llmModelIdentifier": "gpt-5.6-sol",
+    "runtimeKind": "codex_app_server",
+    "llmConfig": {
+      "reasoning_effort": "low"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067",
+  "records": [
+    {
+      "taskId": "task_a73d73bf5b4345f3a9d37e840be5b1ed",
+      "delegatorAgentRunId": "aorg_e2e_lead_5c83906ba25e438da258c0c1990b5813",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_17741349ef0b497b852e5b14e7fab84a"
+      },
+      "description": "Prepare a concise result whose first line is exactly AORG-TEAM-TASK-SUBMISSION-003 and whose second line is exactly Initial formal submission. Then use submit_task_result to submit it. Do not review your own result and do not create any other task.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_764d31fc250d4eada9c95e23d26cfc35",
+          "reason": "Root TeamRun terminated.",
+          "createdAt": "2026-09-01T22:27:20.870Z"
+        }
+      ],
+      "createdAt": "2026-09-01T22:26:32.310Z"
+    }
+  ]
+}

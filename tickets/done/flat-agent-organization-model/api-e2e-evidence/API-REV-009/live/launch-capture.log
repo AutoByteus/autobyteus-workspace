@@ -1,0 +1,16 @@
+{
+  "preview": {
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&mode=configuration",
+    "capturedAt": "2026-09-03T15:47:16.040Z",
+    "rootRuntime": "codex_app_server",
+    "rootWorkspace": "Workspace: Temp Workspace",
+    "teamWorkspace": "Workspace: workspace-team",
+    "analystRuntime": "autobyteus",
+    "analystModel": "DeepSeek / deepseek-v4-flash",
+    "runDisabled": false,
+    "focusQuery": null
+  },
+  "finalUrl": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d&mode=active",
+  "requestCount": 11,
+  "responseCount": 11
+}

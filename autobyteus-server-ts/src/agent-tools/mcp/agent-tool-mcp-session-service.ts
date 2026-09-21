@@ -78,12 +78,12 @@ export class AgentToolMcpSessionService {
   private buildExecutionCapabilities(
     input: AgentToolMcpRunSessionActivationInput,
   ): AgentToolMcpSessionExecutionCapabilities {
-    const member = input.sender.memberTeamContext;
-    const ownerTeamIdentity = input.owner.teamIdentity ?? null;
+    const member = input.sender.memberExecutionContext;
+    const ownerIdentity = input.owner.collaborationIdentity ?? null;
     if (!member) {
-      if (ownerTeamIdentity) {
+      if (ownerIdentity) {
         throw new Error(
-          "Agent Tools MCP Team owner identity requires a Team-member sender context.",
+          "Agent Tools MCP collaboration owner identity requires a member sender context.",
         );
       }
       return Object.freeze({
@@ -97,23 +97,24 @@ export class AgentToolMcpSessionService {
     const memberIdentity = member.identity;
     if (
       input.owner.runId !== memberIdentity.agentRunId
-      || !ownerTeamIdentity
-      || ownerTeamIdentity.rootTeamRunId !== memberIdentity.rootTeamRunId
-      || ownerTeamIdentity.memberAddress !== memberIdentity.memberAddress
-      || ownerTeamIdentity.agentRunId !== memberIdentity.agentRunId
+      || !ownerIdentity
+      || ownerIdentity.root.rootSubjectKind !== memberIdentity.root.rootSubjectKind
+      || ownerIdentity.root.rootRunId !== memberIdentity.root.rootRunId
+      || ownerIdentity.memberAddress !== memberIdentity.memberAddress
+      || ownerIdentity.agentRunId !== memberIdentity.agentRunId
     ) {
       throw new Error(
-        "Agent Tools MCP Team owner identity does not match the Team-member sender context.",
+        "Agent Tools MCP owner identity does not match the collaboration-member sender context.",
       );
     }
     return Object.freeze({
-      kind: "team_member",
+      kind: "collaboration_member",
       publishedArtifactPublisher:
         this.executionCapabilities.publishedArtifactPublisher,
       applicationAgentTools: this.executionCapabilities.applicationAgentTools,
       taskDelegation: Object.freeze({
-        identity: { ...memberIdentity },
-        rootResolver: member.taskRootResolver,
+        identity: memberIdentity,
+        commands: member.tasks,
       }),
     });
   }
@@ -129,7 +130,7 @@ export class AgentToolMcpSessionService {
       enabledTools: Object.freeze([...session.enabledTools]) as string[],
     });
     const owner = cloneAgentToolMcpSessionOwnerIdentity(session.owner);
-    if (owner.teamIdentity) Object.freeze(owner.teamIdentity);
+    if (owner.collaborationIdentity) Object.freeze(owner.collaborationIdentity);
     Object.freeze(owner);
     return Object.freeze({
       kind: "active" as const,

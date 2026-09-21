@@ -229,12 +229,12 @@ describe("ApplicationRunOwnershipService", () => {
       });
     }
     expect(requireLiveTeamMember).toHaveBeenNthCalledWith(1, {
-      rootTeamRunId: "team-run-1",
+      root: { rootSubjectKind: "agent_team", rootRunId: "team-run-1" },
       memberAddress: "/worker",
       agentRunId: "member-run-1",
     });
     expect(requireLiveTeamMember).toHaveBeenNthCalledWith(2, {
-      rootTeamRunId: "team-run-1",
+      root: { rootSubjectKind: "agent_team", rootRunId: "team-run-1" },
       memberAddress: "/worker/dynamic",
       agentRunId: "dynamic-run-1",
     });

@@ -1,0 +1,9 @@
+{
+  "all39source_hashes_match": true,
+  "inventory_equals_commit_delta": true,
+  "production": 24,
+  "tests": 15,
+  "max_production_nonempty": 480,
+  "max_production_delta": 125,
+  "upstream188_unchanged": true
+}

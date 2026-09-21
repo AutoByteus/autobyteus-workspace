@@ -1,0 +1,5 @@
+=== owned ports ===
+=== worktree processes ===
+1071
+1399
+removed owned isolated profile: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile

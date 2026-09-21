@@ -1,0 +1,30 @@
+import { createRequire } from 'node:module'; import fs from 'node:fs/promises'; import assert from 'node:assert/strict';
+const require=createRequire('/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/package.json'); const {chromium}=require('playwright-core');
+const out='/tmp/aorg-ir054-render', result={observations:[],errors:[],warnings:[],queries:[],limits:'Isolated implementation renderer: actual TeamWorkspaceView, active/context/history reconciliation, strict Team stream and exact inspection/projection owners. Synthetic fixture, controlled socket/GraphQL and unrelated history effects; diagnostic inspection controls. Not normal full Workspaces navigation, actual server/provider/native or API acceptance.'};
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
+try {for(const [name,width,height] of [['desktop',1502,900],['narrow',390,844]]){
+ const page=await browser.newPage({viewport:{width,height}});page.on('pageerror',e=>result.errors.push(String(e)));
+ page.on('console',m=>{if(m.type()==='warning'&&/Rejected.*Team|TEAM_EXECUTION|Unhandled/.test(m.text()))result.warnings.push(m.text())});
+ await page.route('**/graphql',r=>{const q=r.request().postDataJSON();result.queries.push({operation:q.operationName,variables:q.variables});
+ const id=q.variables?.agentRunId;const data=id?{getTeamMemberRunProjection:{agentRunId:id,conversation:[{kind:'assistant',role:'assistant',content:`Exact retained result for ${id}`,ts:10}],activities:[{kind:'system_instruction',activityId:`activity-${id}`,content:`Exact Activity for ${id}`,ts:11}],lastActivityAt:'2026-09-12T09:01:00.000Z',hasEarlierActiveTraceEvents:false}}:{agentDefinitions:[]};
+ return r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({data})});});
+ await page.route('**/rest/health',r=>r.fulfill({status:200,contentType:'application/json',body:'{"status":"ok"}'}));
+ await page.goto('http://127.0.0.1:43154/ir054-status',{waitUntil:'networkidle',timeout:120000});await page.waitForFunction(()=>window.__ir054);
+ const state=()=>page.evaluate(()=>window.__ir054.state());
+ const shot=async label=>{const s=await state();const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert.equal(overflow,false);await page.screenshot({path:`${out}/${name}-${label}.png`,fullPage:true});result.observations.push({name:`${name}-${label}`,state:s,overflow});};
+ let s=await state();assert.equal(s.statuses.lead,'initializing');assert.equal(s.statuses.first,'offline');assert.equal(s.statuses.repeat,'offline');await shot('pending-lead');
+ await page.locator('[data-run=first]').click();await page.waitForFunction(()=>window.__ir054.state().focus==='first');
+ await page.getByText('Exact retained result for first',{exact:true}).waitFor();
+ assert.match(await page.locator('[data-test=team-workspace-task-status]').textContent(),/Accepted.*Offline/);
+ assert.equal((await state()).hasInteraction,false);assert.equal(await page.locator('textarea').count(),0);await shot('pending-first');
+ await page.locator('[data-test=ready]').click();await page.waitForFunction(()=>window.__ir054.state().ready);
+ assert.match(await page.locator('[data-test=team-workspace-task-status]').textContent(),/Accepted.*Offline/);await shot('ready-first');
+ const repeat=page.locator('[data-run=repeat]');if(name==='narrow'){await repeat.focus();await repeat.press('Enter')}else await repeat.click();
+ await page.getByText('Exact retained result for repeat',{exact:true}).waitFor();assert.match(await page.locator('[data-test=team-workspace-task-status]').textContent(),/Accepted.*Offline/);
+ await shot('ready-repeat');
+ await page.locator('[data-run=live-task]').click();await page.waitForFunction(()=>window.__ir054.state().focus==='live-task');
+ assert.match(await page.locator('[data-test=team-workspace-task-status]').textContent(),/Accepted.*Running/);assert.equal((await state()).access,'live');await shot('live-control');
+ s=await state();assert.equal(s.sequence,648);assert.equal(s.recovery,false);assert.equal(s.rootActive,true);assert.deepEqual(s.sent,[]);assert.equal(s.statuses.first,'offline');assert.equal(s.statuses.repeat,'offline');await page.close();
+}assert.deepEqual(result.errors,[]);assert.deepEqual(result.warnings,[]);result.passed=true;
+} finally {await fs.writeFile(`${out}/evidence.json`,JSON.stringify(result,null,2));await browser.close()}
+console.log(JSON.stringify({passed:result.passed,observations:result.observations.length,errors:result.errors,warnings:result.warnings}));

@@ -24,9 +24,9 @@ export class GetHandoffRulesMcpAdapterProvider implements AgentToolMcpAdapterPro
         inputSchema: buildGetHandoffRulesParameterSchema(),
       },
       configuredMcpCollisionPolicy: "protect_static_adapter" as const,
-      isAvailable: ({ sender }) => Boolean(sender?.memberTeamContext?.collaboration),
+      isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext?.collaboration),
       execute: async ({ session }) => {
-        const result = this.service.getRules(session.sender.memberTeamContext?.collaboration);
+        const result = this.service.getRules(session.sender.memberExecutionContext?.collaboration);
         return toAgentToolMcpToolResult({
           content: [{ type: "text", text: JSON.stringify(result) }],
           structuredContent: result,

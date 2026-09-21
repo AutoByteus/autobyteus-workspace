@@ -1,0 +1,15 @@
+{
+  "terminatedOwnedPids": [
+    43248,
+    42944,
+    42638
+  ],
+  "ports": {
+    "50681": "closed",
+    "50682": "closed",
+    "50683": "closed"
+  },
+  "browser": "owned tab closed",
+  "data": "retained private ignored .local/api-org-local; no user data touched",
+  "sdk": "upstream outputs preserved"
+}

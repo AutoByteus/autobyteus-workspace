@@ -1,0 +1,274 @@
+{
+  "observations": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "exactDetailAndCoordinator": true,
+      "teamViewAndBack": true,
+      "descriptionSaveAndReopen": true,
+      "sharedPickerExcludesOwned": true,
+      "operations": [
+        {
+          "field": "agentOrgDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentTeamDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "owned-direct"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "owned-direct"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        },
+        {
+          "field": "updateAgentOrgDefinition",
+          "variables": {
+            "input": {
+              "id": "owned-org",
+              "expectedRevision": "revision-1",
+              "name": "Local Research Org",
+              "description": "Updated desktop description.",
+              "members": [
+                {
+                  "memberName": "direct",
+                  "ref": "owned-direct",
+                  "refType": "AGENT",
+                  "refScope": "AGENT_ORG_OWNED"
+                },
+                {
+                  "memberName": "team",
+                  "ref": "owned-team",
+                  "refType": "AGENT_TEAM",
+                  "refScope": "AGENT_ORG_OWNED"
+                }
+              ],
+              "handoffs": [
+                {
+                  "from": "/direct",
+                  "to": "/team",
+                  "rules": [
+                    "Prepare a complete research request.",
+                    "Keep the original context."
+                  ]
+                },
+                {
+                  "from": "/team/worker",
+                  "to": "/direct",
+                  "rules": [
+                    "Return the verified result."
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "owned-direct"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "exactDetailAndCoordinator": true,
+      "teamViewAndBack": true,
+      "descriptionSaveAndReopen": true,
+      "sharedPickerExcludesOwned": true,
+      "operations": [
+        {
+          "field": "agentOrgDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentTeamDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "owned-direct"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "owned-direct"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        },
+        {
+          "field": "updateAgentOrgDefinition",
+          "variables": {
+            "input": {
+              "id": "owned-org",
+              "expectedRevision": "revision-1",
+              "name": "Local Research Org",
+              "description": "Updated narrow description.",
+              "members": [
+                {
+                  "memberName": "direct",
+                  "ref": "owned-direct",
+                  "refType": "AGENT",
+                  "refScope": "AGENT_ORG_OWNED"
+                },
+                {
+                  "memberName": "team",
+                  "ref": "owned-team",
+                  "refType": "AGENT_TEAM",
+                  "refScope": "AGENT_ORG_OWNED"
+                }
+              ],
+              "handoffs": [
+                {
+                  "from": "/direct",
+                  "to": "/team",
+                  "rules": [
+                    "Prepare a complete research request.",
+                    "Keep the original context."
+                  ]
+                },
+                {
+                  "from": "/team/worker",
+                  "to": "/direct",
+                  "rules": [
+                    "Return the verified result."
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "owned-direct"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "owned-team"
+          }
+        },
+        {
+          "field": "agentDefinition",
+          "variables": {
+            "id": "team-local-agent:owned-team:lead"
+          }
+        }
+      ]
+    },
+    {
+      "pendingReadPreservesDraft": true,
+      "genuineUnavailableBlocksSave": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

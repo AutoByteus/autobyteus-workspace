@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-15T11:05:40.845Z",
+  "mainPid": 42714,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus",
+  "childCount": 3,
+  "pid": 43137,
+  "generation": 3,
+  "ready": false,
+  "pending": true,
+  "polls": 1002,
+  "snapshot": {
+    "status": "restarting",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "Healthy"
+  },
+  "windowId": 1,
+  "dom": "Restarting Server...\n\nRestarting Agent Server...\n\nBackend service initializing...\n\nhttp://127.0.0.1:29695/graphql\n\nHealth check: Healthy: ok\n\nLogs available at: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus/logs/app.log\n\nHide technical details\nRun health check"
+}

@@ -1,0 +1,34 @@
+{
+  "entryHead": "ef61b2ac95c2166d3690bc797ee1d3ef4fa9ed16",
+  "sourceCheckpoint": "0f1986dcdd254105feab8b4cfdf255e36cfe8fc3",
+  "files": [
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 292,
+      "sha256": "d7cb0953cbc36c9dde926ace7e35da990c8b81988c52e2bfb3e99798cb4dea67"
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/__tests__/contextAttachmentModel.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 64,
+      "sha256": "0b26ced391c4f63e8beb7cf649bfc6fd0ae61b48ff59ee3202624b14445d1384"
+    },
+    {
+      "path": "autobyteus-web/components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 40,
+      "sha256": "f53fbdd3273ef9b9734fd6e7970760f3f88e7f8cebb5d74a12ddb8f8c7b4ad01"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 40,
+      "sha256": "3f737c1eb7469908fb7e2b2a1d60ecb3ff2f39ee4040421ac1cad5deef1797ae"
+    }
+  ]
+}

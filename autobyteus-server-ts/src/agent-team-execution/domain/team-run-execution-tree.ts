@@ -14,21 +14,7 @@ export type ConfiguredAgentExecutionNode = Readonly<{
   launchConfiguration: AgentLaunchConfiguration;
 }>;
 
-export type ConfiguredTeamExecutionNode = Readonly<{
-  address: AgentTeamAddress;
-  teamDefinitionId: string;
-  role: string | null;
-  description: string | null;
-  teamRunId: string;
-  coordinatorAddress: AgentTeamAddress;
-  defaultLaunchConfiguration: AgentLaunchConfiguration;
-  members: readonly ConfiguredExecutionNode[];
-  taskExecutions: readonly TaskExecution[];
-}>;
-
-export type ConfiguredExecutionNode =
-  | ConfiguredAgentExecutionNode
-  | ConfiguredTeamExecutionNode;
+export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode;
 
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
@@ -73,7 +59,7 @@ export type RootConfiguredTeamExecutionNode = Readonly<{
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
-  members: readonly ConfiguredExecutionNode[];
+  members: readonly ConfiguredAgentExecutionNode[];
   taskExecutions: readonly TaskExecution[];
 }>;
 
@@ -96,10 +82,6 @@ export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFileV2;
 export const isConfiguredAgentExecution = (
   value: ConfiguredExecutionNode,
 ): value is ConfiguredAgentExecutionNode => "agentRunId" in value;
-
-export const isConfiguredTeamExecution = (
-  value: ConfiguredExecutionNode,
-): value is ConfiguredTeamExecutionNode => "teamRunId" in value;
 
 export const isTaskAgentExecution = (
   value: TaskExecution,

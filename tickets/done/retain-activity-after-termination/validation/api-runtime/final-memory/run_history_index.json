@@ -1,0 +1,12 @@
+[
+  {
+    "runId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+    "agentDefinitionId": "aorg-validation-agent",
+    "agentName": "AORG Validation Agent",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/temp_workspace",
+    "summary": "Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-af...",
+    "createdAt": "2026-09-14T14:14:28.390Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

@@ -1,0 +1,886 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/collaboration components/workspace/team/__tests__/TeamDelegatedTask components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts services/agentOrgExecution utils/__tests__/teamDelegatedTaskEntries.spec.ts localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts (4 tests) 71ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts (8 tests) 64ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts (13 tests) 134ms
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection task lifecycle selection > uses parent-controlled collapse, preserves the empty state, and keeps the split dimensions
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection task lifecycle selection > uses parent-controlled collapse, preserves the empty state, and keeps the split dimensions
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > shows exact focused communication count and no removed Task Plan section
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > keeps section expansion parent-owned with Messages open first
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection task lifecycle selection > selects the first task root initially and keeps the complete timeline only in the left navigator
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection task lifecycle selection > shows only the selected update detail while every left-side lifecycle row remains visible
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts > shared participant Tasks inspection > exposes Tasks for a direct Org Agent and navigates by the actual task run rather than source address
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_org',
+  rootRunId: 'org-run',
+  focusedAgentRunId: 'agent-director',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel messages= {
+  rootKind: 'agent_org',
+  rootRunId: 'org-run',
+  focusedAgentRunId: 'agent-director',
+  focusedMemberAddress: '/director',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} tasks= {
+  rootKind: 'agent_org',
+  rootRunId: 'org-run',
+  focusedAgentRunId: 'agent-director',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} >
+  at <Anonymous ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection task lifecycle selection > opens an update-owned reference, refreshes it on reselection, and returns through its owning row without changing focus
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > opens Tasks immediately for a current retained task record
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ❯ components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts (5 tests | 1 failed) 86ms
+   ✓ CollaborationMessagesPanel current AgentRun perspective > renders newest-first exact persistent/task messages with human placement labels 38ms
+   ✓ CollaborationMessagesPanel current AgentRun perspective > shows no-focused state for an unknown AgentRun rather than substituting by address 2ms
+   ✓ CollaborationMessagesPanel current AgentRun perspective > opens a selected reference by root TeamRun/message/reference identity 11ms
+   ✓ keeps identity out of the list and reveals exact task provenance only on demand in the right detail 16ms
+   × closes identity on exact subject/item changes but preserves it across same-item live updates 18ms
+     → expected 'false' to be 'true' // Object.is equality
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection task lifecycle selection > retains an exact selected lifecycle item across a live full-record replacement and appends the new row once
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-run',
+  focusedAgentRunId: 'worker-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ❯ components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts (1 test | 1 failed) 84ms
+   × shared participant Tasks inspection > exposes Tasks for a direct Org Agent and navigates by the actual task run rather than source address 84ms
+     → Unable to get nav button[title="/worker · agent-worker-task"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-none" data-test="collaboration-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="collaboration-messages-header" aria-expanded="false">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300 -rotate-90" data-test="collaboration-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-v-e4ed9f26="" class="flex h-full min-h-0 overflow-hidden bg-white min-h-0 flex-1" style="display: none;">
+      <div data-v-e4ed9f26="" class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400"><svg data-v-e4ed9f26="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mb-2 h-9 w-9 text-gray-300"></svg>
+        <p data-v-e4ed9f26="" class="text-sm font-medium text-gray-500">No team messages yet</p>
+        <p data-v-e4ed9f26="" class="mt-1 text-sm">Accepted inter-agent messages will appear here with their reference files.</p>
+      </div>
+    </div>
+  </section>
+  <div class="flex flex-col transition-all duration-300 ease-in-out min-h-0 flex-1">
+    <section data-test="team-delegated-tasks-section" class="flex min-h-0 flex-col overflow-hidden bg-white h-full"><button type="button" data-test="team-delegated-tasks-header" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" aria-expanded="true">
+        <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-delegated-tasks-disclosure" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg><span class="text-xs font-bold leading-none tracking-wider text-gray-900">Tasks</span></div><span class="text-xs font-medium text-gray-600">2 tasks</span>
+      </button>
+      <div data-test="team-delegated-tasks-body" class="min-h-0 flex-1 overflow-hidden">
+        <div class="flex h-full min-h-0 overflow-hidden" data-test="team-delegated-tasks-split">
+          <aside class="min-h-0 shrink-0 overflow-y-auto border-r border-slate-200 pb-2" style="width: 248px; max-width: 50%;" data-test="team-delegated-tasks-navigator">
+            <div class="pb-1" data-test="team-delegated-task-navigator">
+              <article class="border-l-2 transition-colors border-blue-500 bg-blue-50" data-test="team-delegated-task-agent-entry"><button type="button" data-test="team-delegated-task-summary-row" class="w-full px-3 py-2.5 text-left text-gray-600 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 bg-blue-50" title="Task task-agent. In progress. director → worker. Updated 12:00 AM" aria-label="Task task-agent. In progress. director → worker. Updated 12:00 AM" aria-pressed="true"><span class="line-clamp-2 whitespace-pre-line text-sm leading-5 text-slate-700">Task task-agent</span>
+                  <div class="mt-1.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1"><span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold bg-slate-100 text-slate-700" data-test="team-delegated-task-status"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg> In progress</span><span class="text-[0.6875rem] text-slate-400">Updated 12:00 AM</span></div><span class="mt-1 block truncate text-xs text-slate-500" data-test="team-delegated-task-root-direction">director → worker</span>
+                </button>
+                <!---->
+                <!---->
+              </article>
+              <article class="border-l-2 transition-colors border-transparent" data-test="team-delegated-task-team-entry"><button type="button" data-test="team-delegated-task-summary-row" class="w-full px-3 py-2.5 text-left text-gray-600 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500" title="Task task-team. In progress. director → team. Updated 12:00 AM" aria-label="Task task-team. In progress. director → team. Updated 12:00 AM" aria-pressed="false"><span class="line-clamp-2 whitespace-pre-line text-sm leading-5 text-slate-700">Task task-team</span>
+                  <div class="mt-1.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1"><span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold bg-slate-100 text-slate-700" data-test="team-delegated-task-status"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg> In progress</span><span class="text-[0.6875rem] text-slate-400">Updated 12:00 AM</span></div><span class="mt-1 block truncate text-xs text-slate-500" data-test="team-delegated-task-root-direction">director → team</span>
+                </button>
+                <!---->
+                <!---->
+              </article>
+            </div>
+          </aside>
+          <div class="w-1 shrink-0 cursor-col-resize bg-gray-100 transition-colors hover:bg-blue-200" role="separator" aria-orientation="vertical" data-test="team-delegated-tasks-resize-handle"></div>
+          <main class="min-h-0 min-w-0 flex-1 overflow-hidden" data-test="delegated-task-detail-pane">
+            <div data-v-09c6cbc3="" class="h-full overflow-y-auto p-4" data-test="delegated-task-item-detail">
+              <header data-v-09c6cbc3="" class="mb-4 border-b border-slate-100 pb-3">
+                <div data-v-09c6cbc3="" class="flex flex-wrap items-start justify-between gap-2">
+                  <div data-v-09c6cbc3="" class="flex min-w-0 items-center gap-2"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 shrink-0 text-slate-500"></svg>
+                    <h3 data-v-09c6cbc3="" class="text-base font-semibold text-slate-900" data-test="delegated-task-item-title">Task assigned</h3>
+                  </div><span data-v-09c6cbc3="" class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold bg-slate-100 text-slate-700" data-test="delegated-task-detail-status"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg> In progress</span>
+                </div>
+                <div data-v-09c6cbc3="" class="mt-1.5 flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500" data-test="delegated-task-item-direction"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5 shrink-0"></svg>
+                  <!----><button data-v-09c6cbc3="" type="button" class="max-w-full truncate rounded text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500" title="/director · agent-director" data-test="task-direction-agent">director</button><span data-v-09c6cbc3="" aria-hidden="true"> → </span><button data-v-09c6cbc3="" type="button" class="max-w-full truncate rounded text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500" title="/worker · agent-worker-task" data-test="task-direction-agent">worker</button><button data-v-09c6cbc3="" type="button" class="ml-1 shrink-0 rounded p-1 text-slate-400 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-indigo-500" aria-label="Participant details" aria-expanded="false" aria-controls="v-1" data-test="task-identity-toggle"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+                </div>
+                <!----><time data-v-09c6cbc3="" class="mt-1 block text-xs text-slate-400" datetime="2026-09-01T00:00:01.000Z" data-test="delegated-task-item-time">Sep 1, 12:00 AM</time>
+              </header>
+              <div data-v-09c6cbc3="" class="markdown-renderer-segments team-delegated-task-markdown text-[0.9375rem] leading-6 text-slate-700" data-test="delegated-task-task-body">
+                <div class="markdown-body prose dark:prose-invert prose-gray max-w-none">
+                  <p>Task task-agent</p>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > opens Tasks when a current sequenced activation is applied while mounted
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (5 tests) 144ms
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > resets Messages open and preserves exact run-based communication focus when selection changes
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts (5 tests) 115ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (10 tests) 202ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1537ms
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts (5 tests) 11ms
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (4 tests) 23ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts (8 tests) 24ms
+stdout | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts (2 tests) 3ms
+stdout | components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts (3 tests) 4ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (1 test) 3ms
+ ✓ components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts (2 tests) 90ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts > closes identity on exact subject/item changes but preserves it across same-item live updates
+AssertionError: expected 'false' to be 'true' // Object.is equality
+
+Expected: "true"
+Received: "false"
+
+ ❯ components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts:108:92
+    106|   const original = wrapper.props('messages');
+    107|   await wrapper.setProps({ messages: { ...original, listMessages: () =…
+    108|   expect(wrapper.get('[data-test="message-identity-toggle"]').attribut…
+       |                                                                                            ^
+    109|   await wrapper.setProps({ messages: { ...original, rootKind: 'agent_o…
+    110|   expect(wrapper.get('[data-test="message-identity-toggle"]').attribut…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts > shared participant Tasks inspection > exposes Tasks for a direct Org Agent and navigates by the actual task run rather than source address
+Error: Unable to get nav button[title="/worker · agent-worker-task"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-none" data-test="collaboration-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="collaboration-messages-header" aria-expanded="false">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300 -rotate-90" data-test="collaboration-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-v-e4ed9f26="" class="flex h-full min-h-0 overflow-hidden bg-white min-h-0 flex-1" style="display: none;">
+      <div data-v-e4ed9f26="" class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400"><svg data-v-e4ed9f26="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mb-2 h-9 w-9 text-gray-300"></svg>
+        <p data-v-e4ed9f26="" class="text-sm font-medium text-gray-500">No team messages yet</p>
+        <p data-v-e4ed9f26="" class="mt-1 text-sm">Accepted inter-agent messages will appear here with their reference files.</p>
+      </div>
+    </div>
+  </section>
+  <div class="flex flex-col transition-all duration-300 ease-in-out min-h-0 flex-1">
+    <section data-test="team-delegated-tasks-section" class="flex min-h-0 flex-col overflow-hidden bg-white h-full"><button type="button" data-test="team-delegated-tasks-header" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" aria-expanded="true">
+        <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-delegated-tasks-disclosure" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg><span class="text-xs font-bold leading-none tracking-wider text-gray-900">Tasks</span></div><span class="text-xs font-medium text-gray-600">2 tasks</span>
+      </button>
+      <div data-test="team-delegated-tasks-body" class="min-h-0 flex-1 overflow-hidden">
+        <div class="flex h-full min-h-0 overflow-hidden" data-test="team-delegated-tasks-split">
+          <aside class="min-h-0 shrink-0 overflow-y-auto border-r border-slate-200 pb-2" style="width: 248px; max-width: 50%;" data-test="team-delegated-tasks-navigator">
+            <div class="pb-1" data-test="team-delegated-task-navigator">
+              <article class="border-l-2 transition-colors border-blue-500 bg-blue-50" data-test="team-delegated-task-agent-entry"><button type="button" data-test="team-delegated-task-summary-row" class="w-full px-3 py-2.5 text-left text-gray-600 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 bg-blue-50" title="Task task-agent. In progress. director → worker. Updated 12:00 AM" aria-label="Task task-agent. In progress. director → worker. Updated 12:00 AM" aria-pressed="true"><span class="line-clamp-2 whitespace-pre-line text-sm leading-5 text-slate-700">Task task-agent</span>
+                  <div class="mt-1.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1"><span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold bg-slate-100 text-slate-700" data-test="team-delegated-task-status"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg> In progress</span><span class="text-[0.6875rem] text-slate-400">Updated 12:00 AM</span></div><span class="mt-1 block truncate text-xs text-slate-500" data-test="team-delegated-task-root-direction">director → worker</span>
+                </button>
+                <!---->
+                <!---->
+              </article>
+              <article class="border-l-2 transition-colors border-transparent" data-test="team-delegated-task-team-entry"><button type="button" data-test="team-delegated-task-summary-row" class="w-full px-3 py-2.5 text-left text-gray-600 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500" title="Task task-team. In progress. director → team. Updated 12:00 AM" aria-label="Task task-team. In progress. director → team. Updated 12:00 AM" aria-pressed="false"><span class="line-clamp-2 whitespace-pre-line text-sm leading-5 text-slate-700">Task task-team</span>
+                  <div class="mt-1.5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1"><span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold bg-slate-100 text-slate-700" data-test="team-delegated-task-status"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg> In progress</span><span class="text-[0.6875rem] text-slate-400">Updated 12:00 AM</span></div><span class="mt-1 block truncate text-xs text-slate-500" data-test="team-delegated-task-root-direction">director → team</span>
+                </button>
+                <!---->
+                <!---->
+              </article>
+            </div>
+          </aside>
+          <div class="w-1 shrink-0 cursor-col-resize bg-gray-100 transition-colors hover:bg-blue-200" role="separator" aria-orientation="vertical" data-test="team-delegated-tasks-resize-handle"></div>
+          <main class="min-h-0 min-w-0 flex-1 overflow-hidden" data-test="delegated-task-detail-pane">
+            <div data-v-09c6cbc3="" class="h-full overflow-y-auto p-4" data-test="delegated-task-item-detail">
+              <header data-v-09c6cbc3="" class="mb-4 border-b border-slate-100 pb-3">
+                <div data-v-09c6cbc3="" class="flex flex-wrap items-start justify-between gap-2">
+                  <div data-v-09c6cbc3="" class="flex min-w-0 items-center gap-2"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4 shrink-0 text-slate-500"></svg>
+                    <h3 data-v-09c6cbc3="" class="text-base font-semibold text-slate-900" data-test="delegated-task-item-title">Task assigned</h3>
+                  </div><span data-v-09c6cbc3="" class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold bg-slate-100 text-slate-700" data-test="delegated-task-detail-status"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg> In progress</span>
+                </div>
+                <div data-v-09c6cbc3="" class="mt-1.5 flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500" data-test="delegated-task-item-direction"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5 shrink-0"></svg>
+                  <!----><button data-v-09c6cbc3="" type="button" class="max-w-full truncate rounded text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500" title="/director · agent-director" data-test="task-direction-agent">director</button><span data-v-09c6cbc3="" aria-hidden="true"> → </span><button data-v-09c6cbc3="" type="button" class="max-w-full truncate rounded text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500" title="/worker · agent-worker-task" data-test="task-direction-agent">worker</button><button data-v-09c6cbc3="" type="button" class="ml-1 shrink-0 rounded p-1 text-slate-400 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-indigo-500" aria-label="Participant details" aria-expanded="false" aria-controls="v-1" data-test="task-identity-toggle"><svg data-v-09c6cbc3="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+                </div>
+                <!----><time data-v-09c6cbc3="" class="mt-1 block text-xs text-slate-400" datetime="2026-09-01T00:00:01.000Z" data-test="delegated-task-item-time">Sep 1, 12:00 AM</time>
+              </header>
+              <div data-v-09c6cbc3="" class="markdown-renderer-segments team-delegated-task-markdown text-[0.9375rem] leading-6 text-slate-700" data-test="delegated-task-task-body">
+                <div class="markdown-body prose dark:prose-invert prose-gray max-w-none">
+                  <p>Task task-agent</p>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts:32:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 14 passed (16)
+      Tests  2 failed | 90 passed (92)
+   Start at  13:11:11
+   Duration  21.52s (transform 7.49s, setup 125.63s, collect 7.18s, tests 2.59s, environment 26.87s, prepare 10.35s)
+
+ ELIFECYCLE  Command failed with exit code 1.

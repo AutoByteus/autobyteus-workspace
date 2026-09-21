@@ -5,15 +5,14 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
-import type {
-  MixedTeamRunBackendFactory,
-  MixedTeamRunCallbacks,
-} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import type { FlatTeamExecutionCallbacks } from "../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
+import type { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
+import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
+import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import type { ChannelBinding } from "../../../src/external-channel/domain/models.js";
@@ -37,6 +36,9 @@ const modelSelectionValidator = Object.freeze({
     selection,
   })),
 });
+
+const memberExecutionContextBuilder = Object.freeze({ build: vi.fn() });
+const isolatedRootDirectory = (): ActiveCollaborationRootDirectory => new ActiveCollaborationRootDirectory();
 
 const initializeTaskIdentityAllocator = (memoryDir: string): AgentRunIdentityAllocator =>
   AgentRunIdentityAllocator.getInstance({
@@ -74,40 +76,37 @@ const createConfig = (runtimeKinds: readonly RuntimeKind[]) => {
 const createFactory = (input: {
   active?: boolean;
   terminateResult?: { accepted: boolean; code?: string; message?: string };
-  beforeBackendReturn?: (callbacks: MixedTeamRunCallbacks) => Promise<void>;
+  beforeBackendReturn?: (callbacks: FlatTeamExecutionCallbacks) => Promise<void>;
 } = {}) => {
   const state = { active: input.active ?? true };
-  const callbacks: MixedTeamRunCallbacks[] = [];
+  const callbacks: FlatTeamExecutionCallbacks[] = [];
   const backends: Array<Record<string, unknown>> = [];
-  const buildBackend = async (
-    config: ReturnType<typeof createConfig>,
-    teamRunId: string,
-    callback: MixedTeamRunCallbacks,
-    configuredMemberActivationMode: "fresh" | "restore",
+  const materialize = vi.fn(async (
+    request: Parameters<FlatTeamExecutionFactory["materialize"]>[0],
   ) => {
-    callbacks.push(callback);
-    const runtimeContext = new MixedTeamRunContext({
-      memberContexts: config.rootTeam.children
+    callbacks.push(request.callbacks);
+    const runtimeContext = new FlatTeamExecutionContext({
+      memberContexts: request.teamNode.children
         .filter((node) => node.kind === "agent")
-        .map((node) => new MixedAgentMemberContext({
+        .map((node) => new FlatAgentExecutionContext({
           address: node.address,
           agentRunId: node.agentRunId,
           runtimeKind: node.runtimeKind,
           platformAgentRunId: node.platformAgentRunId,
         })),
-      configuredMemberActivationMode,
+      configuredMemberActivationMode: request.activationMode,
     });
     const context = new TeamRunContext({
-      physicalScope: createRootTeamRunPhysicalScope(teamRunId),
-      teamRunId,
+      physicalScope: request.physicalScope,
+      teamRunId: request.teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
-      teamNode: config.rootTeam,
-      handoffs: config.handoffs,
-      applicationBinding: config.applicationBinding,
+      teamNode: request.teamNode,
+      handoffs: request.handoffs,
+      applicationBinding: request.applicationBinding,
       runtimeContext,
     });
     const backend = {
-      teamRunId,
+      teamRunId: request.teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       getTeamRunContext: () => context,
       getRuntimeContext: () => runtimeContext,
@@ -121,23 +120,25 @@ const createFactory = (input: {
         return result;
       }),
       freezeForRootTermination: () => ({
+        fenceAgentRunsForRootShutdown: vi.fn(async () => ({ accepted: true })),
         interruptActiveTurns: vi.fn(async () => ({ accepted: true })),
         prepareMemberRuns: vi.fn(async () => undefined),
         finish: vi.fn(async () => backend.terminate()),
       }),
     };
     backends.push(backend);
-    await input.beforeBackendReturn?.(callback);
-    return backend;
-  };
-  const createBackend = vi.fn((config, teamRunId, callback) =>
-    buildBackend(config, teamRunId, callback, "fresh"));
-  const restoreBackend = vi.fn((config, teamRunId, callback) =>
-    buildBackend(config, teamRunId, callback, "restore"));
+    await input.beforeBackendReturn?.(request.callbacks);
+    return Object.freeze({
+      teamRun: new TeamRun(context, backend as never),
+      stagedPlatformBindings: Object.freeze([]),
+      stagedNoConversationBindingReplacements: Object.freeze([]),
+      commitAfterDurability: vi.fn(),
+      abort: vi.fn(async () => undefined),
+    });
+  });
   return {
-    factory: { createBackend, restoreBackend } as unknown as MixedTeamRunBackendFactory,
-    createBackend,
-    restoreBackend,
+    factory: { materialize } as unknown as FlatTeamExecutionFactory,
+    materialize,
     callbacks,
     backends,
     state,
@@ -192,6 +193,9 @@ const exactChannelLauncher = (
       assertCurrentSchemaReady: vi.fn(),
       assertExistingRunRestoreReady: vi.fn(),
     },
+    definitionAdmissionService: {
+      requireAvailable: vi.fn(),
+    },
   });
   const launcher = new ChannelBindingRunLauncher({
     bindingService: {
@@ -217,7 +221,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig(runtimeKinds);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
 
     const run = await manager.createTeamRun({ config, teamDefinitionName: "Runtime Team" });
 
@@ -231,15 +235,16 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     expect(Object.isFrozen(checkpoint)).toBe(true);
     expect(manager.getActiveTeamRun(run.teamRunId)).toBe(run);
     expect(manager.listActiveTeamRunIds()).toEqual([run.teamRunId]);
-    expect(factory.createBackend).toHaveBeenCalledWith(
-      expect.objectContaining({ rootTeam: config.rootTeam }),
-      "team-runtime-root",
-      expect.objectContaining({
-        taskRootResolver: expect.objectContaining({ resolveActiveRoot: expect.any(Function) }),
-        publish: expect.any(Function),
-        deliverInterAgentMessage: expect.any(Function),
+    expect(factory.materialize).toHaveBeenCalledWith(expect.objectContaining({
+      teamNode: config.rootTeam,
+      activationMode: "fresh",
+      callbacks: expect.objectContaining({
+        buildMemberExecutionContext: expect.any(Function),
+        publishAgentEvent: expect.any(Function),
+        commitPlatformBindingChange: expect.any(Function),
+        applicationExecutionContext: expect.any(Function),
       }),
-    );
+    }));
     const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({
       rootTeamRunId: run.teamRunId,
       ancestorTeamRunIds: [],
@@ -275,27 +280,25 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
   });
 
-  it("binds one exact root resolver after construction and rejects before bind and after close", async () => {
+  it("supplies only root-neutral local Team callbacks during materialization", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       initializeTaskIdentityAllocator(memoryDir),
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
-    const beforeBackendReturn = vi.fn(async (callbacks: MixedTeamRunCallbacks) => {
-      await expect(callbacks.taskRootResolver.resolveActiveRoot()).rejects.toMatchObject({
-        code: "TEAM_ROOT_NOT_BOUND",
-      });
+    const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecutionCallbacks) => {
+      expect(Object.keys(callbacks).sort()).toEqual([
+        "applicationExecutionContext",
+        "buildMemberExecutionContext",
+        "commitPlatformBindingChange",
+        "publishAgentEvent",
+      ]);
     });
     const factory = createFactory({ beforeBackendReturn });
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
 
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Resolver Team" });
-    const resolver = factory.callbacks[0]!.taskRootResolver;
-    await expect(resolver.resolveActiveRoot()).resolves.toBe(root);
     await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
-    await expect(resolver.resolveActiveRoot()).rejects.toMatchObject({
-      code: "TEAM_RUN_NOT_ACTIVE",
-    });
     expect(beforeBackendReturn).toHaveBeenCalledOnce();
   });
 
@@ -306,14 +309,14 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]);
     const initialFactory = createFactory();
-    const initial = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: initialFactory.factory, taskExecutionIdentity, modelSelectionValidator });
+    const initial = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: initialFactory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     await initial.createTeamRun({ config, teamDefinitionName: "Restorable Team" });
     initialFactory.state.active = false;
     expect(initial.getActiveTeamRun(config.rootTeam.teamRunId)).toBeNull();
     expect(initial.getManagedTeamRun(config.rootTeam.teamRunId)).not.toBeNull();
 
     const restoredFactory = createFactory();
-    const restoredManager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: restoredFactory.factory, taskExecutionIdentity, modelSelectionValidator });
+    const restoredManager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: restoredFactory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     const restored = await restoredManager.restoreTeamRun(config.rootTeam.teamRunId);
 
     expect(restored.getExecutionTreeSnapshot()).toMatchObject({
@@ -334,13 +337,11 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       rootTeamRunId: config.rootTeam.teamRunId,
       messages: [],
     });
-    expect(restoredFactory.createBackend).not.toHaveBeenCalled();
-    expect(restoredFactory.restoreBackend).toHaveBeenCalledWith(
-      expect.objectContaining({ rootTeam: expect.objectContaining({ teamRunId: config.rootTeam.teamRunId }) }),
-      config.rootTeam.teamRunId,
-      expect.any(Object),
-    );
-    const restoredRuntime = (restoredFactory.backends[0]?.getRuntimeContext as (() => MixedTeamRunContext))();
+    expect(restoredFactory.materialize).toHaveBeenCalledWith(expect.objectContaining({
+      teamNode: expect.objectContaining({ teamRunId: config.rootTeam.teamRunId }),
+      activationMode: "restore",
+    }));
+    const restoredRuntime = (restoredFactory.backends[0]?.getRuntimeContext as (() => FlatTeamExecutionContext))();
     expect(restoredRuntime.configuredMemberActivationMode).toBe("restore");
   });
 
@@ -351,7 +352,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     const snapshots: Array<{ teamRunId: string; isActive: boolean }> = [];
     manager.subscribeToLifecycle(config.rootTeam.teamRunId, (snapshot) => snapshots.push(snapshot));
 
@@ -373,7 +374,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
     await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(true);
     // The fake factory shares lifecycle state across backends; a restored backend is a fresh active owner.
@@ -413,8 +414,10 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     }));
     const manager = new AgentTeamRunManager({
       memoryDir,
-      mixedTeamRunBackendFactory: factory.factory,
+      flatTeamExecutionFactory: factory.factory,
+      memberExecutionContextBuilder: memberExecutionContextBuilder as never,
       taskExecutionIdentity,
+      activeRootDirectory: isolatedRootDirectory(),
       modelSelectionValidator: { validate, validateMany: (inputs) => Promise.all(inputs.map((input) => validate(input))) },
     });
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Editable Team" });
@@ -469,14 +472,13 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     factory.state.active = true;
     const restored = await manager.restoreTeamRun(root.teamRunId);
     expect(restored.teamRunId).toBe(root.teamRunId);
-    expect(factory.restoreBackend).toHaveBeenLastCalledWith(
+    expect(factory.materialize).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        rootTeam: expect.objectContaining({
+        activationMode: "restore",
+        teamNode: expect.objectContaining({
           defaultLaunchConfiguration: expect.objectContaining({ llmConfig: patch[0].llmConfig }),
         }),
       }),
-      root.teamRunId,
-      expect.any(Object),
     );
   });
 
@@ -495,8 +497,10 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     });
     const manager = new AgentTeamRunManager({
       memoryDir,
-      mixedTeamRunBackendFactory: factory.factory,
+      flatTeamExecutionFactory: factory.factory,
+      memberExecutionContextBuilder: memberExecutionContextBuilder as never,
       taskExecutionIdentity,
+      activeRootDirectory: isolatedRootDirectory(),
       modelSelectionValidator: { validate, validateMany: (inputs) => Promise.all(inputs.map((input) => validate(input))) },
     });
     const root = await manager.createTeamRun({ config, teamDefinitionName: "External Save-First Team" });
@@ -517,7 +521,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     await vi.waitFor(() => expect(validate).toHaveBeenCalledOnce());
     const externalResolve = launcher.resolveOrStartTeamRun(createTeamBinding(root.teamRunId));
     await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(factory.restoreBackend).not.toHaveBeenCalled();
+    expect(factory.materialize).toHaveBeenCalledTimes(1);
 
     releaseValidation();
     await expect(save).resolves.toMatchObject({
@@ -530,17 +534,16 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       },
     });
     await expect(externalResolve).resolves.toBe(root.teamRunId);
-    expect(factory.restoreBackend).toHaveBeenCalledWith(
+    expect(factory.materialize).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        rootTeam: expect.objectContaining({
+        activationMode: "restore",
+        teamNode: expect.objectContaining({
           defaultLaunchConfiguration: expect.objectContaining({
             llmModelIdentifier: "replacement-model",
             llmConfig: patch[0].llmConfig,
           }),
         }),
       }),
-      root.teamRunId,
-      expect.any(Object),
     );
   });
 
@@ -557,8 +560,10 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     }));
     const manager = new AgentTeamRunManager({
       memoryDir,
-      mixedTeamRunBackendFactory: factory.factory,
+      flatTeamExecutionFactory: factory.factory,
+      memberExecutionContextBuilder: memberExecutionContextBuilder as never,
       taskExecutionIdentity,
+      activeRootDirectory: isolatedRootDirectory(),
       modelSelectionValidator: { validate, validateMany: (inputs) => Promise.all(inputs.map((input) => validate(input))) },
     });
     const root = await manager.createTeamRun({ config, teamDefinitionName: "External Restore-First Team" });

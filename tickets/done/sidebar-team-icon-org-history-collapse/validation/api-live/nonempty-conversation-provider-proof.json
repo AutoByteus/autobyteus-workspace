@@ -1,0 +1,10 @@
+{
+  "provider_boundary": "deterministic owned Ollama protocol fixture, no real inference",
+  "chat_count": 1,
+  "user_messages": [
+    {
+      "role": "user",
+      "content": "SIDEBAR_HISTORY_INPUT: keep this conversation visible during collapse."
+    }
+  ]
+}

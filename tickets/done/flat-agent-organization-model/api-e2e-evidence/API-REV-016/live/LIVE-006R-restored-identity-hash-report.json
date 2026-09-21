@@ -1,0 +1,36 @@
+{
+  "task_delegation_records.json": {
+    "sha256": "cfad23a71dcc3c95bea8f22b015433fa288d6f0d7a3f97cabef712c29e7387c1",
+    "size": 1932
+  },
+  "team_run_execution_tree.json": {
+    "sha256": "b8526f46e1f94a7725192d20c05dbaf6390d3e71b67bedbd813e016ca9e72931",
+    "size": 3943
+  },
+  "members": [
+    {
+      "address": "/lead",
+      "agentRunId": "aorg_e2e_lead_40ab463de3a341a18ba9756664500250",
+      "platformAgentRunId": "01a0771e-a1ae-7173-ad0c-5da5f7f94bd1"
+    },
+    {
+      "address": "/analyst",
+      "agentRunId": "aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726",
+      "platformAgentRunId": "01a0772a-0813-73f0-a980-e29c795e4ab7"
+    },
+    {
+      "address": "/verifier",
+      "agentRunId": "aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26",
+      "platformAgentRunId": "01a0772a-086e-7142-8719-acecd2bb66ee"
+    }
+  ],
+  "taskExecutions": [
+    {
+      "address": "/analyst",
+      "agentRunId": "aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df",
+      "platformAgentRunId": "01a0771f-d70a-72e0-9479-ac16caea1bd3",
+      "startedAt": "2026-09-06T14:29:30.481Z",
+      "settledAt": "2026-09-06T14:33:19.857Z"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "removed_initially_absent_owned_prerequisite_outputs": [
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-sdk-contracts/dist",
+      "files": 52
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-frontend-sdk/dist",
+      "files": 72
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-backend-sdk/dist",
+      "files": 12
+    }
+  ],
+  "all_absent": true,
+  "other_outputs": "Existing ignored dependency/build caches retained. No renderer/backend/provider processes were created by reviewer."
+}

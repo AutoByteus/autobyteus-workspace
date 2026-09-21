@@ -1,0 +1,26 @@
+{
+  "approvedOuter": true,
+  "approvedNested": false,
+  "message": {
+    "sender": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+    "receiver": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17"
+  },
+  "assertions": {
+    "outerMessageCommitted": true,
+    "exactOuterRuns": true,
+    "targetReceivedOnce": true,
+    "oneNestedAdded": false,
+    "exactNestedDelegator": false,
+    "exactRecipient": false,
+    "nestedActive": false,
+    "nestedUnderParent": false,
+    "readyExactlyOnce": false,
+    "nestedVisible": false,
+    "configuredLeadRemainsSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

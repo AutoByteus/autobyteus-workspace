@@ -1,0 +1,633 @@
+[
+  {
+    "id": "org",
+    "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+    "label": "notes.txt",
+    "bytes": "Original fixture bytes for org",
+    "raw": {
+      "id": "raw-org",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+          "file_type": "text",
+          "file_name": "ctx_token__notes.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+            "fileType": "text",
+            "fileName": "ctx_token__notes.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:7:raw-org",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjc6cmF3LW9yZw:user:0",
+            "eventId": "raw:v1:7:raw-org",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjc6cmF3LW9yZw:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_token__notes.txt",
+                "locator": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "team",
+    "uri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+    "label": "notes.txt",
+    "bytes": "Original fixture bytes for team",
+    "raw": {
+      "id": "raw-team",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+          "file_type": "text",
+          "file_name": "ctx_token__notes.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+            "fileType": "text",
+            "fileName": "ctx_token__notes.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:8:raw-team",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjg6cmF3LXRlYW0:user:0",
+            "eventId": "raw:v1:8:raw-team",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjg6cmF3LXRlYW0:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_token__notes.txt",
+                "locator": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "agent",
+    "uri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+    "label": "notes.txt",
+    "bytes": "Original fixture bytes for agent",
+    "raw": {
+      "id": "raw-agent",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+          "file_type": "text",
+          "file_name": "ctx_token__notes.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+            "fileType": "text",
+            "fileName": "ctx_token__notes.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:9:raw-agent",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjk6cmF3LWFnZW50:user:0",
+            "eventId": "raw:v1:9:raw-agent",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjk6cmF3LWFnZW50:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_token__notes.txt",
+                "locator": "/rest/runs/agent/context-files/ctx_token__notes.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "custom",
+    "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+    "name": "Custom report",
+    "label": "Custom report",
+    "bytes": "Original fixture bytes for custom",
+    "raw": {
+      "id": "raw-custom",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+          "file_type": "text",
+          "file_name": "Custom report"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+            "fileType": "text",
+            "fileName": "Custom report"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:10:raw-custom",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjEwOnJhdy1jdXN0b20:user:0",
+            "eventId": "raw:v1:10:raw-custom",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjEwOnJhdy1jdXN0b20:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "Custom report",
+                "locator": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "custom-prefix",
+    "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+    "name": "ctx_custom__literal.txt",
+    "label": "ctx_custom__literal.txt",
+    "bytes": "Original fixture bytes for custom-prefix",
+    "raw": {
+      "id": "raw-custom-prefix",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+          "file_type": "text",
+          "file_name": "ctx_custom__literal.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+            "fileType": "text",
+            "fileName": "ctx_custom__literal.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:17:raw-custom-prefix",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjE3OnJhdy1jdXN0b20tcHJlZml4:user:0",
+            "eventId": "raw:v1:17:raw-custom-prefix",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjE3OnJhdy1jdXN0b20tcHJlZml4:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_custom__literal.txt",
+                "locator": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "literal-prefix",
+    "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+    "label": "ctx_original__literal.txt",
+    "bytes": "Original fixture bytes for literal-prefix",
+    "raw": {
+      "id": "raw-literal-prefix",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+          "file_type": "text",
+          "file_name": "ctx_token__ctx_original__literal.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+            "fileType": "text",
+            "fileName": "ctx_token__ctx_original__literal.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:18:raw-literal-prefix",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjE4OnJhdy1saXRlcmFsLXByZWZpeA:user:0",
+            "eventId": "raw:v1:18:raw-literal-prefix",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjE4OnJhdy1saXRlcmFsLXByZWZpeA:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_token__ctx_original__literal.txt",
+                "locator": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "external",
+    "uri": "https://example.test/ctx_token__notes.txt",
+    "label": "ctx_token__notes.txt",
+    "bytes": "Original fixture bytes for external",
+    "raw": {
+      "id": "raw-external",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "https://example.test/ctx_token__notes.txt",
+          "file_type": "text",
+          "file_name": "ctx_token__notes.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "https://example.test/ctx_token__notes.txt",
+            "fileType": "text",
+            "fileName": "ctx_token__notes.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:12:raw-external",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjEyOnJhdy1leHRlcm5hbA:user:0",
+            "eventId": "raw:v1:12:raw-external",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjEyOnJhdy1leHRlcm5hbA:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_token__notes.txt",
+                "locator": "https://example.test/ctx_token__notes.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "workspace",
+    "uri": "/workspace/ctx_token__notes.txt",
+    "label": "ctx_token__notes.txt",
+    "bytes": "Original fixture bytes for workspace",
+    "raw": {
+      "id": "raw-workspace",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/workspace/ctx_token__notes.txt",
+          "file_type": "text",
+          "file_name": "ctx_token__notes.txt"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/workspace/ctx_token__notes.txt",
+            "fileType": "text",
+            "fileName": "ctx_token__notes.txt"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:13:raw-workspace",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjEzOnJhdy13b3Jrc3BhY2U:user:0",
+            "eventId": "raw:v1:13:raw-workspace",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjEzOnJhdy13b3Jrc3BhY2U:user:0:attachment:file:0",
+                "fileType": "text",
+                "fileName": "ctx_token__notes.txt",
+                "locator": "/workspace/ctx_token__notes.txt"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unknown",
+    "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+    "type": "unknown",
+    "label": "payload.bin",
+    "bytes": "Original fixture bytes for unknown",
+    "raw": {
+      "id": "raw-unknown",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "file_attachments": [
+        {
+          "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+          "file_type": "unknown",
+          "file_name": "ctx_token__payload.bin"
+        }
+      ]
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "fileAttachments": [
+          {
+            "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+            "fileType": "unknown",
+            "fileName": "ctx_token__payload.bin"
+          }
+        ],
+        "content": "Inspect recorded attachment",
+        "media": null,
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:11:raw-unknown",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjExOnJhdy11bmtub3du:user:0",
+            "eventId": "raw:v1:11:raw-unknown",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjExOnJhdy11bmtub3du:user:0:attachment:file:0",
+                "fileType": "unknown",
+                "fileName": "ctx_token__payload.bin",
+                "locator": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "image",
+    "uri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png",
+    "type": "image",
+    "label": "image.png",
+    "bytes": "Original fixture bytes for image",
+    "raw": {
+      "id": "raw-image",
+      "ts": 10,
+      "turn_id": "turn",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Inspect recorded attachment",
+      "source_event": "implementation-fixture",
+      "media": {
+        "images": [
+          "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png"
+        ],
+        "audio": [],
+        "video": []
+      }
+    },
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Inspect recorded attachment",
+        "media": {
+          "images": [
+            "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png"
+          ]
+        },
+        "ts": 10
+      }
+    ],
+    "page": [
+      {
+        "eventId": "raw:v1:9:raw-image",
+        "turnGroupId": "turn:v1:4:turn",
+        "occurredAtMs": 10000,
+        "visuals": [
+          {
+            "kind": "user",
+            "visualId": "active-trace-visual:v1:cmF3OnYxOjk6cmF3LWltYWdl:user:0",
+            "eventId": "raw:v1:9:raw-image",
+            "kindOrdinal": 0,
+            "text": "Inspect recorded attachment",
+            "attachments": [
+              {
+                "attachmentId": "active-trace-visual:v1:cmF3OnYxOjk6cmF3LWltYWdl:user:0:attachment:image:0",
+                "fileType": "image",
+                "fileName": null,
+                "locator": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png"
+              }
+            ],
+            "__typename": "EventMonitorUserVisual"
+          }
+        ]
+      }
+    ]
+  }
+]

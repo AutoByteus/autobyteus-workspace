@@ -1,0 +1,61 @@
+[
+  {
+    "type": "request",
+    "id": 1,
+    "at": "2026-09-17T03:16:31.325Z",
+    "origin": "https://api.openai.com",
+    "path": "/v1/responses",
+    "model": "gpt-5.4-mini"
+  },
+  {
+    "type": "response",
+    "id": 1,
+    "status": 200,
+    "at": "2026-09-17T03:16:34.460Z"
+  },
+  {
+    "type": "request",
+    "id": 2,
+    "at": "2026-09-17T03:16:55.868Z",
+    "origin": "https://api.openai.com",
+    "path": "/v1/responses",
+    "model": "gpt-5.4-mini"
+  },
+  {
+    "type": "request",
+    "id": 3,
+    "at": "2026-09-17T03:16:55.877Z",
+    "origin": "https://api.openai.com",
+    "path": "/v1/responses",
+    "model": "gpt-5.4-mini"
+  },
+  {
+    "type": "response",
+    "id": 3,
+    "status": 200,
+    "at": "2026-09-17T03:16:58.275Z"
+  },
+  {
+    "type": "response",
+    "id": 2,
+    "status": 200,
+    "at": "2026-09-17T03:16:58.285Z"
+  },
+  {
+    "type": "request",
+    "id": 4,
+    "at": "2026-09-17T03:18:49.798Z",
+    "origin": "https://api.openai.com",
+    "path": "/v1/responses",
+    "model": "gpt-5.4",
+    "reasoning": {
+      "effort": "medium"
+    }
+  },
+  {
+    "type": "response",
+    "id": 4,
+    "status": 200,
+    "at": "2026-09-17T03:18:52.189Z"
+  }
+]

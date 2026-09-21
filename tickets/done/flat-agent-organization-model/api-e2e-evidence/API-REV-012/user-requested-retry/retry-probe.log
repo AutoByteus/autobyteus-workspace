@@ -1,0 +1,29 @@
+{
+  "control": {
+    "orgRunId": "aorg_e2e_direct_agents_org_019d00073dc84279b48c45b7b29b8c39",
+    "ack": "accepted",
+    "summary": "APIREV12 intact summary write keeps this server available",
+    "health": {
+      "reachable": true,
+      "status": 200
+    }
+  },
+  "failure": {
+    "orgRunId": "aorg_e2e_direct_agents_org_c3957640330548108663c93e084379c0",
+    "ack": "accepted",
+    "socketClose": {
+      "at": "2026-09-06T01:32:25.364Z",
+      "code": 1006,
+      "reason": ""
+    },
+    "health": {
+      "reachable": false,
+      "error": "TypeError: fetch failed"
+    }
+  },
+  "cleanup": {
+    "indexRestored": true,
+    "beforeSha": "b186e57259bfbcb2342b8064134d36ce789f769674826633bdd2fbaffb7a8bea",
+    "restoredSha": "b186e57259bfbcb2342b8064134d36ce789f769674826633bdd2fbaffb7a8bea"
+  }
+}

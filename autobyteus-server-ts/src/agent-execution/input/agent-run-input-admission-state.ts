@@ -65,6 +65,7 @@ export class AgentRunInputAdmissionState {
   private readonly quiescenceWaiters = new Set<() => void>();
   private nextSequence = 1;
   private accepting = true;
+  private rootShutdownFenced = false;
   private activeClaim: InputEntry | null = null;
 
   admit(
@@ -318,7 +319,32 @@ export class AgentRunInputAdmissionState {
     this.accepting = false;
   }
 
+  tryQuiesceIfAlreadyQuiescent(): boolean {
+    if (!this.isQuiescent()) return false;
+    this.accepting = false;
+    return true;
+  }
+
+  fenceForRootShutdown(): void {
+    this.rootShutdownFenced = true;
+    this.accepting = false;
+    for (const entry of [...this.entries]) {
+      if (entry.state === "reserved") {
+        this.removeEntry(entry);
+        continue;
+      }
+      if (entry.state !== "committed" && entry.state !== "queued") continue;
+      entry.state = "terminal";
+      safeNotify(entry.observer, {
+        kind: "cancelled",
+        code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
+      });
+      this.removeEntry(entry);
+    }
+  }
+
   reopen(): void {
+    if (this.rootShutdownFenced) return;
     this.accepting = true;
   }
 
@@ -337,6 +363,8 @@ export class AgentRunInputAdmissionState {
   get queuedEntryCount(): number {
     return this.entries.filter((entry) => entry.state === "queued").length;
   }
+
+  get isQuiescentNow(): boolean { return this.isQuiescent(); }
 
   private getActiveClaim(claim: AgentRunInputDispatchClaim): InputEntry | null {
     return this.activeClaim?.sequence === claim.entrySequence ? this.activeClaim : null;

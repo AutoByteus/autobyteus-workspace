@@ -93,6 +93,8 @@ const {
   const normalizeWorkspaceNode = (workspace: any): any => ({
     ...workspace,
     workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
+    stableKey: workspace.stableKey ?? workspace.workspaceId
+      ?? workspaceIdFromRoot(workspace.workspaceRootPath),
   });
 
   const state = {
@@ -282,6 +284,9 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => agentDefinitionStoreMock,
 }));
 
+const orgCatalog = vi.hoisted(() => ({ definitions: [] as any[], fetchAll: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => orgCatalog }));
+
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
 }));
@@ -304,6 +309,8 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    orgCatalog.definitions = [];
+    orgCatalog.fetchAll.mockResolvedValue(undefined);
     runHistoryState.loading = false;
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;

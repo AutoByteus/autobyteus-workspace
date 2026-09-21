@@ -1,0 +1,17 @@
+[
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+    "nonemptyLines": 439,
+    "sha256": "119d03e21c5bc14f6113fea08a5eed4b333569354a52c327004a2ceaeb64168c"
+  },
+  {
+    "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+    "nonemptyLines": 115,
+    "sha256": "76dd6eb2f311b69eac2af23dd9d3c35d7f0fe1682aa880d201c246c5d19023aa"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+    "nonemptyLines": 464,
+    "sha256": "ab82e39fe0269a779b8d9cda7aaa9b5d209640f1ee9d3f899ba7e3f500530aa8"
+  }
+]

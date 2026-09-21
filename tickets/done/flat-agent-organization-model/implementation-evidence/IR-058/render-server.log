@@ -1,0 +1,30 @@
+
+> autobyteus@1.4.69 dev /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 43158
+
+│
+▲  Changing NODE_ENV from production to development, to avoid unintended behavior.
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:43158/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because vite config has changed
+✔ Vite client built in 274ms
+✔ Vite server built in 455ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 5473ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue, zod, crypto-js/sha256, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: @monaco-editor/loader, xlsx, vue-pdf-embed
+ℹ ✨ optimized dependencies changed. reloading
+ℹ hmr update /pages/ir058-activity.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/ir058-activity.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fflat-agent-organization-model%2Fautobyteus-web%2F.nuxt%2Froutes.mjs
+ ELIFECYCLE  Command failed.

@@ -1,0 +1,2231 @@
+diff --git a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+index b605543fb..4bd29ac9d 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+@@ -112,7 +112,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+       initial: options.messages,
+       persistence: options.persistence,
+       isOpen: () => this.isAdmitting(),
+-      isCurrentAgent: (identity) => this.isCurrentAgent(identity),
++      isCurrentAgent: (identity) => this.isPublishedAgent(identity),
+       reserveRecipientInput: (agentRunId, message) => this.reserveAgentInput(agentRunId, message),
+       replaceMessages: (messages) => { this.messages = messages; },
+       publish: (message) => options.publisher.publish({ kind: "communication", message }),
+@@ -434,10 +434,16 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     return createCollaborationMemberExecutionIdentity({ root: this.options.root, memberAddress: address, agentRunId });
+   }
+   private isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean {
++    if (!this.isPublishedAgent(identity)) return false;
++    const agent = this.index.getAgent(identity.agentRunId)!;
++    return agent.host.hostKind !== "root" || this.options.rootAgents.isActive(identity.agentRunId);
++  }
++  // Published receiver membership admits first work; it is not sender authorization.
++  private isPublishedAgent(identity: CollaborationMemberExecutionIdentity): boolean {
+     if (!sameRootExecutionIdentity(identity.root, this.options.root)) return false;
+     const agent = this.index.getAgent(identity.agentRunId);
+     const hostIsActive = agent?.host.hostKind === "root"
+-      ? this.options.rootAgents.isActive(identity.agentRunId)
++      ? Boolean(this.options.rootAgents.get(identity.agentRunId))
+       : Boolean(agent && this.options.teams.get(agent.host.hostRunId)?.isActive());
+     return Boolean(agent && hostIsActive && agent.address === identity.memberAddress && this.index.isLiveAgent(identity.agentRunId)
+       && sameCollaborationMemberExecutionIdentity(identity, this.identityFor(agent.agentRunId, agent.address)));
+diff --git a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts
+index b47d77737..c850dd8fc 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts
+@@ -188,8 +188,8 @@ export class AgentOrgExecutionScopeBuilder {
+ 
+   private agentPlan(prepared: PreparedAgentOrgConfiguredAgent) {
+     return Object.freeze({
+-      stagedPlatformBindings: prepared.activation.stagedPlatformBindings,
+-      stagedNoConversationBindingReplacements: prepared.activation.stagedNoConversationBindingReplacements,
++      stagedPlatformBindings: prepared.stagedPlatformBindings,
++      stagedNoConversationBindingReplacements: prepared.stagedNoConversationBindingReplacements,
+       commitAfterDurability: prepared.commitAfterDurability,
+       abort: prepared.abort,
+     });
+diff --git a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts
+index 8d71e5a17..266130757 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts
+@@ -20,7 +20,8 @@ import type { CollaborationAgentPlatformBinding } from "../../agent-collaboratio
+ 
+ export type PreparedAgentOrgConfiguredAgent = Readonly<{
+   handle: ConfiguredAgentExecutionHandle;
+-  activation: PreparedConfiguredAgentActivation;
++  stagedPlatformBindings: PreparedConfiguredAgentActivation["stagedPlatformBindings"];
++  stagedNoConversationBindingReplacements: PreparedConfiguredAgentActivation["stagedNoConversationBindingReplacements"];
+   commitAfterDurability(): void;
+   abort(): Promise<void>;
+ }>;
+@@ -55,16 +56,17 @@ export class AgentOrgRootAgentExecutionRegistry {
+     const handle = await this.createHandle(sourceNode, mode, this.options.callbacks);
+     this.reserve(sourceNode.agentRunId, handle);
+     try {
+-      const activation = await handle.prepareConfiguredActivation();
++      const activation = mode === "fresh" ? null : await handle.prepareConfiguredActivation();
+       let state: "prepared" | "committed" | "aborted" = "prepared";
+       return Object.freeze({
+         handle,
+-        activation,
++        stagedPlatformBindings: activation?.stagedPlatformBindings ?? Object.freeze([]),
++        stagedNoConversationBindingReplacements: activation?.stagedNoConversationBindingReplacements ?? Object.freeze([]),
+         commitAfterDurability: () => {
+           if (state !== "prepared" || this.prepared.get(sourceNode.agentRunId) !== handle) {
+             throw new Error(`AgentRun '${sourceNode.agentRunId}' is not prepared for AgentOrg publication.`);
+           }
+-          activation.commitAfterDurability();
++          activation?.commitAfterDurability();
+           this.prepared.delete(sourceNode.agentRunId);
+           this.active.set(sourceNode.agentRunId, handle);
+           state = "committed";
+@@ -73,7 +75,7 @@ export class AgentOrgRootAgentExecutionRegistry {
+           if (state !== "prepared") return;
+           state = "aborted";
+           this.prepared.delete(sourceNode.agentRunId);
+-          try { await activation.abort(); } finally { handle.dispose(); }
++          try { await activation?.abort(); } finally { handle.dispose(); }
+         },
+       });
+     } catch (error) {
+diff --git a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts
+index 07c95e619..c6d9771d7 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts
+@@ -52,7 +52,7 @@ export class AgentOrgTeamExecutionDirectory {
+     this.reserveIds([input.teamNode.teamRunId]);
+     let prepared: PreparedFlatTeamExecution;
+     try {
+-      prepared = await this.factory.materialize({ ...input, prepareConfiguredAgents: true });
++      prepared = await this.factory.materialize({ ...input, prepareConfiguredAgents: input.activationMode !== "fresh" });
+     } catch (error) {
+       this.releaseIds([input.teamNode.teamRunId]);
+       throw error;
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts b/autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts
+index 089ac3132..57231193a 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts
+@@ -97,7 +97,7 @@ export const materializeTeamRoot = async (
+     applicationBinding: input.config.applicationBinding,
+     activationMode: input.mode,
+     callbacks,
+-    prepareConfiguredAgents: true,
++    prepareConfiguredAgents: input.mode !== "fresh",
+   });
+   const replacementTree = prepared.stagedNoConversationBindingReplacements.reduce(
+     (current, replacement) => replaceAgentPlatformBindingWithoutConversationInTree({
+diff --git a/autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts b/autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+new file mode 100644
+index 000000000..41dc36faa
+--- /dev/null
++++ b/autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+@@ -0,0 +1,166 @@
++import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
++import { tmpdir } from 'node:os';
++import { join } from 'node:path';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
++import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
++import { AgentRunActivationCandidate } from '../../../src/agent-execution/services/agent-run-activation-candidate.js';
++import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
++import { materializeTeamRoot } from '../../../src/agent-team-execution/services/team-root-materializer.js';
++import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
++import { buildInitialTeamRunExecutionTree } from '../../../src/agent-team-execution/services/team-run-execution-tree-builder.js';
++import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
++import { AgentOrgRunPersistenceCoordinator } from '../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js';
++import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
++import { AgentOrgTaskDelegationRecordsV1Store } from '../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js';
++import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
++import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
++import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
++import { TaskDelegationRecordsV1Store } from '../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js';
++import { TeamCommunicationV1Store } from '../../../src/services/team-communication/team-communication-v1-store.js';
++import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
++import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
++import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-run-fixtures.js';
++import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
++
++const dirs: string[] = [];
++afterEach(() => { for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
++const fixture = () => {
++  const dir = mkdtempSync(join(tmpdir(), 'collab-followup-readiness-')); dirs.push(dir);
++  let treeFile = 'agent_org_run_execution_tree.json';
++  const order: string[] = [];
++  const inputs: string[] = [];
++  const active = new Map<string, any>();
++  let release: (() => void) | undefined;
++  let blocked: string | undefined;
++  let fail: string | undefined;
++  let gate = Promise.resolve();
++  const prepareNewAgentRun = vi.fn(async ({ runId }: { runId: string }) => {
++    order.push(`prepare:${runId}`);
++    if (runId === blocked) await gate;
++    if (runId === fail) throw new Error('controlled readiness failure');
++    const run = {
++      runId, isActive: () => active.has(runId), getStatusSnapshot: () => ({ status: 'idle' }),
++      subscribeToEvents: () => () => undefined,
++      postUserMessage: async () => { inputs.push(runId); return { accepted: true }; },
++      reserveUserMessage: async () => ({ reserved: true, reservation: {
++        agentRunId: runId, cancel: vi.fn(), commit: () => ({ release: () => { inputs.push(runId); } }),
++      } }),
++      fenceForRootShutdown: async () => ({ accepted: true }),
++      terminate: async () => { active.delete(runId); return { accepted: true }; },
++    };
++    return new AgentRunActivationCandidate({ runId, runtimeKind: RuntimeKind.CODEX_APP_SERVER,
++      platformAgentRunId: `thread-${runId}`,
++      publish: () => {
++        // This is the actual package writer's bytes, checked before runtime publication.
++        expect(readFileSync(join(dir, treeFile), 'utf8')).toContain(`thread-${runId}`);
++        order.push(`publish:${runId}`); active.set(runId, run); return run as never;
++      }, abort: async () => ({ kind: 'aborted' }),
++    });
++  });
++  const dependencies = { agentRunManager: { prepareNewAgentRun } as never,
++    activityInspector: { inspect: () => ({ kind: 'none' }) } as never,
++    memoryLocator: { getLocation: () => ({ memoryDir: dir }) } as never,
++    workspaceManager: { ensureWorkspaceByRootPath: async () => ({ workspaceId: 'ws' }) } as never };
++  return { dir, order, inputs, active, prepareNewAgentRun, dependencies,
++    useTeamTree() { treeFile = 'team_run_execution_tree.json'; },
++    factory: new FlatTeamExecutionFactory(dependencies),
++    block(id: string) { blocked = id; gate = new Promise<void>(resolve => { release = resolve; }); },
++    release() { release?.(); }, fail(id: string) { fail = id; },
++  };
++};
++const tasks = createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'new-task-run' });
++const org = async (f: ReturnType<typeof fixture>) => {
++  const direct = (address: string, id: string) => { const n = testOrgAgentNode(address, id); return { ...n,
++    launchConfiguration: { ...n.launchConfiguration, runtimeKind: RuntimeKind.CODEX_APP_SERVER } }; };
++  const tree = testAgentOrgExecutionTree({ orgRunId: 'org-lazy', members: [direct('/director', 'director'), direct('/receiver', 'receiver'),
++    testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead',
++      members: [direct('/team/lead', 'lead'), direct('/team/unused', 'unused')] })] });
++  const state = validateAgentOrgStatePackage({ executionTree: tree,
++    taskRecords: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-lazy', records: [] },
++    communicationMessages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-lazy', messages: [] } });
++  const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
++    executionTreeStore: new AgentOrgRunExecutionTreeStore(), taskRecordsStore: new AgentOrgTaskDelegationRecordsV1Store(),
++    communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
++  return new AgentOrgExecutionScopeBuilder({ ...f.dependencies, flatTeamExecutionFactory: f.factory,
++    taskExecutionIdentity: tasks, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
++  }).build({ state, persistence, activationMode: 'fresh', persistInitialPackage: true });
++};
++const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') => {
++  f.useTeamTree();
++  const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
++    ['lead', 'unused'].map(id => testAgentNode(`/${id}`, { agentRunId: id, runtimeKind: RuntimeKind.CODEX_APP_SERVER })) });
++  return materializeTeamRoot({ config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
++    tasks: { schemaVersion: 1, rootTeamRunId: 'team-lazy', records: [] }, messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
++    mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
++    memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
++    taskExecutionIdentity: tasks, executionTreeStore: new TeamRunExecutionTreeStore(), taskRecordsStore: new TaskDelegationRecordsV1Store(),
++    communicationStore: new TeamCommunicationV1Store(), onTerminated: vi.fn(),
++  });
++};
++const identity = (id: string) => createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity('org-lazy'), agentRunId: id, memberAddress: `/${id}` });
++
++describe('fresh configured scope uses existing deferred readiness', () => {
++  it('publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none', async () => {
++    const f = fixture(); const run = await org(f);
++    expect(run.isActive()).toBe(true);
++    expect(run.getAgentStatusSnapshots()).toHaveLength(4);
++    expect(run.getAgentStatusSnapshots().map(s => s.details.status)).toEqual(['offline', 'offline', 'offline', 'offline']);
++    const snapshot = await run.openPackageSnapshotConnection(); snapshot.close();
++    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
++    expect(() => run.authorizeIdentity(identity('receiver'))).toThrow('not a live execution');
++    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
++    await expect(run.deliverLogicalMessage(identity('receiver'), { recipientAddress: '/director', content: 'unauthorized', messageType: 'message', referenceFiles: [] })).rejects.toThrow('not a live execution');
++    expect(() => run.authorizeIdentity({ ...identity('director'), memberAddress: '/receiver' })).toThrow('not a live execution');
++    expect(() => run.authorizeIdentity(createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity('other-root'), memberAddress: '/director', agentRunId: 'director' }))).toThrow();
++    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
++    await expect(run.executeAgentCommand('director', { kind: 'post_message', message: new AgentInputUserMessage('start') })).resolves.toMatchObject({ accepted: true });
++    await expect(run.deliverLogicalMessage(identity('director'), { recipientAddress: '/receiver', content: 'handoff', messageType: 'handoff', referenceFiles: [] })).resolves.toMatchObject({ accepted: true });
++    await expect(run.deliverLogicalMessage(identity('director'), { recipientAddress: '/team', content: 'team work', messageType: 'handoff', referenceFiles: [] })).resolves.toMatchObject({ accepted: true });
++    expect(f.inputs).toEqual(['director', 'receiver', 'lead']);
++    expect(f.prepareNewAgentRun.mock.calls.map(([x]) => x.runId)).toEqual(['director', 'receiver', 'lead']);
++    expect(run.getAgentStatusSnapshots().find(s => s.execution.agentRunId === 'unused')?.details.status).toBe('offline');
++    expect(run.getCommunicationSnapshot().messages).toHaveLength(2);
++  });
++  it('fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness', async () => {
++    const f = fixture(); const run = await team(f, 'fresh');
++    expect(run.isActive()).toBe(true); expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
++    f.block('lead');
++    const send = () => run.executeAgentCommand('lead', { kind: 'post_message' as const, message: new AgentInputUserMessage('work') });
++    const a = send(); const b = send();
++    await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1));
++    expect(f.active.size).toBe(0); f.release();
++    expect((await Promise.all([a, b])).every(r => r.accepted)).toBe(true);
++    expect(f.inputs).toEqual(['lead', 'lead']); expect(f.active.has('unused')).toBe(false);
++  });
++  it('restore still prepares configured members before publication', async () => {
++    const f = fixture(); await team(f, 'restore');
++    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(2); expect(f.active.size).toBe(2);
++  });
++  it('readiness rejection remains an error for the exact worker, without starting other members', async () => {
++    const f = fixture(); const run = await org(f); f.fail('director');
++    await expect(run.executeAgentCommand('director', { kind: 'post_message', message: new AgentInputUserMessage('work') })).resolves.toMatchObject({ accepted: false });
++    expect(run.getAgentStatusSnapshots().find(s => s.execution.agentRunId === 'director')?.details.status).toBe('error');
++    expect(f.active.size).toBe(0); expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
++  });
++  it.each(['org', 'team'] as const)('%s Stop before first use fences all unused workers without startup', async (kind) => {
++    const f = fixture(); const run = kind === 'org' ? await org(f) : await team(f, 'fresh');
++    await expect(run.terminate()).resolves.toMatchObject({ accepted: true });
++    expect(run.isActive()).toBe(false);
++    await expect(run.executeAgentCommand(kind === 'org' ? 'director' : 'lead', { kind: 'post_message', message: new AgentInputUserMessage('late') })).rejects.toThrow('not accepting');
++    expect(f.prepareNewAgentRun).not.toHaveBeenCalled(); expect(f.inputs).toEqual([]);
++  });
++
++  it.each(['org', 'team'] as const)('%s Stop drains first readiness and leaves no published worker after success', async (kind) => {
++    const f = fixture(); const run = kind === 'org' ? await org(f) : await team(f, 'fresh');
++    const id = kind === 'org' ? 'director' : 'lead'; f.block(id);
++    const input = run.executeAgentCommand(id, { kind: 'post_message', message: new AgentInputUserMessage('first') });
++    await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1));
++    const stop = run.terminate(); f.release(); await input;
++    await expect(stop).resolves.toMatchObject({ accepted: true });
++    expect(run.isActive()).toBe(false); expect(f.active.size).toBe(0);
++    await expect(run.executeAgentCommand(id, { kind: 'post_message', message: new AgentInputUserMessage('too late') })).rejects.toThrow('not accepting');
++    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
++  });
++
++});
+diff --git a/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts b/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+index e010ffc34..89709085a 100644
+--- a/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+@@ -106,6 +106,7 @@ const createSubject = (options: Readonly<{
+     tasks: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: [] },
+     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
+     rootAgents: {
++      get: vi.fn(() => ({})),
+       isActive: vi.fn(() => true),
+       reserveInput: reserveRootAgentInput,
+       listHandles: vi.fn(() => []),
+diff --git a/autobyteus-web/components/AppLeftPanel.vue b/autobyteus-web/components/AppLeftPanel.vue
+index 0c264ed14..47beab96b 100644
+--- a/autobyteus-web/components/AppLeftPanel.vue
++++ b/autobyteus-web/components/AppLeftPanel.vue
+@@ -106,6 +106,7 @@
+ </template>
+ 
+ <script setup lang="ts">
++import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+ import { computed, onMounted } from 'vue';
+ import { Icon } from '@iconify/vue';
+ import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
+@@ -149,10 +150,12 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
+ };
+ 
+ const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
++  useAgentSelectionStore().beginSelectionIntent();
+   await pushRoute(resolvePrimaryRoute(key));
+ };
+ 
+ const navigateToSettings = async (): Promise<void> => {
++  useAgentSelectionStore().beginSelectionIntent();
+   await pushRoute('/settings');
+ };
+ 
+diff --git a/autobyteus-web/components/conversation/__tests__/UserMessageFirstSubmission.spec.ts b/autobyteus-web/components/conversation/__tests__/UserMessageFirstSubmission.spec.ts
+new file mode 100644
+index 000000000..bc9e068a8
+--- /dev/null
++++ b/autobyteus-web/components/conversation/__tests__/UserMessageFirstSubmission.spec.ts
+@@ -0,0 +1,55 @@
++import { beforeEach, describe, expect, it, vi } from 'vitest';
++import { createPinia, setActivePinia } from 'pinia';
++import { isReactive, nextTick } from 'vue';
++import { mount } from '@vue/test-utils';
++import UserMessageComponent from '../UserMessage.vue';
++import { useAgentContextsStore } from '~/stores/agentContextsStore';
++import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
++import { beginLocalUserSubmission, finalizeLocalSubmissionAttachments, retargetLocalUserSubmission, failLocalSubmission } from '~/services/runSubmission/localUserSubmission';
++import type { ContextAttachment, UserMessage } from '~/types/conversation';
++
++vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn(), refreshRunNavigationTopology: vi.fn() }) }));
++vi.mock('~/stores/fileExplorer', () => ({ useFileExplorerStore: () => ({ openFile: vi.fn(), openFilePreview: vi.fn() }) }));
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ isEmbeddedWindow: false }) }));
++vi.mock('~/stores/workspace', () => ({ useWorkspaceStore: () => ({ activeWorkspace: null }) }));
++
++const attachment = (phase: 'draft' | 'final'): ContextAttachment => ({
++  kind: 'uploaded', phase, id: 'file-1', storedFilename: 'note.txt', displayName: 'note.txt', type: 'Text',
++  locator: `/rest/context-files/${phase}/note.txt`,
++});
++
++describe('canonical first-submission chip through actual Pinia promotion', () => {
++  beforeEach(() => { setActivePinia(createPinia()); window.open = vi.fn(); });
++  it.each(['standalone', 'team_member', 'org'] as const)('%s retains one proxy and opens the final text immediately without remount', async (kind) => {
++    const contexts = useAgentContextsStore();
++    useAgentRunConfigStore().setAgentConfig({ agentDefinitionId: 'def', agentDefinitionName: 'Writer',
++      llmModelIdentifier: 'model', runtimeKind: 'autobyteus', workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'NONE', isLocked: false });
++    const temporary = contexts.createRunFromTemplate();
++    const context = contexts.getRun(temporary)!;
++    context.requirement = 'Read my note';
++    context.contextFilePaths = [attachment('draft')];
++    const navigationTarget = kind === 'org' ? null : kind === 'standalone'
++      ? { kind, runId: temporary } : { kind, teamRunId: 'team-1', agentRunId: temporary };
++    const handle = beginLocalUserSubmission(context, { text: context.requirement, attachments: context.contextFilePaths, navigationTarget });
++    const rendered = context.conversation.messages[0] as UserMessage;
++    const wrapper = mount(UserMessageComponent, { props: { message: rendered } });
++    expect(wrapper.get('button').attributes('aria-label')).toBe('Open note.txt');
++    contexts.promoteTemporaryId(temporary, 'permanent-agent');
++    if (kind === 'standalone') retargetLocalUserSubmission(handle, { kind, runId: 'permanent-agent' });
++    Object.assign(handle.message, { messageId: 'accepted-once', dedupeKey: 'input-1' });
++    expect(finalizeLocalSubmissionAttachments(handle, [attachment('final')])).toBe(true);
++    await nextTick();
++    await wrapper.get('button').trigger('click');
++    expect(window.open).toHaveBeenCalledExactlyOnceWith('http://localhost:8000/rest/context-files/final/note.txt', '_blank', 'noopener,noreferrer');
++    expect(handle.message).toBe(rendered);
++    expect(isReactive(handle.message)).toBe(true);
++    expect(contexts.getRun('permanent-agent')).toBe(context);
++    expect(context.conversation.messages).toHaveLength(1);
++    expect(context.conversation.messages[0]).toBe(handle.message);
++    expect(finalizeLocalSubmissionAttachments(handle, [attachment('final')])).toBe(false);
++    failLocalSubmission(handle, new Error('send rejected'));
++    expect(context.conversation.messages[0]).toBe(handle.message);
++    expect(context.conversation.messages).toHaveLength(2);
++    wrapper.unmount();
++  });
++});
+diff --git a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+index cb3796ae1..160c0c87e 100644
+--- a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
++++ b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+@@ -5,7 +5,7 @@ import { computed, defineComponent, h, reactive } from 'vue'
+ import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue'
+ import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts'
+ import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState'
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
++import { useAgentSelectionStore, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
+ import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions'
+ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+ import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
+@@ -52,7 +52,7 @@ const historyResponse = () => ({ data: { listCollaborationRootHistory: [{
+   archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: taskBearingView().execution_tree,
+ }] } })
+ let wrapper: ReturnType<typeof mount> | undefined
+-let stopResult: Promise<void>
++let stopResult: Promise<void | WorkspaceSelectionOutcome>
+ let stopError: unknown
+ let stopped: boolean
+ let stoppedInspectionAvailable: boolean
+diff --git a/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts b/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts
+index 9a5f0dde9..e3c1c6f0b 100644
+--- a/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts
++++ b/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts
+@@ -1,5 +1,6 @@
+ import type { AgentOrgRunHistoryItem, TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+ import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
++import type { WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
+ import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
+ 
+ export interface WorkspaceHistorySectionState {
+@@ -83,8 +84,8 @@ export interface WorkspaceHistorySectionActions {
+     member: TeamMemberFocusTarget,
+     workspaceId?: string,
+   ) => Promise<void> | void;
+-  onOpenAgentOrgRun?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
+-  onSelectAgentOrgMember?: (run: AgentOrgRunHistoryItem, address: string) => Promise<void> | void;
+-  onInspectAgentOrgExecution?: (run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => Promise<void> | void;
+-  onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
++  onOpenAgentOrgRun?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
++  onSelectAgentOrgMember?: (run: AgentOrgRunHistoryItem, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
++  onInspectAgentOrgExecution?: (run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
++  onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
+ }
+diff --git a/autobyteus-web/components/workspace/running/RunningAgentsPanel.vue b/autobyteus-web/components/workspace/running/RunningAgentsPanel.vue
+index 9c848202d..8db17f831 100644
+--- a/autobyteus-web/components/workspace/running/RunningAgentsPanel.vue
++++ b/autobyteus-web/components/workspace/running/RunningAgentsPanel.vue
+@@ -156,6 +156,7 @@ const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined =>
+ };
+ 
+ const createAgentRun = (definitionId: string) => {
++  selectionStore.beginSelectionIntent();
+   const definition = agentDefinitionStore.getAgentDefinitionById(definitionId);
+   if (!definition) return;
+ 
+@@ -177,6 +178,7 @@ const createAgentRun = (definitionId: string) => {
+ };
+ 
+ const createTeamRun = (definitionId: string) => {
++  selectionStore.beginSelectionIntent();
+   const definition = teamDefinitionStore.getAgentTeamDefinitionById(definitionId);
+   if (!definition) return;
+ 
+@@ -198,11 +200,13 @@ const createTeamRun = (definitionId: string) => {
+ };
+ 
+ const selectAgentRun = (runId: string) => {
++  selectionStore.beginSelectionIntent();
+   selectionStore.selectRun(runId, 'agent');
+   emit('run-selected', { type: 'agent', runId });
+ };
+ 
+ const selectTeamRun = (runId: string) => {
++  selectionStore.beginSelectionIntent();
+   selectionStore.selectRun(runId, 'team');
+   emit('run-selected', { type: 'team', runId });
+ };
+diff --git a/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts b/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+index 621548b38..4ad3a3f32 100644
+--- a/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
++++ b/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+@@ -70,10 +70,10 @@ const buildTeamNode = (focusedAgentRunId: string): TeamTreeNode => {
+ 
+ const buildActions = () => {
+   const runHistoryStore = {
+-    selectTreeRun: vi.fn(async () => undefined),
+-    createDraftRun: vi.fn(async () => undefined),
++    selectTreeRun: vi.fn(async () => ({ disposition: 'committed' as const })),
++    createDraftRun: vi.fn(async () => ({ disposition: 'committed' as const })),
+   };
+-  const selectionStore = { selectedType: null, selectedRunId: null, selectRun: vi.fn() };
++  const selectionStore = { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null, selectRun: vi.fn() };
+   const presentTeamStreamRecoveryFeedback = vi.fn();
+   return {
+     runHistoryStore,
+@@ -95,7 +95,7 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () =>
+     const { actions, runHistoryStore } = buildActions();
+     await actions.onSelectTeam(buildTeamNode('review_lead'));
+     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
+-      expect.objectContaining({ memberAddress: '/program_manager' }),
++      expect.objectContaining({ memberAddress: '/program_manager' }), expect.objectContaining({ selectionIntent: expect.any(Object) }),
+     );
+   });
+ 
+@@ -103,7 +103,7 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () =>
+     const { actions, runHistoryStore } = buildActions();
+     await actions.onSelectTeam(buildTeamNode('build-review-lead-run'));
+     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
+-      expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }),
++      expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }), expect.objectContaining({ selectionIntent: expect.any(Object) }),
+     );
+   });
+ 
+diff --git a/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts b/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+index 9e6994c40..20e7083d4 100644
+--- a/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
++++ b/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+@@ -11,7 +11,8 @@ const mocks = vi.hoisted(() => ({
+ vi.mock('vue-router', () => ({ useRoute: () => mocks.route, useRouter: () => ({ push: mocks.push, replace: mocks.replace }) }))
+ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => mocks.history }))
+ vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => mocks.contexts }))
+-vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ clearSelection: mocks.clear }) }))
++vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({
++    beginSelectionIntent: () => ({ isCurrent: () => true }), clearSelection: mocks.clear }) }))
+ 
+ beforeEach(() => {
+   vi.clearAllMocks()
+@@ -31,7 +32,7 @@ describe('Org browse is inspection and Stop retains the same exact route', () =>
+   it.each(['open', 'select', 'inspect'] as const)('uses observed inactive truth, not stale active row, for %s', async (action) => {
+     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action,
+       memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
+-    expect(mocks.contexts.openForInspection).toHaveBeenCalledExactlyOnceWith('org-run')
++    expect(mocks.contexts.openForInspection).toHaveBeenCalledExactlyOnceWith('org-run', expect.objectContaining({ isCurrent: expect.any(Function) }))
+     expect(mocks.contexts.stopAndInspect).not.toHaveBeenCalled()
+     expect(mocks.push).toHaveBeenCalledWith({ path: '/workspace', query: {
+       rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-run', mode: 'history',
+diff --git a/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts b/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts
+index 8c90d9cc9..b96ff732f 100644
+--- a/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts
++++ b/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts
+@@ -1,3 +1,4 @@
++import type { WorkspaceSelectionIntent, WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
+ import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+ import type { RunTreeRow } from '~/utils/runTreeProjection';
+ import {
+@@ -6,14 +7,16 @@ import {
+ } from '~/stores/runHistorySelectionActions';
+ 
+ interface RunHistorySelectionStoreLike {
+-  selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
++  selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget, options: { selectionIntent: WorkspaceSelectionIntent }) => Promise<WorkspaceSelectionOutcome>;
+   createDraftRun: (options: {
+     workspaceRootPath: string;
+     agentDefinitionId: string;
+-  }) => Promise<void>;
++    selectionIntent: WorkspaceSelectionIntent;
++  }) => Promise<WorkspaceSelectionOutcome>;
+ }
+ 
+ interface SelectionStoreLike {
++  beginSelectionIntent(): WorkspaceSelectionIntent;
+   selectedType: 'agent' | 'team' | 'team_draft' | null;
+   selectedRunId: string | null;
+   selectRun: (runId: string, type: 'agent' | 'team') => void;
+@@ -50,11 +53,13 @@ export const useWorkspaceHistorySelectionActions = (params: {
+   };
+ 
+   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
++    const intent = params.selectionStore.beginSelectionIntent();
+     try {
+-      await params.runHistoryStore.selectTreeRun(run);
++      const result = await params.runHistoryStore.selectTreeRun(run, { selectionIntent: intent });
++      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
+       params.emitRunSelected({ type: 'agent', runId: run.runId });
+     } catch (error) {
+-      console.error('Failed to open run:', error);
++      if (intent.isCurrent()) console.error('Failed to open run:', error);
+     }
+   };
+ 
+@@ -66,6 +71,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
+   };
+ 
+   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
++    const intent = params.selectionStore.beginSelectionIntent();
+     const isAlreadySelectedTeam =
+       params.selectionStore.selectedType === 'team'
+       && params.selectionStore.selectedRunId === team.teamRunId;
+@@ -88,15 +94,16 @@ export const useWorkspaceHistorySelectionActions = (params: {
+     params.expandTeamMemberAncestors?.(workspaceId, team.teamRunId, targetMember.agentRunId);
+ 
+     try {
+-      await params.runHistoryStore.selectTreeRun({
++      const result = await params.runHistoryStore.selectTreeRun({
+         teamRunId: targetMember.teamRunId,
+         memberAddress: targetMember.memberAddress,
+         agentRunId: targetMember.agentRunId,
+-      });
++      }, { selectionIntent: intent });
++      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
+       params.selectionStore.selectRun(team.teamRunId, 'team');
+       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
+     } catch (error) {
+-      if (!presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
++      if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
+     }
+   };
+ 
+@@ -104,13 +111,15 @@ export const useWorkspaceHistorySelectionActions = (params: {
+     member: TeamMemberFocusTarget,
+     workspaceId = '',
+   ): Promise<void> => {
++    const intent = params.selectionStore.beginSelectionIntent();
+     try {
+       params.setTeamExpanded(member.teamRunId, true);
+       params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.agentRunId);
+-      await params.runHistoryStore.selectTreeRun(member);
++      const result = await params.runHistoryStore.selectTreeRun(member, { selectionIntent: intent });
++      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
+       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
+     } catch (error) {
+-      if (!presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
++      if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
+     }
+   };
+ 
+@@ -118,11 +127,13 @@ export const useWorkspaceHistorySelectionActions = (params: {
+     workspaceRootPath: string,
+     agentDefinitionId: string,
+   ): Promise<void> => {
++    const intent = params.selectionStore.beginSelectionIntent();
+     try {
+-      await params.runHistoryStore.createDraftRun({ workspaceRootPath, agentDefinitionId });
++      const result = await params.runHistoryStore.createDraftRun({ workspaceRootPath, agentDefinitionId, selectionIntent: intent });
++      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
+       params.emitRunCreated({ type: 'agent', definitionId: agentDefinitionId });
+     } catch (error) {
+-      console.error('Failed to create draft run:', error);
++      if (intent.isCurrent()) console.error('Failed to create draft run:', error);
+     }
+   };
+ 
+diff --git a/autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts b/autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts
+index 98e5499bf..7ba83e96f 100644
+--- a/autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts
++++ b/autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts
+@@ -1,7 +1,7 @@
+ import { useRoute, useRouter } from 'vue-router'
+ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+ import { useRunHistoryStore } from '~/stores/runHistoryStore'
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
+ 
+ export type WorkspaceHistorySubjectAction = Readonly<{
+   rootSubjectKind: 'agent_org'
+@@ -18,12 +18,15 @@ export const useWorkspaceHistorySubjectActions = () => {
+   const orgContexts = useAgentOrgContextsStore()
+   const selection = useAgentSelectionStore()
+ 
+-  const execute = async (command: WorkspaceHistorySubjectAction): Promise<void> => {
++  const execute = async (command: WorkspaceHistorySubjectAction, options: { selectionIntent?: WorkspaceSelectionIntent } = {}): Promise<WorkspaceSelectionOutcome> => {
++    const intent = command.action === 'stop' ? undefined : options.selectionIntent ?? selection.beginSelectionIntent()
++    if (intent && !intent.isCurrent()) return { disposition: 'superseded' }
+     let run = historyStore.agentOrgHistory.find((item) => item.rootRunId === command.rootRunId)
+     if (!run) {
+       // Exact participant links can be used before the history drawer mounts.
+       // Resolve through the same strict read owner, not through live-context inference.
+       await historyStore.refreshAgentOrgHistory()
++      if (intent && !intent.isCurrent()) return { disposition: 'superseded' }
+       if (historyStore.historyFamilyErrors.agentOrg) {
+         throw new Error(historyStore.historyFamilyErrors.agentOrg)
+       }
+@@ -40,10 +43,12 @@ export const useWorkspaceHistorySubjectActions = () => {
+           await router.replace({ path: '/workspace', query: { ...route.query, mode: 'history' } })
+         }
+       }
+-      return
++      return { disposition: 'committed' }
+     }
+ 
+-    await orgContexts.openForInspection(run.rootRunId)
++    try { await orgContexts.openForInspection(run.rootRunId, intent) }
++    catch (error) { if (!intent!.isCurrent()) return { disposition: 'superseded' }; throw error }
++    if (!intent!.isCurrent()) return { disposition: 'superseded' }
+     const context = orgContexts.contextFor(run.rootRunId)
+     if (!context) throw new Error(`AgentOrg inspection '${run.rootRunId}' is unavailable.`)
+     if (command.action === 'inspect') {
+@@ -64,6 +69,7 @@ export const useWorkspaceHistorySubjectActions = () => {
+       ...(command.action !== 'open' && command.memberAddress ? { memberAddress: command.memberAddress } : {}),
+       ...(command.action === 'inspect' ? { agentRunId: command.agentRunId } : {}),
+     } })
++    return { disposition: 'committed' }
+   }
+   return { execute }
+ }
+diff --git a/autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts b/autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+index ec0e80e4f..7252609a7 100644
+--- a/autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
++++ b/autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+@@ -1,3 +1,4 @@
++import { createPinia, setActivePinia } from 'pinia'
+ import { reactive } from 'vue'
+ import { mount, flushPromises } from '@vue/test-utils'
+ import { afterEach, describe, expect, it, vi } from 'vitest'
+@@ -17,6 +18,7 @@ const routerReplaceMock = vi.fn(async (location: { path: string; query: Record<s
+ })
+ 
+ vi.mock('vue-router', () => ({
++  onBeforeRouteLeave: vi.fn(), onBeforeRouteUpdate: vi.fn(),
+   useRoute: () => routeMock,
+   useRouter: () => ({
+     replace: routerReplaceMock,
+@@ -44,12 +46,16 @@ const Harness = {
+ describe('useWorkspaceRouteSelection', () => {
+   afterEach(() => {
+     routeMock.path = '/workspace'
++    setActivePinia(createPinia())
++    openWorkspaceExecutionLinkMock.mockResolvedValue({ disposition: 'committed' })
+     routeMock.query = {}
+     openWorkspaceExecutionLinkMock.mockReset()
+     routerReplaceMock.mockClear()
+   })
+ 
+   it('opens a team execution link from the workspace route and clears the query', async () => {
++    setActivePinia(createPinia())
++    openWorkspaceExecutionLinkMock.mockResolvedValue({ disposition: 'committed' })
+     routeMock.query = {
+       workspaceExecutionKind: 'team',
+       workspaceExecutionRunId: 'team-run-1',
+@@ -63,7 +69,7 @@ describe('useWorkspaceRouteSelection', () => {
+       kind: 'team',
+       teamRunId: 'team-run-1',
+       agentRunId: 'writer-run-1',
+-    })
++    }, expect.objectContaining({ isCurrent: expect.any(Function) }))
+     expect(routerReplaceMock).toHaveBeenCalledWith({
+       path: '/workspace',
+       query: {},
+diff --git a/autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts b/autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts
+index 2a84162f9..928d373ba 100644
+--- a/autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts
++++ b/autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts
+@@ -1,5 +1,6 @@
+ import { ref, watch } from 'vue'
+-import { useRoute, useRouter } from 'vue-router'
++import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter, type RouteLocationNormalizedLoaded } from 'vue-router'
++import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+ import {
+   createWorkspaceExecutionLinkSignature,
+   openWorkspaceExecutionLink,
+@@ -7,51 +8,57 @@ import {
+   stripWorkspaceExecutionLinkQuery,
+ } from '~/services/workspace/workspaceNavigationService'
+ 
++// Only navigation identity, never incidental active/history mode or context publication.
++const selectionRouteKey = (route: Pick<RouteLocationNormalizedLoaded, 'path' | 'query'>): string => {
++  const q = route.query
++  return JSON.stringify([route.path, q.rootSubjectKind, q.definitionId, q.orgRunId,
++    q.memberAddress, q.agentRunId, q.mode === 'configuration',
++    q.workspaceExecutionKind, q.workspaceExecutionRunId, q.workspaceExecutionAgentRunId])
++}
++
+ export const useWorkspaceRouteSelection = () => {
+   const route = useRoute()
+   const router = useRouter()
++  const selection = useAgentSelectionStore()
+   const applyingSelection = ref(false)
+   const lastHandledSignature = ref<string | null>(null)
+ 
++  onBeforeRouteLeave(() => { selection.invalidateSelectionIntent() })
++  onBeforeRouteUpdate((to, from) => {
++    if (selectionRouteKey(to) !== selectionRouteKey(from)) selection.invalidateSelectionIntent()
++  })
++
+   const applyRouteSelection = async (): Promise<void> => {
+     const link = parseWorkspaceExecutionLinkQuery(route.query)
+-    if (!link) {
+-      lastHandledSignature.value = null
+-      return
+-    }
+-
++    if (!link) { lastHandledSignature.value = null; return }
+     const signature = createWorkspaceExecutionLinkSignature(link)
+-    if (applyingSelection.value || lastHandledSignature.value === signature) {
+-      return
+-    }
++    if (lastHandledSignature.value === signature) return
+ 
++    const intent = selection.beginSelectionIntent()
++    const path = route.path
+     applyingSelection.value = true
+     lastHandledSignature.value = signature
+-
++    const stopWatching = watch(intent.isCurrent, (current) => {
++      if (!current) applyingSelection.value = false
++    }, { flush: 'sync' })
+     try {
+-      await openWorkspaceExecutionLink(link)
++      const result = await openWorkspaceExecutionLink(link, intent)
++      if (result.disposition === 'superseded' || !intent.isCurrent()) return
++    } catch (error) {
++      if (!intent.isCurrent()) return
++      console.error('Failed to open workspace execution link:', error)
+     } finally {
+-      applyingSelection.value = false
+-      await router.replace({
+-        path: route.path,
+-        query: stripWorkspaceExecutionLinkQuery(route.query),
+-      })
++      stopWatching()
++      if (intent.isCurrent()) {
++        applyingSelection.value = false
++        const current = parseWorkspaceExecutionLinkQuery(route.query)
++        if (route.path === path && current && createWorkspaceExecutionLinkSignature(current) === signature) {
++          await router.replace({ path, query: stripWorkspaceExecutionLinkQuery(route.query) })
++        }
++      }
+     }
+   }
+ 
+-  watch(
+-    () => [
+-      route.query.workspaceExecutionKind,
+-      route.query.workspaceExecutionRunId,
+-      route.query.workspaceExecutionMemberAddress,
+-    ].map((value) => (Array.isArray(value) ? value.join('|') : value ?? '')).join('::'),
+-    () => {
+-      void applyRouteSelection()
+-    },
+-    { immediate: true },
+-  )
+-
+-  return {
+-    applyingSelection,
+-  }
++  watch(() => selectionRouteKey(route), () => { void applyRouteSelection() }, { immediate: true })
++  return { applyingSelection }
+ }
+diff --git a/autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts b/autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
+index 510cdcfd3..45bdd62a2 100644
+--- a/autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
++++ b/autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
+@@ -1,3 +1,4 @@
++import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
+ import type { AgentContext } from '~/types/agent/AgentContext';
+ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+ import { useAgentActivityStore } from '~/stores/agentActivityStore';
+@@ -12,7 +13,7 @@ import {
+ } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+ 
+ export type TeamMemberProjectionHydrationResult = Readonly<{
+-  disposition: 'authoritative' | 'hydrated';
++  disposition: 'authoritative' | 'hydrated' | 'superseded';
+   agentRunId: string;
+ }>;
+ 
+@@ -39,6 +40,7 @@ const exactMountedContext = (
+ const attemptHydration = async (
+   team: AgentTeamContext,
+   agentRunId: string,
++  intent?: WorkspaceSelectionIntent,
+ ): Promise<TeamMemberProjectionHydrationResult | null> => {
+   const agent = exactMountedContext(team, agentRunId);
+   if (authoritativeContexts.has(agent)) {
+@@ -66,6 +68,7 @@ const attemptHydration = async (
+   if (projection.lastActivityAt) conversation.updatedAt = projection.lastActivityAt;
+   const activities = buildActivitiesFromProjection(projection.activities ?? []);
+ 
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded', agentRunId };
+   const currentAgent = exactMountedContext(team, agentRunId);
+   const currentLocation = team.view.getAgentExecutionLocation(agentRunId)!;
+   if (currentAgent !== agent
+@@ -94,6 +97,7 @@ const attemptHydration = async (
+ export const ensureAuthoritativeTeamMemberProjection = async (input: {
+   team: AgentTeamContext;
+   agentRunId: string;
++  selectionIntent?: WorkspaceSelectionIntent;
+ }): Promise<TeamMemberProjectionHydrationResult> => {
+   const agentRunId = input.agentRunId.trim();
+   const initialAgent = exactMountedContext(input.team, agentRunId);
+@@ -101,16 +105,16 @@ export const ensureAuthoritativeTeamMemberProjection = async (input: {
+     return Object.freeze({ disposition: 'authoritative', agentRunId });
+   }
+   const existing = hydrationByContext.get(initialAgent);
+-  if (existing) return existing;
++  if (existing && !input.selectionIntent) return existing;
+ 
+   const operation = (async () => {
+     for (let attempt = 0; attempt < MAX_CONFLICT_ATTEMPTS; attempt += 1) {
+-      const result = await attemptHydration(input.team, agentRunId);
++      const result = await attemptHydration(input.team, agentRunId, input.selectionIntent);
+       if (result) return result;
+     }
+     throw new Error(`Task activity for '${agentRunId}' changed while it was loading.`);
+   })();
+-  hydrationByContext.set(initialAgent, operation);
++  if (!input.selectionIntent) hydrationByContext.set(initialAgent, operation);
+   try {
+     return await operation;
+   } finally {
+diff --git a/autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts b/autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+index d2bc078c5..b2796daed 100644
+--- a/autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
++++ b/autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+@@ -28,6 +28,7 @@ vi.mock('~/stores/agentContextsStore', () => ({
+ }));
+ vi.mock('~/stores/agentSelectionStore', () => ({
+   useAgentSelectionStore: () => ({
++    beginSelectionIntent: () => ({ isCurrent: () => true }),
+     selectRun: mocks.selectRun, selectRunWithoutShellNavigation: mocks.selectRunWithoutShellNavigation,
+   }),
+ }));
+@@ -123,4 +124,16 @@ describe('openAgentRun', () => {
+     expect(mocks.replaceActivities).not.toHaveBeenCalled();
+     expect(mocks.upsertContext).not.toHaveBeenCalled();
+   });
++  it.each(['success', 'error'])('superseded Agent %s never publishes candidate or selection', async (completion) => {
++    mocks.getRun.mockReturnValue(undefined);
++    let current = true, resolve!: (value: unknown) => void, reject!: (error: Error) => void;
++    mocks.loadCandidate.mockReturnValue(new Promise((yes, no) => { resolve = yes; reject = no; }));
++    const pending = openAgentRun({ runId: 'old', fallbackAgentName: null, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() });
++    current = false;
++    if (completion === 'success') resolve(candidate('old', false)); else reject(new Error('old failure'));
++    expect(await pending).toEqual({ disposition: 'superseded' });
++    expect(mocks.replaceActivities).not.toHaveBeenCalled(); expect(mocks.upsertContext).not.toHaveBeenCalled();
++    expect(mocks.selectRun).not.toHaveBeenCalled(); expect(mocks.clearAgentConfig).not.toHaveBeenCalled();
++  });
++
+ });
+diff --git a/autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts b/autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+index ef0c042e3..b627f765a 100644
+--- a/autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
++++ b/autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+@@ -1,3 +1,4 @@
++import { createPinia, setActivePinia } from 'pinia';
+ import { beforeEach, describe, expect, it, vi } from 'vitest';
+ import { inspectMountedTeamMember } from '../teamMemberInspectionCoordinator';
+ import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+@@ -26,6 +27,7 @@ const team = () => buildTestTeamContext({
+ 
+ describe('teamMemberInspectionCoordinator', () => {
+   beforeEach(() => {
++    setActivePinia(createPinia());
+     vi.clearAllMocks();
+     mocks.mounted = team();
+   });
+diff --git a/autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts b/autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+index f53935b62..c1ef95746 100644
+--- a/autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
++++ b/autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+@@ -63,6 +63,7 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
+ }))
+ vi.mock('~/stores/agentSelectionStore', () => ({
+   useAgentSelectionStore: () => ({
++    beginSelectionIntent: () => ({ isCurrent: () => true }),
+     selectRun: selectRunMock,
+     selectRunWithoutShellNavigation: selectRunWithoutShellNavigationMock,
+   }),
+@@ -169,7 +170,7 @@ describe('openTeamRun current exact execution identity', () => {
+ 
+     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'task-agent-run-1' }))
+     expect(hydrated.view.getFocusedAgentRunId()).toBe('task-agent-run-1')
+-    expect(result.focusedAgentRunId).toBe('task-agent-run-1')
++    expect(result.disposition === 'committed' && result.focusedAgentRunId).toBe('task-agent-run-1')
+   })
+ 
+   it('opens an exact settled task Agent through the normal inactive historical path', async () => {
+@@ -334,4 +335,25 @@ describe('openTeamRun current exact execution identity', () => {
+     expect(selectRunMock).not.toHaveBeenCalled()
+     expect(failed.view.getFocusedAgentRunId()).toBe('run-a')
+   })
++  it.each(['success', 'error'])('superseded cold Team %s cannot publish context, activities or selection', async (completion) => {
++    getTeamContextByIdMock.mockReturnValue(null)
++    let current = true, resolve!: (value: unknown) => void, reject!: (error: Error) => void
++    hydrateLiveTeamRunContextMock.mockReturnValue(new Promise((yes, no) => { resolve = yes; reject = no }))
++    const pending = openTeamRun({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })
++    current = false
++    if (completion === 'success') resolve(hydration(makeTeam())); else reject(new Error('old failure'))
++    expect(await pending).toEqual({ disposition: 'superseded' })
++    expect(addTeamContextMock).not.toHaveBeenCalled(); expect(commitActivitiesMock).not.toHaveBeenCalled()
++    expect(selectRunMock).not.toHaveBeenCalled(); expect(connectToTeamStreamMock).not.toHaveBeenCalled()
++  })
++  it('recovery checks the same guard at stream replacement beforeContextCommit', async () => {
++    const currentTeam = makeTeam(), replacement = makeTeam()
++    getTeamContextByIdMock.mockReturnValue(currentTeam)
++    hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue(hydration(replacement))
++    let current = true
++    replaceFailedTeamStreamMock.mockImplementation(async ({ beforeContextCommit }) => { current = false; beforeContextCommit() })
++    expect(await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })).toEqual({ disposition: 'superseded' })
++    expect(commitActivitiesMock).not.toHaveBeenCalled(); expect(markAuthorityMock).not.toHaveBeenCalled(); expect(selectRunMock).not.toHaveBeenCalled()
++  })
++
+ })
+diff --git a/autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts b/autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts
+index 6e266b830..88a568308 100644
+--- a/autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts
++++ b/autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts
+@@ -1,5 +1,5 @@
+ import { useAgentContextsStore } from '~/stores/agentContextsStore';
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
+ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
+ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+ import { useAgentRunStore } from '~/stores/agentRunStore';
+@@ -23,20 +23,32 @@ export interface OpenRunWithCoordinatorInput {
+   resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
+   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
+   selectRun?: boolean;
++  selectionIntent?: WorkspaceSelectionIntent;
+   selectionMode?: RunOpenSelectionMode;
+ }
+ 
+ export interface OpenRunWithCoordinatorResult {
++  disposition: 'committed';
+   runId: string;
+   resumeConfig: RunResumeConfigPayload;
+ }
+ 
+-export const openAgentRun = async (
+-  input: OpenRunWithCoordinatorInput,
+-): Promise<OpenRunWithCoordinatorResult> => {
++export function openAgentRun(input: OpenRunWithCoordinatorInput & { selectRun: false }): Promise<OpenRunWithCoordinatorResult>;
++export function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<OpenRunWithCoordinatorResult | SupersededSelection>;
++export async function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<OpenRunWithCoordinatorResult | SupersededSelection> {
++  const intent = input.selectRun === false ? undefined
++    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   const agentContextsStore = useAgentContextsStore();
+   const expectedContext = agentContextsStore.getRun(input.runId) ?? null;
+-  const candidate = await loadRunContextHydrationCandidate(input);
++  let candidate: Awaited<ReturnType<typeof loadRunContextHydrationCandidate>>;
++  try {
++    candidate = await loadRunContextHydrationCandidate(input);
++  } catch (error) {
++    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
++    throw error;
++  }
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   const { resumeConfig, config, conversation, activities, fileChanges } = candidate;
+ 
+   const currentContext = agentContextsStore.getRun(input.runId) ?? null;
+@@ -102,7 +114,8 @@ export const openAgentRun = async (
+   }
+ 
+   return {
++    disposition: 'committed',
+     runId: input.runId,
+     resumeConfig,
+   };
+-};
++}
+diff --git a/autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts b/autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
+index a61763890..66f97c746 100644
+--- a/autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
++++ b/autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
+@@ -1,7 +1,9 @@
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
+ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+ import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
+ 
+ export type TeamMemberInspectionResult =
++  | SupersededSelection
+   | Readonly<{
+     disposition: 'committed';
+     teamRunId: string;
+@@ -17,12 +19,15 @@ export type TeamMemberInspectionResult =
+ export const inspectMountedTeamMember = async (input: {
+   teamRunId: string;
+   agentRunId: string;
++  selectionIntent?: WorkspaceSelectionIntent;
+   commit: (result: Readonly<{
+     teamRunId: string;
+     agentRunId: string;
+     memberAddress: string;
+   }>) => void;
+ }): Promise<TeamMemberInspectionResult> => {
++  const intent = input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
+   const teamRunId = input.teamRunId.trim();
+   const agentRunId = input.agentRunId.trim();
+   try {
+@@ -34,7 +39,8 @@ export const inspectMountedTeamMember = async (input: {
+     if (!team.view.hasAgentRun(agentRunId)) {
+       throw new Error(`AgentRun '${agentRunId}' is not retained in the mounted Team.`);
+     }
+-    await ensureAuthoritativeTeamMemberProjection({ team, agentRunId });
++    await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
++    if (!intent.isCurrent()) return { disposition: 'superseded' };
+     if (contexts.getTeamContextById(teamRunId) !== team) {
+       throw new Error(`Team context '${teamRunId}' changed before selection commit.`);
+     }
+@@ -50,6 +56,7 @@ export const inspectMountedTeamMember = async (input: {
+     input.commit(committed);
+     return Object.freeze({ disposition: 'committed' as const, ...committed });
+   } catch (error) {
++    if (!intent.isCurrent()) return { disposition: 'superseded' };
+     return Object.freeze({
+       disposition: 'rejected' as const,
+       code: 'TEAM_MEMBER_INSPECTION_FAILED',
+diff --git a/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts b/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+index 4a75d9091..82f7feaae 100644
+--- a/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
++++ b/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+@@ -1,5 +1,5 @@
+ import type { TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes';
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
+ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
+@@ -21,29 +21,38 @@ export interface OpenTeamRunWithCoordinatorInput {
+   resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
+   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
+   selectRun?: boolean;
++  selectionIntent?: WorkspaceSelectionIntent;
+   selectionMode?: TeamRunOpenSelectionMode;
+   onCommitted?: (result: OpenTeamRunWithCoordinatorResult) => void;
+ }
+ export interface OpenTeamRunWithCoordinatorResult {
++  disposition: 'committed';
+   teamRunId: string;
+   focusedAgentRunId: string;
+   focusedMemberAddress: string;
+   resumeConfig: TeamRunResumeConfigPayload;
+ }
+ 
+-export const openTeamRun = async (
+-  input: OpenTeamRunWithCoordinatorInput,
+-): Promise<OpenTeamRunWithCoordinatorResult> => {
++export function openTeamRun(input: OpenTeamRunWithCoordinatorInput & { selectRun: false }): Promise<OpenTeamRunWithCoordinatorResult>;
++export function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection>;
++export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection> {
++  const intent = input.selectRun === false ? undefined
++    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   const contexts = useAgentTeamContextsStore();
+   if (contexts.getTeamContextById(input.teamRunId)) {
+     throw new Error(`Team context '${input.teamRunId}' is already mounted.`);
+   }
+   const preferredAgentRunId = input.agentRunId?.trim() || null;
+   const runStore = useAgentTeamRunStore();
+-  const hydrated = await hydrateLiveTeamRunContext({
+-    ...input,
+-    agentRunId: preferredAgentRunId,
+-  });
++  let hydrated: Awaited<ReturnType<typeof hydrateLiveTeamRunContext>>;
++  try {
++    hydrated = await hydrateLiveTeamRunContext({ ...input, agentRunId: preferredAgentRunId });
++  } catch (error) {
++    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
++    throw error;
++  }
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   const context = hydrated.hydratedContext;
+   if (contexts.getTeamContextById(input.teamRunId)) {
+     throw new Error(`Team context '${input.teamRunId}' became mounted while it was loading.`);
+@@ -67,7 +76,8 @@ export const openTeamRun = async (
+     useTeamRunConfigStore().selectDraft(null);
+     useAgentRunConfigStore().clearConfig();
+   }
+-  const result = {
++  const result: OpenTeamRunWithCoordinatorResult = {
++    disposition: 'committed',
+     teamRunId: input.teamRunId,
+     focusedAgentRunId,
+     focusedMemberAddress,
+@@ -77,11 +87,14 @@ export const openTeamRun = async (
+   if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
+   else runStore.disconnectTeamStream(input.teamRunId);
+   return result;
+-};
++}
+ 
+-export const reopenTeamRunAfterStreamLoss = async (
+-  input: OpenTeamRunWithCoordinatorInput,
+-): Promise<OpenTeamRunWithCoordinatorResult> => {
++export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput & { selectRun: false }): Promise<OpenTeamRunWithCoordinatorResult>;
++export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection>;
++export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection> {
++  const intent = input.selectRun === false ? undefined
++    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   const contexts = useAgentTeamContextsStore();
+   const current = contexts.getTeamContextById(input.teamRunId);
+   const preferredAgentRunId = input.agentRunId?.trim()
+@@ -94,19 +107,32 @@ export const reopenTeamRunAfterStreamLoss = async (
+   if (!runStore.isTeamStreamReopenRequired(input.teamRunId)) {
+     throw new Error(`Team stream '${input.teamRunId}' is not awaiting recovery.`);
+   }
+-  const hydrated = await hydrateTeamRunContextForStreamRecovery({
+-    ...input,
+-    agentRunId: preferredAgentRunId,
+-  });
++  let hydrated: Awaited<ReturnType<typeof hydrateTeamRunContextForStreamRecovery>>;
++  try {
++    hydrated = await hydrateTeamRunContextForStreamRecovery({ ...input, agentRunId: preferredAgentRunId });
++  } catch (error) {
++    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
++    throw error;
++  }
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   const context = hydrated.hydratedContext;
+   const focus = context.view.focusAgentForInspection(preferredAgentRunId);
+   if (focus.disposition === 'rejected') throw new Error(focus.message);
+-  await runStore.replaceFailedTeamStream({
+-    rootTeamRunId: input.teamRunId,
+-    candidateContext: context,
+-    expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
+-    beforeContextCommit: () => commitTeamRunHydrationActivities(hydrated),
+-  });
++  try {
++    await runStore.replaceFailedTeamStream({
++      rootTeamRunId: input.teamRunId,
++      candidateContext: context,
++      expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
++      beforeContextCommit: () => {
++        if (intent && !intent.isCurrent()) throw new Error('Workspace selection superseded.');
++        commitTeamRunHydrationActivities(hydrated);
++      },
++    });
++  } catch (error) {
++    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
++    throw error;
++  }
++  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+   markCommittedTeamRunHydrationAuthority(hydrated);
+   const focusedAgentRunId = context.view.getFocusedAgentRunId();
+   const focusedMemberAddress = context.view.getFocusedMemberAddress();
+@@ -118,7 +144,8 @@ export const reopenTeamRunAfterStreamLoss = async (
+     useTeamRunConfigStore().selectDraft(null);
+     useAgentRunConfigStore().clearConfig();
+   }
+-  const result = {
++  const result: OpenTeamRunWithCoordinatorResult = {
++    disposition: 'committed',
+     teamRunId: input.teamRunId,
+     focusedAgentRunId,
+     focusedMemberAddress,
+@@ -126,4 +153,4 @@ export const reopenTeamRunAfterStreamLoss = async (
+   };
+   input.onCommitted?.(result);
+   return result;
+-};
++}
+diff --git a/autobyteus-web/services/runSubmission/localUserSubmission.ts b/autobyteus-web/services/runSubmission/localUserSubmission.ts
+index e8ded33ef..8090663a3 100644
+--- a/autobyteus-web/services/runSubmission/localUserSubmission.ts
++++ b/autobyteus-web/services/runSubmission/localUserSubmission.ts
+@@ -1,3 +1,4 @@
++import { reactive } from 'vue';
+ import type { AgentContext } from '~/types/agent/AgentContext';
+ import type { ContextAttachment, UserMessage } from '~/types/conversation';
+ import {
+@@ -61,12 +62,12 @@ export const beginLocalUserSubmission = (
+   options: BeginLocalUserSubmissionOptions,
+ ): LocalUserSubmissionHandle => {
+   const occurredAt = nowIso();
+-  const submittedMessage: UserMessage = {
++  const submittedMessage = reactive<UserMessage>({
+     type: 'user',
+     text: options.text,
+     timestamp: new Date(occurredAt),
+     contextFilePaths: [...options.attachments],
+-  };
++  });
+ 
+   context.state.conversation.messages.push(submittedMessage);
+   commitRecentEventMonitorEffect(context, 'STRUCTURAL');
+diff --git a/autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts b/autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts
+index 54f87534f..72d338c93 100644
+--- a/autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts
++++ b/autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts
+@@ -46,7 +46,8 @@ vi.mock('~/stores/runHistoryStore', () => ({
+ }))
+ 
+ vi.mock('~/stores/agentSelectionStore', () => ({
+-  useAgentSelectionStore: () => ({ selectRun: selectRunMock }),
++  useAgentSelectionStore: () => ({
++    beginSelectionIntent: () => ({ isCurrent: () => true }), selectRun: selectRunMock }),
+ }))
+ 
+ import {
+@@ -112,6 +113,7 @@ describe('workspaceNavigationService', () => {
+     })
+ 
+     expect(openAgentRunMock).toHaveBeenCalledWith({
++      selectionIntent: expect.objectContaining({ isCurrent: expect.any(Function) }),
+       runId: 'agent-run-1',
+       fallbackAgentName: null,
+       resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
+@@ -127,7 +129,7 @@ describe('workspaceNavigationService', () => {
+       agentRunId: 'writer-run-1',
+     })
+ 
+-    expect(openTeamMemberRunMock).toHaveBeenCalledWith('team-run-1', 'writer-run-1')
++    expect(openTeamMemberRunMock).toHaveBeenCalledWith('team-run-1', 'writer-run-1', expect.objectContaining({ selectionIntent: expect.any(Object) }))
+     expect(openTeamRunMock).not.toHaveBeenCalled()
+   })
+ })
+diff --git a/autobyteus-web/services/workspace/workspaceNavigationService.ts b/autobyteus-web/services/workspace/workspaceNavigationService.ts
+index 026ef4c8e..749a175bb 100644
+--- a/autobyteus-web/services/workspace/workspaceNavigationService.ts
++++ b/autobyteus-web/services/workspace/workspaceNavigationService.ts
+@@ -3,7 +3,7 @@ import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
+ import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
+ import { useRunHistoryStore } from '~/stores/runHistoryStore'
+ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
+ import {
+   ensureRunHistoryWorkspaceByRootPath,
+   resolveRunHistoryWorkspaceMetadataByRootPath,
+@@ -81,32 +81,35 @@ export const stripWorkspaceExecutionLinkQuery = (
+ 
+ export const openWorkspaceExecutionLink = async (
+   link: WorkspaceExecutionLink,
+-): Promise<void> => {
++  selectionIntent?: WorkspaceSelectionIntent,
++): Promise<WorkspaceSelectionOutcome> => {
++  const intent = selectionIntent ?? useAgentSelectionStore().beginSelectionIntent()
++  if (!intent.isCurrent()) return { disposition: 'superseded' }
+   if (link.kind === 'agent') {
+-    await openAgentRun({
++    return openAgentRun({
++      selectionIntent: intent,
+       runId: link.runId,
+       fallbackAgentName: null,
+       resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
+       ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
+     })
+-    return
+   }
+ 
+   const mounted = useAgentTeamContextsStore().getTeamContextById(link.teamRunId)
+   if (mounted && link.agentRunId) {
+-    const result = await useRunHistoryStore().inspectTeamMember(link.teamRunId, link.agentRunId)
++    const result = await useRunHistoryStore().inspectTeamMember(link.teamRunId, link.agentRunId, { selectionIntent: intent })
+     if (result.disposition === 'rejected') throw new Error(result.message)
+-    return
++    return result
+   }
+   if (mounted) {
+     useAgentSelectionStore().selectRun(link.teamRunId, 'team')
+-    return
++    return { disposition: 'committed' }
+   }
+   if (link.agentRunId) {
+-    await useRunHistoryStore().openTeamMemberRun(link.teamRunId, link.agentRunId)
+-    return
++    return useRunHistoryStore().openTeamMemberRun(link.teamRunId, link.agentRunId, { selectionIntent: intent })
+   }
+-  await openTeamRun({
++  return openTeamRun({
++    selectionIntent: intent,
+     teamRunId: link.teamRunId,
+     agentRunId: link.agentRunId,
+     resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
+diff --git a/autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts b/autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts
+index 29f524f3f..149f7c573 100644
+--- a/autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts
++++ b/autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts
+@@ -1,5 +1,5 @@
+ import { beforeEach, describe, expect, it, vi } from 'vitest';
+-import { selectTreeRunFromHistory } from '../runHistorySelectionActions';
++import { selectTreeRunFromHistory, openTeamMemberRunFromHistory } from '../runHistorySelectionActions';
+ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+ 
+ const {
+@@ -15,7 +15,7 @@ const {
+   isReopenRequiredMock: vi.fn(),
+   reopenMock: vi.fn(),
+   openMock: vi.fn(),
+-  selectionMock: { selectRun: vi.fn() },
++  selectionMock: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectRun: vi.fn() },
+   teamConfigMock: { clearConfig: vi.fn() },
+   agentConfigMock: { clearConfig: vi.fn() },
+ }));
+@@ -51,7 +51,7 @@ const buildStore = () => ({
+   selectedTeamMemberAddress: '/before' as string | null,
+   teamResumeConfigByTeamRunId: {} as Record<string, any>,
+   teamMemberInspectionByIdentity: {},
+-  openTeamMemberRun: vi.fn(),
++  openTeamMemberRun: vi.fn(function(this: any, team: string, agent: string, options: any) { return openTeamMemberRunFromHistory(this, team, agent, options); }),
+   openRun: vi.fn(),
+   ensureWorkspaceByRootPath: vi.fn(),
+   resolveWorkspaceMetadataByRootPath: vi.fn(),
+@@ -77,7 +77,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
+       teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
+     });
+ 
+-    expect(store.inspectTeamMember).toHaveBeenCalledWith('team-recovery', 'run-a');
++    expect(store.inspectTeamMember).toHaveBeenCalledWith('team-recovery', 'run-a', expect.objectContaining({ selectionIntent: expect.any(Object) }));
+     expect(openMock).not.toHaveBeenCalled();
+     expect(reopenMock).not.toHaveBeenCalled();
+   });
+@@ -102,6 +102,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
+   it('routes a known failed local Team selection only through checkpointed recovery', async () => {
+     reopenMock.mockImplementation(async (input: any) => {
+       const result = {
++          disposition: 'committed',
+       teamRunId: 'team-recovery',
+       focusedAgentRunId: 'run-a',
+       focusedMemberAddress: '/member-a',
+@@ -118,7 +119,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
+ 
+     expect(reopenMock).toHaveBeenCalledTimes(1);
+     expect(store.inspectTeamMember).not.toHaveBeenCalled();
+-    expect(store.openTeamMemberRun).not.toHaveBeenCalled();
++    expect(store.openTeamMemberRun).toHaveBeenCalledTimes(1);
+     expect(store.selectedTeamRunId).toBe('team-recovery');
+     expect(store.selectedTeamMemberAddress).toBe('/member-a');
+     expect(store.selectedRunId).toBeNull();
+@@ -147,6 +148,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
+       .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
+       .mockImplementationOnce(async (input: any) => {
+         const result = {
++          disposition: 'committed',
+           teamRunId: 'team-recovery',
+           focusedAgentRunId: 'run-a',
+           focusedMemberAddress: '/member-a',
+diff --git a/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts b/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+index 4985c26b4..31de6a8b6 100644
+--- a/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
++++ b/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+@@ -198,6 +198,7 @@ const {
+   hydrateTeamMemberActivitiesFromProjectionMock,
+ } = vi.hoisted(() => {
+   const selection = {
++    beginSelectionIntent: () => ({ isCurrent: () => true }),
+     selectedType: null as string | null,
+     selectedRunId: null as string | null,
+     selectRun: vi.fn((runId: string, type: string) => {
+@@ -2230,7 +2231,7 @@ describe('runHistoryStore', () => {
+ 
+   it('selectTreeRun delegates to openRun for history rows', async () => {
+     const store = useRunHistoryStore();
+-    const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue(undefined);
++    const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue({ disposition: 'committed' });
+ 
+     await store.selectTreeRun(asRunTreeRow({
+       runId: 'run-1',
+@@ -2243,7 +2244,7 @@ describe('runHistoryStore', () => {
+       isDraft: false,
+     }));
+ 
+-    expect(openRunSpy).toHaveBeenCalledWith('run-1');
++    expect(openRunSpy).toHaveBeenCalledWith('run-1', expect.objectContaining({ selectionIntent: expect.any(Object) }));
+   });
+ 
+   it('selectTreeRun selects local temp context for draft rows', async () => {
+diff --git a/autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts b/autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+index 3e006d465..178415533 100644
+--- a/autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
++++ b/autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+@@ -1,3 +1,4 @@
++import { createPinia, setActivePinia } from 'pinia';
+ import { beforeEach, describe, expect, it, vi } from 'vitest';
+ import { inspectTeamMemberForStore, teamMemberInspectionIdentity } from '../runHistoryTeamMemberInspectionActions';
+ 
+@@ -15,7 +16,7 @@ const store = () => ({
+ });
+ 
+ describe('runHistoryTeamMemberInspectionActions', () => {
+-  beforeEach(() => vi.clearAllMocks());
++  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
+ 
+   it('publishes a row-scoped retry error without replacing the history panel or prior selection', async () => {
+     mocks.inspect.mockResolvedValue({
+diff --git a/autobyteus-web/stores/__tests__/workspaceSelectionComposition.spec.ts b/autobyteus-web/stores/__tests__/workspaceSelectionComposition.spec.ts
+new file mode 100644
+index 000000000..2f3ef5d42
+--- /dev/null
++++ b/autobyteus-web/stores/__tests__/workspaceSelectionComposition.spec.ts
+@@ -0,0 +1,202 @@
++import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
++import { createPinia, setActivePinia } from 'pinia';
++import { defineComponent, h, shallowReactive } from 'vue';
++import { createRouter, createMemoryHistory, RouterView } from 'vue-router';
++import { mount, flushPromises, type VueWrapper } from '@vue/test-utils';
++import AppLeftPanel from '~/components/AppLeftPanel.vue';
++import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceHistorySelectionActions';
++import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions';
++import { useWorkspaceRouteSelection } from '~/composables/workspace/useWorkspaceRouteSelection';
++import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
++import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
++import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
++import { useRunHistoryStore } from '~/stores/runHistoryStore';
++import { useAgentActivityStore } from '~/stores/agentActivityStore';
++import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration';
++import { parseAgentOrgHistoryItems } from '~/stores/runHistoryStoreSupport';
++import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
++import { ControlledOrgApollo, rootView, historyData, inspectionData, memberData, OrgTestSocket } from '~/test-support/agentOrgApolloFixture';
++
++let apollo: ControlledOrgApollo;
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => apollo.client }));
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => false, getBoundEndpoints: () => ({ teamWs: 'ws://controlled.invalid', orgWs: 'ws://controlled.invalid/org' }) }) }));
++vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }));
++vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }));
++let wrapper: VueWrapper | undefined;
++beforeEach(() => { setActivePinia(createPinia()); apollo = new ControlledOrgApollo(); OrgTestSocket.instances = []; vi.stubGlobal('WebSocket', OrgTestSocket); });
++afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentOrgContextsStore().disconnect('org-run'); apollo.client.stop(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
++const member = (id: string) => ({ teamRunId: 'prior-team', agentRunId: id, memberAddress: `/${id}` });
++const respondTeam = (request: ControlledOrgApollo['requests'][number], label = 'loaded') => request.respond({ getTeamMemberRunProjection: {
++  __typename: 'TeamMemberRunProjection', agentRunId: request.operation.variables.agentRunId,
++  summary: label, lastActivityAt: '2026-09-13T00:00:00.000Z', hasEarlierActiveTraceEvents: false,
++  conversation: [{ kind: 'message', role: 'assistant', content: label, ts: 1700000001 }], activities: [],
++} });
++const setup = async () => {
++  const history = useRunHistoryStore();
++  vi.spyOn(history, 'resolveWorkspaceMetadataByRootPath').mockResolvedValue(null);
++  vi.spyOn(history, 'ensureWorkspaceByRootPath').mockResolvedValue(null);
++  vi.spyOn(useAgentTeamRunStore(), 'isTeamStreamReopenRequired').mockReturnValue(false);
++  const teams = useAgentTeamContextsStore();
++  teams.addTeamContext(buildTestTeamContext({ teamRunId: 'prior-team', coordinatorAddress: '/lead', focusedAgentRunId: 'lead',
++    rootChildren: ['lead', 'worker', 'third'].map(id => testAgentNode(`/${id}`, { agentRunId: id })) }));
++  const team = teams.getTeamContextById('prior-team')!;
++  const staged = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false) });
++  await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
++  apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'retained')));
++  const candidate = await staged;
++  candidate.commitActivities();
++  const orgs = useAgentOrgContextsStore(); orgs.contexts['org-run'] = shallowReactive(candidate.context);
++  orgs.select('org-run', '/team/worker');
++  const context = orgs.contextFor('org-run')!;
++  const orgAgent = context.selectedTarget()!.context!;
++  orgAgent.requirement = 'unsent Org draft';
++  history.agentOrgHistory = parseAgentOrgHistoryItems(historyData(false).listCollaborationRootHistory);
++  useAgentSelectionStore().selectRun('prior-team', 'team');
++  let actions!: ReturnType<typeof useWorkspaceHistorySelectionActions>;
++  let execute!: ReturnType<typeof useWorkspaceHistorySubjectActions>['execute'];
++  const History = defineComponent({ emits: ['run-selected', 'run-created'], setup(_, { emit }) {
++    actions = useWorkspaceHistorySelectionActions({ runHistoryStore: history, selectionStore: useAgentSelectionStore(),
++      setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), presentTeamStreamRecoveryFeedback: vi.fn(),
++      emitRunSelected: payload => emit('run-selected', payload), emitRunCreated: payload => emit('run-created', payload) });
++    execute = useWorkspaceHistorySubjectActions().execute;
++    return () => h('div', ['worker', 'third'].map(id => h('button', { 'data-test': id, onClick: () => actions.onSelectTeamMember(member(id)) }, id)));
++  } });
++  const Workspace = defineComponent({ setup() { useWorkspaceRouteSelection(); return () => h('main'); } });
++  const router = createRouter({ history: createMemoryHistory(), routes: [
++    { path: '/workspace', component: Workspace }, { path: '/agents', component: { template: '<div />' } },
++  ] });
++  await router.push({ path: '/workspace', query: { rootSubjectKind: 'agent_org', orgRunId: 'org-run', memberAddress: '/team/worker', mode: 'history' } });
++  wrapper = mount(defineComponent({ setup: () => () => h('div', [h(AppLeftPanel), h(RouterView)]) }), {
++    global: { plugins: [router], stubs: { WorkspaceAgentRunsTreePanel: History, Icon: true } },
++  });
++  await flushPromises();
++  return { history, team, context, orgs, orgAgent, router, actions, execute, selection: useAgentSelectionStore() };
++};
++
++describe('explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router', () => {
++  it.each(['success', 'error'])('late prior Team %s cannot override a newer Org choice or clear its draft', async (completion) => {
++    const s = await setup();
++    const prior = s.team.view.getAgentContext('worker')!.conversation;
++    await wrapper!.get('[data-test="worker"]').trigger('click');
++    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
++    const old = apollo.pending('GetTeamMemberRunProjection')[0];
++    await s.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team/worker' });
++    if (completion === 'success') respondTeam(old); else old.fail('old load failed');
++    await flushPromises();
++    expect(s.router.currentRoute.value.query.orgRunId).toBe('org-run');
++    expect(s.selection.selectedRunId).toBeNull();
++    expect(s.context.selectedAddress).toBe('/team/worker');
++    expect(s.orgAgent.requirement).toBe('unsent Org draft');
++    expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
++    expect(s.team.view.getAgentContext('worker')!.conversation).toBe(prior);
++    expect(s.history.selectedTeamRunId).toBeNull();
++    expect(s.history.error).toBeNull();
++    expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toBeNull();
++    // Legitimate return succeeds through the same real child event and shell.
++    const returning = s.actions.onSelectTeamMember(member('worker'));
++    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
++    respondTeam(apollo.pending('GetTeamMemberRunProjection')[0], 'return'); await returning; await flushPromises();
++    expect(s.selection.selectedRunId).toBe('prior-team'); expect(s.team.view.getFocusedAgentRunId()).toBe('worker');
++    expect(s.router.currentRoute.value.query).toEqual({});
++    expect(s.orgAgent.requirement).toBe('unsent Org draft');
++  });
++  it('newest same-root member link is processed while old read is pending and old finally cannot strip it', async () => {
++    const s = await setup();
++    const link = (id: string) => ({ path: '/workspace', query: { workspaceExecutionKind: 'team', workspaceExecutionRunId: 'prior-team', workspaceExecutionAgentRunId: id } });
++    await s.router.push(link('worker')); await flushPromises();
++    const old = apollo.pending('GetTeamMemberRunProjection')[0]; expect(old).toBeDefined();
++    await s.router.push(link('third')); await flushPromises();
++    const latest = apollo.pending('GetTeamMemberRunProjection').find(r => r.operation.variables.agentRunId === 'third')!;
++    expect(latest).toBeDefined(); respondTeam(old); await flushPromises();
++    expect(s.router.currentRoute.value.query.workspaceExecutionAgentRunId).toBe('third');
++    expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
++    respondTeam(latest); await flushPromises();
++    expect(s.team.view.getFocusedAgentRunId()).toBe('third'); expect(s.router.currentRoute.value.query).toEqual({});
++  });
++  it('route leave invalidates pending selection; Back/Forward can perform a fresh selection', async () => {
++    const s = await setup();
++    await wrapper!.get('[data-test="worker"]').trigger('click'); await flushPromises();
++    const old = apollo.pending('GetTeamMemberRunProjection')[0];
++    await s.router.push('/agents'); respondTeam(old); await flushPromises();
++    expect(s.router.currentRoute.value.path).toBe('/agents'); expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
++    s.router.back(); await flushPromises();
++    expect(s.router.currentRoute.value.query.orgRunId).toBe('org-run');
++    s.router.forward(); await flushPromises(); expect(s.router.currentRoute.value.path).toBe('/agents');
++  });
++  it('supersedes a cold Org selecting candidate before publication, preserving a newer Team selection', async () => {
++    const s = await setup(); s.orgs.disconnect('org-run');
++    const old = s.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/director' });
++    await vi.waitFor(() => expect(apollo.pending('GetAgentOrgRunInspection')).toHaveLength(1));
++    apollo.pending('GetAgentOrgRunInspection')[0].respond(inspectionData(false));
++    await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
++    const choosing = s.actions.onSelectTeamMember(member('worker'));
++    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
++    respondTeam(apollo.pending('GetTeamMemberRunProjection')[0]); await choosing;
++    apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'obsolete')));
++    expect(await old).toEqual({ disposition: 'superseded' }); await flushPromises();
++    expect(s.orgs.contextFor('org-run')).toBeNull();
++    expect(s.selection.selectedRunId).toBe('prior-team'); expect(s.router.currentRoute.value.query).toEqual({});
++    expect(useAgentActivityStore().getActivities('agent-director').some(a => a.activityId?.startsWith('obsolete'))).toBe(false);
++  });
++  it('same-target supersession retains the newest attempt and current error until deliberate retry', async () => {
++    const s = await setup();
++    apollo.client.defaultOptions.query = { context: { queryDeduplication: false } }; // Control two physical completions, not production policy.
++    const first = s.history.inspectTeamMember('prior-team', 'worker');
++    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
++    const second = s.history.inspectTeamMember('prior-team', 'worker');
++    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(2));
++    const [old, current] = apollo.pending('GetTeamMemberRunProjection');
++    const owned = s.history.getTeamMemberInspectionAttempt('prior-team', 'worker');
++    respondTeam(old); expect(await first).toEqual({ disposition: 'superseded' });
++    expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toBe(owned);
++    expect(owned?.state).toBe('loading');
++    current.fail('current unavailable'); expect(await second).toMatchObject({ disposition: 'rejected' });
++    expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toEqual({ state: 'error', detail: 'current unavailable' });
++    expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
++    const retry = s.history.inspectTeamMember('prior-team', 'worker');
++    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
++    respondTeam(apollo.pending('GetTeamMemberRunProjection')[0]);
++    expect(await retry).toMatchObject({ disposition: 'committed' });
++    expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toBeNull();
++  });
++  it('publication-only snapshot/status/input preserves Org route, prior Team focus, explicit intent and draft', async () => {
++    const s = await setup();
++    await s.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team/worker' });
++    const intent = s.selection.selectionIntent;
++    const route = s.router.currentRoute.value.fullPath;
++    const events: unknown[] = [];
++    s.selection.$onAction(({ name }) => events.push(name));
++    s.context.requireReopen('transport reconnect');
++    const reconnect = s.orgs.openForInspection('org-run');
++    await vi.waitFor(() => expect(apollo.pending('GetAgentOrgRunInspection')).toHaveLength(1));
++    apollo.pending('GetAgentOrgRunInspection')[0].respond(inspectionData(true));
++    await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
++    apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'observed')));
++    await reconnect;
++    const socket = OrgTestSocket.instances[0];
++    const view = rootView(true);
++    socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'publication' } });
++    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: view } });
++    await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
++    apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'published')));
++    await vi.waitFor(() => expect(s.orgs.contextFor('org-run')?.phase).toBe('live'));
++    let sequence = view.base_change_sequence;
++    const emit = (message: unknown) => socket.emit({ type: 'ROOT_EXECUTION_EVENT', payload: {
++      root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: ++sequence,
++      event: { kind: 'agent_presentation', member_address: '/team/worker', agent_run_id: 'agent-task-worker', message },
++    } });
++    emit({ type: 'AGENT_STATUS', payload: { status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null } });
++    emit({ type: 'MEMBER_INPUT_MESSAGE', payload: { message_id: 'published-input', dedupe_key: 'published-input', content: 'published task input',
++      input_origin: 'user_message', received_at: '2026-09-13T00:00:00.000Z', context_file_paths: [], sender_agent_run_id: null, parent_communication_message_id: null } });
++    await vi.waitFor(() => expect(s.orgs.contextFor('org-run')!.getAgentContext('agent-task-worker')!.conversation.messages.some(m => m.type === 'user' && m.text === 'published task input')).toBe(true));
++    expect(s.router.currentRoute.value.fullPath).toBe(route);
++    expect(s.selection.selectionIntent).toBe(intent); expect(events).not.toContain('beginSelectionIntent');
++    expect(s.orgs.contextFor('org-run')!.selectedAddress).toBe('/team/worker');
++    expect(s.orgs.contextFor('org-run')!.selectedTarget()!.context).toBe(s.orgAgent);
++    expect(s.orgAgent.requirement).toBe('unsent Org draft');
++    expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
++    expect(s.history.selectedTeamRunId).toBeNull();
++  });
++
++});
+diff --git a/autobyteus-web/stores/agentOrgContextsStore.ts b/autobyteus-web/stores/agentOrgContextsStore.ts
+index e2e0297cd..e639ff326 100644
+--- a/autobyteus-web/stores/agentOrgContextsStore.ts
++++ b/autobyteus-web/stores/agentOrgContextsStore.ts
+@@ -1,3 +1,4 @@
++import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore'
+ import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
+ import { RootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts'
+ import { defineStore } from 'pinia'
+@@ -106,10 +107,11 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+     contexts.value[id]?.select(selection)
+   }
+ 
+-  const readInspection = async (id: string): Promise<void> => {
++  const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
+     const generation = Symbol(id)
+     generations.set(id, generation)
+-    const current = () => generations.get(id) === generation
++    const ownsGeneration = () => generations.get(id) === generation
++    const current = () => ownsGeneration() && (!intent || intent.isCurrent())
+     try {
+       const result = await getApolloClient().query({ query: GetAgentOrgRunInspection,
+         variables: { orgRunId: id }, fetchPolicy: 'network-only', context: { queryDeduplication: false } })
+@@ -129,22 +131,23 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+     } catch (cause) {
+       if (current()) { report(id, cause); throw cause }
+     } finally {
+-      if (current()) generations.delete(id)
++      if (ownsGeneration()) generations.delete(id)
+     }
+   }
+ 
+-  const openForInspection = (id: string): Promise<void> => {
++  const openForInspection = (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
++    if (intent && !intent.isCurrent()) return Promise.resolve()
+     deferredDisposals.delete(id)
+     if (operations.value[id]) return Promise.resolve()
+     const context = contexts.value[id]
+     if (context?.phase === 'historical' || (context?.phase === 'live' && services.get(id)?.isReady())) return Promise.resolve()
+     const inFlight = inspections.get(id)
+-    if (inFlight) return inFlight
++    if (inFlight && !intent) return inFlight
+     retireStream(id)
+-    const operation = readInspection(id).finally(() => {
++    const operation = readInspection(id, intent).finally(() => {
+       if (inspections.get(id) === operation) inspections.delete(id)
+     })
+-    inspections.set(id, operation)
++    if (!intent) inspections.set(id, operation)
+     return operation
+   }
+ 
+diff --git a/autobyteus-web/stores/agentSelectionStore.ts b/autobyteus-web/stores/agentSelectionStore.ts
+index 0761f5211..51e94ac92 100644
+--- a/autobyteus-web/stores/agentSelectionStore.ts
++++ b/autobyteus-web/stores/agentSelectionStore.ts
+@@ -9,7 +9,15 @@ export type RunSelectionSubject =
+   | Readonly<{ kind: 'team_run'; rootTeamRunId: string }>
+   | Readonly<{ kind: 'team_draft'; draftId: TeamLaunchDraftId }>;
+ 
+-interface AgentSelectionState { subject: RunSelectionSubject | null }
++export type WorkspaceSelectionIntent = Readonly<{ isCurrent(): boolean }>;
++export type WorkspaceSelectionOutcome = Readonly<{ disposition: 'committed' | 'superseded' }>;
++export type SupersededSelection = Readonly<{ disposition: 'superseded' }>;
++
++interface AgentSelectionState {
++  subject: RunSelectionSubject | null;
++  // Ephemeral user intent only. Background publication and promotion do not change it.
++  selectionIntent: symbol | null;
++}
+ 
+ const assertSelectionMutable = (): void => {
+   const drafts = useTeamRunConfigStore();
+@@ -19,7 +27,7 @@ const assertSelectionMutable = (): void => {
+ };
+ 
+ export const useAgentSelectionStore = defineStore('agentSelection', {
+-  state: (): AgentSelectionState => ({ subject: null }),
++  state: (): AgentSelectionState => ({ subject: null, selectionIntent: null }),
+   getters: {
+     selectedType(state): SelectionType | null {
+       return state.subject?.kind === 'agent_run' ? 'agent'
+@@ -37,6 +45,13 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
+     isTeamSelected(): boolean { return this.selectedType === 'team' || this.selectedType === 'team_draft'; },
+   },
+   actions: {
++    beginSelectionIntent(): WorkspaceSelectionIntent {
++      assertSelectionMutable();
++      const token = Symbol('workspace-selection');
++      this.selectionIntent = token;
++      return Object.freeze({ isCurrent: () => this.selectionIntent === token });
++    },
++    invalidateSelectionIntent(): void { this.selectionIntent = null; },
+     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') {
+       assertSelectionMutable();
+       const normalized = runId.trim();
+diff --git a/autobyteus-web/stores/runHistoryDraftActions.ts b/autobyteus-web/stores/runHistoryDraftActions.ts
+index 5948938e6..ecaff69ef 100644
+--- a/autobyteus-web/stores/runHistoryDraftActions.ts
++++ b/autobyteus-web/stores/runHistoryDraftActions.ts
+@@ -1,7 +1,7 @@
+ import { useWorkspaceStore } from '~/stores/workspace';
+ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
+ import { useAgentContextsStore } from '~/stores/agentContextsStore';
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
+ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
+ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
+@@ -19,8 +19,10 @@ interface RunHistoryDraftStoreState {
+ 
+ export const createDraftRunForHistoryStore = async (
+   store: RunHistoryDraftStoreState,
+-  options: { workspaceRootPath: string; agentDefinitionId: string },
+-): Promise<void> => {
++  options: { workspaceRootPath: string; agentDefinitionId: string; selectionIntent?: WorkspaceSelectionIntent },
++): Promise<WorkspaceSelectionOutcome> => {
++  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
+   const agentDefinitionStore = useAgentDefinitionStore();
+   if (agentDefinitionStore.agentDefinitions.length === 0) {
+     await agentDefinitionStore.fetchAllAgentDefinitions();
+@@ -57,6 +59,7 @@ export const createDraftRunForHistoryStore = async (
+       await llmProviderConfigStore.ensureMissingDynamicProviders(modelRuntimeKind);
+     },
+   });
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
+   if (!resolvedModelIdentifier) throw new Error('No model is available to start a new run.');
+ 
+   useTeamRunConfigStore().clearConfig();
+@@ -82,4 +85,5 @@ export const createDraftRunForHistoryStore = async (
+   store.selectedRunId = null;
+   store.selectedTeamRunId = null;
+   store.selectedTeamMemberAddress = null;
++  return { disposition: 'committed' };
+ };
+diff --git a/autobyteus-web/stores/runHistoryLoadActions.ts b/autobyteus-web/stores/runHistoryLoadActions.ts
+index 0efcd9c2d..0b59f3a65 100644
+--- a/autobyteus-web/stores/runHistoryLoadActions.ts
++++ b/autobyteus-web/stores/runHistoryLoadActions.ts
+@@ -1,3 +1,5 @@
++import { watch } from 'vue';
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
+ import type { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
+ import { getApolloClient } from '~/utils/apolloClient';
+ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+@@ -44,6 +46,7 @@ import {
+ export type RunHistorySelectionMode = 'desktop' | 'mobile';
+ 
+ interface RunHistoryOpenOptions {
++  selectionIntent?: WorkspaceSelectionIntent;
+   selectionMode?: RunHistorySelectionMode;
+ }
+ 
+@@ -333,28 +336,36 @@ export const openHistoricalRun = async (
+   store: RunHistoryFetchStoreLike,
+   runId: string,
+   options: RunHistoryOpenOptions = {},
+-): Promise<void> => {
++): Promise<WorkspaceSelectionOutcome> => {
++  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
++  const stopWatching = watch(intent.isCurrent, (current) => { if (!current) store.openingRun = false; }, { flush: 'sync' });
+   store.openingRun = true;
+   store.error = null;
+ 
+   try {
+     const result = await openAgentRun({
+       runId,
++      selectionIntent: intent,
+       fallbackAgentName: store.findAgentNameByRunId(runId),
+       resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+         store.resolveWorkspaceMetadataByRootPath(rootPath),
+       selectionMode: options.selectionMode,
+     });
+ 
++    if (result.disposition === 'superseded' || !intent.isCurrent()) return { disposition: 'superseded' };
+     store.resumeConfigByRunId[runId] = result.resumeConfig;
+     store.selectedRunId = result.runId;
+     store.selectedTeamRunId = null;
+     store.selectedTeamMemberAddress = null;
++    return { disposition: 'committed' };
+   } catch (error: any) {
++    if (!intent.isCurrent()) return { disposition: 'superseded' };
+     store.error = error?.message || `Failed to open run '${runId}'.`;
+     throw error;
+   } finally {
+-    store.openingRun = false;
++    stopWatching();
++    if (intent.isCurrent()) store.openingRun = false;
+   }
+ };
+ 
+diff --git a/autobyteus-web/stores/runHistorySelectionActions.ts b/autobyteus-web/stores/runHistorySelectionActions.ts
+index a599008f2..993291502 100644
+--- a/autobyteus-web/stores/runHistorySelectionActions.ts
++++ b/autobyteus-web/stores/runHistorySelectionActions.ts
+@@ -1,9 +1,10 @@
++import { watch } from 'vue';
+ import type {
+   TeamMemberFocusTarget,
+   TeamRunResumeConfigPayload,
+ } from '~/stores/runHistoryTypes';
+ import type { RunTreeRow } from '~/utils/runTreeProjection';
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
+ import { useAgentContextsStore } from '~/stores/agentContextsStore';
+ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+@@ -14,6 +15,7 @@ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+ import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberInspectionCoordinator';
+ import {
+   clearTeamMemberInspectionAttempt,
++  teamMemberInspectionIdentity,
+   setTeamMemberInspectionError,
+   setTeamMemberInspectionLoading,
+   type TeamMemberInspectionAttemptStoreState,
+@@ -21,7 +23,8 @@ import {
+ 
+ type RunHistorySelectionMode = 'desktop' | 'mobile';
+ 
+-interface RunHistoryOpenOptions {
++export interface RunHistoryOpenOptions {
++  selectionIntent?: WorkspaceSelectionIntent;
+   selectionMode?: RunHistorySelectionMode;
+ }
+ 
+@@ -32,8 +35,8 @@ interface RunHistorySelectionStoreLike extends TeamMemberInspectionAttemptStoreS
+   selectedTeamRunId: string | null;
+   selectedTeamMemberAddress: string | null;
+   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
+-  openTeamMemberRun(teamRunId: string, agentRunId: string, options?: RunHistoryOpenOptions): Promise<void>;
+-  openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
++  openTeamMemberRun(teamRunId: string, agentRunId: string, options?: RunHistoryOpenOptions): Promise<WorkspaceSelectionOutcome>;
++  openRun(runId: string, options?: RunHistoryOpenOptions): Promise<WorkspaceSelectionOutcome>;
+   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
+   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
+   inspectTeamMember(
+@@ -60,107 +63,77 @@ export const openTeamMemberRunFromHistory = async (
+   teamRunId: string,
+   agentRunId: string,
+   options: RunHistoryOpenOptions = {},
+-): Promise<void> => {
++): Promise<WorkspaceSelectionOutcome> => {
++  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
+   store.openingRun = true;
+   store.error = null;
+-  setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
++  const attempt = setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
++  const key = teamMemberInspectionIdentity(teamRunId, agentRunId);
++  const clearOwned = () => {
++    if (store.teamMemberInspectionByIdentity[key] === attempt) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
++  };
++  // Invalidate the old loading state synchronously, before the next intent starts loading.
++  const stopWatching = watch(intent.isCurrent, (current) => {
++    if (!current) { store.openingRun = false; clearOwned(); }
++  }, { flush: 'sync' });
+   try {
+-    const result = await openTeamRun({
++    const open = useAgentTeamRunStore().isTeamStreamReopenRequired(teamRunId)
++      ? reopenTeamRunAfterStreamLoss : openTeamRun;
++    return await open({
+       teamRunId,
+       agentRunId,
+-      resolveWorkspaceMetadataByRootPath: (path: string) =>
+-        store.resolveWorkspaceMetadataByRootPath(path),
+-      ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
++      selectionIntent: intent,
++      resolveWorkspaceMetadataByRootPath: (path) => store.resolveWorkspaceMetadataByRootPath(path),
++      ensureWorkspaceByRootPath: (path) => store.ensureWorkspaceByRootPath(path),
+       selectionMode: options.selectionMode,
+       onCommitted: (committed) => {
+         store.teamResumeConfigByTeamRunId[committed.resumeConfig.teamRunId] = committed.resumeConfig;
+         store.selectedTeamRunId = committed.teamRunId;
+         store.selectedTeamMemberAddress = committed.focusedMemberAddress;
+         store.selectedRunId = null;
+-        clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
++        clearOwned();
+       },
+     });
+-    void result;
+-  } catch (error: any) {
+-    setTeamMemberInspectionError(
+-      store,
+-      teamRunId,
+-      agentRunId,
+-      error?.message || `Failed to open team '${teamRunId}'.`,
+-    );
++  } catch (error) {
++    if (!intent.isCurrent()) return { disposition: 'superseded' };
++    if (store.teamMemberInspectionByIdentity[key] === attempt) {
++      setTeamMemberInspectionError(store, teamRunId, agentRunId,
++        error instanceof Error ? error.message : `Failed to open team '${teamRunId}'.`);
++    }
+     throw error;
+   } finally {
+-    store.openingRun = false;
++    stopWatching();
++    if (intent.isCurrent()) store.openingRun = false;
++    if (!intent.isCurrent()) clearOwned();
+   }
+ };
+ 
+ export const selectTreeRunFromHistory = async (
+   store: RunHistorySelectionStoreLike,
+   row: RunTreeRow | TeamMemberFocusTarget,
+-): Promise<void> => {
++  options: RunHistoryOpenOptions = {},
++): Promise<WorkspaceSelectionOutcome> => {
++  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
++  const selectingOptions = { ...options, selectionIntent: intent };
+   if ('teamRunId' in row) {
+-    const teamContextsStore = useAgentTeamContextsStore();
+-    const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
+-    const shouldReuseLocalTeamContext = Boolean(localTeamContext);
+-
+-    if (shouldReuseLocalTeamContext) {
+-      const teamRunStore = useAgentTeamRunStore();
+-      if (teamRunStore.isTeamStreamReopenRequired(row.teamRunId)) {
+-        store.openingRun = true;
+-        store.error = null;
+-        setTeamMemberInspectionLoading(store, row.teamRunId, row.agentRunId);
+-        try {
+-          await reopenTeamRunAfterStreamLoss({
+-            teamRunId: row.teamRunId,
+-            agentRunId: row.agentRunId,
+-            resolveWorkspaceMetadataByRootPath: (path: string) =>
+-              store.resolveWorkspaceMetadataByRootPath(path),
+-            ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
+-            onCommitted: (committed) => {
+-              store.teamResumeConfigByTeamRunId[committed.resumeConfig.teamRunId] = committed.resumeConfig;
+-              store.selectedTeamRunId = committed.teamRunId;
+-              store.selectedTeamMemberAddress = committed.focusedMemberAddress;
+-              store.selectedRunId = null;
+-              clearTeamMemberInspectionAttempt(store, row.teamRunId, row.agentRunId);
+-            },
+-          });
+-        } catch (error: any) {
+-          setTeamMemberInspectionError(
+-            store,
+-            row.teamRunId,
+-            row.agentRunId,
+-            error?.message || `Failed to recover team '${row.teamRunId}'.`,
+-          );
+-          throw error;
+-        } finally {
+-          store.openingRun = false;
+-        }
+-        return;
+-      }
+-      const result = await store.inspectTeamMember(row.teamRunId, row.agentRunId);
++    const mounted = useAgentTeamContextsStore().getTeamContextById(row.teamRunId);
++    if (mounted && !useAgentTeamRunStore().isTeamStreamReopenRequired(row.teamRunId)) {
++      const result = await store.inspectTeamMember(row.teamRunId, row.agentRunId, selectingOptions);
+       if (result.disposition === 'rejected') throw new Error(result.message);
+-      return;
++      return result;
+     }
+-    await store.openTeamMemberRun(row.teamRunId, row.agentRunId);
+-    return;
+-  }
+-
+-  if (row.source === 'history') {
+-    await store.openRun(row.runId);
+-    return;
+-  }
+-
+-  const contextsStore = useAgentContextsStore();
+-  const context = contextsStore.getRun(row.runId);
+-  if (!context) {
+-    return;
++    return store.openTeamMemberRun(row.teamRunId, row.agentRunId, selectingOptions);
+   }
++  if (row.source === 'history') return store.openRun(row.runId, selectingOptions);
+ 
+-  const selectionStore = useAgentSelectionStore();
+-  selectionStore.selectRun(row.runId, 'agent');
++  if (!useAgentContextsStore().getRun(row.runId)) throw new Error(`Run '${row.runId}' is unavailable.`);
++  useAgentSelectionStore().selectRun(row.runId, 'agent');
+   store.selectedRunId = row.runId;
+   store.selectedTeamRunId = null;
+   store.selectedTeamMemberAddress = null;
+   useTeamRunConfigStore().clearConfig();
+   useAgentRunConfigStore().clearConfig();
++  return { disposition: 'committed' };
+ };
+diff --git a/autobyteus-web/stores/runHistoryStore.ts b/autobyteus-web/stores/runHistoryStore.ts
+index 347c84f10..652619230 100644
+--- a/autobyteus-web/stores/runHistoryStore.ts
++++ b/autobyteus-web/stores/runHistoryStore.ts
+@@ -14,6 +14,7 @@ import {
+   findAgentNameByRunId as findAgentNameFromHistory,
+   formatRunHistoryRelativeTime,
+ } from '~/stores/runHistoryReadModel';
++import type { WorkspaceSelectionIntent, WorkspaceSelectionOutcome } from './agentSelectionStore';
+ import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
+ import {
+   type RunTreeRow,
+@@ -120,16 +121,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
+       this.refreshRunNavigationTopology('agent-org-history-refresh');
+     },
+ 
+-    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode } = {}): Promise<void> {
+-      await openHistoricalRun(this, runId, options);
+-      this.refreshRunNavigationTopology('standalone-open');
++    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {}): Promise<WorkspaceSelectionOutcome> {
++      const result = await openHistoricalRun(this, runId, options);
++      if (result.disposition === 'committed') this.refreshRunNavigationTopology('standalone-open');
++      return result;
+     },
+ 
+     async createDraftRun(options: {
+       workspaceRootPath: string;
+       agentDefinitionId: string;
+-    }): Promise<void> {
+-      await createDraftRunForHistoryStore(this, options);
++      selectionIntent?: WorkspaceSelectionIntent;
++    }): Promise<WorkspaceSelectionOutcome> {
++      return createDraftRunForHistoryStore(this, options);
+     },
+ 
+     async createWorkspace(rootPath: string): Promise<string> {
+@@ -483,7 +486,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
+     async inspectTeamMember(
+       teamRunId: string,
+       agentRunId: string,
+-      options: { selectionMode?: RunHistorySelectionMode } = {},
++      options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
+     ): Promise<TeamMemberInspectionResult> {
+       return inspectTeamMemberForStore(this, teamRunId, agentRunId, options);
+     },
+@@ -498,16 +501,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
+     async openTeamMemberRun(
+       teamRunId: string,
+       agentRunId: string,
+-      options: { selectionMode?: RunHistorySelectionMode } = {},
+-    ): Promise<void> {
+-      await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
+-      this.refreshRunNavigationTopology('team-open');
++      options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
++    ): Promise<WorkspaceSelectionOutcome> {
++      const result = await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
++      if (result.disposition === 'committed') this.refreshRunNavigationTopology('team-open');
++      return result;
+     },
+ 
+     async selectTreeRun(
+       row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberFocusTarget,
+-    ): Promise<void> {
+-      await selectTreeRunFromHistory(this, row);
++      options: { selectionIntent?: WorkspaceSelectionIntent } = {},
++    ): Promise<WorkspaceSelectionOutcome> {
++      return selectTreeRunFromHistory(this, row, options);
+     },
+ 
+     formatRelativeTime(isoTime: string): string {
+diff --git a/autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts b/autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts
+index b264332cf..c4638ec0b 100644
+--- a/autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts
++++ b/autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts
+@@ -1,4 +1,5 @@
+-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++import { watch } from 'vue';
++import { useAgentSelectionStore, type WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
+ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
+ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+ import { inspectMountedTeamMember, type TeamMemberInspectionResult } from '~/services/runOpen/teamMemberInspectionCoordinator';
+@@ -29,11 +30,12 @@ export const setTeamMemberInspectionLoading = (
+   store: TeamMemberInspectionAttemptStoreState,
+   teamRunId: string,
+   agentRunId: string,
+-): void => {
++): TeamMemberInspectionAttempt => {
+   store.teamMemberInspectionByIdentity = {
+     ...store.teamMemberInspectionByIdentity,
+     [teamMemberInspectionIdentity(teamRunId, agentRunId)]: { state: 'loading', detail: null },
+   };
++  return store.teamMemberInspectionByIdentity[teamMemberInspectionIdentity(teamRunId, agentRunId)]!;
+ };
+ 
+ export const setTeamMemberInspectionError = (
+@@ -41,11 +43,12 @@ export const setTeamMemberInspectionError = (
+   teamRunId: string,
+   agentRunId: string,
+   detail: string,
+-): void => {
++): TeamMemberInspectionAttempt => {
+   store.teamMemberInspectionByIdentity = {
+     ...store.teamMemberInspectionByIdentity,
+     [teamMemberInspectionIdentity(teamRunId, agentRunId)]: { state: 'error', detail },
+   };
++  return store.teamMemberInspectionByIdentity[teamMemberInspectionIdentity(teamRunId, agentRunId)]!;
+ };
+ 
+ export const clearTeamMemberInspectionAttempt = (
+@@ -64,13 +67,21 @@ export const inspectTeamMemberForStore = async (
+   store: RunHistoryTeamMemberInspectionStoreState,
+   teamRunId: string,
+   agentRunId: string,
+-  options: { selectionMode?: TeamMemberInspectionSelectionMode } = {},
++  options: { selectionMode?: TeamMemberInspectionSelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
+ ): Promise<TeamMemberInspectionResult> => {
+-  setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
++  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
++  if (!intent.isCurrent()) return { disposition: 'superseded' };
++  const attempt = setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
++  const key = teamMemberInspectionIdentity(teamRunId, agentRunId);
++  const clearOwned = () => {
++    if (store.teamMemberInspectionByIdentity[key] === attempt) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
++  };
++  const stopWatching = watch(intent.isCurrent, (current) => { if (!current) clearOwned(); }, { flush: 'sync' });
+   store.error = null;
+   const result = await inspectMountedTeamMember({
+     teamRunId,
+     agentRunId,
++    selectionIntent: intent,
+     commit: ({ teamRunId: committedTeamRunId, agentRunId: committedAgentRunId, memberAddress }) => {
+       refreshRunNavigationTopologyForStore(store, 'team-member-inspection');
+       const selection = useAgentSelectionStore();
+@@ -82,10 +93,12 @@ export const inspectTeamMemberForStore = async (
+       store.selectedRunId = null;
+       useTeamRunConfigStore().clearConfig();
+       useAgentRunConfigStore().clearConfig();
+-      clearTeamMemberInspectionAttempt(store, committedTeamRunId, committedAgentRunId);
++      clearOwned();
+     },
+   });
+-  if (result.disposition === 'rejected') {
++  stopWatching();
++  if (result.disposition === 'superseded') clearOwned();
++  if (result.disposition === 'rejected' && intent.isCurrent() && store.teamMemberInspectionByIdentity[key] === attempt) {
+     setTeamMemberInspectionError(store, teamRunId, agentRunId, result.message);
+   }
+   return result;
+@@ -96,23 +109,24 @@ export const reconcileFocusedTeamMemberProjectionForStore = async (
+   teamRunId: string,
+   agentRunId: string,
+ ): Promise<void> => {
+-  setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
++  const attempt = setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
++  const ownsAttempt = () => store.teamMemberInspectionByIdentity[teamMemberInspectionIdentity(teamRunId, agentRunId)] === attempt;
+   try {
+     const team = useAgentTeamContextsStore().getTeamContextById(teamRunId);
+     if (!team || team.view.getFocusedAgentRunId() !== agentRunId) {
+-      clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
++      if (ownsAttempt()) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+       return;
+     }
+     await ensureAuthoritativeTeamMemberProjection({ team, agentRunId });
+     if (useAgentTeamContextsStore().getTeamContextById(teamRunId) !== team
+       || team.view.getFocusedAgentRunId() !== agentRunId) {
+-      clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
++      if (ownsAttempt()) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+       return;
+     }
+     refreshRunNavigationTopologyForStore(store, 'team-member-projection-reconcile');
+-    clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
++    if (ownsAttempt()) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+   } catch (error) {
+-    setTeamMemberInspectionError(
++    if (ownsAttempt()) setTeamMemberInspectionError(
+       store,
+       teamRunId,
+       agentRunId,

@@ -1,0 +1,66 @@
+{
+  "at": "2026-09-13T11:38:58.170Z",
+  "request": {
+    "operationName": "CreateAgentTeamRun",
+    "variables": {
+      "input": {
+        "teamDefinitionId": "followup-flat-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/coordinator",
+            "agentDefinitionId": "followup-assistant",
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          },
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "followup-assistant",
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "followup-assistant",
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        ]
+      }
+    },
+    "query": "mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {\n  createAgentTeamRun(input: $input) {\n    __typename\n    success\n    message\n    teamRunId\n  }\n}"
+  },
+  "response": {
+    "data": {
+      "createAgentTeamRun": {
+        "__typename": "CreateAgentTeamRunResult",
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c"
+      }
+    }
+  },
+  "status": 200
+}

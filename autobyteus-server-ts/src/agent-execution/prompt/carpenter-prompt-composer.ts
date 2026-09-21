@@ -1,6 +1,6 @@
 import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
-import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { renderTeamCollaborationInstruction } from "../../agent-team-execution/services/team-collaboration-instruction-renderer.js";
 import {
   BASH_OPERATING_PRACTICE_SECTION,
@@ -12,7 +12,7 @@ import {
 
 export type SharedCarpenterPromptComposerInput = {
   agentDefinition: AgentDefinition;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
 };
 
 export type NativeCarpenterPromptComposerInput = SharedCarpenterPromptComposerInput & {
@@ -33,12 +33,12 @@ const buildSharedCarpenterPromptSections = (
   }
 
   const sections: string[] = [renderAgentIdentitySection(input.agentDefinition)];
-  if (input.memberTeamContext) {
-    const teamInstruction = renderTeamInstructionSection(input.memberTeamContext.authoredTeamInstruction);
+  if (input.memberExecutionContext) {
+    const teamInstruction = renderTeamInstructionSection(input.memberExecutionContext.authoredEnclosingScopeInstruction);
     if (teamInstruction) {
       sections.push(teamInstruction);
     }
-    sections.push(renderTeamCollaborationInstruction(input.memberTeamContext));
+    sections.push(renderTeamCollaborationInstruction(input.memberExecutionContext));
   }
   return sections;
 };

@@ -1,0 +1,69 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (5 tests | 4 failed) 2125ms
+   × actual shared Org file input -> active target -> attachment upload owner > uploads, opens exact content, removes and clears on inactive agent-director without activation 43ms
+     → Cannot read properties of undefined (reading 'trigger')
+   × actual shared Org file input -> active target -> attachment upload owner > uploads, opens exact content, removes and clears on inactive agent-team-worker-configured without activation 13ms
+     → Cannot read properties of undefined (reading 'trigger')
+   × actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-director attachments only on deliberate continuation and opens the canonical sent file 1028ms
+     → expected 'reopen_required' to be 'live' // Object.is equality
+   × actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-team-worker-configured attachments only on deliberate continuation and opens the canonical sent file 1027ms
+     → expected 'reopen_required' to be 'live' // Object.is equality
+   ✓ actual shared Org file input -> active target -> attachment upload owner > captures upload ownership across focus switches and does not acquire draft ownership for stopped tasks 14ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > uploads, opens exact content, removes and clears on inactive agent-director without activation
+ FAIL  services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > uploads, opens exact content, removes and clears on inactive agent-team-worker-configured without activation
+TypeError: Cannot read properties of undefined (reading 'trigger')
+ ❯ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:130:81
+    128|     expect(mocks.delete).toHaveBeenCalledWith(ownerPath({ orgDraftId: …
+    129|     await choose()
+    130|     await files.findAll('button').find((button) => button.text() === '…
+       |                                                                                 ^
+    131|     expect(context.contextFilePaths).toEqual([])
+    132|     expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instanc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-director attachments only on deliberate continuation and opens the canonical sent file
+ FAIL  services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-team-worker-configured attachments only on deliberate continuation and opens the canonical sent file
+AssertionError: expected 'reopen_required' to be 'live' // Object.is equality
+
+Expected: "live"
+Received: "reopen_required"
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:79:69
+     77|   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agen…
+     78|   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_…
+     79|   await vi.waitFor(() => expect(store.contextFor('org-run')?.phase).to…
+       |                                                                     ^
+     80|   return socket
+     81| }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  02:35:19
+   Duration  12.02s (transform 5.81s, setup 8.57s, collect 206ms, tests 2.13s, environment 408ms, prepare 309ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

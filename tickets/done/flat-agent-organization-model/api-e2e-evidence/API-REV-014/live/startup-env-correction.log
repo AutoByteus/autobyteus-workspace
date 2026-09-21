@@ -1,0 +1,12 @@
+timestamp=2026-09-06T11:22:57Z
+929278bfdfec4347fbd83f70b4632a61884c83d7898f6723cb88f828ec785e46  /home/autobyteus/data/db/production.db
+75f6144d2c6c1f19928faf2d7fc8486bdbc25757879bb683ac48470fcf34c644  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db
+/home/autobyteus/data/db/production.db 2026-09-06 11:22:48.255191010 +0000 51597312
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db 2026-09-06 02:28:02.000000000 +0000 344064
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/data/db/production.db"
+No pending migrations to apply.
+{"level":30,"time":1788693752326,"pid":49322,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:41971"}
+{"level":30,"time":1788693752361,"pid":49322,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:8594"}
+[2026-09-06T11:22:32.361Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8594
+[2026-09-06T11:22:47.916Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-06T11:22:48.147Z] [INFO] [server.runtime] Server closed cleanly.

@@ -28,7 +28,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({
       availabilities: [],
       fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
-      availabilityByKind: vi.fn().mockReturnValue(null),
+      availabilityByKind: vi.fn((kind: string) => kind === 'removed-runtime' ? null : { enabled: true }),
       isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind !== 'removed-runtime'),
       runtimeReason: vi.fn().mockReturnValue(null),
     })
@@ -93,11 +93,30 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     await flushPromises()
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.get('input[type="number"]').exists()).toBe(true)
+    expect(wrapper.find('input[type="number"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Value must be at least 1.')
     expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
       status: 'invalid',
       message: 'Value must be at least 1.',
+    }])
+  })
+
+  it('reports an unavailable selected launch model after its runtime catalog is ready', async () => {
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: {
+        runtimeKind: 'autobyteus',
+        llmModelIdentifier: 'removed-launch-model',
+        llmConfig: null,
+      },
+    })
+    await flushPromises()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.get('[data-test="selected-model-unavailable"]').text())
+      .toBe('The selected model is unavailable for the current runtime.')
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
+      status: 'unavailable',
+      message: 'The selected model is unavailable for the current runtime.',
     }])
   })
 
@@ -186,6 +205,27 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     await wrapper.setProps({ modelOptions: { status: 'unavailable', options: null } })
     expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id))).toEqual(['saved'])
     expect(wrapper.get('[data-test="model-capacity-status"]').text()).toContain('Current-model settings can still be edited')
+    await wrapper.setProps({ modelSelectionLocked: true, modelOptions: undefined })
+    expect(picker.props('disabled')).toBe(true)
+    expect(wrapper.find('[data-test="model-capacity-status"]').exists()).toBe(false)
+    expect(picker.props('modelValue')).toBe('saved')
+    wrapper.unmount()
+  })
+
+  it.each(['', '   '])('classifies blank %j as required, but prioritizes an actual runtime failure', async model => {
+    const wrapper = mount(RuntimeModelConfigFields, { props: { runtimeKind: 'autobyteus', llmModelIdentifier: model } })
+    await flushPromises()
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{ status: 'invalid', reason: 'model_required', message: 'Select a model before launch.' }])
+    await wrapper.setProps({ runtimeKind: 'removed-runtime' }); await flushPromises()
+    expect(wrapper.emitted('schema-state')?.at(-1)?.[0]).toMatchObject({ status: 'unavailable' })
+    expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
+    wrapper.unmount()
+  })
+  it('keeps a nonempty unavailable model visible instead of treating it as missing', async () => {
+    const wrapper = mount(RuntimeModelConfigFields, { props: { runtimeKind: 'autobyteus', llmModelIdentifier: 'retired' } })
+    await flushPromises()
+    expect(wrapper.emitted('schema-state')?.at(-1)?.[0]).toMatchObject({ status: 'unavailable' })
+    expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     wrapper.unmount()
   })
 

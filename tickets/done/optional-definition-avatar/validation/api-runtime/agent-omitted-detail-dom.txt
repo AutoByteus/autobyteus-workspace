@@ -1,0 +1,49 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agents":
+    - text: Back to Agents
+  - complementary:
+    - generic: AA
+    - heading "Avatar Agent omitted" [level=1]
+    - paragraph: Tools
+    - paragraph: "0"
+    - paragraph: Skills
+    - paragraph: "0"
+    - button "Run Agent": Run Agent
+    - button "Edit": Edit
+    - button "Delete": Delete
+  - heading "Description" [level=2]
+  - paragraph: API owned optional avatar avatar-agent-omitted
+  - paragraph: Category
+  - paragraph: Uncategorized
+  - paragraph: Preferred runtime
+  - paragraph: Not set
+  - paragraph: Preferred model
+  - paragraph: Not set
+  - heading "Instructions" [level=2]
+  - generic: You are an isolated API fixture.
+  - heading "Skills" [level=2]
+  - paragraph: None configured.
+  - heading "Tools" [level=2]
+  - paragraph: None configured.

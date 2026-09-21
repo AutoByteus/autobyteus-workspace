@@ -1,11 +1,11 @@
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "./team-run-config.js";
-import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
+import type { FlatTeamExecutionContext } from "../local/flat-team-execution-context.js";
 import {
-  normalizeTeamRunPhysicalScope,
-  type TeamRunPhysicalScope,
-} from "./team-run-physical-scope.js";
+  createRootExecutionPhysicalScope,
+  type RootExecutionPhysicalScope,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 export interface TeamAgentMemberRuntimeContext {
   readonly kind: "agent";
@@ -14,20 +14,12 @@ export interface TeamAgentMemberRuntimeContext {
   getPlatformAgentRunId(): string | null;
 }
 
-export interface TeamSubTeamMemberRuntimeContext {
-  readonly kind: "agent_team";
-  readonly address: import("../../agent-collaboration/domain/agent-team-address.js").AgentTeamAddress;
-  readonly teamDefinitionId: string;
-  readonly teamRunId: string;
-  childRuntimeContext: RuntimeTeamRunContext | null;
-  getPlatformAgentRunId(): null;
-}
+export type TeamMemberRuntimeContext = TeamAgentMemberRuntimeContext;
+export type RuntimeTeamRunContext = FlatTeamExecutionContext | null;
 
-export type TeamMemberRuntimeContext = TeamAgentMemberRuntimeContext | TeamSubTeamMemberRuntimeContext;
-export type RuntimeTeamRunContext = MixedTeamRunContext | null;
-
+/** Root-neutral local context for one physical TeamRun. */
 export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
-  readonly physicalScope: TeamRunPhysicalScope;
+  readonly physicalScope: RootExecutionPhysicalScope;
   readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
   readonly teamNode: TeamRunAgentTeamNode;
@@ -36,7 +28,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   readonly runtimeContext: TRuntimeContext;
 
   constructor(input: {
-    physicalScope: TeamRunPhysicalScope;
+    physicalScope: RootExecutionPhysicalScope;
     teamRunId: string;
     teamBackendKind: TeamBackendKind;
     teamNode: TeamRunAgentTeamNode;
@@ -44,13 +36,15 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
     applicationBinding?: TeamRunApplicationBinding | null;
     runtimeContext: TRuntimeContext;
   }) {
-    this.physicalScope = normalizeTeamRunPhysicalScope(input.physicalScope);
+    this.physicalScope = createRootExecutionPhysicalScope(input.physicalScope);
     this.teamRunId = required(input.teamRunId, "teamRunId");
     const containingTeamRunId = this.physicalScope.ancestorTeamRunIds.at(-1)
-      ?? this.physicalScope.rootTeamRunId;
+      ?? (this.physicalScope.root.rootSubjectKind === "agent_team"
+        ? this.physicalScope.root.rootRunId
+        : null);
     if (containingTeamRunId !== this.teamRunId) {
       throw new Error(
-        `Physical scope contains TeamRun '${containingTeamRunId}', not '${this.teamRunId}'.`,
+        `Physical scope contains TeamRun '${containingTeamRunId ?? "none"}', not '${this.teamRunId}'.`,
       );
     }
     if (input.teamNode.teamRunId !== this.teamRunId) {
@@ -65,7 +59,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
     this.runtimeContext = input.runtimeContext;
   }
 
-  get rootTeamRunId() { return this.physicalScope.rootTeamRunId; }
+  get rootIdentity() { return this.physicalScope.root; }
   get teamAddress() { return this.teamNode.address; }
 }
 

@@ -1,8 +1,9 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
 import { buildInterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
-import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
 
-const buildContext = () => testMemberTeamContext({
+const buildContext = () => testMemberExecutionContext({
   rootTeamRunId: "team-1",
   teamRunId: "team-1",
   teamDefinitionId: "team-def-1",
@@ -14,7 +15,7 @@ const buildContext = () => testMemberTeamContext({
 describe("inter-agent-message-delivery-intent-builder", () => {
   it("builds an unresolved intent without pre-resolving recipients", () => {
     const result = buildInterAgentMessageDeliveryIntent({
-      memberTeamContext: buildContext(),
+      memberExecutionContext: buildContext(),
       recipientAddress: "/unknown",
       content: "hello",
       messageType: "agent_message",
@@ -33,7 +34,7 @@ describe("inter-agent-message-delivery-intent-builder", () => {
     expect(result.intent.sender.participant).toEqual({
       kind: "agent",
       identity: {
-        rootTeamRunId: "team-1",
+        root: createTeamRootExecutionIdentity("team-1"),
         memberAddress: "/Sender",
         agentRunId: "run-sender",
       },

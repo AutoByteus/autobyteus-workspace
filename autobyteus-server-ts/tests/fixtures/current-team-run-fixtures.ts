@@ -4,8 +4,9 @@ import {
   getAgentTeamAddressBasename,
   type AgentTeamAddress,
 } from "../../src/agent-collaboration/domain/agent-team-address.js";
-import { MemberCollaborationContext } from "../../src/agent-team-execution/domain/member-collaboration-context.js";
-import { MemberTeamContext } from "../../src/agent-team-execution/domain/member-team-context.js";
+import { MemberCollaborationContext, MemberExecutionContext } from "../../src/agent-collaboration/execution/domain/member-execution-context.js";
+import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import type { MemberTaskCommandCapability } from "../../src/agent-collaboration/execution/task/member-task-command-capability.js";
 import { TeamBackendKind } from "../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   TeamRunConfig,
@@ -15,7 +16,6 @@ import {
 } from "../../src/agent-team-execution/domain/team-run-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import type { RootTeamRun } from "../../src/agent-team-execution/domain/root-team-run.js";
-import type { MemberTaskRootResolver } from "../../src/agent-team-execution/task-delegation/member-task-root-resolver.js";
 import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 
@@ -37,7 +37,6 @@ export const testAgentNode = (
     autoExecuteTools: true,
     skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     workspaceRootPath: null,
-    applicationExecutionContext: null,
     ...overrides,
     address,
     kind: "agent",
@@ -85,7 +84,7 @@ export const testAgentTeamNode = (input: {
 };
 
 export const testTeamRunConfig = (input: {
-  children: readonly TeamRunNode[];
+  children: readonly TeamRunAgentNode[];
   coordinatorAddress: string;
   rootTeamRunId?: string;
   rootTeamDefinitionId?: string;
@@ -102,37 +101,51 @@ export const testTeamRunConfig = (input: {
   handoffs: input.handoffs,
 });
 
-export const testMemberTeamContext = (input: {
+export const testMemberExecutionContext = (input: {
   memberAddress?: string;
   rootTeamRunId?: string;
   agentRunId?: string;
-  deliverInterAgentMessage?: MemberCollaborationContext["deliverInterAgentMessage"];
+  deliverInterAgentMessage?: (input: unknown) => Promise<{ accepted: boolean }>;
   outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
   teamInstruction?: string | null;
-  taskRootResolver?: MemberTaskRootResolver;
-} = {}): MemberTeamContext => {
+  taskCommands?: MemberTaskCommandCapability;
+} = {}): MemberExecutionContext => {
   const memberAddress = assertAgentTeamAddress(input.memberAddress ?? "/coordinator");
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
   const agentRunId = input.agentRunId ?? `run-${getAgentTeamAddressBasename(memberAddress) ?? "agent"}`;
-  return new MemberTeamContext({
-    identity: { rootTeamRunId, memberAddress, agentRunId },
-    authoredTeamInstruction: input.teamInstruction ?? null,
+  return new MemberExecutionContext({
+    identity: createCollaborationMemberExecutionIdentity({
+      root: createTeamRootExecutionIdentity(rootTeamRunId),
+      memberAddress,
+      agentRunId,
+    }),
+    authoredEnclosingScopeInstruction: input.teamInstruction ?? null,
     collaboration: new MemberCollaborationContext({
       outgoingHandoffs: input.outgoingHandoffs,
-      deliverInterAgentMessage: input.deliverInterAgentMessage,
+      deliverLogicalMessage: async (message) => input.deliverInterAgentMessage
+        ? input.deliverInterAgentMessage(message)
+        : { accepted: true },
     }),
-    taskRootResolver: input.taskRootResolver ?? testMemberTaskRootResolver(),
+    tasks: input.taskCommands ?? testMemberTaskCommandCapability(rootTeamRunId),
   });
 };
 
-export const testMemberTaskRootResolver = (
+export const testMemberTaskCommandCapability = (
+  rootTeamRunId = "root-team-run",
   root: RootTeamRun | null = null,
-): MemberTaskRootResolver => Object.freeze({
-  resolveActiveRoot: async () => {
-    if (!root) {
-      throw new Error("Test MemberTaskRootResolver has no RootTeamRun.");
-    }
-    return root;
+): MemberTaskCommandCapability => Object.freeze({
+  root: createTeamRootExecutionIdentity(rootTeamRunId),
+  delegateTask: async (caller, input) => {
+    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
+    return root.delegateTask({ identity: caller }, input);
+  },
+  submitTaskResult: async (caller, input) => {
+    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
+    return root.submitTaskResult({ identity: caller }, input);
+  },
+  reviewTaskResult: async (caller, input) => {
+    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
+    return root.reviewTaskResult({ identity: caller }, input);
   },
 });
 
@@ -140,7 +153,7 @@ export const address = (value: string): AgentTeamAddress => assertAgentTeamAddre
 
 /** Current strict V2 execution-tree fixture derived through the production builder. */
 export const testExecutionTree = (input: {
-  children: readonly TeamRunNode[];
+  children: readonly TeamRunAgentNode[];
   coordinatorAddress: string;
   rootTeamRunId?: string;
   rootTeamDefinitionId?: string;

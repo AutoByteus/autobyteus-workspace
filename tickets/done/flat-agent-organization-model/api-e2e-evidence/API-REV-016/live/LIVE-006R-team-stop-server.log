@@ -1,0 +1,36 @@
+Closed PTY session 6fdc4c0e-f91d-4a0b-bcaa-678470a4f194
+FileExplorerSession closed: d71fc8f3-8d59-4d98-b24b-55f3fbe90d88
+Closed file explorer session d71fc8f3-8d59-4d98-b24b-55f3fbe90d88. Active sessions: 0
+Agent team websocket attached for team run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Created agent session 77574217-bb01-4e21-a7bb-95788cba5883 for run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Agent Team WebSocket connected: session=77574217-bb01-4e21-a7bb-95788cba5883, run=aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+[API16_CORR]{"ts":"2026-09-06T14:29:30.480Z","stage":"TASK_MCP_ADAPTER_START","toolName":"delegate_task","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/lead","agentRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.508Z","stage":"TASK_MCP_ADAPTER_START","toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.509Z","stage":"TASK_ROUTER_SUBMIT","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","message":"API16-INITIAL-SUBMISSION"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.509Z","stage":"TASK_ENGINE_SUBMIT_START","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.510Z","stage":"TASK_ENGINE_FIFO_ADMISSION","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.511Z","stage":"TASK_SUBMIT_AT_HEAD","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.431Z","stage":"TASK_MCP_ADAPTER_START","toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/lead","agentRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.873Z","stage":"TASK_MCP_ADAPTER_START","toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.873Z","stage":"TASK_ROUTER_SUBMIT","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","message":"API16-REVISED-SUBMISSION"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.873Z","stage":"TASK_ENGINE_SUBMIT_START","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_ENGINE_FIFO_ADMISSION","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_SUBMIT_AT_HEAD","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.852Z","stage":"TASK_MCP_ADAPTER_START","toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/lead","agentRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.857Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":true,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.857Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.868Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":true,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.869Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":true,"queuedBefore":1}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.869Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":1}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.869Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:24.284Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:24.284Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.978Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.978Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.979Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.980Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.981Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.981Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.994Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.994Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+Closed agent session 77574217-bb01-4e21-a7bb-95788cba5883

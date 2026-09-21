@@ -1,0 +1,71 @@
+{
+  "incident": "Two setup-only backend starts inherited parent DATABASE_URL and opened the user-profile SQLite database before explicit process-level overrides were applied.",
+  "testActionsDuringIncident": false,
+  "prismaPendingMigrations": 0,
+  "correctedDatasource": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/db/production.db",
+  "correctedMemory": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-unified-row-target/.local/api-unified-row-profile/memory",
+  "tableDiffs": [
+    {
+      "table": "token_usage_analytics_daily_facets",
+      "beforeCount": 81,
+      "afterCount": 81,
+      "addedKeys": 0,
+      "removedKeys": 0,
+      "changedRows": 1,
+      "changedColumns": [
+        "accounting_input_tokens",
+        "accounting_output_tokens",
+        "accounting_total_tokens",
+        "billable_input_tokens",
+        "billable_output_tokens",
+        "cache_miss_input_tokens",
+        "cache_read_input_tokens",
+        "estimated_api_cache_read_input_cost",
+        "estimated_api_input_cost",
+        "estimated_api_output_cost",
+        "estimated_api_reasoning_output_cost",
+        "estimated_api_standard_input_cost",
+        "estimated_api_total_cost",
+        "latest_observed_at",
+        "reasoning_output_tokens",
+        "standard_input_tokens",
+        "usage_report_count"
+      ]
+    },
+    {
+      "table": "token_usage_run_records",
+      "beforeCount": 1549,
+      "afterCount": 1549,
+      "addedKeys": 0,
+      "removedKeys": 0,
+      "changedRows": 1,
+      "changedColumns": [
+        "accounting_input_tokens",
+        "accounting_output_tokens",
+        "accounting_total_tokens",
+        "billable_input_tokens",
+        "billable_output_tokens",
+        "cache_miss_input_tokens",
+        "cache_read_input_tokens",
+        "context_window_usage_percent",
+        "estimated_api_cache_read_input_cost",
+        "estimated_api_input_cost",
+        "estimated_api_output_cost",
+        "estimated_api_reasoning_output_cost",
+        "estimated_api_standard_input_cost",
+        "estimated_api_total_cost",
+        "latest_observation_ordinal",
+        "latest_observed_at",
+        "latest_prompt_tokens",
+        "persisted_at",
+        "reasoning_output_tokens",
+        "recent_idempotency_digests_json",
+        "revision",
+        "snapshot_series_state_json",
+        "standard_input_tokens",
+        "usage_report_count"
+      ]
+    }
+  ],
+  "recoveryAction": "No rollback attempted because the user database is shared/live; subsequent acceptance used only the owned clone."
+}

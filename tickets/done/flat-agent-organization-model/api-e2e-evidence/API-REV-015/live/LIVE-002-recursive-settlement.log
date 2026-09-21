@@ -1,0 +1,30 @@
+{
+  "nested": {
+    "status": "accepted",
+    "settledAt": "2026-09-06T13:28:29.202Z"
+  },
+  "afterNestedStatusCount": 8,
+  "parent": {
+    "status": "accepted",
+    "settledAt": "2026-09-06T13:29:08.170Z"
+  },
+  "finalStatusCount": 6,
+  "assertions": {
+    "nestedAwaitingReview": true,
+    "nestedAccepted": true,
+    "nestedSettledBeforeParent": true,
+    "afterNestedEightUnique": true,
+    "parentAwaitingReview": true,
+    "parentAccepted": true,
+    "durableSettlement": true,
+    "finalSixUniqueConfigured": true,
+    "lineageVisible": true,
+    "threeExactInstructionMessages": true,
+    "leadSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

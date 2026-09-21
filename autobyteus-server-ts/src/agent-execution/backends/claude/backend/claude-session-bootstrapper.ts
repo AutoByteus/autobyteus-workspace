@@ -72,7 +72,7 @@ export class ClaudeSessionBootstrapper {
     const configuredSkills = collectResolvedConfiguredSkills(configuredSkillBindings);
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
       agentDefinition,
-      runContext.config.memberTeamContext,
+      runContext.config.memberExecutionContext,
     );
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
@@ -95,7 +95,7 @@ export class ClaudeSessionBootstrapper {
       });
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
-      memberTeamContext: runContext.config.memberTeamContext,
+      memberExecutionContext: runContext.config.memberExecutionContext,
     });
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,

@@ -1,0 +1,3 @@
+{
+  "query": "query StopHistory {listCollaborationRootHistory{__typename ... on AgentOrgRootHistoryObject{root_subject_kind root_run_id is_active archived_at org} ... on AgentTeamRootHistoryObject{root_subject_kind root_run_id is_active archived_at team}}}"
+}

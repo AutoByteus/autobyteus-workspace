@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_3ac76dc4cfc94602898e5a405def77e3",
+  "messages": [
+    {
+      "messageId": "collabmsg_JhtE_3vTnI3QL2kp4Hpll7MUUmSWIsqR",
+      "senderAgentRunId": "aorg_e2e_analyst_ee3167a7537f43bfa0a09eac6b21199f",
+      "receiverAgentRunId": "aorg_e2e_verifier_33e194d06aa340b0bcbfe4971413dbcf",
+      "content": "Completed analysis submitted for review: AORG-TEAM-TASK-INITIAL-003 / Initial result. Please independently check it.",
+      "messageType": "handoff",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T22:29:44.538Z"
+    },
+    {
+      "messageId": "collabmsg_Aq07jlbwKlLn3d-1QVRKj4O6NlcFwkQW",
+      "senderAgentRunId": "aorg_e2e_analyst_c6b678fba4814f7e9d13ee3c56fb7ed3",
+      "receiverAgentRunId": "aorg_e2e_verifier_33e194d06aa340b0bcbfe4971413dbcf",
+      "content": "Revised analysis result submitted for task task_128c82416bd54b49ba7ab14099ec60ee and needs an independent check: AORG-TEAM-TASK-REVISED-C-003 / Revised C.",
+      "messageType": "handoff",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T22:30:38.854Z"
+    }
+  ]
+}

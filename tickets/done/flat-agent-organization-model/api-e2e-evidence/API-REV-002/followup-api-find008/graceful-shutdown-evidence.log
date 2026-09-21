@@ -1,0 +1,133 @@
+2026-09-01T21:07:27,440253970+00:00
+--- listeners/processes ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+  PID  PPID STAT CMD
+--- probe shutdown/close stages ---
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.136Z","monotonicNs":"5148354994262","pid":22586,"stage":"shutdown_phase_start","context":null,"phase":"agent_org_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.137Z","monotonicNs":"5148355950137","pid":22586,"stage":"shutdown_phase_complete","context":null,"phase":"agent_org_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.138Z","monotonicNs":"5148356304512","pid":22586,"stage":"shutdown_phase_start","context":null,"phase":"agent_team_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.159Z","monotonicNs":"5148377775762","pid":22586,"stage":"shutdown_phase_complete","context":null,"phase":"agent_team_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.159Z","monotonicNs":"5148377897179","pid":22586,"stage":"shutdown_phase_start","context":null,"phase":"agent_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.159Z","monotonicNs":"5148378038429","pid":22586,"stage":"shutdown_phase_complete","context":null,"phase":"agent_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:07:17.160Z","monotonicNs":"5148378174721","pid":22586,"stage":"shutdown_supervisor_complete","context":null}
+--- console shutdown tail ---
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:22586) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T21:05:48.362Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-01T21:05:48.666Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-01T21:05:48.670Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788296748679,"pid":22586,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:45615"}
+{"level":30,"time":1788296748724,"pid":22586,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:8437"}
+[2026-09-01T21:05:48.724Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8437
+[2026-09-01T21:05:48.726Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8437
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session d5f230cb-f576-49ae-b890-c0562a674012 using backend PtySession for target /root
+Terminal WebSocket connected: d5f230cb-f576-49ae-b890-c0562a674012
+Terminal websocket attached for cwd /root
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T21:07:01.993179Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Published codex_app_server agent run 'aorg_e2e_lead_cf66995dd5664e69ba3d2dffe50abbb3'.
+Published codex_app_server agent run 'aorg_e2e_analyst_cbf13632f99f42b795b99295aeab9fd4'.
+Published codex_app_server agent run 'aorg_e2e_verifier_34a67ed69e814102bdfff156fde0d6a1'.
+[2026-09-01T21:07:17.130Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed PTY session d5f230cb-f576-49ae-b890-c0562a674012
+Terminal WebSocket disconnected: d5f230cb-f576-49ae-b890-c0562a674012
+[2026-09-01T21:07:17.252Z] [INFO] [server.runtime] Server closed cleanly.

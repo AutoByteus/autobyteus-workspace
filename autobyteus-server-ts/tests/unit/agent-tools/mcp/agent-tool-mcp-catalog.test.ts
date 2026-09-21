@@ -25,7 +25,7 @@ const memberSender = buildAgentRunMessageSenderContext({
   senderRunId: "member-run-1",
   senderName: "member",
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  memberTeamContext: {
+  memberExecutionContext: {
     teamRunId: "team-1",
     teamDefinitionId: "team-def",
     teamName: "team",

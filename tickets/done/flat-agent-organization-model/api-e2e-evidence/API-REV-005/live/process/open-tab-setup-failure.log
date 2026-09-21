@@ -1,0 +1,4 @@
+2026-09-02T08:59:50Z AutoByteus open_tab created page target 4AE7F92EF6AA64899CBFBAED8D9020EB but Page.goto timed out before the production HTTP server received any GET.
+Subsequent list_tabs/run_script and direct Playwright connectOverCDP did not complete.
+curl /json/version and /json/list remained available, demonstrating the inherited PID 40 Chromium DevTools HTTP endpoint but a nonresponsive CDP command path.
+This occurred before any application request and is excluded as browser-harness setup, not product behavior.

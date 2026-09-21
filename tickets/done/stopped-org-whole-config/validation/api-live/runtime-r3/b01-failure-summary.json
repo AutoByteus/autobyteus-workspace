@@ -1,0 +1,28 @@
+{
+  "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+  "mountedHeader": {
+    "firstRequestId": 148,
+    "lastRequestId": 1549,
+    "requestCount": 1366,
+    "firstAt": "2026-09-17T22:46:42.243Z",
+    "lastAt": "2026-09-17T22:47:26.740Z",
+    "visibleResult": "stuck_loading_save_disabled"
+  },
+  "directHeader": {
+    "firstRequestId": 1574,
+    "lastRequestId": 1864,
+    "requestCount": 284,
+    "firstAt": "2026-09-17T22:47:55.906Z",
+    "lastAt": "2026-09-17T22:48:04.806Z",
+    "visibleResult": "stuck_loading_save_disabled"
+  },
+  "providerLogLineCountAfterBothAttempts": 4,
+  "providerRequestsAfterBothAttempts": 2,
+  "treeBeforeSha256": "f802b1caa882fbb218e409e0fb8b4bbd1e5a2091a107f60ac540207c2957d10c",
+  "treeAfterSha256": "f802b1caa882fbb218e409e0fb8b4bbd1e5a2091a107f60ac540207c2957d10c",
+  "precondition": {
+    "directActualReply": "DIRECT-BASELINE",
+    "mountedActualReply": "MOUNTED-BASELINE",
+    "mountedDraftRetainedAfterStop": "UNSENT-DRAFT-MOUNTED"
+  }
+}

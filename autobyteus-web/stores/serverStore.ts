@@ -18,6 +18,7 @@ interface ServerState {
     terminalWs: string
     health: string
   }
+  statusMessage: string
   errorMessage: string
   isElectron: boolean
   healthCheckStatus: string
@@ -42,6 +43,7 @@ const createInitialServerState = (): ServerState => {
     status: ServerStatus.STARTING,
     port: 0,
     urls: isElectron ? emptyElectronUrls() : getBrowserServerUrls(),
+    statusMessage: '',
     errorMessage: '',
     isElectron,
     healthCheckStatus: '',
@@ -73,8 +75,8 @@ export const useServerStore = defineStore('server', {
     },
     
     connectionMessage: (state): string => {
-      if (state.status === ServerStatus.STARTING) {
-        return 'Connecting to Agent Server...'
+      if (state.status === ServerStatus.STARTING || state.status === ServerStatus.RESTARTING) {
+        return state.statusMessage || (state.status === ServerStatus.RESTARTING ? 'Restarting Agent Server...' : 'Connecting to Agent Server...')
       } else if (state.status === ServerStatus.ERROR) {
         return state.errorMessage || 'Error connecting to server'
       } else {
@@ -99,6 +101,7 @@ export const useServerStore = defineStore('server', {
       }
       
       this.status = ServerStatus.STARTING
+      this.statusMessage = ''
       this.errorMessage = ''
       this.connectionAttempts = 0
       this.isInitialStartup = true
@@ -302,10 +305,11 @@ export const useServerStore = defineStore('server', {
         }
       }
       
-      if (serverStatus.status === ServerStatus.ERROR && serverStatus.message) {
-        this.errorMessage = serverStatus.message
-        this.isInitialStartup = false
-      }
+      this.statusMessage = serverStatus.status === ServerStatus.STARTING || serverStatus.status === ServerStatus.RESTARTING
+        ? serverStatus.message || ''
+        : ''
+      this.errorMessage = serverStatus.status === ServerStatus.ERROR ? serverStatus.message || '' : ''
+      if (serverStatus.status === ServerStatus.ERROR) this.isInitialStartup = false
     },
     
     /**
@@ -319,6 +323,7 @@ export const useServerStore = defineStore('server', {
       }
       
       console.log('serverStore: Initiating server restart.')
+      this.statusMessage = ''
       this.status = ServerStatus.RESTARTING; // Optimistically update UI
       this.errorMessage = ''
       

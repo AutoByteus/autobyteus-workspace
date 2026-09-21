@@ -121,12 +121,7 @@ export class TeamRunHistoryService {
 }
 
 const collectConfiguredAgents = (members: readonly ConfiguredExecutionNode[]): ConfiguredAgentExecutionNode[] => {
-  const output: ConfiguredAgentExecutionNode[] = [];
-  for (const member of members) {
-    if ("agentRunId" in member) output.push(member);
-    else output.push(...collectConfiguredAgents(member.members));
-  }
-  return output;
+  return [...members];
 };
 
 const statusFor = (agentRunId: string, snapshots: TeamRunMemberStatusProjection[]): AgentApiStatus =>

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head><body><pre id="result">{"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36","reserved":{"code":1002,"allowed":false,"exceptionName":"InvalidAccessError","message":"Failed to execute 'close' on 'WebSocket': The close code must be either 1000, or between 3000 and 4999. 1002 is neither."},"application":{"code":4000,"allowed":true,"exceptionName":null}}</pre><script>
+const check = (code) => {
+  const socket = new WebSocket('ws://127.0.0.1:9');
+  try { socket.close(code, 'Invalid AgentOrg stream'); return { code, allowed: true, exceptionName: null }; }
+  catch (error) { return { code, allowed: false, exceptionName: error.name, message: error.message }; }
+};
+document.getElementById('result').textContent = JSON.stringify({userAgent:navigator.userAgent,reserved:check(1002),application:check(4000)});
+</script>
+</body></html>

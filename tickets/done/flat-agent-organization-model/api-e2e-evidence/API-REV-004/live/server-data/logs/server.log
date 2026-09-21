@@ -1,0 +1,602 @@
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T07:00:44.377Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:bible-study-group:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:clara-ocean-friends:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:classroom-simulation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:evidence-driven-delivery-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:job-search-application-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:marketing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:movie-maker:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:presentation-chemie:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:product-design-prototyping-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:socratic-math-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-engineering-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:storm-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:video-tutorial-creation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-02T07:00:44.648Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-02T07:00:44.676Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1788332444701,"pid":61855,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:35971"}
+{"level":30,"time":1788332444737,"pid":61855,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:8457"}
+[2026-09-02T07:00:44.737Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8457
+[2026-09-02T07:00:44.739Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8457
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788332473606,"pid":61855,"hostname":"9b5212eb33a8","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3461249992251396,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 54 items.
+[2026-09-02T07:01:32.674Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-02T07:01:32.701Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Created terminal session b090e5b1-edce-4514-8c7f-0f94e28e9940 using backend PtySession for target /root
+Terminal WebSocket connected: b090e5b1-edce-4514-8c7f-0f94e28e9940
+Terminal websocket attached for cwd /root
+Closed PTY session b090e5b1-edce-4514-8c7f-0f94e28e9940
+Terminal WebSocket disconnected: b090e5b1-edce-4514-8c7f-0f94e28e9940
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[CodexAppServerClient] stderr: [2m2026-09-02T07:02:00.739756Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: c09d4c76-78ea-4077-b05c-78f1305377ab for workspace temp_ws_default
+Created file explorer session c09d4c76-78ea-4077-b05c-78f1305377ab for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: c09d4c76-78ea-4077-b05c-78f1305377ab for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:02:12.408511Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+FileExplorerSession closed: c09d4c76-78ea-4077-b05c-78f1305377ab
+Closed file explorer session c09d4c76-78ea-4077-b05c-78f1305377ab. Active sessions: 0
+File explorer WebSocket disconnected: c09d4c76-78ea-4077-b05c-78f1305377ab
+Agent team websocket attached for team run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Created agent session 9c6429b8-e2f0-4a93-9a39-08e21abcf29b for run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Agent Team WebSocket connected: session=9c6429b8-e2f0-4a93-9a39-08e21abcf29b, run=aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Resolved configured temp workspace root to TempWorkspace.
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 02ba63d5-56b8-4fde-836e-b014616e5660 for workspace temp_ws_default
+Created file explorer session 02ba63d5-56b8-4fde-836e-b014616e5660 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 02ba63d5-56b8-4fde-836e-b014616e5660 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.093709Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.275089Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.451006Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.629689Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.807988Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.986453Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:37.162524Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:37.338807Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:37.512517Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 6,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 9,
+  paramKeys: [ 'thread' ]
+}
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+FileExplorerSession closed: 02ba63d5-56b8-4fde-836e-b014616e5660
+Closed file explorer session 02ba63d5-56b8-4fde-836e-b014616e5660. Active sessions: 0
+File explorer WebSocket disconnected: 02ba63d5-56b8-4fde-836e-b014616e5660
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 10,
+  paramKeys: [ 'thread' ]
+}
+[2026-09-02T07:14:29.951Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 9c6429b8-e2f0-4a93-9a39-08e21abcf29b
+[2026-09-02T07:14:30.019Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T07:14:42.784Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:bible-study-group:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:clara-ocean-friends:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:classroom-simulation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:evidence-driven-delivery-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:job-search-application-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:marketing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:movie-maker:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:presentation-chemie:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:product-design-prototyping-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:socratic-math-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-engineering-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:storm-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:video-tutorial-creation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 54 items.
+Populating agent definition cache for the first time...
+[2026-09-02T07:14:43.243Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-02T07:14:43.277Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 54 items.
+{"level":30,"time":1788333283302,"pid":64502,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:39351"}
+{"level":30,"time":1788333283339,"pid":64502,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:8457"}
+[2026-09-02T07:14:43.339Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8457
+[2026-09-02T07:14:43.341Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8457
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788333284992,"pid":64502,"hostname":"9b5212eb33a8","reqId":"req-2","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28' was not found."}
+Agent team websocket attached for team run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:14:45.109144Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Created agent session 7ccc6a2b-7943-4968-bde0-05287f1f9a12 for run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Agent Team WebSocket connected: session=7ccc6a2b-7943-4968-bde0-05287f1f9a12, run=aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T07:15:48.700Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:bible-study-group:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:clara-ocean-friends:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:classroom-simulation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:evidence-driven-delivery-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:job-search-application-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:marketing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:movie-maker:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:presentation-chemie:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:product-design-prototyping-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:socratic-math-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-engineering-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:storm-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:video-tutorial-creation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 54 items.
+Populating agent definition cache for the first time...
+[2026-09-02T07:15:49.082Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-02T07:15:49.115Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 54 items.
+{"level":30,"time":1788333349142,"pid":64858,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:35935"}
+{"level":30,"time":1788333349180,"pid":64858,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:8457"}
+[2026-09-02T07:15:49.180Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8457
+[2026-09-02T07:15:49.182Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8457
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session afb883fa-23cc-4f94-9380-4c5373e8c90b using backend PtySession for target /root
+Terminal WebSocket connected: afb883fa-23cc-4f94-9380-4c5373e8c90b
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788333383936,"pid":64858,"hostname":"9b5212eb33a8","reqId":"req-i","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.2685419991612434,"msg":"http request completed"}
+Closed PTY session afb883fa-23cc-4f94-9380-4c5373e8c90b
+Terminal WebSocket disconnected: afb883fa-23cc-4f94-9380-4c5373e8c90b
+Created terminal session 267c98b8-e8b7-42c5-8e0b-253cbf895c47 using backend PtySession for target /root
+Terminal WebSocket connected: 267c98b8-e8b7-42c5-8e0b-253cbf895c47
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788333414517,"pid":64858,"hostname":"9b5212eb33a8","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6677090004086494,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:18:12.900191Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Agent team websocket attached for team run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Created agent session 2bfe5407-3ae0-42d7-b899-5e983e64ef70 for run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Agent Team WebSocket connected: session=2bfe5407-3ae0-42d7-b899-5e983e64ef70, run=aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Closed agent session 2bfe5407-3ae0-42d7-b899-5e983e64ef70
+Closed PTY session 267c98b8-e8b7-42c5-8e0b-253cbf895c47
+Terminal WebSocket disconnected: 267c98b8-e8b7-42c5-8e0b-253cbf895c47
+Created terminal session c7b4a803-5d22-4f06-bd0f-acb41497e315 using backend PtySession for target /root
+Terminal WebSocket connected: c7b4a803-5d22-4f06-bd0f-acb41497e315
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788333699999,"pid":64858,"hostname":"9b5212eb33a8","reqId":"req-43","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5175829976797104,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 9,
+  paramKeys: [ 'thread' ]
+}
+{"level":30,"time":1788334005508,"pid":64858,"hostname":"9b5212eb33a8","reqId":"req-4k","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28' was not found."}
+[CodexAppServerClient] stderr: [2m2026-09-02T07:26:45.778881Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Closed PTY session c7b4a803-5d22-4f06-bd0f-acb41497e315
+Terminal WebSocket disconnected: c7b4a803-5d22-4f06-bd0f-acb41497e315
+[2026-09-02T07:29:09.616Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-02T07:29:09.856Z] [INFO] [server.runtime] Server closed cleanly.

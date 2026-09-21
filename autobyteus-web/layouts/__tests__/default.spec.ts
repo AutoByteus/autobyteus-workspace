@@ -92,11 +92,16 @@ describe('default layout source', () => {
   it('gives the left shell and real panel a definite full-height flex scroll owner', () => {
     const layoutContent = readFileSync(resolve(process.cwd(), 'layouts/default.vue'), 'utf-8')
     const panelContent = readFileSync(resolve(process.cwd(), 'components/AppLeftPanel.vue'), 'utf-8')
+    const historyContent = readFileSync(
+      resolve(process.cwd(), 'components/workspace/history/WorkspaceAgentRunsTreePanel.vue'),
+      'utf-8',
+    )
 
     expect(layoutContent).toContain('flex h-full flex-shrink-0 flex-col')
     expect(layoutContent).toContain('class="min-h-0 flex-1 overflow-hidden"')
     expect(panelContent).toContain('class="flex h-full w-full flex-col')
     expect(panelContent).toContain('data-test="app-left-panel-run-history"')
-    expect(panelContent).toContain('class="h-full overflow-y-auto"')
+    expect(panelContent).toContain('class="h-full"')
+    expect(historyContent).toContain('class="min-h-0 flex-1 overflow-y-auto px-1 pb-2"')
   })
 })

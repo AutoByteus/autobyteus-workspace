@@ -1,0 +1,73 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+ORGS
+Followup Organization
+(1)
+Use send_message_to exactly twice, sequentially. First recipient_address /receiver, content "Repl...
+4m
+D
+director
+R
+receiver
+research team
+C
+coordinator
+L
+lead
+R
+reviewer
+Task: research team · c60c28
+coordinator · 3a9d7e
+lead · a68902
+reviewer · 23060c
+Settings
+L
+lead
+Idle
+You
+Call delegate_task exactly once with recipient_address /research-team and description "Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow." After successful delegation reply exactly COLLAB-API01-TASK-CREATED. Do not send an additional message to the target.
+L
+lead
+Thinking
+delegate_task
+L
+lead
+
+COLLAB-API01-TASK-CREATED
+
+Context Files (0)
+(drag, paste, or upload)
+Files
+Org
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+0 Messages
+Tasks
+1 task
+Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow.
+In progress
+Updated 11:51 AM
+lead → research-team
+Task assigned
+In progress
+lead
+→
+research-team
+Sep 13, 11:51 AM
+
+Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow.

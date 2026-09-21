@@ -1,0 +1,30 @@
+{
+  "at": "2026-09-15T11:05:54.372Z",
+  "mainPid": 42714,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus",
+  "childCount": 3,
+  "pid": null,
+  "generation": 3,
+  "ready": false,
+  "pending": false,
+  "polls": 1004,
+  "snapshot": {
+    "status": "error",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "Healthy",
+    "message": "Server process exited before health was available (code unknown)"
+  },
+  "windowId": 1,
+  "dom": "❌\nApplication Error\n\nServer process exited before health was available (code unknown)\n\nTechnical details: Server process exited before health was available (code unknown)\n\nHealth check: Healthy: ok\n\nLogs available at: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus/logs/app.log\n\nRestart Server\nCheck Server Health\nHide technical details\nShow Advanced Recovery Options"
+}

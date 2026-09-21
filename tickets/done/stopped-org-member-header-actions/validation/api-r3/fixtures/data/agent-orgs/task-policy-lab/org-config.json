@@ -1,0 +1,27 @@
+{
+  "members": [
+    {
+      "memberName": "parent",
+      "ref": "agent-org-owned-agent:task-policy-lab:parent",
+      "refType": "agent",
+      "refScope": "org_local"
+    },
+    {
+      "memberName": "worker",
+      "ref": "agent-org-owned-agent:task-policy-lab:worker",
+      "refType": "agent",
+      "refScope": "org_local"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/parent",
+      "to": "/worker",
+      "rules": [
+        "When the user requests a delegated calculation, delegate it to /worker and review its submitted result."
+      ]
+    }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

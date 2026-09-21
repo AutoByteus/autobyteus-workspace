@@ -10,18 +10,15 @@ import type {
 } from "../domain/app-data-migration-types.js";
 import type {
   ConfiguredAgentExecutionNode,
-  ConfiguredExecutionNode,
-  ConfiguredTeamExecutionNode,
-  RootConfiguredTeamExecutionNode,
-  TeamRunExecutionTreeFileV2,
+  TaskExecution,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
 import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
 import {
-  getTeamRunFileCommitWriter,
-  type TeamRunFileCommitWriter,
-} from "../../run-history/store/team-run-file-commit-writer.js";
+  getAtomicRunPackageFileCommitWriter,
+  type AtomicRunPackageFileCommitWriter,
+} from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID } from "./team-agent-memory-layout-app-data-migration.js";
 import { validateTeamRunExecutionTreePayload as validateV1 } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import type {
@@ -91,6 +88,65 @@ const launchConfiguration = (value: AgentLaunchConfigurationV1): AgentLaunchConf
   workspaceRootPath: value.workspaceRootPath,
 });
 
+type ReleasedConfiguredTeamExecutionNodeV2 = Readonly<{
+  address: string;
+  teamDefinitionId: string;
+  role: string | null;
+  description: string | null;
+  teamRunId: string;
+  coordinatorAddress: string;
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  members: readonly ReleasedConfiguredExecutionNodeV2[];
+  taskExecutions: readonly TaskExecution[];
+}>;
+type ReleasedConfiguredExecutionNodeV2 = ConfiguredAgentExecutionNode | ReleasedConfiguredTeamExecutionNodeV2;
+type ReleasedTeamRunExecutionTreeFileV2 = Readonly<{
+  schemaVersion: 2;
+  createdAt: string;
+  archivedAt: string | null;
+  applicationBinding: unknown;
+  handoffs: unknown;
+  rootTeam: Readonly<{
+    address: "/";
+    teamDefinitionId: string;
+    teamDefinitionName: string;
+    teamRunId: string;
+    coordinatorAddress: string;
+    defaultLaunchConfiguration: AgentLaunchConfiguration;
+    members: readonly ReleasedConfiguredExecutionNodeV2[];
+    taskExecutions: readonly TaskExecution[];
+  }>;
+}>;
+
+const validateReleasedV2 = (value: unknown, expectedRootTeamRunId: string): ReleasedTeamRunExecutionTreeFileV2 => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Released Team V2 must be an object.");
+  const tree = value as Record<string, unknown>;
+  if (tree.schemaVersion !== 2 || !tree.rootTeam || typeof tree.rootTeam !== "object" || Array.isArray(tree.rootTeam)) {
+    throw new Error("Released Team V2 root is invalid.");
+  }
+  const root = tree.rootTeam as Record<string, unknown>;
+  if (root.address !== "/" || root.teamRunId !== expectedRootTeamRunId || !Array.isArray(root.members)) {
+    throw new Error("Released Team V2 root identity is invalid.");
+  }
+  const validateMembers = (members: unknown[]): void => members.forEach((member) => {
+    if (!member || typeof member !== "object" || Array.isArray(member)) throw new Error("Released Team V2 member is invalid.");
+    const record = member as Record<string, unknown>;
+    if ("agentRunId" in record) return;
+    if (typeof record.teamRunId !== "string" || !Array.isArray(record.members)) throw new Error("Released Team V2 configured Team is invalid.");
+    validateMembers(record.members);
+  });
+  validateMembers(root.members);
+  return structuredClone(value) as ReleasedTeamRunExecutionTreeFileV2;
+};
+
+const validateCurrentOrReleasedV2 = (value: unknown, expectedRootTeamRunId: string): void => {
+  try {
+    validateTeamRunExecutionTreePayload(value, expectedRootTeamRunId);
+  } catch {
+    validateReleasedV2(value, expectedRootTeamRunId);
+  }
+};
+
 const agentNode = (node: ConfiguredAgentExecutionV1): ConfiguredAgentExecutionNode => ({
   address: node.address,
   agentDefinitionId: node.agentDefinitionId,
@@ -112,7 +168,7 @@ const directCoordinator = (
   return matches[0]!;
 };
 
-const teamNode = (node: ConfiguredTeamExecutionV1): ConfiguredTeamExecutionNode => ({
+const teamNode = (node: ConfiguredTeamExecutionV1): ReleasedConfiguredTeamExecutionNodeV2 => ({
   address: node.address,
   teamDefinitionId: node.teamDefinitionId,
   role: node.role,
@@ -124,13 +180,13 @@ const teamNode = (node: ConfiguredTeamExecutionV1): ConfiguredTeamExecutionNode 
   taskExecutions: structuredClone(node.taskExecutions),
 });
 
-const configuredNode = (node: ConfiguredMemberExecutionV1): ConfiguredExecutionNode =>
+const configuredNode = (node: ConfiguredMemberExecutionV1): ReleasedConfiguredExecutionNodeV2 =>
   "agentRunId" in node ? agentNode(node) : teamNode(node);
 
 export const transformTeamRunExecutionTreeV1ToV2 = (
   tree: TeamRunExecutionTreeFileV1,
-): TeamRunExecutionTreeFileV2 => {
-  const root: RootConfiguredTeamExecutionNode = {
+): ReleasedTeamRunExecutionTreeFileV2 => {
+  const root: ReleasedTeamRunExecutionTreeFileV2["rootTeam"] = {
     address: "/",
     teamDefinitionId: tree.rootTeam.teamDefinitionId,
     teamDefinitionName: tree.rootTeam.teamDefinitionName,
@@ -140,7 +196,7 @@ export const transformTeamRunExecutionTreeV1ToV2 = (
     members: tree.rootTeam.members.map(configuredNode),
     taskExecutions: structuredClone(tree.rootTeam.taskExecutions),
   };
-  return validateTeamRunExecutionTreePayload({
+  return validateReleasedV2({
     schemaVersion: 2,
     createdAt: tree.createdAt,
     archivedAt: tree.archivedAt,
@@ -164,7 +220,7 @@ export class TeamRunExecutionTreeV2AppDataMigration implements AppDataMigrationD
 
   constructor(
     private readonly memoryDir: string,
-    private readonly writer: TeamRunFileCommitWriter = getTeamRunFileCommitWriter(),
+    private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
   ) {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
@@ -211,14 +267,14 @@ export class TeamRunExecutionTreeV2AppDataMigration implements AppDataMigrationD
     }
 
     try {
-      validateTeamRunExecutionTreePayload(raw, rootTeamRunId);
+      validateCurrentOrReleasedV2(raw, rootTeamRunId);
       this.record("SKIPPED_ALREADY_CURRENT", filePath);
       return;
     } catch {
       // Exact V1 classification is attempted next inside the migration boundary.
     }
 
-    let target: TeamRunExecutionTreeFileV2;
+    let target: ReleasedTeamRunExecutionTreeFileV2;
     try {
       target = transformTeamRunExecutionTreeV1ToV2(validateV1(raw, rootTeamRunId));
     } catch (error) {
@@ -239,7 +295,7 @@ export class TeamRunExecutionTreeV2AppDataMigration implements AppDataMigrationD
     }
     try {
       const reread = JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
-      validateTeamRunExecutionTreePayload(reread, rootTeamRunId);
+      validateCurrentOrReleasedV2(reread, rootTeamRunId);
       this.record(
         write.outcome === "committed" ? "MIGRATED" : "MIGRATED_WITH_FINALIZATION_WARNING",
         filePath,

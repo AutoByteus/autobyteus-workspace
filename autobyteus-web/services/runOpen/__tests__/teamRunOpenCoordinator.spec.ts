@@ -63,6 +63,7 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
 }))
 vi.mock('~/stores/agentSelectionStore', () => ({
   useAgentSelectionStore: () => ({
+    beginSelectionIntent: () => ({ isCurrent: () => true }),
     selectRun: selectRunMock,
     selectRunWithoutShellNavigation: selectRunWithoutShellNavigationMock,
   }),
@@ -169,7 +170,7 @@ describe('openTeamRun current exact execution identity', () => {
 
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'task-agent-run-1' }))
     expect(hydrated.view.getFocusedAgentRunId()).toBe('task-agent-run-1')
-    expect(result.focusedAgentRunId).toBe('task-agent-run-1')
+    expect(result.disposition === 'committed' && result.focusedAgentRunId).toBe('task-agent-run-1')
   })
 
   it('opens an exact settled task Agent through the normal inactive historical path', async () => {
@@ -296,6 +297,23 @@ describe('openTeamRun current exact execution identity', () => {
     expect(result).toMatchObject({ focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
   })
 
+  it('preserves exact settled task inspection when replacing a failed active-root stream', async () => {
+    const record = testTaskRecord({ taskId: 'retained', delegatorAgentRunId: 'run-a', recipientAddress: '/member-b',
+      target: { agentRunId: 'retained-task' }, status: 'accepted' })
+    const candidate = makeTeam({ focus: 'retained-task', active: true, tasks: [record], taskExecutions: [{
+      kind: 'task_agent', address: '/member-b', agent_run_id: 'retained-task', platform_agent_run_id: null,
+      started_at: '2026-09-01T00:02:00.000Z', settled_at: '2026-09-01T00:05:00.000Z',
+    }] })
+    getTeamContextByIdMock.mockReturnValue(makeTeam())
+    hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue({ ...hydration(candidate), expectedBaseChangeSequence: 12 })
+    await expect(reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, agentRunId: 'retained-task',
+      resolveWorkspaceMetadataByRootPath: vi.fn() })).resolves.toMatchObject({ focusedAgentRunId: 'retained-task' })
+    expect(candidate.view.getFocusedAgentAccess()).toBe('read_only')
+    expect(candidate.view.listNavigationRows().some(row => row.agentRunId === 'retained-task')).toBe(false)
+    expect(candidate.view.isRootTeamActive()).toBe(true)
+    expect(replaceFailedTeamStreamMock).toHaveBeenCalledTimes(1)
+  })
+
   it('preserves selection when candidate replacement fails', async () => {
     const failed = makeTeam({ focus: 'run-a' })
     const candidate = makeTeam({ focus: 'run-b' })
@@ -317,4 +335,25 @@ describe('openTeamRun current exact execution identity', () => {
     expect(selectRunMock).not.toHaveBeenCalled()
     expect(failed.view.getFocusedAgentRunId()).toBe('run-a')
   })
+  it.each(['success', 'error'])('superseded cold Team %s cannot publish context, activities or selection', async (completion) => {
+    getTeamContextByIdMock.mockReturnValue(null)
+    let current = true, resolve!: (value: unknown) => void, reject!: (error: Error) => void
+    hydrateLiveTeamRunContextMock.mockReturnValue(new Promise((yes, no) => { resolve = yes; reject = no }))
+    const pending = openTeamRun({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })
+    current = false
+    if (completion === 'success') resolve(hydration(makeTeam())); else reject(new Error('old failure'))
+    expect(await pending).toEqual({ disposition: 'superseded' })
+    expect(addTeamContextMock).not.toHaveBeenCalled(); expect(commitActivitiesMock).not.toHaveBeenCalled()
+    expect(selectRunMock).not.toHaveBeenCalled(); expect(connectToTeamStreamMock).not.toHaveBeenCalled()
+  })
+  it('recovery checks the same guard at stream replacement beforeContextCommit', async () => {
+    const currentTeam = makeTeam(), replacement = makeTeam()
+    getTeamContextByIdMock.mockReturnValue(currentTeam)
+    hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue(hydration(replacement))
+    let current = true
+    replaceFailedTeamStreamMock.mockImplementation(async ({ beforeContextCommit }) => { current = false; beforeContextCommit() })
+    expect(await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })).toEqual({ disposition: 'superseded' })
+    expect(commitActivitiesMock).not.toHaveBeenCalled(); expect(markAuthorityMock).not.toHaveBeenCalled(); expect(selectRunMock).not.toHaveBeenCalled()
+  })
+
 })

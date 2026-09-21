@@ -1,0 +1,207 @@
+[
+  {
+    "text": "Toggle fixture navigation",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Agents",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Agent Teams",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Agent Orgs",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Skills",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Memory",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Nodes",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Fixture workspace",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "",
+    "test": null,
+    "label": "Remove from Workspaces"
+  },
+  {
+    "text": "PSPrior standalone Team(1)",
+    "test": "workspace-team-definition-row-test-team-definition",
+    "label": null
+  },
+  {
+    "text": "No workspace",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Restored Org(1)",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Exact retained conversation",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "",
+    "test": null,
+    "label": "Stop Agent Org"
+  },
+  {
+    "text": "Ddirector",
+    "test": "agent-org-agent-row-agent-director",
+    "label": "director, offline, /director, agent-director"
+  },
+  {
+    "text": "Wworker",
+    "test": "agent-org-agent-row-agent-worker-configured",
+    "label": "worker, offline, /worker, agent-worker-configured"
+  },
+  {
+    "text": "team",
+    "test": "agent-org-team-row-team-configured",
+    "label": "team. Team status: Offline"
+  },
+  {
+    "text": "Llead",
+    "test": "agent-org-agent-row-agent-lead-configured",
+    "label": "lead, offline, /team/lead, agent-lead-configured"
+  },
+  {
+    "text": "Wworker",
+    "test": "agent-org-agent-row-agent-team-worker-configured",
+    "label": "worker, offline, /team/worker, agent-team-worker-configured"
+  },
+  {
+    "text": "Task: worker · r-task",
+    "test": "agent-org-task-agent-row-agent-worker-task",
+    "label": "worker, offline, /worker, agent-worker-task"
+  },
+  {
+    "text": "Task: team · m-task",
+    "test": "agent-org-task-team-row-team-task",
+    "label": "Task: team · team-task"
+  },
+  {
+    "text": "lead · k-lead",
+    "test": "agent-org-task-agent-row-agent-task-lead",
+    "label": "lead, offline, /team/lead, agent-task-lead"
+  },
+  {
+    "text": "worker · worker",
+    "test": "agent-org-task-agent-row-agent-task-worker",
+    "label": "worker, offline, /team/worker, agent-task-worker"
+  },
+  {
+    "text": "Settings",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "",
+    "test": "workspace-header-edit-config",
+    "label": "Edit Config"
+  },
+  {
+    "text": "",
+    "test": "workspace-header-new-run",
+    "label": "New Agent"
+  },
+  {
+    "text": "note.txt",
+    "test": null,
+    "label": "Open note.txt"
+  },
+  {
+    "text": "",
+    "test": null,
+    "label": "Upload files"
+  },
+  {
+    "text": "",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Files",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Org",
+    "test": null,
+    "label": "Agent Org"
+  },
+  {
+    "text": "Terminal",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Activity",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Token",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "Artifacts",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "VNC Viewer",
+    "test": null,
+    "label": null
+  },
+  {
+    "text": "",
+    "test": "right-side-panel-toggle",
+    "label": null
+  },
+  {
+    "text": "Messages0 Messages",
+    "test": "collaboration-messages-header",
+    "label": null
+  },
+  {
+    "text": "Tasks0 tasks",
+    "test": "team-delegated-tasks-header",
+    "label": null
+  }
+]

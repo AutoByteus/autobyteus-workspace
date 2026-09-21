@@ -1,0 +1,190 @@
+{
+  "sourceCheckpoint": "3005c8921781108af7d4bef9938c26c7f6aaf53a",
+  "scope": "IR050 safe local evidence and implementation-owned canonical records only; no raw user/runtime data",
+  "files": [
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-handoff.md",
+      "sha256": "06721c9ff627750efa0d9cdfb2cf59aa2c39c5e7d6134bbee8b215282ff31517"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-revision-record.md",
+      "sha256": "f34e47a8e6c3954f45a30d6ec6313919583fa4248009908640857871390df3d5"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/completion-integrity.json",
+      "sha256": "cadf78b3efddfde0a5a45e8937f229379e70f1d577ef81d0aa9f79cd0eb80e37"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/cumulative-source-inventory.json",
+      "sha256": "024b7f396bd952f9f43577a32c91b443613fc4e597c872dd902384f62b9197c9"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/exact-files-1.log",
+      "sha256": "62e150180d5dab8463f1b2b6b27732b0c27503bb7883c1528f0d2a6f97010ec2"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/guards.log",
+      "sha256": "71cfa1bedc8ddcb694f7944d0f2f9ecd8119aa17285ffba9a5e39569cd1238a6"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/local-checks.md",
+      "sha256": "0f77751816f984a90737b9ffed7b6fe5cb172ebd7ec103d2643642f27a96b283"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/locator-final.log",
+      "sha256": "c73fce6efeb7633d932084f2215ca132e61da81f490f5909879869a90627e9ac"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/locator-tests-1.log",
+      "sha256": "a32ad2f0f102c87eac48bad8d19f8dee89a82136617e8b77c7f0ed82aa3603fe"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/locator-tests-2.log",
+      "sha256": "c002e7bf02f8dbfdcae08926931f7795bc9778b66cd2f3cd6fe8bc30055af3fb"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/locator-tests-3.log",
+      "sha256": "9d0f8b7f2ced88b76e4f9221a6b9900bf2e0563505e412d619c4431119a6b52d"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/migration-1.log",
+      "sha256": "78518e9e3c8a64187124cc6d3e4e7878ec5a39d50ef193a4ef065f6f2e4d8895"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/migration-2.log",
+      "sha256": "ae189995a0ecf769e134ac3d24657e0cff1dfa5e780915844a5f2c9b80e40a5c"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/migration-readiness-1.log",
+      "sha256": "afd76088e3d37b8e40107eb1e732c7d7205867b905e7a6b82091d449ab321218"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/preservation.json",
+      "sha256": "01d886153100de3e557c3b69236f59521233cd141d884ba7a8f37b4979929e9e"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/production-registry.log",
+      "sha256": "ce0430843b594a777b81d5f0c3986dc9d2d84de774d2ea033f8b172823bd8a83"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/desktop-direct-uploaded-inactive.png",
+      "sha256": "3aff9b2281a140e054067cd7e5f78e1db5fa3589b61f053b43bef2180e454a0c"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/desktop-mounted-uploaded-inactive.png",
+      "sha256": "e394b75e51951df2d675773e63d02e9e05b141fe48cb2fa9be1da85b20697cca"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/desktop-sent-canonical.png",
+      "sha256": "d07b86d37f9f38185144373a867d5045143d1b34576c72906203969dbc7a98be"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/evidence.json",
+      "sha256": "273aaf2daabdee9d106d828e33627b9f7a3dafae4b04c7d4b959e08911fbb539"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/fixture.vue",
+      "sha256": "42eaae3f76fd8776bedb934b15ef6fce8d05b4526b98c99d9ee83e01e6d624e4"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/inspect.mjs",
+      "sha256": "0e960f814fb2418bc238e1d9da5b99160c201154f3310d107ec034931eb02783"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/narrow-delayed-upload-exact-owner.png",
+      "sha256": "1f4e1f69d786618a60c09d3d1eb4f62c0339ba87d58d1cbcf5477d2fddc4f642"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/narrow-direct-retained-history.png",
+      "sha256": "a1d2f1528555eab5fbb7aea1eeda58d0cdcaff9ebde57b9dce7709110a8524d6"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/narrow-direct-uploaded-inactive.png",
+      "sha256": "75a8c2272b6f6f91ffcccb168e85e2ccec1fbda0cc9757748e3dcfe77526e66a"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/narrow-mounted-retained-history.png",
+      "sha256": "d7cc30acd4d6246b895534ed07400ece1b24c2b30e5512ce6fb99b83eebcea1a"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/narrow-mounted-uploaded-inactive.png",
+      "sha256": "8e3a27c52fe55c2b5ec63e243b68895de8b9edbfb746b2d9902f143163f730b0"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/narrow-sent-canonical.png",
+      "sha256": "105fe0916878598a179785bb9a8a6ca05a9c8b0e76dadb61ebc0ec92af149d3d"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/result-2.log",
+      "sha256": "d99dd1501be8f51c89cca71467cfa3d6916cc27a11bd12c7e614883c911a59ca"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/result-3.log",
+      "sha256": "9d4f69b2111ab80ea8c65e8a130ee0557b7bdcf4f500e3163fcb4ab970e69ebb"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/result.log",
+      "sha256": "8dff0ac9d0ac43b86e11f8b313b7d21a069459c6d02a4761dfb2afbf3641e154"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/server.log",
+      "sha256": "8f51760896f2fd02230d1c3ef6a9d05710b4f9a95a4ef9c26662aa6202fbe51d"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/render/server.mjs",
+      "sha256": "125547281c806f4aab1d7497e36cfa563ec33a8e9edca3a1135773c0ff2e1145"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/server-build-final-current.log",
+      "sha256": "c093ba0c4fe6c077896e1a7040d3bd5566419567b22169540f8cf16544655de7"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/server-cohort-final-current.log",
+      "sha256": "cd1d013c520ab5b342f51c52f792ef6444ac324a08a944c3fcd230945a902c5f"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/server-cohort.log",
+      "sha256": "49f0a5099c98936ae808125f79e5e16889277b33699f282ec594d9dae42fcd97"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/server-paths.txt",
+      "sha256": "55c3d0ae5a11b9e65676cb823f39ae6c9d8345f4e53e48073fadc8e4b478d00e"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/source-inventory.json",
+      "sha256": "f8bfdf659e75a51d3c2662343128ed3c30c1df08c6630ad5cc8d2efd3313a34f"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/source-paths.txt",
+      "sha256": "1dffa21d2c259efaa840fca5dbaa81ddab9fc9b1939894cadcbfaacbcf480283"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/strict-package-final.log",
+      "sha256": "5962596508f25a0c53696468f8cc37a14835cba4442d1ecda62b13af68cc95e6"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/type-first.log",
+      "sha256": "16d0a33e0becfcce7d1915c28a9c3b341ff7e188654466bf4266aa1b17e6e2ca"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/type-prepared.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/web-build.log",
+      "sha256": "9159f217eb9959baf9da8586451634eb680f83d625a29420f658d1bfe2818c58"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/web-cohort.log",
+      "sha256": "6d7d08fe667a5bfec29d259abca683533332787c75d1a60c7845a19ed5926696"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/web-files-1.log",
+      "sha256": "f066abb1db57c441ecfff0e5f68e5caa43e41672a557c793fd07c0939f82b497"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/implementation-evidence/IR-050/web-paths.txt",
+      "sha256": "5c14573230a209eb99db7be8488027c62d26b2693e6c192e5308f2528eb84ddf"
+    }
+  ]
+}

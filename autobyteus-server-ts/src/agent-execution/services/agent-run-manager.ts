@@ -1,7 +1,6 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
-import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type {
   CommittedAgentRunTermination,
   PreparedAgentRunTermination,
@@ -9,12 +8,6 @@ import type {
 import { AgentRunContext, type RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
-import { buildClaudeSessionConfig, DEFAULT_CLAUDE_PERMISSION_MODE } from "../backends/claude/session/claude-session-config.js";
-import { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
-import { buildCodexThreadConfig } from "../backends/codex/thread/codex-thread-config.js";
-import { resolveApprovalPolicyForRunConfig } from "../backends/codex/backend/codex-thread-bootstrapper.js";
-import { buildRuntimeAgentToolExposure } from "../shared/runtime-agent-tool-exposure.js";
 import {
   AgentCreationError,
   AgentRunActivationError,
@@ -33,6 +26,8 @@ import {
 } from "../runtime/agent-run-activation-registry.js";
 import { AgentRunActivationCandidate, type AgentRunCandidateAbortResult } from "./agent-run-activation-candidate.js";
 import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
+import { createManagedAgentRunTermination } from "./managed-agent-run-termination.js";
+import { buildAgentRunRestoreRuntimeContext } from "./agent-run-restore-context-factory.js";
 
 const logger = console;
 
@@ -62,9 +57,14 @@ export class AgentRunManager {
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
   private readonly inFlightPreparations = new Set<Promise<AgentRunActivationCandidate>>();
+  private activationAdmissionOpen = true;
   private readonly managedTerminationPreparations = new WeakMap<
     AgentRun,
     Promise<PreparedAgentRunTermination>
+  >();
+  private readonly quiescentTerminationAttempts = new WeakMap<
+    AgentRun,
+    Promise<PreparedAgentRunTermination | null>
   >();
 
   static getInstance(): AgentRunManager {
@@ -117,6 +117,7 @@ export class AgentRunManager {
     runId: string;
     config: AgentRunConfig;
   }): Promise<AgentRunActivationCandidate> {
+    this.assertActivationAdmissionOpen();
     const runId = normalizeRequiredRunId(input.runId);
     return this.prepareCandidate({
       runId,
@@ -128,6 +129,7 @@ export class AgentRunManager {
   prepareRestoreAgentRun(
     context: AgentRunContext<RuntimeAgentRunContext>,
   ): Promise<AgentRunActivationCandidate> {
+    this.assertActivationAdmissionOpen();
     return this.prepareCandidate({
       runId: normalizeRequiredRunId(context.runId),
       runtimeKind: context.config.runtimeKind,
@@ -140,6 +142,7 @@ export class AgentRunManager {
     config: AgentRunConfig;
     platformAgentRunId: string;
   }): Promise<AgentRunActivationCandidate> {
+    this.assertActivationAdmissionOpen();
     const runId = normalizeRequiredRunId(input.runId);
     const platformAgentRunId = input.platformAgentRunId?.trim();
     if (!platformAgentRunId || platformAgentRunId === runId) {
@@ -153,7 +156,7 @@ export class AgentRunManager {
       candidate = await this.prepareRestoreAgentRun(new AgentRunContext({
         runId,
         config: input.config,
-        runtimeContext: this.buildRestoreRuntimeContext(input.config, platformAgentRunId),
+        runtimeContext: buildAgentRunRestoreRuntimeContext(input.config, platformAgentRunId),
       }));
     } catch (error) {
       if (error instanceof AgentRunActivationError) throw error;
@@ -166,6 +169,10 @@ export class AgentRunManager {
     }
     return candidate;
   }
+
+  closeActivationAdmission(): void { this.activationAdmissionOpen = false; }
+
+  private assertActivationAdmissionOpen(): void { if (!this.activationAdmissionOpen) throw new AgentCreationError("AgentRun activation admission is closed for process shutdown."); }
 
   hasActiveRun(runId: string): boolean { return this.getActiveRun(runId) !== null; }
 
@@ -180,58 +187,28 @@ export class AgentRunManager {
   prepareAgentRunTermination(
     expectedRun: AgentRun,
   ): Promise<PreparedAgentRunTermination> {
-    if (this.activationRegistry.getActiveRun(expectedRun.runId) !== expectedRun) {
+    if (!this.isCurrentPublishedRun(expectedRun)) {
       return Promise.reject(new AgentTerminationError(
         `Agent run '${expectedRun.runId}' is not the current published run.`,
       ));
     }
     const existing = this.managedTerminationPreparations.get(expectedRun);
     if (existing) return existing;
-    const preparation = expectedRun.prepareTermination().then((runPreparation) => {
-      let state: "prepared" | "cancelled" | "committed" = "prepared";
-      let committed: CommittedAgentRunTermination | null = null;
-      return Object.freeze({
-        cancel: () => {
-          if (state !== "prepared") return;
-          state = "cancelled";
-          runPreparation.cancel();
+    const quiescentAttempt = this.quiescentTerminationAttempts.get(expectedRun);
+    if (quiescentAttempt) {
+      return quiescentAttempt.then((prepared) => prepared ?? this.prepareAgentRunTermination(expectedRun));
+    }
+    const preparation = expectedRun.prepareTermination()
+      .then((runPreparation) => createManagedAgentRunTermination({
+        expectedRun,
+        runPreparation,
+        clearPreparation: () => {
           if (this.managedTerminationPreparations.get(expectedRun) === preparation) {
             this.managedTerminationPreparations.delete(expectedRun);
           }
         },
-        commit: () => {
-          if (state === "cancelled") {
-            throw new AgentTerminationError(
-              `Agent run '${expectedRun.runId}' termination preparation was cancelled.`,
-            );
-          }
-          if (committed) return committed;
-          state = "committed";
-          const runTermination = runPreparation.commit();
-          let currentAttempt: Promise<AgentOperationResult> | null = null;
-          let terminalAttempt: Promise<AgentOperationResult> | null = null;
-          committed = Object.freeze({
-            finish: () => {
-              if (terminalAttempt) return terminalAttempt;
-              if (currentAttempt) return currentAttempt;
-              const attempt = this.finishPublishedAgentRunTermination(
-                expectedRun,
-                runTermination,
-              );
-              currentAttempt = attempt;
-              void attempt.then((result) => {
-                if (result.accepted) terminalAttempt = attempt;
-                else if (currentAttempt === attempt) currentAttempt = null;
-              }, () => {
-                terminalAttempt = attempt;
-              });
-              return attempt;
-            },
-          });
-          return committed;
-        },
-      });
-    });
+        finishPublished: (run, termination) => this.finishPublishedAgentRunTermination(run, termination),
+      }));
     this.managedTerminationPreparations.set(expectedRun, preparation);
     void preparation.catch(() => {
       if (this.managedTerminationPreparations.get(expectedRun) === preparation) {
@@ -239,6 +216,51 @@ export class AgentRunManager {
       }
     });
     return preparation;
+  }
+
+  async tryPrepareAgentRunTerminationIfQuiescent(
+    expectedRun: AgentRun,
+  ): Promise<PreparedAgentRunTermination | null> {
+    this.assertCurrentPublishedRun(expectedRun);
+    const existing = this.managedTerminationPreparations.get(expectedRun);
+    if (existing || this.quiescentTerminationAttempts.has(expectedRun)) return null;
+    let attempt!: Promise<PreparedAgentRunTermination | null>;
+    attempt = expectedRun.tryPrepareTerminationIfQuiescent().then((runPreparation) => {
+      if (!runPreparation) return null;
+      let managedPromise!: Promise<PreparedAgentRunTermination>;
+      const managed = createManagedAgentRunTermination({
+        expectedRun,
+        runPreparation,
+        clearPreparation: () => {
+          if (this.managedTerminationPreparations.get(expectedRun) === managedPromise) {
+            this.managedTerminationPreparations.delete(expectedRun);
+          }
+        },
+        finishPublished: (run, termination) => this.finishPublishedAgentRunTermination(run, termination),
+      });
+      managedPromise = Promise.resolve(managed);
+      this.managedTerminationPreparations.set(expectedRun, managedPromise);
+      return managed;
+    });
+    this.quiescentTerminationAttempts.set(expectedRun, attempt);
+    void attempt.finally(() => {
+      if (this.quiescentTerminationAttempts.get(expectedRun) === attempt) {
+        this.quiescentTerminationAttempts.delete(expectedRun);
+      }
+    }).catch(() => undefined);
+    return attempt;
+  }
+
+  private assertCurrentPublishedRun(expectedRun: AgentRun): void {
+    if (!this.isCurrentPublishedRun(expectedRun)) {
+      throw new AgentTerminationError(
+        `Agent run '${expectedRun.runId}' is not the current published run.`,
+      );
+    }
+  }
+
+  private isCurrentPublishedRun(expectedRun: AgentRun): boolean {
+    return this.activationRegistry.getActiveRun(expectedRun.runId) === expectedRun;
   }
 
   async terminateAgentRun(runId: string): Promise<boolean> {
@@ -486,37 +508,4 @@ export class AgentRunManager {
     return null;
   }
 
-  private buildRestoreRuntimeContext(
-    config: AgentRunConfig,
-    platformAgentRunId: string,
-  ): RuntimeAgentRunContext {
-    if (config.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
-      return new CodexAgentRunContext({
-        codexThreadConfig: buildCodexThreadConfig({
-          model: config.llmModelIdentifier,
-          workingDirectory: ".",
-          reasoningEffort: null,
-          serviceTier: null,
-          approvalPolicy: resolveApprovalPolicyForRunConfig(config),
-          sandbox: "workspace-write",
-          dynamicTools: null,
-        }),
-        threadId: platformAgentRunId,
-      });
-    }
-    if (config.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
-      return new ClaudeAgentRunContext({
-        sessionConfig: buildClaudeSessionConfig({
-          model: config.llmModelIdentifier,
-          workingDirectory: ".",
-          permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
-          autoExecuteTools: config.autoExecuteTools,
-        }),
-        carpenterSystemPrompt: "Pending runtime bootstrap.",
-        runtimeToolExposure: buildRuntimeAgentToolExposure([], config.memberTeamContext),
-        sessionId: platformAgentRunId,
-      });
-    }
-    return null;
-  }
 }

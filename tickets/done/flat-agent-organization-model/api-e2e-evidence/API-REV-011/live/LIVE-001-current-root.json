@@ -1,0 +1,222 @@
+{
+  "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_81a6edffd0c94545b9406c2ef21a4f60&mode=active",
+  "rootCandidates": [
+    {
+      "text": "AORG E2E Direct Agents Org(1)",
+      "role": null,
+      "dataTest": null,
+      "current": null,
+      "selected": null,
+      "expanded": "true"
+    },
+    {
+      "text": "Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi...",
+      "role": "treeitem",
+      "dataTest": null,
+      "current": "true",
+      "selected": "true",
+      "expanded": "true"
+    },
+    {
+      "text": "",
+      "role": null,
+      "dataTest": null,
+      "current": null,
+      "selected": null,
+      "expanded": null
+    },
+    {
+      "text": "Llead",
+      "role": "treeitem",
+      "dataTest": "agent-org-agent-row-aorg_e2e_lead_3563a536a9e448cdbed4ec6e0f85eecb",
+      "current": null,
+      "selected": "true",
+      "expanded": null
+    },
+    {
+      "text": "Vverifier",
+      "role": "treeitem",
+      "dataTest": "agent-org-agent-row-aorg_e2e_verifier_f731ee20c3984e4fa3e78d128b0f9acf",
+      "current": null,
+      "selected": "false",
+      "expanded": null
+    }
+  ],
+  "perfNav": [
+    {
+      "name": "http://127.0.0.1:3590/workspace/",
+      "entryType": "navigation",
+      "startTime": 0,
+      "duration": 81,
+      "navigationId": 7480,
+      "initiatorType": "navigation",
+      "deliveryType": "",
+      "nextHopProtocol": "http/1.0",
+      "renderBlockingStatus": "non-blocking",
+      "contentType": "text/html",
+      "contentEncoding": "",
+      "workerStart": 0,
+      "workerRouterEvaluationStart": 0,
+      "workerCacheLookupStart": 0,
+      "workerMatchedSourceType": "",
+      "workerFinalSourceType": "",
+      "redirectStart": 0,
+      "redirectEnd": 0,
+      "fetchStart": 0.7000000001862645,
+      "domainLookupStart": 0.7000000001862645,
+      "domainLookupEnd": 0.7000000001862645,
+      "connectStart": 0.7000000001862645,
+      "secureConnectionStart": 0,
+      "connectEnd": 0.7000000001862645,
+      "requestStart": 1.6000000005587935,
+      "responseStart": 2.2000000001862645,
+      "firstInterimResponseStart": 0,
+      "finalResponseHeadersStart": 2.2000000001862645,
+      "responseEnd": 2.7000000001862645,
+      "transferSize": 1784,
+      "encodedBodySize": 1484,
+      "decodedBodySize": 1484,
+      "responseStatus": 200,
+      "serverTiming": [],
+      "unloadEventStart": 0,
+      "unloadEventEnd": 0,
+      "domInteractive": 19.200000000186265,
+      "domContentLoadedEventStart": 60.10000000055879,
+      "domContentLoadedEventEnd": 60.299999999813735,
+      "domComplete": 81,
+      "loadEventStart": 81,
+      "loadEventEnd": 81,
+      "type": "navigate",
+      "redirectCount": 0,
+      "activationStart": 0,
+      "criticalCHRestart": 0,
+      "notRestoredReasons": null,
+      "confidence": {
+        "randomizedTriggerRate": 0.4994798,
+        "value": "high"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 205163.2000000002,
+      "duration": 9.5,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 205163.5,
+      "duration": 10.900000000372529,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 205301.10000000056,
+      "duration": 11.299999999813735,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 205652.10000000056,
+      "duration": 8.199999999254942,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 205652.60000000056,
+      "duration": 9.699999999254942,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 210651.90000000037,
+      "duration": 4.7000000001862645,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 210652.2000000002,
+      "duration": 6.599999999627471,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 211784.7000000002,
+      "duration": 6.099999999627471,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 215652.5,
+      "duration": 3.5,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 215652.90000000037,
+      "duration": 4.599999999627471,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 220652.2000000002,
+      "duration": 4.7999999998137355,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 220652.5,
+      "duration": 8.700000000186265,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 225652.60000000056,
+      "duration": 6,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 225652.90000000037,
+      "duration": 8.399999999441206,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 230652.90000000037,
+      "duration": 4.5,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 230653.2999999998,
+      "duration": 6.7000000001862645,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 235652.7999999998,
+      "duration": 3.800000000745058,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 235653.10000000056,
+      "duration": 5.099999999627471,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 240652.10000000056,
+      "duration": 5.099999999627471,
+      "initiatorType": "fetch"
+    },
+    {
+      "name": "http://127.0.0.1:8590/graphql",
+      "startTime": 240652.2999999998,
+      "duration": 7.400000000372529,
+      "initiatorType": "fetch"
+    }
+  ]
+}

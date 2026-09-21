@@ -1,0 +1,34 @@
+{
+  "taskRecord": {
+    "taskId": "task_b22e3bd3d6b3407786479dae3e64344a",
+    "delegatorAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+    "recipientAddress": "/research-team/analyst",
+    "taskExecution": {
+      "agentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495"
+    },
+    "description": "Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.",
+    "referenceFiles": [],
+    "status": "active",
+    "updates": [],
+    "createdAt": "2026-09-06T11:49:30.663Z"
+  },
+  "tracePath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574/aorg_e2e_research_squad_4c4c0f8443ac46c7a79698725bfbbf54/aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495/raw_traces_active.jsonl",
+  "readyEvents": [
+    {
+      "id": "rt_1788695378956_36817940-f2f8-4c57-8956-cb8b13dcf90a",
+      "ts": 1788695378.956,
+      "turn_id": "01a0768d-5c18-7403-a4b5-e749aaab94c5",
+      "seq": 2,
+      "trace_type": "assistant",
+      "content": "APIREV14-TASK-A-READY",
+      "source_event": "SEGMENT_END"
+    }
+  ],
+  "assertions": {
+    "oneTaskRecord": true,
+    "statusActive": true,
+    "exactRun": true,
+    "exactOneReady": true,
+    "noSubmission": true
+  }
+}

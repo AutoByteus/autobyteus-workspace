@@ -1,0 +1,20 @@
+captured_at_utc=2026-09-04T23:35:33Z
+integrated_head=fa7693e5210d306d8216a035e93e9dc11f8efe04
+display=:99
+package=autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.68.AppImage
+package_bytes=523962651
+package_sha256=661032b9c10f5cafefd2029d0a9ea63171b12911b5953c88f5af37ab636d5aa1
+health_response={"status":"ok","message":"Server is running"}
+processes:
+  PID  PPID STAT     ELAPSED CMD
+51511 51506 S+         03:28 autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.68.AppImage --no-sandbox
+51939 51511 Sl+        03:17 /tmp/appimage_extracted_5bdd024a1ebe5c94b10002d4e09efd50/autobyteus --no-sandbox
+51999 51939 Sl+        03:16 /tmp/appimage_extracted_5bdd024a1ebe5c94b10002d4e09efd50/autobyteus /tmp/appimage_extracted_5bdd024a1ebe5c94b10002d4e09efd50/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+listener:
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      511          0.0.0.0:29695      0.0.0.0:*    users:(("autobyteus",pid=51999,fd=71))
+windows:
+     0x3400001 "autobyteus": ("autobyteus" "Autobyteus")  10x10+10+10  +10+10
+        0x1800004 "autobyteus": ("autobyteus" "autobyteus")  1200x800+5+29  +155+71
+user_surface=Agent Orgs page ready; unified Workspaces panel visible; Create Agent Org action visible
+accepted_bounded_context=external definition packages remain pre-Team-V2 and are skipped until separately owned publication

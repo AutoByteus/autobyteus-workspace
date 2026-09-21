@@ -1,0 +1,9 @@
+{"passed":false,"states":0,"commands":0,"mutations":[],"pageErrors":[],"error":"TypeError: Cannot read properties of undefined (reading 'owner')"}
+file:///tmp/aorg-ir050-render/inspect.mjs:58
+   assert.deepEqual(uploads.at(-1).owner,{kind:'org_member_draft',orgRunId:'org-run',agentRunId:id});
+                                  ^
+
+TypeError: Cannot read properties of undefined (reading 'owner')
+    at file:///tmp/aorg-ir050-render/inspect.mjs:58:35
+
+Node.js v22.23.2

@@ -1,0 +1,75 @@
+{
+  "pid": 97174,
+  "at": "2026-09-14T08:54:59.839Z",
+  "active": [
+    {
+      "runId": "aorg_validation_agent_88444438ccbd45ebbafcee769accca27",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_88444438ccbd45ebbafcee769accca27"
+      }
+    },
+    {
+      "runId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_9423fc355378455685c5ddf75435a608"
+      }
+    },
+    {
+      "runId": "aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181"
+      }
+    }
+  ],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareRestoreAgentRunFromPlatformState",
+      "runId": "aorg_validation_agent_88444438ccbd45ebbafcee769accca27",
+      "startedAt": "2026-09-14T08:53:46.900Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e0b-6c2d-7751-a6a4-7daf6262f8a3"
+    },
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_88444438ccbd45ebbafcee769accca27",
+      "startedAt": "2026-09-14T08:53:46.900Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e0b-6c2d-7751-a6a4-7daf6262f8a3"
+    },
+    {
+      "method": "prepareRestoreAgentRunFromPlatformState",
+      "runId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "startedAt": "2026-09-14T08:54:14.971Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e14-07d6-7eb2-b0ba-b0f575e029a5"
+    },
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "startedAt": "2026-09-14T08:54:14.971Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e14-07d6-7eb2-b0ba-b0f575e029a5"
+    },
+    {
+      "method": "prepareRestoreAgentRunFromPlatformState",
+      "runId": "aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181",
+      "startedAt": "2026-09-14T08:54:30.753Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e0c-a5af-7d33-963d-80ee9081027e"
+    },
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181",
+      "startedAt": "2026-09-14T08:54:30.753Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e0c-a5af-7d33-963d-80ee9081027e"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "SC Standalone Control (1)":
+    - generic: SC
+    - generic: Standalone Control
+    - generic: (1)
+  - button "使用此智能体开始新的运行":
+  - generic: Teams
+  - button "无活跃团队运行 Team Control (2)" [expanded]:
+    - img "无活跃团队运行"
+    - generic: Team Control
+    - generic: (2)
+  - button "非活跃团队运行 Untitled team run":
+    - img "非活跃团队运行"
+    - generic: Untitled team run
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 48m
+  - button "非活跃团队运行 Reply exactly TEAM-CONTROL-917. Do not call tools." [expanded]:
+    - img "非活跃团队运行"
+    - generic: Reply exactly TEAM-CONTROL-917. Do not call tools.
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 51m
+  - tree "Reply exactly TEAM-CONTROL-917. Do not call tools.组织树":
+    - treeitem "智能体，lead，第 1 级，离线，/lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: 51m
+  - generic: 组织
+  - button "Config Lab (4)":
+    - generic: Config Lab
+    - generic: (4)
+  - button "设置":
+    - generic: 设置
+- main:
+  - heading "团队配置" [level=3]
+  - button "返回事件视图":
+  - generic: 团队定义
+  - generic: Team Control
+  - generic: Runtime
+  - combobox "Runtime" [disabled]:
+    - option "AutoByteus" [selected]
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - paragraph: 运行时固定。替换模型的上下文容量不得小于已保存模型。
+  - generic: 默认 LLM 模型（全球）
+  - button "OpenAI / gpt-5.4-mini":
+    - generic: OpenAI / gpt-5.4-mini
+  - paragraph: 运行时固定。替换模型的上下文容量不得小于已保存模型。
+  - generic: Thinking
+  - button "使用设置":
+    - generic: 使用设置
+  - button "高级" [expanded]:
+    - generic: 高级
+  - generic "reasoning_effort": Reasoning Effort ⓘ
+  - combobox "Reasoning Effort ⓘ":
+    - option "none"
+    - option "low"
+    - option "medium" [selected]
+    - option "high"
+    - option "xhigh"
+  - generic "reasoning_summary": Reasoning Summary ⓘ
+  - combobox "Reasoning Summary ⓘ":
+    - option "none" [selected]
+    - option "auto"
+    - option "concise"
+    - option "detailed"
+  - generic: 工作区目录
+  - tablist:
+    - tab "Existing" [disabled]:
+      - generic: Existing
+    - tab "New" [disabled] [selected]:
+      - generic: New
+  - textbox "/绝对/路径/到/工作区" [disabled]: /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace
+  - paragraph: 已保存的值在当前选项中不可用。
+  - paragraph: "Workspace: /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+  - generic: 自动批准工具
+  - paragraph: Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。
+  - switch "自动批准工具" [disabled]:
+    - generic: 自动批准工具
+  - button "团队成员覆盖 (1)" [expanded]:
+    - generic: 团队成员覆盖 (1)
+  - generic: lead
+  - generic: 协调者
+  - generic: 已覆盖
+  - generic: Runtime
+  - combobox "Runtime" [disabled]:
+    - option "AutoByteus" [selected]
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - generic: Model
+  - button "OpenAI / gpt-5.4":
+    - generic: OpenAI / gpt-5.4
+  - generic: Thinking
+  - button "使用设置":
+    - generic: 使用设置
+  - button "高级" [expanded]:
+    - generic: 高级
+  - generic "reasoning_effort": Reasoning Effort ⓘ
+  - combobox "Reasoning Effort ⓘ":
+    - option "none"
+    - option "low"
+    - option "medium" [selected]
+    - option "high"
+    - option "xhigh"
+  - generic "reasoning_summary": Reasoning Summary ⓘ
+  - combobox "Reasoning Summary ⓘ":
+    - option "none" [selected]
+    - option "auto"
+    - option "concise"
+    - option "detailed"
+  - generic: 工作区目录
+  - tablist:
+    - tab "Existing" [disabled]:
+      - generic: Existing
+    - tab "New" [disabled] [selected]:
+      - generic: New
+  - textbox "/绝对/路径/到/工作区" [disabled]: /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace
+  - paragraph: 已保存的值在当前选项中不可用。
+  - paragraph: "Workspace: /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+  - generic: 自动批准
+  - checkbox "关闭" [disabled]
+  - text: 关闭
+  - generic: ●
+  - generic: 此团队已停止。下次恢复时将使用已保存的模型设置。
+  - status: Team model settings updated. They will be used when this team resumes.
+  - button "保存" [disabled]
+  - tablist "工作区工具":
+    - tab "文件"
+    - tab "团队" [selected]: 团队
+    - tab "终端"
+    - tab "活动"
+    - tab "Token"
+    - tab "产物"
+    - tab "VNC 查看器"
+  - button "切换侧边栏":
+  - button "消息 0 消息" [expanded]:
+    - heading "消息" [level=3]
+    - generic: 0 消息
+  - paragraph: 暂无团队消息
+  - paragraph: 已接受的智能体间消息及其引用文件会显示在这里。
+  - button "任务 0 个任务":
+    - generic: 任务
+    - generic: 0 个任务

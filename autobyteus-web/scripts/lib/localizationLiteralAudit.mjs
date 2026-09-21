@@ -5,6 +5,10 @@ import ts from 'typescript';
 const TEMPLATE_FILE_EXTENSIONS = new Set(['.vue']);
 const TS_FILE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs']);
 const STATIC_ATTRIBUTE_PATTERN = /(?<![-:@])\b(?:aria-label|title|alt|label|description)=(['"])(.+?)\1/g;
+const STRICT_STATIC_ATTRIBUTE_PATTERN = /(?<![-:@])\b(?:aria-label|title|alt|label|description|placeholder)=(['"])(.+?)\1/g;
+const BOUND_PRESENTATION_ATTRIBUTE_PATTERN = /(?<![-@]):(?:aria-label|title|alt|label|description|placeholder)=(['"])([\s\S]*?)\1/g;
+const TEMPLATE_EXPRESSION_PATTERN = /{{([\s\S]*?)}}/g;
+const MIXED_TEXT_NODE_PATTERN = />\s*([^<\n]*{{[\s\S]*?}}[^<\n]*)\s*</g;
 const TEXT_NODE_PATTERN = />\s*([^<>{\n][^<>{]*?)\s*</g;
 const IGNORED_FILE_PATTERNS = [/\.spec\./, /\.test\./, /\/__tests__\//, /\/tests\//];
 const VUE_SCRIPT_AUDIT_FILE_PATTERN = /components\/(?:app\/AppUpdateNotice|settings\/AboutSettingsManager|settings\/VoiceInputExtensionCard)\.vue$/;
@@ -24,8 +28,9 @@ const UI_PROPERTY_NAMES = new Set([
   'confirmButtonText',
   'lastError',
   'error',
+  'group',
 ]);
-const UI_IDENTIFIER_PATTERN = /(?:label|message|detail|title|description|summary|placeholder|ariaLabel|buttonLabel|buttonText|helpText|emptyText|errorText|statusLabel|statusMessage|versionSummary|currentVersionLabel|lastCheckedLabel|pendingActionLabel|installPhaseLabel|installMessage|audioInputStatusMessage|settingsTestButtonLabel|settingsTestOutcomeLabel|settingsTestOutcomeDescription|extensionStatusMessage)$/i;
+const UI_IDENTIFIER_PATTERN = /(?:label|message|detail|title|description|summary|placeholder|ariaLabel|buttonLabel|buttonText|helpText|emptyText|errorText|statusLabel|statusMessage|versionSummary|currentVersionLabel|lastCheckedLabel|pendingActionLabel|installPhaseLabel|installMessage|audioInputStatusMessage|settingsTestButtonLabel|settingsTestOutcomeLabel|settingsTestOutcomeDescription|extensionStatusMessage|[A-Za-z0-9]*Error)$/i;
 const UI_FUNCTION_PATTERN = /(?:build.*Error|.*Label|.*Message|.*Title|.*Description|.*Summary)$/i;
 const ALLOWED_LITERAL_PATTERNS = [
   /^https?:\/\//,
@@ -47,6 +52,7 @@ const ALLOWED_LITERAL_PATTERNS = [
 function shouldIgnoreLiteral(literal) {
   const value = literal.trim();
   if (!value) return true;
+  if (value.includes('{{expr}}') && !/[A-Za-z]/.test(value.replaceAll('{{expr}}', ''))) return true;
   if (!/[A-Za-z]/.test(value)) return true;
   if (value.includes('$t(') || value.includes('localizationRuntime.translate(') || value.includes('t(')) {
     return true;
@@ -65,6 +71,13 @@ function shouldIgnoreTemplateLiteral(literal) {
   if (value.includes('{{') || value.includes('}}')) return true;
   if (value.endsWith('...') || value.endsWith('…')) return true;
   if (!/\s/.test(value) && !/[.?!:]/.test(value)) return true;
+  return false;
+}
+
+function shouldIgnoreStrictTemplateLiteral(literal) {
+  const value = literal.trim();
+  if (shouldIgnoreLiteral(value)) return true;
+  if (value.includes('\n')) return true;
   return false;
 }
 
@@ -123,21 +136,25 @@ function isUiIdentifierInitializer(node) {
   }
 
   if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken) {
-    const name = getNodeName(node.left);
+    const name = ts.isPropertyAccessExpression(node.left) && node.left.name.text === 'value'
+      ? getNodeName(node.left.expression)
+      : getNodeName(node.left);
     return Boolean(name && UI_IDENTIFIER_PATTERN.test(name));
   }
 
   return false;
 }
 
-function isUiCallArgument(node, literalNode) {
+function isUiCallArgument(node, literalNode, options = {}) {
+  const { allowErrorConstruction = false } = options;
   if (!ts.isCallExpression(node) && !ts.isNewExpression(node)) return false;
   if (!node.arguments?.includes(literalNode)) return false;
 
   const calleeName = getNodeName(node.expression);
   if (!calleeName) return false;
 
-  return ['addToast', 'showToast', 'toast'].includes(calleeName);
+  if (['addToast', 'showToast', 'toast'].includes(calleeName)) return true;
+  return allowErrorConstruction && ts.isNewExpression(node) && calleeName === 'Error';
 }
 
 function getFunctionLikeOwnerName(node) {
@@ -174,6 +191,7 @@ function isRelevantScriptLiteralContext(node, options = {}) {
   const {
     allowUiIdentifierInitializers = false,
     allowUiNamedReturns = false,
+    allowErrorConstruction = false,
   } = options;
   let current = node.parent;
 
@@ -182,7 +200,7 @@ function isRelevantScriptLiteralContext(node, options = {}) {
       return false;
     }
 
-    if (isUiPropertyAssignment(current) || isUiCallArgument(current, node)) {
+    if (isUiPropertyAssignment(current) || isUiCallArgument(current, node, { allowErrorConstruction })) {
       return true;
     }
 
@@ -254,23 +272,64 @@ function extractScriptBlocks(content) {
   return blocks;
 }
 
-function collectVueFindings({ content, file, scopeId, findings }) {
+function collectTemplateExpressionFindings({ expression, file, scopeId, findings }) {
+  const sourceFile = ts.createSourceFile(
+    `${file}#template-expression`,
+    `const __localizedPresentation = (${expression});`,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+
+  const visit = (node) => {
+    const literal = getNodeTextIfLiteral(node);
+    if (literal && !shouldIgnoreLiteral(literal)) {
+      findings.push({ scopeId, file, finding: literal, status: 'unresolved' });
+    }
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sourceFile);
+}
+
+function collectVueFindings({ content, file, scopeId, findings, strictVueLiterals = false }) {
   const templateContent = extractTemplateContent(content);
   if (templateContent) {
     const sanitizedTemplate = templateContent.replace(/<!--([\s\S]*?)-->/g, ' ');
 
-    for (const pattern of [STATIC_ATTRIBUTE_PATTERN, TEXT_NODE_PATTERN]) {
+    const staticAttributePattern = strictVueLiterals ? STRICT_STATIC_ATTRIBUTE_PATTERN : STATIC_ATTRIBUTE_PATTERN;
+    for (const pattern of [staticAttributePattern, TEXT_NODE_PATTERN]) {
       pattern.lastIndex = 0;
       let match;
       while ((match = pattern.exec(sanitizedTemplate)) !== null) {
         const literal = (match[2] ?? match[1] ?? '').trim();
-        if (shouldIgnoreTemplateLiteral(literal)) continue;
+        if ((strictVueLiterals ? shouldIgnoreStrictTemplateLiteral(literal) : shouldIgnoreTemplateLiteral(literal))) continue;
         findings.push({ scopeId, file, finding: literal, status: 'unresolved' });
+      }
+    }
+
+    if (strictVueLiterals) {
+      MIXED_TEXT_NODE_PATTERN.lastIndex = 0;
+      let mixedMatch;
+      while ((mixedMatch = MIXED_TEXT_NODE_PATTERN.exec(sanitizedTemplate)) !== null) {
+        const literal = mixedMatch[1].replace(/{{[\s\S]*?}}/g, '').trim();
+        if (shouldIgnoreStrictTemplateLiteral(literal)) continue;
+        findings.push({ scopeId, file, finding: literal, status: 'unresolved' });
+      }
+
+      for (const pattern of [TEMPLATE_EXPRESSION_PATTERN, BOUND_PRESENTATION_ATTRIBUTE_PATTERN]) {
+        pattern.lastIndex = 0;
+        let expressionMatch;
+        while ((expressionMatch = pattern.exec(sanitizedTemplate)) !== null) {
+          const expression = (expressionMatch[2] ?? expressionMatch[1] ?? '').trim();
+          if (!expression) continue;
+          collectTemplateExpressionFindings({ expression, file, scopeId, findings });
+        }
       }
     }
   }
 
-  if (VUE_SCRIPT_AUDIT_FILE_PATTERN.test(file)) {
+  if (strictVueLiterals || VUE_SCRIPT_AUDIT_FILE_PATTERN.test(file)) {
     for (const [index, scriptBlock] of extractScriptBlocks(content).entries()) {
       collectScriptFindings({
         content: scriptBlock.body,
@@ -281,6 +340,7 @@ function collectVueFindings({ content, file, scopeId, findings }) {
         contextOptions: {
           allowUiIdentifierInitializers: true,
           allowUiNamedReturns: true,
+          allowErrorConstruction: true,
         },
       });
     }
@@ -319,7 +379,13 @@ export function auditLocalizationLiterals({ appRoot, scopes }) {
       const relativePath = path.relative(appRoot, filePath);
       const content = fs.readFileSync(filePath, 'utf8');
       if (filePath.endsWith('.vue')) {
-        collectVueFindings({ content, file: relativePath, scopeId: scope.scopeId, findings });
+        collectVueFindings({
+          content,
+          file: relativePath,
+          scopeId: scope.scopeId,
+          findings,
+          strictVueLiterals: scope.strictVueLiterals === true,
+        });
         continue;
       }
       collectScriptFindings({
@@ -331,6 +397,7 @@ export function auditLocalizationLiterals({ appRoot, scopes }) {
         contextOptions: {
           allowUiIdentifierInitializers: false,
           allowUiNamedReturns: false,
+          allowErrorConstruction: false,
         },
       });
     }

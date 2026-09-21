@@ -1,0 +1,594 @@
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T21:20:31.683Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-02T21:20:31.936Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T21:20:31.939Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788384031947,"pid":37157,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:40095"}
+{"level":30,"time":1788384031981,"pid":37157,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8588"}
+[2026-09-02T21:20:31.982Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8588
+[2026-09-02T21:20:31.984Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8588
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T21:21:00.328Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-02T21:21:00.601Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T21:21:00.605Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788384060614,"pid":37401,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:44101"}
+{"level":30,"time":1788384060649,"pid":37401,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8588"}
+[2026-09-02T21:21:00.649Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8588
+[2026-09-02T21:21:00.651Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8588
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788384079840,"pid":37401,"hostname":"1da6e6043ac7","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6187499910593033,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-09-02T21:21:53.022Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T21:21:53.022Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-02T21:22:14.578Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T21:22:14.582Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+{"level":40,"time":1788384187844,"pid":37401,"hostname":"1da6e6043ac7","reqId":"req-x","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3834590017795563,"msg":"http request completed"}
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-09-02T21:24:26.630Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID apirev8-team.
+Agent Team Definition created successfully with ID: apirev8-team
+{"level":40,"time":1788384333530,"pid":37401,"hostname":"1da6e6043ac7","reqId":"req-1g","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.1076250076293945,"msg":"http request completed"}
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 6e643504-30e0-4174-9345-724f593c80a3 for workspace temp_ws_default
+Created file explorer session 6e643504-30e0-4174-9345-724f593c80a3 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 6e643504-30e0-4174-9345-724f593c80a3 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Resolved configured temp workspace root to TempWorkspace.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+FileExplorerSession closed: 6e643504-30e0-4174-9345-724f593c80a3
+Closed file explorer session 6e643504-30e0-4174-9345-724f593c80a3. Active sessions: 0
+File explorer WebSocket disconnected: 6e643504-30e0-4174-9345-724f593c80a3
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Replacing stale watcher runtime client for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace; killing previous child
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e50a7a1e-9132-4e50-ad2f-f94f59b3ca6a for workspace temp_ws_default
+Created file explorer session e50a7a1e-9132-4e50-ad2f-f94f59b3ca6a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: e50a7a1e-9132-4e50-ad2f-f94f59b3ca6a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+FileExplorerSession closed: e50a7a1e-9132-4e50-ad2f-f94f59b3ca6a
+Closed file explorer session e50a7a1e-9132-4e50-ad2f-f94f59b3ca6a. Active sessions: 0
+File explorer WebSocket disconnected: e50a7a1e-9132-4e50-ad2f-f94f59b3ca6a
+Agent team websocket attached for team run apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Created agent session 3ee30d1f-c97d-47f6-b025-b564dce95c57 for run apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Agent Team WebSocket connected: session=3ee30d1f-c97d-47f6-b025-b564dce95c57, run=apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: cb8fce08-88fc-4b62-aff1-a93a8aa4c711 for workspace temp_ws_default
+Created file explorer session cb8fce08-88fc-4b62-aff1-a93a8aa4c711 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: cb8fce08-88fc-4b62-aff1-a93a8aa4c711 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+FileExplorerSession closed: cb8fce08-88fc-4b62-aff1-a93a8aa4c711
+Closed file explorer session cb8fce08-88fc-4b62-aff1-a93a8aa4c711. Active sessions: 0
+File explorer WebSocket disconnected: cb8fce08-88fc-4b62-aff1-a93a8aa4c711
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1788385249851,"pid":37401,"hostname":"1da6e6043ac7","reqId":"req-3p","err":{"type":"GraphQLError","message":"Task records for RootTeamRun 'apirev8_613529cf063144d0a9e6cd6e385d58ba' were not found.","stack":"Error: Task records for RootTeamRun 'apirev8_613529cf063144d0a9e6cd6e385d58ba' were not found.\n    at TaskDelegationProjectionService.read (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:73:19)\n    at async TaskDelegationProjectionService.list (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:46:26)\n    at async TaskDelegationResolver.getTaskDelegationRecords (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/task-delegation.js:152:17)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTaskDelegationRecords"],"locations":[{"line":1,"column":40}],"extensions":{}},"msg":"Task records for RootTeamRun 'apirev8_613529cf063144d0a9e6cd6e385d58ba' were not found."}
+[2026-09-02T21:41:34.218Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 3ee30d1f-c97d-47f6-b025-b564dce95c57
+[2026-09-02T21:41:34.260Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T21:41:57.687Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-02T21:41:57.997Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T21:41:58.001Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788385318010,"pid":44310,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:40343"}
+{"level":30,"time":1788385318046,"pid":44310,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8588"}
+[2026-09-02T21:41:58.047Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8588
+[2026-09-02T21:41:58.049Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8588
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent team websocket attached for team run apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+Created agent session 3ecbdf64-262b-4a1e-a6fc-26d5364db548 for run apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Agent Team WebSocket connected: session=3ecbdf64-262b-4a1e-a6fc-26d5364db548, run=apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Created terminal session 7e2c0831-dd17-473f-93bd-c4c50e7c891f using backend PtySession for target /root
+Terminal WebSocket connected: 7e2c0831-dd17-473f-93bd-c4c50e7c891f
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788385508854,"pid":44310,"hostname":"1da6e6043ac7","reqId":"req-1i","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6919999867677689,"msg":"http request completed"}
+Closed PTY session 7e2c0831-dd17-473f-93bd-c4c50e7c891f
+Terminal WebSocket disconnected: 7e2c0831-dd17-473f-93bd-c4c50e7c891f
+Created terminal session 3671e360-356c-4b97-8f28-f18faa9ccf22 using backend PtySession for target /root
+Terminal WebSocket connected: 3671e360-356c-4b97-8f28-f18faa9ccf22
+Terminal websocket attached for cwd /root
+{"level":30,"time":1788385592717,"pid":44310,"hostname":"1da6e6043ac7","reqId":"req-1x","err":{"type":"GraphQLError","message":"Active AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba' was not found.","stack":"Error: Active AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba' was not found."}
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1788385801233,"pid":44310,"hostname":"1da6e6043ac7","reqId":"req-2j","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.","stack":"Error: AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":78}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'."}
+{"level":30,"time":1788385801240,"pid":44310,"hostname":"1da6e6043ac7","reqId":"req-2k","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.","stack":"Error: AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":78}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'."}
+{"level":30,"time":1788385840283,"pid":44310,"hostname":"1da6e6043ac7","reqId":"req-2o","err":{"type":"GraphQLError","message":"Active AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba' was not found.","stack":"Error: Active AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba' was not found."}
+Closed PTY session 3671e360-356c-4b97-8f28-f18faa9ccf22
+Terminal WebSocket disconnected: 3671e360-356c-4b97-8f28-f18faa9ccf22
+Closed agent session 3ecbdf64-262b-4a1e-a6fc-26d5364db548
+[2026-09-02T21:52:06.952Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-02T21:52:07.188Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-03T15:36:36.397Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-03T15:36:36.775Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-03T15:36:36.781Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788449796792,"pid":64604,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:36469"}
+{"level":30,"time":1788449796835,"pid":64604,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8589"}
+[2026-09-03T15:36:36.835Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8589
+[2026-09-03T15:36:36.837Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8589
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788449867551,"pid":64604,"hostname":"1da6e6043ac7","reqId":"req-1","err":{"type":"GraphQLError","message":"Unknown query","stack":"FastifyError: Unknown query\n    at executeQuery (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:227:14)\n    at executeRegularQuery (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.handler (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:317:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Unknown query"}
+{"level":40,"time":1788449867554,"pid":64604,"hostname":"1da6e6043ac7","reqId":"req-1","method":"GET","url":"/graphql","statusCode":400,"elapsedMs":5.999249994754791,"msg":"http request completed"}
+{"level":40,"time":1788449968897,"pid":64604,"hostname":"1da6e6043ac7","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8443340063095093,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-09-03T15:41:37.188Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-03T15:41:37.191Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-03T15:42:10.840Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-03T15:42:10.847Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+{"level":40,"time":1788450154456,"pid":64604,"hostname":"1da6e6043ac7","reqId":"req-37","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.46875,"msg":"http request completed"}
+Created terminal session dd7e31af-584f-43f2-bfec-224a48595c96 using backend PtySession for target /root
+Terminal WebSocket connected: dd7e31af-584f-43f2-bfec-224a48595c96
+Terminal websocket attached for cwd /root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Created and registered workspace ID: agent_ws_7a48fdef7760a66ca5c6b4f3be326dee28d58dfaf0f2351130d1c262d071a58a
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Resolved configured temp workspace root to TempWorkspace.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Reusing registered workspace ID: agent_ws_7a48fdef7760a66ca5c6b4f3be326dee28d58dfaf0f2351130d1c262d071a58a
+Resolved configured temp workspace root to TempWorkspace.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Reusing registered workspace ID: agent_ws_7a48fdef7760a66ca5c6b4f3be326dee28d58dfaf0f2351130d1c262d071a58a
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Reusing registered workspace ID: agent_ws_7a48fdef7760a66ca5c6b4f3be326dee28d58dfaf0f2351130d1c262d071a58a
+MediaStorageService initialized. Media root: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/server-data/media
+AgentRuntimeState initialized for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': LLM instance 'DeepSeekLLM' and 9 tools prepared and stored in state.
+AgentContext composed for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' with config: 'AORG E2E Analyst'.
+AgentWorker initialized for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'.
+Registered AgentContext for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Context registered.
+Agent facade initialized for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' created and stored successfully.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' requesting runtime to start.
+AgentRuntime for 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Starting worker.
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Starting...
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' asyncRun(): Starting.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Runtime init completed (event store initialized).
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Runtime init completed (status deriver initialized).
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Runtime init completed (AgentEventInbox initialized).
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' to become idle (timeout: 30s)...
+AgentEventStream (ID: d3620876-fba3-47c8-8617-2a660c2c2e91) initialized for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Subscribed to notifier.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 3f9f79b1-fd78-4dd2-b0e2-8c0a57951dfb, AgentID: aorg_e2e_analyst_86c94422696d4cc2813089e968030f57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Bootstrapper starting direct lifecycle execution.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Executing McpServerPrewarmingStep.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Executing SystemPromptProcessingStep.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': No configured skills. Skipping skill catalog.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Final processed system prompt configured and captured. Trace ID: rt_1788450439274_43f763be-c07e-46cf-a0be-1968cc5fb6a7. Final length: 8832.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 3f9f79b1-fd78-4dd2-b0e2-8c0a57951dfb, AgentID: aorg_e2e_analyst_86c94422696d4cc2813089e968030f57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' initialized successfully. Entering main event scheduler loop.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' has become idle.
+AgentEventStream (ID: d3620876-fba3-47c8-8617-2a660c2c2e91) for 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: a93c3197-6a1a-46b1-b694-534221c52e27) initialized for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Subscribed to notifier.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Reusing registered workspace ID: agent_ws_7a48fdef7760a66ca5c6b4f3be326dee28d58dfaf0f2351130d1c262d071a58a
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Closed PTY session dd7e31af-584f-43f2-bfec-224a48595c96
+Terminal WebSocket disconnected: dd7e31af-584f-43f2-bfec-224a48595c96
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 23feebbe-dbdd-4366-8c90-12d4826929fb for workspace temp_ws_default
+Created file explorer session 23feebbe-dbdd-4366-8c90-12d4826929fb for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 23feebbe-dbdd-4366-8c90-12d4826929fb for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default
+FileExplorerSession closed: 23feebbe-dbdd-4366-8c90-12d4826929fb
+Closed file explorer session 23feebbe-dbdd-4366-8c90-12d4826929fb. Active sessions: 0
+File explorer WebSocket disconnected: 23feebbe-dbdd-4366-8c90-12d4826929fb
+Agent team websocket attached for team run aorg_e2e_research_squad_7637f2dddfe4440eb9dff830660336c7
+Created agent session 272fc418-bbc4-46fe-9f04-1495ffb0d531 for run aorg_e2e_research_squad_7637f2dddfe4440eb9dff830660336c7
+Agent Team WebSocket connected: session=272fc418-bbc4-46fe-9f04-1495ffb0d531, run=aorg_e2e_research_squad_7637f2dddfe4440eb9dff830660336c7
+Closed agent session 272fc418-bbc4-46fe-9f04-1495ffb0d531
+[2026-09-03T16:10:25.046Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+AgentEventStream (ID: a93c3197-6a1a-46b1-b694-534221c52e27) for 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'. Attempting graceful shutdown.
+Agent 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 3f9f79b1-fd78-4dd2-b0e2-8c0a57951dfb, AgentID: aorg_e2e_analyst_86c94422696d4cc2813089e968030f57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Stop requested.
+AgentExternalEventNotifier (NotifierID: 3f9f79b1-fd78-4dd2-b0e2-8c0a57951dfb, AgentID: aorg_e2e_analyst_86c94422696d4cc2813089e968030f57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' asyncRun() loop has finished.
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Running shutdown sequence on worker loop.
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Shutdown resource cleanup completed successfully.
+AgentWorker 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57'.
+AgentRuntime for 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57': Context unregistered.
+AgentRuntime for 'aorg_e2e_analyst_86c94422696d4cc2813089e968030f57' stop() method completed.
+[2026-09-03T16:10:25.172Z] [INFO] [server.runtime] Server closed cleanly.

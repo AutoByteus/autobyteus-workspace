@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "37200cbe75a927ed2ad02c829d08e30b1c4d9239",
+  "sourceInventoryMatches": true,
+  "sourceCommitPaths": [
+    "autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+    "autobyteus-web/services/teamExecution/teamExecutionViewState.ts"
+  ],
+  "noUnmergedPaths": true,
+  "temporaryRouteAbsent": true,
+  "removedInitiallyAbsentSdkDist": [
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-application-frontend-sdk/dist",
+    "autobyteus-application-backend-sdk/dist"
+  ]
+}

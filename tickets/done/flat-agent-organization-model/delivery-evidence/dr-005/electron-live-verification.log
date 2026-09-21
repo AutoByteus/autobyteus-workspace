@@ -1,0 +1,97 @@
+timestamp=2026-09-06T02:44:08Z
+health:
+{"status":"ok","message":"Server is running"}
+listeners:
+LISTEN 0      511          0.0.0.0:29695      0.0.0.0:*    users:(("autobyteus",pid=28551,fd=83))
+processes:
+28447 /bin/bash -lc set -o pipefail DISPLAY=:99 APPIMAGE_EXTRACT_AND_RUN=1 LD_LIBRARY_PATH=/tmp/aorg-appimage-libs \   autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.68.AppImage --no-sandbox \   2>&1 | tee tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-005/electron-launch.log
+28450 autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.68.AppImage --no-sandbox
+28486 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus --no-sandbox
+28488 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus --type=zygote --no-zygote-sandbox --no-sandbox
+28489 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus --type=zygote --no-sandbox
+28518 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus --type=gpu-process --no-sandbox --ozone-platform=x11 --enable-crash-reporter=5a02c7ef-f835-4d79-8500-75f7b94e9d61,no_channel --user-data-dir=/root/.config/autobyteus --gpu-preferences=UAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAYAAAAAAAAABgAAAAAAAAAAQAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA --shared-files --field-trial-handle=3,i,9026493621262609021,13133177152122842954,262144 --enable-features=PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2313994831919727115,9066618049576543764,4 --trace-process-track-uuid=3190708988185955192
+28522 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --enable-crash-reporter=5a02c7ef-f835-4d79-8500-75f7b94e9d61,no_channel --user-data-dir=/root/.config/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,9026493621262609021,13133177152122842954,262144 --enable-features=PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2313994831919727115,9066618049576543764,4 --trace-process-track-uuid=3190708989122997041
+28540 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus --type=renderer --enable-crash-reporter=5a02c7ef-f835-4d79-8500-75f7b94e9d61,no_channel --user-data-dir=/root/.config/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/resources/app.asar --enable-sandbox --no-sandbox --ozone-platform=x11 --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1788656114479442 --launch-time-ticks=6530578954 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,9026493621262609021,13133177152122842954,262144 --enable-features=PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2313994831919727115,9066618049576543764,4 --trace-process-track-uuid=3190708990060038890
+28551 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+28634 /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/autobyteus /tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/child {"product":"prisma","version":"5.22.0","cli_install_type":"local","information":"","local_timestamp":"2026-09-06T02:44:06Z","project_hash":"144f2c26","cli_path":"/tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/resources/server/node_modules/prisma/build/index.js","cli_path_hash":"6bd91d5d","endpoint":"https://checkpoint.prisma.io","disable":false,"arch":"arm64","os":"linux","node_version":"v24.16.0","ci":false,"ci_name":"","command":"migrate deploy --schema [redacted]","schema_providers":["sqlite"],"schema_preview_features":[],"schema_generators_providers":["prisma-client-js"],"cache_file":"/root/.cache/checkpoint-nodejs/prisma-6bd91d5d","cache_duration":43200000,"remind_duration":172800000,"force":false,"timeout":5000,"unref":true,"child_path":"/tmp/appimage_extracted_e02c7e23f4620edc32bae003b0347601/resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/child","client_event_id":"","previous_client_event_id":"","check_if_update_available":true}
+windows:
+
+xwininfo: Window id: 0x22b (the root window) (has no name)
+
+  Root window id: 0x22b (the root window) (has no name)
+  Parent window id: 0x0 (none)
+     50 children:
+     0x2e00006 (has no name): ()  1x1+0+0  +0+0
+     0x3400001 "autobyteus": ("autobyteus" "Autobyteus")  10x10+10+10  +10+10
+     0x2e00000 "Chromium clipboard": ()  10x10+-100+-100  +-100+-100
+     0xe00005 "Qt Clipboard Requestor Window": ()  3x3+0+0  +0+0
+     0x160009d "xfdesktop": ()  10x10+-100+-100  +-100+-100
+     0x240 (has no name): ()  100x100+0+0  +0+0
+     0x1800101 (has no name): ()  10x10+0+0  +0+0
+     0x2a00008 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x3000008 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x2600008 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x220000b (has no name): ()  1x1+-1+-1  +-1+-1
+     0x2200007 "wrapper-2.0": ()  10x10+-100+-100  +-100+-100
+     0x3000001 "wrapper-2.0": ("wrapper-2.0" "Wrapper-2.0")  10x10+10+10  +10+10
+     0x2c00001 "xdg-desktop-portal-gtk": ("xdg-desktop-portal-gtk" "Xdg-desktop-portal-gtk")  10x10+10+10  +10+10
+     0x2a00001 "wrapper-2.0": ("wrapper-2.0" "Wrapper-2.0")  10x10+10+10  +10+10
+     0x2600001 "wrapper-2.0": ("wrapper-2.0" "Wrapper-2.0")  10x10+10+10  +10+10
+     0x2200001 "wrapper-2.0": ("wrapper-2.0" "Wrapper-2.0")  10x10+10+10  +10+10
+     0x240000c (has no name): ()  1x1+-1+-1  +-1+-1
+     0x1e00001 "evolution-alarm-notify": ("evolution-alarm-notify" "Evolution-alarm-notify")  10x10+10+10  +10+10
+     0x2800001 "xfce4-notifyd": ("xfce4-notifyd" "Xfce4-notifyd")  10x10+10+10  +10+10
+     0x2400001 "NetworkManager Applet": ("nm-applet" "Nm-applet")  10x10+10+10  +10+10
+     0x600006 (has no name): ()  1x1+0+0  +0+0
+     0x1600003 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x1800008 (has no name): ()  1x1+-1+-1  +-1+-1
+     0xc00496 (has no name): ()  1210x834+0+0  +0+0
+     0x1600001 "xfdesktop": ("xfdesktop" "Xfdesktop")  10x10+10+10  +10+10
+     0x1c00001 "Thunar": ("Thunar" "Thunar")  10x10+10+10  +10+10
+     0x1800001 "xfce4-panel": ("xfce4-panel" "Xfce4-panel")  10x10+10+10  +10+10
+     0x1400003 (has no name): ()  10x10+0+0  +0+0
+     0x1400002 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x1400001 "xfsettingsd": ("xfsettingsd" "Xfsettingsd")  10x10+10+10  +10+10
+     0xe00004 "Qt Selection Owner for copyq": ()  3x3+0+0  +0+0
+     0xc0003d (has no name): ()  1x1+-1+-1  +-1+-1
+     0xc00032 "Xfwm4": ("xfwm4" "Xfwm4")  5x5+-1000+-1000  +-1000+-1000
+        1 child:
+        0xc00033 (has no name): ()  1x1+-1+-1  +-1001+-1001
+     0xc00030 (has no name): ()  10x10+-100+-100  +-100+-100
+     0xc00001 "xfwm4": ("xfwm4" "Xfwm4")  10x10+10+10  +10+10
+     0xa00001 "chromium": ("chromium" "Chromium")  10x10+10+10  +10+10
+     0x200001 "xfce4-session": ("xfce4-session" "Xfce4-session")  10x10+10+10  +10+10
+     0x600000 "Chromium clipboard": ()  10x10+-100+-100  +-100+-100
+     0x400004 "Qt Selection Owner for copyq": ()  3x3+0+0  +0+0
+     0xc00036 (has no name): ()  1x915+-1+0  +-1+0
+     0xc00037 (has no name): ()  1x915+1510+0  +1510+0
+     0xc00038 (has no name): ()  1510x1+0+-1  +0+-1
+     0xc00039 (has no name): ()  1510x1+0+915  +0+915
+     0xc009cf (has no name): ()  306x49+602+984  +602+984
+        16 children:
+        0x1800014 "xfce4-panel": ("xfce4-panel" "Xfce4-panel")  306x49+0+0  +602+984
+           1 child:
+           0x1800015 (has no name): ()  1x1+-1+-1  +601+983
+        0xc009de (has no name): ()  1x1+0+0  +602+984
+        0xc009dd (has no name): ()  1x1+0+0  +602+984
+        0xc009dc (has no name): ()  1x1+0+0  +602+984
+        0xc009db (has no name): ()  1x1+0+0  +602+984
+        0xc009da (has no name): ()  1x1+0+0  +602+984
+        0xc009d9 (has no name): ()  1x1+0+0  +602+984
+        0xc009d8 (has no name): ()  1x1+0+0  +602+984
+        0xc009d7 (has no name): ()  1x1+0+0  +602+984
+        0xc009d6 (has no name): ()  1x1+0+0  +602+984
+        0xc009d5 (has no name): ()  1x1+0+0  +602+984
+        0xc009d4 (has no name): ()  1x1+0+0  +602+984
+        0xc009d3 (has no name): ()  1x1+0+0  +602+984
+        0xc009d2 (has no name): ()  1x1+0+0  +602+984
+        0xc009d1 (has no name): ()  1x1+0+0  +602+984
+        0xc009d0 (has no name): ()  1x1+0+0  +602+984
+     0xc006ee (has no name): ()  306x3+602+912  +602+912
+        16 children:
+        0x1800010 "xfce4-panel": ("xfce4-panel" "Xfce4-panel")  306x3+0+0  +602+912
+           1 child:
+           0x1800011 (has no name): ()  1x1+-1+-1  +601+911
+        0xc006fd (has no name): ()  1x1+0+0  +602+912
+        0xc006fc (has no name): ()  1x1+0+0  +602+912
+        0xc006fb (has no name): ()  1x1+0+0  +602+912

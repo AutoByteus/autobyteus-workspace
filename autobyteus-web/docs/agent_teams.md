@@ -1,312 +1,98 @@
-# Agent Teams Module - Frontend
+# Agent Teams - Frontend
 
 ## Scope
 
-Shows team definitions in the native Agent Teams surface, supports shared-team creation, supports edit/detail flows for existing shared and application-owned teams, and prepares workspace team launches with ownership-aware member semantics, mixed-runtime per-member overrides, truthful launch-readiness gating, and reopen/hydration support.
+The Agent Teams surface defines, inspects, and launches reusable **flat** Teams.
+A Team contains Agent members only and has one direct Agent coordinator. Stable
+multi-Team composition is authored as an [Agent Org](./agent_orgs.md), never as
+a nested Team definition.
 
-For runtime execution/streaming behavior, see `agent_execution_architecture.md`.
+For shared execution/event behavior, see
+[Agent Execution Architecture](./agent_execution_architecture.md).
 
-The Agent Teams list can also present a server-configured **Featured teams** section. Featured placement is owned by the `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` server setting and managed from Settings -> Server Settings -> Basics -> Featured catalog items; it is not a property of the team definition itself.
+## Catalog And Definition Authoring
 
-## Main Files
+The `/agent-teams` route shows shared and application-owned root Team
+definitions. Featured placement is controlled by
+`AUTOBYTEUS_FEATURED_CATALOG_ITEMS`; it is presentation metadata, not a Team
+definition field.
 
-- `stores/agentTeamDefinitionStore.ts`
-- `components/agentTeams/AgentTeamList.vue`
-- `components/agentTeams/AgentTeamCard.vue`
-- `components/agentTeams/AgentTeamDetail.vue`
-- `components/agentTeams/AgentTeamDefinitionForm.vue`
-- `components/launch-config/DefinitionLaunchPreferencesSection.vue`
-- `components/launch-config/RuntimeModelConfigFields.vue`
-- `components/workspace/config/TeamRunConfigForm.vue`
-- `components/workspace/config/TeamMemberConfigTree.vue`
-- `components/workspace/config/TeamScopeConfigEditor.vue`
-- `components/workspace/config/MemberOverrideItem.vue`
-- `components/workspace/config/HistoricalModelConfigFallback.vue`
-- `components/workspace/config/RunConfigPanel.vue`
-- `components/agentTeams/form/useAgentTeamDefinitionFormState.ts`
-- `components/agentTeams/form/AgentTeamMemberDetailsPanel.vue`
-- `stores/teamRunConfigStore.ts`
-- `stores/agentTeamContextsStore.ts`
-- `stores/agentTeamRunStore.ts`
-- `types/agent/TeamLaunchDraft.ts`
-- `types/agent/TeamRunConfig.ts`
-- `types/agent/TeamRunFormModel.ts`
-- `types/agent/EditableTeamRunFormModel.ts`
-- `types/agent/ExistingTeamRunFormModel.ts`
-- `services/runConfigEditing/existingTeamRunFormModel.ts`
-- `services/runConfigEditing/existingTeamModelConfigDraft.ts`
-- `stores/existingRunModelConfigStore.ts`
-- `utils/editableTeamRunFormModel.ts`
-- `utils/historicalModelConfigFields.ts`
-- `utils/teamRunConfigUtils.ts`
-- `utils/teamRunLaunchHierarchy.ts`
-- `utils/teamRunLaunchReadiness.ts`
-- `utils/catalog/featuredCatalogItems.ts`
-- `utils/definitionOwnership.ts`
+The create/edit form owns:
 
-## Team Definition Model
+- Team name, description, instructions, and category;
+- direct Agent membership;
+- one coordinator chosen from those direct Agents;
+- ordered Team-local handoffs;
+- optional default launch preferences.
 
-Team definitions now include:
+Canonical Team saves/exports remain strict and contain no `schemaVersion` or
+member `refType`. Normal package reads/import/reload extract supported fields
+and ignore unused metadata, including those fields, without rewriting source
+files. Missing or null `defaultLaunchConfig` means no package defaults; valid
+supplied defaults keep their values. Omitted or null `avatarUrl` means no image.
+Catalog cards/details keep their existing initials fallback; sidebar Team
+definition headers use the Team group glyph when the image is absent or broken.
+Valid supplied avatars retain normal image rendering. Sidebar Org definition
+headers use the analogous image-first/building-glyph fallback, without changing
+Agent avatars. Other required fields, value types and launch settings remain
+validated.
 
-- `ownershipScope` (`SHARED`, `TEAM_LOCAL`, or `APPLICATION_OWNED`),
-- owning application/package provenance, and
-- persisted launch defaults:
-  - `defaultLaunchConfig.llmModelIdentifier`
-  - `defaultLaunchConfig.runtimeKind`
-  - `defaultLaunchConfig.llmConfig`
-- per-member `refScope` for both agent and nested-team members (`SHARED`, `TEAM_LOCAL`, or `APPLICATION_OWNED`).
+Agent member rows use `memberName`, `ref`, and explicit `refScope`. Actual scoped
+Agent lookup and handoff validation determine availability: ignoring `refType`
+does not turn a nested Team reference into an Agent. An invalid parent is excluded
+whole, without partial membership or suppressing valid siblings. Package
+registration is not a count of available Teams. The UI must not offer deeper
+configured composition. See the [Team input and write contract](../../autobyteus-server-ts/docs/modules/agent_team_definition.md).
 
-Nested team members now use `refType: 'AGENT_TEAM'` with explicit `refScope`.
-For a parent-owned local subteam, the persisted config keeps the local child id
-in `ref` and sets `refScope: 'TEAM_LOCAL'`; the loaded definition graph resolves
-that child to a canonical team-local team id. Shared nested teams stay
-`refScope: 'SHARED'`, and application-owned sibling team refs use
-`refScope: 'APPLICATION_OWNED'` when the containing team belongs to an
-application bundle. Missing nested-team scope is invalid in current team config.
+Shared Teams can be created, updated, and deleted through the shared provider.
+Application-owned Teams are inspectable and editable only when the owning
+bundle source is writable; generic deletion does not bypass source ownership.
+Team-local private Agents remain discoverable through their owning Team detail.
 
-`defaultLaunchConfig.llmConfig` carries explicit schema-driven runtime/model
-parameters for the selected model. This includes thinking settings such as
-`reasoning_effort` and runtime-specific non-thinking settings such as Codex
-`service_tier: "fast"` for models whose catalog schema exposes **Fast mode**.
-Launch-time UI may display valid schema defaults as effective values, but those
-defaults are not stored in `llmConfig` merely because the form renders them.
+## Handoffs
 
-## Ownership Behavior
+Team-local handoff authoring uses explicit **From**, **To**, and ordered
+**When** conditions. Both endpoints are direct Agent members of the Team.
+Changes remain in the definition draft until the complete definition saves
+atomically. Invalid/self-resolving endpoints, duplicate pairs, empty conditions,
+and member changes that leave stale references block save visibly.
 
-| Scope | Shown in generic Agent Teams list | Editable from generic team detail/edit | Generic delete action |
-| --- | --- | --- | --- |
-| `SHARED` | Yes | Yes | Allowed |
-| `TEAM_LOCAL` | No in the root catalog; discover through the owning team detail/member tree | Direct known-id routes can inspect/edit when the backing source is writable | Not allowed as an independent generic root workflow |
-| `APPLICATION_OWNED` | Yes | Yes when backed by a writable source | Not allowed in the generic shared workflow |
+AgentOrg owns cross-Team and Org-level handoffs. A Team selected as an Org
+destination routes through its direct coordinator, but the Org editor never
+mutates the Team's local handoffs.
 
-The root Agent Teams catalog is based on ownership scope: it renders shared and
-application-owned root definitions and excludes `TEAM_LOCAL` child definitions.
-This is intentionally not a "referenced by another team" filter, because a
-shared nested team can still be an independent reusable catalog team.
+## Standalone Team Launch
 
-The list/detail/card surfaces show ownership badges, owner-team labels, and
-application/package provenance so embedded teams remain distinguishable from
-standalone shared teams.
+`teamRunConfigStore` owns an immutable launch draft. The root Team form
+collects runtime/model/model-config, workspace, automatic-tool policy, and the
+existing direct-member override intent. Every exact configured Agent must be
+valid before launch; pending or failed runtime catalogs and invalid model
+configuration block launch with scoped feedback.
 
-Team definitions are reusable configuration, not runtime subjects. Definition
-catalog and detail surfaces therefore expose no owned runtime status field,
-status dot, or lifecycle label. Runtime liveness belongs only to a concrete team
-run, and authoritative five-state status belongs only to exact leaf agents.
-Workspace history and running-team presentation may group displayed runs by
-definition and show a presentation-only any-active cue for that rendered
-collection. The group dot is derived from `runs.some(run => run.isActive)` and
-is not stored on, transported with, or inferred as a status of the definition.
-Each child run row still shows only its own binary `isActive` cue; neither cue
-depends on representative member status, socket subscription, or Stop/pending
-state.
+A standalone Team launches one native Team V2 root. The coordinator becomes the
+initial focused Agent for the familiar Team journey. Browser launch input does
+not supply concrete TeamRun/AgentRun IDs; the server allocates and validates
+them.
 
-Within a concrete TeamRun's Workspaces history hierarchy, a stable configured
-nested-Team row may separately summarize the exact Agent statuses already
-projected beneath that row. The UI-only fold uses `running > initializing >
-error > idle > offline`, includes descendant task Agent/task-Team-child rows,
-stays visible while collapsed, and excludes ancestors, adjacent siblings, root
-TeamRun rows, definition groups, Agent rows, and transient task-Team rows. This
-summary is not an owned Team field, public event, persisted value, liveness
-signal, or command/readiness/interrupt/delete authority.
+Launching makes the root and configured scope available without starting unused
+Agents or binding their provider conversations. They remain truthfully Offline,
+including the initially focused coordinator, until supported work requires them.
+The first real input/delivery starts the required member; a visible selection is
+not evidence of an active worker. The same fresh-unused policy applies to direct
+and mounted-Team Agents in a new AgentOrg. Restoring a retained Team or Org also
+leaves configured members Offline until actual work reaches them, even when they
+have prior history. Sending after a server restart restores the complete scope
+but readies only the required recipient; later peer or human input can start
+another member. Saved conversations, attachments and identities are preserved.
+Assigned task execution retains its separate durable preparation/release journey.
 
-An expanded TeamRun renders its configured and transient execution rows as one
-compact printed-file-tree hierarchy. `WorkspaceTeamExecutionTree.vue` consumes
-the existing depth-first `executionRows` projection and applies only the current
-disclosure state; `WorkspaceHierarchyBranches.vue` derives continuous ancestor
-rails plus a right-only elbow whose vertical segment stops at the final sibling.
-Configured nested Teams use an unboxed filled user-group icon and semibold name,
-configured Agents retain circular avatars, and transient task Teams retain a
-dashed indigo treatment with a bolt icon. These are presentation roles only and
-do not change topology, status authority, or selection identity.
+The effective standalone configuration is resolved for each direct Agent from
+the Team root plus any exact Agent override. Definition defaults seed the new
+draft but are not persisted merely because a schema default is displayed.
 
-The execution subtree exposes a localized `tree`/`treeitem` accessibility model
-with level, role, address, status, selection, and disclosure state. Full role,
-name, and address remain available through the native title and a keyboard-focus
-tooltip when the visible name truncates. The named Workspace-history container
-keeps controls operable at the supported 260/320/520px widths and Default/Large/
-Extra Large font presets: repeated age yields at 320px and below, and depth-2
-status may yield below 280px, with both returning on hover or focus.
+## Execution Identity And Commands
 
-## Default Launch Preferences
-
-`AgentTeamDefinitionForm.vue` now round-trips `defaultLaunchConfig` through the shared `DefinitionLaunchPreferencesSection.vue` surface for both shared and application-owned teams.
-
-Those values are used in two places:
-
-- direct native team launches, and
-- application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
-
-Definition editors can leave runtime blank to mean “choose when launching”. Only
-the root-selected definition seeds a new launch draft. Embedded Team definition
-defaults do not activate independently: every nested Team inherits from its
-containing Team until the user records an exact-address Team override.
-
-Team launch forms do not expose a team-level skill-access selector. Each
-leaf member uses the skills configured on that member's agent definition; a leaf
-member with no configured skills receives no AutoByteus-managed skills by
-default. The old all-installed-skill option is not a normal launch-time policy
-and is absent from the frontend skill-access type union.
-
-## Team Run Config Surface
-
-The workspace-side team launch buffer is owned by `teamRunConfigStore` and rendered through `TeamRunConfigForm.vue`.
-
-
-The team launch data model does not carry Skill Improvement overrides for the
-manual-click model. Team definitions, `team-config.json`, persisted default
-launch preferences, `TeamRunConfig`, and agent-member launch records do not own
-Skill Improvement eligibility; the backend resolves manual eligibility from current
-global Skill Improvement settings and the current active target state at click time.
-Whole-team/subteam Skill Improvement is not part of the MVP manual action, and the team
-run configuration form does not expose launch-time Skill Improvement default or
-leaf-member override controls.
-
-For manual Skill Improvement, the composer-adjacent CTA targets the selected active
-leaf member, not the whole team row. The frontend sends the member-scoped target
-identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSkillImprovement`, and
-the backend records source run ids for the selected member only. Before
-triggering the improver, the backend ensures that member's work trace files are
-current, then activates or reuses the target-scoped improver run. This preserves
-the same valid focused leaf-member boundary used by the shared composer target
-and prevents stale history rows or whole-team containers from becoming improvement
-targets.
-
-That surface stores authoring intent rather than a partially materialized runtime tree:
-
-- `TeamRunConfig.rootConfig` is the complete root Team scope.
-- `teamOverrides` stores only meaningful partial overrides keyed by canonical
-  rooted Team address.
-- `agentOverrides` stores only meaningful partial overrides keyed by canonical
-  rooted Agent address.
-- `TeamLaunchDraft` adds one stable draft id, exact-address Team workspace
-  authoring state, focused Agent address, and pending composer input.
-
-`resolveTeamRunConfiguration(...)` is the only frontend hierarchy-resolution
-owner. It walks the selected definition graph and resolves every field with this
-precedence:
-
-```text
-Agent override -> containing Team -> ancestor Teams -> root Team
-```
-
-The result is a complete immutable view for every configured Team and Agent.
-Runtime kind, model, `llmConfig`, auto-approve, and workspace inherit together;
-`llmConfig: null` remains an explicit value rather than "missing". Workspace can
-be owned by the root or by an explicitly customized nested Team. Agents inherit
-their containing Team workspace and do not own an Agent workspace override.
-Skill access remains root-authored and inherited across the full hierarchy.
-
-`TeamRunConfigForm.vue` preserves the familiar root launch form: Team Definition
-flows directly into runtime/model/configuration, Workspace Directory, Auto
-approve tools, and the existing **Team Members Override** disclosure. The root
-does not render hierarchy-specific wrapper chrome, an **Inherited** or
-**Customized** badge, canonical `/`, or a duplicated effective-value summary.
-
-`TeamMemberConfigTree.vue` recursively renders nested Team and Agent placements
-inside the member disclosure. Each nested Team extends the existing indented
-Team group with its name, `TEAM` marker, canonical placement address, one
-actionable **Inherited** or **Customized** state, a disclosure chevron, and a
-conditional **Reset** action. The nested editor starts collapsed. When expanded,
-`TeamScopeConfigEditor.vue` renders the actual effective workspace/runtime/model/
-configuration/auto-approve controls; no separate effective or customized-fields
-summary is rendered in either state. `MemberOverrideItem.vue` remains the leaf
-Agent override editor. Reset removes only the selected scope's stored intent;
-descendants then resolve again through the nearest remaining ancestor. Stale
-Team/Agent addresses are pruned against the current definition topology and
-shown as a repair notice before the user retries launch.
-
-The authoring UI may show schema defaults as effective values, but it does not
-store them merely because they render. Explicit runtime/model changes clear
-only incompatible configuration owned by that scope. For Codex members,
-`service_tier: "fast"` remains valid only while the selected or inherited model
-schema exposes **Fast mode**.
-
-Selected existing Team runs do not reconstruct definition-time override intent,
-but they reuse the same form/tree/control presentation as editable drafts.
-`RunConfigPanel.vue` gives the exact V2 execution tree and its local model-config
-planner to `projectExistingTeamRunFormModel(...)`, while editable launch drafts
-remain `EditableTeamRunFormModel`. The `TeamRunFormModel` union keeps
-`mode: 'editable' | 'existing'` discrimination through every Team and Agent
-node.
-
-Existing nodes share neutral display facts—identity, saved effective launch
-configuration, stored workspace display, and comparison-derived state. They do
-not fabricate definition overrides, workspace authoring state, or launch
-commands. Runtime/workspace/auto-approve and identity stay locked, while the
-same-runtime model/settings pair becomes editable only for a canonically
-stopped, unarchived, ownership-free Team. Disclosures remain operable; **Reset**
-and **Run Team** are unavailable. Save emits exact configured-Team/configured-
-Agent model/settings pairs through `existingRunModelConfigStore`. Replacement
-requires verified target context >= that scope's fresh saved-model context;
-same-model settings bypass the replacement-capacity comparison only. Every
-intended patch validates before one write; smaller/unknown replacements and
-invalid descendants cannot be silently accepted or omitted. Selecting a new
-model clears old explicit settings and presents the target schema/defaults
-before Save. See [Settings](./settings.md#existing-run-model-configuration).
-
-Historical model configuration is field/value exact. Explicit values that a
-current control can represent stay in that normal control, editable only when
-the overall stopped-run contract permits. A producer-backed saved value that is
-no longer selectable, or a key removed from the current schema, appears once in
-the compact field-local historical fallback instead of being replaced by a
-current default. Current-schema fields are considered in schema order and
-removed persisted keys follow in stable key order. The projection never mutates
-the V2 snapshot or renders one persisted key twice.
-
-## Hierarchical Launch Readiness
-
-`teamRunLaunchReadiness.ts` evaluates the complete resolved hierarchy, not only
-leaf overrides. Launch is blocked while topology is unavailable; when any exact
-Team or Agent lacks a valid runtime/model; while a required runtime catalog is
-pending or failed; or when an effective model is unavailable for its runtime.
-Workspace readiness belongs only to the root and to nested Teams that explicitly
-own a workspace override. Inherited Teams and Agents do not emit duplicate
-workspace blockers.
-
-Each current Team scope has one draft-owned controlled workspace selection.
-Existing mode uses its selected workspace immediately. New mode can remain
-unregistered while the user edits: a non-empty absolute path is launch-ready and
-an empty path produces one exact Team-scoped blocker. A stale selection for a
-Team removed or changed in the definition no longer deadlocks the only repair
-action; activation prunes stale configuration/workspace state, reports the
-sorted repaired addresses, performs no workspace registration or GraphQL create,
-and asks the user to review and retry.
-
-## Draft Workspace Preparation And Launch
-
-`teamRunConfigStore` owns the immutable Team launch draft and the authorization
-for every workspace-preparation step. `agentTeamRunStore.launchDraft()` is the
-single orchestration owner:
-
-1. reconcile the current definition topology and create a plan bound to the
-   draft id plus topology fingerprint;
-2. group active New-workspace Team selections by canonical path;
-3. immediately before each asynchronous registration, re-authorize the same
-   draft, topology, and exact Team addresses;
-4. write the registered workspace metadata back to those Team scopes and repeat
-   topology authorization;
-5. finalize preparation, evaluate complete launch readiness, and admit the
-   immutable draft exactly once;
-6. project one complete `teamConfigs[]` entry for every Team and one complete
-   `memberConfigs[]` entry for every Agent; and
-7. call `createAgentTeamRun`, hydrate the returned V2 execution tree, focus the
-   exact Agent address, transfer pending input, and promote the draft once.
-
-Registration failure preserves the user's New mode/path and exposes the error.
-Topology drift before or during preparation stops the launch with a visible
-repair-required result. While a draft is admitted, edits, selection/focus/input
-changes, removal, clear, and duplicate launch allocation are rejected. The
-frontend does not create a temporary runtime Team or infer missing Team/Agent
-settings at the GraphQL boundary.
-
-For nested team definitions, the backend launches through the mixed topology
-path even when all leaf members use the same runtime. Leaf launch configs carry
-canonical rooted `memberAddress` values so duplicate leaf names in different
-subteams remain distinct. A subteam is structural topology, not an executable
-Agent target; user messages and runtime commands address an exact leaf Agent
-execution.
-
-Team focus is one exact `TeamExecutionAddress`:
+Every executable Team target uses an exact `TeamExecutionAddress`:
 
 ```ts
 interface TeamExecutionAddress {
@@ -317,260 +103,208 @@ interface TeamExecutionAddress {
 }
 ```
 
-`memberAddress` is the rooted logical Agent placement (for example
-`/BuildSquad/review_lead`). The ordered `taskTeamRunIds` identify nested task-Team
-execution lineage, and `taskAgentRunId` distinguishes a task-Agent execution
-from its stable logical member. Structural leaf executions use an empty task-Team
-lineage and `null` task-Agent id. The frontend validates and serializes exactly
-these four fields; legacy path, route-key, instance-id, or generated-run-id
-fallbacks are not accepted.
+A direct configured Agent has an empty task-Team chain and
+`taskAgentRunId: null`. Delegation can create task Agents or task Teams; those
+task-scoped executions extend the exact address but are not configured Team
+members.
 
-`agentTeamRunStore.sendMessageToFocusedMember()` sends ordinary chat only to the
-focused exact Agent execution. For a draft, the selected immutable draft and its
-focused rooted member address are admitted synchronously before any asynchronous
-allocation; pending edits, focus changes, input changes, removal, selection
-changes, clear, and duplicate launches are rejected until that launch either
-promotes once or releases after failure. After launch or restore, the store
-starts one local submission for the exact focused Agent context, finalizes its
-attachments, connects the Team stream, and emits `SEND_MESSAGE` with
-`execution_address`, required `message_id`, and required `dedupe_key`. Missing,
-stale, non-Agent, or cross-root addresses fail closed rather than retargeting.
-An accepted server result means the exact member AgentRun owns the input. The
-AgentRun may append it to the identified Codex turn or retain it for a later
-AutoByteus/Claude turn; Team frontend state does not choose that policy or
-create another queue.
+Message, interrupt, tool approval/denial, token usage, Team Communication,
+history selection, and Activity all use the same exact identity. The frontend
+does not retarget by display name, route key, first matching Agent, or stale
+focus.
 
-The same exact address is the identity for focus, run-open hydration, token usage,
-Team Communication perspectives, tool approval, and interrupt. Team
-`INTERRUPT_GENERATION` carries `{command_id, execution_address}`;
-`AGENT_COMMAND_ACK` must match both fields before the pending command completes.
-Team tool approval and denial carry `{invocation_id, execution_address, reason}`;
-the execution address captured from the authoritative `agent_execution` event is
-reused even if UI focus later changes. No command reconstructs identity from a
-display name, a route-key alias, a structural template, or an invocation id.
+## Runtime, Tasks, And Status
 
-Focus changes are committed through inspection rather than by updating the
-Workspaces row first. For a mounted Team, the inspection coordinator ensures the
-exact AgentRun has an authoritative retained projection before
-`TeamExecutionViewState` accepts focus; the run-history current-row projection is
-then rebuilt from that view. A failed or conflicted inspection leaves the
-previous AgentRun selected. For a task Agent, the existence of a live-created
-context is not proof that its retained conversation or Activity has been loaded.
+`agentTeamRunStore` owns launch, restore, focused commands, Stop, and
+streaming. `agentTeamContextsStore` owns hydrated execution contexts.
+`TeamStreamingService` parses the shared contracts and routes each frame to
+the exact execution.
 
-Root `TEAM_RUN_LIFECYCLE` remains a binary Team-container fact. Exact
-`AGENT_STATUS` events own leaf `offline` / `initializing` / `idle` / `running` /
-`error` state. WebSocket subscription state remains separate from both. This
-keeps Team liveness, leaf status, focus, and interrupt authority independent.
+Root Team lifecycle is a binary manager-owned fact. Each Agent owns its own
+`offline | initializing | idle | running | error` status. Connection state,
+root lifecycle, Agent status, task lifecycle, and command overlays are not
+interchangeable. A restored standalone Team scope can be Active while every
+configured Agent remains Offline: the Team stream can reopen scope without
+starting providers. Green/Idle is not evidence of model reasoning. Do not copy
+Org container-status expectations onto a Team or start workers to reconcile status.
 
-For a delegated task Agent, its retained projection establishes the selected
-monitor baseline and the root Team stream owns subsequent progress. The server
-publishes `TASK_AGENT_ACTIVATED` before that exact run's status, turn, content,
-tool, or segment frames: a durability gate buffers pre-activation events, drains
-them FIFO after activation becomes durable, and then forwards later frames
-exactly once. Abort/disposal drops the private events and starts no task work.
-The frontend routes the released frames by the exact `agent_execution`, so an
-early-selected task advances without reload/refocus and repeated task runs at one
-logical address remain isolated.
+Task delegation remains supported. A task Agent or task Team is shown as a
+transient execution row while the Tasks surface retains the durable record,
+submissions, reviews, and reference files. Task activation becomes durable
+before its Agent frames are released, allowing an early-selected task monitor
+to advance without reload or refocus.
 
-## Stopped Team Follow-Up And Termination State
+## History, Restore, Stop, And Delete
 
-`agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
+Team history is backed by the strict native Team V2 package under
+`memory/agent_teams/<team-run-id>/`. The root contains direct configured
+Agents plus task-execution snapshots; it has no configured child Team.
 
-- launch drafts call `launchDraft()` before the first send and hydrate the permanent
-  V2 execution tree returned by `createAgentTeamRun`;
-- persisted teams with cached inactive resume config call `RestoreAgentTeamRun` before send;
-- the backend team WebSocket connect and `SEND_MESSAGE` paths also resolve through
-  `TeamRunService.resolveActiveTeamRun(...)`, so the server can restore and rebind
-  the stream session even when the frontend's resume cache is stale or absent; and
-- after a successful follow-up send, the run history cache is marked active and refreshed.
+Opening a current or historical run hydrates its stored execution tree and exact
+member projection. Current definitions are not used to reinterpret the stored
+topology. External provider IDs remain provider bindings, not local AgentRun
+identity.
 
-`agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority
-for a hydrated Team execution. Stop is available only while root `isActive` is
-true and that run has no `stopPending` request. It tears down local stream/member
-state and marks the team resume config inactive only after
-`TerminateAgentTeamRun` succeeds. If backend termination fails, the store clears
-pending, returns `false`, and leaves root activity, local member state, and
-run-history activity unchanged. An unlaunched draft has no backend runtime and
-is discarded through draft actions rather than Team termination. `isSubscribed`
-remains a separate transport fact and must not be used as liveness.
+The normal Tasks detail can deliberately inspect an accepted/settled task Agent
+while the containing Team is active or inactive. Admission uses exact retained
+AgentRun/placement and authoritative projection hydration, not presence in the
+live navigation roster. Focus commits only after successful hydration; repeated
+same-address assignments remain distinct. The retained monitor exposes actual
+conversation and Activity as read-only, without composer, commands, writes or
+reactivation. Deliberate inspection survives later task activation and existing
+verified stream-replacement snapshots. Ordinary live-task selection still repairs
+to an eligible live member when that task settles; it does not silently become
+retained-inspection intent.
 
-The focused member interrupt/Stop action is separate from root termination.
-The store creates a fresh client interrupt command id and sends the exact
-team/member route plus optional run guard through `TeamStreamingService`. The
-service matches `AGENT_COMMAND_ACK` by command id and exact target before member
-projection. Accepted acknowledgement does not mark the member idle or change
-root `isActive`; the later canonical member terminal/status event removes the
-interrupt affordance. Rejected/failed acknowledgement or local
-not-connected/send/disconnect completion produces one member-aware localized
-toast without transcript, member-status, root-liveness, or retry side effects.
-Input admitted while Stop is settling remains FIFO-owned on the server and is
-forwarded only after the matching interrupt reservation is rejected/released or
-the accepted interrupt reaches its canonical terminal.
+Shared Tasks keeps participant links in the familiar direction line rather than
+an extra name/ID strip. Exact Agent names navigate directly; a Team name or
+identity disclosure reveals all exact participant links, including non-coordinator
+members. Identity details are on demand and reset with the selected item/scope.
 
-Workspace team history is backed by the server V2 team catalog, not by durable
-live-status fields. `listWorkspaceRunHistory` returns team rows with
-`createdAt`, `archivedAt`, `terminatedAt`, manager-owned `isActive`, exact leaf
-member statuses, and recursive `rootTeam`; no root status is derived. Frontend team tree rows may still expose
-local view-model `lastActivityAt`, `lastKnownStatus`, and delete-readiness
-fields for shared UI components, but those values are derived from the V2
-catalog row plus live status and are not persisted backend team-history fields.
+A stopped Team can restore for supported follow-up. Stop ends runtime ownership
+but retains history. Archive and permanent Delete remain separate later user
+actions; failed Stop keeps the root active/retryable and does not enable Delete.
 
-## Reopen / Hydration Behavior
+Selected existing runs can expose stored model configuration through the shared
+display/editor components. Only canonically stopped, unarchived, ownership-free
+runs permit supported exact model-config updates. Runtime identity, workspace,
+topology, tasks, and provider bindings remain immutable.
 
-Current Team reopen and history hydration consume the V2 execution tree rather
-than reconstructing definition-time override intent.
-`hydrateLiveTeamRunContext(...)` and the Team execution view preserve the exact
-configured hierarchy: the root and every nested Team carry their complete
-`defaultLaunchConfiguration`, and every configured Agent carries its complete
-`launchConfiguration`.
+## Definition And Package Refresh
 
-The selected exact member projection is a required part of a coherent open.
-Fresh open stages the required conversation and Activity before the Team context
-is mounted and treats nonfocused member projections as best effort. Mounted
-inspection uses the existing `GetTeamMemberRunProjection(teamRunId, agentRunId)`
-operation, single-flights duplicate selection, and performs a revision-guarded
-conversation/Activity replacement. Loading, retryable error, and authoritative
-empty are distinct UI states. Snapshot/reconnect invalidates projection
-authority, and settlement-triggered focus repair reconciles the repaired
-fallback projection before its monitor becomes authoritative.
-
-The workspace config panel derives one existing-run view from that tree and the
-local `ExistingTeamModelConfigDraft`, then adapts it to
-`ExistingTeamRunFormModel`. `TeamRunConfigForm.vue`,
-`TeamMemberConfigTree.vue`, `TeamScopeConfigEditor.vue`, and
-`MemberOverrideItem.vue` render the same visual hierarchy used for a draft with
-fixed identity/runtime/workspace/policy fields and conditionally editable
-model/settings controls.
-The frontend does not consult current definitions for topology/order, infer a
-representative Team default, turn complete snapshots back into definition
-overrides, or import authoring state into the existing-run projector. Explicit
-`llmConfig: null` and `workspaceRootPath: null` remain recorded values. A parent
-model/settings-pair edit follows only original links based on draft-start
-runtime/model/settings equality; divergent and mixed-runtime branches remain
-stable, and explicit direct edits stay sticky for the draft even if later equal
-to the parent. Only configured scopes are targeted, never task executions.
-Save keeps topology, IDs, provider bindings, history, and retained compaction
-state unchanged; normal later member messages consume the saved pairs in their
-same conversations. Indeterminate Save verification uses the existing read/Retry
-lock, not another mutation or rollback.
-
-Logical topology uses canonical AgentTeam addresses. Physical memory resolution
-remains a separate concern based on `rootTeamRunId`, physical ancestor TeamRun
-IDs, and AgentRun identity. The frontend projects the V2 tree into stable and
-task execution models keyed by exact serialized `TeamExecutionAddress`.
-
-Every Team Agent stream event carries one strict `agent_execution` binding:
-
-```ts
-{
-  kind: 'structural' | 'task_agent' | 'task_team_member';
-  execution_address: {
-    root_team_run_id: string;
-    task_team_run_ids: string[];
-    member_address: string;
-    task_agent_run_id: string | null;
-  };
-  agent_run_id?: string;
-}
-```
-
-The strict contract does not expose `execution_kind`, task instance ids,
-member/source paths or route keys, represented-subteam fields, or generic
-egress identity aliases. `TeamStreamingService` parses the shared protocol,
-reconciles each binding through the Team execution model, and applies the
-resulting effect to the exact Agent context. Unknown topology, incomplete
-identity, wrong roots, and invalid task lineage are rejected instead of guessed.
-
-Task-Agent and task-Team executions are transient execution projections, not
-structural topology. A task-Agent address keeps the logical `memberAddress` and
-adds its `taskAgentRunId`; a task-Team member address appends the concrete child
-TeamRun id to `taskTeamRunIds` and identifies the exact child Agent with a rooted
-`memberAddress`. Complete task snapshots and live events converge through the
-same canonical address. The Workspaces tree renders execution rows from this
-model and selection/focus uses exact serialized address equality, so identical
-member names, repeated logical placements, and nested task executions cannot
-collide.
-
-Task-Agent presentation keeps lifecycle and execution state separate. The row
-and selected header show a Task marker plus a task-record lifecycle label (`In
-progress`, `Awaiting review`, `Revision requested`, `Accepted`, or
-`Interrupted`) and the exact AgentRun execution label (`Initializing`,
-`Running`, `Idle`, `Error`, or `Offline`). Conversation and Activity visibility
-does not depend on lifecycle or on which collaboration tool produced the
-content, and ordinary message text never advances the task state machine.
-
-Team → Tasks remains the durable delegated-task surface. It renders persisted
-records and reference files, while the Workspaces tree renders the live execution
-hierarchy. The two surfaces share canonical task records and addresses but do
-not derive one another from transient display rows.
-
-Subteam rows remain grouping/navigation structure. The executable focus is an
-exact Agent address such as `/BuildSquad/review_lead`; Team Communication stores
-and compares the complete sender and receiver execution addresses. Display
-labels are derived from canonical topology only after identity has been
-resolved.
-
-## Store Ownership
-
-`agentTeamDefinitionStore` owns:
-
-- fetch and reload of the full team catalog,
-- create/update/delete mutations,
-- ownership-aware getters such as `rootAgentTeamDefinitions`, `sharedAgentTeamDefinitions`, `teamLocalAgentTeamDefinitions`, `getTeamLocalTeamDefinitionsByOwnerTeamId(...)`, and `getApplicationOwnedTeamDefinitionsByOwnerApplicationId(...)`, and
-- cache invalidation via `invalidateAgentTeamDefinitions()`.
-
-`teamRunConfigStore` owns:
-
-- the collection of immutable Team launch drafts and the selected draft,
-- root, nested-Team, and exact-Agent authoring intent keyed by canonical address,
-- per-Team workspace selection state, topology reconciliation/repair, and
-  authorization-bound workspace-preparation plans,
-- runtime-scoped model catalogs for launch readiness,
-- the derived `launchReadiness` view consumed by the workspace panel.
-
-`agentTeamRunStore` owns draft launch orchestration, permanent Team creation,
-V2 hydration, streaming, restore, focused sends, and termination.
-`agentTeamContextsStore` owns hydrated live execution contexts. There is no
-temporary runtime Team between draft authoring and `createAgentTeamRun`.
-
-## Package Refresh Behavior
-
-Agent package import, removal, local reload, and managed GitHub update flows
-invalidate and reload Agent Teams together with Applications and Agents so
-package-owned teams appear, refresh, or disappear immediately in the same
-session.
-
-For definition updates outside the editor, use **Settings → Agent Packages** as
-the source-aware package lifecycle surface. Local path packages remain
-user-owned: edit or pull the folder outside AutoByteus, then press the package
-row's **Reload** action so the backend validates and rescans the package.
-Public GitHub package rows can **Check again** for default-branch drift and
-**Update** the AutoByteus-managed package when an update is available or the
-installed revision is unknown. These actions refresh the local agent and team
-definition catalogs from configured package sources and perform a network
-refetch; they do not copy definitions between nodes.
+Agent package import, removal, local Reload, and managed GitHub Update invalidate
+Agent, Team, and AgentOrg catalogs together. External/local package ownership
+remains source-authoritative; catalog refresh does not copy definitions between
+nodes or activate legacy formats.
 
 ## Featured Teams
 
-`AgentTeamList.vue` joins the loaded team catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT_TEAM`.
+`AgentTeamList.vue` joins admitted Team definitions with featured catalog
+settings whose `resourceKind` is `AGENT_TEAM`.
 
-- Featured teams render with the same `AgentTeamCard` component and the same view-details and run actions as the regular grid.
-- When the featured section is visible, the same team is removed from the regular grid to avoid duplicate cards.
-- Search mode hides featured grouping and searches the root team catalog normally, including featured teams that match the query while still excluding `TEAM_LOCAL` child definitions from the root page.
-- Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.
-- Frontend code must not hard-code featured team ids. Change featured placement through the server setting instead.
+- Featured cards use the ordinary detail and Run actions.
+- A featured Team is omitted from the regular section to avoid duplication.
+- Search removes featured grouping and searches admitted root Teams normally.
+- Unknown featured IDs remain operator-cleanup concerns in Settings.
 
-## Notes
+## Manual Skill Improvement
 
-- The generic create flow still creates shared standalone teams.
-- Application-owned teams are surfaced for inspection/testing and in-place editing, not for shared-path deletion.
-- Team-local subteams are stored under the owning team at `agent-teams/<local-team-id>/`, can own their own `agents/` and deeper `agent-teams/` folders, and are hidden from the root catalog by `ownershipScope: 'TEAM_LOCAL'`.
-- Team member configs must preserve explicit `refScope` for all members. Use `TEAM_LOCAL` for parent-owned local agents/subteams, `SHARED` for reusable catalog definitions, and `APPLICATION_OWNED` for same-application sibling team references from application-owned teams.
-- Resolvable nested team members show a visible `View ↗` action in the parent team detail row. The action routes through the existing Agent Teams page detail view with the resolved canonical child team id and a parent return context, including canonical team-local child ids such as `team-local-team:<encoded-owner-team-id>:<encoded-local-team-id>`. Unresolved nested team rows do not show a broken navigation action.
-- Team detail cards surface team-local member badges for embedded private agents. Resolvable team-local agent members use compact `Details ▾` / `Hide ▴` actions and can be expanded in the team detail page to inspect the member agent's name, role, description, instructions, skills, tools, default runtime/model, and optional processor configuration without leaving team context.
-- Expanded team-local member panels provide in-place editing through the canonical agent definition form and persist through `agentDefinitionStore.updateAgentDefinition(...)`; canceling edit returns to the expanded read view without saving draft changes.
-- Shared/global individual-agent members (`refType === 'AGENT'` with absent/`SHARED` scope) use a compact `View ↗` action that opens the existing Agent Detail route with `returnToTeam=<teamId>` so the Agent Detail back action returns to the originating team. Shared/global members do not get inline team-local details/editing.
-- Application-owned team forms preserve the distinction between same-application sibling teams (`APPLICATION_OWNED`) and parent-owned child teams (`TEAM_LOCAL`) instead of writing no-scope nested-team refs.
-- Generic Agents browse/search excludes team-local definitions, so the owning Agent Team detail page is the primary team-local discovery and edit surface. Direct known-id agent detail/edit routes are still available for debugging.
-- Agent cards/details show both team and application provenance when the owning team belongs to an application bundle.
-- The workspace run-config flow now truthfully supports mixed-runtime teams; any future team-launch UX must preserve the same per-member runtime/model/readiness invariants.
+Manual Skill Improvement is selected-Agent owned. The composer-adjacent action
+targets the active focused Agent execution, not the Team container. Definition
+and launch config do not persist a Team-wide or task-Team eligibility flag.
+
+## Main Files
+
+- `pages/agent-teams.vue`
+- `components/agentTeams/AgentTeamList.vue`
+- `components/agentTeams/AgentTeamDetail.vue`
+- `components/agentTeams/AgentTeamDefinitionForm.vue`
+- `stores/agentTeamDefinitionStore.ts`
+- `stores/teamRunConfigStore.ts`
+- `stores/agentTeamRunStore.ts`
+- `stores/agentTeamContextsStore.ts`
+- `services/agentStreaming/TeamStreamingService.ts`
+- `components/workspace/config/TeamRunConfigForm.vue`
+- `components/workspace/history/AgentTeamRunHistoryPanel.vue`
+
+## Compatible Model Selection On Stopped Runs
+
+The existing-run form permits a stopped standalone Team root or exact direct
+Agent to edit its model/settings pair while runtime, workspace, approval policy,
+addresses, and execution/provider identities remain locked. Model options are
+advisory: Save revalidates every affected scope against its original saved model
+and requires verified target context capacity at least that baseline. Same-model
+settings still require a current model/schema, but no replacement-capacity check.
+
+Root pair changes propagate only to Agents linked by draft-start
+runtime/model/settings equality. Divergent or directly edited Agents remain
+independent. All intended patches validate before one strict Team V2 write.
+An indeterminate write/read-back locks Save until the existing Refresh verifies
+canonical state; it must not be presented as a confirmed failure or replayed.
+This does not unlock active AgentOrg member settings, add mounted-Team save/root
+authority, or restore nested configured Team authoring.
+
+### Historical Content And Current Tool Decisions
+
+First inspection of a mounted task still loads its exact conversation, attachments
+and Activity; it does not return a blank monitor merely because live events have
+arrived. For a currently live member of an active, synchronized Team, hydration
+composes historical content with the same AgentRun's actual observed tool state,
+matched by exact invocation ID. Parsed history cannot erase a pending manual
+approval or regress an approved/executing call. Explicit terminal outcomes cannot
+be made pending again; conflicting identities/outcomes fail the candidate without
+partially publishing either conversation or Activity.
+
+The current tool's arguments, type and available routing metadata survive. Missing
+historical tool entries can retain one observed live invocation, not a copy of the
+whole live conversation. Existing selection, identity, readiness and content-revision
+guards still apply. Retired/inactive/disconnected member inspections load history
+without carrying obsolete live permissions forward. Approval remains the normal
+ToolCallIndicator → exact AgentRun/invocation command path, not an Activity control,
+handler replay, automatic approval or new pending-decision registry. Task startup
+continues to honor the configured recipient's `autoExecuteTools` policy.
+
+Historical traces are not a complete journal of pending tool decisions. A parsed
+tool intent, or recorded approval provenance, does not alone authorize a current
+Approve control. Preserve actual same-live-run decision evidence only while the
+existing identity and stream-readiness guards hold; never infer permission by
+replaying trace entries or changing `autoExecuteTools`.
+
+## Stopping And Retained Activity
+
+Stopping a Team retires its runtime and stream while keeping the selected
+workspace and each member’s existing Activity available for inspection. Completed
+tool details and System instructions do not require a new message, refocus, or
+reload to remain visible. Stopped Activity is historical presentation, not
+permission to execute an old tool decision. Later deliberate input uses the
+normal restore and history-hydration path; Stop itself does not activate Agents
+or fetch replacement Activity. Existing recent-window and history-source limits
+still apply.
+
+For Agent/Org parity, failure-state preservation and historical-control limits,
+see [Retained Activity After Termination](./agent_execution_architecture.md#retained-activity-after-termination).
+
+
+## Catalog Lookups Versus Exact Org References
+
+`agentTeamDefinitionStore.getCatalogAgentTeamDefinitionById` and
+`getCatalogAgentTeamDefinitionByName` synchronously search the current catalog
+snapshot. A `null` result is a catalog miss, not proof that a definition is absent
+from storage. These getters do not query or add owned definitions to the catalog.
+
+Org detail/editor, Org-owned Team detail and enclosing Org launch use
+`loadAgentOrgDefinitionReferences` for exact, scope/owner-validated references.
+Its required `AgentOrgReferenceCatalogLookup` callbacks,
+`getCatalogAgentById` and `getCatalogTeamById`, supply only eligible catalog
+matches; owned references use exact reads. The selected reference graph remains
+local to its view and does not change shared/application catalog membership.
+Reading a definition does not grant shared visibility, independent mutation or
+new standalone run permissions. This boundary does not change the existing
+independent Run/Edit policy for owned Teams.
+
+### Copying a retained Team after Settings Save
+
+Header **New (+)** reads the source Team's current canonical resume configuration
+before installing an editable draft. The alternate existing-source group action
+in `RunningAgentsPanel` uses the same reader, but that component is not mounted
+by the current application host: `AppLeftPanel` uses
+`WorkspaceAgentRunsTreePanel`, which has no Team group Plus control. The alternate
+action's component/loader/seed tests are not a live-browser acceptance claim.
+A retained execution view is presentation state, not authoring authority after a
+successful stopped-run Settings Save. The reader correlates requested, response,
+and tree root IDs before cache publication; the copy also verifies its definition.
+Only matching read-only workspace metadata is reused or resolved. Missing metadata
+blocks the copy rather than changing the workspace or creating one implicitly.
+Loading and failure stay on the source screen; the same action retries. A changed
+selection, source association, or unmounted caller cannot publish a late draft.
+Copying does not replace the source's context, history, Activity or composer state.
+Source-free creation still uses definition defaults; ordinary Create allocates
+new runtime identities.
+
+Sparse copy preserves explicit member parameters when its runtime or model differs
+from the parent, even if the parameter object equals the parent's. Explicit null,
+zero and false remain meaningful. With the same runtime/model/parameters, no
+redundant override is needed. This copy rule does not change deliberate editing:
+choosing a different runtime/model with unspecified parameters still follows the
+existing clearing/inheritance policy. Copying config never clones source runtime
+IDs, provider bindings, tasks, messages or attachments.

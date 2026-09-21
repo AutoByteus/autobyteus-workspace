@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_3ba09981d7344c2ea15a577d2d1604d3",
+  "records": [
+    {
+      "taskId": "task_3110f35c97b54ee3b3ae8fddb0f6103e",
+      "delegatorAgentRunId": "aorg_e2e_lead_cf66995dd5664e69ba3d2dffe50abbb3",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_bda68d61c1b44d208a13d73245299375"
+      },
+      "description": "Return exactly AORG-FIND008-DRAFT-001 on the first line and one short sentence on the second line, then formally call submit_task_result. If a revision is requested, change the first line to AORG-FIND008-REVISED-001 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "submissionId": "submission_be1b77ab6cb947b5bb91a44be4bdf91b",
+          "message": "AORG-FIND008-DRAFT-001\nThe requested deterministic draft marker is complete.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:02:07.217Z"
+        },
+        {
+          "reviewId": "review_127d2a05682d4822915c740b9a5bc48b",
+          "reviewedSubmissionId": "submission_be1b77ab6cb947b5bb91a44be4bdf91b",
+          "decision": "request_revision",
+          "comment": "Change the first line to exactly AORG-FIND008-REVISED-001, keep one short sentence on the second line, and formally resubmit this same task.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:03:10.100Z"
+        },
+        {
+          "submissionId": "submission_cbe8b973d7fa48769501ef804d434bbe",
+          "message": "AORG-FIND008-REVISED-001\nThe requested deterministic revision marker is complete.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:03:13.856Z"
+        },
+        {
+          "interruptionId": "task_3110f35c97b54ee3b3ae8fddb0f6103e_interruption_restart",
+          "reason": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+          "createdAt": "2026-09-01T21:07:01.847Z"
+        }
+      ],
+      "createdAt": "2026-09-01T21:01:56.668Z"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "ticket": "APP-STARTUP-LATENCY-20260918-001",
+  "scope": "implementation-scoped fresh-process read-only readiness observations; not full Electron/API-E2E launch acceptance",
+  "baseRevision": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "candidateSourceSha256": "5f89ecc88d07fd307e6d55c0eab44b1d0295f69bbd93b56a5e7a9f069ca61866",
+  "candidateBuiltSha256": "c3f5a2a6fe13eb35461c1b5dc89ea38627e4f492fea136c8ecd272aa11e39fac",
+  "observations": [
+    {
+      "run": 1,
+      "durationMs": 625.989,
+      "rawTraceCalls": 0,
+      "rawTraceBytes": 0,
+      "admittedTeamCount": 518,
+      "admittedOrgCount": 17,
+      "diagnosticCount": 8
+    },
+    {
+      "run": 2,
+      "durationMs": 397.915,
+      "rawTraceCalls": 0,
+      "rawTraceBytes": 0,
+      "admittedTeamCount": 518,
+      "admittedOrgCount": 17,
+      "diagnosticCount": 8
+    },
+    {
+      "run": 3,
+      "durationMs": 407.378,
+      "rawTraceCalls": 0,
+      "rawTraceBytes": 0,
+      "admittedTeamCount": 518,
+      "admittedOrgCount": 17,
+      "diagnosticCount": 8
+    }
+  ],
+  "allUnderRepresentativeTenSecondThreshold": true,
+  "allZeroRawTraceReads": true,
+  "writesOrMutationsRequested": false,
+  "downstreamStillRequired": "three clean full process/application launches on the same representative profile with exact startup/listen evidence"
+}

@@ -4,8 +4,8 @@ import TeamDelegatedTaskItemDetail from '../TeamDelegatedTaskItemDetail.vue';
 
 const directed = (from = 'assignee', to = 'delegator') => ({
   kind: 'directed' as const,
-  from: { kind: 'named' as const, label: from },
-  to: { kind: 'named' as const, label: to },
+  from: { kind: 'named' as const, targetKind: 'unavailable' as const, label: from },
+  to: { kind: 'named' as const, targetKind: 'unavailable' as const, label: to },
 });
 const base = {
   itemKey: 'item-key',
@@ -38,7 +38,7 @@ describe('TeamDelegatedTaskItemDetail', () => {
     [{ ...base, kind: 'submission', content: 'Revised result.', resultOrdinal: 2, revised: true }, 'Revised result submitted · Result 2'],
     [{ ...base, kind: 'review', decision: 'request_revision', content: 'Please revise.', reviewedResultOrdinal: 1 }, 'Revision requested for Result 1'],
     [{ ...base, kind: 'review', decision: 'accept', content: 'Looks good.', reviewedResultOrdinal: 2 }, 'Result 2 accepted'],
-    [{ ...base, kind: 'interruption', content: 'Root TeamRun terminated.', direction: { kind: 'system' } }, 'Task interrupted'],
+    [{ ...base, kind: 'interruption', content: 'Root TeamRun terminated.', direction: { kind: 'system', assignment: directed() } }, 'Task interrupted'],
   ])('renders the selected lifecycle variant %#', (item, expectedTitle) => {
     const wrapper = mountSubject(item);
     expect(wrapper.get('[data-test="delegated-task-item-title"]').text()).toBe(expectedTitle);
@@ -55,8 +55,30 @@ describe('TeamDelegatedTaskItemDetail', () => {
 
   it('labels interruption as a system event rather than inventing a participant', () => {
     const wrapper = mountSubject({
-      ...base, kind: 'interruption', content: 'Stopped.', direction: { kind: 'system' },
+      ...base, kind: 'interruption', content: 'Stopped.', direction: { kind: 'system', assignment: directed() },
     }, 'interrupted');
     expect(wrapper.get('[data-test="delegated-task-item-direction"]').text()).toContain('System lifecycle event');
   });
+});
+
+it('keeps system interruption text while disclosing exact assignment links, and never makes unavailable labels actionable', async () => {
+  const from = { kind: 'named', targetKind: 'agent', label: 'director',
+    link: { agentRunId: 'exact-director', address: '/director', label: 'director' } };
+  const to = { kind: 'named', targetKind: 'task_team', label: 'review',
+    teamRunId: 'exact-retained-team', participants: [
+      { agentRunId: 'retained-lead', address: '/review/lead', label: 'lead' },
+      { agentRunId: 'retained-worker', address: '/review/worker', label: 'worker' },
+    ] };
+  const wrapper = mountSubject({ ...base, kind: 'interruption', content: 'Stopped.',
+    direction: { kind: 'system', assignment: { from, to } } }, 'interrupted');
+  expect(wrapper.get('[data-test="delegated-task-item-direction"]').text()).toBe('System lifecycle event');
+  expect(wrapper.find('[data-test="task-direction-agent"]').exists()).toBe(false);
+  await wrapper.get('[data-test="task-identity-toggle"]').trigger('click');
+  expect(wrapper.get('[data-test="task-identity-detail"]').text()).toContain('exact-retained-team');
+  await wrapper.findAll('[data-test="task-identity-agent"]')[2].trigger('click');
+  expect(wrapper.emitted('select-participant')).toEqual([[to.participants[1]]]);
+  const unavailable = mountSubject({ ...base, kind: 'assignment', content: 'Historical task.' });
+  expect(unavailable.find('[data-test="task-direction-agent"]').exists()).toBe(false);
+  await unavailable.get('[data-test="task-identity-toggle"]').trigger('click');
+  expect(unavailable.find('[data-test="task-identity-agent"]').exists()).toBe(false);
 });

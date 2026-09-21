@@ -1,0 +1,27 @@
+{
+  "entryHead": "2b31b4967627cd541e5063651026db2c8227cd9e",
+  "sourceCheckpoint": "fbd268f543471ebf754837d6deec19127b172eb4",
+  "files": [
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 145,
+      "sha256": "a67b4fff2a6c57c0ee02ee55be55091d16a0457563f3dd980026eb8c014a3dde"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 187,
+      "sha256": "5405fdf0284d85ff78fc135c6c1336b495666e4424297f206d4ad89890e8fe0c"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 552,
+      "sha256": "776413658a7f4e4d88c35532265a8ba5739f644b9b2b8215e3f91a49e0bb6c3e"
+    }
+  ]
+}

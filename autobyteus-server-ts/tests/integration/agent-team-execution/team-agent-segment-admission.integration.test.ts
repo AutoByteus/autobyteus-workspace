@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it } from "vitest";
 import { StreamEventType } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
@@ -31,7 +32,7 @@ import { projectTeamAgentEventMessage } from "../../../src/services/agent-stream
 
 const runId = "teacher-agent-run";
 const execution = createTeamAgentExecutionBinding({
-  rootTeamRunId: "root-team-run",
+  root: createTeamRootExecutionIdentity("root-team-run"),
   memberAddress: "/Teacher",
   agentRunId: runId,
 });
@@ -365,7 +366,7 @@ describe("AgentRun-owned Team segment lifecycle", () => {
     );
 
     const nestedExecution = createTeamAgentExecutionBinding({
-      rootTeamRunId: "root-team-run",
+      root: createTeamRootExecutionIdentity("root-team-run"),
       memberAddress: "/StudentStudyGroup/student_one",
       agentRunId: runId,
     });

@@ -81,8 +81,8 @@ vi.mock("../../src/managed-capabilities/messaging-gateway/defaults.js", () => ({
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
 }));
-vi.mock("../../src/run-history/services/team-run-package-catalog.js", () => ({
-  TeamRunPackageCatalog: class {
+vi.mock("../../src/run-history/services/root-run-package-readiness-index.js", () => ({
+  RootRunPackageReadinessIndex: class {
     rebuild = mocks.rebuildTeamRunCatalog;
   },
 }));

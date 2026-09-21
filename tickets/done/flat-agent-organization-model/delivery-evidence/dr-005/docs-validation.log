@@ -1,0 +1,30 @@
+timestamp=2026-09-06T02:48:10Z
+git_diff_check:
+PASS
+markdown_fence_balance:
+autobyteus-server-ts/docs/modules/agent_orgs.md: fences=8
+autobyteus-server-ts/docs/modules/run_history.md: fences=2
+autobyteus-web/docs/agent_execution_architecture.md: fences=2
+autobyteus-web/docs/agent_orgs.md: fences=4
+tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md: fences=0
+tickets/in-progress/flat-agent-organization-model/docs-sync-report.md: fences=0
+tickets/in-progress/flat-agent-organization-model/handoff-summary.md: fences=0
+tickets/in-progress/flat-agent-organization-model/release-deployment-report.md: fences=0
+tickets/in-progress/flat-agent-organization-model/release-notes.md: fences=0
+PASS
+changed_relative_links:
+PASS
+current_chain_reports:
+32
+long_lived_summary_contract_terms:
+autobyteus-server-ts/docs/modules/agent_orgs.md:166:`New - <AgentOrg name>`. The first successfully accepted external
+autobyteus-server-ts/docs/modules/agent_orgs.md:182:a handled settlement tail, so one caller-visible write rejection cannot escape
+autobyteus-server-ts/docs/modules/agent_orgs.md:197:`20260905_agent_org_history_first_message_summary_v1` reconciles only empty
+autobyteus-server-ts/docs/modules/run_history.md:256:storing a distinct handled settlement tail for per-path ordering and cleanup.
+autobyteus-server-ts/docs/modules/run_history.md:261:Startup migration `20260905_agent_org_history_first_message_summary_v1`
+autobyteus-web/docs/agent_orgs.md:172:  accepted acknowledgements trigger a `network-only` Org-family refresh, and a
+autobyteus-web/docs/agent_execution_architecture.md:733:AgentOrg rows use the same stable first-accepted-message presentation while
+autobyteus-web/docs/agent_execution_architecture.md:739:existing mixed history owner performs one `network-only` AgentOrg-family read.
+known_unrelated_preexisting_link:
+autobyteus-web/AGENTS.md -> ./docs/prompt_engineering.md remains missing (pre-existing, unchanged)
+result=PASS

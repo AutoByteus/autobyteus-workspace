@@ -5,6 +5,8 @@ import {
 import type { MemoryTraceEvent, MemoryTurnTraceEvent } from "../domain/models.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
+import { parseRawTraceFileAttachments } from "autobyteus-ts/memory/models/raw-trace-attachments.js";
+
 export type RawTraceRecord = Record<string, unknown>;
 
 const asFiniteNumber = (value: unknown): number | null =>
@@ -62,6 +64,8 @@ export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTurnTraceEvent 
     seq: traceSeq(trace),
     ts: traceTs(trace),
   };
+  const fileAttachments = parseRawTraceFileAttachments(trace["file_attachments"], event.traceType);
+  if (fileAttachments.length) event.fileAttachments = fileAttachments;
   if (Object.prototype.hasOwnProperty.call(trace, "tool_result")) {
     event.toolResult = trace["tool_result"];
   }
@@ -81,6 +85,7 @@ export const normalizeRawTraceRecords = (
       normalizedWithOrdinal.push({ event: toMemoryTraceEvent(record), ordinal });
       continue;
     }
+    parseRawTraceFileAttachments(record.file_attachments, SYSTEM_INSTRUCTION_TRACE_TYPE);
     const parsed = parseSystemInstructionTraceRecord(record);
     if (!parsed) {
       console.warn('[RawTraceRecordNormalizer] omitted malformed system instruction trace row.');

@@ -1,6 +1,6 @@
 import type { JsonValue } from "@autobyteus/team-stream-contracts";
 import type { AgentRunStatusHint } from "../../agent-execution/domain/agent-run-event.js";
-import type { TeamMemberExecutionIdentity } from "./team-member-execution-identity.js";
+import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamAgentStatusDetails } from "./team-agent-status.js";
 import type { AgentSegmentType } from "../../agent-execution/domain/agent-segment.js";
 import type {
@@ -110,7 +110,7 @@ export type TeamAgentEvent =
   | Correlated<"TOOL_EXECUTION_INTERRUPTED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; reason: string }>
   | Correlated<"TOOL_LOG", { logEntry: string; toolInvocationId: string; toolName: string; turnId: string | null }>
   | Correlated<"TODO_LIST_UPDATE", { todos: readonly Readonly<{ todoId: string; description: string; status: "pending" | "in_progress" | "done" }>[] }>
-  | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; identity: TeamMemberExecutionIdentity }>; content: string }>
+  | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; identity: CollaborationMemberExecutionIdentity }>; content: string }>
   | Correlated<"ARTIFACT_PERSISTED", { artifactId: string; path: string; artifactType: string; status: "available"; description: string | null; revisionId: string; createdAt: string; updatedAt: string }>
   | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: AgentRunFileChangeArtifactType; status: AgentRunFileChangeStatus; sourceTool: AgentRunFileChangeSourceTool; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
   | Correlated<"ERROR", TeamAgentErrorDetails>;

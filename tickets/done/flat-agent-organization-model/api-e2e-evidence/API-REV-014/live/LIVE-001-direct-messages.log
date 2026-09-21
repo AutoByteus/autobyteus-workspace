@@ -1,0 +1,18 @@
+{
+  "runId": "aorg_e2e_direct_agents_org_9e6292c5584542e8bb0d74d02fc1e97a",
+  "assertions": {
+    "exactCurrentRoot": true,
+    "durableExactlyOne": true,
+    "durableExactRunIds": true,
+    "durableExactReference": true,
+    "senderStayedSelectedForLiveUpdate": true,
+    "senderExactlyOneSentRow": true,
+    "senderNoInboundCenterEvent": true,
+    "receiverExactlyOneInboundCenterEvent": true,
+    "receiverExactlyOneReceivedRow": true,
+    "referenceInspectable": true,
+    "desktopNoHorizontalOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

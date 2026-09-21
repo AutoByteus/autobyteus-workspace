@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "createdAt": "2026-09-17T22:45:29.618Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/guide",
+      "to": "/squad/lead",
+      "rules": [
+        "Route synthetic validation handoffs only when explicitly requested."
+      ]
+    }
+  ],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "whole-config-org",
+    "orgDefinitionName": "Whole Config Org",
+    "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "gpt-5.4-mini",
+      "llmConfig": {
+        "reasoning_effort": "medium"
+      },
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/guide",
+        "agentDefinitionId": "whole-config-agent",
+        "role": null,
+        "description": null,
+        "agentRunId": "whole_config_agent_a80f248291e94764b5d1695f7f152dcc",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.4-mini",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data/temp_workspace"
+        }
+      },
+      {
+        "address": "/squad",
+        "teamDefinitionId": "whole-config-team",
+        "role": null,
+        "description": null,
+        "teamRunId": "whole_config_team_585f9e2f01ba434384a6fb6322367104",
+        "coordinatorAddress": "/squad/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.4-mini",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/squad/lead",
+            "agentDefinitionId": "whole-config-agent",
+            "role": null,
+            "description": null,
+            "agentRunId": "whole_config_agent_7079055c1b63430cbd7ba72db26b6db7",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "xhigh"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": []
+  }
+}

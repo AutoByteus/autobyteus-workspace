@@ -1,0 +1,8 @@
+{
+  "at": "2026-09-02T16:04:02.214Z",
+  "operationName": "GetProviderModelCatalogSnapshots",
+  "variables": {
+    "runtimeKind": "autobyteus"
+  },
+  "action": "abort-failed"
+}

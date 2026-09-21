@@ -114,6 +114,7 @@ const props = defineProps<{
   historicalValueUnavailableMessage?: string;
   historicalModelConfigTitle?: string;
   validationErrors?: Readonly<Record<string, string>>;
+  preserveInvalidDraft?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -282,6 +283,7 @@ const applyDefaultsIfNeeded = () => {
 
 const sanitizeConfigIfNeeded = (): boolean => {
   if (props.historical || props.readOnly) return false;
+  if (props.preserveInvalidDraft) return false;
   if (!hasSchema.value) return false;
   const sanitized = sanitizeModelConfigAgainstSchema(props.schema ?? null, props.modelConfig ?? null);
   if (configsEqual(sanitized, props.modelConfig ?? null)) {

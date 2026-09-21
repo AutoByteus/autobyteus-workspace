@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+  "messages": [
+    {
+      "messageId": "collabmsg_8ooc2h9g77G9FYapvRl6WR7gAkjyE_0c",
+      "senderAgentRunId": "aorg_e2e_analyst_566640d90b8d4b70ad58abe81c8fe4bf",
+      "receiverAgentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+      "content": "APIREV6-STANDALONE-TASK-MESSAGE",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T16:16:46.632Z"
+    }
+  ]
+}

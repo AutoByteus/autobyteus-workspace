@@ -1,10 +1,10 @@
-import type { MemberTeamContext } from "../domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { renderMemberCollaborationInstruction } from "./member-collaboration-instruction-renderer.js";
 
 export const renderTeamCollaborationInstruction = (
-  context: MemberTeamContext,
+  context: MemberExecutionContext,
 ): string => {
-  if (!context.collaboration.deliverInterAgentMessage) {
+  if (typeof context.collaboration.deliverLogicalMessage !== "function") {
     throw new Error("Team member context requires an active message-delivery binding.");
   }
   return renderMemberCollaborationInstruction({

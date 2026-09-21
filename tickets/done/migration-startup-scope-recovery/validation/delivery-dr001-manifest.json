@@ -1,0 +1,13 @@
+{
+  "autobyteus-web/components/server/ServerLoading.vue": true,
+  "autobyteus-web/components/server/ServerMonitor.vue": true,
+  "autobyteus-web/components/server/__tests__/StartupDelayPresentation.spec.ts": true,
+  "autobyteus-web/docs/electron_packaging.md": true,
+  "autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts": true,
+  "autobyteus-web/electron/server/__tests__/ServerStatusManager.spec.ts": true,
+  "autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts": true,
+  "autobyteus-web/electron/server/baseServerManager.ts": true,
+  "autobyteus-web/electron/server/serverStatusManager.ts": true,
+  "autobyteus-web/electron/server/windowsServerManager.ts": true,
+  "autobyteus-web/stores/serverStore.ts": true
+}

@@ -1,5 +1,5 @@
 import type {
-  ConfiguredExecutionNode,
+  ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
@@ -20,18 +20,9 @@ export type TeamRunModelConfigTarget = Readonly<{
 }>;
 
 const findConfiguredNode = (
-  members: readonly ConfiguredExecutionNode[],
+  members: readonly ConfiguredAgentExecutionNode[],
   address: string,
-): ConfiguredExecutionNode | null => {
-  for (const member of members) {
-    if (member.address === address) return member;
-    if ("members" in member) {
-      const nested = findConfiguredNode(member.members, address);
-      if (nested) return nested;
-    }
-  }
-  return null;
-};
+): ConfiguredAgentExecutionNode | null => members.find((member) => member.address === address) ?? null;
 
 export const resolveTeamRunModelConfigTargets = (
   tree: TeamRunExecutionTreeSnapshot,
@@ -49,11 +40,8 @@ export const resolveTeamRunModelConfigTargets = (
     }
     const node = findConfiguredNode(tree.rootTeam.members, address);
     if (!node) throw new Error(`Configured Team scope '${address}' was not found.`);
-    if (patch.scopeKind === "CONFIGURED_AGENT" && "agentRunId" in node) {
+    if (patch.scopeKind === "CONFIGURED_AGENT") {
       return { patch: { ...patch, scopeAddress: address }, launchConfiguration: node.launchConfiguration };
-    }
-    if (patch.scopeKind === "CONFIGURED_TEAM" && "members" in node) {
-      return { patch: { ...patch, scopeAddress: address }, launchConfiguration: node.defaultLaunchConfiguration };
     }
     throw new Error(`Configured Team scope '${address}' does not match kind '${patch.scopeKind}'.`);
   });
@@ -69,24 +57,12 @@ const replaceLaunchConfig = (
 });
 
 const patchMembers = (
-  members: readonly ConfiguredExecutionNode[],
+  members: readonly ConfiguredAgentExecutionNode[],
   patchByAddress: ReadonlyMap<string, TeamRunModelConfigPatch>,
-): readonly ConfiguredExecutionNode[] => members.map((member) => {
+): readonly ConfiguredAgentExecutionNode[] => members.map((member) => {
   const patch = patchByAddress.get(member.address);
-  if ("agentRunId" in member) {
-    return patch
-      ? { ...member, launchConfiguration: replaceLaunchConfig(member.launchConfiguration, patch) }
-      : member;
-  }
-  const nextMembers = patchMembers(member.members, patchByAddress);
-  return patch || nextMembers !== member.members
-    ? {
-        ...member,
-        ...(patch
-          ? { defaultLaunchConfiguration: replaceLaunchConfig(member.defaultLaunchConfiguration, patch) }
-          : {}),
-        members: nextMembers,
-      }
+  return patch
+    ? { ...member, launchConfiguration: replaceLaunchConfig(member.launchConfiguration, patch) }
     : member;
 });
 

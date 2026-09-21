@@ -1,0 +1,54 @@
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 test /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-collaboration-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: requires explicit family and exact matching branch
+ok 1 - requires explicit family and exact matching branch
+  ---
+  duration_ms: 3.781833
+  type: 'test'
+  ...
+# Subtest: requires sequenced events and an exact Org-root client command
+ok 2 - requires sequenced events and an exact Org-root client command
+  ---
+  duration_ms: 1.789
+  type: 'test'
+  ...
+# Subtest: requires one correlated status for every live Agent execution
+ok 3 - requires one correlated status for every live Agent execution
+  ---
+  duration_ms: 1.717125
+  type: 'test'
+  ...
+# Subtest: rejects duplicate and sidecar AgentOrg member identities
+ok 4 - rejects duplicate and sidecar AgentOrg member identities
+  ---
+  duration_ms: 0.693584
+  type: 'test'
+  ...
+# Subtest: requires each configured Team coordinator to be one of that Team's direct Agents
+ok 5 - requires each configured Team coordinator to be one of that Team's direct Agents
+  ---
+  duration_ms: 1.604791
+  type: 'test'
+  ...
+# Subtest: correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses
+ok 6 - correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses
+  ---
+  duration_ms: 2.616042
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 215.619209

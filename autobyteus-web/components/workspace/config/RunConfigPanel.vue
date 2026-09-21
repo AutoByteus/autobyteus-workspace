@@ -137,7 +137,7 @@ const activeAgentDefinition = computed(() => {
 
 const activeTeamDefinition = computed(() => {
   if (!effectiveTeamConfig.value?.teamDefinitionId) return null
-  return teamDefinitionStore.getAgentTeamDefinitionById(effectiveTeamConfig.value.teamDefinitionId) || null
+  return teamDefinitionStore.getCatalogAgentTeamDefinitionById(effectiveTeamConfig.value.teamDefinitionId) || null
 })
 const { reloadRuntimeKind: retryTeamRuntimeCatalog } = useTeamRunRuntimeCatalogSync(effectiveTeamConfig)
 
@@ -234,7 +234,7 @@ const teamRunFormModel = computed((): Readonly<TeamRunFormModel> | null => {
   return projectEditableTeamRunFormModel({
     config,
     teamDefinition: definition,
-    getTeamDefinitionById: teamDefinitionStore.getAgentTeamDefinitionById,
+    getTeamDefinitionById: teamDefinitionStore.getCatalogAgentTeamDefinitionById,
     repairAddresses: teamRunConfigStore.repairNotice?.addresses || [],
     workspaceOperationFor: (address) => teamRunConfigStore.teamWorkspaceAuthoringViewFor(address).operation,
     workspaceSelectionFor: (address) => teamRunConfigStore.teamWorkspaceAuthoringViewFor(address).selection,

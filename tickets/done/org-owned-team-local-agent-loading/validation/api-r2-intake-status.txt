@@ -1,0 +1,19 @@
+ M autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts
+ M autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts
+ M autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts
+ M autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts
+ M autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts
+ M autobyteus-server-ts/tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts
+ M autobyteus-web/components/agentOrgs/AgentOrgExperience.vue
+ M autobyteus-web/components/agentTeams/AgentTeamDetail.vue
+ M autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue
+ M autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+ M autobyteus-web/localization/messages/en/workspace.ts
+ M autobyteus-web/localization/messages/zh-CN/workspace.ts
+ D autobyteus-web/services/agentOrgDefinition/agentOrgAuthoringReferences.ts
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/tests/integration/collaboration-definition-admission/
+?? autobyteus-web/components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+?? autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts
+?? tickets/in-progress/org-owned-team-local-agent-loading/

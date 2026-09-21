@@ -1,0 +1,13 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-server-ts
+
+stdout | tests/unit/collaboration-definition-admission/org-avatar-delete.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/collaboration-definition-admission/org-avatar-delete.test.ts (3 tests) 90ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:01:11
+   Duration  2.32s (transform 1.48s, setup 0ms, import 2.14s, tests 90ms, environment 0ms)
+

@@ -1,0 +1,208 @@
+{
+  "at": "2026-09-13T11:48:09.637Z",
+  "id": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+  "views": [
+    {
+      "id": "followup_assistant_216e424e97ee45b9b0ed416beb8f8652",
+      "address": "/director",
+      "status": "offline",
+      "selected": "true",
+      "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active&memberAddress=/director",
+      "center": "D\ndirector - 8652\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    {
+      "id": "followup_assistant_addd51e26f024892b80673b6d6c74d68",
+      "address": "/receiver",
+      "status": "offline",
+      "selected": "true",
+      "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active&memberAddress=/receiver",
+      "center": "R\nreceiver - 4D68\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    {
+      "id": "followup_assistant_3adf5e0e66f848ce9cec314516090bec",
+      "address": "/research-team/coordinator",
+      "status": "offline",
+      "selected": "true",
+      "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active&memberAddress=/research-team/coordinator",
+      "center": "C\ncoordinator\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    {
+      "id": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+      "address": "/research-team/lead",
+      "status": "offline",
+      "selected": "true",
+      "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active&memberAddress=/research-team/lead",
+      "center": "L\nlead\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    {
+      "id": "followup_assistant_eaff41b332a7423686880225c488e970",
+      "address": "/research-team/reviewer",
+      "status": "offline",
+      "selected": "true",
+      "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active&memberAddress=/research-team/reviewer",
+      "center": "R\nreviewer\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    }
+  ],
+  "final": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-13T11:47:19.939Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/director",
+        "to": "/receiver",
+        "rules": [
+          "When the user requests a message to the receiver."
+        ]
+      },
+      {
+        "from": "/director",
+        "to": "/research-team",
+        "rules": [
+          "When the user requests Team-directed work."
+        ]
+      },
+      {
+        "from": "/research-team/coordinator",
+        "to": "/research-team/lead",
+        "rules": [
+          "When the user requests a message to the lead."
+        ]
+      },
+      {
+        "from": "/research-team/lead",
+        "to": "/research-team/coordinator",
+        "rules": [
+          "When the user asks to return a message to the coordinator."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "followup-organization",
+      "orgDefinitionName": "Followup Organization",
+      "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+      },
+      "members": [
+        {
+          "address": "/director",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_216e424e97ee45b9b0ed416beb8f8652",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/receiver",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_addd51e26f024892b80673b6d6c74d68",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/research-team",
+          "teamDefinitionId": "followup-flat-team",
+          "role": null,
+          "description": null,
+          "teamRunId": "followup_flat_team_2ef41ec0472f4dc0ad2b2909f6ffddac",
+          "coordinatorAddress": "/research-team/coordinator",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          },
+          "members": [
+            {
+              "address": "/research-team/coordinator",
+              "agentDefinitionId": "followup-assistant",
+              "role": null,
+              "description": null,
+              "agentRunId": "followup_assistant_3adf5e0e66f848ce9cec314516090bec",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+              }
+            },
+            {
+              "address": "/research-team/lead",
+              "agentDefinitionId": "followup-assistant",
+              "role": null,
+              "description": null,
+              "agentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+              }
+            },
+            {
+              "address": "/research-team/reviewer",
+              "agentDefinitionId": "followup-assistant",
+              "role": null,
+              "description": null,
+              "agentRunId": "followup_assistant_eaff41b332a7423686880225c488e970",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "files": [],
+  "checks": {
+    "initiallyUnfocused": true,
+    "allFiveOffline": true,
+    "allUnboundAfterInspection": true,
+    "noRawWork": true,
+    "oneLaunch": true,
+    "noSend": true
+  }
+}

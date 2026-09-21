@@ -1,0 +1,478 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["autobyteus"] 32ms
+   → expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+@@ -1,15 +1,24 @@
+  [
+-   ObjectContaining {
++   {
+      "activationMode": "fresh",
+-     "callbacks": ObjectContaining {
+-       "deliverInterAgentMessage": Any<Function>,
+-       "publish": Any<Function>,
+-       "taskCommands": ObjectContaining {
+-         "delegateTask": Any<Function>,
++     "applicationBinding": null,
++     "callbacks": {
++       "acceptPlatformBinding": [Function acceptPlatformBinding],
++       "applicationExecutionContext": [Function applicationExecutionContext],
++       "buildMemberExecutionContext": [Function buildMemberExecutionContext],
++       "publishAgentEvent": [Function publishAgentEvent],
++     },
++     "handoffs": [],
++     "physicalScope": {
++       "ancestorTeamRunIds": [],
++       "root": {
++         "rootRunId": "team-runtime-root",
++         "rootSubjectKind": "agent_team",
+        },
+      },
++     "prepareConfiguredAgents": true,
+      "teamNode": {
+        "address": "/",
+        "children": [
+          {
+            "address": "/Coordinator",
+
+
+Number of calls: 1
+
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["codex_app_server"] 50ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["claude_agent_sdk"] 15ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["autobyteus","codex_app_server","claude_agent_sdk"] 13ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > binds one exact root resolver after construction and rejects before bind and after close 2ms
+   → callbacks2.deliverInterAgentMessage is not a function
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > restores the strict three-file package and rebuilds runtime context from current tree identity 19ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > emits root lifecycle transitions and unregisters only after accepted termination 23ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds one exact-ID transition lane across unmanaged deletion and restore registration 15ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > rejects active updates, then persists a stopped narrow patch for the next restore 16ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > orders the exact external-channel Team resolver after Save and restores committed config 16ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ × tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > returns RUN_ACTIVE when the exact external-channel Team resolver restores before Save 16ms
+   → Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ × tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > persists delegate -> submit -> request revision -> resubmit -> accept through the three public tools 17ms
+   → Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ × tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > keeps identical general and application identities bound to their own root capabilities 19ms
+   → Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ × tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > lets a fresh task Agent delegate a nested sibling task and preserves exact review ownership 10ms
+   → Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ × tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > fails closed for a retired configured-Team recipient in a flat Team root 7ms
+   → Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ × tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation 7ms
+   → Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ × tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > validates absolute reference files before preparation and persists the exact accepted path 6ms
+   → Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts [ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js' imported from '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts'
+ ❯ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts:15:1
+     13| import { AgentRunManager } from "../../../src/agent-execution/services…
+     14| import { buildRuntimeAgentToolExposure } from "../../../src/agent-exec…
+     15| import { MixedAgentMemberHandle } from "../../../src/agent-team-execut…
+       | ^
+     16| import type { FlatTeamExecutionFactory } from "../../../src/agent-team…
+     17| import {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["autobyteus"]
+AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+@@ -1,15 +1,24 @@
+  [
+-   ObjectContaining {
++   {
+      "activationMode": "fresh",
+-     "callbacks": ObjectContaining {
+-       "deliverInterAgentMessage": Any<Function>,
+-       "publish": Any<Function>,
+-       "taskCommands": ObjectContaining {
+-         "delegateTask": Any<Function>,
++     "applicationBinding": null,
++     "callbacks": {
++       "acceptPlatformBinding": [Function acceptPlatformBinding],
++       "applicationExecutionContext": [Function applicationExecutionContext],
++       "buildMemberExecutionContext": [Function buildMemberExecutionContext],
++       "publishAgentEvent": [Function publishAgentEvent],
++     },
++     "handoffs": [],
++     "physicalScope": {
++       "ancestorTeamRunIds": [],
++       "root": {
++         "rootRunId": "team-runtime-root",
++         "rootSubjectKind": "agent_team",
+        },
+      },
++     "prepareConfiguredAgents": true,
+      "teamNode": {
+        "address": "/",
+        "children": [
+          {
+            "address": "/Coordinator",
+
+
+Number of calls: 1
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:230:33
+    228|     expect(manager.getActiveTeamRun(run.teamRunId)).toBe(run);
+    229|     expect(manager.listActiveTeamRunIds()).toEqual([run.teamRunId]);
+    230|     expect(factory.materialize).toHaveBeenCalledWith(expect.objectCont…
+       |                                 ^
+    231|       teamNode: config.rootTeam,
+    232|       activationMode: "fresh",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["codex_app_server"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["claude_agent_sdk"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the three-file current package for ["autobyteus","codex_app_server","claude_agent_sdk"]
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:218:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > binds one exact root resolver after construction and rejects before bind and after close
+TypeError: callbacks2.deliverInterAgentMessage is not a function
+ ❯ Object.<anonymous> tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:281:30
+    279|     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    280|     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecut…
+    281|       await expect(callbacks.deliverInterAgentMessage({} as never)).re…
+       |                              ^
+    282|         accepted: false,
+    283|         code: "TEAM_ROOT_NOT_BOUND",
+ ❯ Object.<anonymous> tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:126:17
+ ❯ materializeTeamRoot src/agent-team-execution/services/team-root-materializer.ts:90:40
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:146:26
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > restores the strict three-file package and rebuilds runtime context from current tree identity
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:305:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > emits root lifecycle transitions and unregisters only after accepted termination
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:351:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds one exact-ID transition lane across unmanaged deletion and restore registration
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:370:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > rejects active updates, then persists a stopped narrow patch for the next restore
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:414:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > orders the exact external-channel Team resolver after Save and restores committed config
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:490:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > returns RUN_ACTIVE when the exact external-channel Team resolver restores before Save
+Error: Collaboration root 'agent_team:team-runtime-root' is already active or reserved.
+ ❯ ActiveCollaborationRootDirectory.reserve src/agent-collaboration/execution/services/active-collaboration-root-directory.ts:50:13
+     48|     const key = rootExecutionIdentityKey(root);
+     49|     if (this.active.has(key) || this.reserved.has(key)) {
+     50|       throw new Error(`Collaboration root '${root.rootSubjectKind}:${r…
+       |             ^
+     51|     }
+     52|     if (!boundary || typeof boundary.deliverExactAgentMessage !== "fun…
+ ❯ AgentTeamRunManager.register src/agent-team-execution/services/agent-team-run-manager.ts:428:50
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:158:12
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:462:14
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:550:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > persists delegate -> submit -> request revision -> resubmit -> accept through the three public tools
+Error: Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createRootExecutionPhysicalScope src/agent-collaboration/execution/domain/root-execution-identity.ts:124:3
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:39:26
+ ❯ new TestTeamBackend tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:120:20
+ ❯ createHarness tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:244:19
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:311:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > keeps identical general and application identities bound to their own root capabilities
+Error: Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createRootExecutionPhysicalScope src/agent-collaboration/execution/domain/root-execution-identity.ts:124:3
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:39:26
+ ❯ new TestTeamBackend tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:120:20
+ ❯ createHarness tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:244:19
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:372:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > lets a fresh task Agent delegate a nested sibling task and preserves exact review ownership
+Error: Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createRootExecutionPhysicalScope src/agent-collaboration/execution/domain/root-execution-identity.ts:124:3
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:39:26
+ ❯ new TestTeamBackend tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:120:20
+ ❯ createHarness tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:244:19
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:397:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > fails closed for a retired configured-Team recipient in a flat Team root
+Error: Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createRootExecutionPhysicalScope src/agent-collaboration/execution/domain/root-execution-identity.ts:124:3
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:39:26
+ ❯ new TestTeamBackend tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:120:20
+ ❯ createHarness tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:244:19
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:426:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation
+Error: Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createRootExecutionPhysicalScope src/agent-collaboration/execution/domain/root-execution-identity.ts:124:3
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:39:26
+ ❯ new TestTeamBackend tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:120:20
+ ❯ createHarness tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:244:19
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:435:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current universal task-delegation tool lifecycle integration > validates absolute reference files before preparation and persists the exact accepted path
+Error: Root execution physical scope accepts exactly ancestorTeamRunIds, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createRootExecutionPhysicalScope src/agent-collaboration/execution/domain/root-execution-identity.ts:124:3
+ ❯ new TeamRunContext src/agent-team-execution/domain/team-run-context.ts:39:26
+ ❯ new TestTeamBackend tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:120:20
+ ❯ createHarness tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:244:19
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:461:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/18]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  17 failed (17)
+   Start at  11:49:08
+   Duration  23.05s (transform 5.63s, setup 69ms, import 15.82s, tests 289ms, environment 0ms)
+

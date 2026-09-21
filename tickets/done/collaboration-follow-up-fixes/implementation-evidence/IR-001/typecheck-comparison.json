@@ -1,0 +1,66 @@
+{
+  "tooling": "vue-tsc3.1.8 / TypeScript5.9.3",
+  "baseline": "reviewed HEAD production with current test code; tests with new APIs are not baseline validity claims",
+  "baseline_total_diagnostics": 394,
+  "current_total_diagnostics": 391,
+  "baseline_production_diagnostics": 136,
+  "current_production_diagnostics": 140,
+  "new_production_diagnostics": [
+    [
+      "components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "TS2322",
+      "Type '(run: AgentOrgRunHistoryItem) => Promise<Readonly<{ disposition: \"superseded\" | \"committed\"; }>>' is not assignable to type '(run: AgentOrgRunHistoryItem) => void | Promise<void>'."
+    ],
+    [
+      "components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "TS2322",
+      "Type '(run: AgentOrgRunHistoryItem, memberAddress: string) => Promise<Readonly<{ disposition: \"superseded\" | \"committed\"; }>>' is not assignable to type '(run: AgentOrgRunHistoryItem, address: string) => void | Promise<void>'."
+    ],
+    [
+      "components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "TS2322",
+      "Type '(run: AgentOrgRunHistoryItem, agentRunId: string, memberAddress: string) => Promise<Readonly<{ disposition: \"superseded\" | \"committed\"; }>>' is not assignable to type '(run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => void | Promise<void>'."
+    ],
+    [
+      "components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "TS2322",
+      "Type '(run: AgentOrgRunHistoryItem) => Promise<Readonly<{ disposition: \"superseded\" | \"committed\"; }> | undefined>' is not assignable to type '(run: AgentOrgRunHistoryItem) => void | Promise<void>'."
+    ]
+  ],
+  "removed_production_diagnostics": [],
+  "changed_production_current": [
+    [
+      "stores/runHistoryLoadActions.ts",
+      "TS2307",
+      "Cannot find module '@apollo/client/core' or its corresponding type declarations."
+    ],
+    [
+      "stores/runHistoryLoadActions.ts",
+      "TS7006",
+      "Parameter 'error' implicitly has an 'any' type."
+    ],
+    [
+      "stores/runHistoryLoadActions.ts",
+      "TS7006",
+      "Parameter 'result' implicitly has an 'any' type."
+    ]
+  ],
+  "scope": "Normalization omits source line positions, not error code/message; repository-wide typecheck remains FAIL, not a Pass. Test diagnostics separately listed.",
+  "new_test_diagnostics": [
+    [
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "TS2322",
+      "Type 'Promise<void | Readonly<{ disposition: \"superseded\" | \"committed\"; }>>' is not assignable to type 'Promise<void>'."
+    ],
+    [
+      "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+      "TS2322",
+      "Type 'string' is not assignable to type '{ reference_id: string; path: string; type: \"audio\" | \"image\" | \"video\" | \"file\" | \"pdf\" | \"csv\" | \"excel\" | \"other\"; created_at: string; updated_at: string; }'."
+    ],
+    [
+      "stores/__tests__/runHistoryTeamExecutionRows.spec.ts",
+      "TS2322",
+      "Type '\"task_team\"' is not assignable to type '\"task_team_agent\" | \"task_team_member\"'."
+    ]
+  ]
+}

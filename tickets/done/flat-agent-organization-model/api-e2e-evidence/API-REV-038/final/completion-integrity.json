@@ -1,0 +1,40 @@
+{
+  "at": "2026-09-13T03:23:15.196487+00:00",
+  "result": "Pass",
+  "apiOutcome": "Fail85.6 (integrityPass does not override productfailure)",
+  "currentEvidenceFiles": 4211,
+  "references": 6487,
+  "incomingReferences": 2287,
+  "allIncomingRetained": true,
+  "excludedDirectSensitiveFiles": [
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/derived-write/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/derived-write/server-data/db/production.db.secret.key",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-deep-complete/deep/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-locators-process/one-level-locators/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-process-corrected/one-level-catalog/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-shape/degraded-independent/data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-shape/degraded-independent/data/db/production.db.secret.key",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-shape/pending-clean/data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/migration-shape/pending-clean/data/db/production.db.secret.key",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/native/environment-before-native.txt",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/restore-missing-current/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/restore-unreadable-current/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/runtime/server-data/.env",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-038/runtime/server-data/db/production.db.secret.key"
+  ],
+  "priorCanonicalHashesPreserved": true,
+  "protectedRegular": 63129,
+  "sourceInventory": 814,
+  "scenarioGroups": {
+    "Pass": 38,
+    "Fail": 3,
+    "N/A": 1
+  },
+  "structuredReceipts": 320,
+  "originalNonzero": 37,
+  "allPlannedUserJourneysCompleted": true,
+  "credentialsRemoved": true,
+  "cleanupPass": true,
+  "successfulProportionalReview": false,
+  "ruleRecipient": "/software_engineering_team/code_reviewer"
+}

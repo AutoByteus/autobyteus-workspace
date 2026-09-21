@@ -1,0 +1,69 @@
+{
+  "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&mode=configuration",
+  "auto": [
+    {
+      "html": "<button type=\"button\" role=\"switch\" aria-checked=\"false\" class=\"relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 bg-gray-200\"><span class=\"sr-only\">Auto approve tools</span><span class=\"inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0\"></span></button>",
+      "pressed": null,
+      "checked": null,
+      "test": null
+    },
+    {
+      "html": "<button id=\"team-scope-research-team-auto-execute\" type=\"button\" role=\"switch\" aria-checked=\"false\" class=\"relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-200\"><span class=\"sr-only\">Auto approve tools</span><span aria-hidden=\"true\" class=\"inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0\"></span></button>",
+      "pressed": null,
+      "checked": null,
+      "test": null
+    },
+    {
+      "html": "<button id=\"team-scope-support-team-auto-execute\" type=\"button\" role=\"switch\" aria-checked=\"false\" class=\"relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-200\"><span class=\"sr-only\">Auto approve tools</span><span aria-hidden=\"true\" class=\"inline-block h-5 w-5 rounded-full bg-white shadow transition translate-x-0\"></span></button>",
+      "pressed": null,
+      "checked": null,
+      "test": null
+    }
+  ],
+  "tests": [
+    {
+      "test": "app-left-panel-run-history",
+      "text": "Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi... 4m L lead V verifier workspace workspace-team workspace-default"
+    },
+    {
+      "test": "workspace-agent-orgs",
+      "text": "AGENT ORGS AORG E2E Direct Agents Org (1) Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi... 4m L lead V verifier"
+    },
+    {
+      "test": "agent-org-agent-row-aorg_e2e_lead_3563a536a9e448cdbed4ec6e0f85eecb",
+      "text": "L lead"
+    },
+    {
+      "test": "agent-org-agent-row-aorg_e2e_verifier_f731ee20c3984e4fa3e78d128b0f9acf",
+      "text": "V verifier"
+    },
+    {
+      "test": "agent-org-run-config",
+      "text": "Agent Org AORG E2E Mixed Org Runtime AutoByteus Codex App Server Claude Agent SDK Selects the runtime used by this organization run. Default LLM Model OpenAI / GPT-5.6-Sol (default reasoning: low) Used across the organization unless a placement is customized. Thinking Use the model settings below to control thinking. Use setting Advanced Reasoning Effort ⓘ low medium high xhigh max ultra Fast mode"
+    },
+    {
+      "test": "org-auto-approve-row",
+      "text": "Auto approve tools Automatically allows tool calls and access requests for this run. Auto approve tools"
+    },
+    {
+      "test": "org-member-overrides-toggle",
+      "text": "Member overrides (6)"
+    },
+    {
+      "test": "org-member-overrides-chevron",
+      "text": ""
+    },
+    {
+      "test": "org-member-overrides-panel",
+      "text": "AORG E2E Concierge/conciergeAORG E2E ConciergeconciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultThinkingUse the model settings below to control thinking.Use settingAdvancedReasoning Effort ⓘlowmediumhighxhighmaxultraFast mode ⓘDefaultfastAORG E2E Research SquadTeam/research-teamInheritedRuntimeAutoByteusCodex App ServerClaude A"
+    },
+    {
+      "test": "org-placement-/concierge",
+      "text": "AORG E2E Concierge/conciergeAORG E2E ConciergeconciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultThinkingUse the model settings below to control thinking.Use settingAdvancedReasoning Effort ⓘlowmediumhighxhighmaxultraFast mode ⓘDefaultfast"
+    },
+    {
+      "test": "run-agent-org",
+      "text": "Run Agent Org"
+    }
+  ]
+}

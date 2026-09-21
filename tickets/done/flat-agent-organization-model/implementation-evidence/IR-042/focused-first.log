@@ -1,0 +1,67 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (6 tests) 5ms
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (7 tests | 1 failed) 178ms
+   ✓ exact Org task inspection independent of history drawer initialization > awaits the canonical cold read, then opens the settled non-coordinator; warm same-name links keep exact identity 84ms
+   ✓ exact Org task inspection independent of history drawer initialization > resolves inactive history through the same read owner and inspects without Restore, transport or activation 19ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict network unavailability without inferring root activity from the current context 16ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict graphql unavailability without inferring root activity from the current context 13ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict schema unavailability without inferring root activity from the current context 12ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict missing unavailability without inferring root activity from the current context 15ms
+   × exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun 19ms
+     → promise resolved "undefined" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:156:55
+    154|   it('does not substitute a configured or same-address execution for a…
+    155|     const { execute, push } = await setup()
+    156|     await expect(execute(inspect('missing-agent-run'))).rejects.toThro…
+       |                                                       ^
+    157|     expect(push).not.toHaveBeenCalled()
+    158|     expect(mocks.mutate).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 12 passed (13)
+   Start at  15:00:57
+   Duration  9.84s (transform 5.28s, setup 15.96s, collect 420ms, tests 183ms, environment 1.24s, prepare 655ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

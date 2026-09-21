@@ -1,0 +1,6 @@
+
+> @autobyteus-example/brief-studio-authoring@ build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio
+> autobyteus-app pack
+
+sh: 1: autobyteus-app: not found
+ ELIFECYCLE  Command failed.

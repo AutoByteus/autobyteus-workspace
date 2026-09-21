@@ -1,0 +1,116 @@
+[
+  {
+    "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "sha256": "aecb990ddfb9496fd8b118860d33602b7c53569d41f12dfae2a878ad6ceea0b9",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/docs/modules/agent_team_definition.md",
+    "sha256": "e7bbe618a47f4574cca732d2de08194139cec0d6403664493b78f0a44855642f",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-definition/providers/agent-team-definition-config.ts",
+    "sha256": "6a0f5fc92f614cf96a19e09cf4add2d8bd93ec2555acff68d4ec1d8ad3c02d04",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts",
+    "sha256": "f1ba75dfa0a10a36d08b4bd1d2f816759d5b8edd343ed70db608d1bbae428d28",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts",
+    "sha256": "f11dd5444f62f0aedd1a04880c447fd2167618c650ea9f0cab8a7c6154302718",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/collaboration-definition-authoring-transition.ts",
+    "sha256": null,
+    "status": "deleted",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/owned-definition-package-inventory.ts",
+    "sha256": null,
+    "status": "deleted",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts",
+    "sha256": "9ca8b96a016321a9e88eb2faf812c4eda34f3557ac118f2202cf192014b2c425",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/collaboration-definition-authoring-shape-app-data-migration.ts",
+    "sha256": null,
+    "status": "deleted",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/application-bundles/providers/file-application-bundle-provider.ts",
+    "sha256": "575da8fd0d1496e28b8b205d53827b19c531b997e9e6b8b1872d196fe02cd7e9",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts",
+    "sha256": "fe39feee1f535a819d9b56ac6f3f651fa1e28bd1dbbef418bcfeb57c546d66a5",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts",
+    "sha256": "f468f281e36cfa6b80f6bcc9e6d33025dd8fde60c4cb0956e501025af3d21e50",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts",
+    "sha256": "026c7ab8a39a834fd145d587450855fd4aa86986465c30ca680fe8852fda722b",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts",
+    "sha256": null,
+    "status": "deleted",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts",
+    "sha256": "ba0d3123e3d2fb2a597cf4c8b5b366500dbd67417cc8306d2d07262b840db683",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/collaboration-definition-admission/definition-admission-service.test.ts",
+    "sha256": "f71b0c8f6a264ab0b84403563a1a458c35433972e6a0acff0d40bbd2bb4972da",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-definition/agent-team-definition-config.test.ts",
+    "sha256": "b102b19eaddaf7fa6bc8ff0380e269f1ff0a38d852a15eda15f2bae4de421d3c",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts",
+    "sha256": "642d5c1dd1e5d81e7b314b7ccd791815f00b59a142aa9b936aa1b7c99f635374",
+    "status": "present",
+    "verified": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/collaboration-definition-admission/tolerant-team-package-reading.test.ts",
+    "sha256": "f328bd23eee9542b691e9b8cccc5ab6b56170a4383fbd96c535a19b020b3f18d",
+    "status": "present",
+    "verified": true
+  }
+]

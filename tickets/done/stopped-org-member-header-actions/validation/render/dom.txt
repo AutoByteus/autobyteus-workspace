@@ -1,0 +1,37 @@
+Isolated implementation renderer — synthetic stopped Org
+Direct member
+Mounted member
+Reopen settings
+Next save uncertain
+Agent Configuration
+Agent Definition
+lead
+Runtime
+Codex App Server
+AutoByteus
+
+Runtime is fixed. Replacement models must have at least the saved model’s context capacity.
+
+LLM Model
+Synthetic provider / gpt-5.6-sol
+
+Runtime is fixed. Replacement models must have at least the saved model’s context capacity.
+
+Advanced
+Budget
+Enabled
+Workspace Directory
+Existing
+New
+Select a workspace...
+
+Workspace is fixed for existing runs.
+
+Auto approve tools
+
+High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+●
+This run is stopped. Saved model settings will be used when it resumes.
+Save

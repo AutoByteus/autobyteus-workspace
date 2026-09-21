@@ -14,7 +14,6 @@ import {
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import type {
   ConfiguredExecutionNode,
-  ConfiguredTeamExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamExecution,
@@ -182,23 +181,13 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
 });
 
 const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
-  if ("agentRunId" in member) return {
+  return {
     kind: "configured_agent", address: member.address, agent_definition_id: member.agentDefinitionId,
     role: member.role, description: member.description, agent_run_id: member.agentRunId,
     platform_agent_run_id: member.platformAgentRunId,
     launch_configuration: projectLaunchConfiguration(member.launchConfiguration),
   };
-  return projectConfiguredTeam(member);
 };
-
-const projectConfiguredTeam = (team: ConfiguredTeamExecutionNode): ConfiguredMemberExecutionDto => ({
-  kind: "configured_team", address: team.address, team_definition_id: team.teamDefinitionId,
-  role: team.role, description: team.description, team_run_id: team.teamRunId,
-  coordinator_address: team.coordinatorAddress,
-  default_launch_configuration: projectLaunchConfiguration(team.defaultLaunchConfiguration),
-  members: team.members.map(projectConfiguredMember),
-  task_executions: team.taskExecutions.map(projectTaskExecution),
-});
 
 const projectLaunchConfiguration = (
   configuration: import("../../agent-team-execution/domain/team-run-config.js").AgentLaunchConfiguration,
@@ -244,14 +233,14 @@ const findTaskExecution = (
   reference: TaskExecutionReference,
 ): { parentTeamRunId: string; execution: TaskExecution } | null => {
   const visit = (
-    team: RootConfiguredTeamExecutionNode | ConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
+    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
   ): { parentTeamRunId: string; execution: TaskExecution } | null => {
     const own = team.taskExecutions.find((execution) =>
       "agentRunId" in reference
         ? "agentRunId" in execution && execution.agentRunId === reference.agentRunId
         : "teamRunId" in execution && execution.teamRunId === reference.teamRunId);
     if (own) return { parentTeamRunId: team.teamRunId, execution: own };
-    for (const member of team.members) {
+    if (!("teamDefinitionName" in team)) for (const member of team.members) {
       if (!("teamRunId" in member)) continue;
       const nested = visit(member);
       if (nested) return nested;

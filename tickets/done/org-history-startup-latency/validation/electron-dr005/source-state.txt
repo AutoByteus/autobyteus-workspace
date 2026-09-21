@@ -1,0 +1,10 @@
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen
+branch=codex/org-history-startup-latency-reopen
+head=d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd
+remote_base=d7343ea0dfe9ed0ea9fccb1d426c10bb1fa09ebd
+candidate_manifest=tickets/in-progress/org-history-startup-latency/validation/ir002-source-manifest.json
+existing_output=false
+output_process=false
+started_at=2026-09-18T04:57:00Z
+completed_at=2026-09-18T05:02:25Z
+verification_completed_at=2026-09-18T05:03:08Z

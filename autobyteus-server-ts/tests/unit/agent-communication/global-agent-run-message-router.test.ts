@@ -5,7 +5,8 @@ import { buildAgentRunMessageSenderContext } from "../../../src/agent-communicat
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
+import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 
 const sender = buildAgentRunMessageSenderContext({
   senderRunId: "sender-run",
@@ -26,7 +27,7 @@ const createTargetRun = (input: {
   }));
   const run = {
     runId: input.runId ?? "target-run",
-    config: { memberTeamContext: null },
+    config: { memberExecutionContext: null },
     postUserMessage,
     publishEvent: vi.fn(async (event: AgentRunEvent) => {
       emittedEvents.push(event);
@@ -106,9 +107,8 @@ describe("GlobalAgentRunMessageRouter", () => {
   });
 
   it("confirms the exact accepting AgentRun when same-root delivery uses the Team owner", async () => {
-    const memberTeamContext = testMemberTeamContext({
+    const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "root-team-run",
-      teamRunId: "root-team-run",
       memberAddress: "/sender",
       agentRunId: "sender-run",
     });
@@ -116,27 +116,26 @@ describe("GlobalAgentRunMessageRouter", () => {
       senderRunId: "sender-run",
       senderName: "Sender",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberTeamContext,
+      memberExecutionContext,
     });
     const target = createTargetRun({ runId: "same-root-target" });
-    const targetTeamContext = testMemberTeamContext({
+    const targetTeamContext = testMemberExecutionContext({
       rootTeamRunId: "root-team-run",
-      teamRunId: "root-team-run",
       memberAddress: "/target",
       agentRunId: "same-root-target",
     });
-    (target.run as unknown as { config: { memberTeamContext: unknown } })
-      .config.memberTeamContext = targetTeamContext;
+    (target.run as unknown as { config: { memberExecutionContext: unknown } })
+      .config.memberExecutionContext = targetTeamContext;
     const deliverExactAgentMessage = vi.fn(async () => ({
       accepted: true,
       code: "DELIVERED",
       message: "Delivered by Team owner.",
     }));
+    const activeRootDirectory = new ActiveCollaborationRootDirectory();
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, { deliverExactAgentMessage }).commit();
     const router = new GlobalAgentRunMessageRouter({
       agentRunManager: { getActiveRun: vi.fn(() => target.run) },
-      teamRunManager: {
-        getActiveTeamRun: vi.fn(() => ({ deliverExactAgentMessage }) as never),
-      },
+      activeRootDirectory,
     });
 
     await expect(router.deliver({

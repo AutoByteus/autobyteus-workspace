@@ -1,0 +1,20 @@
+[
+  "autobyteus-web/components/workspace/collaboration/CollaborationDelegatedTasksSection.vue",
+  "autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue",
+  "autobyteus-web/components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts",
+  "autobyteus-web/components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts",
+  "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+  "autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue",
+  "autobyteus-web/components/workspace/team/TeamDelegatedTaskItemDetail.vue",
+  "autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts",
+  "autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts",
+  "autobyteus-web/localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts",
+  "autobyteus-web/localization/messages/en/workspace.ts",
+  "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+  "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts",
+  "autobyteus-web/services/agentOrgExecution/agentOrgTaskPresentation.ts",
+  "autobyteus-web/types/workspace/collaborationTaskPresentation.ts",
+  "autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts",
+  "autobyteus-web/utils/teamDelegatedTaskEntries.ts",
+  "autobyteus-web/components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts"
+]

@@ -9,7 +9,7 @@ export class TokenUsageContextEnricher {
     const { runContext } = input;
     const payload = input.payload;
     const config = runContext.config;
-    const memberContext = config.memberTeamContext;
+    const memberContext = config.memberExecutionContext;
     const qualityFlags = new Set(payload.quality_flags);
 
     if (payload.runtime_kind && payload.runtime_kind !== config.runtimeKind) {
@@ -29,7 +29,9 @@ export class TokenUsageContextEnricher {
       workspace_id: config.workspaceId ?? payload.workspace_id,
       runtime_kind: config.runtimeKind,
       model_identifier: payload.model_identifier ?? config.llmModelIdentifier,
-      root_team_run_id: memberContext?.identity.rootTeamRunId ?? payload.root_team_run_id,
+      root_team_run_id: memberContext?.identity.root.rootSubjectKind === "agent_team"
+        ? memberContext.identity.root.rootRunId
+        : payload.root_team_run_id,
       quality_flags: Array.from(qualityFlags),
     };
   }

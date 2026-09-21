@@ -4,7 +4,6 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   buildTeamLocalAgentDefinitionId,
-  buildTeamLocalTeamDefinitionId,
 } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { findAgentSourcePaths } from "../../../src/agent-definition/providers/agent-definition-source-paths.js";
@@ -64,14 +63,11 @@ describe("team-local-agent-discovery", () => {
     cleanupPaths.add(tempRoot);
     const teamRoot = path.join(tempRoot, "agent-teams");
     const parentTeamDir = path.join(teamRoot, "company");
-    const localTeamDir = path.join(parentTeamDir, "agent-teams", "research");
-    const localAgentDir = path.join(localTeamDir, "agents", "planner");
+    const localAgentDir = path.join(parentTeamDir, "agents", "planner");
     await writeTeam(parentTeamDir, "Company Team");
-    await writeTeam(localTeamDir, "Research Team");
     await writeAgent(localAgentDir, "Planner");
 
-    const localTeamId = buildTeamLocalTeamDefinitionId("company", "research");
-    const localAgentId = buildTeamLocalAgentDefinitionId(localTeamId, "planner");
+    const localAgentId = buildTeamLocalAgentDefinitionId("company", "planner");
     const applicationBundleService = {
       getApplicationOwnedAgentSourceById: vi.fn(async () => null),
       getApplicationOwnedTeamSourceById: vi.fn(async () => null),
@@ -88,8 +84,8 @@ describe("team-local-agent-discovery", () => {
     expect(sourcePaths).toMatchObject({
       mdPath: path.join(localAgentDir, "agent.md"),
       ownershipScope: "team_local",
-      ownerTeamId: localTeamId,
-      ownerTeamName: "Research Team",
+      ownerTeamId: "company",
+      ownerTeamName: "Company Team",
     });
 
     const listed = await listTeamLocalAgentDefinitions({
@@ -114,11 +110,11 @@ describe("team-local-agent-discovery", () => {
       expect.objectContaining({
         id: localAgentId,
         ownershipScope: "team_local",
-        ownerTeamId: localTeamId,
-        ownerTeamName: "Research Team",
+        ownerTeamId: "company",
+        ownerTeamName: "Company Team",
         sourceInfo: {
           agentDirPath: localAgentDir,
-          teamDirPath: localTeamDir,
+          teamDirPath: parentTeamDir,
         },
       }),
     ]);

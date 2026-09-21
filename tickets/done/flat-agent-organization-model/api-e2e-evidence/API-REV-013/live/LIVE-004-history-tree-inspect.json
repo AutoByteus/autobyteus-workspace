@@ -1,0 +1,232 @@
+{
+  "at": "2026-09-06T02:08:10.280Z",
+  "url": "http://127.0.0.1:3592/workspace/",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nworkspace-team\nworkspace\nworkspace-default\nTEAMS\nAORG E2E Research Squad\n(1)\nAGENT ORGS\nAORG E2E Mixed Org\n(1)\nworkspace-default\nSettings\nNo agent or team run selected\n\nChoose an agent or team, or open run history to continue.\n\nChoose an agent or team\nOpen runs/history\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n~ $  ",
+  "tests": [
+    {
+      "test": "app-left-panel-shell",
+      "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) workspace-team workspace workspace-default TEAMS AORG E2E Research Squad (1) AGENT ORGS AORG E2E Mixed Org (1) workspace-default Settings",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-sections",
+      "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) workspace-team workspace workspace-default TEAMS AORG E2E Research Squad (1) AGENT ORGS AORG E2E Mixed Org (1) workspace-default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-primary-nav",
+      "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-section-resize-handle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-run-history",
+      "text": "Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) workspace-team workspace workspace-default TEAMS AORG E2E Research Squad (1) AGENT ORGS AORG E2E Mixed Org (1) workspace-default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "Temp Workspace",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace",
+      "expanded": "true",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-definition-row-apirev8-team",
+      "text": "A本 APIREV8 本地化 Team β (1)",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-activity-dot",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-agent-orgs",
+      "text": "AGENT ORGS APIREV8 组织 Ω (1)",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-team",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-default",
+      "expanded": "true",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-definition-row-aorg-research-squad",
+      "text": "AORG E2E Research Squad (1)",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-activity-dot",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-agent-orgs",
+      "text": "AGENT ORGS AORG E2E Mixed Org (1)",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-default",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-adaptive-layout",
+      "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Terminal Activity Token Artifacts VNC Viewer ➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-center-right-flow",
+      "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Terminal Activity Token Artifacts VNC Viewer ➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-center-pane",
+      "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-center-content-shell",
+      "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-empty-state",
+      "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-empty-state-choose",
+      "text": "Choose an agent or team",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-empty-state-runs",
+      "text": "Open runs/history",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-right-resize-handle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-right-panel",
+      "text": "Files Terminal Activity Token Artifacts VNC Viewer ➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-tab-list",
+      "text": "Files Terminal Activity Token Artifacts VNC Viewer",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-panel-toggle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-tab-content-shell",
+      "text": "➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-terminal-panel",
+      "text": "➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "terminal-panel",
+      "text": "➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "terminal-panel-entry",
+      "text": "➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    }
+  ],
+  "treeitems": []
+}

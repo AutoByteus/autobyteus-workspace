@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
@@ -63,8 +64,8 @@ const createTeamRun = (postResult: Record<string, unknown> = {
   agentRunId: "member-1",
 }) => {
   const executions = new Map([
-    ["member-1", { identity: { rootTeamRunId: "team-1", memberAddress: "/support", agentRunId: "member-1" } }],
-    ["member-2", { identity: { rootTeamRunId: "team-1", memberAddress: "/reviewer", agentRunId: "member-2" } }],
+    ["member-1", { identity: { root: createTeamRootExecutionIdentity("team-1"), memberAddress: "/support", agentRunId: "member-1" } }],
+    ["member-2", { identity: { root: createTeamRootExecutionIdentity("team-1"), memberAddress: "/reviewer", agentRunId: "member-2" } }],
   ]);
   return {
     teamRunId: "team-1",
@@ -150,7 +151,11 @@ describe("ChannelTeamRunFacade", () => {
     teamRun.postMessage.mockImplementation(async () => {
       queueMicrotask(() => listener?.({
         eventSourceType: TeamRunEventSourceType.AGENT,
-        execution: { rootTeamRunId: "team-1", memberAddress: "/support", agentRunId: "member-1" },
+        execution: {
+          root: createTeamRootExecutionIdentity("team-1"),
+          memberAddress: "/support",
+          agentRunId: "member-1",
+        },
         payload: {
           eventType: AgentRunEventType.TURN_STARTED,
           details: { turnId: "turn-captured" },

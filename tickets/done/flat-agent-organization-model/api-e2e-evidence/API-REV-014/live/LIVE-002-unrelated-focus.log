@@ -1,0 +1,22 @@
+{
+  "at": "2026-09-06T11:45:43.760Z",
+  "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574&mode=active",
+  "selected": [
+    "agent-org-agent-row-aorg_e2e_lead_79f9cb8e0fce4348bda220c4215cdcc2"
+  ],
+  "messagesHeader": "Messages\n0 Messages",
+  "sectionText": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+  "markerRows": [],
+  "inboundCenter": [],
+  "scroll": {
+    "width": 1502,
+    "client": 1502
+  },
+  "assertions": {
+    "exactOneSelected": true,
+    "noRows": true,
+    "noInbound": true,
+    "zeroMessageHeader": true,
+    "noOverflow": true
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "totalUiSaves": 5,
+  "noReplayAfterExplicitRead": true,
+  "evidence": [
+    {
+      "at": "2026-09-17T01:22:29.994Z",
+      "id": 523,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "UpdateStoppedAgentOrgMemberModelConfig",
+        "variables": {
+          "input": {
+            "orgRunId": "config_lab_55cf971aeb934826aedbc1a7983e7ecc",
+            "memberAddress": "/guide",
+            "agentRunId": "config_guide_58b1481c340743b5a5933a2eb4a314b5",
+            "llmModelIdentifier": "gpt-5.4",
+            "llmConfig": {
+              "reasoning_effort": "medium"
+            }
+          }
+        },
+        "query": "mutation UpdateStoppedAgentOrgMemberModelConfig($input: UpdateStoppedAgentOrgMemberModelConfigInput!) {\n  updateStoppedAgentOrgMemberModelConfig(input: $input) {\n    success\n    outcome\n    message\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    canonical {\n      orgRunId\n      memberAddress\n      agentRunId\n      launchConfiguration\n      isActive\n      editability {\n        editable\n        reason\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    {
+      "at": "2026-09-17T01:22:30.009Z",
+      "id": 523,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"updateStoppedAgentOrgMemberModelConfig\":{\"success\":true,\"outcome\":\"UPDATED\",\"message\":\"Model configuration saved.\",\"isActive\":false,\"editability\":{\"editable\":true,\"reason\":null,\"__typename\":\"RunModelConfigEditabilityObject\"},\"fieldErrors\":[],\"canonical\":{\"orgRunId\":\"config_lab_55cf971aeb934826aedbc1a7983e7ecc\",\"memberAddress\":\"/guide\",\"agentRunId\":\"config_guide_58b1481c340743b5a5933a2eb4a314b5\",\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4\",\"llmConfig\":{\"reasoning_effort\":\"medium\"},\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"isActive\":false,\"editability\":{\"editable\":true,\"reason\":null,\"__typename\":\"RunModelConfigEditabilityObject\"},\"__typename\":\"AgentOrgMemberModelConfigObject\"},\"__typename\":\"AgentOrgMemberModelConfigUpdateResult\"}}}",
+      "edge": {
+        "fail": true,
+        "delayMs": 2000
+      }
+    },
+    {
+      "at": "2026-09-17T01:22:47.989Z",
+      "id": 541,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "AgentOrgMemberModelConfig",
+        "variables": {
+          "identity": {
+            "orgRunId": "config_lab_55cf971aeb934826aedbc1a7983e7ecc",
+            "memberAddress": "/guide",
+            "agentRunId": "config_guide_58b1481c340743b5a5933a2eb4a314b5"
+          }
+        },
+        "query": "query AgentOrgMemberModelConfig($identity: AgentOrgMemberModelConfigIdentityInput!) {\n  getAgentOrgMemberModelConfig(identity: $identity) {\n    orgRunId\n    memberAddress\n    agentRunId\n    launchConfiguration\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    modelOptions {\n      ...RunModelOptionsFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment RunModelOptionsFields on RunModelOptionsObject {\n  currentModelIdentifier\n  currentContextTokens\n  unavailableReason\n  replacements {\n    llmModelIdentifier\n    contextTokens\n    __typename\n  }\n  __typename\n}"
+      }
+    }
+  ]
+}

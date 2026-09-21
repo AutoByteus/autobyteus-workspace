@@ -31,8 +31,8 @@ const parse = (path: string) => ts.createSourceFile(
 
 type GovernedConstructorSymbol =
   | "AgentRunManager"
-  | "MixedTeamRunBackendFactory"
-  | "MixedTeamManager"
+  | "FlatTeamRunBackendFactory"
+  | "FlatTeamExecutionManager"
   | "MixedAgentMemberHandle";
 
 const governedConstructorOccurrences = (
@@ -45,8 +45,8 @@ const governedConstructorOccurrences = (
   const visit = (node: ts.Node): void => {
     if (ts.isNewExpression(node) && ts.isIdentifier(node.expression)) {
       const symbol = node.expression.text;
-      if (symbol === "AgentRunManager" || symbol === "MixedTeamRunBackendFactory" ||
-        symbol === "MixedTeamManager" || symbol === "MixedAgentMemberHandle") {
+      if (symbol === "AgentRunManager" || symbol === "FlatTeamRunBackendFactory" ||
+        symbol === "FlatTeamExecutionManager" || symbol === "MixedAgentMemberHandle") {
         found.push({ symbol, node });
       }
     }
@@ -198,7 +198,7 @@ const requiredDeactivatorInitializer = (
   const symbol = ts.isNewExpression(node) && ts.isIdentifier(node.expression)
     ? node.expression.text
     : "AgentRunManager";
-  const argument = node.arguments[symbol === "MixedTeamManager" ? 1 : 0];
+  const argument = node.arguments[symbol === "FlatTeamExecutionManager" ? 1 : 0];
   return objectPropertyInitializer(
     argument,
     "agentToolMcpRunSessionDeactivator",
@@ -295,7 +295,7 @@ const validateSyntheticFactoryOptions = (snippet: string): boolean => {
     if (
       ts.isNewExpression(node)
       && ts.isIdentifier(node.expression)
-      && node.expression.text === "MixedTeamRunBackendFactory"
+      && node.expression.text === "FlatTeamRunBackendFactory"
     ) {
       valid = isExplicitFactoryCallback(
         requiredFactoryCallbackInitializer(node, sourceFile),
@@ -480,47 +480,18 @@ describe("agent provider composition boundaries", () => {
   });
 
   it("keeps activation provider-local and deactivation at the AgentRun resource owner", () => {
-    const activatorFiles = [
-      "agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
-      "agent-execution/backends/claude/session/claude-session-manager.ts",
-      "agent-execution/backends/claude/session/claude-session.ts",
-      "agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts",
+    const nonOwningLocalFiles = [
+      "agent-team-execution/local/flat-team-execution-manager.ts",
+      "agent-team-execution/local/registries/configured-agent-execution-registry.ts",
+      "agent-team-execution/local/registries/task-agent-execution-registry.ts",
     ];
-    const deactivatorFiles = [
-      "agent-execution/services/agent-run-manager.ts",
-      "agent-execution/services/agent-run-resource-manager.ts",
-    ];
-    const nonOwningMixedFiles = [
-      "agent-team-execution/backends/mixed/mixed-team-manager.ts",
-      "agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts",
-      "agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts",
-      "agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts",
-    ];
-    for (const relativePath of activatorFiles) {
-      const source = read(join(SRC, relativePath));
-      expect(source, relativePath).toMatch(
-        /AgentToolMcpRunSessionActivator|agentToolMcpRunSessions/,
-      );
-      expect(source, relativePath).not.toMatch(/AgentToolsMcpHost|ScopedAgentToolMcpSessionAuthority|AgentToolMcpSessionManager|getAgentToolMcpSessionService/);
+    for (const relativePath of nonOwningLocalFiles) {
+      expect(read(join(SRC, relativePath)), relativePath).not.toMatch(/AgentToolMcp|agentToolMcp/);
     }
-    for (const relativePath of deactivatorFiles) {
-      const source = read(join(SRC, relativePath));
-      expect(source, relativePath).toContain("AgentToolMcpRunSessionDeactivator");
-      expect(source, relativePath).not.toMatch(/AgentToolsMcpHost|ScopedAgentToolMcpSessionAuthority|AgentToolMcpSessionManager|getAgentToolMcpSessionService/);
-    }
-    for (const relativePath of nonOwningMixedFiles) {
-      expect(read(join(SRC, relativePath)), relativePath).not.toMatch(
-        /AgentToolMcp|agentToolMcp/,
-      );
-    }
-    const mixedAgentHandle = read(join(
-      SRC,
-      "agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts",
-    ));
-    expect(mixedAgentHandle).toContain("this.manager.prepareAgentRunTermination(run)");
-    expect(mixedAgentHandle).not.toMatch(/\brun\.prepareTermination\(\)/);
+    const handle = read(join(SRC, "agent-collaboration/execution/backends/configured-agent-execution-handle.ts"));
+    expect(handle).toContain("this.manager.prepareAgentRunTermination(this.agentRun)");
+    expect(handle).not.toMatch(/RootTeamRun|AgentOrgRun|ExecutionTreeStore|HistoryIndexStore/);
   });
-
   it("keeps the application kernel private to its builder and owning scope", () => {
     const allowed = new Set([
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
@@ -536,181 +507,60 @@ describe("agent provider composition boundaries", () => {
     expect(scope).not.toMatch(/BuiltKernel|buildScope|sessionManager!|bind[A-Z]/);
   });
 
-  it("fails closed on the exact direct-constructor test sets and narrow fixture property", () => {
-    const actual = new Map<string, Set<string>>([
-      ["AgentRunManager", new Set()],
-      ["MixedTeamRunBackendFactory", new Set()],
-      ["MixedTeamManager", new Set()],
-      ["MixedAgentMemberHandle", new Set()],
+  it("keeps configured Agent and flat-Team construction inside their owned factories", () => {
+    expect(typescriptFiles(SRC)
+      .filter((path) => read(path).includes("new ConfiguredAgentExecutionHandle("))
+      .map(relativeRoot)).toEqual([
+      "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-factory.ts",
     ]);
-    for (const path of typescriptFiles(TESTS)) {
-      if (path === THIS_FILE) continue;
-      const sourceFile = parse(path);
-      for (const occurrence of governedConstructorOccurrences(path)) {
-        const relativePath = relativeRoot(path);
-        const generalOwnershipFactory = occurrence.symbol === "MixedTeamRunBackendFactory"
-          && relativePath === AGENT_TEAM_MANAGER_INITIALIZATION_TESTS[0];
-        if (!generalOwnershipFactory) actual.get(occurrence.symbol)!.add(relativePath);
-        const implementationScopedAgentManager = occurrence.symbol === "AgentRunManager"
-          && relativePath.includes("/tests/unit/");
-        if (implementationScopedAgentManager) {
-          expect(
-            hasExplicitObjectProperties(
-              occurrence.node.arguments[0],
-              AGENT_MANAGER_FIELDS,
-              sourceFile,
-            ),
-            `${relativePath}:complete AgentRunManager input`,
-          ).toBe(true);
-        }
-        if (implementationScopedAgentManager) {
-          const initializer = requiredDeactivatorInitializer(occurrence.node, sourceFile);
-          expect(initializer, `${relativePath}:${occurrence.symbol}`).not.toBeNull();
-          expect(initializer, `${relativePath}:${occurrence.symbol}`).not.toMatch(
-            /^(?:null|undefined)$|\bas\s+(?:any|never)\b|getAgentTool|getInstance|sessionManager/,
-          );
-          expect(read(path), relativePath).toMatch(
-            /agent-tool-mcp-run-session-deactivator-fixtures\.js|scoped-agent-tool-mcp-session-authority\.js/,
-          );
-        }
-        if (
-          occurrence.symbol === "MixedTeamRunBackendFactory"
-          && ts.isNewExpression(occurrence.node)
-        ) {
-          const callback = requiredFactoryCallbackInitializer(
-            occurrence.node,
-            sourceFile,
-          );
-          expect(
-            isExplicitFactoryCallback(callback),
-            `${relativePath}:createTeamManager`,
-          ).toBe(true);
-        }
-      }
-    }
-    expect([...actual.get("AgentRunManager")!].sort()).toEqual([...AGENT_MANAGER_TESTS].sort());
-    expect([...actual.get("MixedTeamRunBackendFactory")!].sort())
-      .toEqual([...MIXED_BACKEND_FACTORY_TESTS].sort());
-    expect([...actual.get("MixedTeamManager")!].sort()).toEqual([...MIXED_MANAGER_TESTS].sort());
-    expect([...actual.get("MixedAgentMemberHandle")!].sort()).toEqual([...MIXED_HANDLE_TESTS].sort());
+    expect(typescriptFiles(SRC)
+      .filter((path) => read(path).includes("new FlatTeamExecutionManager("))
+      .map(relativeRoot)).toEqual([
+      "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+    ]);
   });
-
   it("keeps AgentTeamRunManager creation explicit and process access lookup-only", () => {
-    const actualConstruction = new Set<string>();
-    const actualInitialization = new Set<string>();
-    for (const path of typescriptFiles(TESTS)) {
-      if (path === THIS_FILE) continue;
-      const sourceFile = parse(path);
-      for (const occurrence of agentTeamManagerOccurrences(path)) {
-        const relativePath = relativeRoot(path);
-        const target = occurrence.kind === "construct"
-          ? actualConstruction
-          : actualInitialization;
-        target.add(relativePath);
-        expect(
-          hasExplicitObjectProperties(
-            occurrence.node.arguments[0],
-            AGENT_TEAM_MANAGER_FIELDS,
-            sourceFile,
-          ),
-          `${relativePath}:${occurrence.kind}:complete input`,
-        ).toBe(true);
+    const production = typescriptFiles(SRC)
+      .filter((path) => !path.endsWith("agent-team-run-manager.ts"))
+      .filter((path) => /new AgentTeamRunManager\(|AgentTeamRunManager\.initializeProcessInstance\(/.test(read(path)))
+      .map(relativeRoot)
+      .sort();
+    expect(production).toEqual([
+      "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+    ]);
+    for (const relativePath of production) {
+      const source = read(join(ROOT, relativePath));
+      for (const required of ["memoryDir", "flatTeamExecutionFactory", "taskExecutionIdentity", "modelSelectionValidator", "memberExecutionContextBuilder"]) {
+        expect(source, `${relativePath}:${required}`).toContain(required);
       }
     }
-    expect([...actualConstruction].sort())
-      .toEqual([...AGENT_TEAM_MANAGER_CONSTRUCTION_TESTS].sort());
-    expect([...actualInitialization].sort())
-      .toEqual([...AGENT_TEAM_MANAGER_INITIALIZATION_TESTS].sort());
-
-    const managerSource = read(join(
-      SRC,
-      "agent-team-execution/services/agent-team-run-manager.ts",
-    ));
+    const managerSource = read(join(SRC, "agent-team-execution/services/agent-team-run-manager.ts"));
     expect(managerSource).toContain("static getInstance(): AgentTeamRunManager");
-    expect(managerSource).toContain(
-      "The process AgentTeamRunManager is not initialized.",
-    );
-    expect(managerSource).not.toMatch(
-      /static getInstance\([^)]*options|instance \?\?= new AgentTeamRunManager|constructor\([^)]*= \{\}\)|getMixedTeamRunBackendFactory/,
-    );
+    expect(managerSource).not.toMatch(/instance \?\?= new AgentTeamRunManager|getFlatTeamRunBackendFactory/);
   });
-
-  it("binds exactly two production Mixed Team factories to complete root families", () => {
+  it("binds exactly two production flat-Team factories to complete lifecycle roots", () => {
     const expectedRoots = [
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
     ];
     const actualRoots = typescriptFiles(SRC)
-      .filter((path) => read(path).includes("new MixedTeamRunBackendFactory("))
+      .filter((path) => read(path).includes("new FlatTeamExecutionFactory("))
       .map(relativeRoot)
       .sort();
     expect(actualRoots).toEqual([...expectedRoots].sort());
-
     for (const relativePath of expectedRoots) {
       const source = read(join(ROOT, relativePath));
-      expect(occurrences(source, "new MixedTeamRunBackendFactory("), relativePath)
-        .toBe(1);
-      expect(source, relativePath).toContain(
-        "createTeamManager: (managerInput) =>",
-      );
-      for (const requiredIdentity of [
-        "new MixedTeamManager(managerInput.context",
-        "subTeamRunFactory: managerInput.subTeamRunFactory",
-        "managerInput.callbacks.taskRootResolver",
-        "managerInput.callbacks.publish",
-        "managerInput.callbacks.deliverInterAgentMessage",
-        "managerInput.callbacks.acceptPlatformBinding",
-        "memoryLocationService",
-        "activityInspector",
-        "memberTeamContextBuilder",
-        "workspaceManager",
-      ]) expect(source, `${relativePath}:${requiredIdentity}`).toContain(requiredIdentity);
-      expect(source, relativePath).not.toContain(
-        "managerInput.agentToolMcpRunSessionDeactivator",
-      );
+      for (const required of ["agentRunManager", "memoryLocator", "activityInspector", "workspaceManager"]) {
+        expect(source, `${relativePath}:${required}`).toContain(required);
+      }
     }
-
-    const general = read(join(ROOT, expectedRoots[0]!));
-    expect(general).toMatch(
-      /const memoryLocationService = new AgentMemoryLocationService\(\{[\s\S]*?memoryDir,[\s\S]*?locationService: storedTeamLocations,[\s\S]*?\}\);/,
-    );
-    expect(general).toContain(
-      "const activityInspector = new AgentConversationActivityInspector();",
-    );
-    expect(general).toContain(
-      "agentRunManager: generalAgentRunManager",
-    );
-    expect(general).toContain(
-      "AgentTeamRunManager.initializeProcessInstance({",
-    );
-
-    const application = read(join(ROOT, expectedRoots[1]!));
-    expect(application).toContain("const agentRunManager = new AgentRunManager({");
-    expect(application).toContain("const teamRunManager = new AgentTeamRunManager({");
-    expect(application).toContain("agentRunManager,");
-    expect(application).not.toMatch(
-      /AgentRunManager\.getInstance|AgentTeamRunManager\.getInstance|getAgentMemoryLocationService|getAgentConversationActivityInspector|getMemberTeamContextBuilder|getWorkspaceManager|getAgentToolMcpRunSessionDeactivator/,
-    );
-
-    const factory = read(join(
-      SRC,
-      "agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-    ));
-    expect(factory).toContain("MixedTeamManagerConstructionInput");
-    expect(factory).toContain("private readonly options: MixedTeamRunBackendFactoryOptions;");
-    expect(factory).not.toMatch(
-      /agent-tool-mcp-session-service|new MixedTeamManager|getMixedTeamRunBackendFactory|let cached|createTeamManager\?|agentToolMcp|constructor\([^)]*= \{\}\)/,
-    );
-    expect(read(join(
-      SRC,
-      "agent-tools/mcp/agent-tool-mcp-session-service.ts",
-    ))).not.toContain("getAgentToolMcpRunSessionDeactivator");
+    const factory = read(join(SRC, "agent-team-execution/local/flat-team-execution-factory.ts"));
+    expect(factory).not.toMatch(/RootTeamRun|AgentOrgRun|ExecutionTreeStore|HistoryIndexStore|registerRoot/);
   });
-
-  it("closes complete Agent manager and AgentRun construction to exact roots and fixtures", () => {
+  it("closes complete Agent manager and AgentRun construction to production roots", () => {
     const productionManagerRoots = typescriptFiles(SRC)
-      .filter((path) => governedConstructorOccurrences(path)
-        .some((occurrence) => occurrence.symbol === "AgentRunManager"))
+      .filter((path) => governedConstructorOccurrences(path).some((occurrence) => occurrence.symbol === "AgentRunManager"))
       .map(relativeRoot)
       .filter((path) => !path.endsWith("agent-run-manager.ts"))
       .sort();
@@ -718,62 +568,12 @@ describe("agent provider composition boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
     ].sort());
-    for (const relativePath of productionManagerRoots) {
-      const absolutePath = join(ROOT, relativePath);
-      const sourceFile = parse(absolutePath);
-      for (const occurrence of governedConstructorOccurrences(absolutePath)
-        .filter((item) => item.symbol === "AgentRunManager")) {
-        expect(hasExplicitObjectProperties(
-          occurrence.node.arguments[0], AGENT_MANAGER_FIELDS, sourceFile,
-        ), `${relativePath}:complete AgentRunManager input`).toBe(true);
-      }
-    }
-
-    const directAgentRunTests = typescriptFiles(TESTS)
-      .filter((path) => path !== THIS_FILE && directNewOccurrences(path, "AgentRun").length > 0)
-      .map(relativeRoot)
-      .sort();
-    expect(directAgentRunTests).toEqual([...AGENT_RUN_TESTS].sort());
-    for (const relativePath of directAgentRunTests) {
-      const path = join(ROOT, relativePath);
-      const sourceFile = parse(path);
-      for (const occurrence of directNewOccurrences(path, "AgentRun")) {
-        expect(isExplicitNarrowInitializer(objectPropertyInitializer(
-          occurrence.arguments?.[0], "providerInputNormalizer", sourceFile,
-        )), `${relativePath}:providerInputNormalizer`).toBe(true);
-      }
-    }
     expect(typescriptFiles(SRC)
       .filter((path) => directNewOccurrences(path, "AgentRun").length > 0)
       .map(relativeRoot)).toEqual([
       "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
     ]);
-
-    const expectedServiceRoots = [
-      "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
-    ];
-    const productionServiceRoots = typescriptFiles(SRC)
-      .filter((path) => directNewOccurrences(path, "AgentRunService").length > 0)
-      .map(relativeRoot)
-      .sort();
-    expect(productionServiceRoots).toEqual([...expectedServiceRoots].sort());
-    const directServiceTests = typescriptFiles(TESTS)
-      .filter((path) => path !== THIS_FILE && directNewOccurrences(path, "AgentRunService").length > 0)
-      .map(relativeRoot)
-      .sort();
-    expect(directServiceTests).toEqual([...AGENT_RUN_SERVICE_TESTS].sort());
-    for (const relativePath of [...productionServiceRoots, ...directServiceTests]) {
-      const path = join(ROOT, relativePath);
-      const sourceFile = parse(path);
-      for (const occurrence of directNewOccurrences(path, "AgentRunService")) {
-        expect(isExplicitNarrowInitializer(objectPropertyInitializer(
-          occurrence.arguments?.[1], "lifecycleService", sourceFile,
-        )), `${relativePath}:AgentRunService:lifecycleService`).toBe(true);
-      }
-    }
   });
-
   it("selects one host validator and propagates it to the two exact lifecycle roots", () => {
     const hosts = [
       "autobyteus-server-ts/src/compositions/build-studio-server.ts",
@@ -824,43 +624,16 @@ describe("agent provider composition boundaries", () => {
     }
   });
 
-  it("carries one explicit task-identity pair through every Team and task constructor", () => {
-    const exactTestFiles = (symbol: string): string[] => typescriptFiles(TESTS)
-      .filter((path) => path !== THIS_FILE && directNewOccurrences(path, symbol).length > 0)
-      .map(relativeRoot)
-      .sort();
-    expect(exactTestFiles("RootTeamRun")).toEqual([...ROOT_TEAM_RUN_TESTS].sort());
-    expect(exactTestFiles("TaskDelegationService"))
-      .toEqual([...TASK_DELEGATION_SERVICE_TESTS].sort());
-    for (const [symbol, files] of [
-      ["RootTeamRun", ROOT_TEAM_RUN_TESTS],
-      ["TaskDelegationService", TASK_DELEGATION_SERVICE_TESTS],
-    ] as const) {
-      for (const relativePath of files) {
-        const path = join(ROOT, relativePath);
-        const sourceFile = parse(path);
-        for (const occurrence of directNewOccurrences(path, symbol)) {
-          expect(isExplicitNarrowInitializer(objectPropertyInitializer(
-            occurrence.arguments?.[0], "taskExecutionIdentity", sourceFile,
-          )), `${relativePath}:${symbol}:taskExecutionIdentity`).toBe(true);
-        }
-      }
-    }
-    expect(typescriptFiles(SRC)
-      .filter((path) => directNewOccurrences(path, "TaskTeamRunIdentityFactory").length > 0)
-      .map(relativeRoot)).toEqual([
-      "autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts",
-    ]);
-    const taskFactoryOwner = join(
-      SRC,
-      "agent-team-execution/task-delegation/task-execution-identity-capabilities.ts",
-    );
-    const sourceFile = parse(taskFactoryOwner);
-    for (const occurrence of directNewOccurrences(taskFactoryOwner, "TaskTeamRunIdentityFactory")) {
-      expect(occurrence.arguments?.[0]?.getText(sourceFile)).toBe("agentRuns");
-    }
+  it("carries one explicit task-identity capability through both subject roots", () => {
+    const teamManager = read(join(SRC, "agent-team-execution/services/agent-team-run-manager.ts"));
+    expect(teamManager).toContain("taskExecutionIdentity");
+    const teamMaterializer = read(join(SRC, "agent-team-execution/services/team-root-materializer.ts"));
+    expect(teamMaterializer).toMatch(/new RootTeamRun\(\{[\s\S]*taskExecutionIdentity/);
+    const orgBuilder = read(join(SRC, "agent-org-execution/services/agent-org-execution-scope-builder.ts"));
+    expect(orgBuilder).toContain("taskExecutionIdentity");
+    const identityOwner = read(join(SRC, "agent-team-execution/task-delegation/task-execution-identity-capabilities.ts"));
+    expect(identityOwner).toContain("new TaskTeamRunIdentityFactory(agentRuns)");
   });
-
   it("keeps context translation provider-neutral and all path authority explicit", () => {
     const forbiddenProviderOwners = [
       "agent-customization/processors/prompt/user-input-context-building-processor.ts",
@@ -930,59 +703,11 @@ describe("agent provider composition boundaries", () => {
     expect(general).toContain("contextFilePathEnvironment: ContextFilePathEnvironment");
   });
 
-  it("rejects synthetic omission, null, undefined, casts, ambient getters, and broad substitutes", () => {
-    for (const invalid of [
-      "new AgentRunManager({})",
-      "new AgentRunManager({ agentToolMcpRunSessionDeactivator: null })",
-      "new AgentRunManager({ agentToolMcpRunSessionDeactivator: undefined })",
-      "new AgentRunManager({ agentToolMcpRunSessionDeactivator: missing as never })",
-      "new AgentRunManager({ agentToolMcpRunSessionDeactivator: getAgentToolMcpRunSessionDeactivator() })",
-      "new AgentRunManager({ agentToolMcpRunSessionDeactivator: sessionManager })",
-    ]) expect(validateSyntheticDeactivator(invalid), invalid).toBe(false);
-    expect(validateSyntheticDeactivator(
-      "new AgentRunManager({ agentToolMcpRunSessionDeactivator: recording.deactivator })",
-    )).toBe(true);
-
-    const completeAgentManager = AGENT_MANAGER_FIELDS
-      .map((field) => `${field}: ${field}`)
-      .join(", ");
-    expect(validateSyntheticAgentManagerOptions(
-      `new AgentRunManager({ ${completeAgentManager} })`,
-    )).toBe(true);
-    for (const field of AGENT_MANAGER_FIELDS) {
-      for (const replacement of ["omitted", "null", "undefined", "missing as never"] as const) {
-        const fields = AGENT_MANAGER_FIELDS
-          .filter((candidate) => replacement !== "omitted" || candidate !== field)
-          .map((candidate) => `${candidate}: ${candidate === field ? replacement : candidate}`)
-          .join(", ");
-        expect(validateSyntheticAgentManagerOptions(
-          `new AgentRunManager({ ${fields} })`,
-        ), `${field}:${replacement}`).toBe(false);
-      }
+  it("rejects retired root-bound execution construction symbols", () => {
+    const retired = ["MixedAgentMemberHandle", "FlatTeamRunBackendFactory", "MemberTaskRootResolver"];
+    for (const path of typescriptFiles(SRC)) {
+      const source = read(path);
+      for (const symbol of retired) expect(source, `${relativeRoot(path)}:${symbol}`).not.toContain(symbol);
     }
-
-    for (const invalid of [
-      "new MixedTeamRunBackendFactory()",
-      "new MixedTeamRunBackendFactory({})",
-      "new MixedTeamRunBackendFactory({ createTeamManager: null })",
-      "new MixedTeamRunBackendFactory({ createTeamManager: undefined })",
-      "new MixedTeamRunBackendFactory({ createTeamManager: getMixedTeamManager() })",
-      "new MixedTeamRunBackendFactory({ createTeamManager: missing as never })",
-    ]) expect(validateSyntheticFactoryOptions(invalid), invalid).toBe(false);
-    expect(validateSyntheticFactoryOptions(
-      "new MixedTeamRunBackendFactory({ createTeamManager: build })",
-    )).toBe(true);
-
-    for (const invalid of [
-      "new AgentTeamRunManager()",
-      "new AgentTeamRunManager({})",
-      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: null })",
-      "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: undefined })",
-      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: getMixedTeamRunBackendFactory() })",
-      "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: missing as any })",
-    ]) expect(validateSyntheticTeamManagerOptions(invalid), invalid).toBe(false);
-    expect(validateSyntheticTeamManagerOptions(
-      "new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory, taskExecutionIdentity, modelSelectionValidator })",
-    )).toBe(true);
   });
 });

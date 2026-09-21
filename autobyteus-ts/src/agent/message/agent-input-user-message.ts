@@ -1,3 +1,5 @@
+import { contextFileReferenceToDict, type ContextFileReference } from './context-file-reference.js';
+import { parseRawTraceFileAttachments, validateFileAttachments } from '../../memory/models/raw-trace-attachments.js';
 import { ContextFile } from './context-file.js';
 import { SenderType } from '../sender-type.js';
 import { parseAgentExternalSourceMetadata, type AgentExternalSourceMetadata } from './external-source-metadata.js';
@@ -7,12 +9,14 @@ export class AgentInputUserMessage {
   senderType: SenderType;
   contextFiles: ContextFile[] | null;
   metadata: Record<string, unknown>;
+  readonly recordingFileAttachments: readonly ContextFileReference[] | null;
 
   constructor(
     content: string,
     senderType: SenderType = SenderType.USER,
     contextFiles: ContextFile[] | null = null,
-    metadata: Record<string, unknown> = {}
+    metadata: Record<string, unknown> = {},
+    recordingFileAttachments: readonly ContextFileReference[] | null = null
   ) {
     if (typeof content !== 'string') {
       throw new TypeError("AgentInputUserMessage 'content' must be a string.");
@@ -33,6 +37,7 @@ export class AgentInputUserMessage {
     this.senderType = senderType;
     this.contextFiles = contextFiles;
     this.metadata = metadata;
+    this.recordingFileAttachments = recordingFileAttachments === null ? null : validateFileAttachments(recordingFileAttachments);
   }
 
   toDict(): Record<string, unknown> {
@@ -44,7 +49,8 @@ export class AgentInputUserMessage {
       content: this.content,
       sender_type: this.senderType,
       context_files: contextFiles,
-      metadata: this.metadata
+      metadata: this.metadata,
+      recording_file_attachments: this.recordingFileAttachments?.map(contextFileReferenceToDict) ?? null
     };
   }
 
@@ -75,7 +81,11 @@ export class AgentInputUserMessage {
       throw new Error("AgentInputUserMessage 'metadata' in dictionary must be a dict if provided.");
     }
 
-    return new AgentInputUserMessage(content, senderType, contextFiles, metadata as Record<string, unknown>);
+    return new AgentInputUserMessage(
+      content, senderType, contextFiles, metadata as Record<string, unknown>,
+      payloadRecord.recording_file_attachments == null ? null
+        : parseRawTraceFileAttachments(payloadRecord.recording_file_attachments, 'user'),
+    );
   }
 
   toString(): string {

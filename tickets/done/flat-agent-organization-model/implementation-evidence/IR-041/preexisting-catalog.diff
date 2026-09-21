@@ -1,0 +1,13 @@
+diff --git a/autobyteus-web/localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts b/autobyteus-web/localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+index 461a6bc9d..b535ba3fa 100644
+--- a/autobyteus-web/localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
++++ b/autobyteus-web/localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+@@ -27,7 +27,7 @@ const agentOrgCopy = {
+     '请从侧栏中的当前智能体组织选择成员。选择团队时会先聚焦其协调者。',
+   ],
+   'workspace.agentOrg.history.refreshLabel': ['Refresh Agent Org history', '刷新智能体组织历史记录'],
+-  'workspace.agentOrg.history.collectionLabel': ['Agent Orgs', '智能体组织'],
++  'workspace.agentOrg.history.collectionLabel': ['Org', '组织'],
+   'workspace.agentOrg.history.stopLabel': ['Stop Agent Org', '停止智能体组织'],
+   'workspace.agentOrg.runConfig.orgLabel': ['Agent Org', '智能体组织'],
+   'workspace.agentOrg.runConfig.autoApprove': ['Auto approve tools', '自动批准工具'],

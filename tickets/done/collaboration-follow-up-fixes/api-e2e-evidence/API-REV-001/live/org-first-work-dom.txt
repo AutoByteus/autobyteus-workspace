@@ -1,0 +1,76 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+ORGS
+Followup Organization
+(1)
+Use send_message_to exactly twice, sequentially. First recipient_address /receiver, content "Repl...
+1m
+D
+director
+R
+receiver
+research team
+C
+coordinator
+L
+lead
+R
+reviewer
+Settings
+D
+director - 8652
+Idle
+You
+Use send_message_to exactly twice, sequentially. First recipient_address /receiver, content "Reply exactly COLLAB-API01-ORG-RECEIVER-READY. No tools or communication." Then recipient_address /research-team, content "Reply exactly COLLAB-API01-ORG-TEAM-INGRESS-READY. No tools or communication." After both calls succeed, reply exactly COLLAB-API01-ORG-DIRECTOR-READY. Do not delegate, or contact any other member.
+D
+director
+Thinking
+send_message_to
+send_message_to
+
+COLLAB-API01-ORG-DIRECTOR-READY
+
+Context Files (0)
+(drag, paste, or upload)
+Files
+Org
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+2 Messages
+Message
+Sep 13, 11:49 AM
+
+to coordinator
+
+Reply exactly COLLAB-API01-ORG-TEAM-INGRESS-READY. No tools or communication.
+
+Message
+Sep 13, 11:49 AM
+
+to receiver
+
+Reply exactly COLLAB-API01-ORG-RECEIVER-READY. No tools or communication.
+
+Message
+receiver
+Sep 13, 11:49 AM
+
+Reply exactly COLLAB-API01-ORG-RECEIVER-READY. No tools or communication.
+
+Tasks
+0 tasks

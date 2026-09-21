@@ -88,6 +88,7 @@ const buildProjection = (
     buildTeamContext('team-a', '/workspace-a', taskAStatus),
     buildTeamContext('team-b', '/workspace-b'),
   ],
+  agentOrgHistory: [],
 }, previous);
 
 const buildHistoricalProjection = () => {
@@ -129,6 +130,7 @@ const buildHistoricalProjection = () => {
     workspacesById: {},
     agentContexts: new Map(),
     teamContexts: [context],
+    agentOrgHistory: [],
   });
 };
 
@@ -144,11 +146,11 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     ]);
     expect(first.memberIndexByIdentity[runHistoryMemberIndexKey('team-a', taskAgentRunId('team-a'))]).toBe(1);
     expect(first.runAncestryById['standalone-a']).toEqual({
-      workspaceId: 'workspace-a',
+      workspaceId: 'workspace:/workspace-a',
       agentDefinitionId: 'standalone-a-definition',
     });
     expect(first.teamAncestryById['team-a']).toEqual({
-      workspaceId: 'workspace-a',
+      workspaceId: 'workspace:/workspace-a',
       teamDefinitionGroupKey: 'team-a-definition',
     });
     expect(first.memberAncestorExecutionKeysByIdentity[

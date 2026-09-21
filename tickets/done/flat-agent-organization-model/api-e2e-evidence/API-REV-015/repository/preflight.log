@@ -1,0 +1,42 @@
+timestamp=2026-09-06T12:39:44Z
+head=43ef19f2de69b2c16133577dac40471f75ebd913
+source=8f9f9ce3f7f4ab9312813de8faf5b651578a7310
+source_is_ancestor=true
+--- instruction hashes ---
+e641ea74f36bf96753253dc164cd7816426b040e664374a1f046f523a5c2623e  autobyteus-server-ts/AGENTS.md
+36ce08f5c256733dbc2ddd1bc57275b8862d1405ac96e9538e1ab6204a64a1f1  autobyteus-web/AGENTS.md
+b1da397a24655d90aebdf0884eb9e4c0a1bbe823f5248e54f93ee25af8a3543f  autobyteus-server-ts/README.md
+8d74791499993ea90eaa69df5c5983b2b06e2bf6ea4c6fbe9e9264273e37bab7  autobyteus-web/README.md
+--- package hashes ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+--- package inventory ---
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-orgs/aorg-direct-agents-org
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-orgs/aorg-mixed-org
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-teams/aorg-research-squad
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-teams/aorg-support-pair
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-analyst
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-concierge
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-lead
+tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-verifier
+--- listeners ---
+--- owned processes ---
+70030 70025 S    tee tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/repository/preflight.log
+--- diff check ---
+pass

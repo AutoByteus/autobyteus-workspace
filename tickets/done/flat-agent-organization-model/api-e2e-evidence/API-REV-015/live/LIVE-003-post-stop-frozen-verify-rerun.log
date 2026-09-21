@@ -1,0 +1,30 @@
+{
+  "taskStatuses": [
+    "interrupted",
+    "interrupted",
+    "interrupted"
+  ],
+  "taskSettled": [
+    "2026-09-06T13:18:40.015Z",
+    "2026-09-06T13:18:40.023Z",
+    "2026-09-06T13:18:40.008Z"
+  ],
+  "historyRoute": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=history",
+  "teamDots": [],
+  "assertions": {
+    "stopRoutedConfiguration": false,
+    "threeInterrupted": true,
+    "threeSettledTaskTeams": true,
+    "historyExact": true,
+    "terminalCopy": true,
+    "frozenTasksVisible": false,
+    "configuredTeamsOffline": false,
+    "configuredAgentsOffline": false,
+    "noActiveControls": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

@@ -1,5 +1,5 @@
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { MemberTeamContext } from "../domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import {
   buildDeliveryEndpointForParticipant,
   type InterAgentMessageDeliveryIntent,
@@ -11,7 +11,7 @@ export type InterAgentMessageDeliveryIntentBuildResult =
   | { ok: false; code: "INVALID_DELIVERY_INTENT"; message: string };
 
 const buildSenderParticipant = (
-  context: MemberTeamContext,
+  context: MemberExecutionContext,
 ): InterAgentMessageParticipant => Object.freeze({
   kind: "agent",
   identity: context.identity,
@@ -19,22 +19,24 @@ const buildSenderParticipant = (
 });
 
 export const buildInterAgentMessageDeliveryIntent = (input: {
-  memberTeamContext: MemberTeamContext;
+  memberExecutionContext: MemberExecutionContext;
   recipientAddress: string;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
-}): InterAgentMessageDeliveryIntentBuildResult => ({
-  ok: true,
-  intent: {
-    rootTeamRunId: input.memberTeamContext.identity.rootTeamRunId,
+}): InterAgentMessageDeliveryIntentBuildResult => input.memberExecutionContext.identity.root.rootSubjectKind !== "agent_team"
+  ? { ok: false, code: "INVALID_DELIVERY_INTENT", message: "Team delivery requires a Team root identity." }
+  : ({
+    ok: true,
+    intent: {
+    rootTeamRunId: input.memberExecutionContext.identity.root.rootRunId,
     recipientAddress: input.recipientAddress,
-    sender: buildDeliveryEndpointForParticipant(buildSenderParticipant(input.memberTeamContext)),
+    sender: buildDeliveryEndpointForParticipant(buildSenderParticipant(input.memberExecutionContext)),
     content: input.content,
     messageType: input.messageType,
     referenceFiles: input.referenceFiles,
-  },
-});
+    },
+  });
 
 export const buildInterAgentMessageDeliveryIntentFromRecipientAddress =
   buildInterAgentMessageDeliveryIntent;

@@ -1,0 +1,27 @@
+{
+  "entryHead": "f09cd68c3804b06752762db0b86cbf39f23bf5d5",
+  "sourceCheckpoint": "a1ce590b859518d813cbd35dbaf8294b58aa97f1",
+  "files": [
+    {
+      "path": "autobyteus-web/pages/agent-teams.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 93,
+      "sha256": "4114d9fba206b58f6a1870fa85027668c9963f319a944a8ace0c4ece89f2c320"
+    },
+    {
+      "path": "autobyteus-web/pages/agents.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 88,
+      "sha256": "895e4b985e676a67d1f7a8c7eb266b9162ff001ad735b919790cb174cfdb66c0"
+    },
+    {
+      "path": "autobyteus-web/pages/__tests__/org-definition-navigation.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 119,
+      "sha256": "d087e0cbdbfbaa7d14bd693717e9222cd728c4a0516231103818498c099abe26"
+    }
+  ]
+}

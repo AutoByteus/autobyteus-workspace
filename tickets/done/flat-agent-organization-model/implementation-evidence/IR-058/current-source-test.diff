@@ -1,0 +1,299 @@
+diff --git a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+new file mode 100644
+index 000000000..cb3796ae1
+--- /dev/null
++++ b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+@@ -0,0 +1,212 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
++import { flushPromises, mount } from '@vue/test-utils'
++import { createPinia, setActivePinia } from 'pinia'
++import { computed, defineComponent, h, reactive } from 'vue'
++import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue'
++import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts'
++import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState'
++import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
++import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions'
++import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
++import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
++import { useRunHistoryStore } from '~/stores/runHistoryStore'
++import { parseAgentOrgHistoryItems } from '~/stores/runHistoryStoreSupport'
++import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
++import { AgentStatus } from '~/types/agent/AgentStatus'
++
++const mocks = vi.hoisted(() => ({
++  query: vi.fn(), mutate: vi.fn(), replace: vi.fn(),
++  route: { query: { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'active', memberAddress: '/director' } },
++}))
++vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(),
++  useRoute: () => reactive(mocks.route), useRouter: () => ({ replace: mocks.replace }),
++}))
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({
++  waitForBoundBackendReady: async () => true, getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org' }),
++}) }))
++vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
++vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
++
++const deferred = <T,>() => {
++  let resolve!: (value: T) => void, reject!: (reason: Error) => void
++  const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no })
++  return { promise, resolve, reject }
++}
++class Socket {
++  static OPEN = 1
++  static CONNECTING = 0
++  static instances: Socket[] = []
++  readyState = 1
++  onmessage: ((event: { data: string }) => void) | null = null
++  onclose: (() => void) | null = null
++  onerror = null
++  sent: string[] = []
++  constructor() { Socket.instances.push(this) }
++  send(value: string) { this.sent.push(value) }
++  close() { this.readyState = 3; this.onclose?.() }
++  emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
++}
++const historyResponse = () => ({ data: { listCollaborationRootHistory: [{
++  root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: '2026-09-01T00:00:00.000Z',
++  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: taskBearingView().execution_tree,
++}] } })
++let wrapper: ReturnType<typeof mount> | undefined
++let stopResult: Promise<void>
++let stopError: unknown
++let stopped: boolean
++let stoppedInspectionAvailable: boolean
++
++beforeEach(() => {
++  setActivePinia(createPinia())
++  vi.clearAllMocks()
++  Socket.instances = []
++  vi.stubGlobal('WebSocket', Socket)
++  stopped = false; stoppedInspectionAvailable = false; stopError = null
++  mocks.route.query.mode = 'active'
++  mocks.replace.mockImplementation(async ({ query }) => { mocks.route.query = query })
++  mocks.query.mockImplementation(async ({ query, variables }: any) => {
++    const name = query.definitions[0].name.value
++    if (name === 'ListCollaborationRootHistory') return historyResponse()
++    if (name === 'GetAgentOrgRunInspection') {
++      if (stopped && !stoppedInspectionAvailable) throw new Error('Stopped inspection unavailable')
++      const view = taskBearingView()
++      if (stopped) { view.is_active = false; view.agent_statuses = [] }
++      return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
++    }
++    if (variables?.agentRunId) return { data: { getAgentOrgMemberRunProjection: {
++      agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
++      conversation: [{ kind: 'message', role: 'user', content: `Retained ${variables.agentRunId}`, ts: 1700000000 }],
++      activities: [], hasEarlierActiveTraceEvents: false,
++    } } }
++    throw new Error(`Unexpected query ${name}`)
++  })
++})
++afterEach(() => {
++  wrapper?.unmount(); wrapper = undefined
++  useAgentOrgContextsStore().disconnect('org-run')
++  vi.unstubAllGlobals()
++})
++
++async function open(address: string) {
++  mocks.route.query.memberAddress = address
++  const history = useRunHistoryStore(), orgs = useAgentOrgContextsStore(), runs = useAgentOrgRunStore()
++  history.agentOrgHistory = parseAgentOrgHistoryItems(historyResponse().data.listCollaborationRootHistory)
++  await orgs.openForInspection('org-run')
++  const socket = Socket.instances[0]!
++  socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'session' } })
++  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
++    root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView(),
++  } })
++  await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
++  await flushPromises()
++  orgs.select('org-run', address)
++  const org = orgs.contextFor('org-run')!, context = org.selectedTarget()!.context
++  const messages = JSON.stringify(context.conversation.messages)
++  const selection = org.selection
++  wrapper = mount(defineComponent({ setup() {
++    const subject = useWorkspaceHistorySubjectActions()
++    const tree = useWorkspaceHistoryTreeState({
++      runHistoryStore: history, selectionStore: useAgentSelectionStore(),
++      selectedAgentOrg: computed(() => {
++        const current = orgs.contextFor('org-run')
++        return { rootRunId: 'org-run', focusAddress: current?.selectedAddress ?? null, selection: current?.selection ?? null }
++      }),
++    })
++    const state = {
++      isAgentOrgDefinitionExpanded: () => true, isAgentOrgRunExpanded: () => true, isAgentOrgTeamExpanded: () => true,
++      isAgentOrgRunSelected: (id: string) => id === mocks.route.query.orgRunId,
++      isAgentOrgMemberSelected: tree.isAgentOrgMemberSelected,
++      isAgentOrgTerminating: (id: string) => Boolean(orgs.operations[id]) || runs.terminatingRunIds.has(id),
++      agentOrgTerminationError: (id: string) => runs.terminationErrors[id] ?? orgs.errorFor(id), agentOrgContextFor: orgs.contextFor,
++    } as WorkspaceHistorySectionState
++    const actions = { onTerminateAgentOrg: (run) => {
++      stopResult = subject.execute({ rootSubjectKind: 'agent_org', rootRunId: run.rootRunId, action: 'stop' })
++        .catch((error) => { stopError = error })
++      return stopResult
++    } } as WorkspaceHistorySectionActions
++    return () => h(WorkspaceAgentOrgHistoryCollection, {
++      workspaceId: 'history', groups: history.getTreeNodes().flatMap((node) => node.agentOrgDefinitions), state, actions,
++    })
++  } }), { global: { stubs: { Icon: true } } })
++  await flushPromises()
++  expect(wrapper.findAll('.org-execution-row[aria-selected="true"]')).toHaveLength(1)
++  expect(wrapper.get('.org-execution-row[aria-selected="true"]').attributes('data-test')).toBe(`agent-org-agent-row-${context.state.runId}`)
++  expect(wrapper.find('[aria-label="Running"]').exists()).toBe(true)
++  expect(wrapper.find('button[title="Stop Agent Org"]').attributes('disabled')).toBeUndefined()
++  return { history, orgs, runs, org, context, selection, messages, socket }
++}
++const stopButton = () => wrapper!.get('button[title="Stop Agent Org"]')
++
++// The collection consumes the REAL pre-existing cached navigation projection; only transport is controlled.
++describe.each(['/director', '/team/lead'])('Org activity publication with selected %s', (address) => {
++  it.each([true, false])('publishes Stop before history I/O (stopped inspection available=%s)', async (inspectionAvailable) => {
++    stoppedInspectionAvailable = inspectionAvailable
++    const { history, orgs, runs, org, context, selection, messages, socket } = await open(address)
++    const before = history.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs)[0]!
++    const old = deferred<any>(), fresh = deferred<any>(), stop = deferred<any>()
++    const fallback = mocks.query.getMockImplementation()!
++    let refreshes = 0
++    mocks.query.mockImplementation((input: any) => input.query.definitions[0].name.value === 'ListCollaborationRootHistory'
++      ? (++refreshes === 1 ? old.promise : fresh.promise) : fallback(input))
++    const pending = history.refreshAgentOrgHistory()
++    await vi.waitFor(() => expect(refreshes).toBe(1))
++    mocks.mutate.mockReturnValueOnce(stop.promise)
++    await stopButton().trigger('click')
++    expect(stopButton().attributes('disabled')).toBeDefined()
++    expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(true)
++    stopped = true
++    stop.resolve({ data: { terminateAgentOrgRun: { success: true } } })
++    await stopResult; await flushPromises()
++    expect(refreshes).toBe(inspectionAvailable ? 3 : 2)
++    const assertStopped = () => {
++      expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(false)
++      expect(wrapper!.find('[aria-label="Stopped"]').exists()).toBe(true)
++      expect(wrapper!.find('button[title="Stop Agent Org"]').exists()).toBe(false)
++      expect(wrapper!.text()).toContain(before.summary)
++      expect(history.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs)[0]).toEqual({ ...before, isActive: false })
++      const current = orgs.contextFor('org-run')!
++      expect(current.phase).toBe('historical')
++      expect(current.selectedTarget()!.context).toBe(context)
++      expect(current.selection).toEqual(selection)
++      expect(wrapper!.findAll('.org-execution-row[aria-selected="true"]')).toHaveLength(1)
++      expect(wrapper!.get('.org-execution-row[aria-selected="true"]').attributes('data-test')).toBe(`agent-org-agent-row-${context.state.runId}`)
++      expect(context.state.currentStatus).toBe(AgentStatus.Offline)
++      expect(JSON.stringify(context.conversation.messages)).toBe(messages)
++      expect(mocks.route.query).toMatchObject({ mode: 'history', orgRunId: 'org-run', memberAddress: address })
++      expect(runs.terminatingRunIds.size).toBe(0)
++    }
++    assertStopped()
++    old.resolve(historyResponse()); await pending; await flushPromises(); assertStopped()
++    fresh.reject(new Error('Follow-up history unavailable')); await flushPromises(); assertStopped()
++    expect(history.historyFamilyErrors.agentOrg).toBe('Follow-up history unavailable')
++    expect(orgs.errorFor('org-run')).toBe(inspectionAvailable ? null : 'Stopped inspection unavailable')
++    if (inspectionAvailable) expect(stopError).toBeNull()
++    else expect(stopError).toBeInstanceOf(Error)
++    expect(mocks.mutate).toHaveBeenCalledTimes(1)
++    expect(mocks.mutate.mock.calls[0][0].variables).toEqual({ agentOrgRunId: 'org-run' })
++    expect(socket.sent).toHaveLength(0)
++  })
++
++  it('keeps active controls and exact selection/conversation when Stop is rejected', async () => {
++    const { history, org, context, selection, messages, socket } = await open(address)
++    const projection = history.navigationProjection
++    mocks.query.mockClear()
++    mocks.mutate.mockResolvedValueOnce({ data: { terminateAgentOrgRun: { success: false, message: 'Stop rejected' } } })
++    await stopButton().trigger('click'); await stopResult; await flushPromises()
++    expect(history.navigationProjection).toBe(projection)
++    expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(true)
++    expect(stopButton().attributes('disabled')).toBeUndefined()
++    expect(wrapper!.get('[role="alert"]').text()).toBe('Stop rejected')
++    expect(org.phase).toBe('live')
++    expect(org.isActive).toBe(true)
++    expect(org.selection).toEqual(selection)
++    expect(org.selectedTarget()!.context).toBe(context)
++    expect(JSON.stringify(context.conversation.messages)).toBe(messages)
++    expect(mocks.route.query.mode).toBe('active')
++    expect(mocks.replace).not.toHaveBeenCalled()
++    expect(mocks.query).not.toHaveBeenCalled()
++    expect(mocks.mutate).toHaveBeenCalledTimes(1)
++    expect(socket.sent).toHaveLength(0)
++  })
++})
+diff --git a/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts b/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+index 213c6a21c..4985c26b4 100644
+--- a/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
++++ b/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+@@ -784,19 +784,56 @@ describe('runHistoryStore', () => {
+     expect(store.historyFamilyErrors.agentOrg).toBe('Focused Org refresh failed');
+   });
+ 
+-  it('invalidates an older active response on confirmed Stop and preserves inactive fact when fresh history fails', async () => {
++  it('publishes only the confirmed exact root activity and preserves other rows before refresh', async () => {
++    let resolveRefresh!: (value: unknown) => void;
++    queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveRefresh = resolve; }));
++    const store = useRunHistoryStore();
++    const rows = [buildAgentOrgHistoryRow({ rootRunId: 'org-restored', summary: 'Restored title' }),
++      buildAgentOrgHistoryRow({ rootRunId: 'org-unrelated', summary: 'Other title' })];
++    store.agentOrgHistory = parseAgentOrgHistoryItems(rows);
++    const projectedRows = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs);
++    const original = projectedRows().find((run) => run.rootRunId === 'org-restored')!;
++    const unrelated = projectedRows().find((run) => run.rootRunId === 'org-unrelated')!;
++    store.applyAgentOrgActivity('org-restored', true);
++    expect(projectedRows().find((run) => run.rootRunId === 'org-restored')).toEqual({ ...original, isActive: true });
++    expect(projectedRows().find((run) => run.rootRunId === 'org-unrelated')).toBe(unrelated);
++    expect(projectedRows()).toHaveLength(2);
++    await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
++    resolveRefresh({ data: { listCollaborationRootHistory: rows.map((row) => row.root_run_id === 'org-restored' ? { ...row, is_active: true } : row) }, errors: [] });
++    await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBeNull());
++  });
++
++  it.each(['old-first', 'failure-first'])('publishes confirmed Stop to existing navigation before I/O (%s)', async (order) => {
+     let resolveOlder!: (value: unknown) => void;
++    let rejectFresh!: (reason: Error) => void;
+     queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveOlder = resolve; }))
+-      .mockRejectedValueOnce(new Error('fresh history unavailable'));
++      .mockReturnValueOnce(new Promise((_resolve, reject) => { rejectFresh = reject; }));
+     const store = useRunHistoryStore();
+-    store.agentOrgHistory = parseAgentOrgHistoryItems([buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title' })]);
++    const activeRow = { ...buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title' }), is_active: true };
++    store.agentOrgHistory = parseAgentOrgHistoryItems([activeRow]);
++    const projectedRow = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions)
++      .flatMap((group) => group.runs).find((run) => run.rootRunId === 'org-confirmed')!;
++    const original = projectedRow(); // The visible projection must exist BEFORE Stop.
++    expect(original.isActive).toBe(true);
+     const pending = store.refreshAgentOrgHistory();
+     await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
+     store.applyAgentOrgActivity('org-confirmed', false);
+-    await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable'));
+-    resolveOlder({ data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed' })] }, errors: [] });
+-    await pending;
+-    expect(store.agentOrgHistory).toMatchObject([{ rootRunId: 'org-confirmed', isActive: false, summary: 'Do not alter title' }]);
++    expect(projectedRow()).toEqual({ ...original, isActive: false });
++    await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(2));
++    const releaseOld = async () => {
++      resolveOlder({ data: { listCollaborationRootHistory: [activeRow] }, errors: [] });
++      await pending;
++      expect(projectedRow()).toEqual({ ...original, isActive: false });
++    };
++    const failFresh = async () => {
++      rejectFresh(new Error('fresh history unavailable'));
++      await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable'));
++      expect(projectedRow()).toEqual({ ...original, isActive: false });
++    };
++    if (order === 'old-first') { await releaseOld(); await failFresh(); }
++    else { await failFresh(); await releaseOld(); }
++    expect(store.agentOrgHistory).toEqual([{ ...original, isActive: false }]);
++    expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable');
+   });
+ 
+   it('shares AgentOrg request generation between full history loads and focused refreshes', async () => {
+diff --git a/autobyteus-web/stores/runHistoryStore.ts b/autobyteus-web/stores/runHistoryStore.ts
+index a5609f95d..347c84f10 100644
+--- a/autobyteus-web/stores/runHistoryStore.ts
++++ b/autobyteus-web/stores/runHistoryStore.ts
+@@ -241,6 +241,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
+     applyAgentOrgActivity(orgRunId: string, isActive: boolean): void {
+       this.agentOrgRequestGeneration += 1;
+       this.agentOrgHistory = this.agentOrgHistory.map((run) => run.rootRunId === orgRunId ? { ...run, isActive } : run);
++      // Publish the confirmed fact to already-rendered rows before refresh I/O.
++      this.refreshRunNavigationTopology('agent-org-activity');
+       void this.refreshAgentOrgHistory();
+     },
+ 

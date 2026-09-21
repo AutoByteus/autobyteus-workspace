@@ -1,0 +1,42 @@
+[
+  {
+    "pid": 85989,
+    "ppid": 1,
+    "command": "/bin/bash -lc BACKEND_NODE_BASE_URL=http://127.0.0.1:50461 pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 50462 > tickets/in-progress/tolerant-flat-team-package-reading/validation/api-runtime/frontend.log 2>&1"
+  },
+  {
+    "pid": 86292,
+    "ppid": 85989,
+    "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 50462"
+  },
+  {
+    "pid": 86293,
+    "ppid": 86292,
+    "command": "node ./node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 50462"
+  },
+  {
+    "pid": 86302,
+    "ppid": 86293,
+    "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+  },
+  {
+    "pid": 86303,
+    "ppid": 86293,
+    "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50462"
+  },
+  {
+    "pid": 86304,
+    "ppid": 86293,
+    "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50462"
+  },
+  {
+    "pid": 95830,
+    "ppid": 94732,
+    "command": "node tickets/in-progress/tolerant-flat-team-package-reading/validation/api-runtime/server-complete.mjs complete-second"
+  },
+  {
+    "pid": 96133,
+    "ppid": 95830,
+    "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 50461 --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001"
+  }
+]

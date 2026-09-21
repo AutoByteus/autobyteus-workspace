@@ -1,0 +1,72 @@
+{
+  "ticket": "ORG-HISTORY-LATENCY-20260917-001",
+  "revision": "API-REV-002",
+  "coldRun": 3,
+  "backendPid": 9296,
+  "readiness": {
+    "rebuildCalls": 1,
+    "awaitReadyCalls": 2,
+    "startupRebuildCaller": [
+      "at Module.startConfiguredServer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-server-ts/dist/server-runtime.js:179:71)",
+      "at async startServer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency-reopen/autobyteus-server-ts/dist/app.js:66:5)"
+    ],
+    "rebuildStartAt": "2026-09-18T04:42:48.613Z",
+    "rebuildEndAt": "2026-09-18T04:42:48.621Z",
+    "admittedTeams": 1,
+    "admittedOrgs": 1,
+    "awaitReadyInitializedBefore": [
+      true
+    ],
+    "postStartupRebuildCalls": 0
+  },
+  "transport": {
+    "workspace": {
+      "requestId": 13,
+      "requestEpochMs": 1789706598828,
+      "backendReadyEpochMs": 1789706598832,
+      "backendLatencyMs": 4,
+      "status": 200,
+      "bytes": 2893,
+      "releasedEpochMs": 1789706598833,
+      "requestToReleaseMs": 5
+    },
+    "collaborationRoots": {
+      "requestId": 14,
+      "requestEpochMs": 1789706598837,
+      "backendReadyEpochMs": 1789706598859,
+      "backendLatencyMs": 22,
+      "status": 200,
+      "bytes": 2620,
+      "releasedEpochMs": 1789706598859,
+      "requestToReleaseMs": 22
+    }
+  },
+  "browser": {
+    "navigationStartEpochMs": 1789706593709,
+    "rowsObservedEpochMs": 1789706599897,
+    "navigationToVisibleRowsUpperBoundMs": 6188,
+    "axChecks": 16,
+    "visible": [
+      "Latency Agent",
+      "Latency Team",
+      "Latency Org",
+      "LATENCY-AGENT-R2",
+      "LATENCY-TEAM-R2",
+      "LATENCY-ORG-R2"
+    ],
+    "statuses": [
+      "standalone Agent Offline",
+      "standalone Team lead Offline",
+      "AgentOrg direct guide Offline",
+      "AgentOrg mounted Team Offline",
+      "AgentOrg mounted lead Offline"
+    ]
+  },
+  "providerMetadataLines": 0,
+  "preservation": {
+    "comparedFileCount": 22,
+    "changedFiles": [],
+    "allHashesIdentical": true
+  },
+  "serverListenAt": "2026-09-18T04:42:48.773Z"
+}

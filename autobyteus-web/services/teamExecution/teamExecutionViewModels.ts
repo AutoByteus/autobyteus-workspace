@@ -8,7 +8,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import type { TeamTokenUsageDetails } from '~/types/tokenUsageMeter';
-import type { TeamExecutionTaskPresentation } from './taskDelegationPresentation';
+import type { CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation';
 
 export type TeamExecutionRowKind =
   | 'configured_team'
@@ -28,7 +28,7 @@ export interface TeamExecutionNavigationRow {
   readonly parentKey: string | null;
   readonly agentRunId: string | null;
   readonly teamRunId: string | null;
-  readonly task: TeamExecutionTaskPresentation | null;
+  readonly task: CollaborationTaskHeadingPresentation | null;
   readonly currentStatus: AgentStatus | null;
   readonly focusable: boolean;
   readonly expandable: boolean;

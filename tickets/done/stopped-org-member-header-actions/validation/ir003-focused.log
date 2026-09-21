@@ -1,0 +1,123 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts components/workspace/running/__tests__/RunningAgentsPanel.spec.ts components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningAgentsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningAgentsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts (10 tests) 24ms
+ ✓ components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts (2 tests) 16ms
+ ✓ components/workspace/running/__tests__/RunningAgentsPanel.spec.ts (4 tests) 34ms
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders exact focused Agent identity, status, avatar, and composer target from the current view
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders a different exact focused AgentRun without coordinator substitution
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders focused task lifecycle and execution status over an authoritative empty projection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders persistent actionable guidance while the selected Team stream requires recovery
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > opens selected Team configuration from the header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > seeds an editable new Team configuration without sharing nested LLM config state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > keeps configured Team placement non-focusable while retaining its exact Agent child focus
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (8 tests) 89ms
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header coalesces clicks and preserves screen/draft on failure; same action retries
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after unmount
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after replacement
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts (11 tests) 249ms
+
+ Test Files  5 passed (5)
+      Tests  35 passed (35)
+   Start at  04:47:31
+   Duration  5.84s (transform 3.21s, setup 22.63s, collect 1.60s, tests 412ms, environment 818ms, prepare 670ms)
+

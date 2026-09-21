@@ -1,0 +1,6 @@
+  571    59 Sl   node /usr/bin/codex app-server
+  578   571 Sl   /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/bin/codex app-server
+ 1750   578 Ss+  /bin/bash -lc set -o pipefail DATA='/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data' set -a; source "$DATA/.env"; set +a exec node dist/app.js --data-dir "$DATA" --host 127.0.0.1 --port 8417 2>&1 | tee ../tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-live.log
+ 1753  1750 Sl+  node dist/app.js --data-dir /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data --host 127.0.0.1 --port 8417
+ 2324  1753 Sl+  node /usr/bin/codex app-server
+ 2331  2324 Sl+  /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/bin/codex app-server

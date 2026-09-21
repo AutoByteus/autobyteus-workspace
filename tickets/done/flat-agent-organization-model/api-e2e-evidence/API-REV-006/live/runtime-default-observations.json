@@ -1,0 +1,7 @@
+{
+  "target":"/support-team/specialist",
+  "committedBeforeFailure":{"runtime":"claude_agent_sdk","model":"default"},
+  "failedRequest":{"requestedRuntime":"autobyteus","operation":"GetProviderModelCatalogSnapshots","error":"Failed to fetch","selectedValueVisible":"autobyteus","retryVisible":true,"runDisabled":true},
+  "abandonment":{"selected":"Global default","storedValue":"","errorVisible":false,"retryVisible":false,"runEnabled":true},
+  "launch":{"operation":"CreateAgentOrgRun","teamOverrides":[],"agentOverrides":[],"staleAutobyteusPresent":false,"staleClaudePresent":false,"orgRunId":"aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9","wholeOrgActive":true}
+}

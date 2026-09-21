@@ -1,0 +1,3530 @@
+{
+  "events": [
+    {
+      "label": "team-history-after-process-restart",
+      "at": "2026-09-06T02:27:38.801Z",
+      "url": "http://127.0.0.1:3592/workspace/",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nA\naorg_e2e_lead\nOffline\nYou\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-LIVE-001\nTeam live validation acknowledged successfully.\n\nYou\nReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV10-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV10-TEAM-RESUMED-002\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV13-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV13-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+      "selected": [
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC ViewerMessages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ddddddddddddddddddddd",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-row",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-section",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-header",
+          "text": "Messages0 Messages",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-messages-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks0 tasks",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "No delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-empty",
+          "text": "No delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "APIREV13-TEAM-POSTRESTART-001",
+      "at": "2026-09-06T02:27:47.449Z",
+      "url": "http://127.0.0.1:3592/workspace/",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\nnow\nA\naorg_e2e_lead\nnow\nA\naorg_e2e_analyst\nnow\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nA\naorg_e2e_lead\nRunning\nYou\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-LIVE-001\nTeam live validation acknowledged successfully.\n\nYou\nReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV10-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV10-TEAM-RESUMED-002\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV13-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV13-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV13-TEAM-POSTRESTART-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV13-TEAM-POSTRESTART-001\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+      "selected": [
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_leadnowAgent · aorg_e2e_lead · /aorg_e2e_lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...nowAaorg_e2e_leadnowAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analystnowAgent · aorg_e2",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...nowAaorg_e2e_leadnowAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analystnowAgent · aorg_e2",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...nowAaorg_e2e_leadnowAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analystnowAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIRE",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "true"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "true"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_leadnowAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analystnowAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_leadnowAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analystnowAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "Aaorg_e2e_leadRunningYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "Aaorg_e2e_leadRunningYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "Aaorg_e2e_leadRunningYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "Aaorg_e2e_leadRunningYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC ViewerMessages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ddddddddddddddddddddd",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-row",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-section",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-header",
+          "text": "Messages0 Messages",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-messages-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks0 tasks",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "No delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-empty",
+          "text": "No delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "team-restopped-after-process-restart",
+      "at": "2026-09-06T02:27:47.667Z",
+      "url": "http://127.0.0.1:3592/workspace/",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nA\naorg_e2e_lead\nOffline\nYou\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-LIVE-001\nTeam live validation acknowledged successfully.\n\nYou\nReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV10-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV10-TEAM-RESUMED-002\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV13-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV13-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nYou\nReturn exactly APIREV13-TEAM-POSTRESTART-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV13-TEAM-POSTRESTART-001\nTeam postrestart validation acknowledged successfully.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+      "selected": [
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "Aaorg_e2e_leadOfflineYouReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.Aaorg_e2e_leadAPIREV8-TEAM-LIVE-001 Team live validation acknowledged successfully. YouReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledg",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC ViewerMessages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ddddddddddddddddddddd",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-row",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-section",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-header",
+          "text": "Messages0 Messages",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-messages-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks0 tasksNo delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks0 tasks",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "No delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-empty",
+          "text": "No delegated tasks yetDelegated work appears here from saved task records.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "org-direct-restored-after-process-restart",
+      "at": "2026-09-06T02:27:48.540Z",
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e concierge - C413\nIdle\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-001\nConfirmed, direct request was received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-RESUMED-002\nConfirmed, resumed direct request received.\n\nYou\nReturn exactly APIREV13-ORG-DIRECT-CONTINUE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV13-ORG-DIRECT-CONTINUE-001\nConfirmed, direct continuation request received.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 2, 2026, 9:38:04 PM · 6118 characters\nAVAILABLE",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge"
+        },
+        {
+          "test": null,
+          "text": "Activity"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 team",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AEaorg e2e concierge - C413IdleYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AEaorg e2e concierge - C413IdleYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AEaorg e2e concierge - C413IdleYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AEaorg e2e concierge - C413IdleYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AEaorg e2e concierge - C413IdleYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTerminalActivityTokenArtifactsVNC ViewerNo file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #00000",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-files-panel",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "activity-feed-scroll-container",
+          "text": "System instructionsAutoByteus-supplied · Codex baseInstructionsCaptured Sep 2, 2026, 9:38:04 PM · 6118 charactersAvailableAutoByteus-supplied · Codex baseInstructions · Captured Sep 2, 2026, 9:38:04 PM · 6118 characters## Agent Identity - Name: AORG E2E Concierge - Description: Receives deterministi",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "APIREV13-ORG-POSTRESTART-001",
+      "at": "2026-09-06T02:28:02.698Z",
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e concierge - C413\nRunning\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-001\nConfirmed, direct request was received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-RESUMED-002\nConfirmed, resumed direct request received.\n\nYou\nReturn exactly APIREV13-ORG-DIRECT-CONTINUE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV13-ORG-DIRECT-CONTINUE-001\nConfirmed, direct continuation request received.\n\nYou\nReturn exactly APIREV13-ORG-POSTRESTART-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV13-ORG-POSTRESTART-001\nConfirmed, post-restart\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 2, 2026, 9:38:04 PM · 6118 characters\nAVAILABLE",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge"
+        },
+        {
+          "test": null,
+          "text": "Activity"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 team",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AEaorg e2e concierge - C413RunningYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first l",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AEaorg e2e concierge - C413RunningYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first l",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AEaorg e2e concierge - C413RunningYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first l",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AEaorg e2e concierge - C413RunningYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first l",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AEaorg e2e concierge - C413RunningYouReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e conciergeAPIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. YouReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first l",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTerminalActivityTokenArtifactsVNC ViewerNo file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #00000",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-files-panel",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "activity-feed-scroll-container",
+          "text": "System instructionsAutoByteus-supplied · Codex baseInstructionsCaptured Sep 2, 2026, 9:38:04 PM · 6118 charactersAvailableAutoByteus-supplied · Codex baseInstructions · Captured Sep 2, 2026, 9:38:04 PM · 6118 characters## Agent Identity - Name: AORG E2E Concierge - Description: Receives deterministi",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "org-mounted-history-after-process-restart",
+      "at": "2026-09-06T02:28:03.022Z",
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e lead\nIdle\nYou\nReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-LIVE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. After delegate_task succeeds, reply exactly APIREV8-TASK-DELEGATED-001.\nAE\naorg e2e lead\nThinking\ndelegate_task\n\nAPIREV8-TASK-DELEGATED-001\n\nYou\nTask task_9df98cdc92da40e4ac557daceedbc99a result submitted:\nAPIREV8-TASK-PAYLOAD-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_9df98cdc92da40e4ac557daceedbc99a with decision accept. After the tool succeeds, reply exactly APIREV8-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV8-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV8-ORG-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-RESUMED-001\nAcknowledged, resumed, and ready now.\n\nYou\nReturn exactly APIREV10-ORG-TEAM-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV10-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\n\nAPIREV10-TASK-DELEGATED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-INITIAL-001\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision request_revision and feedback: Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV10-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-REVISED-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision accept. After the tool succeeds, reply exactly APIREV10-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV10-ORG-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-RESUMED-002\nAcknowledged and confirmed as requested.\n\nYou\nReturn exactly APIREV13-ORG-MOUNTED-CONTINUE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV13-ORG-MOUNTED-CONTINUE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV13-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\n\nAPIREV13-TASK-DELEGATED-001\n\nYou\nUse review_task_result on task task_result with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nThinking\nreview_task_result\n\nreview_task_result failed: task task_result was not found.\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-INITIAL-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-REVISED-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision accept. After the tool succeeds, reply exactly APIREV13-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-ACCEPTED-001\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n3 tasks\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.\nAccepted\nUpdated 09:39 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n09:39 PM\n\nAPIREV8-TASK-PAYLOAD-001\n\nResult 1 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n09:39 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:35 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:30 PM\n\nAPIREV10-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:34 PM\n\nSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:34 PM\n\nAPIREV10-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:35 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:20 AM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:15 AM\n\nAPIREV13-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:19 AM\n\nSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:19 AM\n\nAPIREV13-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:20 AM\n\nResult accepted.\n\nTask assigned\nAccepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\nSep 2, 09:39 PM\n\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AEaorg e2e lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AEaorg e2e lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+          "text": "AEaorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AEaorg e2e leadIdleYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AEaorg e2e leadIdleYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AEaorg e2e leadIdleYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AEaorg e2e leadIdleYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AEaorg e2e leadIdleYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC ViewerNo file selectedSelect a file from the explorer to view or edit its content.Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks3 tasksReturn exactly APIREV8-TASK-PAYLOAD-001 as the form",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks3 tasksReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_r",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-files-panel",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-section",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-header",
+          "text": "Messages0 Messages",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "team-messages-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks3 tasksReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks3 tasks",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-split",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedaorg_e2e_lead → aorg_e2e_analyst09:39 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV8-TASK-PAYLOAD-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 1 acceptedaorg_e2e_lead → aorg_e2e_analyst09:39 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 1 acceptedaorg_e2e_lead → aorg_e2e_analyst09:39 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 1 accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:35 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:35 PMaorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:30 PMAPIREV10-TASK-INITIAL-001Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:34 PMSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:34 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:30 PMAPIREV10-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:30 PMAPIREV10-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:34 PMSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:34 PMSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:34 PMAPIREV10-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:34 PMAPIREV10-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:35 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:35 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:20 AMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:20 AMaorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:15 AMAPIREV13-TASK-INITIAL-001Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:19 AMSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:19 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:15 AMAPIREV13-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:15 AMAPIREV13-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:19 AMSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:19 AMSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:19 AMAPIREV13-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:19 AMAPIREV13-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:20 AMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:20 AMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-detail-pane",
+          "text": "Task assigned Acceptedaorg_e2e_lead → aorg_e2e_analystSep 2, 09:39 PMReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-detail",
+          "text": "Task assigned Acceptedaorg_e2e_lead → aorg_e2e_analystSep 2, 09:39 PMReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-title",
+          "text": "Task assigned",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-detail-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-time",
+          "text": "Sep 2, 09:39 PM",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-task-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "APIREV13-ORG-MOUNTED-POSTRESTART-001",
+      "at": "2026-09-06T02:28:08.917Z",
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e lead\nRunning\nYou\nReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-LIVE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. After delegate_task succeeds, reply exactly APIREV8-TASK-DELEGATED-001.\nAE\naorg e2e lead\nThinking\ndelegate_task\n\nAPIREV8-TASK-DELEGATED-001\n\nYou\nTask task_9df98cdc92da40e4ac557daceedbc99a result submitted:\nAPIREV8-TASK-PAYLOAD-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_9df98cdc92da40e4ac557daceedbc99a with decision accept. After the tool succeeds, reply exactly APIREV8-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV8-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV8-ORG-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-RESUMED-001\nAcknowledged, resumed, and ready now.\n\nYou\nReturn exactly APIREV10-ORG-TEAM-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV10-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\n\nAPIREV10-TASK-DELEGATED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-INITIAL-001\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision request_revision and feedback: Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV10-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-REVISED-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision accept. After the tool succeeds, reply exactly APIREV10-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV10-ORG-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-RESUMED-002\nAcknowledged and confirmed as requested.\n\nYou\nReturn exactly APIREV13-ORG-MOUNTED-CONTINUE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV13-ORG-MOUNTED-CONTINUE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV13-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\n\nAPIREV13-TASK-DELEGATED-001\n\nYou\nUse review_task_result on task task_result with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nThinking\nreview_task_result\n\nreview_task_result failed: task task_result was not found.\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-INITIAL-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-REVISED-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision accept. After the tool succeeds, reply exactly APIREV13-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV13-ORG-MOUNTED-POSTRESTART-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV13-ORG-MOUNTED-POSTRESTART-001\nAcknowledged\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n3 tasks\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.\nAccepted\nUpdated 09:39 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n09:39 PM\n\nAPIREV8-TASK-PAYLOAD-001\n\nResult 1 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n09:39 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:35 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:30 PM\n\nAPIREV10-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:34 PM\n\nSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:34 PM\n\nAPIREV10-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:35 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:20 AM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:15 AM\n\nAPIREV13-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:19 AM\n\nSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:19 AM\n\nAPIREV13-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:20 AM\n\nResult accepted.\n\nTask assigned\nAccepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\nSep 2, 09:39 PM\n\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AEaorg e2e lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AEaorg e2e lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+          "text": "AEaorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AEaorg e2e leadRunningYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AEaorg e2e leadRunningYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AEaorg e2e leadRunningYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AEaorg e2e leadRunningYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AEaorg e2e leadRunningYouReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.AEaorg e2e leadAPIREV8-ORG-TEAM-LIVE-001 Acknowledged and confirmed as requested. YouUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC ViewerNo file selectedSelect a file from the explorer to view or edit its content.Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks3 tasksReturn exactly APIREV8-TASK-PAYLOAD-001 as the form",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTeamTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.Tasks3 tasksReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_r",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-files-panel",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-section",
+          "text": "Messages0 MessagesNo team messages yetAccepted inter-agent messages will appear here with their reference files.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-messages-header",
+          "text": "Messages0 Messages",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "team-messages-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks3 tasksReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks3 tasks",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-split",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedao",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. AcceptedUpdated 09:39 PMaorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001Result 1 acceptedaorg_e2e_lead → aorg_e2e_analyst09:39 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead09:39 PMAPIREV8-TASK-PAYLOAD-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV8-TASK-PAYLOAD-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 1 acceptedaorg_e2e_lead → aorg_e2e_analyst09:39 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 1 acceptedaorg_e2e_lead → aorg_e2e_analyst09:39 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 1 accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:35 PMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:35 PMaorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:30 PMAPIREV10-TASK-INITIAL-001Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:34 PMSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:34 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:30 PMAPIREV10-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:30 PMAPIREV10-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:34 PMSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:34 PMSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:34 PMAPIREV10-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:34 PMAPIREV10-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:35 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:35 PMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:20 AMaorg_e2e_lead → aorg_e2e_analystResult submitted · Result 1aorg_e2e_analyst → aor",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. AcceptedUpdated 02:20 AMaorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:15 AMAPIREV13-TASK-INITIAL-001Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:19 AMSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:19 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:15 AMAPIREV13-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1aorg_e2e_analyst → aorg_e2e_lead02:15 AMAPIREV13-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-INITIAL-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:19 AMSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1aorg_e2e_lead → aorg_e2e_analyst02:19 AMSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:19 AMAPIREV13-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2aorg_e2e_analyst → aorg_e2e_lead02:19 AMAPIREV13-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-REVISED-001",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:20 AMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 acceptedaorg_e2e_lead → aorg_e2e_analyst02:20 AMResult accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-delegated-tasks-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-detail-pane",
+          "text": "Task assigned Acceptedaorg_e2e_lead → aorg_e2e_analystSep 2, 09:39 PMReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-detail",
+          "text": "Task assigned Acceptedaorg_e2e_lead → aorg_e2e_analystSep 2, 09:39 PMReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-title",
+          "text": "Task assigned",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-detail-status",
+          "text": "Accepted",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-item-time",
+          "text": "Sep 2, 09:39 PM",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "delegated-task-task-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    },
+    {
+      "label": "final-org-terminal-after-restart-continuations",
+      "at": "2026-09-06T02:28:09.282Z",
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nStopped Agent Org\n\nSelect a member from the historical run in the sidebar to continue from its saved state.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo workspaces available. Add a workspace to see files.\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": null,
+          "text": "Files"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_a",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 ",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本APIREV8 本地化 Team β(1)",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null,
+          "active": "false"
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "Agent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AEaorg e2e concierge",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "true",
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AEaorg e2e lead",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+          "text": "AEaorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "active": null
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "Stopped Agent OrgSelect a member from the historical run in the sidebar to continue from its saved state.FilesTerminalActivityTokenArtifactsVNC ViewerNo workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "Stopped Agent OrgSelect a member from the historical run in the sidebar to continue from its saved state.FilesTerminalActivityTokenArtifactsVNC ViewerNo workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "Stopped Agent OrgSelect a member from the historical run in the sidebar to continue from its saved state.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "Stopped Agent OrgSelect a member from the historical run in the sidebar to continue from its saved state.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "Stopped Agent OrgSelect a member from the historical run in the sidebar to continue from its saved state.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "agent-org-stopped-history",
+          "text": "Stopped Agent OrgSelect a member from the historical run in the sidebar to continue from its saved state.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "FilesTerminalActivityTokenArtifactsVNC ViewerNo workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inlin",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "No workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-files-panel",
+          "text": "No workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null,
+          "active": null
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

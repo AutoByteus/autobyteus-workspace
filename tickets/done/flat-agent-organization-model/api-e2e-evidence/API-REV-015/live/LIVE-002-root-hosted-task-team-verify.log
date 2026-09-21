@@ -1,0 +1,27 @@
+{
+  "statusCount": 11,
+  "pairs": [
+    "/concierge|aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+    "/research-team/lead|aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+    "/research-team/analyst|aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+    "/research-team/verifier|aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+    "/support-team/dispatcher|aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+    "/support-team/specialist|aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+    "/support-team/dispatcher|aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+    "/support-team/specialist|aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+    "/research-team/lead|aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+    "/research-team/analyst|aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+    "/research-team/verifier|aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23"
+  ],
+  "assertions": {
+    "snapshotAvailable": true,
+    "exactRoot": true,
+    "statusCountEleven": true,
+    "uniquePairs": true,
+    "uniqueRunIds": true,
+    "rootTaskTeamSnapshot": true,
+    "rootTaskTeamTree": true,
+    "noNotice": true,
+    "noOverflow": true
+  }
+}

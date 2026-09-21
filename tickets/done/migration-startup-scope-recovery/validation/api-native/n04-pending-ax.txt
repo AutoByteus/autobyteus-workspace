@@ -1,0 +1,22 @@
+Window: "Electron", App: Electron.
+0 Standardfenster Electron, Secondary Actions: Raise
+	1 container Electron
+		2 container
+			3 HTML-Inhalte 127.0.0.1:50572/
+				4 container
+					5 Kopfzeile Starting AutoByteus..., Value: 2
+						6 Text Starting AutoByteus...
+					7 Text Connecting to Agent Server...
+					8 Text Initial server startup may take a moment. Please be patient...
+					9 Button Show technical details
+	10 Schließen-Taste
+	11 Taste „Vollbildmodus“ Help: mit dieser Taste wird auch das Fenster vergrößert, Secondary Actions: Fenster zoomen
+	12 Taste zum Minimieren
+13 menu bar
+	14 Electron
+	15 File
+	16 Edit
+	17 View
+	18 Window
+
+The focused UI element is 3 HTML-Inhalte 127.0.0.1:50572/

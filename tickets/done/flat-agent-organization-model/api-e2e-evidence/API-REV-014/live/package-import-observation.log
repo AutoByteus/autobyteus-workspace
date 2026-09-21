@@ -1,0 +1,24 @@
+registry_after_import:
+[
+  {
+    "packageId": "local:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fflat-agent-organization-model%2Ftickets%2Fin-progress%2Fflat-agent-organization-model%2Fapi-e2e-fixtures%2Faorg-api-rev-002-agent-package",
+    "rootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "sourceKind": "LOCAL_PATH",
+    "source": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "normalizedSource": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "managedInstallPath": null,
+    "sourceMetadata": null,
+    "createdAt": "2026-09-06T11:24:19.783Z",
+    "updatedAt": "2026-09-06T11:24:19.783Z"
+  }
+]
+server_paths:
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db"
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default
+[2026-09-06T11:23:33.600Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8594
+ports:
+LISTEN 0      5          127.0.0.1:3594       0.0.0.0:*    users:(("python3",pid=49651,fd=3))
+LISTEN 0      511        127.0.0.1:8594       0.0.0.0:*    users:(("node",pid=49540,fd=31))  
+shared DB current hash only (shared user app may change it; isolated server log above proves API-REV-014 uses its copy):
+bc6b4c8225680926e244e05c54e009bb74760b77f04bef9e09addee5d962eb33  /home/autobyteus/data/db/production.db

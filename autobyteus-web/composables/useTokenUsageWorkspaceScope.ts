@@ -1,14 +1,9 @@
 import { computed, reactive, watch } from 'vue';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
-import {
-  buildTokenUsageTeamMemberIdentities,
-  resolveFocusedTeamAgentRunId,
-  type TokenUsageTeamMemberIdentity,
-} from '~/composables/tokenUsageTeamMemberRows';
+import type { TokenUsageTeamMemberIdentity } from '~/composables/tokenUsageTeamMemberRows';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
+import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 
 export interface TokenUsageTeamMemberRow {
   agentRunId: string;
@@ -23,204 +18,161 @@ export interface TokenUsageTeamMemberRow {
 const fetchErrorMessage = (error: unknown): string => (
   error instanceof Error ? error.message : String(error || 'Unknown token usage loading error')
 );
-
-const memberFetchKey = (teamRunId: string, agentRunId: string): string => `${teamRunId}\u0000${agentRunId}`;
+const memberKey = (scope: string, agentRunId: string): string => `${scope}\u0000${agentRunId}`;
+const label = (address: string): string =>
+  address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address;
+const hasTeam = (target: ActiveAgentWorkspaceTarget | null): target is Extract<
+  ActiveAgentWorkspaceTarget,
+  { kind: 'standalone_team_member' | 'agent_org_team_member' }
+> => target?.kind === 'standalone_team_member' || target?.kind === 'agent_org_team_member';
+const isOrg = (target: ActiveAgentWorkspaceTarget | null): target is Extract<
+  ActiveAgentWorkspaceTarget,
+  { kind: 'agent_org_direct_agent' | 'agent_org_team_member' }
+> => target?.kind === 'agent_org_direct_agent' || target?.kind === 'agent_org_team_member';
 
 export function useTokenUsageWorkspaceScope() {
-  const selectionStore = useAgentSelectionStore();
-  const activeContextStore = useActiveContextStore();
-  const teamContextsStore = useAgentTeamContextsStore();
-  const meterStore = useTokenUsageMeterStore();
-
-  const runLoadingById = reactive<Record<string, boolean>>({});
-  const runErrorById = reactive<Record<string, string | null>>({});
-  const memberLoadingByKey = reactive<Record<string, boolean>>({});
-  const memberErrorByKey = reactive<Record<string, string | null>>({});
+  const active = useActiveContextStore();
+  const meter = useTokenUsageMeterStore();
+  const loadingByKey = reactive<Record<string, boolean>>({});
+  const errorByKey = reactive<Record<string, string | null>>({});
   const teamTotalLoadingById = reactive<Record<string, boolean>>({});
   const teamTotalErrorById = reactive<Record<string, string | null>>({});
 
-  const isTeamContext = computed(() => selectionStore.selectedType === 'team');
-  const activeTeamContext = computed(() => isTeamContext.value ? teamContextsStore.activeTeamContext : null);
-  const activeTeamRunId = computed(() => activeTeamContext.value?.view.getRootTeamRunId() ?? null);
-  const activeRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? null);
-  const selectedAgentRunId = computed(() => (
-    selectionStore.selectedType === 'agent' ? activeRunId.value : null
-  ));
+  const target = computed(() => active.activeWorkspaceTarget);
+  const isTeamContext = computed(() => hasTeam(target.value));
+  const isStandaloneTeam = computed(() => target.value?.kind === 'standalone_team_member');
+  const activeTeamRunId = computed(() => isStandaloneTeam.value && hasTeam(target.value)
+    ? target.value.team.rootRunId
+    : null);
+  const focusedAgentRunId = computed(() => target.value?.context.state.runId ?? null);
+  const scopeKey = computed(() => {
+    const current = target.value;
+    if (!current) return '';
+    if (isOrg(current)) return `org:${current.root.orgRunId}`;
+    if (current.kind === 'standalone_team_member') return `team:${current.team.rootRunId}`;
+    return 'agent';
+  });
 
-  const focusedAgentRunId = computed(() => resolveFocusedTeamAgentRunId(activeTeamContext.value));
-
-  const teamMemberIdentities = computed<TokenUsageTeamMemberIdentity[]>(() => buildTokenUsageTeamMemberIdentities({
-    team: activeTeamContext.value,
-    focusedAgentRunId: focusedAgentRunId.value,
-  }));
-
-  const teamMemberIdentityKey = computed(() => teamMemberIdentities.value
-    .map((identity) => [
-      activeTeamRunId.value || '',
-      identity.agentRunId,
-      identity.isFocused ? 'focused' : '',
-    ].join(':'))
+  const teamMemberIdentities = computed<TokenUsageTeamMemberIdentity[]>(() => {
+    const current = target.value;
+    if (!hasTeam(current)) return [];
+    return current.team.listMembers().map((member) => ({
+      agentRunId: member.agentRunId,
+      memberAddress: member.address,
+      displayName: member.context.config.agentDefinitionName || label(member.address),
+      isFocused: member.agentRunId === current.context.state.runId,
+    }));
+  });
+  const teamIdentityKey = computed(() => teamMemberIdentities.value
+    .map((identity) => `${scopeKey.value}:${identity.agentRunId}:${identity.isFocused ? 'focused' : ''}`)
     .join('|'));
-
-  const getMemberSummary = (identity: TokenUsageTeamMemberIdentity): TokenUsageRunSummary | null => {
-    const teamRunId = activeTeamRunId.value;
-    return teamRunId
-      ? meterStore.getTeamMemberSummary({ teamRunId, agentRunId: identity.agentRunId })
-      : null;
+  const summaryFor = (identity: TokenUsageTeamMemberIdentity): TokenUsageRunSummary | null => {
+    const current = target.value;
+    if (current?.kind === 'standalone_team_member') {
+      return meter.getTeamMemberSummary({
+        teamRunId: current.team.rootRunId,
+        agentRunId: identity.agentRunId,
+      });
+    }
+    return meter.getRunSummary(identity.agentRunId);
   };
-
   const teamRows = computed<TokenUsageTeamMemberRow[]>(() => teamMemberIdentities.value.map((identity) => {
-    const key = memberFetchKey(activeTeamRunId.value ?? '', identity.agentRunId);
+    const key = memberKey(scopeKey.value, identity.agentRunId);
     return {
       ...identity,
-      summary: getMemberSummary(identity),
-      loading: Boolean(memberLoadingByKey[key]),
-      error: memberErrorByKey[key] ?? null,
+      summary: summaryFor(identity),
+      loading: Boolean(loadingByKey[key]),
+      error: errorByKey[key] ?? null,
     };
   }));
-
   const focusedTeamRow = computed(() => teamRows.value.find((row) => row.isFocused) ?? null);
   const primarySummary = computed<TokenUsageRunSummary | null>(() => {
-    if (selectionStore.selectedType === 'agent') {
-      return meterStore.getRunSummary(selectedAgentRunId.value);
-    }
-    if (selectionStore.selectedType === 'team') {
-      return focusedTeamRow.value?.summary ?? null;
-    }
-    return null;
+    const current = target.value;
+    if (!current) return null;
+    return hasTeam(current) ? focusedTeamRow.value?.summary ?? null : meter.getRunSummary(current.context.state.runId);
   });
+  const primaryKey = computed(() => focusedAgentRunId.value
+    ? memberKey(scopeKey.value, focusedAgentRunId.value)
+    : '');
+  const primaryLoading = computed(() => Boolean(primaryKey.value
+    && loadingByKey[primaryKey.value]
+    && !primarySummary.value));
+  const primaryError = computed(() => primaryKey.value ? errorByKey[primaryKey.value] ?? null : null);
+  const primaryUnavailable = computed(() => Boolean(isTeamContext.value && !focusedTeamRow.value));
 
-  const primaryLoading = computed(() => {
-    if (selectionStore.selectedType === 'agent') {
-      const runId = selectedAgentRunId.value;
-      return Boolean(runId && runLoadingById[runId] && !primarySummary.value);
+  const hydrateIdentity = async (identity: TokenUsageTeamMemberIdentity): Promise<void> => {
+    const current = target.value;
+    if (!current) return;
+    const key = memberKey(scopeKey.value, identity.agentRunId);
+    if (loadingByKey[key]) return;
+    const summary = summaryFor(identity);
+    if (summary) return;
+    loadingByKey[key] = true;
+    errorByKey[key] = null;
+    try {
+      if (current.kind === 'standalone_team_member') {
+        await meter.fetchTeamMemberSummary({
+          teamRunId: current.team.rootRunId,
+          agentRunId: identity.agentRunId,
+        });
+      } else if (isOrg(current)) {
+        await meter.fetchAgentOrgMemberSummary({
+          orgRunId: current.root.orgRunId,
+          memberAddress: identity.memberAddress,
+          agentRunId: identity.agentRunId,
+        });
+      } else {
+        await meter.fetchAgentRunSummary(identity.agentRunId);
+      }
+    } catch (error) {
+      errorByKey[key] = fetchErrorMessage(error);
+    } finally {
+      loadingByKey[key] = false;
     }
-    if (selectionStore.selectedType === 'team') {
-      const row = focusedTeamRow.value;
-      return Boolean(row && row.loading && !row.summary);
-    }
-    return false;
+  };
+
+  const directIdentity = computed<TokenUsageTeamMemberIdentity | null>(() => {
+    const current = target.value;
+    if (!current || hasTeam(current)) return null;
+    return {
+      agentRunId: current.context.state.runId,
+      memberAddress: current.kind === 'agent_org_direct_agent' ? current.address : '/',
+      displayName: current.context.config.agentDefinitionName,
+      isFocused: true,
+    };
   });
-
-  const primaryError = computed(() => {
-    if (selectionStore.selectedType === 'agent') {
-      const runId = selectedAgentRunId.value;
-      return runId ? runErrorById[runId] ?? null : null;
-    }
-    if (selectionStore.selectedType === 'team') {
-      return focusedTeamRow.value?.error ?? null;
-    }
-    return null;
-  });
-
-  const primaryUnavailable = computed(() => Boolean(
-    selectionStore.selectedType === 'team' &&
-    activeTeamRunId.value &&
-    !focusedTeamRow.value,
-  ));
+  watch([directIdentity, scopeKey], ([identity]) => { if (identity) void hydrateIdentity(identity); }, { immediate: true });
+  watch(teamIdentityKey, () => {
+    for (const identity of teamMemberIdentities.value) void hydrateIdentity(identity);
+  }, { immediate: true });
 
   const teamTotalSummary = computed<TokenUsageRunSummary | null>(() => (
-    isTeamContext.value ? meterStore.getTeamSummary(activeTeamRunId.value) : null
+    activeTeamRunId.value ? meter.getTeamSummary(activeTeamRunId.value) : null
   ));
   const teamTotalLoading = computed(() => Boolean(
     activeTeamRunId.value && teamTotalLoadingById[activeTeamRunId.value],
   ));
-  const teamTotalError = computed(() => (
-    activeTeamRunId.value ? teamTotalErrorById[activeTeamRunId.value] ?? null : null
-  ));
-
-  const hydrateAgentRunSummary = async (runId: string | null | undefined): Promise<void> => {
-    const normalizedRunId = runId?.trim() || '';
-    if (
-      !normalizedRunId ||
-      runLoadingById[normalizedRunId] ||
-      !meterStore.needsAgentRunSummaryHydration(normalizedRunId)
-    ) {
-      return;
-    }
-
-    runLoadingById[normalizedRunId] = true;
-    runErrorById[normalizedRunId] = null;
-    try {
-      await meterStore.fetchAgentRunSummary(normalizedRunId);
-    } catch (error) {
-      runErrorById[normalizedRunId] = fetchErrorMessage(error);
-    } finally {
-      runLoadingById[normalizedRunId] = false;
-    }
-  };
-
-  const hydrateTeamMemberSummary = async (identity: TokenUsageTeamMemberIdentity): Promise<void> => {
-    const teamRunId = activeTeamRunId.value;
-    if (!teamRunId) return;
-    const key = memberFetchKey(teamRunId, identity.agentRunId);
-    if (
-      memberLoadingByKey[key] ||
-      !meterStore.needsTeamMemberSummaryHydration({ teamRunId, agentRunId: identity.agentRunId })
-    ) {
-      return;
-    }
-
-    memberLoadingByKey[key] = true;
-    memberErrorByKey[key] = null;
-    let finalError: unknown = null;
-    try {
-      try {
-        await meterStore.fetchTeamMemberSummary({
-          teamRunId,
-          agentRunId: identity.agentRunId,
-        });
-      } catch (error) {
-        finalError = error;
-      }
-      if (finalError) {
-        memberErrorByKey[key] = fetchErrorMessage(finalError);
-      }
-    } finally {
-      memberLoadingByKey[key] = false;
-    }
-  };
-
-  const hydrateTeamTotalSummary = async (teamRunId: string | null | undefined): Promise<void> => {
-    const normalizedTeamRunId = teamRunId?.trim() || '';
-    if (
-      !normalizedTeamRunId ||
-      teamTotalLoadingById[normalizedTeamRunId] ||
-      !meterStore.needsTeamRunSummaryHydration(normalizedTeamRunId)
-    ) {
-      return;
-    }
-
-    teamTotalLoadingById[normalizedTeamRunId] = true;
-    teamTotalErrorById[normalizedTeamRunId] = null;
-    try {
-      await meterStore.fetchTeamRunSummary(normalizedTeamRunId);
-    } catch (error) {
-      teamTotalErrorById[normalizedTeamRunId] = fetchErrorMessage(error);
-    } finally {
-      teamTotalLoadingById[normalizedTeamRunId] = false;
-    }
-  };
-
-  watch(selectedAgentRunId, (runId) => {
-    void hydrateAgentRunSummary(runId);
-  }, { immediate: true });
-
-  watch(teamMemberIdentityKey, () => {
-    for (const identity of teamMemberIdentities.value) {
-      void hydrateTeamMemberSummary(identity);
-    }
-  }, { immediate: true });
-
+  const teamTotalError = computed(() => activeTeamRunId.value
+    ? teamTotalErrorById[activeTeamRunId.value] ?? null
+    : null);
   watch(() => {
     const teamRunId = activeTeamRunId.value;
     return [
       teamRunId,
-      meterStore.needsTeamRunSummaryHydration(teamRunId),
-      meterStore.getTeamRunSummaryHydrationGeneration(teamRunId),
+      meter.needsTeamRunSummaryHydration(teamRunId),
+      meter.getTeamRunSummaryHydrationGeneration(teamRunId),
     ] as const;
-  }, ([teamRunId, needsHydration]) => {
-    if (needsHydration) void hydrateTeamTotalSummary(teamRunId);
+  }, async ([teamRunId, needsHydration]) => {
+    if (!teamRunId || !needsHydration || teamTotalLoadingById[teamRunId]) return;
+    teamTotalLoadingById[teamRunId] = true;
+    teamTotalErrorById[teamRunId] = null;
+    try {
+      await meter.fetchTeamRunSummary(teamRunId);
+    } catch (error) {
+      teamTotalErrorById[teamRunId] = fetchErrorMessage(error);
+    } finally {
+      teamTotalLoadingById[teamRunId] = false;
+    }
   }, { immediate: true });
 
   return {

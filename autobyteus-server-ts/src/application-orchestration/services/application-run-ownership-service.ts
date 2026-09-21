@@ -10,6 +10,7 @@ import type { ApplicationRunBindingStore } from "../stores/application-run-bindi
 import type { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
 import type { ApplicationOrchestrationStartupGate } from "./application-orchestration-startup-gate.js";
 import type { ApplicationTeamExecution } from "../../application-platform/execution/application-execution-scope-contracts.js";
+import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 export type ApplicationRunBindingProvenance = Readonly<{
   applicationId: string;
@@ -166,7 +167,7 @@ export class ApplicationRunOwnershipService implements ApplicationRunOwnershipRe
       );
     }
     await this.dependencies.teamExecution.requireLiveTeamMember({
-      rootTeamRunId: teamProducer.rootTeamRunId,
+      root: createTeamRootExecutionIdentity(teamProducer.rootTeamRunId),
       memberAddress: teamProducer.memberAddress,
       agentRunId,
     });

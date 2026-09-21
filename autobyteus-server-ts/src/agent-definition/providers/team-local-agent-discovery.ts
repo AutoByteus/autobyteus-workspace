@@ -7,7 +7,7 @@ import {
   getCanonicalTeamDefinitionIdFromSourcePaths,
   type ResolvedTeamSourcePaths,
 } from "../../agent-team-definition/providers/team-definition-source-paths.js";
-import { listAllTeamSourcePaths } from "../../agent-team-definition/providers/team-local-team-discovery.js";
+import { listAllTeamSourcePaths } from "../../agent-team-definition/providers/agent-team-definition-source-discovery.js";
 import { parseTeamMd, TeamMdParseError } from "../../agent-team-definition/utils/team-md-parser.js";
 import type {
   AgentDefinition,
@@ -85,27 +85,19 @@ const readInheritedApplicationOwnership = (teamSourcePaths: ResolvedTeamSourcePa
   ownerApplicationId:
     teamSourcePaths.kind === "application_owned"
       ? teamSourcePaths.applicationId
-      : teamSourcePaths.kind === "team_local"
-        ? teamSourcePaths.ownerApplicationId ?? null
-        : null,
+      : null,
   ownerApplicationName:
     teamSourcePaths.kind === "application_owned"
       ? teamSourcePaths.applicationName
-      : teamSourcePaths.kind === "team_local"
-        ? teamSourcePaths.ownerApplicationName ?? null
-        : null,
+      : null,
   ownerPackageId:
     teamSourcePaths.kind === "application_owned"
       ? teamSourcePaths.packageId
-      : teamSourcePaths.kind === "team_local"
-        ? teamSourcePaths.ownerPackageId ?? null
-        : null,
+      : null,
   ownerLocalApplicationId:
     teamSourcePaths.kind === "application_owned"
       ? teamSourcePaths.localApplicationId
-      : teamSourcePaths.kind === "team_local"
-        ? teamSourcePaths.ownerLocalApplicationId ?? null
-        : null,
+      : null,
 });
 
 export const buildTeamLocalAgentFilePaths = (

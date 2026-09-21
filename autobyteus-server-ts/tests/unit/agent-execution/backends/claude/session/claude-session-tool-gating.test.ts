@@ -9,10 +9,10 @@ import { ClaudeSession } from "../../../../../../src/agent-execution/backends/cl
 import { ClaudeProviderSessionLifecycle } from "../../../../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { AgentDefinition } from "../../../../../../src/agent-definition/domain/models.js";
 import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
-import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const {
@@ -38,8 +38,8 @@ const createResultQuery = async function* () {
   };
 };
 
-const createMemberTeamContext = () =>
-  testMemberTeamContext({
+const createMemberExecutionContext = () =>
+  testMemberExecutionContext({
     teamRunId: "team-1",
     rootTeamRunId: "team-1",
     teamDefinitionId: "team-def-1",
@@ -51,12 +51,12 @@ const createMemberTeamContext = () =>
   });
 
 const createSession = (requestedToolNames: string[] = [], input: {
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
 } = {}) => {
   const startQueryTurn = vi.fn(async () => createResultQuery());
   const closeQuery = vi.fn();
-  const memberTeamContext = input.memberTeamContext ?? null;
+  const memberExecutionContext = input.memberExecutionContext ?? null;
   const supportedAgentToolsMcpNames = new Set([
     "get_handoff_rules",
     "send_message_to",
@@ -71,7 +71,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
     "db_query",
     "read_application_state",
   ]);
-  const runtimeToolExposure = buildRuntimeAgentToolExposure(requestedToolNames, memberTeamContext);
+  const runtimeToolExposure = buildRuntimeAgentToolExposure(requestedToolNames, memberExecutionContext);
   const enabledTools = runtimeToolExposure.requestedToolNames.filter((toolName) =>
     supportedAgentToolsMcpNames.has(toolName),
   );
@@ -97,7 +97,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
       autoExecuteTools: false,
       skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      memberTeamContext,
+      memberExecutionContext,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
     runtimeContext: new ClaudeAgentRunContext({
@@ -108,7 +108,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
           instructions: "Run the requested test.",
           toolNames: requestedToolNames,
         }),
-        memberTeamContext,
+        memberExecutionContext,
       }),
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
@@ -163,7 +163,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
   it("preserves configured-only standalone exposure without team defaults", async () => {
     const { session, startQueryTurn, activateForRun } = createSession(["read_page"], {
-      memberTeamContext: null,
+      memberExecutionContext: null,
     });
 
     await (session as any).executeTurn({
@@ -192,7 +192,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   it("enables team collaboration defaults and only configured browser tools", async () => {
     const { session, startQueryTurn } = createSession(
       ["send_message_to", "open_tab", "read_page"],
-      { memberTeamContext: createMemberTeamContext() },
+      { memberExecutionContext: createMemberExecutionContext() },
     );
 
     await (session as any).executeTurn({
@@ -237,9 +237,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("automatically enables team collaboration tools for exact-run-only contexts", async () => {
-    const memberTeamContext = createMemberTeamContext();
+    const memberExecutionContext = createMemberExecutionContext();
     const { session, startQueryTurn } = createSession([], {
-      memberTeamContext,
+      memberExecutionContext,
     });
 
     await (session as any).executeTurn({
@@ -274,9 +274,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("creates an Agent Tools MCP session with member sender context when send_message_to is configured", async () => {
-    const memberTeamContext = createMemberTeamContext();
+    const memberExecutionContext = createMemberExecutionContext();
     const { session, activateForRun } = createSession(["send_message_to"], {
-      memberTeamContext,
+      memberExecutionContext,
     });
 
     await (session as any).executeTurn({
@@ -289,14 +289,14 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         owner: expect.objectContaining({
           runId: "run-1",
-          teamIdentity: memberTeamContext.identity,
+          collaborationIdentity: memberExecutionContext.identity,
           displayName: "Professor",
         }),
         sender: expect.objectContaining({
           senderRunId: "run-1",
           senderName: "Professor",
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-          memberTeamContext,
+          memberExecutionContext,
         }),
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       }),
@@ -312,7 +312,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
   it("creates an Agent Tools MCP session with standalone sender context when no team context exists", async () => {
     const { session, activateForRun } = createSession(["send_message_to"], {
-      memberTeamContext: null,
+      memberExecutionContext: null,
     });
 
     await (session as any).executeTurn({
@@ -328,7 +328,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           senderRunId: "run-1",
           senderName: "agent-1",
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-          memberTeamContext: null,
+          memberExecutionContext: null,
         }),
       }),
     );
@@ -474,7 +474,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         "review_task_result",
         "create_task",
       ],
-      { memberTeamContext: createMemberTeamContext() },
+      { memberExecutionContext: createMemberExecutionContext() },
     );
 
     await (session as any).executeTurn({

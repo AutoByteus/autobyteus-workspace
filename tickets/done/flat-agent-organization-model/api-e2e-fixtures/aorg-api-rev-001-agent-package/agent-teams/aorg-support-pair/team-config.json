@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "coordinatorMemberName": "dispatcher",
+  "members": [
+    {
+      "memberName": "dispatcher",
+      "ref": "aorg-lead",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "specialist",
+      "ref": "aorg-verifier",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/dispatcher",
+      "to": "/specialist",
+      "rules": [
+        "When a support answer needs explicit verification."
+      ]
+    }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "llmModelIdentifier": "gpt-5.6-sol",
+    "runtimeKind": "codex_app_server",
+    "llmConfig": {
+      "reasoning_effort": "low"
+    }
+  }
+}

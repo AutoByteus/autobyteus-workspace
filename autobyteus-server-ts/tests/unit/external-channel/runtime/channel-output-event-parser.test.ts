@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import {
   parseDirectChannelOutputEvent,
   parseTeamChannelOutputEvent,
@@ -9,15 +8,15 @@ import {
 import { ChannelRunOutputEligibilityPolicy } from "../../../../src/external-channel/runtime/channel-run-output-eligibility.js";
 
 describe("channel output event parsing and eligibility", () => {
-  it("parses direct assistant text from segment payload variants", () => {
+  it("parses direct assistant text from the admitted segment delta", () => {
     const parsed = parseDirectChannelOutputEvent({
       eventType: AgentRunEventType.SEGMENT_CONTENT,
       runId: "agent-run-1",
       statusHint: "ACTIVE",
       payload: {
-        turn: { id: "turn-1" },
+        turnId: "turn-1",
         segment_type: "text",
-        item: { type: "output_text", content: [{ text: "hello" }] },
+        delta: "hello",
       },
     });
 
@@ -29,7 +28,7 @@ describe("channel output event parsing and eligibility", () => {
     });
   });
 
-  it("classifies segment end text as final text", () => {
+  it("does not reinterpret segment-end metadata as assistant text", () => {
     const parsed = parseDirectChannelOutputEvent({
       eventType: AgentRunEventType.SEGMENT_END,
       runId: "agent-run-1",
@@ -42,8 +41,8 @@ describe("channel output event parsing and eligibility", () => {
     });
 
     expect(parsed).toMatchObject({
-      text: "complete reply",
-      textKind: "FINAL_TEXT",
+      text: null,
+      textKind: null,
     });
   });
 
@@ -88,22 +87,19 @@ describe("channel output event parsing and eligibility", () => {
   it("parses team member events and filters to the coordinator member", () => {
     const event = {
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-1",
-      data: {
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberName: "worker",
-        memberRunId: "worker-run-1",
-        memberRouteKey: "worker",
-        memberPath: ["worker"],
-        agentEvent: {
-          eventType: AgentRunEventType.SEGMENT_CONTENT,
-          runId: "worker-run-1",
-          statusHint: "ACTIVE",
-          payload: {
-            turnId: "worker-turn-1",
-            segment_type: "text",
-            delta: "internal",
-          },
+      execution: {
+        root: { rootSubjectKind: "agent_team", rootRunId: "team-1" },
+        memberAddress: "/worker",
+        agentRunId: "worker-run-1",
+      },
+      payload: {
+        eventType: "SEGMENT_CONTENT",
+        statusHint: "ACTIVE",
+        details: {
+          segmentId: "segment-1",
+          turnId: "worker-turn-1",
+          segmentType: "text",
+          delta: "internal",
         },
       },
     };
@@ -113,9 +109,8 @@ describe("channel output event parsing and eligibility", () => {
 
     expect(parsed).toMatchObject({
       teamRunId: "team-1",
-      memberRunId: "worker-run-1",
-      memberRouteKey: "worker",
-      memberPath: ["worker"],
+      agentRunId: "worker-run-1",
+      memberAddress: "/worker",
       text: "internal",
       textKind: "STREAM_FRAGMENT",
     });
@@ -123,30 +118,24 @@ describe("channel output event parsing and eligibility", () => {
       linkTarget: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: "coordinator-run-1",
-        entryMemberRouteKey: "coordinator",
-        entryMemberPath: ["coordinator"],
+        entryAgentRunId: "coordinator-run-1",
       },
       event: parsed!,
     })).toBeNull();
   });
 
-  it("accepts restored coordinator links by route key and captures member run id", () => {
+  it("accepts a restored exact entry Agent identity", () => {
     const parsed = parseTeamChannelOutputEvent({
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-1",
-      data: {
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberName: "coordinator",
-        memberRunId: "coordinator-run-1",
-        memberRouteKey: "coordinator",
-        memberPath: ["coordinator"],
-        agentEvent: {
-          eventType: AgentRunEventType.TURN_COMPLETED,
-          runId: "coordinator-run-1",
-          statusHint: "IDLE",
-          payload: { turnId: "turn-2" },
-        },
+      execution: {
+        root: { rootSubjectKind: "agent_team", rootRunId: "team-1" },
+        memberAddress: "/coordinator",
+        agentRunId: "coordinator-run-1",
+      },
+      payload: {
+        eventType: "TURN_COMPLETED",
+        statusHint: "IDLE",
+        details: { turnId: "turn-2", reason: null },
       },
     });
     const policy = new ChannelRunOutputEligibilityPolicy();
@@ -155,9 +144,7 @@ describe("channel output event parsing and eligibility", () => {
       linkTarget: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: null,
-        entryMemberRouteKey: "coordinator",
-        entryMemberPath: null,
+        entryAgentRunId: "coordinator-run-1",
       },
       event: parsed!,
     });
@@ -165,9 +152,7 @@ describe("channel output event parsing and eligibility", () => {
     expect(eligible?.target).toEqual({
       targetType: "TEAM",
       teamRunId: "team-1",
-      entryMemberRunId: "coordinator-run-1",
-      entryMemberRouteKey: "coordinator",
-      entryMemberPath: ["coordinator"],
+      entryAgentRunId: "coordinator-run-1",
     });
   });
 });

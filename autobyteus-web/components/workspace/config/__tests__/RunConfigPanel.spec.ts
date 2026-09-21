@@ -224,7 +224,7 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => ({
-    getAgentTeamDefinitionById: (id: string) => ({ id, name: 'Team ' + id, nodes: [] }),
+    getCatalogAgentTeamDefinitionById: (id: string) => ({ id, name: 'Team ' + id, nodes: [] }),
   }),
 }))
 

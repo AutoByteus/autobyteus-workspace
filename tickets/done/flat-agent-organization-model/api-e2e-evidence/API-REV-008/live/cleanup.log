@@ -1,0 +1,55 @@
+timestamp=2026-09-02T21:52:50Z
+artifact=06a918c71fc192e0b4ed9c3ef6b4df7163aef530
+source_is_ancestor=yes
+--- fixture ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+fixture_file_count=19
+--- ports ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+--- history termination ---
+[
+  {
+    "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+    "orgDefinitionId": "apirev8",
+    "orgDefinitionName": "APIREV8 组织 Ω",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace",
+    "summary": "",
+    "createdAt": "2026-09-02T21:38:04.066Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-02T21:50:40.278Z"
+  }
+]
+[
+  {
+    "teamRunId": "apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+    "teamDefinitionId": "apirev8-team",
+    "teamDefinitionName": "APIREV8 本地化 Team β",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace",
+    "summary": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+    "createdAt": "2026-09-02T21:34:23.735Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-02T21:51:39.038Z"
+  }
+]
+--- generated SDK dist ---
+application_sdk_dist_removed=yes
+backend_sdk_dist_removed=yes
+--- git diff check ---
+diff_check=pass

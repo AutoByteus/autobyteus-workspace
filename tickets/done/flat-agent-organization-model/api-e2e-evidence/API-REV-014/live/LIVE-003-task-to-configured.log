@@ -1,0 +1,16 @@
+{
+  "assertions": {
+    "taskSelected": false,
+    "sidecarIncrementedOnce": true,
+    "exactRuns": false,
+    "exactReference": true,
+    "configuredRuntimeDelivery": true,
+    "configuredReceiverNoRow": false,
+    "configuredReceiverNoInbound": false,
+    "receiverSelected": true,
+    "taskStillActive": true,
+    "noOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

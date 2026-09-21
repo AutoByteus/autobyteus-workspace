@@ -1,0 +1,96 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "AV AORG Validation Agent (1)" [expanded]:
+    - generic: AV
+    - generic: AORG Validation Agent
+    - generic: (1)
+  - button "New run with this agent":
+  - button "Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt. Then reply with the first line followed by AGENT-ONE. Do not read any other files or use other tools. now":
+    - generic: Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt. Then reply with the first line followed by AGENT-ONE. Do not read any other files or use other tools.
+    - button "Archive run":
+    - button "Delete run permanently":
+    - generic: now
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)":
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - generic: Orgs
+  - button "AORG Validation Org (1)":
+    - generic: AORG Validation Org
+    - generic: (1)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: AV
+  - heading "AORG Validation Agent - 2345" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt. Then reply with the first line followed by AGENT-ONE. Do not read any other files or use other tools.
+  - generic: AV
+  - generic: AORG Validation Agent
+  - button "Thinking":
+    - generic: Thinking
+  - button "read_file · api-runtime/activity-note.txt":
+    - generic: read_file
+    - generic "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt": · api-runtime/activity-note.txt
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: ACTIVITY-RETAIN-ORANGE-731 AGENT-ONE
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message...": UNSENT-AGENT-DRAFT-731
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Terminal"
+    - tab "Activity" [selected]: Activity
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 2 Events
+  - article:
+    - button "System instructions. AutoByteus-supplied · Native configured system prompt. Available. Captured 14.09.2026, 16:14:28. 3258 characters." [expanded]:
+      - generic: System instructions
+      - generic: AutoByteus-supplied · Native configured system prompt
+      - generic: Captured 14.09.2026, 16:14:28 · 3258 characters
+      - generic: Available
+    - region "System instructions":
+      - paragraph: AutoByteus-supplied · Native configured system prompt · Captured 14.09.2026, 16:14:28 · 3258 characters
+      - generic: "## Agent Identity - Name: AORG Validation Agent - Description: Harmless test-owned conversation and lazy-readiness fixture. ### Responsibilities and Boundaries You are a test-owned validation responder. Follow only the exact test message. Normally reply with the supplied marker in one short sentence. Do not initiate peer messages or tasks unless explicitly asked. Never inspect unrelated user files, conversations, credentials or processes. If asked to read an attachment, read only that supplied file. If explicitly asked to send a peer message or delegate a task, use the exact supplied canonical target once; do not repeat successful calls. For a task assignment, return the requested marker and submit the result once when instructed. ## Working Environment - Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/temp_workspace` - Use skills from their skill package directories to work on tasks in the agent workspace. - A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace. - Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise. - Do not modify a skill package unless the task explicitly targets that skill package. - With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace. ## Bash Operating Practice - Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings. - For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery. - Prefer non-interactive, small, composable, project-native commands. ## File And Directory Practice - Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n \"term\" path`; for filename discovery, use `rg --files path | rg \"pattern\"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal. - When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement. - Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed. - Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch. - Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+  - generic: read_file
+  - generic: "#272919"
+  - generic: Success
+  - generic: Arguments
+  - generic: "{ \"path\": \"/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt\" }"
+  - generic: Logs (3)
+  - generic: Result
+  - generic: "1: ACTIVITY-RETAIN-ORANGE-731 2: Only test-owned attachment content."

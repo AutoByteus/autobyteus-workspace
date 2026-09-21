@@ -1,0 +1,8 @@
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-004-history-restore-switch.mjs:61
+if (await restoreButton.count() !== 1) throw new Error(`restore button missing; candidates=${JSON.stringify(returnedOrg.buttons.filter((entry) => /restor/i.test(`${entry.text} ${entry.aria} ${entry.title}`)))}`);
+                                             ^
+
+Error: restore button missing; candidates=[]
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-004-history-restore-switch.mjs:61:46
+
+Node.js v22.23.2

@@ -1,0 +1,15 @@
+{
+  "taskId": "task_a7edf3fb6dfe49e3b032e0a18b4c270f",
+  "taskExecution": {
+    "teamRunId": "aorg_support_pair_381ed079b0f64287a7b9a38108a90371"
+  },
+  "status": "active",
+  "assertions": {
+    "oneTaskCreated": true,
+    "correctRecipient": true,
+    "taskRunMaterialized": true,
+    "stillActive": true,
+    "readyObserved": false,
+    "delegatorStayedSelected": true
+  }
+}

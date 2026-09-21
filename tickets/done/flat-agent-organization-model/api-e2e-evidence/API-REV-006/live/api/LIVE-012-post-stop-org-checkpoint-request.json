@@ -1,0 +1,6 @@
+{
+  "query": "query StopOrg($orgRunId:String!){getAgentOrgExecutionCheckpoint(orgRunId:$orgRunId){orgRunId changeSequence hasOpenExecutionWork}}",
+  "variables": {
+    "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9"
+  }
+}

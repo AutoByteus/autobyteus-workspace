@@ -1,0 +1,284 @@
+{
+  "caseId": "LIVE-005",
+  "result": "Pass",
+  "strictNegatives": {
+    "wrongAddress": {
+      "data": null,
+      "errors": [
+        {
+          "message": "AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 78
+            }
+          ],
+          "path": [
+            "getAgentOrgMemberRunProjection"
+          ]
+        }
+      ]
+    },
+    "wrongAgentRun": {
+      "data": null,
+      "errors": [
+        {
+          "message": "AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 78
+            }
+          ],
+          "path": [
+            "getAgentOrgMemberRunProjection"
+          ]
+        }
+      ]
+    },
+    "validAfterNegatives": {
+      "data": {
+        "getAgentOrgMemberRunProjection": {
+          "agentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "memberAddress": "/apirev8_team/aorg_e2e_lead",
+          "summary": "Return exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the ..."
+        },
+        "getAgentOrgExecutionCheckpoint": {
+          "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+          "changeSequence": 0,
+          "hasOpenExecutionWork": false
+        }
+      }
+    },
+    "failClosed": true,
+    "validContextUnaffected": true
+  },
+  "migration": {
+    "logCount": 19,
+    "failedCountTotal": 0,
+    "nonemptyErrors": [],
+    "agentOrgFlatTeamMigration": {
+      "file": "20260901_agent_org_flat_team_families_v1-2026-09-02T21-20-31-591Z.log",
+      "migrationId": "20260901_agent_org_flat_team_families_v1",
+      "statusSummary": {
+        "scannedCount": 1,
+        "migratedCount": 0,
+        "skippedCount": 0,
+        "failedCount": 0
+      },
+      "nonemptyErrorLines": []
+    },
+    "all": [
+      {
+        "file": "20260517_team_run_metadata_member_tree-2026-09-02T21-20-31-551Z.log",
+        "migrationId": "20260517_team_run_metadata_member_tree",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260521_run_history_index_v2-2026-09-02T21-20-31-664Z.log",
+        "migrationId": "20260521_run_history_index_v2",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260521_team_run_history_index_v2-2026-09-02T21-20-31-658Z.log",
+        "migrationId": "20260521_team_run_history_index_v2",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260617_raw_trace_rotation_layout-2026-09-02T21-20-31-603Z.log",
+        "migrationId": "20260617_raw_trace_rotation_layout",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260623_remove_self_evolution_run_metadata-2026-09-02T21-20-31-650Z.log",
+        "migrationId": "20260623_remove_self_evolution_run_metadata",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260701_team_communication_projection_addresses-2026-09-02T21-20-31-619Z.log",
+        "migrationId": "20260701_team_communication_projection_addresses",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260706_remove_global_skill_discovery_mode-2026-09-02T21-20-31-545Z.log",
+        "migrationId": "20260706_remove_global_skill_discovery_mode",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260707_raw_trace_active_file_name-2026-09-02T21-20-31-609Z.log",
+        "migrationId": "20260707_raw_trace_active_file_name",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260727_custom_provider_v1_secret_migration-2026-09-02T21-20-31-540Z.log",
+        "migrationId": "20260727_custom_provider_v1_secret_migration",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 1,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260730_token_usage_custom_provider_model_value_backfill-2026-09-02T21-20-31-627Z.log",
+        "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260730_token_usage_provider_name_snapshot_backfill-2026-09-02T21-20-31-638Z.log",
+        "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260731_migrate_native_working_context_snapshots_v5-2026-09-02T21-20-31-614Z.log",
+        "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260731_remove_external_runtime_working_context_snapshots-2026-09-02T21-20-31-598Z.log",
+        "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260803_custom_provider_readable_identity-2026-09-02T21-20-31-680Z.log",
+        "migrationId": "20260803_custom_provider_readable_identity",
+        "statusSummary": {
+          "scannedCount": 1,
+          "migratedCount": 0,
+          "skippedCount": 1,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260814_team_run_execution_tree_v1-2026-09-02T21-20-31-571Z.log",
+        "migrationId": "20260814_team_run_execution_tree_v1",
+        "statusSummary": {
+          "scannedCount": 2,
+          "migratedCount": 0,
+          "skippedCount": 2,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260819_token_usage_run_records_v1-2026-09-02T21-20-31-646Z.log",
+        "migrationId": "20260819_token_usage_run_records_v1",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260823_repair_team_agent_memory_layout-2026-09-02T21-20-31-577Z.log",
+        "migrationId": "20260823_repair_team_agent_memory_layout",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260824_team_run_execution_tree_v2-2026-09-02T21-20-31-582Z.log",
+        "migrationId": "20260824_team_run_execution_tree_v2",
+        "statusSummary": {
+          "scannedCount": 0,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      },
+      {
+        "file": "20260901_agent_org_flat_team_families_v1-2026-09-02T21-20-31-591Z.log",
+        "migrationId": "20260901_agent_org_flat_team_families_v1",
+        "statusSummary": {
+          "scannedCount": 1,
+          "migratedCount": 0,
+          "skippedCount": 0,
+          "failedCount": 0
+        },
+        "nonemptyErrorLines": []
+      }
+    ]
+  },
+  "restartBootstrap": "24 Prisma migrations found; no pending migrations; server ready on exact data directory"
+}

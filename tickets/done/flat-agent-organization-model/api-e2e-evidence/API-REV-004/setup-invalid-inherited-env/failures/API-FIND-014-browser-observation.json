@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-09-02T06:52:56.955Z",
+  "url": "http://127.0.0.1:3457/workspace",
+  "centerHeader": [
+    "L",
+    "lead",
+    "Offline"
+  ],
+  "priorHistoryMarkers": {
+    "first": true,
+    "initial": true,
+    "revised": true,
+    "accepted": true
+  },
+  "triggeringPromptVisible": false,
+  "draftValue": "Return exactly AORG4-TEAM-RESUME-001 on the first line and a five-word acknowledgement on the second line.",
+  "teamRowText": "Return exactly AORG4-TEAM-FIRST-001 on the first line and a five-word acknowledgement on the seco...",
+  "teamStatus": [
+    "Inactive team run"
+  ],
+  "leadText": "L\nlead\n15m",
+  "stopControls": [],
+  "errorSurface": []
+}

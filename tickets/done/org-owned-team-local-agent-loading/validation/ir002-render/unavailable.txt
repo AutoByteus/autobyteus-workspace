@@ -1,0 +1,52 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Agent Org
+Readfix Alpha
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime used by this organization run.
+
+Default LLM Model
+Select a model
+
+Used across the organization unless a placement is customized.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+Automatically allows tool calls and access requests for this run.
+
+Auto approve tools
+
+Unable to load organization members: agent-org-owned-team:readfix-alpha:squad
+
+Run Agent Org
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+
+WebSocket connection error
+
+Retry Connection
+➜ Terminal initialized
+ 

@@ -1,0 +1,210 @@
+[
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 371,
+    "sha256": "50e56742b28855095fe17f04dd0d6a9fb5797ef22046ec22792ad938c020e1b7"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceSurface.vue",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 96,
+    "sha256": "ce2e48aad10fe4201b10635aa42bd44197fbca5d309e5def3af16db51088fcb3"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 48,
+    "sha256": "bbc00d0e74a0b5b7510ca9b9f8b1d72f8ed1dfba81a5581c2ac980d72f139d17"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 170,
+    "sha256": "7bb428980acf275eab131209a447472a58146a3dfeeeb6e74383dfc2a69f5808"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 422,
+    "sha256": "f3827bdd8f7f74d4152973169a869a4a04dedff40305c99ddf07f8ea79a8d156"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 569,
+    "sha256": "20c72a0144fba12cdcbf53b00b280f3a6adaf9e260467e88d15833f2a8ab95e3"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 87,
+    "sha256": "87c72bebb88625395c929903dd96dcdf2e6dcd07ea93e9945a451bb554076518"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 141,
+    "sha256": "49c5ea822f1045295c34a8d56be5b6fd96415b8edeb711c7043ab5303dc28620"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 172,
+    "sha256": "fe10bfcde38284d4254e76ecd3c3bc509540fd7a8d2e0ebb383b6bdddbfd275e"
+  },
+  {
+    "path": "autobyteus-web/components/workspace/team/TeamWorkspaceSurface.vue",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 113,
+    "sha256": "d8cb9ff6c14e6abac48befa7ccb319b3bfa95f567ac2f19c39e553a22e38750d"
+  },
+  {
+    "path": "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 168,
+    "sha256": "a37d08531d041a6020edfda48a47dec883734282203ce243f047bfd7c073a975"
+  },
+  {
+    "path": "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 66,
+    "sha256": "5006a77906dfdd38878423a3913fa028698d7add354ae448fa7c496777976f8d"
+  },
+  {
+    "path": "autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 64,
+    "sha256": "446784560a7bcd1683a39ac8b00e543556b6f1f3f4492a8b531061224b620142"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 520,
+    "sha256": "37be3b4ee19eefcd1745da8c808bebd7cf327c2b601fd206202d4e29f4605c83"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 196,
+    "sha256": "b3615a013e1e7cbbd2076f117fa7b7e930eb44877515b34bbab4a5ca1e069eb6"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 642,
+    "sha256": "a51d866c0d54ee96ae624d4b6a2b9ba0ab0b233fffdce3707c11f0a5641472d8"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 128,
+    "sha256": "a522947576f8d6aa4cb68ad735126239fc0a32add660bebdd361e2bf91f02de2"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 199,
+    "sha256": "45d046e487c9e818ad585fc492f147e8c33adb5eaac28b417edd4542ffd02b62"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 315,
+    "sha256": "0b56f3705c679c68619b7acb8b19f63e5ed1c19b547f3a3da574486e9b818774"
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 440,
+    "sha256": "992e65cdff4f1d057b23e917a224a045f38c963f029bcfe2b43f674dacd6f05b"
+  },
+  {
+    "path": "autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 466,
+    "sha256": "4daaa90bf936b7c8c216e9f98afd63112d68d173a564690853172b39a5706ea3"
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 44,
+    "sha256": "f2ccc901b7efbf949845ebcfed6b3ab6af22f0fd9c8d6cb8e41ff0c17841eb83"
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/agentOrgInspection.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 85,
+    "sha256": "eff3d254fec64c2a801c911e91110f58ca0860f1b6622fc26b382b2b25ccd7fd"
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "kind": "test",
+    "action": "Modify",
+    "nonemptyLines": 2398,
+    "sha256": "f95fe7d2b1c852d36ef6a720ddd2ff075c45d60729fd3c79d3428ac6051238d5"
+  },
+  {
+    "path": "autobyteus-web/stores/activeContextStore.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 285,
+    "sha256": "523e0a9044ea2984ba5cb13bf90421e314e757814d4b1a2338d911d2f84f721e"
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 232,
+    "sha256": "71a3a4d80ee230ca86742c668119d6f91e5590dbe4794c215697d2d6625eda9c"
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgRunStore.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 54,
+    "sha256": "8c48a9f4b6e40b9ea0e876b816518bb935d8ba3bc889d41da8ad7ea4d9c25889"
+  },
+  {
+    "path": "autobyteus-web/stores/rootExecutionViewStore.ts",
+    "kind": "production",
+    "action": "Remove"
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryStore.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 473,
+    "sha256": "e0c68af340b6c54d8b322f4208a7da6adab1edb0451b784c08e37b5b667a24c9"
+  },
+  {
+    "path": "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 84,
+    "sha256": "e8e137851b2a08b45c72553b673961311964c27771339211452542e6985be431"
+  }
+]

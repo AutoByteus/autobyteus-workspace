@@ -1,0 +1,2 @@
+# Preserve literal patch context lines byte-for-byte; these are evidence, not source whitespace.
+code-review-evidence/CRR-092/durable-test.diff -whitespace

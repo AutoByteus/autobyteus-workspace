@@ -12,3 +12,15 @@ export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: Str
     replacements { llmModelIdentifier contextTokens }
   }
 }`
+
+export const AgentOrgRunModelConfig = gql`query AgentOrgRunModelConfig($orgRunId: String!) {
+  getAgentOrgRunModelConfig(orgRunId: $orgRunId) {
+    orgRunId executionTree isActive editability { editable reason }
+  }
+}`
+export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRunId: String!) {
+  agentOrgRunModelOptions(orgRunId: $orgRunId) {
+    scopeKind scopeAddress currentModelIdentifier currentContextTokens unavailableReason
+    replacements { llmModelIdentifier contextTokens }
+  }
+}`

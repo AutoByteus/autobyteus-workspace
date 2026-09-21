@@ -1,0 +1,1 @@
+{"data":null,"errors":[{"message":"AgentRun 'aorg_e2e_lead_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'.","locations":[{"line":1,"column":78}],"path":["getAgentOrgMemberRunProjection"]}]}

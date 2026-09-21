@@ -1,0 +1,8 @@
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-003-post-stop-frozen-final.mjs:5
+let row=p.locator('button[role="treeitem"]').filter({hasText:'Call delegate_task exactly once'}).first();if(await row.count()!==1)throw new Error('retained root missing');await row.click();await p.waitForFunction(id=>new URL(location.href).searchParams.get('orgRunId')===id&&new URL(location.href).searchParams.get('mode')==='history'&&document.body.innerText.includes('Stopped Agent Org'),orgRunId);await p.waitForTimeout(500);
+                                                                                                                                        ^
+
+Error: retained root missing
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-003-post-stop-frozen-final.mjs:5:137
+
+Node.js v22.23.2

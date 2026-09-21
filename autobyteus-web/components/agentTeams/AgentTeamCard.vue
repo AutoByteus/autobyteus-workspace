@@ -49,18 +49,11 @@
       <div
         v-for="node in previewNodes"
         :key="`${node.memberName}-${node.ref}`"
-        :title="`${node.memberName} (${node.refType})`"
-        class="inline-flex max-w-[14rem] items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium"
-        :class="node.refType === 'AGENT' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-violet-200 bg-violet-50 text-violet-700'"
+        :title="node.memberName"
+        class="inline-flex max-w-[14rem] items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"
       >
         <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/80 text-[10px] font-semibold">{{ node.memberName.slice(0, 1).toUpperCase() }}</span>
         <span class="truncate">{{ node.memberName }}</span>
-        <span
-          v-if="node.refType === 'AGENT_TEAM'"
-          class="shrink-0 rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-semibold text-violet-700"
-        >
-          {{ $t('agentTeams.components.agentTeams.AgentTeamCard.teamBadge') }}
-        </span>
       </div>
       <span v-if="remainingNodesCount > 0" class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-medium text-slate-600">
         {{ $t('agentTeams.components.agentTeams.AgentTeamCard.moreCount', { count: remainingNodesCount }) }}
@@ -68,7 +61,7 @@
       <span v-if="teamNodes.length === 0" class="text-xs italic text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamCard.no_members_defined') }}</span>
     </div>
 
-    <div class="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-xs text-slate-600 sm:grid-cols-3">
+    <div class="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-xs text-slate-600">
       <div>
         <p class="font-medium text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamCard.coordinator') }}</p>
         <p class="mt-0.5 truncate text-sm text-slate-800">{{ coordinatorLabel }}</p>
@@ -76,10 +69,6 @@
       <div>
         <p class="font-medium text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamCard.members') }}</p>
         <p class="mt-0.5 text-sm font-semibold text-slate-800">{{ teamNodes.length }}</p>
-      </div>
-      <div>
-        <p class="font-medium text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamCard.nested_teams') }}</p>
-        <p class="mt-0.5 text-sm font-semibold text-slate-800">{{ nestedTeamCount }}</p>
       </div>
     </div>
   </div>
@@ -108,7 +97,6 @@ const teamNodes = computed(() =>
 );
 const previewNodes = computed(() => teamNodes.value.slice(0, MAX_MEMBER_PREVIEW));
 const remainingNodesCount = computed(() => Math.max(0, teamNodes.value.length - MAX_MEMBER_PREVIEW));
-const nestedTeamCount = computed(() => teamNodes.value.filter((node) => node.refType === 'AGENT_TEAM').length);
 
 const avatarUrl = computed(() => (teamDef.value.avatarUrl || '').trim());
 const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);

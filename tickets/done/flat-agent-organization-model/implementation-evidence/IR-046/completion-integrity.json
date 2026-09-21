@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "61f633abe669d1283a617847c7294ce7b8047bb6",
+  "sourceInventoryMatches": true,
+  "unmergedPaths": 0,
+  "temporaryRouteRemoved": true,
+  "generatedInitiallyAbsentSdkDistRemoved": true,
+  "nativeRenderer": "10 states, one SEND, no page errors; synthetic I/O",
+  "finalCohort": "79 files / 685 tests Pass",
+  "build": "Nuxt production 16 routes Pass"
+}

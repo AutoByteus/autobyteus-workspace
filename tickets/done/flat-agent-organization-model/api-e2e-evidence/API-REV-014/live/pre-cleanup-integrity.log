@@ -1,0 +1,38 @@
+2026-09-06T12:07:09Z
+--- exact failing sidecar ---
+1ae10716fb0eb51ce0e7cd4ef34da581c980f3a9435b0f54f7bdb4dc1a22daa7  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574/agent_org_task_delegation_records.json
+--- all key failing evidence ---
+127ea1ee0d833690e912e1652f65e35ae0c7dbb26ec7856838eca7e8932839b2  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/live/LIVE-003-task-team-stream-recovery.json
+d4352f55950c0cc97c2468f9a19905df969cf98f88130291dfabc71483f33e09  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/live/LIVE-003-task-team-stream-recovery-rerun.log
+0e0d94db761476b3bb0a0fbb4470b003a86395a9221e504eb045e3dc3ab6f97c  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/live/screenshots/LIVE-003-task-team-stream-failure.png
+9860fa91160739b83ad9d31fc0f0edaaac657e3cd78a3dbf5dc663384ea36fda  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/live/screenshots/LIVE-003-task-team-stream-recovery.png
+--- source/artifact ---
+3656220d2f7a1551aa54d8e7e9d3eb8d767b96f6
+source_ancestor=0
+--- fixture manifest/hash check ---
+699634cf7a8d3d71e5a1f608d9e9d9ce202ba7eaf77d309c51ae34135e8f8112  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/PACKAGE.sha256
+c8dddb5569647545f5163551ec41ab99ccd2a43a425247af1a6aa156f4ad95b8  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/README.md
+7d0cc8451090208f42cae7d93097faaef512f166ba1fa7996e7796460bc396d0  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/TEST-MANIFEST.md
+d612f1af68c88422d45cad86cf1064cff28e31b43de817d3abb447c8cccc627d  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-orgs/aorg-direct-agents-org/org-config.json
+79107d076e24e9248f0ad2ebbb7414e5335da5041eeb79de447316e7ef2088ae  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-orgs/aorg-direct-agents-org/org.md
+31710da7b6b72870dc7e49e760f7bf0b2478da7a5159a6ff10d6c75dc665daed  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-orgs/aorg-mixed-org/org-config.json
+2a7f2344bc87b4c8f51be970edccae0d8b1e1b89af72e0a6137df8041cb51883  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-orgs/aorg-mixed-org/org.md
+8c03ff062545515a05650905fe103e4b4c0ad075530e61766b5d4aae172780b6  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-teams/aorg-research-squad/team-config.json
+d7f82722121207d39a5034d9b236909fe344dfe5b38174f9202edfd5fde85279  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-teams/aorg-research-squad/team.md
+ea1714c0cb8ff6fa76657de1d3b129f46b8f0cf748fd501124a349463ccca189  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-teams/aorg-support-pair/team-config.json
+f07a73a44412d9129bcf7731d9f1f9cef326e7e462129d4ed1b811ac779b2264  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agent-teams/aorg-support-pair/team.md
+d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-analyst/agent-config.json
+ba2bcad92fd0a208015c71a03f72d182c82205b2c13948eadcc40c98d2d67ea5  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-analyst/agent.md
+d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-concierge/agent-config.json
+b17acc385388d746c8415dfa650b8de4bfac34aa3833f513d8d098c9990fc1bb  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-concierge/agent.md
+d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-lead/agent-config.json
+3855ed0304157df143baa219a48f3521defb49d1cbf358630263b0e31b5fec49  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-lead/agent.md
+d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-verifier/agent-config.json
+dc08448fc20a3ee14df8ee2c04367e231d86b53207f12d3d0ee09ec2c8fe1fbb  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/agents/aorg-verifier/agent.md
+--- listeners/processes before shutdown ---
+  PID  PPID STAT                  STARTED CMD
+49540 49537 Sl   Sun Sep  6 11:23:29 2026 node dist/app.js --host 127.0.0.1 --port 8594 --data-dir /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data
+49651 49648 S    Sun Sep  6 11:23:42 2026 python3 -m http.server 3594 --bind 127.0.0.1 --directory dist/public
+LISTEN 0      5          127.0.0.1:3594       0.0.0.0:*    users:(("python3",pid=49651,fd=3))
+LISTEN 0      511        127.0.0.1:8594       0.0.0.0:*    users:(("node",pid=49540,fd=31))  
+LISTEN 0      511        127.0.0.1:37875      0.0.0.0:*    users:(("node",pid=49540,fd=30))  

@@ -18,14 +18,47 @@
           {{ statusLabel }}
         </span>
       </div>
-      <p class="mt-1.5 flex min-w-0 items-center gap-1 text-sm text-slate-500" data-test="delegated-task-item-direction">
+      <div class="mt-1.5 flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500" data-test="delegated-task-item-direction">
         <Icon
           :icon="item.direction.kind === 'system' ? 'heroicons:cog-6-tooth' : 'heroicons:arrow-right'"
           class="h-3.5 w-3.5 shrink-0"
           aria-hidden="true"
         />
-        <span class="truncate" :title="directionLabel">{{ directionLabel }}</span>
-      </p>
+        <span v-if="item.direction.kind === 'system'">{{ t('workspace.components.workspace.team.TeamDelegatedTasksSection.system_lifecycle_event') }}</span>
+        <template v-else v-for="(endpoint, index) in identityEndpoints" :key="index">
+          <span v-if="index" aria-hidden="true">{{ ' → ' }}</span>
+          <button v-if="endpoint.kind === 'named' && endpoint.targetKind === 'agent'" type="button"
+            class="max-w-full truncate rounded text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500"
+            :title="`${endpoint.link.address} · ${endpoint.link.agentRunId}`" data-test="task-direction-agent"
+            @click="$emit('select-participant', endpoint.link)">{{ endpoint.label }}</button>
+          <button v-else-if="endpoint.kind === 'named' && endpoint.targetKind === 'task_team'" type="button"
+            class="max-w-full truncate rounded text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500"
+            :aria-expanded="identityOpen" :aria-controls="identityId" data-test="task-direction-team"
+            @click="identityOpen = !identityOpen">{{ endpoint.label }}</button>
+          <span v-else>{{ participantLabel(endpoint) }}</span>
+        </template>
+        <button type="button" class="ml-1 shrink-0 rounded p-1 text-slate-400 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-indigo-500"
+          :aria-label="t('workspace.collaboration.identity.details')" :aria-expanded="identityOpen" :aria-controls="identityId"
+          data-test="task-identity-toggle" @click="identityOpen = !identityOpen">
+          <Icon icon="heroicons:information-circle" class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </div>
+      <div v-if="identityOpen" :id="identityId" class="mt-2 space-y-2 rounded bg-slate-50 p-2 text-xs text-slate-600" data-test="task-identity-detail">
+        <section v-for="(endpoint, index) in identityEndpoints" :key="index" class="min-w-0">
+          <p v-if="endpoint.kind !== 'named' || endpoint.targetKind !== 'agent'" class="break-words font-medium">{{ participantLabel(endpoint) }}</p>
+          <template v-if="endpoint.kind === 'named' && endpoint.targetKind !== 'unavailable'">
+            <p v-if="endpoint.targetKind === 'task_team'" class="break-all">
+              {{ t('workspace.collaboration.identity.teamRun') }}: {{ endpoint.teamRunId }}
+            </p>
+            <div v-for="link in endpoint.targetKind === 'agent' ? [endpoint.link] : endpoint.participants" :key="link.agentRunId" class="mt-1 min-w-0">
+              <button type="button" class="max-w-full break-words rounded text-left text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500"
+                data-test="task-identity-agent" @click="$emit('select-participant', link)">{{ link.label }}</button>
+              <p class="break-all">{{ t('workspace.collaboration.identity.address') }}: {{ link.address }}</p>
+              <p class="break-all">{{ t('workspace.collaboration.identity.agentRun') }}: {{ link.agentRunId }}</p>
+            </div>
+          </template>
+        </section>
+      </div>
       <time class="mt-1 block text-xs text-slate-400" :datetime="item.createdAt" data-test="delegated-task-item-time">
         {{ fullTimestamp }}
       </time>
@@ -40,14 +73,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, useId } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type {
+  CollaborationTaskParticipantLink,
   DelegatedTaskDisplayStatus,
   DelegatedTaskLifecycleItem,
   DelegatedTaskParticipant,
-} from '~/utils/teamDelegatedTaskEntries';
+} from '~/types/workspace/collaborationTaskPresentation';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 
 const props = defineProps<{
@@ -55,6 +89,13 @@ const props = defineProps<{
   displayStatus: DelegatedTaskDisplayStatus;
 }>();
 
+defineEmits<{ (e: 'select-participant', participant: CollaborationTaskParticipantLink): void }>();
+const identityOpen = ref(false);
+const identityId = useId();
+const identityEndpoints = computed(() => {
+  const direction = props.item.direction.kind === 'system' ? props.item.direction.assignment : props.item.direction;
+  return [direction.from, direction.to];
+});
 const { t } = useLocalization();
 const itemTitle = computed((): string => {
   if (props.item.kind === 'assignment') {
@@ -82,9 +123,6 @@ const participantLabel = (participant: DelegatedTaskParticipant): string => {
     ? 'workspace.components.workspace.team.TeamDelegatedTasksSection.task_delegator'
     : 'workspace.components.workspace.team.TeamDelegatedTasksSection.task_assignee');
 };
-const directionLabel = computed((): string => props.item.direction.kind === 'system'
-  ? t('workspace.components.workspace.team.TeamDelegatedTasksSection.system_lifecycle_event')
-  : `${participantLabel(props.item.direction.from)} → ${participantLabel(props.item.direction.to)}`);
 const fullTimestamp = computed((): string => {
   const date = new Date(props.item.createdAt);
   if (Number.isNaN(date.getTime())) return props.item.createdAt;

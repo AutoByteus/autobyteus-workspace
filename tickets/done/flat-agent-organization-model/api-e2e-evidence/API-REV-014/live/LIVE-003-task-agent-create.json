@@ -1,0 +1,38 @@
+{
+  "kind": "agent",
+  "recipient": "/research-team/analyst",
+  "ready": "APIREV14-TASK-A-READY",
+  "beforeCount": 0,
+  "afterCount": 1,
+  "record": {
+    "taskId": "task_b22e3bd3d6b3407786479dae3e64344a",
+    "delegatorAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+    "recipientAddress": "/research-team/analyst",
+    "taskExecution": {
+      "agentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495"
+    },
+    "description": "Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.",
+    "referenceFiles": [],
+    "status": "active",
+    "updates": [],
+    "createdAt": "2026-09-06T11:49:30.663Z"
+  },
+  "readyTrace": false,
+  "snapshot": {
+    "at": "2026-09-06T11:51:31.880Z",
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574&mode=active",
+    "readyCount": 7,
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(2)\nAORG E2E Mixed Org\n(1)\nUse send_message_to exactly once with recipient_address `/research-team/analyst`, content `APIREV...\n17m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: analyst\nsupport team\nD\ndispatcher\nS\nspecialist\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nL\nlead\nIdle\nYou\nYour system instructions and live Agent Tools MCP catalog expose send_message_to. Use send_message_to exactly once with recipient_address `/concierge`, content `APIREV14-MOUNTED-DIRECT-MSG-001 from /research-team/lead to /concierge`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/mounted-direct.txt`]. Do not claim the tool is unavailable and do not call any other tool. After the successful tool result, reply exactly APIREV14-MOUNTED-DIRECT-MSG-001 from /research-team/lead to /concierge-SENT.\nL\nlead\nThinking\nsend_message_to\n\nAPIREV14-MOUNTED-DIRECT-MSG-001 from /research-team/lead to /concierge-SENT.\n\nYou\nYour system instructions and live Agent Tools MCP catalog expose send_message_to. Use send_message_to exactly once with recipient_address `/support-team/specialist`, content `APIREV14-CROSS-TEAM-MSG-001 from /research-team/lead to /support-team/specialist`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/cross-team.txt`]. Do not claim the tool is unavailable and do not call any other tool. After the successful tool result, reply exactly APIREV14-CROSS-TEAM-MSG-001 from /research-team/lead to /support-team/specialist-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-CROSS-TEAM-MSG-001 from /research-team/lead to /support-team/specialist-SENT.\n\nYou\nYour live catalog exposes delegate_task. Use delegate_task exactly once with recipient_address `/research-team/analyst` and task description `Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.`. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-A-READY-DELEGATED.\nL\nlead\nThinking\ndelegate_task\nThinking\n\ndelegate_task failed because the catalog rejected task_description as an invalid field.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/research-team/analyst` and description=`Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-A-READY-DELEGATED.\nL\nlead\ndelegate_task\nL\nlead\n\nAPIREV14-TASK-A-READY-DELEGATED.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nTasks\n1 task\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.\nIn progress\nUpdated 11:49 AM\nlead → analyst\nTask assigned\nIn progress\n\nlead → analyst\n\nSep 6, 11:49 AM\n\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.",
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096"
+    ]
+  },
+  "assertions": {
+    "oneTaskCreated": true,
+    "correctRecipient": true,
+    "taskRunMaterialized": true,
+    "stillActive": true,
+    "readyObserved": false,
+    "delegatorStayedSelected": true
+  }
+}

@@ -193,7 +193,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
     } catch {
       ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
-        mixedTeamRunBackendFactory: {} as never,
+        flatTeamExecutionFactory: {} as never,
+        memberExecutionContextBuilder: {} as never,
         taskExecutionIdentity: {
           agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
           taskTeams: { create: () => "unused-task-team" },

@@ -1,0 +1,18 @@
+{
+  "at": "2026-09-13T03:21:12.528246+00:00",
+  "protectedRegular": 63129,
+  "unchanged": 63129,
+  "changed": [],
+  "missing": [],
+  "protectedSymlinks": 11,
+  "symlinkMismatches": [],
+  "immutableFixtureFiles": 19,
+  "fixtureMismatches": [],
+  "durableMismatches": [],
+  "unexpectedNonEvidenceGitFiles": [],
+  "staged": "",
+  "unmerged": "",
+  "head": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "expectedHead": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "allChecksPass": true
+}

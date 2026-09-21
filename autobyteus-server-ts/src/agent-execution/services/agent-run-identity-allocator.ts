@@ -26,6 +26,7 @@ type AgentRunIdentityAllocatorOptions = {
   agentRunManager?: Pick<AgentRunManager, "hasActiveRun">;
   agentRunMetadataService?: Pick<AgentRunMetadataService, "readMetadata">;
   teamRunExecutionTreeLocationService?: Pick<TeamRunExecutionTreeLocationService, "containsRunId">;
+  collaborationExecutionLocationService?: Readonly<{ containsRunId(runId: string): Promise<boolean> }>;
   memoryDir?: string;
   createToken?: () => string;
 };
@@ -54,7 +55,7 @@ export class AgentRunIdentityAllocator {
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
     this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRunMetadataService = options.agentRunMetadataService ?? getAgentRunMetadataService();
-    this.teamRunExecutionTreeLocations = options.teamRunExecutionTreeLocationService
+    this.teamRunExecutionTreeLocations = options.collaborationExecutionLocationService ?? options.teamRunExecutionTreeLocationService
       ?? new TeamRunExecutionTreeLocationService({ memoryDir });
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.createToken = options.createToken ?? createUuidIdentityToken;

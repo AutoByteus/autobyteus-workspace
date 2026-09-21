@@ -1,0 +1,25 @@
+{
+  "pid": 64690,
+  "cmd": [
+    "node",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-server-ts/dist/app.js",
+    "--data-dir",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "50681"
+  ],
+  "environment_keys": [
+    "PATH",
+    "TMPDIR",
+    "LANG",
+    "LC_ALL",
+    "SHELL",
+    "USER",
+    "LOGNAME",
+    "HOME",
+    "OLLAMA_HOSTS",
+    "LMSTUDIO_HOSTS"
+  ]
+}

@@ -37,10 +37,10 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
         ...(entry.resultSchema ? { outputSchema: entry.resultSchema } : {}),
       },
       configuredMcpCollisionPolicy: "protect_static_adapter",
-      isAvailable: ({ sender }) => Boolean(sender?.memberTeamContext),
+      isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext),
       execute: async ({ session, rawArguments }) => {
         const capabilities = session.executionCapabilities;
-        if (capabilities.kind !== "team_member") {
+        if (capabilities.kind !== "collaboration_member") {
           return createAgentToolsMcpErrorResult(
             toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(
               new Error("Task delegation tools require an authenticated Team-member capability."),

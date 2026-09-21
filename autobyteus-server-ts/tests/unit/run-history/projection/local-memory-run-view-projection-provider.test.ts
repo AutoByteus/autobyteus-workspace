@@ -304,7 +304,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     ]);
     expect(page.events[0]?.visuals[0]).toMatchObject({
       kind: "user",
-      attachments: [{ locator: "images/user.png", mediaType: "image" }],
+      attachments: [{ locator: "images/user.png", fileType: "image" }],
     });
   });
 

@@ -110,7 +110,6 @@
         <AgentTeamLibraryPanel
           :search="librarySearch"
           :agent-items="filteredAgentItems"
-          :team-items="filteredTeamItems"
           @update:search="updateLibrarySearch"
           @add="addNodeFromLibrary"
           @dragstart-item="handleLibraryDragStart"
@@ -142,7 +141,7 @@
               class="rounded-md border p-3"
               :class="[
                 selectedNodeIndex === index ? 'border-blue-300 bg-blue-50/40' : 'border-slate-200 bg-white',
-                node.refType === 'AGENT' ? 'shadow-sm' : '',
+                'shadow-sm',
               ]"
               @click="selectNode(index)"
             >
@@ -153,15 +152,11 @@
                 </div>
 
                 <div class="flex shrink-0 items-center gap-2">
-                  <span
-                    class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                    :class="node.refType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
-                  >
-                    {{ node.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.agentBadge') : $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.teamBadge') }}
+                  <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
+                    {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.agentBadge') }}
                   </span>
 
                   <div
-                    v-if="node.refType === 'AGENT'"
                     class="inline-flex items-center gap-2 text-xs text-slate-600"
                     @click.stop
                   >
@@ -199,7 +194,7 @@
           <div
             class="mt-3 rounded-md border border-dashed p-6 text-center text-sm"
             :class="isCanvasDragOver ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-slate-300 bg-slate-50 text-slate-500'"
-          >{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.drop_agents_and_teams_here_to') }}</div>
+          >{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.dropAgentsHere') }}</div>
 
           <p v-if="formErrors.nodes" class="mt-2 text-xs text-red-600">{{ formErrors.nodes }}</p>
         </section>
@@ -213,6 +208,14 @@
           @toggle-coordinator="toggleSelectedCoordinator"
         />
       </section>
+      <HandoffManager
+        ref="handoffManagerRef"
+        v-model="handoffs"
+        :from-options="handoffEndpoints"
+        :to-options="handoffEndpoints"
+        mode="edit"
+        scope="team"
+      />
       <DefinitionLaunchPreferencesSection
         :runtime-kind="launchPreferences.runtimeKind"
         :llm-model-identifier="launchPreferences.llmModelIdentifier"
@@ -260,6 +263,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import DefinitionLaunchPreferencesSection from '~/components/launch-config/DefinitionLaunchPreferencesSection.vue';
 import AgentTeamLibraryPanel from './form/AgentTeamLibraryPanel.vue';
 import AgentTeamMemberDetailsPanel from './form/AgentTeamMemberDetailsPanel.vue';
+import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.vue';
 import {
   buildSubmitNodes,
   createInitialFormData,
@@ -269,11 +273,16 @@ import {
 } from './form/useAgentTeamDefinitionFormState';
 import { useFileUploadStore } from '~/stores/fileUploadStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import {
   normalizeDefaultLaunchConfig,
   toEditableDefaultLaunchConfig,
 } from '~/types/launch/defaultLaunchConfig';
+import {
+  toDefinitionHandoffs,
+  toEditableHandoffs,
+  type EditableHandoff,
+  type HandoffEndpointOption,
+} from '~/types/collaboration/handoffs';
 
 const props = defineProps<{
   initialData?: any;
@@ -286,7 +295,6 @@ const { initialData } = toRefs(props);
 
 const fileUploadStore = useFileUploadStore();
 const agentDefStore = useAgentDefinitionStore();
-const agentTeamDefStore = useAgentTeamDefinitionStore();
 const { t } = useLocalization();
 
 const avatarFileInputRef = ref<HTMLInputElement | null>(null);
@@ -296,6 +304,8 @@ const avatarPreviewBroken = ref(false);
 const formErrors = reactive<Record<string, string>>({});
 const formData = reactive(createInitialFormData());
 const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
+const handoffs = ref<EditableHandoff[]>([]);
+const handoffManagerRef = ref<{ validateAll: () => boolean } | null>(null);
 
 const avatarInitials = computed(() => {
   const raw = (formData.name || '').trim();
@@ -324,24 +334,6 @@ const agentDefinitions = computed(() => {
     currentTeamDefinitionId.value ?? '',
   );
 });
-const teamDefinitions = computed(() => {
-  const localChildren = currentTeamDefinitionId.value
-    ? agentTeamDefStore.getTeamLocalTeamDefinitionsByOwnerTeamId(currentTeamDefinitionId.value)
-    : [];
-  if (!isApplicationOwnedTeam.value || !currentOwnerApplicationId.value) {
-    return [
-      ...(agentTeamDefStore.sharedAgentTeamDefinitions || []),
-      ...localChildren,
-    ];
-  }
-  return [
-    ...agentTeamDefStore.getApplicationOwnedTeamDefinitionsByOwnerApplicationId(
-      currentOwnerApplicationId.value,
-    ),
-    ...localChildren,
-  ];
-});
-
 const nameValid = computed(() => Boolean(formData.name.trim()));
 const descriptionValid = computed(() => Boolean(formData.description.trim()));
 const instructionsValid = computed(() => Boolean(formData.instructions.trim()));
@@ -351,7 +343,7 @@ const coordinatorValid = computed(() => {
     return false;
   }
   return formData.nodes.some(
-    (node) => node.refType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
+    (node) => node.memberName === formData.coordinatorMemberName,
   );
 });
 
@@ -362,11 +354,17 @@ const canSubmit = computed(() => (
   && membersValid.value
   && coordinatorValid.value
 ));
+const handoffEndpoints = computed<HandoffEndpointOption[]>(() => formData.nodes.map((node) => ({
+  id: node.memberName,
+  kind: 'agent',
+  label: node.memberName,
+  address: `/${node.memberName}`,
+  group: t('handoffs.manager.groups.teamAgents'),
+})));
 const {
   addNodeFromLibrary,
   clearErrors,
   filteredAgentItems,
-  filteredTeamItems,
   getReferenceName,
   handleCanvasDrop,
   isCoordinator,
@@ -385,9 +383,7 @@ const {
   formErrors,
   currentTeamDefinitionId,
   agentDefinitions,
-  teamDefinitions,
   getAgentDefinitionById: agentDefStore.getAgentDefinitionById,
-  getAgentTeamDefinitionById: agentTeamDefStore.getAgentTeamDefinitionById,
 });
 
 const updateLibrarySearch = (value: string) => {
@@ -441,7 +437,7 @@ const handleAvatarFileSelected = async (event: Event) => {
 };
 
 const handleSubmit = () => {
-  if (!validateForm()) {
+  if (!validateForm() || handoffManagerRef.value?.validateAll() === false) {
     return;
   }
 
@@ -452,6 +448,7 @@ const handleSubmit = () => {
     instructions: formData.instructions.trim(),
     coordinatorMemberName: formData.coordinatorMemberName,
     nodes: buildSubmitNodes(formData.nodes),
+    handoffs: toDefinitionHandoffs(handoffs.value),
     avatarUrl: formData.avatarUrl,
     defaultLaunchConfig: normalizeDefaultLaunchConfig(launchPreferences),
   };
@@ -474,8 +471,10 @@ watch(
       formData.avatarUrl = newData.avatarUrl || newData.avatar_url || '';
       Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
       formData.nodes = mapInitialTeamNodes(newData.nodes || []);
+      handoffs.value = toEditableHandoffs(newData.handoffs);
       selectedNodeIndex.value = formData.nodes.length > 0 ? 0 : null;
     } else {
+      handoffs.value = [];
       Object.assign(launchPreferences, toEditableDefaultLaunchConfig(null));
       selectedNodeIndex.value = null;
     }
@@ -493,9 +492,6 @@ watch(
 onMounted(() => {
   if (agentDefStore.agentDefinitions.length === 0) {
     agentDefStore.fetchAllAgentDefinitions();
-  }
-  if (agentTeamDefStore.agentTeamDefinitions.length === 0) {
-    agentTeamDefStore.fetchAllAgentTeamDefinitions();
   }
 });
 </script>

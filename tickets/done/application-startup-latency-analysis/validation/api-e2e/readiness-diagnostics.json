@@ -1,0 +1,116 @@
+{
+  "probe": "separate read-only strict readiness diagnostic corroboration",
+  "writesRequested": false,
+  "admittedTeams": 518,
+  "admittedOrgs": 17,
+  "diagnosticCount": 8,
+  "diagnosticCodeCounts": {
+    "agent_team:ROOT_RUN_PACKAGE_MANIFEST_INVALID": 8
+  },
+  "diagnostics": [
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "292e51e0e06b5d44",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "f593b128cf41177b",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "096583f3ddda4cf5",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "8ea2a8bd2ba8d0f4",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "9705d785ed4cd89c",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "caa7c7eb8eb71a5e",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "c49fc1138d5663b9",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    },
+    {
+      "family": "agent_team",
+      "code": "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
+      "rootIdHash": "b9e32cdda05983de",
+      "absentFromPublishedIndex": true,
+      "keys": [
+        "code",
+        "packagePath",
+        "reason",
+        "rootRunId",
+        "rootSubjectKind"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "at": "2026-09-13T03:43:06.820189+00:00",
+  "directUserMessage": "Actually, the majority of the tests are actually working. I would say that we can finalize the tickets. Instead of don't finalize to the personal branch, finalize to your own branch, to the task branch itself, we can finalize to the task branch itself, I mean the current branch itself. Instead of we don't finalize to the origin personal branch, because then we can push the task branch into remote, because we can use the task branch in the future as the base branch to fix additional problems that we noticed.",
+  "effectiveScope": "Finalize/archive/commit/push current task branch only; retain branch/worktree as future fix base; no personal merge/push; no release/deployment/cutover",
+  "acceptance": "Current package successful with three known accepted issues; CRR091 original explicit acceptance preserved",
+  "newApiPass": false,
+  "nativeOrMigrationAuthorization": false
+}

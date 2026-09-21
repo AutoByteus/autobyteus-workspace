@@ -48,13 +48,14 @@ describe('MemoryIngestInputProcessor', () => {
     context.state.activeTurn = { turnId: 'turn_0001' } as any;
 
     const message = new AgentInputUserMessage('Hello');
-    const result = await processor.process(message, context, {} as any);
+    const result = await processor.process(message, context, { agentInputUserMessage: message } as any);
 
     expect(result).toBe(message);
     expect(memoryManager.ingestUserMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: 'Hello' }),
       'turn_0001',
-      'LLMUserMessageReadyEvent'
+      'LLMUserMessageReadyEvent',
+      []
     );
   });
 
@@ -68,7 +69,7 @@ describe('MemoryIngestInputProcessor', () => {
     context.state.activeTurn = { turnId: 'turn_existing' } as any;
 
     const message = new AgentInputUserMessage('Tool result', SenderType.TOOL);
-    const result = await processor.process(message, context, {} as any);
+    const result = await processor.process(message, context, { agentInputUserMessage: message } as any);
 
     expect(result).toBe(message);
     expect(memoryManager.ingestUserMessage).not.toHaveBeenCalled();

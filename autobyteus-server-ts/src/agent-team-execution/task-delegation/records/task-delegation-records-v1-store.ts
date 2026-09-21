@@ -2,10 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { TaskDelegationRecordsFileV1 } from "../task-delegation-record-v1.js";
 import {
-  getTeamRunFileCommitWriter,
-  type TeamRunFileCommitWriter,
-  type TeamRunFileWriteResult,
-} from "../../../run-history/store/team-run-file-commit-writer.js";
+  getAtomicRunPackageFileCommitWriter,
+  type AtomicRunPackageFileCommitWriter,
+  type RunPackageFileWriteResult,
+} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { validateTaskDelegationRecordsV1Payload } from "./task-delegation-records-v1-schema.js";
 
 export const TASK_DELEGATION_RECORDS_V1_FILE_NAME = "task_delegation_records.json";
@@ -19,7 +19,7 @@ const isMissingFile = (error: unknown): boolean =>
 
 export class TaskDelegationRecordsV1Store {
   constructor(
-    private readonly writer: TeamRunFileCommitWriter = getTeamRunFileCommitWriter(),
+    private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
   ) {}
 
   async read(
@@ -40,7 +40,7 @@ export class TaskDelegationRecordsV1Store {
   async write(
     teamMemoryDir: string,
     records: TaskDelegationRecordsFileV1,
-  ): Promise<TeamRunFileWriteResult> {
+  ): Promise<RunPackageFileWriteResult<"task_records">> {
     const normalized = validateTaskDelegationRecordsV1Payload(
       records,
       records.rootTeamRunId,

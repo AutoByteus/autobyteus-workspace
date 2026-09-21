@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -8,12 +9,16 @@ import { createTeamAgentExecutionBinding } from "../../../src/agent-team-executi
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 const rootDefinition = {
+  id: "team-def-1",
   name: "Support Team",
+  description: "A flat support Team.",
+  instructions: "Coordinate support work.",
   coordinatorMemberName: "Coordinator",
   nodes: [
-    { memberName: "Coordinator", refType: "agent", refScope: "shared", ref: "agent-def-1" },
-    { memberName: "Reviewer", refType: "agent", refScope: "shared", ref: "agent-def-2" },
+    { memberName: "Coordinator", refScope: "shared", ref: "agent-def-1" },
+    { memberName: "Reviewer", refScope: "shared", ref: "agent-def-2" },
   ],
+  handoffs: [],
 };
 
 const launchConfig = (
@@ -52,7 +57,7 @@ const createSubject = (
   },
   managedRun: unknown = activeRun,
 ) => {
-  const executionTree = { schemaVersion: 1, rootTeam: { teamRunId: "team-mixed-1" } };
+  const executionTree = { schemaVersion: 2, rootTeam: { teamRunId: "team-mixed-1" } };
   const agentTeamRunManager = {
     getActiveTeamRun: vi.fn().mockReturnValue(activeRun),
     getManagedTeamRun: vi.fn().mockReturnValue(managedRun),
@@ -94,9 +99,17 @@ const createSubject = (
     teamRunHistoryCatalogService,
     workspaceManager,
     memoryDir: "/tmp/team-run-service-current-test",
+    memoryLocationService: {} as never,
     agentRunIdentityAllocator,
     teamRunIdentityAllocator,
     tokenUsageReadiness,
+    definitionAdmissionService: {
+      requireAvailable: vi.fn(async (_kind: string, id: string) => {
+        const definition = definitions.get(id);
+        if (!definition) throw new Error(`Definition '${id}' is unavailable.`);
+        return { status: "available", subjectKind: "agent_team", definition };
+      }),
+    } as never,
   });
   return {
     service,
@@ -194,7 +207,7 @@ describe("TeamRunService current root lifecycle", () => {
     eventListener!({ event: {
       eventSourceType: TeamRunEventSourceType.AGENT,
       execution: createTeamAgentExecutionBinding({
-        rootTeamRunId: "team-1",
+        root: createTeamRootExecutionIdentity("team-1"),
         memberAddress: "/Coordinator",
         agentRunId: "member-run-1",
       }),
@@ -296,7 +309,7 @@ describe("TeamRunService current root lifecycle", () => {
         launchConfig("/Reviewer"),
         launchConfig("/RemovedLegacySelector"),
       ],
-    })).rejects.toThrow("unknown Team member '/RemovedLegacySelector'");
+    })).rejects.toThrow("unknown direct Team member '/RemovedLegacySelector'");
     expect(mocks.teamRunIdentityAllocator.allocateForTeamDefinitionName).toHaveBeenCalledTimes(1);
     expect(mocks.agentRunIdentityAllocator.allocateForAgentDefinition).toHaveBeenCalledTimes(2);
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();

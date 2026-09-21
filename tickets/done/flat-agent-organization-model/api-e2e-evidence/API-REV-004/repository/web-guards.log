@@ -1,0 +1,13 @@
+== guard:web-boundary ==
+
+> autobyteus@1.4.63 guard:web-boundary /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+== guard:localization-boundary ==
+
+> autobyteus@1.4.63 guard:localization-boundary /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+exit_status=0

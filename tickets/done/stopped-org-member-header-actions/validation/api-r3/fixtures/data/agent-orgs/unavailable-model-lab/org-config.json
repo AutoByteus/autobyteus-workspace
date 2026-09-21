@@ -1,0 +1,17 @@
+{
+  "members": [
+    {
+      "memberName": "worker",
+      "ref": "agent-org-owned-agent:unavailable-model-lab:worker",
+      "refType": "agent",
+      "refScope": "org_local"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "synthetic-unavailable-model-917",
+    "llmConfig": null
+  }
+}

@@ -1,0 +1,22 @@
+audited_at_utc=2026-09-02T07:46:53Z
+branch=requirements/flat-agent-organization-model
+head=24faedbea10bf0255747e23c67fe399af9055308
+origin_personal=5fb16658e7bd2aefd750f99eb596a17382e161ac
+merge_head_present=no
+unmerged_paths=0
+diff_check=PASS
+artifact_docs-sync-report.md=present
+artifact_handoff-summary.md=present
+artifact_release-deployment-report.md=present
+artifact_delivery-revision-record.md=present
+conflict_evidence=present
+delivery_revision_record_dr001=PASS
+status_begin
+## requirements/flat-agent-organization-model
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+status_end
+RESULT=PASS

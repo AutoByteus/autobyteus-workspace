@@ -1,0 +1,24 @@
+API/E2E artifact audit
+required_files=14
+OK file tickets/in-progress/org-history-unified-row-target/api-e2e-coverage-investigation.md size=14583 sha256=664fb43ec266b82f98c8fa1e6f2ce83488a2746623593a2f6f014d86cffdc578
+OK file tickets/in-progress/org-history-unified-row-target/api-e2e-execution-coverage-report.md size=11956 sha256=16090e500ea1fde3f5917440acb96b538236b7d9a9a32326c2ccc790b42e0ebe
+OK file tickets/in-progress/org-history-unified-row-target/api-e2e-test-case-ledger.md size=7595 sha256=ac6673c659611090ba11bbcc4dedded066d8a9e8a7bcfb518db877c2efe68135
+OK file tickets/in-progress/org-history-unified-row-target/api-e2e-revision-record.md size=1642 sha256=c62e3b323da4ad3fa166214e0621cdda8b799e117382646f5b782d681e2ef78f
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/browser-results.json size=8927 sha256=d4de30c6fb5365fe1539860b79bf2b470565fbe969cb90b31c707f00ad1ebe35
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/manifest-check.json size=1032 sha256=841f10c3ea7a1e8b176e66a8fea3c75e5c4430ab20101971d018f96ab58eb4cb
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/persistence-comparison.json size=770 sha256=7452428074e7508000d2a8a4d70956e5b1b0ec737d1ac83afdd8adc8b139315f
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/setup-isolation-correction.json size=2606 sha256=f716d39534f427d2c68bc52190233e3fbe1ed6f766362275543e939986512f98
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/b01-unified-expanded.png size=90724 sha256=68bb3fae96f3ecf86162894e38ba06f22b93a3112ba12e52c17f453687e9f758
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/b03-stop-isolation.png size=92385 sha256=4fd76fd929511b188dd5e5bb097af1430f25cf756ea069a77e7a54e42ccad5b3
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/b04-team-comparator.png size=289338 sha256=ae009367be093d6aba7aaf62786d4bfa32d0f6595bf231c136500338dd848cf7
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/repository-tests.log size=2442 sha256=e46d7700d7b927057263e08a36f9a67cc82185f98bbc9952b131b2eda6780b05
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/server-build.log size=1966 sha256=ac867f2b64813b630bd68b66943b70bed998c555361de89075a552b0eb5d37dd
+OK file tickets/in-progress/org-history-unified-row-target/validation/api-e2e/process-cleanup-check.txt size=506 sha256=f65d2586fe2259a9778f81be6cb8beaca3c361c857ce627173ce08005aa19aa2
+OK json tickets/in-progress/org-history-unified-row-target/validation/api-e2e/browser-results.json
+OK json tickets/in-progress/org-history-unified-row-target/validation/api-e2e/manifest-check.json
+OK json tickets/in-progress/org-history-unified-row-target/validation/api-e2e/persistence-comparison.json
+OK json tickets/in-progress/org-history-unified-row-target/validation/api-e2e/setup-isolation-correction.json
+OK report result/confidence Pass/96.9%
+OK ledger all cases Pass and reconciled
+OK isolated profile absent
+OK audit complete

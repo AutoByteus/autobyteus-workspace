@@ -1,0 +1,1 @@
+{"when":"When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.","recipient_address":"/software_engineering_team/code_reviewer"}

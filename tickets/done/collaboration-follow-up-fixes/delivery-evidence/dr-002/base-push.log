@@ -1,0 +1,6 @@
+remote: 
+remote: GitHub found 933 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 420 high, 423 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To https://github.com/AutoByteus/autobyteus-workspace.git
+   345d8e0be..a88cad9e3  requirements/flat-agent-organization-model -> requirements/flat-agent-organization-model

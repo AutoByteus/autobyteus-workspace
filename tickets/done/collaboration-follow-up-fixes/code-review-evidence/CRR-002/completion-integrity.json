@@ -1,0 +1,35 @@
+{
+  "at": "2026-09-13T12:24:57.569566+00:00",
+  "result": "Pass",
+  "reviewResult": "Not Applicable",
+  "revision": "CRR-002",
+  "head": "270d0d72ec8b2feec2b4699b1687f5caa8707108",
+  "headUnchanged": true,
+  "sourceFilesVerified": 39,
+  "sourceReportUnchanged": true,
+  "sourceReportSha256": "35e782ea8740474890a209069a8c8c6b201377911159a41d8bcf28d124009081",
+  "priorCRR001EntryUnchanged": true,
+  "incomingReferencesPreserved": 458,
+  "incomingBytesUnchangedExceptOwnedRevisionRecord": true,
+  "changedIncoming": [
+    "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/code-review-revision-record.md"
+  ],
+  "apiManifestFilesVerifiedAtEntry": 233,
+  "apiDurableChanges": [],
+  "trackedChanges": [],
+  "stagedChanges": [],
+  "unmerged": [],
+  "lookupCount": 465,
+  "noApiWorkflowRerun": true,
+  "noSourceScorecardReopening": true,
+  "ownedChanges": [
+    "api-e2e-test-review-report.md",
+    "code-review-revision-record.md",
+    "code-review-evidence/CRR-002/"
+  ],
+  "canonicalTestReportSha256": "8148834cffe4cbd14b9ca7660b247f2db8c2a74c35456558f06e690bef17a72c",
+  "revisionRecordSha256": "fad89188d7abc58f3516662215fb3cfecfade753deb7687f7e47d858d332c8fe",
+  "historicalPublicationCause": "UNASSIGNED; current API functional acceptance is separate",
+  "recipient": "/software_engineering_team/delivery_engineer",
+  "handoff": "Pending messaging confirmation"
+}

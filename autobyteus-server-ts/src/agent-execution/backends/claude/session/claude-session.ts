@@ -377,7 +377,7 @@ export class ClaudeSession {
     const configuredToolingOptions = resolveClaudeSessionToolingOptions({
       runtimeToolExposure: this.runContext.runtimeContext.runtimeToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
-      memberTeamContext: this.runContext.config.memberTeamContext,
+      memberExecutionContext: this.runContext.config.memberExecutionContext,
     });
     const agentToolsMcpDescriptor = (
       configuredToolingOptions.agentToolsMcpToolingRequested ||
@@ -388,7 +388,7 @@ export class ClaudeSession {
     const toolingOptions = resolveClaudeSessionToolingOptions({
       runtimeToolExposure: this.runContext.runtimeContext.runtimeToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
-      memberTeamContext: this.runContext.config.memberTeamContext,
+      memberExecutionContext: this.runContext.config.memberExecutionContext,
       agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
     });
     const mcpServers = await buildClaudeSessionMcpServerConfig({

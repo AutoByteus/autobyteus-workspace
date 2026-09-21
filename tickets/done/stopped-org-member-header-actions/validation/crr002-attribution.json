@@ -1,0 +1,31 @@
+{
+  "head": "36c149b26c429a0ca6689442fe2aea067533a638",
+  "all23ImplementationHashesMatch": true,
+  "pathEvidence": [
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "sha256": "8590f5689e11803c80988159870b9530af0e939b55a0b34e1746384e75448395",
+      "unchanged_vs_HEAD": false
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "sha256": "ae1bdf852e020a4f453502bc95770f2b239062a2258cdcee716b8be956839176",
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgRunConfigStore.ts",
+      "sha256": "c3841140d4df5b8263966b0a85214ee8f5495d9101b11da85a07cd1617176fc2",
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/TeamWorkspaceView.vue",
+      "sha256": "a67301cf4abaa0eee86f13b383becba6ed5c662e6847dd5d76e90104605670eb",
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "autobyteus-web/composables/useDefinitionLaunchDefaults.ts",
+      "sha256": "d151ec19dc95f25b619d389191bb079abc5516e2fbc7a9eebc47a4a255eea1a7",
+      "unchanged_vs_HEAD": true
+    }
+  ]
+}

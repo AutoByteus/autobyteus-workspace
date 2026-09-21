@@ -1,0 +1,232 @@
+{
+  "missingTreeRootCount": 8,
+  "allSourcesUnchanged": true,
+  "newTargetCount": 0,
+  "roots": [
+    {
+      "rootId": "team_classroomsimulation_1ad20b5a",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 0,
+      "sourceAggregateSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceUnchanged": true,
+      "files": []
+    },
+    {
+      "rootId": "team_classroomsimulation_3629e668",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 0,
+      "sourceAggregateSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceUnchanged": true,
+      "files": []
+    },
+    {
+      "rootId": "team_classroomsimulation_77474497",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 0,
+      "sourceAggregateSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceUnchanged": true,
+      "files": []
+    },
+    {
+      "rootId": "team_classroomsimulation_7ebcecc4",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 0,
+      "sourceAggregateSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceUnchanged": true,
+      "files": []
+    },
+    {
+      "rootId": "team_classroomsimulation_8661ebcb",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 0,
+      "sourceAggregateSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceUnchanged": true,
+      "files": []
+    },
+    {
+      "rootId": "team_northstar-operating-company_6af4b5ba",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 19,
+      "sourceAggregateSha256": "b1c7c087e7685a17801e204ee2549cd66abbd887623034fd5183459a2335da27",
+      "sourceUnchanged": true,
+      "files": [
+        {
+          "path": "ceo_e62dd2ebee38e5be/raw_traces_active.jsonl",
+          "size": 3200,
+          "sha256": "59056a8e85678c8abf4e81c3ca9c3015b06ea2c1cbb9674c5901c7f95749b365"
+        },
+        {
+          "path": "ceo_e62dd2ebee38e5be/working_context_snapshot.json",
+          "size": 2510,
+          "sha256": "f7663bc6af15f71328c935103fca80ddd425ca61ffd07f029d3ee7d0eeaa9401"
+        },
+        {
+          "path": "cfo_06ca78952c6281cb/file_changes.json",
+          "size": 481,
+          "sha256": "94889cdead18ef5b58dcd61e8821be0f4b85f02544fde91dec54806505e9358c"
+        },
+        {
+          "path": "cfo_06ca78952c6281cb/raw_traces_active.jsonl",
+          "size": 43943,
+          "sha256": "248f42da47c6c96acdc41a49ae6f169f291309c81283cb5aa2c9ff0fdddbfe65"
+        },
+        {
+          "path": "cfo_06ca78952c6281cb/working_context_snapshot.json",
+          "size": 2521,
+          "sha256": "00fbc7497dab87709afeb46546ad50dd29da8f79d45d34edb3646ae3ead8ec6a"
+        },
+        {
+          "path": "cro_934a5faa276c1bf6/raw_traces_active.jsonl",
+          "size": 8440,
+          "sha256": "964605f89115ad02d2ac56723f7b65f63714c9708bd6d70a0f8ba97f58e05c65"
+        },
+        {
+          "path": "cro_934a5faa276c1bf6/working_context_snapshot.json",
+          "size": 2520,
+          "sha256": "146a50f88e4bf773fee59cb99b1cfe492878525fd69064e39049b0dae2609fc6"
+        },
+        {
+          "path": "finance_people_org_controller_b3a9062bef3ce1ea/file_changes.json",
+          "size": 490,
+          "sha256": "19a88d794a6ad5ae558e28783323fbb45824b1e223aa4adfdd1fd39314845416"
+        },
+        {
+          "path": "finance_people_org_controller_b3a9062bef3ce1ea/raw_traces_active.jsonl",
+          "size": 52647,
+          "sha256": "514d37656ef4c9feed61f584c3647d7cd863023730f3ca0ddba7f726ad693c3f"
+        },
+        {
+          "path": "finance_people_org_controller_b3a9062bef3ce1ea/working_context_snapshot.json",
+          "size": 39431,
+          "sha256": "1d1f3fb15c048264a3ab1c93f397be15a7b53dde68e9d7a4792db81a498c606e"
+        },
+        {
+          "path": "finance_people_org_people_ops_lead_cf69091790df6bf2/file_changes.json",
+          "size": 479,
+          "sha256": "34e6a9dc8de6e1f799ad78a24d75622e4583f3837ab85cb3bfde27d5c93ff4ab"
+        },
+        {
+          "path": "finance_people_org_people_ops_lead_cf69091790df6bf2/raw_traces_active.jsonl",
+          "size": 11994,
+          "sha256": "1a131e1fa3e4c9e75a5ae67a46e485b3a3d6cdffcb7547ecfd7883bb438d9c3b"
+        },
+        {
+          "path": "finance_people_org_people_ops_lead_cf69091790df6bf2/working_context_snapshot.json",
+          "size": 13867,
+          "sha256": "5e8bc55797f10cf2b6da7c263fd664644ca3ce262d7160783df7eb9f45843b02"
+        },
+        {
+          "path": "finance_people_org_vp_finance_bf4f937a76c71427/file_changes.json",
+          "size": 531,
+          "sha256": "a51fb87c2fd3f0064d08f2d6cf14a34e83cbfdf060237689c1057d60fe950ca9"
+        },
+        {
+          "path": "finance_people_org_vp_finance_bf4f937a76c71427/raw_traces_active.jsonl",
+          "size": 78100,
+          "sha256": "9da9133a0e24f461878d937121d02fc89ca23979534c5d14b513335e46ee8612"
+        },
+        {
+          "path": "finance_people_org_vp_finance_bf4f937a76c71427/working_context_snapshot.json",
+          "size": 69805,
+          "sha256": "8ac6e8f6a6fb9f28720925f44adead7d9aedc816becc73200a0bdc08b63576a3"
+        },
+        {
+          "path": "team_communication_messages.json",
+          "size": 30924,
+          "sha256": "b31ebe9f5438e30d39226c7b95d032fab9793b1c92dabd2adbe201001e9bbd6a"
+        },
+        {
+          "path": "team_communication_messages.json.backup-2026-07-01T16-45-14-714Z",
+          "size": 40653,
+          "sha256": "d6e5f6f0b1662b40610e3842331af54338465d36f485f05ce5f7b7d9947d6108"
+        },
+        {
+          "path": "team_run_metadata.json",
+          "size": 31137,
+          "sha256": "c4dd5d0c02e5a7d96005bae37fb16701371482dc7010c452426c74a833458248"
+        }
+      ]
+    },
+    {
+      "rootId": "team_software-engineering-team_359ede01",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 2,
+      "sourceAggregateSha256": "3f182807bd5c89d2fc5a700ad706281ab26364d62d4c7544e234a76b4bbed9cc",
+      "sourceUnchanged": true,
+      "files": [
+        {
+          "path": "solution_designer_72f34680755163ef/raw_traces_active.jsonl",
+          "size": 7575,
+          "sha256": "15596e58b754f9bd5095fdd32aa24294ca4207ca13ef3be7b8267e3a43868eb5"
+        },
+        {
+          "path": "solution_designer_72f34680755163ef/working_context_snapshot.json",
+          "size": 122106,
+          "sha256": "c173629be8b8f6ebb88aaa166bd36a1f57d7d5833eefadacdabbad18c652ed05"
+        }
+      ]
+    },
+    {
+      "rootId": "team_video-tutorial-creation-team_48955b3c",
+      "sourceExists": true,
+      "targetExists": false,
+      "sourceFileCount": 9,
+      "sourceAggregateSha256": "f65ce62046d8439c2058e526253922eba91801e3f64ff2c38f9e08b8514ad213",
+      "sourceUnchanged": true,
+      "files": [
+        {
+          "path": "team_communication_messages.json",
+          "size": 4400,
+          "sha256": "773e1d14bfa9d107d16aa647a2bb00189b519b5f433282eef827a28cecb02c85"
+        },
+        {
+          "path": "team_communication_messages.json.backup-2026-07-01T16-45-15-067Z",
+          "size": 5172,
+          "sha256": "a00fa8b0ad96efbebb40a67a5cd3cf5d17b532e02bc0f64726391cc862947d6a"
+        },
+        {
+          "path": "team_run_metadata.json",
+          "size": 2019,
+          "sha256": "90164ad89e55fc001b76d4fc660d4e7768d69bceb45c665458554876fb872172"
+        },
+        {
+          "path": "tutorialvideoassembler_a6401cbc2379c3ad/context_files/ctx_224284766ac4__image.png",
+          "size": 275063,
+          "sha256": "2c9256a711b471af7708f5b7e5f025c2c254ab644c33e9c5214d31b4eb3af05e"
+        },
+        {
+          "path": "tutorialvideoassembler_a6401cbc2379c3ad/file_changes.json",
+          "size": 28630,
+          "sha256": "68a771985ed6a374e12154220622977f311a1b320d8d14ecc053722fe3d24ec3"
+        },
+        {
+          "path": "tutorialvideoassembler_a6401cbc2379c3ad/raw_traces_active.jsonl",
+          "size": 607185,
+          "sha256": "8b522b98006b17610fa8926b84cb5902f199fbf5dab0e81fe65673cb3ca01461"
+        },
+        {
+          "path": "tutorialvoiceoverwriter_908288232bbc59eb/file_changes.json",
+          "size": 605,
+          "sha256": "14492f59921719acb3f23c6b55cbd46f616f22d9402ddabbc3cc9049418d3804"
+        },
+        {
+          "path": "tutorialvoiceoverwriter_908288232bbc59eb/raw_traces_active.jsonl",
+          "size": 28274,
+          "sha256": "e8532530b9db3cbe4ed6b6921492e569ebbb7d1a0ea7c97501c8ef785cbe2e8c"
+        },
+        {
+          "path": "tutorialvoiceoverwriter_908288232bbc59eb/working_context_snapshot.json",
+          "size": 41986,
+          "sha256": "4ab8888cac36070b7d87114fb54b768e6f96aec62bde0459477664974b7845a9"
+        }
+      ]
+    }
+  ]
+}

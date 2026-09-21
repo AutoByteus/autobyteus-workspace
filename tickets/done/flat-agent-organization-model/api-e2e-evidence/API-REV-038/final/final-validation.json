@@ -1,0 +1,28 @@
+{
+  "revision": "API-REV-038",
+  "completed": "2026-09-13T03:21:00.373395+00:00",
+  "result": "Fail",
+  "confidencePercent": 85.6,
+  "taskSize": "Large",
+  "architecturalRisk": "High",
+  "inputRoute": "Reviewed",
+  "source": "6e2d7997444383d5585225d9febbc1ee54247714",
+  "head": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "groups": {
+    "Pass": 38,
+    "Fail": 3,
+    "N/A": 1
+  },
+  "acceptedDeviationGroups": 2,
+  "unwaivedFinding": "API-FIND-040",
+  "remainingPlannedUserJourneys": 0,
+  "repositoryMainCommands": 34,
+  "repositoryFiles": 436,
+  "repositoryTests": 2708,
+  "structuredReceipts": 320,
+  "originalNonzero": 37,
+  "cleanupPass": true,
+  "durableChangedThisRound": [],
+  "successfulProportionalReview": "Still required after eventual cumulative Pass; not performed now",
+  "historicalPrior": "API37 Fail69.3, not inferred or overwritten"
+}

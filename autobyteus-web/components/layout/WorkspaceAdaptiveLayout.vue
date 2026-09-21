@@ -15,7 +15,9 @@
         :style="centerPaneStyle"
       >
         <div data-test="workspace-center-content-shell" class="relative flex-1 min-h-0 overflow-hidden">
-          <RunConfigPanel v-if="showSelectedRunConfig" />
+          <AgentOrgRunConfigPanel v-if="showAgentOrgRunConfig" />
+          <AgentOrgWorkspaceView v-else-if="showAgentOrgActive" />
+          <RunConfigPanel v-else-if="showSelectedRunConfig" />
           <AgentWorkspaceView v-else-if="isAgentSelected" />
           <TeamWorkspaceView v-else-if="isTeamSelected" />
           <RunConfigPanel v-else-if="hasPendingRunConfig" />
@@ -95,7 +97,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useRightPanel } from '~/composables/useRightPanel';
@@ -104,6 +106,8 @@ import { useResponsiveWorkspaceShellState } from '~/composables/layout/useRespon
 import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue';
 import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
+import AgentOrgRunConfigPanel from '~/components/workspace/config/AgentOrgRunConfigPanel.vue';
+import AgentOrgWorkspaceView from '~/components/workspace/org/AgentOrgWorkspaceView.vue';
 import WorkspaceCenterLoadingOverlay from '~/components/layout/WorkspaceCenterLoadingOverlay.vue';
 import RightSideTabs from './RightSideTabs.vue';
 import RightSidebarStrip from './RightSidebarStrip.vue';
@@ -122,6 +126,7 @@ defineProps<{
 
 const { t } = useLocalization();
 const appLayoutStore = useAppLayoutStore();
+const route = useRoute();
 const router = useRouter();
 const { resolvePrimaryRoute } = useShellPrimaryNavigation();
 const selectionStore = useAgentSelectionStore();
@@ -177,6 +182,10 @@ onBeforeUnmount(() => {
 
 const isAgentSelected = computed(() => selectionStore.selectedType === 'agent');
 const isTeamSelected = computed(() => selectionStore.selectedType === 'team');
+const showAgentOrgRunConfig = computed(() => route.query?.rootSubjectKind === 'agent_org' && route.query.mode === 'configuration');
+const showAgentOrgActive = computed(() => route.query?.rootSubjectKind === 'agent_org'
+  && (route.query.mode === 'active' || route.query.mode === 'history')
+  && Boolean(route.query.orgRunId));
 const showSelectedRunConfig = computed(() =>
   Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
 );

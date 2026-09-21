@@ -3,7 +3,8 @@ import { createUnionType, Field, Float, ID, Int, ObjectType } from "type-graphql
 @ObjectType("EventMonitorActiveTraceAttachment")
 class EventMonitorActiveTraceAttachmentObject {
   @Field(() => ID) attachmentId!: string;
-  @Field(() => String) mediaType!: string;
+  @Field(() => String) fileType!: string;
+  @Field(() => String, { nullable: true }) fileName!: string | null;
   @Field(() => String) locator!: string;
 }
 

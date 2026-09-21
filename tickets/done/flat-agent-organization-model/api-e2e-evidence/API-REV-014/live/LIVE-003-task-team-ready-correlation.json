@@ -1,0 +1,36 @@
+{
+  "taskRecord": {
+    "taskId": "task_a7edf3fb6dfe49e3b032e0a18b4c270f",
+    "delegatorAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+    "recipientAddress": "/support-team",
+    "taskExecution": {
+      "teamRunId": "aorg_support_pair_381ed079b0f64287a7b9a38108a90371"
+    },
+    "description": "As the new task Team coordinator, remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-TEAM-READY and wait.",
+    "referenceFiles": [],
+    "status": "active",
+    "updates": [],
+    "createdAt": "2026-09-06T11:58:28.471Z"
+  },
+  "teamRunId": "aorg_support_pair_381ed079b0f64287a7b9a38108a90371",
+  "coordinatorAgentRunId": "aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc",
+  "tracePath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574/aorg_e2e_research_squad_4c4c0f8443ac46c7a79698725bfbbf54/aorg_support_pair_381ed079b0f64287a7b9a38108a90371/aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc/raw_traces_active.jsonl",
+  "readyEvents": [
+    {
+      "id": "rt_1788695916315_8784a424-3a24-4ca7-b180-dccbdc940b09",
+      "ts": 1788695916.315,
+      "turn_id": "01a07695-9102-7b11-86f2-95c8be2f1d01",
+      "seq": 2,
+      "trace_type": "assistant",
+      "content": "APIREV14-TASK-TEAM-READY",
+      "source_event": "SEGMENT_END"
+    }
+  ],
+  "assertions": {
+    "taskCountThree": true,
+    "statusActive": true,
+    "exactTeamRun": true,
+    "exactOneReady": true,
+    "noSubmission": true
+  }
+}

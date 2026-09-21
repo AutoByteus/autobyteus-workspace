@@ -1,0 +1,131 @@
+{
+  "start": 1789625064517,
+  "observations": [
+    {
+      "at": 1789625065075,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065125,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065305,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065464,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065508,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065666,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065718,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065795,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625065966,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625066743,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625066822,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625066858,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625066906,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625067150,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625067239,
+      "org": false,
+      "agent": false,
+      "team": false,
+      "conversation": false
+    },
+    {
+      "at": 1789625067340,
+      "org": true,
+      "agent": true,
+      "team": true,
+      "conversation": false
+    },
+    {
+      "at": 1789625067393,
+      "org": true,
+      "agent": true,
+      "team": true,
+      "conversation": false
+    },
+    {
+      "at": 1789625067488,
+      "org": true,
+      "agent": true,
+      "team": true,
+      "conversation": true
+    }
+  ]
+}

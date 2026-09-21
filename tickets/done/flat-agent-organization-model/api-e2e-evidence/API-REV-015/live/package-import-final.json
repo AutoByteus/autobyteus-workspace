@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-06T12:52:14.346Z",
+  "body": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAgent Packages\n\nLink a local package path or paste a public GitHub repository URL. GitHub packages are installed into app-managed storage, while local paths remain in place.\n\nBuilt-in Storage\nBuilt-in | Shared Agents: 52 | Team-local Agents: 0 | Teams: 1 | Applications: 0\n/home/autobyteus/data\nBuilt-in package is platform managed.\nDefault\naorg-api-rev-002-agent-package\nLocal Path | Shared Agents: 4 | Team-local Agents: 0 | Teams: 2 | Applications: 0\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove\nPackage Path Or GitHub URL\nImport Package",
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "errorText": false,
+  "hasPkg": true,
+  "counts": true,
+  "onlyTestAdditional": true
+}

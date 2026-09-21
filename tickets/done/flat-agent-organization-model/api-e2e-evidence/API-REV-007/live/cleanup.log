@@ -1,0 +1,71 @@
+timestamp=2026-09-02T20:46:10Z
+--- fixture after ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+fixture_file_count=19
+artifact=5bfc54c11ef82e4fec217c84dc66887965cf98ac
+diff_check=pass
+--- stopping backend ---
+backend_pid=23669
+backend_exited_poll=2
+--- stopping renderer ---
+web_pid=15676
+web_exited_poll=4
+--- ports after ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+--- exact owned process scan ---
+  PID STAT CMD
+--- working tree status ---
+ M README.md
+ M autobyteus-server-ts/docs/PROJECT_OVERVIEW.md
+ M autobyteus-server-ts/docs/README.md
+ M autobyteus-server-ts/docs/modules/README.md
+ M autobyteus-server-ts/docs/modules/agent_team_definition.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-web/AGENTS.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/docs/modules/agent_orgs.md
+?? autobyteus-web/docs/agent_orgs.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+?? tickets/in-progress/flat-agent-organization-model/release-notes.md
+--- removed owned generated prerequisites ---
+autobyteus-application-backend-sdk/dist
+autobyteus-application-sdk-contracts/dist
+--- ports after generated cleanup ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+--- final diff check ---
+diff_check=pass

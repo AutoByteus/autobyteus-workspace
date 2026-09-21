@@ -1,0 +1,95 @@
+timestamp=2026-09-06T13:40:29Z
+3beb46afaa3534fa9d79b39803b8aa3a7415c77bb6b6596a590fa873678c66a1  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30/agent_org_communication_messages.json
+f65ef1ef8171f73484a3ecb90358e90dee7fa895dbeabd90d8194947bb2cfb09  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30/agent_org_run_execution_tree.json
+e2df5607a3a6386a6bca1341d66a93a9e17577b5521b2caf14733c5c0f28fc14  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30/agent_org_task_delegation_records.json
+--- execution tree ---
+{
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-06T13:33:41.214Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+        {
+            "from": "/lead",
+            "to": "/verifier",
+            "rules": [
+                "When the lead response needs an exact verification marker."
+            ]
+        }
+    ],
+    "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "aorg-direct-agents-org",
+        "orgDefinitionName": "AORG E2E Direct Agents Org",
+        "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+        "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": {
+                "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+        },
+        "members": [
+            {
+                "address": "/lead",
+                "agentDefinitionId": "aorg-lead",
+                "role": null,
+                "description": null,
+                "agentRunId": "aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+                "platformAgentRunId": "01a076ec-bbed-7dd2-9fac-05f5fd08f94a",
+                "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                        "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                }
+            },
+            {
+                "address": "/verifier",
+                "agentDefinitionId": "aorg-verifier",
+                "role": null,
+                "description": null,
+                "agentRunId": "aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+                "platformAgentRunId": "01a076ec-bc4d-74b2-ae0e-cd8e8aaf4c37",
+                "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                        "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                }
+            }
+        ],
+        "taskExecutions": []
+    }
+}
+--- communication ---
+{
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+    "messages": [
+        {
+            "messageId": "collabmsg_bd3wSpHElhH5XY_IQyzNVj8en-IyGgdK",
+            "senderAgentRunId": "aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+            "receiverAgentRunId": "aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+            "content": "APIREV15-DIRECT-TO-DIRECT-MSG-001",
+            "messageType": "agent_message",
+            "referenceFiles": [
+                "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt"
+            ],
+            "createdAt": "2026-09-06T13:34:10.276Z"
+        }
+    ]
+}

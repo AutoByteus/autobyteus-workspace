@@ -1,0 +1,6 @@
+{"type":"request","id":1,"at":"2026-09-18T04:34:16.614Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":1,"status":200,"at":"2026-09-18T04:34:25.706Z"}
+{"type":"request","id":2,"at":"2026-09-18T04:35:05.646Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":2,"status":200,"at":"2026-09-18T04:35:08.503Z"}
+{"type":"request","id":3,"at":"2026-09-18T04:35:37.885Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":3,"status":200,"at":"2026-09-18T04:35:40.384Z"}

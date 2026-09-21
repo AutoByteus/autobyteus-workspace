@@ -1,0 +1,57 @@
+{
+  "source": "fresh exact base Electron app.log",
+  "baseRevision": "4e84b76a918253da22fd4a382c653cb47744dc6c",
+  "milestones": [
+    {
+      "name": "application_started",
+      "timestampUtc": "2026-09-18T07:45:40.473Z",
+      "elapsedFromApplicationStartMs": 0.0
+    },
+    {
+      "name": "window_created",
+      "timestampUtc": "2026-09-18T07:45:40.822Z",
+      "elapsedFromApplicationStartMs": 349.0
+    },
+    {
+      "name": "server_process_spawned",
+      "timestampUtc": "2026-09-18T07:45:41.534Z",
+      "elapsedFromApplicationStartMs": 1061.0
+    },
+    {
+      "name": "prisma_started",
+      "timestampUtc": "2026-09-18T07:45:43.219Z",
+      "elapsedFromApplicationStartMs": 2746.0
+    },
+    {
+      "name": "prisma_completed",
+      "timestampUtc": "2026-09-18T07:45:43.589Z",
+      "elapsedFromApplicationStartMs": 3116.0
+    },
+    {
+      "name": "flat_org_migration_warning",
+      "timestampUtc": "2026-09-18T07:45:43.791Z",
+      "elapsedFromApplicationStartMs": 3318.0
+    },
+    {
+      "name": "settings_initialized",
+      "timestampUtc": "2026-09-18T07:46:10.742Z",
+      "elapsedFromApplicationStartMs": 30269.0
+    },
+    {
+      "name": "server_listening",
+      "timestampUtc": "2026-09-18T07:46:11.233Z",
+      "elapsedFromApplicationStartMs": 30760.0
+    },
+    {
+      "name": "server_ready",
+      "timestampUtc": "2026-09-18T07:46:11.401Z",
+      "elapsedFromApplicationStartMs": 30928.0
+    }
+  ],
+  "derivedIntervalsMs": {
+    "applicationStartToServerReady": 30928.0,
+    "postMigrationWarningToSettingsInitialization": 26951.0,
+    "settingsInitializationToServerReady": 659.0
+  },
+  "privacy": "No user identifiers, paths, payloads, or conversation contents retained."
+}

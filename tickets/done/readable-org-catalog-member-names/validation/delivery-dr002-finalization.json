@@ -1,0 +1,23 @@
+{
+  "ticket": "ORG-CATALOG-NAMES-20260916-001",
+  "revision": "DR-002",
+  "completed_at_utc": "2026-09-16T09:40:52.185582+00:00",
+  "user_acceptance": "yesss. after finalization still make bae branch worktree latest",
+  "package_commit": "4fa5c393e53da1a49396f75c0dea91f615a037db",
+  "ticket_remote": "origin/codex/readable-org-catalog-member-names",
+  "target": "origin/requirements/flat-agent-organization-model",
+  "both_remotes_verified": "4fa5c393e53da1a49396f75c0dea91f615a037db",
+  "integration": "FF from755831eb8fe185ee9a32f6a77ebabdf773350cc0",
+  "base_worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base",
+  "manifest_matches": 9,
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/readable-org-catalog-member-names",
+  "ticket_worktree_removed": true,
+  "local_ticket_branch_removed": true,
+  "prune": "completed",
+  "remote_ticket_branch": "retained",
+  "private_backup": "/Users/normy/autobyteus_org/delivery-retained/ORG-CATALOG-NAMES-20260916-001-DR002",
+  "verified_retained_entries": 71,
+  "release_deployment_electron_rebuild": "Not required; not performed",
+  "unrelated_base_files": "Existing SDKdist and org-history-resume-offline-analysis preserved",
+  "final_receipt_commit": "Following docs-only base commit; no source change"
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+  "records": [
+    {
+      "taskId": "task_b8e80da8c72b4207b4a1e6f7b5346561",
+      "delegatorAgentRunId": "aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_b1d9385d0bb348e3ba1ff1cc6dcea623"
+      },
+      "description": "submit exactly APIREV6-MOUNTED-FRESH-V1 using submit_task_result, then end the task-agent turn and wait for a formal revision request; do not call any review tool and do not settle itself.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_ed3e1075533d4db09430d81ffb42e02f",
+          "message": "APIREV6-MOUNTED-FRESH-V1",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:28:50.286Z"
+        },
+        {
+          "reviewId": "review_b0f339f206c1455b989d7d954e325053",
+          "reviewedSubmissionId": "submission_ed3e1075533d4db09430d81ffb42e02f",
+          "decision": "request_revision",
+          "comment": "APIREV6-MOUNTED-REVISION: submit exactly APIREV6-MOUNTED-FRESH-V2 using submit_task_result, then stop and await explicit acceptance.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:29:51.358Z"
+        },
+        {
+          "submissionId": "submission_ddc2ec0e6b5b4cedaf208e4797e1ef25",
+          "message": "APIREV6-MOUNTED-FRESH-V2",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:29:54.991Z"
+        },
+        {
+          "reviewId": "review_f4050e9e638947bda29acf56bbf9ec64",
+          "reviewedSubmissionId": "submission_ddc2ec0e6b5b4cedaf208e4797e1ef25",
+          "decision": "accept",
+          "comment": "APIREV6-MOUNTED-ACCEPTED",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:31:27.196Z"
+        }
+      ],
+      "createdAt": "2026-09-02T16:28:39.611Z"
+    }
+  ]
+}

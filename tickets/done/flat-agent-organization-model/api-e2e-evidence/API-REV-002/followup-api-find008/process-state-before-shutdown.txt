@@ -1,0 +1,18 @@
+2026-09-01T21:04:22,774430218+00:00
+--- listeners ---
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                          
+LISTEN 0      511        127.0.0.1:3437      0.0.0.0:*    users:(("node",pid=19280,fd=22))
+LISTEN 0      511        127.0.0.1:8437      0.0.0.0:*    users:(("node",pid=18962,fd=36))
+--- server/codex process tree ---
+  PID  PPID                  STARTED STAT CMD
+  573    46 Tue Sep  1 19:42:28 2026 Sl    \_ node /usr/bin/codex app-server
+  580   573 Tue Sep  1 19:42:28 2026 Sl    |   \_ /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/bin/codex app-server
+18958   580 Tue Sep  1 20:58:21 2026 Ss+   |       \_ /bin/bash -lc E=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008 exec env -i HOME=/root USER=root TERM=xterm PATH="$PATH" AUTOBYTEUS_API_E2E_PROBE_LOG="$E/correlation.jsonl" node dist/app.js --host 127.0.0.1 --port 8437 --data-dir "$E/live-data" 2>&1 | tee "$E/server-console-live.log"
+18962 18958 Tue Sep  1 20:58:21 2026 Sl+   |       |   \_ node dist/app.js --host 127.0.0.1 --port 8437 --data-dir /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data
+19949 18962 Tue Sep  1 21:00:38 2026 Sl+   |       |   |   \_ node /usr/bin/codex app-server
+19956 19949 Tue Sep  1 21:00:38 2026 Sl+   |       |   |       \_ /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/bin/codex app-server
+19261   580 Tue Sep  1 20:58:50 2026 Ss+   |       \_ /bin/bash -lc export BACKEND_NODE_BASE_URL=http://127.0.0.1:8437 export BACKEND_GRAPHQL_BASE_URL=http://127.0.0.1:8437/graphql export BACKEND_REST_BASE_URL=http://127.0.0.1:8437/rest export BACKEND_AGENT_WS_ENDPOINT=ws://127.0.0.1:8437/ws/agent export BACKEND_TEAM_WS_ENDPOINT=ws://127.0.0.1:8437/ws/agent-team export BACKEND_GRAPHQL_WS_ENDPOINT=ws://127.0.0.1:8437/graphql export BACKEND_TRANSCRIPTION_WS_ENDPOINT=ws://127.0.0.1:8437/ws/transcribe export BACKEND_TERMINAL_WS_ENDPOINT=ws://127.0.0.1:8437/ws/terminal export BACKEND_FILE_EXPLORER_WS_ENDPOINT=ws://127.0.0.1:8437/ws/file-explorer exec pnpm exec nuxt dev --host 127.0.0.1 --port 3437 2>&1 | tee /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/web-console-live.log
+19264 19261 Tue Sep  1 20:58:50 2026 Sl+   |       |   \_ node /usr/bin/pnpm exec nuxt dev --host 127.0.0.1 --port 3437
+19280 19264 Tue Sep  1 20:58:50 2026 Sl+   |       |   |   \_ node ./node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 3437
+19370 19280 Tue Sep  1 20:58:57 2026 Sl+   |       |   |       \_ /usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 3437
+19376 19280 Tue Sep  1 20:58:57 2026 Sl+   |       |   |       \_ /usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 3437

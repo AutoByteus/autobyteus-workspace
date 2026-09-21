@@ -1,0 +1,8 @@
+{
+  "query": "query Live011($orgRunId:String!,$memberAddress:String!,$agentRunId:String!){ getAgentOrgExecutionCheckpoint(orgRunId:$orgRunId){orgRunId changeSequence hasOpenExecutionWork} getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$memberAddress,agentRunId:$agentRunId){agentRunId memberAddress conversation activities hasEarlierActiveTraceEvents} }",
+  "variables": {
+    "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+    "memberAddress": "/research-team/lead",
+    "agentRunId": "aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6"
+  }
+}

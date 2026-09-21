@@ -11,8 +11,11 @@ import type {
 } from "./inter-agent-message-delivery.js";
 import { buildDeliveryEndpointForParticipant } from "./inter-agent-message-delivery.js";
 import type { TeamAgentStatusSnapshot } from "./team-agent-status.js";
-import type { TeamMemberExecutionIdentity } from "./team-member-execution-identity.js";
-import { createTeamMemberExecutionIdentity } from "./team-member-execution-identity.js";
+import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  createCollaborationMemberExecutionIdentity,
+  createTeamRootExecutionIdentity,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunEvent } from "./team-run-event.js";
@@ -38,9 +41,9 @@ import type {
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import { TaskDelegationService } from "../task-delegation/task-delegation-service.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
-import type { TeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
-import { TeamAgentPlatformBindingError } from "./team-agent-platform-binding.js";
-import { adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
+import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
+import { TeamAgentPlatformBindingError, createTeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
+import { adoptAgentPlatformBindingInTree, replaceAgentPlatformBindingWithoutConversationInTree } from "../services/team-run-execution-tree-mutator.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
 
@@ -112,7 +115,7 @@ export class RootTeamRun {
       getTree: () => this.tree,
       getIndex: () => this.index,
       isRootOpen: () => this.isAdmitting(),
-      authorize: (identity) => this.authorizeIdentity(identity),
+      authorize: (identity) => this.authorizeCurrentIdentity(identity),
       requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
       teamRunResolver: this.teamRunResolver,
       commitTaskMutation: (command) => options.persistence.commitTaskMutation(command),
@@ -154,17 +157,25 @@ export class RootTeamRun {
     return this.options.rootRun.getLeafAgentStatusSnapshots();
   }
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
-  getTaskRecordsSnapshot(): TaskDelegationRecordsSnapshot { return this.tasks; }
+  getTaskRecordsSnapshot(): TaskDelegationRecordsSnapshot { return this.taskDelegation.getSnapshot(this.teamRunId); }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot { return this.messages; }
 
-  async adoptAgentPlatformBinding(binding: TeamAgentPlatformBinding): Promise<void> {
+  async commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     this.assertAdmitting();
     let liveCommitStarted = false;
     let result: Awaited<ReturnType<TeamRunPersistenceCoordinator["commitExecutionTreeMutation"]>>;
     try {
       result = await this.options.persistence.commitExecutionTreeMutation({
         prepareAgainstCurrent: () => {
-          const mutation = adoptAgentPlatformBindingInTree({ tree: this.tree, binding });
+          this.assertAdmitting();
+          const binding = createTeamAgentPlatformBinding(
+            change.kind === "adopt_or_retain" ? change.binding : change.replacement.binding,
+          );
+          const mutation = change.kind === "adopt_or_retain"
+            ? adoptAgentPlatformBindingInTree({ tree: this.tree, binding })
+            : { outcome: "adopted", tree: replaceAgentPlatformBindingWithoutConversationInTree({
+                tree: this.tree, replacement: { ...change.replacement, binding },
+              }) };
           return {
             nextTree: mutation.tree,
             requiresWrite: mutation.outcome === "adopted",
@@ -179,7 +190,6 @@ export class RootTeamRun {
         },
       });
     } catch (error) {
-      if (error instanceof TeamAgentPlatformBindingError) throw error;
       if (liveCommitStarted) {
         this.enterLifecycleFailStop();
         throw new TeamAgentPlatformBindingError(
@@ -188,6 +198,7 @@ export class RootTeamRun {
           { cause: error, indeterminate: true },
         );
       }
+      if (error instanceof TeamAgentPlatformBindingError) throw error;
       throw new TeamAgentPlatformBindingError(
         "TEAM_AGENT_PLATFORM_BINDING_COMMIT_FAILED",
         "The team provider binding did not commit.",
@@ -210,7 +221,7 @@ export class RootTeamRun {
   }
 
   getAgentExecution(agentRunId: string): Readonly<{
-    identity: TeamMemberExecutionIdentity;
+    identity: CollaborationMemberExecutionIdentity;
     containingTeamRunId: string;
     ancestorTeamRunIds: readonly string[];
     launchConfiguration: AgentLaunchConfiguration | null;
@@ -218,8 +229,8 @@ export class RootTeamRun {
     const execution = this.index.getAgent(agentRunId.trim());
     if (!execution) return null;
     return Object.freeze({
-      identity: createTeamMemberExecutionIdentity({
-        rootTeamRunId: this.teamRunId,
+      identity: createCollaborationMemberExecutionIdentity({
+        root: createTeamRootExecutionIdentity(this.teamRunId),
         memberAddress: execution.address,
         agentRunId: execution.agentRunId,
       }),
@@ -234,14 +245,10 @@ export class RootTeamRun {
   }
 
   getCoordinatorAgentRunId(teamRunId: string = this.teamRunId): string {
-    const team = this.index.requireTeam(teamRunId);
-    const configuredPlacement = this.index.getConfiguredPlacement(team.address);
-    const coordinatorAddress = "coordinatorAddress" in team.source
-      ? team.source.coordinatorAddress
-      : configuredPlacement && "teamRunId" in configuredPlacement
-        ? configuredPlacement.coordinatorAddress
-        : null;
-    if (!coordinatorAddress) throw new Error(`TeamRun '${teamRunId}' has no configured coordinator address.`);
+    this.index.requireTeam(teamRunId);
+    const coordinatorAddress = this.teamRunResolver.getManaged(teamRunId)?.context.teamNode.coordinatorAddress
+      ?? (teamRunId === this.teamRunId ? this.tree.rootTeam.coordinatorAddress : null);
+    if (!coordinatorAddress) throw new Error(`TeamRun '${teamRunId}' has no active coordinator address.`);
     const coordinator = this.index.listDirectAgentExecutions(teamRunId)
       .find((agent) => agent.address === coordinatorAddress);
     if (!coordinator) throw new Error(`TeamRun '${teamRunId}' has no concrete coordinator AgentRun.`);
@@ -258,8 +265,12 @@ export class RootTeamRun {
     return this.recipientResolver.resolve(this.index, recipientAddress);
   }
 
-  authorizeIdentity(identity: TeamMemberExecutionIdentity): void {
+  authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
     this.assertAdmitting();
+    this.authorizeCurrentIdentity(identity);
+  }
+
+  private authorizeCurrentIdentity(identity: CollaborationMemberExecutionIdentity): void {
     if (!this.isCurrentAgent(identity)) {
       throw new CollaborationContractError(
         "COLLABORATION_CONTEXT_REQUIRED",
@@ -283,11 +294,11 @@ export class RootTeamRun {
   }
 
   submitTaskResult(context: TaskDelegationContext, input: SubmitTaskResultInput): Promise<SubmitTaskResultResult> {
-    return this.materializationGate.run(() => this.taskDelegation.submitTaskResult(context, input));
+    return this.taskDelegation.submitTaskResult(context, input);
   }
 
   reviewTaskResult(context: TaskDelegationContext, input: ReviewTaskResultInput): Promise<ReviewTaskResultResult> {
-    return this.materializationGate.run(() => this.taskDelegation.reviewTaskResult(context, input));
+    return this.taskDelegation.reviewTaskResult(context, input);
   }
 
   async deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
@@ -311,7 +322,7 @@ export class RootTeamRun {
     targetAgentRunId: string;
     content: string;
     messageType?: string | null;
-    referenceFiles?: string[] | null;
+    referenceFiles?: readonly string[] | null;
   }): Promise<AgentOperationResult> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(input.sender.identity);
@@ -319,8 +330,8 @@ export class RootTeamRun {
       if (!execution || !this.index.isLiveAgent(execution.agentRunId)) {
         return { accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE", message: `Exact AgentRun target '${input.targetAgentRunId}' is not active in root '${this.teamRunId}'.` };
       }
-      const receiver = createTeamMemberExecutionIdentity({
-        rootTeamRunId: this.teamRunId,
+      const receiver = createCollaborationMemberExecutionIdentity({
+        root: createTeamRootExecutionIdentity(this.teamRunId),
         memberAddress: execution.address,
         agentRunId: execution.agentRunId,
       });
@@ -331,7 +342,7 @@ export class RootTeamRun {
           recipientAddress: execution.address,
           content: input.content,
           messageType: input.messageType,
-          referenceFiles: input.referenceFiles,
+          referenceFiles: input.referenceFiles ? [...input.referenceFiles] : null,
         },
         receiverIdentity: receiver,
         receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
@@ -410,20 +421,18 @@ export class RootTeamRun {
 
   private async runTermination(): Promise<AgentOperationResult> {
     await this.materializationGate.closeAndDrain();
-    await this.taskDelegation.drain();
-    await this.options.persistence.drain();
     this.teamRunResolver.closeRegistration();
     this.frozenTerminationScope ??= this.options.rootRun.freezeForRootTermination();
-    const interrupted = await this.frozenTerminationScope.interruptActiveTurns();
-    if (!interrupted.accepted) return interrupted;
-    await this.frozenTerminationScope.prepareMemberRuns();
+    const fenced = await this.frozenTerminationScope.fenceAgentRunsForRootShutdown();
+    if (!fenced.accepted) return fenced;
     if (!this.failStopped) {
       try {
         await this.taskDelegation.shutdownAndSettle("Root TeamRun terminated.");
       } catch (error) {
         if (!this.failStopped) throw error;
       }
-    }
+    } else await this.taskDelegation.drain();
+    await this.options.persistence.drain();
     const result = await this.frozenTerminationScope.finish();
     if (!result.accepted) return result;
     this.teamRunResolver.clear();
@@ -443,8 +452,11 @@ export class RootTeamRun {
     if (!this.isAdmitting()) throw new Error(`RootTeamRun '${this.teamRunId}' is not accepting operations.`);
   }
 
-  private isCurrentAgent(identity: TeamMemberExecutionIdentity): boolean {
-    if (identity.rootTeamRunId !== this.teamRunId) return false;
+  private isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean {
+    if (
+      identity.root.rootSubjectKind !== "agent_team"
+      || identity.root.rootRunId !== this.teamRunId
+    ) return false;
     const execution = this.index.getAgent(identity.agentRunId);
     return !!execution && execution.address === identity.memberAddress && this.index.isLiveAgent(identity.agentRunId);
   }
@@ -464,17 +476,16 @@ export class RootTeamRun {
     return this.requireTeamRun(execution.containingTeamRunId);
   }
 
-  private resolveConfiguredRecipientIdentity(placement: ResolvedTeamRecipient): TeamMemberExecutionIdentity {
-    const targetAddress = placement.kind === "agent" ? placement.address : placement.coordinatorAddress;
-    const target = this.index.getConfiguredPlacement(targetAddress);
-    if (!target || !("agentRunId" in target) || !this.index.isLiveAgent(target.agentRunId)) {
+  private resolveConfiguredRecipientIdentity(placement: ResolvedTeamRecipient): CollaborationMemberExecutionIdentity {
+    const target = this.index.getConfiguredPlacement(placement.address);
+    if (!target || !this.index.isLiveAgent(target.agentRunId)) {
       throw new CollaborationContractError(
         "COLLABORATION_TARGET_NOT_FOUND",
         `Collaboration recipient '${placement.address}' has no live configured Agent ingress.`,
       );
     }
-    return createTeamMemberExecutionIdentity({
-      rootTeamRunId: this.teamRunId,
+    return createCollaborationMemberExecutionIdentity({
+      root: createTeamRootExecutionIdentity(this.teamRunId),
       memberAddress: target.address,
       agentRunId: target.agentRunId,
     });

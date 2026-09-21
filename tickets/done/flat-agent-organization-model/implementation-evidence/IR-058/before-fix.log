@@ -1,0 +1,150 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts (43 tests | 2 failed) 253ms
+   ✓ runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 5ms
+   ✓ runHistoryStore > fetches run history tree from GraphQL 3ms
+   ✓ runHistoryStore > strictly merges only AgentOrg roots beneath Teams using stable normalized workspace keys 15ms
+   ✓ runHistoryStore > retains each successful history-family slice when the other query fails 3ms
+   ✓ runHistoryStore > retains the prior AgentOrg slice when strict root correlation rejects a later response 1ms
+   ✓ runHistoryStore > commits only the newest initiated AgentOrg refresh and retains its slice on a later failure 2ms
+   × runHistoryStore > publishes confirmed Stop to existing navigation before I/O (old-first) 70ms
+     → expected { …(8) } to deeply equal { …(8) }
+   × runHistoryStore > publishes confirmed Stop to existing navigation before I/O (failure-first) 56ms
+     → expected { …(8) } to deeply equal { …(8) }
+   ✓ runHistoryStore > shares AgentOrg request generation between full history loads and focused refreshes 53ms
+   ✓ runHistoryStore > hydrates and connects newly discovered active runs from workspace history 6ms
+   ✓ runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 1ms
+   ✓ runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 1ms
+   ✓ runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+   ✓ runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 2ms
+   ✓ runHistoryStore > does not project history-only removed workspace roots without visible descriptors 1ms
+   ✓ runHistoryStore > preserves failed-stream member statuses without background stream resurrection 2ms
+   ✓ runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+   ✓ runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 1ms
+   ✓ runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 4ms
+   ✓ runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 2ms
+   ✓ runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 1ms
+   ✓ runHistoryStore > does not clobber live active context state when reopening an already subscribed run 1ms
+   ✓ runHistoryStore > creates draft run for selected workspace and agent 1ms
+   ✓ runHistoryStore > reuses model from existing context when creating draft run 1ms
+   ✓ runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 1ms
+   ✓ runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 1ms
+   ✓ runHistoryStore > reuses an existing workspace id when local cache has matching root path 1ms
+   ✓ runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 1ms
+   ✓ runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 1ms
+   ✓ runHistoryStore > overlays persisted run status with matching live context only 1ms
+   ✓ runHistoryStore > projects offline draft contexts as inactive in tree projection 0ms
+   ✓ runHistoryStore > selectTreeRun delegates to openRun for history rows 2ms
+   ✓ runHistoryStore > selectTreeRun selects local temp context for draft rows 1ms
+   ✓ runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 0ms
+   ✓ runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveRun does not mutate local state when backend rejects archive 0ms
+   ✓ runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 0ms
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (4 tests | 4 failed) 256ms
+   × Org activity publication with selected /director > publishes confirmed Stop while history is held, rejects the released old row and retains errors 84ms
+     → Cannot read properties of undefined (reading 'context')
+   × Org activity publication with selected /director > keeps active controls and exact selection/conversation when Stop is rejected 57ms
+     → Cannot read properties of undefined (reading 'context')
+   × Org activity publication with selected /team/lead > publishes confirmed Stop while history is held, rejects the released old row and retains errors 56ms
+     → Cannot read properties of undefined (reading 'context')
+   × Org activity publication with selected /team/lead > keeps active controls and exact selection/conversation when Stop is rejected 57ms
+     → Cannot read properties of undefined (reading 'context')
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > publishes confirmed Stop to existing navigation before I/O (old-first)
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > publishes confirmed Stop to existing navigation before I/O (failure-first)
+AssertionError: expected { …(8) } to deeply equal { …(8) }
+
+- Expected
++ Received
+
+@@ -40,11 +40,11 @@
+        "taskExecutions": [],
+      },
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+    },
+-   "isActive": false,
++   "isActive": true,
+    "rootRunId": "org-confirmed",
+    "rootSubjectKind": "agent_org",
+    "stableKey": "agent_org_run:org-confirmed",
+    "summary": "Do not alter title",
+  }
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts:802:28
+    800|     await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
+    801|     store.applyAgentOrgActivity('org-confirmed', false);
+    802|     expect(projectedRow()).toEqual({ ...original, isActive: false });
+       |                            ^
+    803|     await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(2));
+    804|     const releaseOld = async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /director > publishes confirmed Stop while history is held, rejects the released old row and retains errors
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /team/lead > publishes confirmed Stop while history is held, rejects the released old row and retains errors
+TypeError: Cannot read properties of undefined (reading 'context')
+ ❯ open components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:99:72
+     97|   await flushPromises()
+     98|   orgs.select('org-run', address)
+     99|   const org = orgs.contextFor('org-run')!, context = org.activeTarget!…
+       |                                                                        ^
+    100|   const messages = JSON.stringify(context.conversation.messages)
+    101|   const selection = org.selection
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:130:80
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /director > keeps active controls and exact selection/conversation when Stop is rejected
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /team/lead > keeps active controls and exact selection/conversation when Stop is rejected
+TypeError: Cannot read properties of undefined (reading 'context')
+ ❯ open components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:99:72
+     97|   await flushPromises()
+     98|   orgs.select('org-run', address)
+     99|   const org = orgs.contextFor('org-run')!, context = org.activeTarget!…
+       |                                                                        ^
+    100|   const messages = JSON.stringify(context.conversation.messages)
+    101|   const selection = org.selection
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:173:68
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 41 passed (47)
+   Start at  21:46:54
+   Duration  14.28s (transform 7.35s, setup 23.44s, collect 742ms, tests 508ms, environment 1.84s, prepare 895ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

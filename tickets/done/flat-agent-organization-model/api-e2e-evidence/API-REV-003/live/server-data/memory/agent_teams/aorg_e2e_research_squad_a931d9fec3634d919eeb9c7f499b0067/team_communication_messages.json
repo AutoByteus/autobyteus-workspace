@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067",
+  "messages": [
+    {
+      "messageId": "collabmsg_NxDVRd8In3JYAeb9nMX_Ck35h-Omh6LQ",
+      "senderAgentRunId": "aorg_e2e_lead_5c83906ba25e438da258c0c1990b5813",
+      "receiverAgentRunId": "aorg_e2e_analyst_516819612cf84e78b78dfc4ad51397dd",
+      "content": "Return exactly AORG-TEAM-MESSAGE-003 on the first line and Delivery acknowledged. on the second line.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T22:25:05.820Z"
+    }
+  ]
+}

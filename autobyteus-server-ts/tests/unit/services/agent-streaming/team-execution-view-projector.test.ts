@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -15,12 +16,16 @@ import {
 
 const scenarioDir = path.resolve(
   process.cwd(),
+  "tests/fixtures/current-team-run-v2/case-001-nested-task-team",
+);
+const recordsDir = path.resolve(
+  process.cwd(),
   "tests/fixtures/app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team",
 );
-const json = (name: string) => JSON.parse(fs.readFileSync(path.join(scenarioDir, name), "utf8")) as unknown;
-const tree = validateTeamRunExecutionTreePayload(json("team_run_execution_tree.json"), "team-run-root");
-const tasks = validateTaskDelegationRecordsV1Payload(json("task_delegation_records.json"), "team-run-root");
-const messages = validateTeamCommunicationMessagesV1Payload(json("team_communication_messages.json"), "team-run-root");
+const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as unknown;
+const tree = validateTeamRunExecutionTreePayload(json(scenarioDir, "team_run_execution_tree.json"), "team-run-root");
+const tasks = validateTaskDelegationRecordsV1Payload(json(recordsDir, "task_delegation_records.json"), "team-run-root");
+const messages = validateTeamCommunicationMessagesV1Payload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
 const task = tasks.records[1]!;
 const message = messages.messages[0]!;
 const root = {
@@ -32,7 +37,7 @@ describe("Team execution view strict projection", () => {
   it("projects one atomic initial V1 execution/task/message/status snapshot", () => {
     const status = createTeamAgentStatusSnapshot({
       execution: createTeamAgentExecutionBinding({
-        rootTeamRunId: "team-run-root",
+        root: createTeamRootExecutionIdentity("team-run-root"),
         memberAddress: "/qa/automation/tester",
         agentRunId: "nested-task-agent-run-001",
       }),
@@ -80,7 +85,7 @@ describe("Team execution view strict projection", () => {
   it("keeps snapshot placement identity out of the exact live status payload", () => {
     const status = createTeamAgentStatusSnapshot({
       execution: createTeamAgentExecutionBinding({
-        rootTeamRunId: "team-run-root",
+        root: createTeamRootExecutionIdentity("team-run-root"),
         memberAddress: "/qa/automation/tester",
         agentRunId: "nested-task-agent-run-001",
       }),
@@ -112,7 +117,7 @@ describe("Team execution view strict projection", () => {
 
   it("projects live status and the following Agent event contiguously through strict admission", () => {
     const execution = createTeamAgentExecutionBinding({
-      rootTeamRunId: "team-run-root",
+      root: createTeamRootExecutionIdentity("team-run-root"),
       memberAddress: "/qa/automation/tester",
       agentRunId: "nested-task-agent-run-001",
     });
@@ -151,7 +156,7 @@ describe("Team execution view strict projection", () => {
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
         execution: createTeamAgentExecutionBinding({
-          rootTeamRunId: "team-run-root",
+          root: createTeamRootExecutionIdentity("team-run-root"),
           memberAddress: "/qa/automation/tester",
           agentRunId: "nested-task-agent-run-001",
         }),

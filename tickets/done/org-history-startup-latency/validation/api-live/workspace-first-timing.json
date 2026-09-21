@@ -1,0 +1,13 @@
+{
+  "start": 1789625004041,
+  "observed": 1789625015651,
+  "control": {
+    "hold": [
+      "ListCollaborationRootHistory",
+      "GetWorkspaceRunHistory",
+      "GetAgentDefinitions",
+      "GetAgentTeamDefinitions",
+      "GetAgentOrgDefinitions"
+    ]
+  }
+}

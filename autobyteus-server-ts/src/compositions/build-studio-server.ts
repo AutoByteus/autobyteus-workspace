@@ -189,6 +189,11 @@ export const buildStudioServer = async (input: {
     appConfig: input.appConfig,
     bundleService: packages.bundleService,
   });
+  const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
+    .filter((result) => result.status === "unavailable");
+  for (const diagnostic of definitionDiagnostics) {
+    console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
+  }
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
@@ -236,6 +241,8 @@ export const buildStudioServer = async (input: {
       contextFilePathEnvironment,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+      agentOrgDefinitionService: hostDefinitionServices.agentOrgDefinitionService,
+      definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
       workspaceManager,
       agentProviderFactoryBuilder,
       agentToolMcpSessionAuthority: generalProcessAuthority,
@@ -272,8 +279,12 @@ export const buildStudioServer = async (input: {
       packageCommands: applicationServices.packageCommandService,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+      agentOrgDefinitionService: hostDefinitionServices.agentOrgDefinitionService,
       agentRunService: generalProcessRunSupervisor.agentRunService,
       teamRunService: generalProcessRunSupervisor.teamRunService,
+      agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
+      definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
+      collaborationRootHistoryService: generalProcessRunSupervisor.collaborationRootHistoryService,
       runModelConfigService,
     });
 
@@ -313,6 +324,7 @@ export const buildStudioServer = async (input: {
       await registerWebsocketRoutes(app, {
         lifecycleReadiness: currentApplicationRuntime.lifecycle,
         application: currentApplicationRuntime.realtime,
+        agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
       });
       await registerGraphql(app);
       return Object.freeze({

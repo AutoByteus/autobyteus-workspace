@@ -1,0 +1,6 @@
+migrationId=20260905_agent_org_history_first_message_summary_v1
+displayName=AgentOrg first-message history summaries
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":1}
+error=1 AgentOrg history summary item(s) require correction and restart.
+details=
+{"itemId":"FAILED_CURRENT_VALIDATION","status":"FAILED","message":"Count: 1. Examples: apirev8_613529cf063144d0a9e6cd6e385d58ba. Reasons: ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: AgentOrgRun execution tree has unsupported or missing field(s).."}

@@ -105,7 +105,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     const originalUserMessage = new LLMUserMessage({
       content: 'Use read_media_file on test_audio.m4a, then transcribe exactly what is spoken. Answer with only the spoken word.'
     });
-    memoryManager.ingestUserMessage(originalUserMessage, turn.turnId, 'UserMessageReceivedEvent');
+    memoryManager.ingestUserMessage(originalUserMessage, turn.turnId, 'UserMessageReceivedEvent', []);
     memoryManager.appendWorkingContextUserMessage(originalUserMessage, { turnId: turn.turnId });
 
     const mediaResult = await new ReadMediaFile().execute(context, { file_path: 'test_audio.m4a' });

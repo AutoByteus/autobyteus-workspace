@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-13T03:36:29.960087+00:00",
+  "baselineRegularDirtyUntracked": 35312,
+  "unchangedBaselineFiles": 35310,
+  "changedBaselineFiles": [
+    "tickets/in-progress/flat-agent-organization-model/code-review-report.md",
+    "tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md"
+  ],
+  "otherChangedPreviouslyClean": [
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-test-review-report.md"
+  ],
+  "missing": [],
+  "unexpectedNew": [],
+  "headBefore": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "headAfter": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "staged": "",
+  "unmerged": "",
+  "references": 6504,
+  "allIncomingReferencesRetained": true,
+  "missingReferences": [],
+  "originalSourceReportArchivedExact": true,
+  "api38ExecutionReportUnchanged": true,
+  "priorProportionalReportArchivedExact": true,
+  "priorRevisionPreserved": true,
+  "note": "Only three reviewer canonical files and CRR091/092 evidence changed. Source inventory814 and API evidence4211 verified separately. No builds/tests/process/browser/provider/data/auth/migration/stage/commit work.",
+  "result": "Pass"
+}

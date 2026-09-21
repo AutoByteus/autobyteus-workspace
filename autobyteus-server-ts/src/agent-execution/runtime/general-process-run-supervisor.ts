@@ -1,5 +1,6 @@
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { AgentProviderFactoryBuilder } from "../providers/agent-provider-factory-builder.js";
@@ -22,11 +23,14 @@ import {
   releaseProcessAgentRunService,
 } from "../services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../services/standalone-agent-run-lifecycle-service.js";
-import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
+import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
-import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
+import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
+import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentOrgExecutionScopeBuilder } from "../../agent-org-execution/services/agent-org-execution-scope-builder.js";
+import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
+import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import {
   TeamRunService,
   bindProcessTeamRunService,
@@ -43,17 +47,24 @@ import { RunFileChangeService } from "../../services/run-file-changes/run-file-c
 import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import type { RunModelSelectionValidator, RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
+import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
+import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
+import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
+import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
+import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
   contextFilePathEnvironment: ContextFilePathEnvironment;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
+  agentOrgDefinitionService: AgentOrgDefinitionService;
+  definitionAdmissionService: DefinitionAdmissionService;
   workspaceManager: WorkspaceManager;
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -70,11 +81,14 @@ const requireGeneralProcessRunSupervisorInput = (
     || !input.contextFilePathEnvironment.baseUrl.trim()
     || !input.agentDefinitionService
     || !input.agentTeamDefinitionService
+    || !input.agentOrgDefinitionService
+    || !input.definitionAdmissionService
     || !input.workspaceManager
     || !input.agentProviderFactoryBuilder
     || !input.agentToolMcpSessionAuthority
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
+    || typeof input.modelSelectionValidator.listOptions !== "function"
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
@@ -84,10 +98,14 @@ const requireGeneralProcessRunSupervisorInput = (
 export class GeneralProcessRunSupervisor {
   readonly agentRunService: AgentRunService;
   readonly teamRunService: TeamRunService;
+  readonly agentOrgRunService: AgentOrgRunService;
   readonly agentRunResumeConfigService: AgentRunResumeConfigService;
   readonly teamRunHistoryService: TeamRunHistoryService;
+  readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
+  readonly collaborationRootHistoryService: CollaborationRootHistoryService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
+  private readonly agentOrgRunManager: AgentOrgRunManager;
   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private closePromise: Promise<void> | null = null;
 
@@ -96,8 +114,14 @@ export class GeneralProcessRunSupervisor {
     const memoryDir = input.memoryDir.trim();
     const workspaceManager = input.workspaceManager;
     const storedTeamLocations = createStoredTeamRunExecutionTreeLocationService(memoryDir);
+    const storedOrgLocations = new AgentOrgExecutionTreeLocationService({ memoryDir });
+    const collaborationLocations = new CollaborationExecutionLocationService({
+      teams: storedTeamLocations,
+      orgs: storedOrgLocations,
+    });
     let agentRunManager: AgentRunManager | null = null;
     let agentTeamRunManager: AgentTeamRunManager | null = null;
+    let agentOrgRunManager: AgentOrgRunManager | null = null;
     let agentRunService: AgentRunService | null = null;
     let teamRunService: TeamRunService | null = null;
     let agentRunServiceBound = false;
@@ -109,7 +133,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
       });
       const contextFileOwnerResolver = new ContextFileOwnerResolver({
-        locations: storedTeamLocations,
+        locations: collaborationLocations,
       });
       const providerInputNormalizer = new AgentRunProviderInputNormalizer(
         new ContextFileLocalPathResolver({
@@ -122,9 +146,7 @@ export class GeneralProcessRunSupervisor {
       const resourceManager = new AgentRunResourceManager({
         runSessions: input.agentToolMcpSessionAuthority.runSessions,
         runFileChangeService: new RunFileChangeService({
-          memoryDir,
           workspaceManager,
-          teamLocations: storedTeamLocations,
         }),
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
@@ -156,41 +178,48 @@ export class GeneralProcessRunSupervisor {
         agentRunManager,
         agentRunMetadataService: metadataService,
         teamRunExecutionTreeLocationService: storedTeamLocations,
+        collaborationExecutionLocationService: collaborationLocations,
         memoryDir,
       });
       const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
         agentRunIdentityAllocator,
       );
 
-      const memberTeamContextBuilder = new MemberTeamContextBuilder(
+      const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
         input.agentTeamDefinitionService,
       );
       const memoryLocationService = new AgentMemoryLocationService({
         memoryDir,
         locationService: storedTeamLocations,
       });
+      const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
       const activityInspector = new AgentConversationActivityInspector();
       const generalAgentRunManager = agentRunManager;
+      const flatTeamExecutionFactory = new FlatTeamExecutionFactory({
+        agentRunManager: generalAgentRunManager,
+        memoryLocator,
+        activityInspector,
+        workspaceManager,
+      });
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
         taskExecutionIdentity,
         modelSelectionValidator: input.modelSelectionValidator,
-        mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-          createTeamManager: (managerInput) =>
-            new MixedTeamManager(managerInput.context, {
-              subTeamRunFactory: managerInput.subTeamRunFactory,
-              taskRootResolver: managerInput.callbacks.taskRootResolver,
-              agentRunManager: generalAgentRunManager,
-              memoryLocationService,
-              activityInspector,
-              memberTeamContextBuilder,
-              workspaceManager,
-              publish: managerInput.callbacks.publish,
-              deliverInterAgentMessage:
-                managerInput.callbacks.deliverInterAgentMessage,
-              acceptPlatformBinding:
-                managerInput.callbacks.acceptPlatformBinding,
-            }),
+        flatTeamExecutionFactory,
+        memberExecutionContextBuilder,
+      });
+      agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
+        memoryDir,
+        modelSelectionValidator: input.modelSelectionValidator,
+        scopeBuilder: new AgentOrgExecutionScopeBuilder({
+          flatTeamExecutionFactory,
+          taskExecutionIdentity,
+          orgDefinitions: input.agentOrgDefinitionService,
+          teamDefinitions: input.agentTeamDefinitionService,
+          agentRunManager: generalAgentRunManager,
+          memoryLocator,
+          activityInspector,
+          workspaceManager,
         }),
       });
       const tokenUsageReadiness = new TokenUsageMigrationReadiness();
@@ -221,6 +250,10 @@ export class GeneralProcessRunSupervisor {
       const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
         teamRunManager: agentTeamRunManager,
       });
+      const agentOrgRunHistoryCatalogService = new AgentOrgRunHistoryCatalogService(
+        memoryDir,
+        agentOrgRunManager,
+      );
       teamRunService = new TeamRunService({
         agentTeamRunManager,
         teamDefinitionService: input.agentTeamDefinitionService,
@@ -231,6 +264,19 @@ export class GeneralProcessRunSupervisor {
         agentRunIdentityAllocator,
         teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
         tokenUsageReadiness,
+        definitionAdmissionService: input.definitionAdmissionService,
+      });
+      const agentOrgRunService = new AgentOrgRunService({
+        manager: agentOrgRunManager,
+        teamDefinitions: input.agentTeamDefinitionService,
+        agentDefinitions: input.agentDefinitionService,
+        agentIdentities: agentRunIdentityAllocator,
+        teamIdentities: new TeamRunIdentityAllocator(),
+        workspaces: workspaceManager,
+        admission: input.definitionAdmissionService,
+        modelSelectionValidator: input.modelSelectionValidator,
+        modelSelectionOptions: input.modelSelectionValidator,
+        history: agentOrgRunHistoryCatalogService,
       });
 
       bindProcessAgentRunService(agentRunService);
@@ -240,8 +286,11 @@ export class GeneralProcessRunSupervisor {
 
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
+      this.agentOrgRunManager = agentOrgRunManager;
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
+      this.agentOrgRunService = agentOrgRunService;
+      this.agentOrgRunHistoryCatalogService = agentOrgRunHistoryCatalogService;
       this.agentToolMcpSessionAuthority = input.agentToolMcpSessionAuthority;
       this.agentRunResumeConfigService = new AgentRunResumeConfigService(memoryDir, {
         statusProjectionService: new AgentRunStatusProjectionService({
@@ -254,12 +303,21 @@ export class GeneralProcessRunSupervisor {
         catalogService: teamRunHistoryCatalogService,
         teamRunManager: agentTeamRunManager,
       });
+      this.collaborationRootHistoryService = new CollaborationRootHistoryService({
+        memoryDir,
+        teams: this.teamRunHistoryService,
+        orgs: agentOrgRunHistoryCatalogService,
+        orgRuns: agentOrgRunManager,
+      });
     } catch (error) {
       if (teamRunServiceBound && teamRunService) {
         releaseProcessTeamRunService(teamRunService);
       }
       if (agentRunServiceBound && agentRunService) {
         releaseProcessAgentRunService(agentRunService);
+      }
+      if (agentOrgRunManager) {
+        AgentOrgRunManager.releaseProcessInstance(agentOrgRunManager);
       }
       if (agentTeamRunManager) {
         AgentTeamRunManager.releaseProcessInstance(agentTeamRunManager);
@@ -278,6 +336,14 @@ export class GeneralProcessRunSupervisor {
 
   private async closeInternal(): Promise<void> {
     const errors: unknown[] = [];
+    this.agentOrgRunManager.closeRootAdmission();
+    this.agentTeamRunManager.closeRootAdmission();
+    this.agentRunManager.closeActivationAdmission();
+    try {
+      await this.agentOrgRunManager.stopAllAgentOrgRuns();
+    } catch (error) {
+      errors.push(error);
+    }
     try {
       await this.agentTeamRunManager.stopAllTeamRuns();
     } catch (error) {
@@ -291,6 +357,7 @@ export class GeneralProcessRunSupervisor {
     try {
       releaseProcessTeamRunService(this.teamRunService);
       releaseProcessAgentRunService(this.agentRunService);
+      AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
       AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
       AgentRunManager.releaseProcessInstance(this.agentRunManager);
     } catch (error) {

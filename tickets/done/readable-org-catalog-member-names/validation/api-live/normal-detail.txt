@@ -1,0 +1,49 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Orgs":
+    - text: Back to Agent Orgs
+  - generic: CB
+  - heading "Catalog Beta" [level=1]
+  - button "Run"
+  - button "Edit"
+  - button "Delete"
+  - heading "Description" [level=2]
+  - paragraph: Synthetic catalog-name validation
+  - heading "Members" [level=2]
+  - heading "Agents (2)" [level=3]
+  - list:
+    - generic: BD
+    - paragraph: Beta Director
+    - generic: CR
+    - paragraph: Common Researcher
+  - heading "Teams (2)" [level=3]
+  - list:
+    - paragraph: Beta Research-Team
+    - paragraph: "Coordinator: Beta Child"
+    - button "View ↗"
+    - paragraph: Shared Delivery Team
+    - paragraph: "Coordinator: Shared Team Child"
+    - button "View ↗"
+  - heading "Handoffs" [level=2]
+  - paragraph: No handoffs yet

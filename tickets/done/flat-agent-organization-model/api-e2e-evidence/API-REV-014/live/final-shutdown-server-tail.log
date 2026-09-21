@@ -1,0 +1,180 @@
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:49540) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-06T11:23:33.331Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:apirev8:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/agent-orgs/apirev8
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:apirev8-team:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/agent-teams/apirev8-team
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-06T11:23:33.554Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-06T11:23:33.556Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1788693813563,"pid":49540,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:37875"}
+{"level":30,"time":1788693813600,"pid":49540,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:8594"}
+[2026-09-06T11:23:33.600Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8594
+[2026-09-06T11:23:33.602Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8594
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788693832894,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":2.1354580000042915,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-06T11:24:19.795Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-06T11:24:19.800Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+{"level":40,"time":1788693895052,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-u","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.8952080011367798,"msg":"http request completed"}
+Created terminal session 304f2a47-43ea-453a-900f-1faaa7466255 using backend PtySession for target /root
+Terminal WebSocket connected: 304f2a47-43ea-453a-900f-1faaa7466255
+Terminal websocket attached for cwd /root
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_a943fc7cac4d4c8f9359effbe801f044'.
+Published codex_app_server agent run 'aorg_e2e_verifier_c087f8dc71724ffaaa2fb77aa6fe6987'.
+[CodexAppServerClient] stderr: 2026-09-06T11:25:23.868327Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit
+{"level":30,"time":1788693964740,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-2y","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_direct_agents_org_73461b065d33421abb824f87aa5594df' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_direct_agents_org_73461b065d33421abb824f87aa5594df' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_direct_agents_org_73461b065d33421abb824f87aa5594df' was not found."}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_lead_52f20c6ad2cc4d56b39bf62962728fc2'.
+Published codex_app_server agent run 'aorg_e2e_verifier_da675eaf8f694d85893e14989a825e9b'.
+[CodexAppServerClient] stderr: 2026-09-06T11:26:48.331089Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit
+[CodexAppServerClient] stderr: 2026-09-06T11:31:23.339974Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+{"level":40,"time":1788694323087,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-cw","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.0266249999403954,"msg":"http request completed"}
+Created terminal session d5e9fd6c-f191-4e11-b1f3-5362c4b381c5 using backend PtySession for target /root
+Terminal WebSocket connected: d5e9fd6c-f191-4e11-b1f3-5362c4b381c5
+Terminal websocket attached for cwd /root
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4'.
+Published codex_app_server agent run 'aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096'.
+Published codex_app_server agent run 'aorg_e2e_analyst_5a787039299e4d61bebd98a6dea1fa2d'.
+Published codex_app_server agent run 'aorg_e2e_verifier_9c904e2989ba4e25a4baaa031942ddfa'.
+Published codex_app_server agent run 'aorg_e2e_lead_79f9cb8e0fce4348bda220c4215cdcc2'.
+Published codex_app_server agent run 'aorg_e2e_verifier_999c777c63b5454592a73674b806b840'.
+{"level":30,"time":1788694590150,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-jw","err":{"type":"GraphQLError","message":"Unknown query","stack":"FastifyError: Unknown query\n    at executeQuery (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:227:14)\n    at executeRegularQuery (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.handler (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:317:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Unknown query"}
+{"level":40,"time":1788694590150,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-jw","method":"GET","url":"/graphql","statusCode":400,"elapsedMs":1.2802500016987324,"msg":"http request completed"}
+{"level":40,"time":1788694819194,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-p8","method":"POST","url":"/mcp/agent-tools/agtrun_0lu78N8P4vQyjbllZ0HYTcBLCFo19bMsHLrE2n2gAac","statusCode":404,"elapsedMs":0.4694169983267784,"msg":"http request completed"}
+{"level":40,"time":1788694819198,"pid":49540,"hostname":"17de3252c4f7","reqId":"req-p9","method":"POST","url":"/mcp/agent-tools/agtrun_UWJqRwxhg1jgc7p-JW5GvUB3NCnkr_I7zKfrwz6ZErc","statusCode":404,"elapsedMs":0.26170800253748894,"msg":"http request completed"}
+[CodexAppServerClient] stderr: 2026-09-06T11:40:31.438119Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit
+Closed PTY session 304f2a47-43ea-453a-900f-1faaa7466255
+Terminal WebSocket disconnected: 304f2a47-43ea-453a-900f-1faaa7466255
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 9,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc'.
+[2026-09-06T12:07:23.612Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed PTY session d5e9fd6c-f191-4e11-b1f3-5362c4b381c5
+Terminal WebSocket disconnected: d5e9fd6c-f191-4e11-b1f3-5362c4b381c5
+[2026-09-06T12:07:23.806Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,0 +1,1122 @@
+{
+  "states": [
+    {
+      "name": "desktop-before",
+      "overflow": false,
+      "textarea": "My next exact-Agent draft",
+      "state": {
+        "sequence": 0,
+        "recovery": false,
+        "focused": "lead",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "desktop-activated",
+      "overflow": false,
+      "textarea": "My next exact-Agent draft",
+      "state": {
+        "sequence": 2,
+        "recovery": false,
+        "focused": "lead",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-verifier",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-verifier",
+            "accessibleName": "Task: Verify fresh-verifier",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-verifier",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-verifier",
+              "description": "Verify fresh-verifier",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          },
+          {
+            "sequence": 1,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 2,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "desktop-task-monitor",
+      "overflow": false,
+      "textarea": "",
+      "state": {
+        "sequence": 3,
+        "recovery": false,
+        "focused": "fresh-verifier",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-verifier",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-verifier",
+            "accessibleName": "Task: Verify fresh-verifier",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-verifier",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-verifier",
+              "description": "Verify fresh-verifier",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          },
+          {
+            "sequence": 1,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 2,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 3,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "desktop-snapshot",
+      "overflow": false,
+      "textarea": "My next exact-Agent draft",
+      "state": {
+        "sequence": 8,
+        "recovery": false,
+        "focused": "lead",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-verifier",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-verifier",
+            "accessibleName": "Task: Verify fresh-verifier",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-verifier",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-verifier",
+              "description": "Verify fresh-verifier",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-second",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-second",
+            "accessibleName": "Task: Verify fresh-second",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-second",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-second",
+              "description": "Verify fresh-second",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          },
+          {
+            "sequence": 1,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 2,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 3,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 7,
+            "entries": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-second",
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 8,
+            "entries": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-second",
+              "fresh-verifier"
+            ]
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "narrow-before",
+      "overflow": false,
+      "textarea": "My next exact-Agent draft",
+      "state": {
+        "sequence": 0,
+        "recovery": false,
+        "focused": "lead",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "narrow-activated",
+      "overflow": false,
+      "textarea": "My next exact-Agent draft",
+      "state": {
+        "sequence": 2,
+        "recovery": false,
+        "focused": "lead",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-verifier",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-verifier",
+            "accessibleName": "Task: Verify fresh-verifier",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-verifier",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-verifier",
+              "description": "Verify fresh-verifier",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          },
+          {
+            "sequence": 1,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 2,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "narrow-task-monitor",
+      "overflow": false,
+      "textarea": "",
+      "state": {
+        "sequence": 3,
+        "recovery": false,
+        "focused": "fresh-verifier",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-verifier",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-verifier",
+            "accessibleName": "Task: Verify fresh-verifier",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-verifier",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-verifier",
+              "description": "Verify fresh-verifier",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          },
+          {
+            "sequence": 1,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 2,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 3,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          }
+        ],
+        "sent": []
+      }
+    },
+    {
+      "name": "narrow-snapshot",
+      "overflow": false,
+      "textarea": "My next exact-Agent draft",
+      "state": {
+        "sequence": 8,
+        "recovery": false,
+        "focused": "lead",
+        "sameLead": true,
+        "draft": "My next exact-Agent draft",
+        "rows": [
+          {
+            "key": "team:flat-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "Test Team",
+            "accessibleName": "Test Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "flat-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:flat-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-verifier",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-verifier",
+            "accessibleName": "Task: Verify fresh-verifier",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-verifier",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-verifier",
+              "description": "Verify fresh-verifier",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:fresh-second",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Verify fresh-second",
+            "accessibleName": "Task: Verify fresh-second",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "fresh-second",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-fresh-second",
+              "description": "Verify fresh-second",
+              "displayStatus": "in_progress"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "witnesses": [
+          {
+            "sequence": 0,
+            "entries": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "lead"
+            ],
+            "tasks": []
+          },
+          {
+            "sequence": 1,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 2,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 3,
+            "entries": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 7,
+            "entries": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-second",
+              "fresh-verifier"
+            ]
+          },
+          {
+            "sequence": 8,
+            "entries": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tree": [
+              "configured-verifier",
+              "fresh-second",
+              "fresh-verifier",
+              "lead"
+            ],
+            "tasks": [
+              "fresh-second",
+              "fresh-verifier"
+            ]
+          }
+        ],
+        "sent": []
+      }
+    }
+  ],
+  "pageErrors": [],
+  "warnings": [],
+  "externalQueries": [
+    "GetAgentDefinitions",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "GetSkillImprovementCapability"
+  ],
+  "limits": "Implementation renderer only: actual TeamWorkspaceView/shared monitor/composer, active Pinia and strict stream/publication. Synthetic exact flat Team, injected transport and suppressed external history refresh/projection I/O. Diagnostic selection controls. Not a provider/API/native-shell or full workspace navigation result.",
+  "passed": true
+}

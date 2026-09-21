@@ -1,0 +1,163 @@
+{
+  "before": {
+    "label": "before-supported-reselect",
+    "at": "2026-09-06T12:03:07.631Z",
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574&mode=active",
+    "notice": true,
+    "tasksHeader": "Tasks\n2 tasks",
+    "statuses": [
+      {
+        "test": "agent-org-agent-row-aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4",
+        "status": "offline",
+        "aria": "concierge, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+        "status": "offline",
+        "aria": "lead, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_analyst_5a787039299e4d61bebd98a6dea1fa2d",
+        "status": "offline",
+        "aria": "analyst, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_verifier_9c904e2989ba4e25a4baaa031942ddfa",
+        "status": "offline",
+        "aria": "verifier, offline"
+      },
+      {
+        "test": "agent-org-task-agent-row-aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+        "status": "offline",
+        "aria": "analyst, offline"
+      },
+      {
+        "test": "agent-org-task-agent-row-aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1",
+        "status": "offline",
+        "aria": "verifier, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_lead_79f9cb8e0fce4348bda220c4215cdcc2",
+        "status": "offline",
+        "aria": "dispatcher, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_verifier_999c777c63b5454592a73674b806b840",
+        "status": "offline",
+        "aria": "specialist, offline"
+      }
+    ],
+    "hasTaskTeam": false,
+    "body": "IREV14-TASK-A-READY-DELEGATED.\nL\nlead\nThinking\ndelegate_task\nThinking\n\ndelegate_task failed because the catalog rejected task_description as an invalid field.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/research-team/analyst` and description=`Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-A-READY-DELEGATED.\nL\nlead\ndelegate_task\n\nAPIREV14-TASK-A-READY-DELEGATED.\n\nYou\nYour live catalog exposes send_message_to. Call send_message_to exactly once with target_agent_run_id `aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495`, content `APIREV14-CONFIGURED-TO-TASK-MSG-001`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. Do not set recipient_address. After success reply exactly APIREV14-CONFIGURED-TO-TASK-MSG-001-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-CONFIGURED-TO-TASK-MSG-001-SENT.\n\nYou\nYour live catalog exposes send_message_to. Call send_message_to exactly once with recipient_address `/concierge`, content `APIREV14-TASK-TO-CONFIGURED-MSG-001`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. After success reply exactly APIREV14-TASK-TO-CONFIGURED-MSG-001-SENT. Do not submit the task yet.\nL\nlead\nsend_message_to\n\nAPIREV14-TASK-TO-CONFIGURED-MSG-001-SENT.\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495`, content `APIREV14-TASK-CLARIFICATION-001: Your live catalog exposes send_message_to. Call send_message_to exactly once with recipient_address /concierge, content APIREV14-TASK-TO-CONFIGURED-REAL-001, and reference_files [/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt]. After success reply exactly APIREV14-TASK-TO-CONFIGURED-REAL-001-SENT. Do not submit_task_result yet.`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. Do not set recipient_address. After success reply exactly APIREV14-TASK-CLARIFICATION-001-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-TASK-CLARIFICATION-001-SENT.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/research-team/verifier` and description=`Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-B-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-B-READY-DELEGATED.\nL\nlead\ndelegate_task\nL\nlead\n\nAPIREV14-TASK-B-READY-DELEGATED.\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495`, content `APIREV14-TASK-TASK-CLARIFICATION-001: Call send_message_to exactly once with target_agent_run_id aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1, content APIREV14-TASK-TO-TASK-MSG-001, and reference_files [/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt]. Do not set recipient_address. After success reply exactly APIREV14-TASK-TO-TASK-MSG-001-SENT. Do not submit_task_result yet.`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. Do not set recipient_address. After success reply exactly APIREV14-TASK-TASK-CLARIFICATION-001-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-TASK-TASK-CLARIFICATION-001-SENT.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/support-team` and description=`As the new task Team coordinator, remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-TEAM-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-TEAM-READY-DELEGATED.\nL\nlead\ndelegate_task\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n3 Messages\nTasks\n2 tasks\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.\nIn progress\nUpdated 11:49 AM\nlead → analyst\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-B-READY and wait.\nIn progress\nUpdated 11:55 AM\nlead → verifier\nTask assigned\nIn progress\n\nlead → analyst\n\nSep 6, 11:49 AM\n\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait."
+  },
+  "after": {
+    "label": "after-supported-reselect",
+    "at": "2026-09-06T12:03:29.510Z",
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574&mode=active",
+    "notice": true,
+    "tasksHeader": "Tasks\n2 tasks",
+    "statuses": [
+      {
+        "test": "agent-org-agent-row-aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4",
+        "status": "offline",
+        "aria": "concierge, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+        "status": "offline",
+        "aria": "lead, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_analyst_5a787039299e4d61bebd98a6dea1fa2d",
+        "status": "offline",
+        "aria": "analyst, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_verifier_9c904e2989ba4e25a4baaa031942ddfa",
+        "status": "offline",
+        "aria": "verifier, offline"
+      },
+      {
+        "test": "agent-org-task-agent-row-aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+        "status": "offline",
+        "aria": "analyst, offline"
+      },
+      {
+        "test": "agent-org-task-agent-row-aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1",
+        "status": "offline",
+        "aria": "verifier, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_lead_79f9cb8e0fce4348bda220c4215cdcc2",
+        "status": "offline",
+        "aria": "dispatcher, offline"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_verifier_999c777c63b5454592a73674b806b840",
+        "status": "offline",
+        "aria": "specialist, offline"
+      }
+    ],
+    "hasTaskTeam": false,
+    "body": "IREV14-TASK-A-READY-DELEGATED.\nL\nlead\nThinking\ndelegate_task\nThinking\n\ndelegate_task failed because the catalog rejected task_description as an invalid field.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/research-team/analyst` and description=`Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-A-READY-DELEGATED.\nL\nlead\ndelegate_task\n\nAPIREV14-TASK-A-READY-DELEGATED.\n\nYou\nYour live catalog exposes send_message_to. Call send_message_to exactly once with target_agent_run_id `aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495`, content `APIREV14-CONFIGURED-TO-TASK-MSG-001`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. Do not set recipient_address. After success reply exactly APIREV14-CONFIGURED-TO-TASK-MSG-001-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-CONFIGURED-TO-TASK-MSG-001-SENT.\n\nYou\nYour live catalog exposes send_message_to. Call send_message_to exactly once with recipient_address `/concierge`, content `APIREV14-TASK-TO-CONFIGURED-MSG-001`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. After success reply exactly APIREV14-TASK-TO-CONFIGURED-MSG-001-SENT. Do not submit the task yet.\nL\nlead\nsend_message_to\n\nAPIREV14-TASK-TO-CONFIGURED-MSG-001-SENT.\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495`, content `APIREV14-TASK-CLARIFICATION-001: Your live catalog exposes send_message_to. Call send_message_to exactly once with recipient_address /concierge, content APIREV14-TASK-TO-CONFIGURED-REAL-001, and reference_files [/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt]. After success reply exactly APIREV14-TASK-TO-CONFIGURED-REAL-001-SENT. Do not submit_task_result yet.`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. Do not set recipient_address. After success reply exactly APIREV14-TASK-CLARIFICATION-001-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-TASK-CLARIFICATION-001-SENT.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/research-team/verifier` and description=`Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-B-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-B-READY-DELEGATED.\nL\nlead\ndelegate_task\nL\nlead\n\nAPIREV14-TASK-B-READY-DELEGATED.\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495`, content `APIREV14-TASK-TASK-CLARIFICATION-001: Call send_message_to exactly once with target_agent_run_id aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1, content APIREV14-TASK-TO-TASK-MSG-001, and reference_files [/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt]. Do not set recipient_address. After success reply exactly APIREV14-TASK-TO-TASK-MSG-001-SENT. Do not submit_task_result yet.`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt`]. Do not set recipient_address. After success reply exactly APIREV14-TASK-TASK-CLARIFICATION-001-SENT.\nL\nlead\nsend_message_to\n\nAPIREV14-TASK-TASK-CLARIFICATION-001-SENT.\n\nYou\nYour live catalog exposes delegate_task. Call delegate_task exactly once with the exact JSON fields recipient_address=`/support-team` and description=`As the new task Team coordinator, remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-TEAM-READY and wait.`. The field name is description, not task_description. Do not send an ordinary message for this assignment. After the successful tool result, reply exactly APIREV14-TASK-TEAM-READY-DELEGATED.\nL\nlead\ndelegate_task\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n3 Messages\nTasks\n2 tasks\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.\nIn progress\nUpdated 11:49 AM\nlead → analyst\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-B-READY and wait.\nIn progress\nUpdated 11:55 AM\nlead → verifier\nTask assigned\nIn progress\n\nlead → analyst\n\nSep 6, 11:49 AM\n\nRemain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait."
+  },
+  "network": [],
+  "errors": [],
+  "ws": [
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574\",\"session_id\":\"a27a7af1-b737-4235-97fa-25df64def782\"}}",
+        "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_STREAM_UNAVAILABLE\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc' is duplicated.\\\",\\n    \\\"path\\\": []\\n  },\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_verifier_633875fceb00419a88e9120551a5f18f' is duplicated.\\\",\\n    \\\"path\\\": []\\n  }\\n]\"}}"
+      ],
+      "sent": [],
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574\",\"session_id\":\"bfdaf687-45c0-4a0c-a650-c073e8beffe8\"}}",
+        "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_STREAM_UNAVAILABLE\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc' is duplicated.\\\",\\n    \\\"path\\\": []\\n  },\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_verifier_633875fceb00419a88e9120551a5f18f' is duplicated.\\\",\\n    \\\"path\\\": []\\n  }\\n]\"}}"
+      ],
+      "sent": [],
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574\",\"session_id\":\"5f1e90bc-fef8-45f3-8314-8eb4ab105157\"}}",
+        "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_STREAM_UNAVAILABLE\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc' is duplicated.\\\",\\n    \\\"path\\\": []\\n  },\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_verifier_633875fceb00419a88e9120551a5f18f' is duplicated.\\\",\\n    \\\"path\\\": []\\n  }\\n]\"}}"
+      ],
+      "sent": [],
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574\",\"session_id\":\"7eb79bbf-8551-4dbf-b4f1-bfea567e3177\"}}",
+        "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_STREAM_UNAVAILABLE\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc' is duplicated.\\\",\\n    \\\"path\\\": []\\n  },\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_verifier_633875fceb00419a88e9120551a5f18f' is duplicated.\\\",\\n    \\\"path\\\": []\\n  }\\n]\"}}"
+      ],
+      "sent": [],
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574\",\"session_id\":\"49d8b334-d825-4187-b242-c724abf63513\"}}",
+        "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_STREAM_UNAVAILABLE\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_lead_279d32a369bc4e83b2adffa867ae2ebc' is duplicated.\\\",\\n    \\\"path\\\": []\\n  },\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg status for AgentRun 'aorg_e2e_verifier_633875fceb00419a88e9120551a5f18f' is duplicated.\\\",\\n    \\\"path\\\": []\\n  }\\n]\"}}"
+      ],
+      "sent": [],
+      "errors": []
+    }
+  ],
+  "assertions": {
+    "preconditionExhaustedNotice": true,
+    "preconditionOnlyTwoTasks": true,
+    "noticeCleared": false,
+    "threeTasksProjected": false,
+    "taskTeamProjected": false,
+    "configuredStatusesRecovered": false,
+    "noNetworkFailures": true,
+    "noErrors": true
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "parentTeamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+  "coordinator": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+  "approved": true,
+  "taskId": "task_0035bd13c1f44dc895a5c070139f8e6d",
+  "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171",
+  "assertions": {
+    "oneAdded": true,
+    "exactDelegator": false,
+    "exactRecipient": true,
+    "activeTeam": true,
+    "parentFound": true,
+    "nestedUnderParent": false,
+    "readyExactlyOnce": true,
+    "coordinatorSelected": false,
+    "nestedVisible": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

@@ -52,13 +52,16 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   async findAgent(input: {
+    rootTeamRunId?: string | null;
     agentRunId?: string | null;
     memberAddress?: string | null;
     containingTeamRunId?: string | null;
   }): Promise<LocatedTeamAgentExecution | null> {
     const active = this.findInActive(input);
     if (active) return active;
-    for (const rootTeamRunId of await this.listStoredRootIds()) {
+    const requestedRoot = input.rootTeamRunId?.trim() || null;
+    for (const rootTeamRunId of requestedRoot ? [requestedRoot] : await this.listStoredRootIds()) {
+      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const tree = await this.readStoredTree(rootTeamRunId);
       const located = tree ? this.findInTree(tree, input, false) : null;
       if (located) return located;
@@ -103,13 +106,16 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   findAgentSync(input: {
+    rootTeamRunId?: string | null;
     agentRunId?: string | null;
     memberAddress?: string | null;
     containingTeamRunId?: string | null;
   }): LocatedTeamAgentExecution | null {
     const active = this.findInActive(input);
     if (active) return active;
-    for (const rootTeamRunId of this.listStoredRootIdsSync()) {
+    const requestedRoot = input.rootTeamRunId?.trim() || null;
+    for (const rootTeamRunId of requestedRoot ? [requestedRoot] : this.listStoredRootIdsSync()) {
+      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const tree = this.readStoredTreeSync(rootTeamRunId);
       const located = tree ? this.findInTree(tree, input, false) : null;
       if (located) return located;
@@ -129,11 +135,13 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   private findInActive(input: {
+    rootTeamRunId?: string | null;
     agentRunId?: string | null;
     memberAddress?: string | null;
     containingTeamRunId?: string | null;
   }): LocatedTeamAgentExecution | null {
-    for (const rootTeamRunId of this.manager.listManagedTeamRunIds()) {
+    const requestedRoot = input.rootTeamRunId?.trim() || null;
+    for (const rootTeamRunId of requestedRoot ? [requestedRoot] : this.manager.listManagedTeamRunIds()) {
       const root = this.manager.getManagedTeamRun(rootTeamRunId);
       if (!root) continue;
       const located = this.findInTree(root.getExecutionTreeSnapshot(), input, true);
@@ -178,13 +186,13 @@ export class TeamRunExecutionTreeLocationService {
     const configured = index.getConfiguredPlacement(agent.address);
     const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
     return Object.freeze({
-      rootTeamRunId: scope.rootTeamRunId,
+      rootTeamRunId: scope.root.rootRunId,
       containingTeamRunId: agent.containingTeamRunId,
       ancestorTeamRunIds: scope.ancestorTeamRunIds,
       agentRunId: agent.agentRunId,
       memberAddress: agent.address,
       configuredPlacement,
-      memoryDir: this.layout.getTeamAgentRunDirPath(scope, agent.agentRunId),
+      memoryDir: this.layout.getRootedAgentRunDirPath(scope, agent.agentRunId),
       tree,
       isActive,
     });

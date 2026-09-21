@@ -1,0 +1,89 @@
+Ad-hoc signing owned candidate application for isolated local execution
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: replacing existing signature
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: valid on disk
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: satisfies its Designated Requirement
+Ad-hoc hardened-runtime signing owned candidate application for isolated local execution
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: replacing existing signature
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: valid on disk
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: satisfies its Designated Requirement
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=com.autobyteus.app
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20500 size=435 flags=0x10002(adhoc,runtime) hashes=3+7 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=215ef9c14bf22551e49711ec78230e245bb02f20
+CandidateCDHashFull sha256=215ef9c14bf22551e49711ec78230e245bb02f20fe73795f8850e6034bcacaf3
+Hash choices=sha256
+CMSDigest=215ef9c14bf22551e49711ec78230e245bb02f20fe73795f8850e6034bcacaf3
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=16384
+CDHash=215ef9c14bf22551e49711ec78230e245bb02f20
+Signature=adhoc
+Info.plist entries=32
+TeamIdentifier=not set
+Runtime Version=26.2.0
+Sealed Resources version=2 rules=13 files=33047
+Internal requirements count=0 size=12
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: replacing existing signature
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: valid on disk
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: satisfies its Designated Requirement

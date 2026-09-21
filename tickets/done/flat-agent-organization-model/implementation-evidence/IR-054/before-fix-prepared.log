@@ -1,0 +1,93 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runHistoryRetainedTeamStatus.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | stores/__tests__/runHistoryRetainedTeamStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryRetainedTeamStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts (5 tests | 5 failed) 54ms
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=false 17ms
+     → expected 'initializing' to be 'offline' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=false 17ms
+     → expected undefined to be 'first' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=true 4ms
+     → expected 'initializing' to be 'offline' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=true 12ms
+     → expected undefined to be 'first' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves a retained terminal error and does not admit an incomplete live snapshot 2ms
+     → expected 'initializing' to be 'error' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=false
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=true
+AssertionError: expected 'initializing' to be 'offline' // Object.is equality
+
+Expected: "offline"
+Received: "initializing"
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:64:92
+     62|       if (alreadyReady) h.ready();
+     63|       await h.reconcile();
+     64|       for (const id of h.retiredIds) expect(view.getAgentContext(id)!.…
+       |                                                                                            ^
+     65|       for (const status of h.snapshot.payload.agent_statuses) expect(v…
+     66|         .toBe(alreadyReady ? status.status : AgentStatus.Initializing);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=false
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=true
+AssertionError: expected undefined to be 'first' // Object.is equality
+
+- Expected: 
+"first"
+
++ Received: 
+undefined
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:77:58
+     75|         const inspected = await inspectMountedTeamMember({ teamRunId: …
+     76|         expect(inspected.disposition).toBe('committed');
+     77|         expect(active.activeTarget?.context.state.runId).toBe(id);
+       |                                                          ^
+     78|         expect(active.activeTarget?.access).toBe('read_only'); expect(…
+     79|         expect(view.getAgentContext(id)!.state.currentStatus).toBe(Age…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves a retained terminal error and does not admit an incomplete live snapshot
+AssertionError: expected 'initializing' to be 'error' // Object.is equality
+
+Expected: "error"
+Received: "initializing"
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:94:92
+     92|   it('preserves a retained terminal error and does not admit an incomp…
+     93|     const h = harness(); h.team.view.getAgentContext('first')!.state.c…
+     94|     await h.reconcile(); expect(h.team.view.getAgentContext('first')!.…
+       |                                                                                            ^
+     95|     h.emit({ type: 'CONNECTED', payload: { session_id: 'fixture', root…
+     96|     h.emit({ ...h.snapshot, payload: { ...h.snapshot.payload, agent_st…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  13:27:21
+   Duration  11.81s (transform 6.79s, setup 10.09s, collect 270ms, tests 54ms, environment 533ms, prepare 409ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

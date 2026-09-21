@@ -1,0 +1,97 @@
+Window: "Electron", App: Electron.
+0 Standardfenster Electron, Secondary Actions: Raise
+	1 container Electron
+		2 container
+			3 HTML-Inhalte 127.0.0.1:50572/settings
+				4 container
+					5 Inhaltsliste
+						6 Button Back to workspace
+						7 Button API Keys
+						8 Button Token Statistics
+						9 Button Messaging
+						10 Button Display
+						11 Button Language
+						12 Button Local Tools
+						13 Button MCP Servers
+						14 Button Application Packages
+						15 Button Agent Packages
+						16 Button Server Settings
+						17 Button Extensions
+						18 Button Updates
+					19 Teilungsfunktion Description: Resize Settings menu, Value: 256
+					20 Kopfzeile API Key Management, Value: 2
+						21 Text API Key Management
+					22 Text Manage provider keys and provider-specific model discovery
+					23 container Providers
+						24 Text PROVIDERS
+						25 Button Anthropic 6
+							26 Text Anthropic
+							27 Text 6
+						28 Button AutoByteus 0
+							29 Text AutoByteus
+							30 Text 0
+						31 Button DeepSeek 2
+							32 Text DeepSeek
+							33 Text 2
+						34 Button Gemini 11
+							35 Text Gemini
+							36 Text 11
+						37 Button GLM 1
+							38 Text GLM
+							39 Text 1
+						40 Button Grok 1
+							41 Text Grok
+							42 Text 1
+						43 Button Kimi 1
+							44 Text Kimi
+							45 Text 1
+						46 Button LM Studio 15
+							47 Text LM Studio
+							48 Text 15
+						49 Button MiniMax 1
+							50 Text MiniMax
+							51 Text 1
+						52 Button Mistral 2
+							53 Text Mistral
+							54 Text 2
+						55 Button Ollama Model count loading
+							56 Text Ollama
+							57 container Model count loading
+								58 Text —
+						59 Button OpenAI 9
+							60 Text OpenAI
+							61 Text 9
+						62 Button Qwen 6
+							63 Text Qwen
+							64 Text 6
+						65 Button New Provider Model count loading
+							66 Text New Provider
+							67 container Model count loading
+								68 Text —
+					69 text Anthropic Not Configured
+					70 container
+						71 verschlüsseltes Textfeld (settable) Enter API key...
+						72 Button
+					73 Button (disabled) Save Key
+					74 container Models
+						75 Kopfzeile Models, Value: 3
+							76 Text Models
+						77 Kopfzeile LLM MODELS, Value: 4
+							78 Text LLM MODELS
+						79 Text claude-fable-5
+						80 Text claude-opus-4.7
+						81 Text claude-opus-4.8
+						82 Text claude-opus-5
+						83 Text claude-sonnet-4.6
+						84 Text claude-sonnet-5
+	85 Schließen-Taste
+	86 Taste „Vollbildmodus“ Help: mit dieser Taste wird auch das Fenster vergrößert, Secondary Actions: Fenster zoomen
+	87 Taste zum Minimieren
+88 menu bar
+	89 Electron
+	90 File
+	91 Edit
+	92 View
+	93 Window
+
+The focused UI element is 3 HTML-Inhalte 127.0.0.1:50572/settings

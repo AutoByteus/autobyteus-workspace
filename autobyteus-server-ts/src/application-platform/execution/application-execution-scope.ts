@@ -68,9 +68,12 @@ export class ApplicationExecutionScope {
       observeTeamRunLifecycle: (teamRunId, listener) =>
         this.kernel.teamRunService.observeTeamRunLifecycle(teamRunId, listener),
       requireLiveTeamMember: async (identity) => {
-        const root = this.kernel.teamRunService.getActiveTeamRun(identity.rootTeamRunId);
+        if (identity.root.rootSubjectKind !== "agent_team") {
+          throw new Error("Application execution scopes admit Team members only.");
+        }
+        const root = this.kernel.teamRunService.getActiveTeamRun(identity.root.rootRunId);
         if (!root) {
-          throw new Error(`Root TeamRun '${identity.rootTeamRunId}' is not active.`);
+          throw new Error(`Root TeamRun '${identity.root.rootRunId}' is not active.`);
         }
         root.authorizeIdentity(identity);
       },
@@ -154,19 +157,9 @@ export class ApplicationExecutionScope {
     run: Awaited<ReturnType<ApplicationExecutionScopeKernel["teamRunService"]["createTeamRun"]>>,
   ): ApplicationTeamLaunchResult {
     const members: ApplicationTeamLaunchMember[] = [];
-    const visit = (nodes: readonly ConfiguredExecutionNode[]): void => {
-      for (const node of nodes) {
-        if (isConfiguredAgentExecution(node)) {
-          members.push(Object.freeze({
-            memberAddress: node.address,
-            agentRunId: node.agentRunId,
-          }));
-        } else {
-          visit(node.members);
-        }
-      }
-    };
-    visit(run.getExecutionTreeSnapshot().rootTeam.members);
+    for (const node of run.getExecutionTreeSnapshot().rootTeam.members) {
+      members.push(Object.freeze({ memberAddress: node.address, agentRunId: node.agentRunId }));
+    }
     return Object.freeze({ teamRunId: run.teamRunId, members: Object.freeze(members) });
   }
 

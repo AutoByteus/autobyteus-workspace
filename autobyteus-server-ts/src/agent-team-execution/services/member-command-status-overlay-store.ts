@@ -71,6 +71,6 @@ export class MemberCommandStatusOverlayStore {
   clear(): void { this.statuses.clear(); }
 
   private key(binding: TeamAgentExecutionBinding): string {
-    return `${binding.rootTeamRunId}\0${binding.agentRunId}\0${binding.memberAddress}`;
+    return `${binding.root.rootSubjectKind}\0${binding.root.rootRunId}\0${binding.agentRunId}\0${binding.memberAddress}`;
   }
 }

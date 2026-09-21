@@ -1,0 +1,12 @@
+[
+  {
+    "teamRunId": "aorg_e2e_research_squad_406e38c2bf72449ea5685e1489282463",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/live/server-data/temp_workspace",
+    "summary": "Return exactly AORG-TEAM-AFTER-RESTORE-002 on the first line and state the earlier lead marker on...",
+    "createdAt": "2026-09-01T19:51:57.881Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-01T20:23:36.129Z"
+  }
+]

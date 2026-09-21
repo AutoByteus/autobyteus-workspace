@@ -14,6 +14,7 @@ import { ApplicationPortableLaunchConfigPolicy } from "./application-portable-la
 const createReadOnlyDefinitionConfig = (packageRoot: string): AppConfig => ({
   getAgentsDir: () => path.join(packageRoot, ".validation-only", "agents"),
   getAgentTeamsDir: () => path.join(packageRoot, ".validation-only", "agent-teams"),
+  getAgentOrgsDir: () => path.join(packageRoot, ".validation-only", "agent-orgs"),
   getAdditionalAgentPackageRoots: () => [],
 }) as unknown as AppConfig;
 

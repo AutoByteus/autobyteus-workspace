@@ -1,0 +1,34 @@
+{
+  "entryHead": "5b2c52bb4036800e009764701d8ac149ee70dcfd",
+  "sourceCheckpoint": "3d9a019d320878c421429f27c0f074f9a4c4c2f5",
+  "files": [
+    {
+      "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 426,
+      "sha256": "27aafcc938ae840c2aea8140cfd61b30986c2047b4d217d97c3acf5575ed28d5"
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 387,
+      "sha256": "0c77eccd5d9bf1c066295c5024dc0f7d119a4adb0b964c4a45e6f9dc0736f6f6"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/runHistoryRetainedTeamStatus.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 107,
+      "sha256": "d818d264fd3076533f1febdd2fe85041771c48575cf7871c2487dc6191bf6d5d"
+    },
+    {
+      "path": "autobyteus-web/test-support/retainedTeamHistoryFixture.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 58,
+      "sha256": "407c7a44c013f129407e5d62f8b38f440e150264d9b317699afc0a987bf8f29e"
+    }
+  ]
+}

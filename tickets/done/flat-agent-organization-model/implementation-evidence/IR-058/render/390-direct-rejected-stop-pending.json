@@ -1,0 +1,182 @@
+{
+  "calls": [
+    {
+      "kind": "query",
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "ListCollaborationRootHistory"
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "kind": "query",
+      "name": "ListCollaborationRootHistory"
+    },
+    {
+      "kind": "query",
+      "name": "ListCollaborationRootHistory"
+    },
+    {
+      "kind": "mutation",
+      "name": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    }
+  ],
+  "refreshes": 1,
+  "phase": "live",
+  "active": true,
+  "address": "/director",
+  "selection": {
+    "kind": "agent_execution",
+    "agentRunId": "agent-director"
+  },
+  "selectionRetained": true,
+  "exactContextRetained": true,
+  "conversationRetained": true,
+  "status": "idle",
+  "draft": "IR058 retain this draft",
+  "mode": "active",
+  "rootRunId": "org-run",
+  "pending": true,
+  "historyError": null,
+  "error": null,
+  "socketSends": 0,
+  "rows": [
+    {
+      "rootRunId": "org-run",
+      "active": true,
+      "summary": "Keep this exact conversation"
+    }
+  ]
+}

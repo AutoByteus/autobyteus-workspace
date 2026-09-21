@@ -1,0 +1,27 @@
+manifest MATCH present autobyteus-server-ts/docs/modules/agent_orgs.md
+manifest MATCH present autobyteus-server-ts/docs/modules/agent_team_definition.md
+manifest MATCH present autobyteus-server-ts/src/agent-team-definition/providers/agent-team-definition-config.ts
+manifest MATCH present autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts
+manifest MATCH present autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+manifest MATCH deleted autobyteus-server-ts/src/app-data-migrations/legacy/collaboration-definition-authoring-transition.ts
+manifest MATCH deleted autobyteus-server-ts/src/app-data-migrations/legacy/owned-definition-package-inventory.ts
+manifest MATCH present autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts
+manifest MATCH deleted autobyteus-server-ts/src/app-data-migrations/migrations/collaboration-definition-authoring-shape-app-data-migration.ts
+manifest MATCH present autobyteus-server-ts/src/application-bundles/providers/file-application-bundle-provider.ts
+manifest MATCH present autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts
+manifest MATCH deleted autobyteus-server-ts/tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/collaboration-definition-admission/definition-admission-service.test.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/agent-team-definition/agent-team-definition-config.test.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts
+manifest MATCH present autobyteus-server-ts/tests/unit/collaboration-definition-admission/tolerant-team-package-reading.test.ts
+migrateRuntimeRoots: exact retained method MATCH
+cleanupOrgTargets: exact retained method MATCH
+migrateHistoryIndexes: exact retained method MATCH
+validateCompleteOrgRunPackage: exact retained method MATCH
+add: exact retained method MATCH
+Codec excluding added input projection: byte-identical to HEAD
+git diff --check: 0
+Reviewer-generated two shared SDK dist directories removed after tests/typecheck; absent at intake. No staging/commit.

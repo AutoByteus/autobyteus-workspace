@@ -1,0 +1,25 @@
+{
+  "at": "2026-09-13T12:06:13.824913+00:00",
+  "protectedCount": 8824,
+  "changed": [],
+  "missing": [],
+  "all224UpstreamReferencesPreserved": true,
+  "head": "270d0d72ec8b2feec2b4699b1687f5caa8707108",
+  "headUnchanged": true,
+  "staged": "",
+  "unmerged": "",
+  "gitStatus": "?? tickets/in-progress/collaboration-follow-up-fixes/api-e2e-coverage-investigation.md\n?? tickets/in-progress/collaboration-follow-up-fixes/api-e2e-evidence/\n?? tickets/in-progress/collaboration-follow-up-fixes/api-e2e-execution-coverage-report.md\n?? tickets/in-progress/collaboration-follow-up-fixes/api-e2e-test-case-ledger.md\n?? tickets/in-progress/collaboration-follow-up-fixes/code-review-evidence/\n?? tickets/in-progress/collaboration-follow-up-fixes/code-review-report.md\n?? tickets/in-progress/collaboration-follow-up-fixes/code-review-revision-record.md\n",
+  "removedOwnInitiallyAbsentOutputs": [
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-application-frontend-sdk/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-server-ts/dist"
+  ],
+  "preexistingCoreDist": "Rebuilt by normal server build, retained because existed at entry; not claimed byte-identical.",
+  "ownedPosixRootRemoved": true,
+  "sourceCredentialUnchanged": true,
+  "secretInEvidence": false,
+  "archiveFiles": 36,
+  "oldAORG": "Read-only provenance; no execution/reopen/repair/cutover",
+  "limits": "Default Temp Workspace discovery/file-explorer watcher read external /home/autobyteus/workspace during normal no-selection navigation; no user work or writes there. Initial ambient definition roots were read before isolation correction; owned seeds confirmed in isolated data only."
+}

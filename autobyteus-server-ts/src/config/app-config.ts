@@ -328,21 +328,15 @@ export class AppConfig {
   }
 
   getDownloadDir(): string {
-    const downloadDir = path.join(this.dataDir, "download");
-    fs.mkdirSync(downloadDir, { recursive: true });
-    return downloadDir;
+    return this.ensureDataSubdirectory("download");
   }
 
   getMemoryDir(): string {
-    const memoryDir = path.join(this.dataDir, "memory");
-    fs.mkdirSync(memoryDir, { recursive: true });
-    return memoryDir;
+    return this.ensureDataSubdirectory("memory");
   }
 
   getSkillsDir(): string {
-    const skillsDir = path.join(this.dataDir, "skills");
-    fs.mkdirSync(skillsDir, { recursive: true });
-    return skillsDir;
+    return this.ensureDataSubdirectory("skills");
   }
 
   getTempWorkspaceDir(): string {
@@ -360,15 +354,15 @@ export class AppConfig {
   }
 
   getAgentsDir(): string {
-    const agentsDir = path.join(this.dataDir, "agents");
-    fs.mkdirSync(agentsDir, { recursive: true });
-    return agentsDir;
+    return this.ensureDataSubdirectory("agents");
   }
 
   getAgentTeamsDir(): string {
-    const teamsDir = path.join(this.dataDir, "agent-teams");
-    fs.mkdirSync(teamsDir, { recursive: true });
-    return teamsDir;
+    return this.ensureDataSubdirectory("agent-teams");
+  }
+
+  getAgentOrgsDir(): string {
+    return this.ensureDataSubdirectory("agent-orgs");
   }
 
   getAgentMdPath(agentId: string): string {
@@ -387,6 +381,14 @@ export class AppConfig {
     return path.join(this.getAgentTeamsDir(), teamId, "team-config.json");
   }
 
+  getOrgMdPath(orgId: string): string {
+    return path.join(this.getAgentOrgsDir(), orgId, "org.md");
+  }
+
+  getOrgConfigPath(orgId: string): string {
+    return path.join(this.getAgentOrgsDir(), orgId, "org-config.json");
+  }
+
   getTeamLocalAgentsDir(teamId: string): string {
     return path.join(this.getAgentTeamsDir(), teamId, "agents");
   }
@@ -397,6 +399,12 @@ export class AppConfig {
 
   getTeamLocalAgentConfigPath(teamId: string, agentId: string): string {
     return path.join(this.getTeamLocalAgentsDir(teamId), agentId, "agent-config.json");
+  }
+
+  private ensureDataSubdirectory(name: string): string {
+    const directory = path.join(this.dataDir, name);
+    fs.mkdirSync(directory, { recursive: true });
+    return directory;
   }
 
   getAdditionalSkillsDirs(): string[] {

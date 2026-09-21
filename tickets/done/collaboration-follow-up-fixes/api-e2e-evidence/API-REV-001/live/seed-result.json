@@ -1,0 +1,16 @@
+{
+  "at": "2026-09-13T11:35:54.852Z",
+  "agent": {
+    "id": "followup-assistant",
+    "name": "Followup Assistant"
+  },
+  "team": {
+    "id": "followup-flat-team",
+    "name": "Followup Flat Team"
+  },
+  "org": {
+    "id": "followup-organization",
+    "name": "Followup Organization"
+  },
+  "mode": "Supported public definition authoring APIs for isolated fixture setup ONLY. Actual Run/Send acceptance is through visible UI."
+}

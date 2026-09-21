@@ -1,0 +1,643 @@
+{
+  "events": [
+    {
+      "label": "restored-direct-desktop",
+      "at": "2026-09-06T02:12:01.918Z",
+      "viewport": {
+        "width": 1502,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e concierge - C413\nIdle\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-001\nConfirmed, direct request was received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-RESUMED-002\nConfirmed, resumed direct request received.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 2, 2026, 9:38:04 PM · 6118 characters\nAVAILABLE",
+      "current": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        }
+      ],
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AE aorg e2e concierge"
+        },
+        {
+          "test": null,
+          "text": "Activity"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-panel-shell",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco... 3d A aorg_e2e_lead 3d A aorg_e2e_analyst 3d AGENT ORGS APIREV8 组织 Ω (1) Return ex",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco... 3d A aorg_e2e_lead 3d A aorg_e2e_analyst 3d AGENT ORGS APIREV8 组织 Ω (1) Return ex",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco... 3d A aorg_e2e_lead 3d A aorg_e2e_analyst 3d AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first lin",
+          "expanded": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true"
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本 APIREV8 本地化 Team β (1)",
+          "expanded": "true"
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "expanded": "true"
+        },
+        {
+          "test": "workspace-team-run-disclosure",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-team-execution-tree",
+          "text": "A aorg_e2e_lead 3d A aorg_e2e_analyst 3d",
+          "expanded": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+          "text": "A aorg_e2e_lead 3d",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null
+        },
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "A aorg_e2e_analyst 3d",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "text": "A",
+          "expanded": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AE aorg e2e concierge",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-right-panel",
+          "text": "Files Terminal Activity Token Artifacts VNC Viewer To-Do 0 Tasks Activity 1 Events System instructions AutoByteus-supplied · Codex baseInstructions Captured Sep 2, 2026, 9:38:04 PM · 6118 characters AVAILABLE",
+          "expanded": null
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "Files Terminal Activity Token Artifacts VNC Viewer",
+          "expanded": null
+        },
+        {
+          "test": "right-side-panel-toggle",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "To-Do 0 Tasks Activity 1 Events System instructions AutoByteus-supplied · Codex baseInstructions Captured Sep 2, 2026, 9:38:04 PM · 6118 characters AVAILABLE",
+          "expanded": null
+        },
+        {
+          "test": "right-side-files-panel",
+          "text": "No file selectedSelect a file from the explorer to view or edit its content.",
+          "expanded": null
+        },
+        {
+          "test": "right-side-terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null
+        },
+        {
+          "test": "terminal-panel",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null
+        },
+        {
+          "test": "terminal-panel-entry",
+          "text": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$dddddddddddddddddddddddddddddddd.xterm-dom-renderer-owner-1 .xterm-rows span { display: inline-block; height: 100%; vertical-align: top;}.xterm-dom-renderer-owner-1 .xterm-rows { color: #000000; font-family: Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", m",
+          "expanded": null
+        },
+        {
+          "test": "activity-feed-scroll-container",
+          "text": "System instructions AutoByteus-supplied · Codex baseInstructions Captured Sep 2, 2026, 9:38:04 PM · 6118 characters AVAILABLE",
+          "expanded": null
+        }
+      ]
+    },
+    {
+      "label": "narrow-strip-drawer",
+      "at": "2026-09-06T02:12:03.344Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e concierge - C413\nIdle\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-001\nConfirmed, direct request was received.\n\nYou\nReturn exactly APIREV10-ORG-DIRECT-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV10-ORG-DIRECT-RESUMED-002\nConfirmed, resumed direct request received.\n\nContext Files (0)\n(drag, paste, or upload)",
+      "current": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        }
+      ],
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AE aorg e2e concierge"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-drawer-backdrop",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "app-left-navigation-drawer",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team workspace-team ",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team workspace-team ",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team workspace-team workspace workspace-default workspace-default",
+          "expanded": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true"
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本 APIREV8 本地化 Team β (1)",
+          "expanded": "false"
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AE aorg e2e concierge",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AE aorg e2e concierge - C413 Idle You Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line. AE aorg e2e concierge APIREV8-ORG-DIRECT-LIVE-001 Confirmed, direct live request received. You Return exactly APIREV8-ORG-DIRECT-RESUMED-001 on the fi",
+          "expanded": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-right-tool-strip",
+          "text": "",
+          "expanded": null
+        }
+      ]
+    },
+    {
+      "label": "narrow-mounted-exact-focus",
+      "at": "2026-09-06T02:12:03.515Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e analyst\nIdle\nContext Files (0)\n(drag, paste, or upload)",
+      "current": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        }
+      ],
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+          "text": "AE aorg e2e analyst"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-drawer-backdrop",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "app-left-navigation-drawer",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team AE aorg e2e lea",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team AE aorg e2e lea",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "Workspaces Temp Workspace workspace TEAMS A本 APIREV8 本地化 Team β (1) AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team AE aorg e2e lead AE aorg e2e analyst Task: aorg e2e analyst Task:",
+          "expanded": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "true"
+        },
+        {
+          "test": "workspace-team-definition-row-apirev8-team",
+          "text": "A本 APIREV8 本地化 Team β (1)",
+          "expanded": "false"
+        },
+        {
+          "test": "team-activity-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "AGENT ORGS APIREV8 组织 Ω (1) Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th... 3d AE aorg e2e concierge apirev8 team AE aorg e2e lead AE aorg e2e analyst Task: aorg e2e analyst Task: aorg e2e analyst",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "text": "AE aorg e2e concierge",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "text": "apirev8 team",
+          "expanded": "true"
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "team-aggregate-status-dot",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AE aorg e2e lead",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+          "text": "AE aorg e2e analyst",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+          "text": "Task: aorg e2e analyst",
+          "expanded": null
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false"
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "AE aorg e2e analyst Idle Context Files (0) (drag, paste, or upload)",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "AE aorg e2e analyst Idle Context Files (0) (drag, paste, or upload)",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "AE aorg e2e analyst Idle Context Files (0) (drag, paste, or upload)",
+          "expanded": null
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "AE aorg e2e analyst Idle Context Files (0) (drag, paste, or upload)",
+          "expanded": null
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "AE aorg e2e analyst Idle Context Files (0) (drag, paste, or upload)",
+          "expanded": null
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null
+        },
+        {
+          "test": "workspace-right-tool-strip",
+          "text": "",
+          "expanded": null
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

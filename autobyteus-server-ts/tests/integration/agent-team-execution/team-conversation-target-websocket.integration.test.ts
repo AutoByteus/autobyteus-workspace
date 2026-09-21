@@ -89,7 +89,7 @@ const startHarness = async () => {
     new TeamStreamBroadcaster(),
     lifecycle as never,
   );
-  await registerAgentWebsocket(app, {} as never, handler);
+  await registerAgentWebsocket(app, {} as never, handler, {} as never);
   await app.listen({ host: "127.0.0.1", port: 0 });
   const address = app.server.address();
   if (!address || typeof address === "string") throw new Error("Expected TCP server address");

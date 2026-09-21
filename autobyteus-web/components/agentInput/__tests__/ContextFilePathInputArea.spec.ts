@@ -24,6 +24,18 @@ const createContext = (runId: string): MockAgentContext => ({
 
 const activeContextStoreMock = reactive({
   activeAgentContext: createContext('temp-agent-1') as MockAgentContext | null,
+  get activeWorkspaceTarget(): any {
+    const context = this.activeAgentContext;
+    if (!context) return null;
+    if (agentSelectionStoreMock.selectedType === 'agent' && agentContextsStoreMock.activeRun === context) {
+      return { kind: 'standalone_agent', context, access: 'live' };
+    }
+    const team = agentTeamContextsStoreMock.activeTeamContext;
+    return agentSelectionStoreMock.selectedType === 'team' && team && agentTeamContextsStoreMock.activeExecutionFocusedMemberContext === context
+      ? { kind: 'standalone_team_member', context, access: 'live', team: {
+        rootRunId: team.view.getRootTeamRunId(), focusedMemberAddress: team.view.getFocusedMemberAddress(),
+      } } : null;
+  },
   currentContextPaths: [] as ContextAttachment[],
   addContextFilePathForContext: vi.fn(),
   removeContextFilePathForContext: vi.fn(),

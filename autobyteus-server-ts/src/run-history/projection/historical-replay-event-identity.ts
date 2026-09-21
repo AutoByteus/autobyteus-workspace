@@ -37,6 +37,7 @@ export const buildLegacyTraceFingerprint = (trace: MemoryTurnTraceEvent): string
   normalized(trace.toolName),
   digest(normalized(trace.content)),
   digest(mediaIdentity(trace.media)),
+  ...(trace.fileAttachments?.length ? [JSON.stringify(trace.fileAttachments)] : []),
 ].map(lengthPrefixed).join("|"));
 
 export const buildProviderRowFingerprint = (fields: readonly unknown[]): string => digest(

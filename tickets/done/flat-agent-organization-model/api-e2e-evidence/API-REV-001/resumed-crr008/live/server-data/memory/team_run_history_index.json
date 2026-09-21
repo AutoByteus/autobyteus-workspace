@@ -1,0 +1,12 @@
+[
+  {
+    "teamRunId": "aorg_e2e_research_squad_8f9556c7431a40c185ad379c0c96d262",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data/temp_workspace",
+    "summary": "Return exactly AORG-TEAM-LEAD-001 on the first line. Then call get_handoff_rules and send_message...",
+    "createdAt": "2026-09-01T16:41:20.065Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "outcome": "IR-055 completed architecture-based implementation with explicit local-check limitations; independent cumulative source review required",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selectionReason": "ARCH023 approved AD026 resolves the prior Design Impact; this is the completed architecture implementation rule, not a newly assigned implementation Local Fix.",
+  "selected_rule": {
+    "when": "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+    "recipient_address": "/software_engineering_team/code_reviewer"
+  }
+}

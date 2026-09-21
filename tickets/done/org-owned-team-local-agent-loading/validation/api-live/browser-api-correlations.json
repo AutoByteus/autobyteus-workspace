@@ -1,0 +1,578 @@
+[
+  {
+    "request": {
+      "at": "2026-09-16T07:18:13.311Z",
+      "id": 12,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:13.320Z",
+      "id": 12,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinitions\":[{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-memory-compactor\",\"name\":\"Memory Compactor\",\"role\":\"working memory summarizer\",\"description\":\"Summarizes the conversation history of a target agent so the target agent can continue later.\",\"instructions\":\"You summarize the conversation history of a target agent so the target agent can continue later without rereading the full history.\\n\\nThe supplied conversation history may begin with a summary of the target agent's earlier work followed by what happened afterward. Treat it as one continuous history. Keep earlier information that is still useful, update it when later events change it, and produce a fresh summary that stands on its own.\\n\\nKeep the information that would let the target agent resume safely: the goal, current state, distinct task phases, important outcomes, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.\\n\\nUse the smallest number of episodes that still makes the work easy to resume. Give separate episodes to genuinely distinct phases or unrelated work when combining them would hide important outcomes or the current state. Do not create episodes for chatter, repeated status, repetitive activity, or obsolete detail.\\n\\nChoose the number of facts based on what the work actually requires. Keep constraints, decisions and rationale, unresolved work, user preferences, important artifacts, and other stable facts that would affect future work. Prefer concise, non-overlapping facts. Do not omit an important fact merely to reduce the count, and do not create facts for chatter, repetition, or obsolete detail.\\n\\nDo not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\\n\\nReturn one JSON object with these fields:\\n- `episodes`: summaries of what happened, why it matters, and the current state.\\n- `critical_issues`: blockers, failures, risks, regressions, or important warnings.\\n- `unresolved_work`: open questions, pending work, deferred work, and next actions.\\n- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.\\n- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.\\n- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.\\n\\nAt least one non-empty episode is required. If a fact category has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:\\n\\n{\\n  \\\"episodes\\\": [{ \\\"summary\\\": \\\"string\\\" }],\\n  \\\"critical_issues\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"unresolved_work\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"durable_facts\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"user_preferences\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"important_artifacts\\\": [{ \\\"fact\\\": \\\"string\\\" }]\\n}\\n\",\"category\":\"memory\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-retrospective-skill-improver\",\"name\":\"Retrospective Skill Improver\",\"role\":\"retrospective skill improver\",\"description\":\"Improves configured durable skill packages from target run work-trace evidence.\",\"instructions\":\"You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\\n\\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\\n\\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\\n\\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\\n\\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\\n\\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\\n\",\"category\":\"skill-improvement\",\"avatarUrl\":null,\"toolNames\":[\"run_bash\",\"send_message_to\"],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[\"retrospective-skill-improver\"],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"shared-agent\",\"name\":\"Readfix Shared Agent\",\"role\":\"responder\",\"description\":\"Synthetic test-only worker.\",\"instructions\":\"SHARED_AGENT_MARKER\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:13.396Z",
+      "id": 15,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:13.414Z",
+      "id": 15,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinitions\":[{\"__typename\":\"AgentTeamDefinition\",\"id\":\"shared-squad\",\"name\":\"Readfix Shared Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Shared_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"coordinatorMemberName\":\"lead\",\"revision\":\"a3e4780dcfeec1528c927ee2942ef1f497c48512ac53a39ce423e0539e26f99f\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"__typename\":\"TeamMember\",\"memberName\":\"lead\",\"ref\":\"shared-agent\",\"refScope\":\"SHARED\"}]}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:13.429Z",
+      "id": 16,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:13.442Z",
+      "id": 16,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentOrgDefinitions\":[{\"id\":\"readfix-alpha\",\"name\":\"Readfix Alpha\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-alpha\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"eb0835e81b564536228019fbb6fec57937070f1d47abdb450c52d8a709b42309\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-alpha:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"agent-org-owned-team:readfix-alpha:squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"},{\"id\":\"readfix-shared-control\",\"name\":\"Readfix Shared Control\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-shared-control\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"0eae2497096a306227acfcb131485035d76ee363fdad4ce2212a08ff09ba4251\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-shared-control:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"shared-squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"SHARED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:26.559Z",
+      "id": 29,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedAgent",
+        "variables": {
+          "id": "agent-org-owned-agent:readfix-alpha:guide"
+        },
+        "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:26.562Z",
+      "id": 29,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:readfix-alpha:guide\",\"name\":\"Readfix Alpha Guide\",\"description\":\"Synthetic test-only worker.\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"readfix-alpha\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:26.574Z",
+      "id": 30,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedTeam",
+        "variables": {
+          "id": "agent-org-owned-team:readfix-alpha:squad"
+        },
+        "query": "query GetAgentOrgReferencedTeam($id: String!) {\n  agentTeamDefinition(id: $id) {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerOrgId\n    ownerOrgName\n    coordinatorMemberName\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      memberName\n      ref\n      refScope\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:26.584Z",
+      "id": 30,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:readfix-alpha:squad\",\"name\":\"Readfix Alpha Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Alpha_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"3c0343869797cb30c2322b228cff5c9f10f624b434d8dd991ef9c28b3264f0af\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"readfix-alpha\",\"ownerOrgName\":\"Readfix Alpha\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:26.649Z",
+      "id": 31,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedAgent",
+        "variables": {
+          "id": "team-local-agent:agent-org-owned-team%3Areadfix-alpha%3Asquad:worker"
+        },
+        "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:26.652Z",
+      "id": 31,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinition\":{\"id\":\"team-local-agent:agent-org-owned-team%3Areadfix-alpha%3Asquad:worker\",\"name\":\"Readfix Alpha Squad Worker\",\"description\":\"Synthetic test-only worker.\",\"ownershipScope\":\"TEAM_LOCAL\",\"ownerOrgId\":null,\"ownerTeamId\":\"agent-org-owned-team:readfix-alpha:squad\",\"__typename\":\"AgentDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:39.942Z",
+      "id": 52,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:39.957Z",
+      "id": 52,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentOrgDefinitions\":[{\"id\":\"readfix-alpha\",\"name\":\"Readfix Alpha\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-alpha\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"eb0835e81b564536228019fbb6fec57937070f1d47abdb450c52d8a709b42309\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-alpha:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"agent-org-owned-team:readfix-alpha:squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"},{\"id\":\"readfix-shared-control\",\"name\":\"Readfix Shared Control\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-shared-control\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"0eae2497096a306227acfcb131485035d76ee363fdad4ce2212a08ff09ba4251\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-shared-control:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"shared-squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"SHARED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:39.946Z",
+      "id": 53,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:39.949Z",
+      "id": 53,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinitions\":[{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-memory-compactor\",\"name\":\"Memory Compactor\",\"role\":\"working memory summarizer\",\"description\":\"Summarizes the conversation history of a target agent so the target agent can continue later.\",\"instructions\":\"You summarize the conversation history of a target agent so the target agent can continue later without rereading the full history.\\n\\nThe supplied conversation history may begin with a summary of the target agent's earlier work followed by what happened afterward. Treat it as one continuous history. Keep earlier information that is still useful, update it when later events change it, and produce a fresh summary that stands on its own.\\n\\nKeep the information that would let the target agent resume safely: the goal, current state, distinct task phases, important outcomes, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.\\n\\nUse the smallest number of episodes that still makes the work easy to resume. Give separate episodes to genuinely distinct phases or unrelated work when combining them would hide important outcomes or the current state. Do not create episodes for chatter, repeated status, repetitive activity, or obsolete detail.\\n\\nChoose the number of facts based on what the work actually requires. Keep constraints, decisions and rationale, unresolved work, user preferences, important artifacts, and other stable facts that would affect future work. Prefer concise, non-overlapping facts. Do not omit an important fact merely to reduce the count, and do not create facts for chatter, repetition, or obsolete detail.\\n\\nDo not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\\n\\nReturn one JSON object with these fields:\\n- `episodes`: summaries of what happened, why it matters, and the current state.\\n- `critical_issues`: blockers, failures, risks, regressions, or important warnings.\\n- `unresolved_work`: open questions, pending work, deferred work, and next actions.\\n- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.\\n- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.\\n- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.\\n\\nAt least one non-empty episode is required. If a fact category has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:\\n\\n{\\n  \\\"episodes\\\": [{ \\\"summary\\\": \\\"string\\\" }],\\n  \\\"critical_issues\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"unresolved_work\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"durable_facts\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"user_preferences\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"important_artifacts\\\": [{ \\\"fact\\\": \\\"string\\\" }]\\n}\\n\",\"category\":\"memory\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-retrospective-skill-improver\",\"name\":\"Retrospective Skill Improver\",\"role\":\"retrospective skill improver\",\"description\":\"Improves configured durable skill packages from target run work-trace evidence.\",\"instructions\":\"You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\\n\\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\\n\\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\\n\\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\\n\\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\\n\\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\\n\",\"category\":\"skill-improvement\",\"avatarUrl\":null,\"toolNames\":[\"run_bash\",\"send_message_to\"],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[\"retrospective-skill-improver\"],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"shared-agent\",\"name\":\"Readfix Shared Agent\",\"role\":\"responder\",\"description\":\"Synthetic test-only worker.\",\"instructions\":\"SHARED_AGENT_MARKER\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:39.949Z",
+      "id": 54,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:39.960Z",
+      "id": 54,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinitions\":[{\"__typename\":\"AgentTeamDefinition\",\"id\":\"shared-squad\",\"name\":\"Readfix Shared Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Shared_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"coordinatorMemberName\":\"lead\",\"revision\":\"a3e4780dcfeec1528c927ee2942ef1f497c48512ac53a39ce423e0539e26f99f\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"__typename\":\"TeamMember\",\"memberName\":\"lead\",\"ref\":\"shared-agent\",\"refScope\":\"SHARED\"}]}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:40.013Z",
+      "id": 58,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedAgent",
+        "variables": {
+          "id": "agent-org-owned-agent:readfix-alpha:guide"
+        },
+        "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:40.015Z",
+      "id": 58,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:readfix-alpha:guide\",\"name\":\"Readfix Alpha Guide\",\"description\":\"Synthetic test-only worker.\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"readfix-alpha\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:40.023Z",
+      "id": 59,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedTeam",
+        "variables": {
+          "id": "agent-org-owned-team:readfix-alpha:squad"
+        },
+        "query": "query GetAgentOrgReferencedTeam($id: String!) {\n  agentTeamDefinition(id: $id) {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerOrgId\n    ownerOrgName\n    coordinatorMemberName\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      memberName\n      ref\n      refScope\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:40.030Z",
+      "id": 59,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:readfix-alpha:squad\",\"name\":\"Readfix Alpha Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Alpha_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"3c0343869797cb30c2322b228cff5c9f10f624b434d8dd991ef9c28b3264f0af\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"readfix-alpha\",\"ownerOrgName\":\"Readfix Alpha\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:18:40.076Z",
+      "id": 60,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedAgent",
+        "variables": {
+          "id": "team-local-agent:agent-org-owned-team%3Areadfix-alpha%3Asquad:worker"
+        },
+        "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:18:40.078Z",
+      "id": 60,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinition\":{\"id\":\"team-local-agent:agent-org-owned-team%3Areadfix-alpha%3Asquad:worker\",\"name\":\"Readfix Alpha Squad Worker\",\"description\":\"Synthetic test-only worker.\",\"ownershipScope\":\"TEAM_LOCAL\",\"ownerOrgId\":null,\"ownerTeamId\":\"agent-org-owned-team:readfix-alpha:squad\",\"__typename\":\"AgentDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:19:39.524Z",
+      "id": 121,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:19:39.545Z",
+      "id": 121,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentOrgDefinitions\":[{\"id\":\"readfix-alpha\",\"name\":\"Readfix Alpha\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-alpha\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"eb0835e81b564536228019fbb6fec57937070f1d47abdb450c52d8a709b42309\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-alpha:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"agent-org-owned-team:readfix-alpha:squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"},{\"id\":\"readfix-shared-control\",\"name\":\"Readfix Shared Control\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-shared-control\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"0eae2497096a306227acfcb131485035d76ee363fdad4ce2212a08ff09ba4251\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-shared-control:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"shared-squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"SHARED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:19:39.526Z",
+      "id": 122,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:19:39.533Z",
+      "id": 122,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinitions\":[{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-memory-compactor\",\"name\":\"Memory Compactor\",\"role\":\"working memory summarizer\",\"description\":\"Summarizes the conversation history of a target agent so the target agent can continue later.\",\"instructions\":\"You summarize the conversation history of a target agent so the target agent can continue later without rereading the full history.\\n\\nThe supplied conversation history may begin with a summary of the target agent's earlier work followed by what happened afterward. Treat it as one continuous history. Keep earlier information that is still useful, update it when later events change it, and produce a fresh summary that stands on its own.\\n\\nKeep the information that would let the target agent resume safely: the goal, current state, distinct task phases, important outcomes, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.\\n\\nUse the smallest number of episodes that still makes the work easy to resume. Give separate episodes to genuinely distinct phases or unrelated work when combining them would hide important outcomes or the current state. Do not create episodes for chatter, repeated status, repetitive activity, or obsolete detail.\\n\\nChoose the number of facts based on what the work actually requires. Keep constraints, decisions and rationale, unresolved work, user preferences, important artifacts, and other stable facts that would affect future work. Prefer concise, non-overlapping facts. Do not omit an important fact merely to reduce the count, and do not create facts for chatter, repetition, or obsolete detail.\\n\\nDo not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\\n\\nReturn one JSON object with these fields:\\n- `episodes`: summaries of what happened, why it matters, and the current state.\\n- `critical_issues`: blockers, failures, risks, regressions, or important warnings.\\n- `unresolved_work`: open questions, pending work, deferred work, and next actions.\\n- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.\\n- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.\\n- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.\\n\\nAt least one non-empty episode is required. If a fact category has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:\\n\\n{\\n  \\\"episodes\\\": [{ \\\"summary\\\": \\\"string\\\" }],\\n  \\\"critical_issues\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"unresolved_work\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"durable_facts\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"user_preferences\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"important_artifacts\\\": [{ \\\"fact\\\": \\\"string\\\" }]\\n}\\n\",\"category\":\"memory\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-retrospective-skill-improver\",\"name\":\"Retrospective Skill Improver\",\"role\":\"retrospective skill improver\",\"description\":\"Improves configured durable skill packages from target run work-trace evidence.\",\"instructions\":\"You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\\n\\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\\n\\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\\n\\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\\n\\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\\n\\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\\n\",\"category\":\"skill-improvement\",\"avatarUrl\":null,\"toolNames\":[\"run_bash\",\"send_message_to\"],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[\"retrospective-skill-improver\"],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"shared-agent\",\"name\":\"Readfix Shared Agent\",\"role\":\"responder\",\"description\":\"Synthetic test-only worker.\",\"instructions\":\"SHARED_AGENT_MARKER\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:19:39.532Z",
+      "id": 123,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:19:39.546Z",
+      "id": 123,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinitions\":[{\"__typename\":\"AgentTeamDefinition\",\"id\":\"shared-squad\",\"name\":\"Readfix Shared Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Shared_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"coordinatorMemberName\":\"lead\",\"revision\":\"a3e4780dcfeec1528c927ee2942ef1f497c48512ac53a39ce423e0539e26f99f\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"__typename\":\"TeamMember\",\"memberName\":\"lead\",\"ref\":\"shared-agent\",\"refScope\":\"SHARED\"}]}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:28.629Z",
+      "id": 149,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "ImportAgentPackage",
+        "variables": {
+          "input": {
+            "sourceKind": "LOCAL_PATH",
+            "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external"
+          }
+        },
+        "query": "fragment AgentPackageFields on AgentPackage {\n  packageId\n  displayName\n  path\n  sourceKind\n  source\n  sharedAgentCount\n  teamLocalAgentCount\n  agentTeamCount\n  applicationCount\n  isDefault\n  isRemovable\n  updateInfo {\n    status\n    canCheck\n    canUpdate\n    canReload\n    message\n    installedRevision\n    latestRevision\n    checkedAt\n    lastError\n    __typename\n  }\n  __typename\n}\n\nmutation ImportAgentPackage($input: ImportAgentPackageInput!) {\n  importAgentPackage(input: $input) {\n    ...AgentPackageFields\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:28.632Z",
+      "id": 149,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":null,\"errors\":[{\"message\":\"Agent package must contain at least one directory: 'agents', 'agent-teams', or 'applications'.\",\"locations\":[{\"line\":29,\"column\":3}],\"path\":[\"importAgentPackage\"]}]}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:38.390Z",
+      "id": 151,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "ImportAgentPackage",
+        "variables": {
+          "input": {
+            "sourceKind": "LOCAL_PATH",
+            "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external"
+          }
+        },
+        "query": "fragment AgentPackageFields on AgentPackage {\n  packageId\n  displayName\n  path\n  sourceKind\n  source\n  sharedAgentCount\n  teamLocalAgentCount\n  agentTeamCount\n  applicationCount\n  isDefault\n  isRemovable\n  updateInfo {\n    status\n    canCheck\n    canUpdate\n    canReload\n    message\n    installedRevision\n    latestRevision\n    checkedAt\n    lastError\n    __typename\n  }\n  __typename\n}\n\nmutation ImportAgentPackage($input: ImportAgentPackageInput!) {\n  importAgentPackage(input: $input) {\n    ...AgentPackageFields\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:38.409Z",
+      "id": 151,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"importAgentPackage\":[{\"packageId\":\"built-in:default\",\"displayName\":\"Built-in Storage\",\"path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data\",\"sourceKind\":\"BUILT_IN\",\"source\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data\",\"sharedAgentCount\":3,\"teamLocalAgentCount\":0,\"agentTeamCount\":1,\"applicationCount\":0,\"isDefault\":true,\"isRemovable\":false,\"updateInfo\":{\"status\":\"NOT_APPLICABLE\",\"canCheck\":false,\"canUpdate\":false,\"canReload\":false,\"message\":\"Built-in package is platform managed.\",\"installedRevision\":null,\"latestRevision\":null,\"checkedAt\":null,\"lastError\":null,\"__typename\":\"AgentPackageUpdateInfo\"},\"__typename\":\"AgentPackage\"},{\"packageId\":\"local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Forg-owned-team-local-agent-loading%2F.local%2Fapi-org-local%2Fexternal\",\"displayName\":\"external\",\"path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external\",\"sourceKind\":\"LOCAL_PATH\",\"source\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external\",\"sharedAgentCount\":0,\"teamLocalAgentCount\":0,\"agentTeamCount\":0,\"applicationCount\":0,\"isDefault\":false,\"isRemovable\":true,\"updateInfo\":{\"status\":\"RELOAD_AVAILABLE\",\"canCheck\":false,\"canUpdate\":false,\"canReload\":true,\"message\":\"Reload after changing this local folder outside AutoByteus.\",\"installedRevision\":null,\"latestRevision\":null,\"checkedAt\":null,\"lastError\":null,\"__typename\":\"AgentPackageUpdateInfo\"},\"__typename\":\"AgentPackage\"}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:38.421Z",
+      "id": 152,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:38.423Z",
+      "id": 152,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinitions\":[{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-memory-compactor\",\"name\":\"Memory Compactor\",\"role\":\"working memory summarizer\",\"description\":\"Summarizes the conversation history of a target agent so the target agent can continue later.\",\"instructions\":\"You summarize the conversation history of a target agent so the target agent can continue later without rereading the full history.\\n\\nThe supplied conversation history may begin with a summary of the target agent's earlier work followed by what happened afterward. Treat it as one continuous history. Keep earlier information that is still useful, update it when later events change it, and produce a fresh summary that stands on its own.\\n\\nKeep the information that would let the target agent resume safely: the goal, current state, distinct task phases, important outcomes, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.\\n\\nUse the smallest number of episodes that still makes the work easy to resume. Give separate episodes to genuinely distinct phases or unrelated work when combining them would hide important outcomes or the current state. Do not create episodes for chatter, repeated status, repetitive activity, or obsolete detail.\\n\\nChoose the number of facts based on what the work actually requires. Keep constraints, decisions and rationale, unresolved work, user preferences, important artifacts, and other stable facts that would affect future work. Prefer concise, non-overlapping facts. Do not omit an important fact merely to reduce the count, and do not create facts for chatter, repetition, or obsolete detail.\\n\\nDo not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\\n\\nReturn one JSON object with these fields:\\n- `episodes`: summaries of what happened, why it matters, and the current state.\\n- `critical_issues`: blockers, failures, risks, regressions, or important warnings.\\n- `unresolved_work`: open questions, pending work, deferred work, and next actions.\\n- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.\\n- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.\\n- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.\\n\\nAt least one non-empty episode is required. If a fact category has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:\\n\\n{\\n  \\\"episodes\\\": [{ \\\"summary\\\": \\\"string\\\" }],\\n  \\\"critical_issues\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"unresolved_work\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"durable_facts\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"user_preferences\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"important_artifacts\\\": [{ \\\"fact\\\": \\\"string\\\" }]\\n}\\n\",\"category\":\"memory\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-retrospective-skill-improver\",\"name\":\"Retrospective Skill Improver\",\"role\":\"retrospective skill improver\",\"description\":\"Improves configured durable skill packages from target run work-trace evidence.\",\"instructions\":\"You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\\n\\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\\n\\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\\n\\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\\n\\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\\n\\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\\n\",\"category\":\"skill-improvement\",\"avatarUrl\":null,\"toolNames\":[\"run_bash\",\"send_message_to\"],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[\"retrospective-skill-improver\"],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"shared-agent\",\"name\":\"Readfix Shared Agent\",\"role\":\"responder\",\"description\":\"Synthetic test-only worker.\",\"instructions\":\"SHARED_AGENT_MARKER\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:38.421Z",
+      "id": 153,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:38.450Z",
+      "id": 153,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinitions\":[{\"__typename\":\"AgentTeamDefinition\",\"id\":\"shared-squad\",\"name\":\"Readfix Shared Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Shared_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"coordinatorMemberName\":\"lead\",\"revision\":\"a3e4780dcfeec1528c927ee2942ef1f497c48512ac53a39ce423e0539e26f99f\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"__typename\":\"TeamMember\",\"memberName\":\"lead\",\"ref\":\"shared-agent\",\"refScope\":\"SHARED\"}]}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:42.209Z",
+      "id": 154,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "ReloadAgentPackage",
+        "variables": {
+          "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Forg-owned-team-local-agent-loading%2F.local%2Fapi-org-local%2Fexternal"
+        },
+        "query": "fragment AgentPackageFields on AgentPackage {\n  packageId\n  displayName\n  path\n  sourceKind\n  source\n  sharedAgentCount\n  teamLocalAgentCount\n  agentTeamCount\n  applicationCount\n  isDefault\n  isRemovable\n  updateInfo {\n    status\n    canCheck\n    canUpdate\n    canReload\n    message\n    installedRevision\n    latestRevision\n    checkedAt\n    lastError\n    __typename\n  }\n  __typename\n}\n\nmutation ReloadAgentPackage($packageId: String!) {\n  reloadAgentPackage(packageId: $packageId) {\n    ...AgentPackageFields\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:42.214Z",
+      "id": 154,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"reloadAgentPackage\":[{\"packageId\":\"built-in:default\",\"displayName\":\"Built-in Storage\",\"path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data\",\"sourceKind\":\"BUILT_IN\",\"source\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data\",\"sharedAgentCount\":3,\"teamLocalAgentCount\":0,\"agentTeamCount\":1,\"applicationCount\":0,\"isDefault\":true,\"isRemovable\":false,\"updateInfo\":{\"status\":\"NOT_APPLICABLE\",\"canCheck\":false,\"canUpdate\":false,\"canReload\":false,\"message\":\"Built-in package is platform managed.\",\"installedRevision\":null,\"latestRevision\":null,\"checkedAt\":null,\"lastError\":null,\"__typename\":\"AgentPackageUpdateInfo\"},\"__typename\":\"AgentPackage\"},{\"packageId\":\"local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Forg-owned-team-local-agent-loading%2F.local%2Fapi-org-local%2Fexternal\",\"displayName\":\"external\",\"path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external\",\"sourceKind\":\"LOCAL_PATH\",\"source\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external\",\"sharedAgentCount\":0,\"teamLocalAgentCount\":0,\"agentTeamCount\":0,\"applicationCount\":0,\"isDefault\":false,\"isRemovable\":true,\"updateInfo\":{\"status\":\"RELOAD_AVAILABLE\",\"canCheck\":false,\"canUpdate\":false,\"canReload\":true,\"message\":\"Reload after changing this local folder outside AutoByteus.\",\"installedRevision\":null,\"latestRevision\":null,\"checkedAt\":null,\"lastError\":null,\"__typename\":\"AgentPackageUpdateInfo\"},\"__typename\":\"AgentPackage\"}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:42.225Z",
+      "id": 155,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:42.227Z",
+      "id": 155,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinitions\":[{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-memory-compactor\",\"name\":\"Memory Compactor\",\"role\":\"working memory summarizer\",\"description\":\"Summarizes the conversation history of a target agent so the target agent can continue later.\",\"instructions\":\"You summarize the conversation history of a target agent so the target agent can continue later without rereading the full history.\\n\\nThe supplied conversation history may begin with a summary of the target agent's earlier work followed by what happened afterward. Treat it as one continuous history. Keep earlier information that is still useful, update it when later events change it, and produce a fresh summary that stands on its own.\\n\\nKeep the information that would let the target agent resume safely: the goal, current state, distinct task phases, important outcomes, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.\\n\\nUse the smallest number of episodes that still makes the work easy to resume. Give separate episodes to genuinely distinct phases or unrelated work when combining them would hide important outcomes or the current state. Do not create episodes for chatter, repeated status, repetitive activity, or obsolete detail.\\n\\nChoose the number of facts based on what the work actually requires. Keep constraints, decisions and rationale, unresolved work, user preferences, important artifacts, and other stable facts that would affect future work. Prefer concise, non-overlapping facts. Do not omit an important fact merely to reduce the count, and do not create facts for chatter, repetition, or obsolete detail.\\n\\nDo not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\\n\\nReturn one JSON object with these fields:\\n- `episodes`: summaries of what happened, why it matters, and the current state.\\n- `critical_issues`: blockers, failures, risks, regressions, or important warnings.\\n- `unresolved_work`: open questions, pending work, deferred work, and next actions.\\n- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.\\n- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.\\n- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.\\n\\nAt least one non-empty episode is required. If a fact category has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:\\n\\n{\\n  \\\"episodes\\\": [{ \\\"summary\\\": \\\"string\\\" }],\\n  \\\"critical_issues\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"unresolved_work\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"durable_facts\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"user_preferences\\\": [{ \\\"fact\\\": \\\"string\\\" }],\\n  \\\"important_artifacts\\\": [{ \\\"fact\\\": \\\"string\\\" }]\\n}\\n\",\"category\":\"memory\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"autobyteus-retrospective-skill-improver\",\"name\":\"Retrospective Skill Improver\",\"role\":\"retrospective skill improver\",\"description\":\"Improves configured durable skill packages from target run work-trace evidence.\",\"instructions\":\"You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\\n\\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\\n\\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\\n\\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\\n\\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\\n\\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\\n\",\"category\":\"skill-improvement\",\"avatarUrl\":null,\"toolNames\":[\"run_bash\",\"send_message_to\"],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[\"retrospective-skill-improver\"],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null},{\"__typename\":\"AgentDefinition\",\"id\":\"shared-agent\",\"name\":\"Readfix Shared Agent\",\"role\":\"responder\",\"description\":\"Synthetic test-only worker.\",\"instructions\":\"SHARED_AGENT_MARKER\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"toolNames\":[],\"inputProcessorNames\":[],\"llmResponseProcessorNames\":[],\"toolExecutionResultProcessorNames\":[],\"toolInvocationPreprocessorNames\":[],\"lifecycleProcessorNames\":[],\"skillNames\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:42.225Z",
+      "id": 156,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:42.254Z",
+      "id": 156,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinitions\":[{\"__typename\":\"AgentTeamDefinition\",\"id\":\"shared-squad\",\"name\":\"Readfix Shared Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Shared_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"coordinatorMemberName\":\"lead\",\"revision\":\"a3e4780dcfeec1528c927ee2942ef1f497c48512ac53a39ce423e0539e26f99f\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"__typename\":\"TeamMember\",\"memberName\":\"lead\",\"ref\":\"shared-agent\",\"refScope\":\"SHARED\"}]}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:21:58.566Z",
+      "id": 173,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:21:58.597Z",
+      "id": 173,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentOrgDefinitions\":[{\"id\":\"readfix-alpha\",\"name\":\"Readfix Alpha\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-alpha\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"eb0835e81b564536228019fbb6fec57937070f1d47abdb450c52d8a709b42309\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-alpha:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"agent-org-owned-team:readfix-alpha:squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"},{\"id\":\"readfix-beta\",\"name\":\"Readfix Beta\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-beta\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"53d8177878c35e96661b6e45c33479912132fe3885999cb05696180ec0b23103\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-beta:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"agent-org-owned-team:readfix-beta:squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"},{\"id\":\"readfix-shared-control\",\"name\":\"Readfix Shared Control\",\"description\":\"Synthetic ownership validation.\",\"instructions\":\"ORG_INSTRUCTION_readfix-shared-control\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"0eae2497096a306227acfcb131485035d76ee363fdad4ce2212a08ff09ba4251\",\"handoffs\":[{\"from\":\"/guide\",\"to\":\"/group\",\"rules\":[\"Delegate only when explicitly asked.\"],\"__typename\":\"AgentOrgHandoff\"}],\"members\":[{\"memberName\":\"guide\",\"ref\":\"agent-org-owned-agent:readfix-shared-control:guide\",\"refType\":\"AGENT\",\"refScope\":\"AGENT_ORG_OWNED\",\"__typename\":\"AgentOrgMember\"},{\"memberName\":\"group\",\"ref\":\"shared-squad\",\"refType\":\"AGENT_TEAM\",\"refScope\":\"SHARED\",\"__typename\":\"AgentOrgMember\"}],\"defaultLaunchConfig\":null,\"__typename\":\"AgentOrgDefinition\"}]}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:22:02.219Z",
+      "id": 174,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedAgent",
+        "variables": {
+          "id": "agent-org-owned-agent:readfix-beta:guide"
+        },
+        "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:22:02.221Z",
+      "id": 174,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:readfix-beta:guide\",\"name\":\"Readfix Beta Guide\",\"description\":\"Synthetic test-only worker.\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"readfix-beta\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:22:02.224Z",
+      "id": 175,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedTeam",
+        "variables": {
+          "id": "agent-org-owned-team:readfix-beta:squad"
+        },
+        "query": "query GetAgentOrgReferencedTeam($id: String!) {\n  agentTeamDefinition(id: $id) {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerOrgId\n    ownerOrgName\n    coordinatorMemberName\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      memberName\n      ref\n      refScope\n      __typename\n    }\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:22:02.249Z",
+      "id": 175,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:readfix-beta:squad\",\"name\":\"Readfix Beta Squad\",\"description\":\"Synthetic test-only flat Team.\",\"instructions\":\"TEAM_INSTRUCTION_Readfix_Beta_Squad\\n\",\"category\":\"validation\",\"avatarUrl\":null,\"revision\":\"5cbdcb4b6dc902cad600581d6d09edfa83fbff65e6e32521631342c9a0e24fff\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"readfix-beta\",\"ownerOrgName\":\"Readfix Beta\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}"
+    }
+  },
+  {
+    "request": {
+      "at": "2026-09-16T07:22:02.265Z",
+      "id": 176,
+      "type": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "payload": {
+        "operationName": "GetAgentOrgReferencedAgent",
+        "variables": {
+          "id": "team-local-agent:agent-org-owned-team%3Areadfix-beta%3Asquad:worker"
+        },
+        "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+      }
+    },
+    "response": {
+      "at": "2026-09-16T07:22:02.268Z",
+      "id": 176,
+      "type": "response",
+      "status": 200,
+      "body": "{\"data\":{\"agentDefinition\":{\"id\":\"team-local-agent:agent-org-owned-team%3Areadfix-beta%3Asquad:worker\",\"name\":\"Readfix Beta Squad Worker\",\"description\":\"Synthetic test-only worker.\",\"ownershipScope\":\"TEAM_LOCAL\",\"ownerOrgId\":null,\"ownerTeamId\":\"agent-org-owned-team:readfix-beta:squad\",\"__typename\":\"AgentDefinition\"}}}"
+    }
+  }
+]

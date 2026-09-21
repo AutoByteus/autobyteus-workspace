@@ -3,7 +3,7 @@ import {
   type DelegateTaskInput,
   type ReviewTaskResultInput,
   type SubmitTaskResultInput,
-} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+} from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
 const nonEmptyString = (fieldName: string) =>

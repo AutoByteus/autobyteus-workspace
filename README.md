@@ -16,6 +16,30 @@ Monorepo workspace for the AutoByteus TypeScript platform.
 - `autobyteus-application-devkit`
 - `applications/*` sample application source projects
 
+## Collaboration model
+
+AutoByteus separates reusable Teams from multi-Team organizations:
+
+- an **AgentTeam** is flat, contains Agent members only, and has one direct
+  Agent coordinator;
+- an **AgentOrg** is coordinator-free and can contain direct Agents plus
+  reusable flat Teams; and
+- task delegation may create task-scoped Team executions without creating
+  persistent Team-within-Team configuration.
+
+AgentOrg launch configures the complete Org first, then the user selects an exact
+Agent or Team before messaging. Team targets enter through that Team's
+coordinator. Definitions use target-only Team V2 and AgentOrg V1 contracts;
+unsupported nested or legacy definitions fail admission rather than being
+silently flattened.
+
+Architecture and UI details:
+
+- [Server AgentTeam definitions](autobyteus-server-ts/docs/modules/agent_team_definition.md)
+- [Server AgentOrg model](autobyteus-server-ts/docs/modules/agent_orgs.md)
+- [Frontend Agent Teams](autobyteus-web/docs/agent_teams.md)
+- [Frontend Agent Orgs](autobyteus-web/docs/agent_orgs.md)
+
 ## Setup
 
 ```bash

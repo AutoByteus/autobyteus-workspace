@@ -1,0 +1,120 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - button "Active team run Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll..." [expanded]:
+    - img "Active team run"
+    - generic: Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll...
+  - button "Terminate team":
+  - generic: 4m
+  - tree "Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll... organization tree":
+    - treeitem "Agent, lead, level 1, idle, /lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: 4m
+    - treeitem "Agent, worker, level 1, idle, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 4m
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: 4m
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Use read_file exactly once to read the attached activity-note.txt. Reply with its first line followed by TEAM-LEAD-ONE. Do not use any other tool or read other files.
+  - paragraph: Context files
+  - list:
+    - button "Open activity-note.txt": activity-note.txt
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "lovable.read_file · context_files/ctx_03af6323e849__activity-note.txt":
+    - generic: lovable.read_file
+    - generic "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/memory/agent_teams/aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843/aorg_validation_agent_8738bf014c4c4574bd07a4d948135562/context_files/ctx_03af6323e849__activity-note.txt": · context_files/ctx_03af6323e849__activity-note.txt
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph:
+    - text: "Unable to read the file:"
+    - code: read_file
+    - text: is unavailable.
+  - generic: You
+  - generic: Call the available send_message_to tool exactly once with recipient_address /worker and content "Reply TEAM-WORKER-ONE only; do not use tools." Then reply TEAM-LEAD-ONE. Do not call read_file or other tools.
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "send_message_to":
+    - generic: send_message_to
+  - paragraph: TEAM-LEAD-ONE
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..." [active]: UNSENT-TEAM-DRAFT-ACTIVITY-731
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team"
+    - tab "Terminal"
+    - tab "Activity" [selected]: Activity
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 3 Events
+  - article:
+    - button "System instructions. AutoByteus-supplied · Codex baseInstructions. Available. Captured 14.09.2026, 16:11:41. 6195 characters." [expanded]:
+      - generic: System instructions
+      - generic: AutoByteus-supplied · Codex baseInstructions
+      - generic: Captured 14.09.2026, 16:11:41 · 6195 characters
+      - generic: Available
+    - region "System instructions":
+      - paragraph: AutoByteus-supplied · Codex baseInstructions · Captured 14.09.2026, 16:11:41 · 6195 characters
+      - generic: "## Agent Identity - Name: AORG Validation Agent - Description: Harmless test-owned conversation and lazy-readiness fixture. ### Responsibilities and Boundaries You are a test-owned validation responder. Follow only the exact test message. Normally reply with the supplied marker in one short sentence. Do not initiate peer messages or tasks unless explicitly asked. Never inspect unrelated user files, conversations, credentials or processes. If asked to read an attachment, read only that supplied file. If explicitly asked to send a peer message or delegate a task, use the exact supplied canonical target once; do not repeat successful calls. For a task assignment, return the requested marker and submit the result once when instructed. ## Team Instruction Respond only to assigned validation work. Lead is coordinator. No automatic forwarding. ## AgentTeam Addressing AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths. The root AgentTeam is represented by `/`. Its display or metadata name is not included in any address. The following example illustrates the address structure: / ├── /A (Agent) ├── /B (Agent) └── /C (nested AgentTeam) ├── /C/D (Agent) └── /C/E (Agent) In this example: - `/A` and `/B` are Agents directly under the root AgentTeam. - `/C` is an AgentTeam directly under the root AgentTeam. - `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`. - Each `/` separates one parent-to-child level. The letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context. Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients. Your Agent address is: /lead Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator. ## AgentTeam Collaboration Choose the collaboration mode based on your primary intent. `send_message_to` communicates with an already existing execution. `delegate_task` spawns a fresh task execution that independently owns a unit of work. These operations are not interchangeable. Never use both to deliver the same work. ### Ordinary Communication Use `send_message_to` to communicate with an already existing Agent or AgentTeam instance. - When `recipient_address` identifies an Agent, the message is delivered to that mounted Agent's existing execution. - When `recipient_address` identifies an AgentTeam, the message is delivered to that mounted Team's existing configured coordinator. - When an exact active AgentRun ID is known, `target_agent_run_id` may instead select that specific execution. A successful call returns the exact existing AgentRun that accepted the message as `target_agent_run_id`. For an AgentTeam recipient, this is its existing coordinator AgentRun. `send_message_to` does not spawn an Agent or AgentTeam, create or track a task, submit a task result, review a task result, or change task status. ### Dedicated Task Execution Use `delegate_task` to assign a new bounded unit of work that requires its own execution, ownership, and task lifecycle. The `recipient_address` identifies the mounted Agent or AgentTeam definition from which the task execution is spawned. - When `recipient_address` identifies an Agent, the system spawns a fresh task Agent instance and delivers the complete task packet to that new Agent. - When `recipient_address` identifies an AgentTeam, the system spawns a fresh task AgentTeam instance and delivers the complete task packet to that new Team's configured coordinator. The entire task Team is newly spawned; its coordinator is the initial task ingress. A successful call returns the new task's `task_id`, `status`, and exact spawned task ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly spawned Team's coordinator AgentRun. The delegation call is both the creation and assignment step. Include the complete task description and reference files in that call. Do not send the same assignment again through `send_message_to`. The original logical `recipient_address` continues to identify the mounted Agent or AgentTeam. It is not an alias for the newly spawned task execution. If delegation returns `status: \"not_started\"`, no task execution was successfully spawned. Do not use an ordinary message as an equivalent task- creation fallback. Correct the problem and delegate again, or report the failure. ### Additional Task Clarification After successful delegation, genuinely new clarification may be sent to the exact active task ingress using the returned `target_agent_run_id`. Never repeat the original task packet, and never use the original logical `recipient_address` as an alias for the spawned task execution. An additional message communicates with the active task execution; it does not create another task or change the existing task's lifecycle state. ### Task Lifecycle The spawned task assignee uses `submit_task_result` to submit its formal result. The delegator uses `review_task_result` to accept the result or request a revision. Message wording such as \"finished,\" \"accepted,\" or \"please revise\" does not change task state. ### Rule-Based Handoffs When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally. Do not claim that a message, delegation, or handoff succeeded unless the corresponding tool confirms success."
+  - generic: lovable.read_file
+  - generic: "#exec-d"
+  - generic: Failed
+  - generic: Arguments
+  - generic: Error
+  - generic: send_message_to
+  - generic: "#exec-0"
+  - generic: Success
+  - generic: Arguments
+  - generic: "{ \"recipient_address\": \"/worker\", \"content\": \"Reply TEAM-WORKER-ONE only; do not use tools.\" }"
+  - generic: Result
+  - generic: "{ \"accepted\": true, \"code\": \"DELIVERED\", \"message\": \"Delivered message to /worker.\", \"target_agent_run_id\": \"aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66\" }"

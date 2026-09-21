@@ -1,7 +1,7 @@
 import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 import type { AgentDefinition } from "../../../../agent-definition/domain/models.js";
-import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../../../agent-collaboration/execution/domain/member-execution-context.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import type { ApplicationAgentToolCapability } from "../../../../application-agent-tools/services/application-agent-tool-capability.js";
@@ -17,7 +17,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
   runtimeToolExposure: RuntimeAgentToolExposure;
   senderRunId: string;
   runtimeKind?: string | null;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
   capability?: ApplicationAgentToolCapability | null;
   logger?: { warn: (...args: unknown[]) => void; error: (...args: unknown[]) => void };
@@ -29,7 +29,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
       senderRunId: input.senderRunId,
       senderName: input.agentDefinition.name,
       runtimeKind: input.runtimeKind,
-      memberTeamContext: input.memberTeamContext,
+      memberExecutionContext: input.memberExecutionContext,
       logger: input.logger,
     });
   }
@@ -37,7 +37,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
     senderRunId: input.senderRunId,
     senderName: input.agentDefinition.name,
     runtimeKind: input.runtimeKind,
-    memberTeamContext: input.memberTeamContext,
+    memberExecutionContext: input.memberExecutionContext,
   });
   const routes = input.capability.resolveSelectedRoutes({
     executionContext: input.applicationExecutionContext,
@@ -56,7 +56,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
     senderRunId: input.senderRunId,
     senderName: input.agentDefinition.name,
     runtimeKind: input.runtimeKind,
-    memberTeamContext: input.memberTeamContext,
+    memberExecutionContext: input.memberExecutionContext,
     logger: input.logger,
   });
   const projector = new ApplicationAgentToolNativeSchemaProjector();

@@ -1,0 +1,8 @@
+{
+  "query": "query Valid($orgRunId:String!,$memberAddress:String!,$agentRunId:String!){getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$memberAddress,agentRunId:$agentRunId){agentRunId memberAddress summary} getAgentOrgExecutionCheckpoint(orgRunId:$orgRunId){orgRunId changeSequence hasOpenExecutionWork}}",
+  "variables": {
+    "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+    "memberAddress": "/apirev8_team/aorg_e2e_lead",
+    "agentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79"
+  }
+}

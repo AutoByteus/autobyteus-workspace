@@ -18,9 +18,8 @@
 
     <div class="min-h-0 flex-1 overflow-hidden bg-slate-50 p-3">
       <div class="h-full min-h-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <TeamCommunicationReferenceViewer
-          :team-run-id="teamRunId"
-          :message-id="messageId"
+        <CollaborationMessageReferenceViewer
+          :content-path="contentPath"
           :reference="reference"
           :refresh-signal="refreshSignal"
           :disable-rich-text-preview="true"
@@ -31,20 +30,25 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
-import TeamCommunicationReferenceViewer from '~/components/workspace/team/TeamCommunicationReferenceViewer.vue';
-import type { TeamCommunicationReferenceFile } from '~/stores/teamCommunicationTypes';
+import CollaborationMessageReferenceViewer from '~/components/workspace/collaboration/CollaborationMessageReferenceViewer.vue';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import {
   referenceFileIcon,
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
 
-defineProps<{
+const props = defineProps<{
   teamRunId: string;
   messageId: string;
-  reference: TeamCommunicationReferenceFile;
+  reference: TeamReferenceFile;
   refreshSignal?: number;
 }>();
+
+const contentPath = computed(() =>
+  `team-runs/${encodeURIComponent(props.teamRunId)}/team-communication/messages/${encodeURIComponent(props.messageId)}/references/${encodeURIComponent(props.reference.referenceId)}/content`,
+);
 
 defineEmits<{
   close: [];

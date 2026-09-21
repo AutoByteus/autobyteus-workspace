@@ -4,6 +4,13 @@ import {
   INVALID_DRAFT_WORKSPACE_WARNING,
 } from '~/utils/runTreeProjectionConstants';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
+import type {
+  AgentOrgHistoryDefinitionGroup,
+  AgentOrgRunHistoryItem,
+  WorkspaceHistoryWorkspaceNode,
+} from '~/stores/runHistoryTypes';
+
+export const NO_WORKSPACE_HISTORY_ROOT = '__workspace_history_no_workspace__';
 
 export type ProjectionRunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 export type RunTreeRowSource = 'history' | 'draft' | 'local';
@@ -333,4 +340,79 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
     }
     return a.workspaceRootPath.localeCompare(b.workspaceRootPath);
   });
+};
+
+const historyRoot = (item: AgentOrgRunHistoryItem): string =>
+  normalizeRootPath(item.executionTree.rootOrg.defaultLaunchConfiguration.workspaceRootPath)
+    || NO_WORKSPACE_HISTORY_ROOT;
+
+const historyWorkspaceName = (root: string): string => {
+  if (root === NO_WORKSPACE_HISTORY_ROOT) return 'No Workspace';
+  return root.split('/').filter(Boolean).at(-1) || root;
+};
+
+const compareOrgRuns = (left: AgentOrgRunHistoryItem, right: AgentOrgRunHistoryItem): number => {
+  const byCreated = asTimestamp(right.createdAt) - asTimestamp(left.createdAt);
+  return byCreated || left.rootRunId.localeCompare(right.rootRunId);
+};
+
+/**
+ * Adds strictly decoded AgentOrg roots to the established Agent/Team workspace
+ * nodes without interpreting the collaboration-history Team branch.
+ */
+export const projectWorkspaceHistoryByWorkspace = (
+  establishedNodes: readonly RunTreeWorkspaceNode[],
+  agentOrgHistory: readonly AgentOrgRunHistoryItem[],
+): WorkspaceHistoryWorkspaceNode[] => {
+  const nodes = establishedNodes.map<WorkspaceHistoryWorkspaceNode>((node) => ({
+    ...node,
+    stableKey: `workspace:${normalizeRootPath(node.workspaceRootPath)}`,
+    agentOrgDefinitions: [],
+  }));
+  const nodeByRoot = new Map(nodes.map((node) => [normalizeRootPath(node.workspaceRootPath), node]));
+
+  for (const item of agentOrgHistory) {
+    const root = historyRoot(item);
+    let node = nodeByRoot.get(root);
+    if (!node) {
+      node = {
+        stableKey: `workspace:${root}`,
+        workspaceId: `history:${root}`,
+        workspaceRootPath: root,
+        workspaceName: historyWorkspaceName(root),
+        workspaceKind: 'filesystem',
+        canRemoveFromWorkspaces: false,
+        agents: [],
+        agentOrgDefinitions: [],
+      };
+      nodes.push(node);
+      nodeByRoot.set(root, node);
+    }
+
+    const rootOrg = item.executionTree.rootOrg;
+    let group = node.agentOrgDefinitions.find((entry) => entry.definitionId === rootOrg.orgDefinitionId);
+    if (!group) {
+      group = {
+        stableKey: `agent_org_definition:${rootOrg.orgDefinitionId}`,
+        definitionId: rootOrg.orgDefinitionId,
+        name: rootOrg.orgDefinitionName,
+        runs: [],
+      };
+    node.agentOrgDefinitions!.push(group);
+    }
+    group.runs.push(item);
+  }
+
+  for (const node of nodes) {
+    node.agentOrgDefinitions!.sort((left, right) =>
+      left.name.localeCompare(right.name) || left.definitionId.localeCompare(right.definitionId));
+    for (const group of node.agentOrgDefinitions!) group.runs.sort(compareOrgRuns);
+  }
+
+  const establishedCount = establishedNodes.length;
+  const established = nodes.slice(0, establishedCount);
+  const historyOnly = nodes.slice(establishedCount).sort((left, right) =>
+    left.workspaceName.localeCompare(right.workspaceName)
+      || left.workspaceRootPath.localeCompare(right.workspaceRootPath));
+  return [...established, ...historyOnly];
 };

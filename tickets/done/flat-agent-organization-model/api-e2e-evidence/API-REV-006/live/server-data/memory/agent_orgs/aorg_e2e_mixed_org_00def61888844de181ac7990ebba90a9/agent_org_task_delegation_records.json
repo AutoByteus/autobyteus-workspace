@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9",
+  "records": [
+    {
+      "taskId": "task_883894ab337145ec8f34ff0532f54928",
+      "delegatorAgentRunId": "aorg_e2e_lead_2f6de1f54a3a4ae8b787a5075e008a56",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_9b0d3fb28c334d329da71e8d269ef083"
+      },
+      "description": "submit exactly APIREV6-MOUNTED-SUBMISSION-V1 using submit_task_result, then end the task-agent turn and wait for a formal revision request; do not call any review tool and do not settle itself.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_076051508d5f415c960e918e847dacf3",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-02T16:26:39.745Z"
+        }
+      ],
+      "createdAt": "2026-09-02T16:25:32.717Z"
+    }
+  ]
+}

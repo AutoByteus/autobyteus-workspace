@@ -7,7 +7,7 @@ import {
 import { getAppDataMigrationRunner } from "../../../app-data-migrations/app-data-migration-runner.js";
 import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../../app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
-import { TeamRunPackageCatalog } from "../../../run-history/services/team-run-package-catalog.js";
+import { RootRunPackageReadinessIndex } from "../../../run-history/services/root-run-package-readiness-index.js";
 
 export enum AppDataMigrationStatusEnum {
   NOT_RUN = "NOT_RUN",
@@ -116,7 +116,7 @@ export class AppDataMigrationResolver {
       if (migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID) {
         // Manual Settings Retry is not complete until the current-package
         // admission catalog reflects every V2 file produced by this attempt.
-        await new TeamRunPackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
+        await new RootRunPackageReadinessIndex(appConfigProvider.config.getMemoryDir()).rebuild();
       }
       return {
         success: snapshot.status !== "FAILED",

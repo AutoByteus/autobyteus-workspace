@@ -1,0 +1,69 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/workspaceSelectionComposition.spec.ts -t 'late prior Team success'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+
+stderr | stores/__tests__/workspaceSelectionComposition.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/workspaceSelectionComposition.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/workspaceSelectionComposition.spec.ts > explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > late prior Team success cannot override a newer Org choice or clear its draft
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/workspaceSelectionComposition.spec.ts > explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > late prior Team success cannot override a newer Org choice or clear its draft
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ stores/__tests__/workspaceSelectionComposition.spec.ts (7 tests | 1 failed | 6 skipped) 127ms
+   × explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > late prior Team success cannot override a newer Org choice or clear its draft 126ms
+     → expected undefined to be 'org-run' // Object.is equality
+   ↓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > late prior Team error cannot override a newer Org choice or clear its draft
+   ↓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > newest same-root member link is processed while old read is pending and old finally cannot strip it
+   ↓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > route leave invalidates pending selection; Back/Forward can perform a fresh selection
+   ↓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > supersedes a cold Org selecting candidate before publication, preserving a newer Team selection
+   ↓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > same-target supersession retains the newest attempt and current error until deliberate retry
+   ↓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > publication-only snapshot/status/input preserves Org route, prior Team focus, explicit intent and draft
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/workspaceSelectionComposition.spec.ts > explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > late prior Team success cannot override a newer Org choice or clear its draft
+AssertionError: expected undefined to be 'org-run' // Object.is equality
+
+- Expected: 
+"org-run"
+
++ Received: 
+undefined
+
+ ❯ stores/__tests__/workspaceSelectionComposition.spec.ts:87:56
+     85|     if (completion === 'success') respondTeam(old); else old.fail('old…
+     86|     await flushPromises();
+     87|     expect(s.router.currentRoute.value.query.orgRunId).toBe('org-run');
+       |                                                        ^
+     88|     expect(s.selection.selectedRunId).toBeNull();
+     89|     expect(s.context.selectedAddress).toBe('/team/worker');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  11:01:18
+   Duration  10.63s (transform 6.04s, setup 8.42s, collect 740ms, tests 127ms, environment 428ms, prepare 467ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

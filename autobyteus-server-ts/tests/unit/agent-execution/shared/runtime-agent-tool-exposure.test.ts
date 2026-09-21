@@ -5,9 +5,9 @@ import {
   resolveRuntimeAgentToolExposure,
   toRuntimeAgentToolNameSet,
 } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
-import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
-const memberTeamContext = testMemberTeamContext({
+const memberExecutionContext = testMemberExecutionContext({
   teamRunId: "team-run",
   rootTeamRunId: "team-run",
   teamDefinitionId: "team-def",
@@ -117,7 +117,7 @@ describe("runtime-agent-tool-exposure", () => {
   it("deduplicates configured names and automatically adds the three Team runtime tools", () => {
     const exposure = resolveRuntimeAgentToolExposure(
       { toolNames: [" run_bash ", "run_bash", "send_message_to"] },
-      memberTeamContext,
+      memberExecutionContext,
     );
 
     expect(AUTOMATIC_TEAM_TOOL_NAMES).toEqual([

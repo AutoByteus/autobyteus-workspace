@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_8f9556c7431a40c185ad379c0c96d262",
+  "records": [
+    {
+      "taskId": "task_abe44eb7ebb74ad486de247a1eb84962",
+      "delegatorAgentRunId": "aorg_e2e_lead_3f453e1d49164fc788f25c18f6bd2526",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_32efe0faeee0427091dcda5348757149"
+      },
+      "description": "Produce and formally submit a concise validation result. Acceptance criterion: the formal submission must contain exactly the marker AORG-TEAM-TASK-SUBMIT-001. After review requests a revision, replace that marker with the newly required replacement marker and formally resubmit.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "task_abe44eb7ebb74ad486de247a1eb84962_interruption_restart",
+          "reason": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+          "createdAt": "2026-09-01T16:54:49.062Z"
+        }
+      ],
+      "createdAt": "2026-09-01T16:43:07.597Z"
+    }
+  ]
+}

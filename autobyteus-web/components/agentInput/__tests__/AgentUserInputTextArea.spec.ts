@@ -335,9 +335,20 @@ describe('AgentUserInputTextArea', () => {
     consoleError.mockRestore()
   })
 
-  it('keeps a debounced draft with the member that typed it when focus changes', async () => {
-    vi.useFakeTimers()
+  it('commits typing and deliberate clearing to the exact context without waiting or sending', async () => {
+    const context = createContext('ctx-edit')
+    selectContext(context)
+    const wrapper = mount(AgentUserInputTextArea)
+    await wrapper.find('textarea').setValue('new draft')
+    expect(context.requirement).toBe('new draft')
+    await wrapper.find('textarea').setValue('')
+    expect(context.requirement).toBe('')
+    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenNthCalledWith(1, context, 'new draft')
+    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenNthCalledWith(2, context, '')
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+  })
 
+  it('keeps each immediate draft edit with the member that typed it when focus changes', async () => {
     const architectureContext = createContext('ctx-architecture')
     const apiE2eContext = createContext('ctx-api-e2e')
     selectContext(architectureContext)
@@ -347,14 +358,12 @@ describe('AgentUserInputTextArea', () => {
 
     await textarea.setValue('dsfdsf')
     expect((textarea.element as HTMLTextAreaElement).value).toBe('dsfdsf')
+    expect(architectureContext.requirement).toBe('dsfdsf')
 
     selectContext(apiE2eContext)
     await nextTick()
 
     expect((textarea.element as HTMLTextAreaElement).value).toBe('')
-
-    vi.advanceTimersByTime(750)
-    await nextTick()
 
     expect(architectureContext.requirement).toBe('dsfdsf')
     expect(apiE2eContext.requirement).toBe('')
@@ -364,9 +373,7 @@ describe('AgentUserInputTextArea', () => {
     )
   })
 
-  it('flushes the previous member draft before a new member starts typing', async () => {
-    vi.useFakeTimers()
-
+  it('commits the previous member draft before a new member starts typing', async () => {
     const architectureContext = createContext('ctx-architecture')
     const apiE2eContext = createContext('ctx-api-e2e')
     selectContext(architectureContext)
@@ -375,6 +382,7 @@ describe('AgentUserInputTextArea', () => {
     const textarea = wrapper.find('textarea')
 
     await textarea.setValue('draft for architecture')
+    expect(architectureContext.requirement).toBe('draft for architecture')
     selectContext(apiE2eContext)
     await nextTick()
 
@@ -382,9 +390,6 @@ describe('AgentUserInputTextArea', () => {
     expect((textarea.element as HTMLTextAreaElement).value).toBe('')
 
     await textarea.setValue('draft for api e2e')
-    vi.advanceTimersByTime(750)
-    await nextTick()
-
     expect(architectureContext.requirement).toBe('draft for architecture')
     expect(apiE2eContext.requirement).toBe('draft for api e2e')
     expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(

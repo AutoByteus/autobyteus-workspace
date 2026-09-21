@@ -1,0 +1,72 @@
+{
+  "checkpoint": {
+    "rootTeamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+    "changeSequence": 43,
+    "hasOpenExecutionWork": false
+  },
+  "projectionConversationItems": 29,
+  "projectionActivityItems": 6,
+  "markerInProjection": 2,
+  "messages": [
+    {
+      "messageId": "collabmsg_8ooc2h9g77G9FYapvRl6WR7gAkjyE_0c",
+      "content": "APIREV6-STANDALONE-TASK-MESSAGE"
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "task_e625fff626294a688b146539a2a2c7d8",
+      "status": "accepted",
+      "updates": [
+        {
+          "kind": "submission",
+          "content": "APIREV6-TASK-SUBMISSION-V1",
+          "decision": null,
+          "submissionId": "submission_a38277609c5b45a48966bb45855d73cc",
+          "reviewedSubmissionId": null
+        },
+        {
+          "kind": "review",
+          "content": null,
+          "decision": "accept",
+          "submissionId": null,
+          "reviewedSubmissionId": "submission_a38277609c5b45a48966bb45855d73cc"
+        }
+      ]
+    },
+    {
+      "taskId": "task_aa15bce5c28145268b522d94d6c46b02",
+      "status": "accepted",
+      "updates": [
+        {
+          "kind": "submission",
+          "content": "APIREV6-REVISION-SUBMISSION-V1",
+          "decision": null,
+          "submissionId": "submission_5fa73dc4be5d438b845e470511f12875",
+          "reviewedSubmissionId": null
+        },
+        {
+          "kind": "review",
+          "content": "APIREV6-REVISION-REQUEST: submit exactly APIREV6-REVISION-SUBMISSION-V2 using submit_task_result, then stop and await explicit acceptance.",
+          "decision": "request_revision",
+          "submissionId": null,
+          "reviewedSubmissionId": "submission_5fa73dc4be5d438b845e470511f12875"
+        },
+        {
+          "kind": "submission",
+          "content": "APIREV6-REVISION-SUBMISSION-V2",
+          "decision": null,
+          "submissionId": "submission_57ee6dc3801c41f39de8fdb1cca4703e",
+          "reviewedSubmissionId": null
+        },
+        {
+          "kind": "review",
+          "content": "APIREV6-REVISION-ACCEPTED",
+          "decision": "accept",
+          "submissionId": null,
+          "reviewedSubmissionId": "submission_57ee6dc3801c41f39de8fdb1cca4703e"
+        }
+      ]
+    }
+  ]
+}

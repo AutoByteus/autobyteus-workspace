@@ -1,0 +1,29 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - generic: 正在加载任务历史记录...
+  - button "temp_workspace" [expanded] [active]:
+    - generic: temp_workspace
+  - generic: 组织
+  - button "Latency Org (1)":
+    - generic: Latency Org
+    - generic: (1)
+  - button "设置":
+    - generic: 设置
+- main:
+  - paragraph: 正在准备智能体管理器...

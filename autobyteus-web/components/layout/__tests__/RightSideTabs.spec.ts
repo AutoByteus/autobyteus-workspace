@@ -12,11 +12,13 @@ const visibleTabs = ref([
 const latestVisibleArtifactSignal = ref<string | null>(null);
 const openFilesForActiveWorkspace = ref<string[]>([]);
 const activeWorkspaceForTabs = ref<{ workspaceId: string } | null>(null);
+const activeWorkspaceTarget = ref<any>(null);
 
 vi.mock('~/stores/activeContextStore', () => ({
   useActiveContextStore: () => ({
     activeAgentContext: { state: { runId: 'run-1' } },
     activeConfig: null,
+    get activeWorkspaceTarget() { return activeWorkspaceTarget.value; },
   }),
 }));
 
@@ -78,6 +80,7 @@ describe('RightSideTabs', () => {
     latestVisibleArtifactSignal.value = null;
     openFilesForActiveWorkspace.value = [];
     activeWorkspaceForTabs.value = null;
+    activeWorkspaceTarget.value = null;
   });
 
   const mountSubject = (props: Record<string, unknown> = {}) => shallowMount(RightSideTabs, {
@@ -92,7 +95,11 @@ describe('RightSideTabs', () => {
           props: ['tabs', 'selectedTab'],
           template: '<div class="tab-list-stub" />',
         },
-        TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
+        CollaborationOverviewPanel: {
+          name: 'CollaborationOverviewPanel',
+          props: ['messages', 'tasks'],
+          template: '<div class="collaboration-overview-stub" />',
+        },
         TerminalPanel: {
           name: 'TerminalPanel',
           props: ['active'],
@@ -178,6 +185,45 @@ describe('RightSideTabs', () => {
     const fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
     expect(fileLayout.props('active')).toBe(true);
     expect(fileLayout.props('layout')).toBe('stacked');
+  });
+
+  it('mounts the root-neutral Messages overview for a direct AgentOrg Agent', () => {
+    const messages = { rootKind: 'agent_org', rootRunId: 'org-run' };
+    activeWorkspaceTarget.value = {
+      kind: 'agent_org_direct_agent',
+      collaborationMessages: messages,
+      collaborationTasks: { rootKind: 'agent_org', rootRunId: 'org-run', focusedAgentRunId: 'direct' },
+      context: { config: { workspaceId: null, workspaceMetadata: null } },
+    };
+    activeTab.value = 'teamMembers';
+    visibleTabs.value = [{ name: 'teamMembers', label: 'Org', ariaLabel: 'Agent Org' }];
+
+    const wrapper = mountSubject();
+
+    const overview = wrapper.getComponent({ name: 'CollaborationOverviewPanel' });
+    expect(overview.props('messages')).toStrictEqual(messages);
+    expect(overview.props('tasks')).toMatchObject({ rootKind: 'agent_org', focusedAgentRunId: 'direct' });
+  });
+
+  it('tracks the compound collaboration root when Team and AgentOrg run IDs collide', async () => {
+    activeWorkspaceTarget.value = {
+      kind: 'standalone_team_member',
+      collaborationMessages: { rootKind: 'agent_team', rootRunId: 'shared-run-id' },
+      team: {},
+      context: { config: { workspaceId: null, workspaceMetadata: null } },
+    };
+    const wrapper = mountSubject();
+    setActiveTab.mockClear();
+
+    activeWorkspaceTarget.value = {
+      kind: 'agent_org_direct_agent',
+      collaborationMessages: { rootKind: 'agent_org', rootRunId: 'shared-run-id' },
+      context: { config: { workspaceId: null, workspaceMetadata: null } },
+    };
+    await nextTick();
+
+    expect(setActiveTab).toHaveBeenCalledWith('teamMembers');
+    wrapper.unmount();
   });
 
   it('hides the docked-panel toggle in drawer mode', () => {

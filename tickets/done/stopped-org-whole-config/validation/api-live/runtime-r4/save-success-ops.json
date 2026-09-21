@@ -1,0 +1,158 @@
+[
+  {
+    "id": 131,
+    "at": "2026-09-17T23:12:31.980Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 132,
+    "at": "2026-09-17T23:12:31.989Z",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "id": 133,
+    "at": "2026-09-17T23:12:31.990Z",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "id": 134,
+    "at": "2026-09-17T23:12:34.500Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 135,
+    "at": "2026-09-17T23:12:34.502Z",
+    "op": "UpdateStoppedAgentOrgRunModelConfigs",
+    "variables": {
+      "input": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+        "patches": [
+          {
+            "scopeKind": "CONFIGURED_ORG",
+            "scopeAddress": "/",
+            "llmModelIdentifier": "gpt-5.4-mini",
+            "llmConfig": {
+              "reasoning_effort": "medium"
+            }
+          },
+          {
+            "scopeKind": "CONFIGURED_AGENT",
+            "scopeAddress": "/guide",
+            "llmModelIdentifier": "gpt-5.4-mini",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            }
+          },
+          {
+            "scopeKind": "CONFIGURED_TEAM",
+            "scopeAddress": "/squad",
+            "llmModelIdentifier": "gpt-5.4-mini",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            }
+          },
+          {
+            "scopeKind": "CONFIGURED_AGENT",
+            "scopeAddress": "/squad/lead",
+            "llmModelIdentifier": "gpt-5.4-mini",
+            "llmConfig": {
+              "reasoning_effort": "xhigh"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 136,
+    "at": "2026-09-17T23:12:34.565Z",
+    "op": "AgentOrgRunModelOptions",
+    "variables": {
+      "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+    }
+  },
+  {
+    "id": 137,
+    "at": "2026-09-17T23:12:36.985Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 138,
+    "at": "2026-09-17T23:12:36.998Z",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "id": 139,
+    "at": "2026-09-17T23:12:37.006Z",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "id": 140,
+    "at": "2026-09-17T23:12:41.986Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 141,
+    "at": "2026-09-17T23:12:41.998Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 142,
+    "at": "2026-09-17T23:12:42.000Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 143,
+    "at": "2026-09-17T23:12:42.003Z",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "id": 144,
+    "at": "2026-09-17T23:12:42.004Z",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "id": 145,
+    "at": "2026-09-17T23:12:46.984Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 146,
+    "at": "2026-09-17T23:12:46.997Z",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "id": 147,
+    "at": "2026-09-17T23:12:47.010Z",
+    "op": "",
+    "variables": null
+  },
+  {
+    "id": 148,
+    "at": "2026-09-17T23:12:47.015Z",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  }
+]

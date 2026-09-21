@@ -2,7 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, expect, it } from 'vitest';
 import type { TaskDelegationRecordDto } from '@autobyteus/team-stream-contracts';
-import TeamDelegatedTasksSection from '../TeamDelegatedTasksSection.vue';
+import TeamDelegatedTasksSection from '../../collaboration/CollaborationDelegatedTasksSection.vue';
 import {
   applyTestTeamMessage,
   buildTestTeamContext,
@@ -10,6 +10,7 @@ import {
   testSubTeamNode,
   testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
+import { testCollaborationTasksContextView } from '~/test-support/teamWorkspaceContextView';
 
 const reference = (referenceId: string, path: string) => ({
   reference_id: referenceId,
@@ -84,15 +85,18 @@ const buildTeamContext = (tasks: readonly TaskDelegationRecordDto[] = [taskRecor
   });
 };
 
-const mountSubject = (teamContext = buildTeamContext(), props: Record<string, unknown> = {}) => mount(TeamDelegatedTasksSection, {
-  props: { teamContext, ...props },
+const mountSubject = (
+  teamContext = buildTeamContext(),
+  props: { focusedAgentRunId?: string; collapsed?: boolean } = {},
+) => mount(TeamDelegatedTasksSection, {
+  props: { tasks: testCollaborationTasksContextView(teamContext, String(props.focusedAgentRunId || teamContext.view.getFocusedAgentRunId())), collapsed: props.collapsed },
   global: {
     stubs: {
       Icon: { props: ['icon'], template: '<span data-test="task-icon" :data-icon="icon" />' },
       MarkdownRenderer: { props: ['content'], template: '<div data-test="markdown-renderer">{{ content }}</div>' },
       TeamTaskReferenceViewer: {
-        props: ['teamRunId', 'taskId', 'reference', 'refreshSignal'],
-        template: '<div data-test="task-reference-viewer">{{ teamRunId }}:{{ taskId }}:{{ reference.referenceId }}:<span data-test="task-reference-refresh">{{ refreshSignal }}</span></div>',
+        props: ['contentPath', 'reference', 'refreshSignal'],
+        template: '<div data-test="task-reference-viewer">{{ contentPath }}:{{ reference.referenceId }}:<span data-test="task-reference-refresh">{{ refreshSignal }}</span></div>',
       },
     },
     mocks: { $t: (key: string) => labels[key] ?? key },
@@ -151,7 +155,7 @@ describe('TeamDelegatedTasksSection task lifecycle selection', () => {
       .get('[data-test="team-delegated-task-reference-row"]');
     await resultReference.trigger('click');
     expect(wrapper.get('[data-test="task-reference-viewer"]').text())
-      .toContain('team-run:task-agent-1:result-ref:0');
+      .toContain('team-runs/team-run/task-delegations/task-agent-1/references/result-ref/content:result-ref:0');
     expect(team.view.getFocusedAgentRunId()).toBe('worker-run');
 
     await resultReference.trigger('click');

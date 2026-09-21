@@ -1,0 +1,60 @@
+{
+  "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+  "senderAddress": "/concierge",
+  "receiverAddress": "/research-team/analyst",
+  "marker": "APIREV15-DIRECT-TO-MOUNTED-MSG-001",
+  "record": {
+    "messageId": "collabmsg_gf4An2j6xr4JwmBIrnSjrxqW_aAsd8pW",
+    "senderAgentRunId": "aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3",
+    "receiverAgentRunId": "aorg_e2e_analyst_8134ba2057a0494cbce0f564cb3b5068",
+    "content": "APIREV15-DIRECT-TO-MOUNTED-MSG-001",
+    "messageType": "agent_message",
+    "referenceFiles": [
+      "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-mounted.txt"
+    ],
+    "createdAt": "2026-09-06T13:33:09.764Z"
+  },
+  "receiverView": {
+    "rows": [
+      {
+        "text": "Message\nSep 6, 01:33 PM\n\nfrom concierge\n\n/concierge\n\nAPIREV15-DIRECT-TO-MOUNTED-MSG-001\n\ndirect-to-mounted.txt",
+        "aria": null
+      }
+    ],
+    "inbound": 1,
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_analyst_8134ba2057a0494cbce0f564cb3b5068"
+    ],
+    "taskMarkers": false
+  },
+  "senderView": {
+    "rows": [
+      {
+        "text": "Message\nSep 6, 01:33 PM\n\nto analyst\n\n/research-team/analyst\n\nAPIREV15-DIRECT-TO-MOUNTED-MSG-001\n\ndirect-to-mounted.txt",
+        "aria": null
+      }
+    ],
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3"
+    ],
+    "taskMarkers": false
+  },
+  "assertions": {
+    "oneCommitted": true,
+    "exactRuns": true,
+    "canonicalAddresses": true,
+    "exactReference": true,
+    "receiverProviderOnce": true,
+    "receiverStayedFocused": true,
+    "receiverCenterOnce": true,
+    "receiverReceivedRowOnce": true,
+    "senderSentRowOnce": true,
+    "taskInvolvedExcluded": true,
+    "senderSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

@@ -1,0 +1,6 @@
+migrationId=20260701_team_communication_projection_addresses
+displayName=Team communication execution-address migration
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":0,"failedCount":1}
+error=1 projection(s) failed.
+details=
+{"itemId":"aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/team_communication_messages.json","status":"FAILED","message":"senderAddress.segments[0] member identity is missing."}

@@ -1,0 +1,39 @@
+{
+  "classification": "API/E2E console-capture artifact; not a product failure",
+  "reason": "The sole renderer-origin 404 is /favicon.ico at initial open_tab 02:06:43, about 19 minutes before this post-restart script. A correlated reload with response and console listeners produced no >=400 response and no console error.",
+  "originalBoundaryAssertions": {
+    "teamHistoryRetained": true,
+    "teamContinuedAfterRestart": true,
+    "teamRestopped": true,
+    "orgHistoryRetained": true,
+    "orgDirectContinuedAfterRestart": true,
+    "mountedHistoryRetained": true,
+    "orgMountedContinuedAfterRestart": true,
+    "acceptedTaskRetainedInDurableTree": true,
+    "finalTerminalExact": true,
+    "noRelevantBrowserErrors": false
+  },
+  "knownHistoricalWeb404Lines": [
+    "127.0.0.1 - - [06/Sep/2026 02:06:43] \"GET /favicon.ico HTTP/1.1\" 404 -"
+  ],
+  "correlatedReload": {
+    "at": "2026-09-06T02:28:19.737Z",
+    "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+    "bad": [],
+    "errors": [],
+    "bodyHasWorkspaces": true
+  },
+  "correctedAssertions": {
+    "teamHistoryRetained": true,
+    "teamContinuedAfterRestart": true,
+    "teamRestopped": true,
+    "orgHistoryRetained": true,
+    "orgDirectContinuedAfterRestart": true,
+    "mountedHistoryRetained": true,
+    "orgMountedContinuedAfterRestart": true,
+    "acceptedTaskRetainedInDurableTree": true,
+    "finalTerminalExact": true,
+    "noRelevantBrowserErrors": true
+  },
+  "allCorrectedAssertionsPass": true
+}

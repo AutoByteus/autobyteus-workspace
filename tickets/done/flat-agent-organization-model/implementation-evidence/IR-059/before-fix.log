@@ -1,0 +1,273 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentOrgInspectionApollo.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgInspectionApollo.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > old root still pending, oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgRunId%22%2C%22%7B%5Cn%20%20%5C%22success%5C%22%3A%20true%2C%5Cn%20%20%5C%22message%5C%22%3A%20null%5Cn%7D%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > old root still pending, oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgRunId%22%2C%22%7B%5Cn%20%20%5C%22success%5C%22%3A%20true%2C%5Cn%20%20%5C%22message%5C%22%3A%20null%5Cn%7D%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > old root still pending, oldFirst=true
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgRunId%22%2C%22%7B%5Cn%20%20%5C%22success%5C%22%3A%20true%2C%5Cn%20%20%5C%22message%5C%22%3A%20null%5Cn%7D%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > old root still pending, oldFirst=false
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgRunId%22%2C%22%7B%5Cn%20%20%5C%22success%5C%22%3A%20true%2C%5Cn%20%20%5C%22message%5C%22%3A%20null%5Cn%7D%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > keeps global Apollo deduplication enabled for unchanged ordinary options
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspectionApollo.spec.ts > keeps global Apollo deduplication enabled for unchanged ordinary options
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ stores/__tests__/agentOrgInspectionApollo.spec.ts (13 tests | 12 failed) 4575ms
+   × installed Apollo final inspection /director > root completed / child pending; prior=false oldFirst=false 15ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /director > root completed / child pending; prior=false oldFirst=true 3ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=false 77ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=true 62ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /director > old root still pending, oldFirst=true 1066ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × installed Apollo final inspection /director > old root still pending, oldFirst=false 1061ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × installed Apollo final inspection /team/lead > root completed / child pending; prior=false oldFirst=false 5ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /team/lead > root completed / child pending; prior=false oldFirst=true 4ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=false 71ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=true 66ms
+     → expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+   × installed Apollo final inspection /team/lead > old root still pending, oldFirst=true 1066ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × installed Apollo final inspection /team/lead > old root still pending, oldFirst=false 1066ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   ✓ keeps global Apollo deduplication enabled for unchanged ordinary options 11ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=false oldFirst=false
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=false oldFirst=true
+AssertionError: expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ stores/__tests__/agentOrgInspectionApollo.spec.ts:66:49
+     64|       const old = orgs.openForInspection('org-run')
+     65|       // An ordinary duplicate open still shares the store-owned curre…
+     66|       expect(orgs.openForInspection('org-run')).toBe(old)
+       |                                                 ^
+     67|       const roots = await requests(ROOT, prior ? 2 : 1)
+     68|       roots.at(-1)!.respond(inspectionData(true))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=false
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > root completed / child pending; prior=true oldFirst=true
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=false
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=true oldFirst=true
+AssertionError: expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ stores/__tests__/agentOrgInspectionApollo.spec.ts:66:49
+     64|       const old = orgs.openForInspection('org-run')
+     65|       // An ordinary duplicate open still shares the store-owned curre…
+     66|       expect(orgs.openForInspection('org-run')).toBe(old)
+       |                                                 ^
+     67|       const roots = await requests(ROOT, prior ? 2 : 1)
+     68|       roots.at(-1)!.respond(inspectionData(true))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > old root still pending, oldFirst=true
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /director > old root still pending, oldFirst=false
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > old root still pending, oldFirst=true
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > old root still pending, oldFirst=false
+AssertionError: expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ stores/__tests__/agentOrgInspectionApollo.spec.ts:25:56
+     23| const outcome = (p: Promise<void>) => p.then(() => null, e => e as Err…
+     24| async function requests(name: string, count: number) {
+     25|   await vi.waitFor(() => expect(transport.named(name)).toHaveLength(co…
+       |                                                        ^
+     26|   return transport.named(name)
+     27| }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=false oldFirst=false
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > installed Apollo final inspection /team/lead > root completed / child pending; prior=false oldFirst=true
+AssertionError: expected Promise{…} to be Promise{…} // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: Promise{…}
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ stores/__tests__/agentOrgInspectionApollo.spec.ts:66:49
+     64|       const old = orgs.openForInspection('org-run')
+     65|       // An ordinary duplicate open still shares the store-owned curre…
+     66|       expect(orgs.openForInspection('org-run')).toBe(old)
+       |                                                 ^
+     67|       const roots = await requests(ROOT, prior ? 2 : 1)
+     68|       roots.at(-1)!.respond(inspectionData(true))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 1 passed (13)
+   Start at  23:50:27
+   Duration  13.54s (transform 5.34s, setup 7.75s, collect 165ms, tests 4.58s, environment 451ms, prepare 242ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

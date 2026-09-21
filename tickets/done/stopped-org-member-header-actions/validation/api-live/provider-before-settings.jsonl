@@ -1,0 +1,4 @@
+{"type":"request","id":1,"at":"2026-09-17T01:16:05.547Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":1,"status":200,"at":"2026-09-17T01:16:10.651Z"}
+{"type":"request","id":2,"at":"2026-09-17T01:16:22.312Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":2,"status":200,"at":"2026-09-17T01:16:24.903Z"}

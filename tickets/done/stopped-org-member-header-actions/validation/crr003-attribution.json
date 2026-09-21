@@ -1,0 +1,22 @@
+[
+  {
+    "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+    "sha256": "01b8e443f139151437bb71621e2ffcba99c5a1d661710d369e2f8fb4d9e69403",
+    "unchanged_vs_HEAD": true
+  },
+  {
+    "path": "autobyteus-web/components/workspace/config/AgentOrgDirectAgentOverrideRow.vue",
+    "sha256": "1bfd3e545736aaef11ce200b8bc07f56fbf9a8ba7eb9a24f5634e4ce275e6a55",
+    "unchanged_vs_HEAD": true
+  },
+  {
+    "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+    "sha256": "8c65c50ccb10f6d1a275acc185fccfadc0062a7ffa5d2cd941c96bc473381113",
+    "unchanged_vs_HEAD": true
+  },
+  {
+    "path": "autobyteus-web/utils/teamRunLaunchReadiness.ts",
+    "sha256": "66b93d32ee158aab22cd8820f05fb6b04346600a4bef525cf615e7b3be5586f5",
+    "unchanged_vs_HEAD": true
+  }
+]

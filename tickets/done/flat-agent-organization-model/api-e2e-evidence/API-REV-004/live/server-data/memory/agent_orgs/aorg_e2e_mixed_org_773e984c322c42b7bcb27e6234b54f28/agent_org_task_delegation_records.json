@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28",
+  "records": [
+    {
+      "taskId": "task_89edbace8d704e8d9d2a0096cbf4099b",
+      "delegatorAgentRunId": "aorg_e2e_concierge_43e1792fa8ac4c2fbac06fad0b447d65",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_c3fbe579693345a98cf04485b42eb88d"
+      },
+      "description": "Submit exactly AORG4C-ORG-MOUNTED-TASK-INITIAL-001 as the task result using submit_task_result. If a revision is requested, resubmit on this same task using the exact revised marker required by the revision instructions.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_85c3ee745e554d82becb401d964eb140",
+          "message": "AORG4C-ORG-MOUNTED-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:05:30.259Z"
+        },
+        {
+          "reviewId": "review_e99bae14635d419095298724e36bc5b3",
+          "reviewedSubmissionId": "submission_85c3ee745e554d82becb401d964eb140",
+          "decision": "request_revision",
+          "comment": "Revise and resubmit on this same task with exactly AORG4C-ORG-MOUNTED-TASK-REVISED-001 using submit_task_result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:05:32.186Z"
+        },
+        {
+          "submissionId": "submission_0e383b6b47f54b99838d07de9435713b",
+          "message": "AORG4C-ORG-MOUNTED-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:05:48.462Z"
+        },
+        {
+          "reviewId": "review_67f5bc116bc34114a77963d8d476949d",
+          "reviewedSubmissionId": "submission_0e383b6b47f54b99838d07de9435713b",
+          "decision": "accept",
+          "comment": "Accepted revised result AORG4C-ORG-MOUNTED-TASK-REVISED-001.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:05:51.610Z"
+        }
+      ],
+      "createdAt": "2026-09-02T07:05:18.754Z"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import type { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
 import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
-import type { TeamRunFileWriteResult } from "../../run-history/store/team-run-file-commit-writer.js";
+import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type {
   PreparedExecutionTreeMutation,
   PreparedTaskMutationCommit,
@@ -10,11 +10,16 @@ import type {
   TaskMutationCommitResult,
   TaskSettlementCommitResult,
   TeamMessageCommitResult,
+  TeamRunFileRole,
 } from "./team-run-persistence-contract.js";
 import { TeamRunPersistenceFailStoppedError } from "./team-run-persistence-contract.js";
+import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 
 export type TeamRunPersistenceFailStop = (input: {
-  file: TeamRunFileWriteResult & { outcome: "renamed_finalization_indeterminate" };
+  file: RunPackageFileWriteResult & { outcome: "renamed_finalization_indeterminate" };
+} | {
+  postDurabilityError: Error;
+  fileRole: TeamRunFileRole;
 }) => void;
 
 /** Serializes all physical mutations for one root TeamRun. */
@@ -64,8 +69,8 @@ export class TeamRunPersistenceCoordinator {
           stage: result.stage,
         };
       }
-      const settlement = command.settlement.commitAfterDurability();
-      prepared.commitTreeAndEvent(settlement);
+      const settlement = this.finalizeAfterDurability("execution_tree", () => command.settlement.commitAfterDurability());
+      this.finalizeAfterDurability("execution_tree", () => prepared.commitTreeAndEvent(settlement));
       return { outcome: "committed", settlement };
     });
   }
@@ -78,7 +83,7 @@ export class TeamRunPersistenceCoordinator {
     return this.withRootLock(async () => {
       const change = plan.prepareAgainstCurrent();
       if (!change.requiresWrite) {
-        change.commitAfterDurability();
+        this.finalizeAfterDurability("execution_tree", () => change.commitAfterDurability());
         return { outcome: "committed" };
       }
       const result = await this.options.executionTreeStore.write(
@@ -98,7 +103,7 @@ export class TeamRunPersistenceCoordinator {
         this.latchPersistenceFailStop(result);
         return { outcome: "finalization_indeterminate", file: result.file, stage: result.stage };
       }
-      change.commitAfterDurability();
+      this.finalizeAfterDurability("execution_tree", () => change.commitAfterDurability());
       return { outcome: "committed" };
     });
   }
@@ -143,14 +148,17 @@ export class TeamRunPersistenceCoordinator {
     );
     if (taskFailure) return taskFailure;
 
-    if (command.kind === "activation") command.activation.commitAfterDurability();
-    else command.commitAfterDurability();
+    if (command.kind === "activation") {
+      this.finalizeAfterDurability("task_records", () => command.activation.commitAfterDurability());
+    } else {
+      this.finalizeAfterDurability("task_records", () => command.commitAfterDurability());
+    }
     return { outcome: "committed" };
   }
 
   private async handleTaskFileFailure(
     command: PreparedTaskMutationCommit,
-    result: TeamRunFileWriteResult,
+    result: RunPackageFileWriteResult<TeamRunFileRole>,
     treeOrphanMayExist: boolean,
   ): Promise<TaskMutationCommitResult | null> {
     if (result.outcome === "committed") return null;
@@ -196,7 +204,7 @@ export class TeamRunPersistenceCoordinator {
       this.latchPersistenceFailStop(result);
       return { outcome: "finalization_indeterminate", stage: result.stage };
     }
-    prepared.commit.commitAfterDurability();
+    this.finalizeAfterDurability("communication_messages", () => prepared.commit.commitAfterDurability());
     return { outcome: "committed" };
   }
 
@@ -210,9 +218,25 @@ export class TeamRunPersistenceCoordinator {
   }
 
   private latchPersistenceFailStop(
-    result: TeamRunFileWriteResult & { outcome: "renamed_finalization_indeterminate" },
+    result: RunPackageFileWriteResult & { outcome: "renamed_finalization_indeterminate" },
   ): void {
     this.failStopped = true;
     this.options.enterPersistenceFailStop({ file: result });
+  }
+
+  private finalizeAfterDurability<T>(fileRole: TeamRunFileRole, action: () => T): T {
+    try {
+      return action();
+    } catch (cause) {
+      const error = cause instanceof Error ? cause : new Error(String(cause));
+      this.failStopped = true;
+      this.options.enterPersistenceFailStop({ postDurabilityError: error, fileRole });
+      throw new RootTaskPersistenceFinalizationIndeterminateError(
+        "agent_team",
+        fileRole,
+        "post_durability_publication",
+        `TeamRun '${fileRole}' is durable but local publication failed: ${error.message}`,
+      );
+    }
   }
 }

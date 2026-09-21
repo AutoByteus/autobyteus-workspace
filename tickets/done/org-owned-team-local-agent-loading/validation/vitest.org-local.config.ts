@@ -1,0 +1,3 @@
+import { defineConfig } from 'vitest/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
+export default defineConfig({plugins:[tsconfigPaths({projects:['./tsconfig.json']})],test:{environment:'node',pool:'forks',fileParallelism:false,include:['tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts','tests/unit/agent-team-definition/**/*.test.ts','tests/unit/agent-definition/team-local-agent-discovery.test.ts','tests/unit/agent-definition/cached-agent-definition-provider.test.ts','tests/unit/collaboration-definition-admission/*.test.ts','tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts','tests/unit/agent-org-execution/agent-org-run-planner.test.ts']}});

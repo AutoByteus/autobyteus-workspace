@@ -1,0 +1,333 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/.env
+Loading environment from: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/.env
+[dotenv@17.3.1] injecting env (13) from tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8437
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8437
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data
+DB DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/db
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:42474) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T22:17:47.920Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-01T22:17:48.124Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-01T22:17:48.125Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1788301068132,"pid":42474,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:45435"}
+{"level":30,"time":1788301068166,"pid":42474,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:8437"}
+[2026-09-01T22:17:48.167Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8437
+[2026-09-01T22:17:48.168Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8437
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788301247821,"pid":42474,"hostname":"0d2d48492ef2","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.5574999991804361,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-01T22:21:17.722Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-01T22:21:17.726Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+{"level":40,"time":1788301303073,"pid":42474,"hostname":"0d2d48492ef2","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5467499997466803,"msg":"http request completed"}
+{"level":40,"time":1788301321586,"pid":42474,"hostname":"0d2d48492ef2","reqId":"req-17","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.0259579997509718,"msg":"http request completed"}
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: c4e22bfb-0209-495d-8ff9-8e64bb59b2fa for workspace temp_ws_default
+Created file explorer session c4e22bfb-0209-495d-8ff9-8e64bb59b2fa for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: c4e22bfb-0209-495d-8ff9-8e64bb59b2fa for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+[CodexAppServerClient] stderr: [2m2026-09-01T22:22:10.795659Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:22:23.890791Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_5c83906ba25e438da258c0c1990b5813'.
+Published codex_app_server agent run 'aorg_e2e_analyst_516819612cf84e78b78dfc4ad51397dd'.
+Published codex_app_server agent run 'aorg_e2e_verifier_865543a875ed458dbc4bfad45d08d321'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+FileExplorerSession closed: c4e22bfb-0209-495d-8ff9-8e64bb59b2fa
+Closed file explorer session c4e22bfb-0209-495d-8ff9-8e64bb59b2fa. Active sessions: 0
+File explorer WebSocket disconnected: c4e22bfb-0209-495d-8ff9-8e64bb59b2fa
+Agent team websocket attached for team run aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067
+Created agent session 8059d351-5c9a-46a7-b3da-b1b7b017fbc6 for run aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067
+Agent Team WebSocket connected: session=8059d351-5c9a-46a7-b3da-b1b7b017fbc6, run=aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_17741349ef0b497b852e5b14e7fab84a'.
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'aorg_e2e_analyst_17741349ef0b497b852e5b14e7fab84a',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+Closed agent session 8059d351-5c9a-46a7-b3da-b1b7b017fbc6
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:27:40.887008Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_5c83906ba25e438da258c0c1990b5813'.
+Published codex_app_server agent run 'aorg_e2e_analyst_516819612cf84e78b78dfc4ad51397dd'.
+Published codex_app_server agent run 'aorg_e2e_verifier_865543a875ed458dbc4bfad45d08d321'.
+Agent team websocket attached for team run aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067
+Created agent session 5c5fb2e8-db1d-4949-913e-db725f61586c for run aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067
+Agent Team WebSocket connected: session=5c5fb2e8-db1d-4949-913e-db725f61586c, run=aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067
+Closed agent session 5c5fb2e8-db1d-4949-913e-db725f61586c
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 911936d9-dfd5-4c2f-bb73-76c14909a31c for workspace temp_ws_default
+Created file explorer session 911936d9-dfd5-4c2f-bb73-76c14909a31c for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 911936d9-dfd5-4c2f-bb73-76c14909a31c for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:28:48.304439Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_ff6e706d50f04ae59a2c51e69e846019'.
+Published codex_app_server agent run 'aorg_e2e_analyst_565706d297e244cebc7e5e27f4324c70'.
+Published codex_app_server agent run 'aorg_e2e_verifier_33e194d06aa340b0bcbfe4971413dbcf'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+FileExplorerSession closed: 911936d9-dfd5-4c2f-bb73-76c14909a31c
+Closed file explorer session 911936d9-dfd5-4c2f-bb73-76c14909a31c. Active sessions: 0
+File explorer WebSocket disconnected: 911936d9-dfd5-4c2f-bb73-76c14909a31c
+Agent team websocket attached for team run aorg_e2e_research_squad_3ac76dc4cfc94602898e5a405def77e3
+Created agent session 674d8a7d-67b5-41be-8b29-962b1e706bc9 for run aorg_e2e_research_squad_3ac76dc4cfc94602898e5a405def77e3
+Agent Team WebSocket connected: session=674d8a7d-67b5-41be-8b29-962b1e706bc9, run=aorg_e2e_research_squad_3ac76dc4cfc94602898e5a405def77e3
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_ee3167a7537f43bfa0a09eac6b21199f'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_c6b678fba4814f7e9d13ee3c56fb7ed3'.
+Closed agent session 674d8a7d-67b5-41be-8b29-962b1e706bc9
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3 for workspace temp_ws_default
+Created file explorer session a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:17.129314Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:17.299633Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:17.478840Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:17.647543Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:17.815535Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:17.997311Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:18.161317Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:18.341497Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:18.505764Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:32:18.738361Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 6,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_concierge_a5b71ecb42b145049068e07f1122e8d1'.
+Published codex_app_server agent run 'aorg_e2e_lead_05191864a4b2478485940f8bf1a6de06'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b10c56a02ef04e73a7c8adf372fa508d'.
+Published codex_app_server agent run 'aorg_e2e_verifier_b9a4358c4d384805bc1ca341622807e7'.
+Published codex_app_server agent run 'aorg_e2e_lead_65085416d1c14cc6becffd4d14869289'.
+Published codex_app_server agent run 'aorg_e2e_verifier_462a1b085363459288b635b084f508ef'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+FileExplorerSession closed: a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3
+Closed file explorer session a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3. Active sessions: 0
+File explorer WebSocket disconnected: a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6'.
+[AgentRun] listener failed for run 'aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6': Error: AgentRun 'aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6' does not resolve to the supplied member identity.
+Task 'task_a74ec579d8d34fb58ca5788856b5486b' settlement failed: RootTaskFailStoppedError: Task delegation stopped because root persistence authority is indeterminate.
+    at RootTaskLifecycleCommandQueue.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-command-queue.js:35:23)
+    at RootTaskLifecycleEngine.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-engine.js:27:20)
+    at AgentOrgRun.enterFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:317:25)
+    at AgentOrgRun.onAgentExecutionEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:173:18)
+    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/services/agent-org-execution-scope-builder.js:51:21)
+    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/local/flat-team-agent-execution-handle.js:82:78)
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:253:36
+    at dispatchRuntimeEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/shared/runtime-event-dispatch.js:4:13)
+    at AgentRun.dispatchCanonicalStatus (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:442:9)
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:435:18
+Task 'task_a74ec579d8d34fb58ca5788856b5486b' settlement failed: RootTaskFailStoppedError: Task delegation stopped because root persistence authority is indeterminate.
+    at RootTaskLifecycleCommandQueue.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-command-queue.js:35:23)
+    at RootTaskLifecycleEngine.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-engine.js:27:20)
+    at AgentOrgRun.enterFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:317:25)
+    at AgentOrgRun.onAgentExecutionEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:173:18)
+    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/services/agent-org-execution-scope-builder.js:51:21)
+    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/local/flat-team-agent-execution-handle.js:82:78)
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:253:36
+    at dispatchRuntimeEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/shared/runtime-event-dispatch.js:4:13)
+    at AgentRun.dispatchCanonicalStatus (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:442:9)
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:435:18
+Created terminal session 158cd2cb-9c51-4b77-9ea4-e57008daec46 using backend PtySession for target /root
+Terminal WebSocket connected: 158cd2cb-9c51-4b77-9ea4-e57008daec46
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788302259196,"pid":42474,"hostname":"0d2d48492ef2","reqId":"req-8t","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.4048750009387732,"msg":"http request completed"}
+Closed PTY session 158cd2cb-9c51-4b77-9ea4-e57008daec46
+Terminal WebSocket disconnected: 158cd2cb-9c51-4b77-9ea4-e57008daec46
+[CodexAppServerClient] stderr: [2m2026-09-01T22:38:01.238811Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Created terminal session c2edd7bf-3613-45a1-a023-36d34c9ab3c9 using backend PtySession for target /root
+Terminal WebSocket connected: c2edd7bf-3613-45a1-a023-36d34c9ab3c9
+Terminal websocket attached for cwd /root
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-01T22:39:20.620167Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_concierge_a5b71ecb42b145049068e07f1122e8d1'.
+Published codex_app_server agent run 'aorg_e2e_lead_05191864a4b2478485940f8bf1a6de06'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b10c56a02ef04e73a7c8adf372fa508d'.
+Published codex_app_server agent run 'aorg_e2e_verifier_b9a4358c4d384805bc1ca341622807e7'.
+Published codex_app_server agent run 'aorg_e2e_lead_65085416d1c14cc6becffd4d14869289'.
+Published codex_app_server agent run 'aorg_e2e_verifier_462a1b085363459288b635b084f508ef'.
+Closed PTY session c2edd7bf-3613-45a1-a023-36d34c9ab3c9
+Terminal WebSocket disconnected: c2edd7bf-3613-45a1-a023-36d34c9ab3c9
+[2026-09-01T22:42:54.576Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-01T22:42:54.790Z] [INFO] [server.runtime] Server closed cleanly.

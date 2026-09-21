@@ -6,7 +6,10 @@ import type {
   TeamMemberMemoryTargetSummary,
 } from "../domain/models.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import {
+  createStoredTeamRunExecutionTreeLocationService,
+  TeamRunExecutionTreeLocationService,
+} from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
 import type { TeamRunIndexRow } from "../../run-history/domain/team-run-history-index-types.js";
 import { mergeMemoryAvailability } from "./memory-run-summary-builder.js";
@@ -36,6 +39,14 @@ type TeamGroup = {
   runs: TeamRunRecord[];
 };
 
+const STORED_HISTORY_MANAGER = Object.freeze({
+  hasManagedTeamRun: () => false,
+  withUnmanagedHistoryDeletion: async <T>(_teamRunId: string, operation: () => Promise<T>) => ({
+    kind: "completed" as const,
+    value: await operation(),
+  }),
+});
+
 export class TeamMemoryExplorerService {
   private readonly treeLocations: TeamRunExecutionTreeLocationService;
   private readonly catalogService: TeamRunHistoryCatalogService;
@@ -48,9 +59,14 @@ export class TeamMemoryExplorerService {
       catalogService?: TeamRunHistoryCatalogService;
     } = {},
   ) {
-    this.treeLocations = dependencies.treeLocations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
-    this.catalogService = dependencies.catalogService ?? new TeamRunHistoryCatalogService(memoryDir);
-    this.memberTargetBuilder = new TeamMemoryMemberTargetBuilder(new AgentMemoryLocationService({ memoryDir }));
+    this.treeLocations = dependencies.treeLocations ?? createStoredTeamRunExecutionTreeLocationService(memoryDir);
+    this.catalogService = dependencies.catalogService ?? new TeamRunHistoryCatalogService(memoryDir, {
+      teamRunManager: STORED_HISTORY_MANAGER,
+    });
+    this.memberTargetBuilder = new TeamMemoryMemberTargetBuilder(new AgentMemoryLocationService({
+      memoryDir,
+      locationService: this.treeLocations,
+    }));
   }
 
   async listAgentTeamsWithMemory(

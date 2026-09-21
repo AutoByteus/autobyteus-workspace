@@ -1,0 +1,7 @@
+migrationId=20260905_agent_org_history_first_message_summary_v1
+displayName=AgentOrg first-message history summaries
+statusSummary={"scannedCount":2,"migratedCount":0,"skippedCount":2,"failedCount":0}
+error=
+details=
+{"itemId":"SKIPPED_EXISTING_AGENT_ORG_HISTORY_SUMMARY","status":"SKIPPED","message":"Count: 1. Examples: apirev8_613529cf063144d0a9e6cd6e385d58ba."}
+{"itemId":"SKIPPED_NO_UNIQUE_QUALIFYING_TRACE","status":"SKIPPED","message":"Count: 1. Examples: aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d. Reasons: NO_QUALIFYING_TRACE."}

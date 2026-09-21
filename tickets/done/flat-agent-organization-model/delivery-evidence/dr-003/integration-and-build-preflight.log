@@ -1,0 +1,13 @@
+=== integrated state ===
+2026-09-02T22:02:48Z
+branch=requirements/flat-agent-organization-model
+head=0fb57d902b63d2d927e34ead64a7fb62bf808c09
+base=66056b5afc49240fa139bcefd00b62d119f35ec8
+merge_base=66056b5afc49240fa139bcefd00b62d119f35ec8
+divergence=0	100
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-003/
+package_version=1.4.67
+arch=aarch64
+pnpm=10.28.2
+port_29695_before_build:
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess

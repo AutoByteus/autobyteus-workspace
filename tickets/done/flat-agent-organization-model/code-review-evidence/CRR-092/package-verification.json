@@ -1,0 +1,10 @@
+{
+  "incomingReferenceCount": 6487,
+  "missingReferences": [],
+  "cumulativeSourceCount": 814,
+  "sourceMismatches": [],
+  "apiEvidenceCount": 4211,
+  "apiEvidenceMismatches": [],
+  "durableHashesMatch": true,
+  "note": "References retain the complete cumulative chain; source/evidence hashes are independently checked, not full reruns."
+}

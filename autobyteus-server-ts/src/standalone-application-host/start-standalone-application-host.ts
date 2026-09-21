@@ -48,7 +48,7 @@ import {
   TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
   configureTokenUsageMigrationReadiness,
 } from "../token-usage/providers/token-usage-migration-readiness.js";
-import { TeamRunPackageCatalog } from "../run-history/services/team-run-package-catalog.js";
+import { RootRunPackageReadinessIndex } from "../run-history/services/root-run-package-readiness-index.js";
 import {
   createHostDefinitionServices,
   type HostDefinitionServices,
@@ -163,7 +163,7 @@ const initializeStandaloneProcessResources = async (
             logPath: tokenUsageStatus?.logPath ?? null,
           },
     );
-    await new TeamRunPackageCatalog(appConfig.getMemoryDir()).rebuild();
+    await new RootRunPackageReadinessIndex(appConfig.getMemoryDir()).rebuild();
     const teamRunV2Status = statuses.find(
       (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
     );
@@ -236,6 +236,11 @@ export const startStandaloneApplicationHost = async (
       appConfig: processResources.appConfig,
       bundleService,
     });
+    const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
+      .filter((result) => result.status === "unavailable");
+    for (const diagnostic of definitionDiagnostics) {
+      console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
+    }
     const workspaceManager = getWorkspaceManager();
     const contextFilePathEnvironment = createContextFilePathEnvironment({
       appDataDir: processResources.appConfig.getAppDataDir(),
@@ -265,6 +270,8 @@ export const startStandaloneApplicationHost = async (
         contextFilePathEnvironment,
         agentDefinitionService: hostDefinitionServices.agentDefinitionService,
         agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+        agentOrgDefinitionService: hostDefinitionServices.agentOrgDefinitionService,
+        definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
         workspaceManager,
         agentProviderFactoryBuilder,
         agentToolMcpSessionAuthority: generalProcessAuthority,

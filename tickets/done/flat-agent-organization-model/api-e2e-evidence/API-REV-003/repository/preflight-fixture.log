@@ -1,0 +1,42 @@
+timestamp=2026-09-01T22:09:18Z
+head=73a2c06eb14e3c5a7d91322aae7f42dbc4de0e0a
+source_commit=3e38be96596432df8e3f459056d908786b5371bd
+--- fixture checksums ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+--- fixture inventory ---
+PACKAGE.sha256
+README.md
+TEST-MANIFEST.md
+agent-orgs/aorg-direct-agents-org/org-config.json
+agent-orgs/aorg-direct-agents-org/org.md
+agent-orgs/aorg-mixed-org/org-config.json
+agent-orgs/aorg-mixed-org/org.md
+agent-teams/aorg-research-squad/team-config.json
+agent-teams/aorg-research-squad/team.md
+agent-teams/aorg-support-pair/team-config.json
+agent-teams/aorg-support-pair/team.md
+agents/aorg-analyst/agent-config.json
+agents/aorg-analyst/agent.md
+agents/aorg-concierge/agent-config.json
+agents/aorg-concierge/agent.md
+agents/aorg-lead/agent-config.json
+agents/aorg-lead/agent.md
+agents/aorg-verifier/agent-config.json
+agents/aorg-verifier/agent.md

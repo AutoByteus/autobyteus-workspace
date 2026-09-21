@@ -1,0 +1,57 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/agentOrgInspection.spec.ts components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (6 tests) 6ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (41 tests) 115ms
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 19ms
+ ✓ components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts (2 tests) 89ms
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests) 194ms
+
+ Test Files  5 passed (5)
+      Tests  62 passed (62)
+   Start at  15:01:34
+   Duration  11.26s (transform 5.56s, setup 43.59s, collect 1.91s, tests 424ms, environment 5.06s, prepare 2.34s)

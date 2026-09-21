@@ -1,0 +1,53 @@
+{
+  "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+  "lead": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+  "verifier": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+  "whitespaceAck": {
+    "at": "2026-09-06T00:09:55.996Z",
+    "index": 3,
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+      "command_id": "empty-accepted",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+      "state": "rejected",
+      "code": "AGENT_RUN_INPUT_INVALID",
+      "message": "AgentRun input content must be a non-empty string."
+    }
+  },
+  "afterWhitespaceSummary": "",
+  "invalidAck": {
+    "at": "2026-09-06T00:09:56.003Z",
+    "index": 4,
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+      "command_id": "invalid-target",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "not-a-real-agent-run",
+      "state": "rejected",
+      "code": "RUN_NOT_FOUND",
+      "message": "AgentRun 'not-a-real-agent-run' is not live in AgentOrg 'aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c'."
+    }
+  },
+  "afterInvalidSummary": "",
+  "ackOrder": [
+    {
+      "index": 13,
+      "at": "2026-09-06T00:09:56.036Z",
+      "commandId": "concurrent-b",
+      "state": "accepted"
+    },
+    {
+      "index": 14,
+      "at": "2026-09-06T00:09:56.036Z",
+      "commandId": "concurrent-a",
+      "state": "accepted"
+    }
+  ],
+  "winner": "APIREV11-CONCURRENT-B verifier accepted competition",
+  "persisted": "APIREV11-CONCURRENT-B verifier accepted competition"
+}

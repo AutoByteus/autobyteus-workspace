@@ -1,0 +1,93 @@
+{
+  "attempts": [
+    {
+      "at": "2026-09-06T02:29:08.256Z",
+      "mode": "org",
+      "op": "ListCollaborationRootHistory",
+      "url": "http://127.0.0.1:8592/graphql"
+    },
+    {
+      "at": "2026-09-06T02:29:18.245Z",
+      "mode": "workspace",
+      "op": "ListWorkspaceRunHistory",
+      "url": "http://127.0.0.1:8592/graphql"
+    }
+  ],
+  "events": [
+    {
+      "label": "baseline",
+      "at": "2026-09-06T02:29:06.634Z",
+      "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [],
+      "workspaceSections": 6
+    },
+    {
+      "label": "org-failed-retained",
+      "at": "2026-09-06T02:29:08.279Z",
+      "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "historyText": "Workspaces\nResponse not successful: Received status code 500\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [
+        "Response not successful: Received status code 500"
+      ],
+      "workspaceSections": 6
+    },
+    {
+      "label": "org-recovered",
+      "at": "2026-09-06T02:29:13.279Z",
+      "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [],
+      "workspaceSections": 6
+    },
+    {
+      "label": "workspace-failed-retained",
+      "at": "2026-09-06T02:29:18.278Z",
+      "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "historyText": "Workspaces\nResponse not successful: Received status code 500\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [
+        "Response not successful: Received status code 500"
+      ],
+      "workspaceSections": 6
+    },
+    {
+      "label": "workspace-recovered",
+      "at": "2026-09-06T02:29:23.280Z",
+      "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "teamDefs": [
+        "A本APIREV8 本地化 Team β(1)"
+      ],
+      "orgRoots": [],
+      "red": [],
+      "workspaceSections": 6
+    }
+  ],
+  "assertions": {
+    "orgFailureObserved": true,
+    "workspaceFailureObserved": true,
+    "orgRetainedTeamFamily": true,
+    "orgRetainedOrgFamily": false,
+    "orgRecovered": true,
+    "workspaceRetainedTeamFamily": true,
+    "workspaceRetainedOrgFamily": false,
+    "workspaceRecovered": true,
+    "singleUnifiedHistoryPanel": false
+  }
+}

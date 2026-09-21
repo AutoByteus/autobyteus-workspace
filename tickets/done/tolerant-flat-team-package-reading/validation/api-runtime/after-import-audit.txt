@@ -1,0 +1,2 @@
+{"externalFilesUnchanged": 552, "ownedFilesUnchanged": 24, "orgDirectories": ["api-untouched-org"], "flatTreeExactUnchanged": true}
+family SUCCEEDED history [{'orgRunId': 'api-migrated-org', 'orgDefinitionId': 'api-unconverted-parent', 'orgDefinitionName': 'API Migrated History', 'workspaceRootPath': '/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001/temp_workspace', 'summary': '', 'createdAt': '2026-09-01T00:00:00.000Z', 'archivedAt': None, 'terminatedAt': None}]

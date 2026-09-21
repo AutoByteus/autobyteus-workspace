@@ -1,0 +1,481 @@
+{
+  "scope": "Current IR-001 artifacts and canonical implementation records, excluding this checksum manifest itself; source/upstream hashes are in their dedicated inventories.",
+  "files": [
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/artifact-whitespace-disposition.json",
+      "sha256": "23d04855da314060e960496e769214d403b986732ed420fe91307d95aaf7bd39"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/artifact-whitespace.log",
+      "sha256": "0816bbe37ef4fa5965cc5d674b97f613eed783a6be3f2baa4855cd07eab52f11"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/authority-integrity.json",
+      "sha256": "475dc80bbfc789bba1ce281ae1952676bbe994f4e9a65feeb703d82572c58a11"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/base-head.txt",
+      "sha256": "e1ec8d7ffd50634a605f6547dbb9b8bc473f31204a39e5338c9d44a5c2d5e7c6"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-check.py",
+      "sha256": "2beacb0b09a1905e9e884f7b5450dcfe48e7893a89477e9a1e90276aeca5d3a3"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-restoration.json",
+      "sha256": "a66505ed79e24a3de00aac1b9cfb51045921d269cba0d9463ff9c6f17535d153"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-results.json",
+      "sha256": "4254969cba6093ce4972f7730407b9e324b4a425384e45f2576b576388aebbc9"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-web-typecheck.log",
+      "sha256": "486b5097fba1ed27f80ef6b2ff9902ac70e010cb728bd478eb89d3f756f86a30"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-attachment.log",
+      "sha256": "af85372b81e33958ed6e53c07568ac982aeb1ea3821af9a3da066309bb6e4a1e"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-runtime.log",
+      "sha256": "06b46a7eb14488f200bf74da62b2c0073e3c2a25a500a006eaa4c3debb36f398"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-selection.log",
+      "sha256": "dd40d5ddac80b410860e28f1ec6d684ed269ffa1f83b84df0d35f9f9c77ccc7d"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/compare-typecheck.py",
+      "sha256": "f2328d1445d642c12a9f74c384edde94a244942eec01821eef0fe1abb5be3b07"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/complete-integrity.py",
+      "sha256": "6dc201afcafe73baa38603848f61b712ddb84ce34fda47d897f80ca75df45022"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-checks.json",
+      "sha256": "63afdfe583adbb7e43a3fae52721cf1881c7fdfc82f4810f1a1100c410a5fe11"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-checks.py",
+      "sha256": "9d08c8b8513b7bce4f255047dd5450e0462cb6d2944e1cac8774ba6f0ebce8f3"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-integrity.json",
+      "sha256": "e0d153bc1dc41b9161993995c1a6731220156a50781e52a80c0799882c260d22"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-localization-boundary.log",
+      "sha256": "6556ac5f840c1b48443485b2b251eb61d33f5842b62bf58d4adff8016240749d"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-boundary.log",
+      "sha256": "1a6405c3e640589c07bc3eabeaacc10968624467e23b09fd1d9db1d396e8e775"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-build.log",
+      "sha256": "c7543de94aa010833b4e1cc104845c20940053ea168d9d21221a292782f81966"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-typecheck.log",
+      "sha256": "4ad7fb86dafc0bb62b424a97fd87c74799b94e80dd063a73b0b4659edd19e62c"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web.log",
+      "sha256": "05ae040969d4514b5f2a7ce12286ec54e6b224ccd69b2e26f8958717712678fb"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff",
+      "sha256": "9e1d9b893892c321ff245a7e7c421b156152c5861e52e34115233e578512c4f6"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-checks.json",
+      "sha256": "1d2cac3a5ff47035b0f68127927e1f1d8f7dba537ecb953db00a396653e84f32"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-checks.py",
+      "sha256": "37a923cb78a614f142656a5e6156d8b0c8b190724ae1fb72aed1d48ddf441166"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-localization-boundary.log",
+      "sha256": "6556ac5f840c1b48443485b2b251eb61d33f5842b62bf58d4adff8016240749d"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-prepare.log",
+      "sha256": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-server-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-server.log",
+      "sha256": "75ef0451aa7c080b57fed94495c2b82e7e1aad31f0a852224275ec94d9749ef2"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-boundary.log",
+      "sha256": "1a6405c3e640589c07bc3eabeaacc10968624467e23b09fd1d9db1d396e8e775"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-build.log",
+      "sha256": "c38e57346d52ed07576d61e4dd82f5d8fa10466d3406f647a453ca36d6304580"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-typecheck.log",
+      "sha256": "eda42dfaf6fd6d4d55cfe5e6950a31829b288dc37834a53abed0f47ad58d68b6"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web.log",
+      "sha256": "576a5b048523afb99ef38e4e67e43fa83470930b2c82a389edb637eccf584463"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/handoff-reference-files.txt",
+      "sha256": "16d8d9e4b5b4d15ad51d2988dcbe74df16a907a777ee66c93d5253621d2a8b46"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/initial-status.txt",
+      "sha256": "2a57d7127bb9ab6442964036f186607ecc4467c7998255abf10b748072183f8f"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/initial-web-check.log",
+      "sha256": "517ffef4185d2348c0e9308b3d965aa32b725a8b904cdced1bd0e48e29646250"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/install.log",
+      "sha256": "43fcc44b4b30318c6a5399e4fa3558ad893e3d322ceb601e4240e7daa37ea454"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/local-checks.md",
+      "sha256": "e163c07333739ec26cb47bf157577b0c5228639706484e8100dcf709f322b524"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/native-preflight.json",
+      "sha256": "d8ff1336722ff883a97fb7abfb8c16ac419510a49c9a54d851f390e98905e232"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/navigation-investigation.md",
+      "sha256": "7fe0049b87bc604c1711a5b9d82fba0e44d41b3f2b24a4d542f061bb78463c14"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/prerequisites.log",
+      "sha256": "a611c7eaedc24cdedac71a3822dde19931337cd303dfd1a34b829fb2aac3a8d1"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/prisma-generate.log",
+      "sha256": "fd91e9b34e2c09029d5901c7b6d3b6dca13001b6d6703590148d0c23d0920bb1"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-final-chip.html",
+      "sha256": "ca0bef140ddb5614ec35e3f410c9dcfcbe648d54e40e5e0914bf458d55705730"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-final-chip.png",
+      "sha256": "1f22b29abfaaa1ba02774e35b53354431cf9b11bc3e5a04806b30c3220a1c08a"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-pending-team.html",
+      "sha256": "15a57f72c5056930e6dec6d0dad42d6b8774785b1df00b23c12967536dd64ce4"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-pending-team.png",
+      "sha256": "abe7ec86985af5fe6c0c398df3025500f2d6b09a3f08488971684b05862ae424"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-publication.html",
+      "sha256": "ca0bef140ddb5614ec35e3f410c9dcfcbe648d54e40e5e0914bf458d55705730"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-publication.png",
+      "sha256": "ca96b0f72cc09074b90960777a0b3cf1c1bcaaaa07daef6e7c066452a273495d"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-retained.html",
+      "sha256": "4bb22ae8fff8bea1ea486754f1d43f56920706dc0c7eebdb58299f1457703d50"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-retained.png",
+      "sha256": "6b13ff69a5df0baccc1957480e6cb4ea30d29a7224377b83b6c46d7474e34c07"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-direct.html",
+      "sha256": "3362981f44e25fc572949eec8a0d4e671d862833eefe9805f278cf2fe261fbf2"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-direct.png",
+      "sha256": "18577ef966fa8bf14607eb75ffa7f458c2cfc0986eb8d3f17404f963ed46034a"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-mounted.html",
+      "sha256": "d9efcb5bc57505da592a02354f0b0be80c79f24f7372a3a00335adfce425d64c"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-mounted.png",
+      "sha256": "17cf97652d82ae0c261606c2823242692ef4ce3631d5ff7ffdfb8a491f1119d0"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-final-chip.html",
+      "sha256": "8dc97575aa18c480473774cbe4f766d514668b96cb4631dd1cf2658f3b1e8953"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-final-chip.png",
+      "sha256": "4143c97b0dda9ef7fed990e4e3cbd9ef2d6ec8516e1b8ac18ebe43932661d289"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-pending-team.html",
+      "sha256": "838f81d42fa6404e5e87dfdd36cf6ad57ebfc47191d009e1c4dd53172c947d07"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-pending-team.png",
+      "sha256": "4a9d4af6d8b900459202b6327710b172355912905a545b9db8a1214609780d03"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-publication.html",
+      "sha256": "6d68c22d7a0a6855e1c4578aaa192491251b28b1298e428b6f4812f91a82ab6f"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-publication.png",
+      "sha256": "00f60e0b1edce72fe0eede39ba547183b79b6b4e7a527305b2dd369958ce2f99"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-retained.html",
+      "sha256": "9b680c99258f2cb73d6ab65bb3f51f97936dc727c7152865dc1c4e9b38eb7904"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-retained.png",
+      "sha256": "9bda3444c69b2a91586881bedae1fa20561976ab3e39dff1f05327304382a0dd"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-direct.html",
+      "sha256": "05aa9887110a4ac3b695050f9d4ae457730b8dda805d20e89a1835b2449ecc19"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-direct.png",
+      "sha256": "925770b32138e3c73ef552005694a5a4885789be274792654a031d8b983b9dda"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-mounted.html",
+      "sha256": "7f55774d47763ee427f044fdd12a975ff5b00ec4bb3d00df8c1257fe1633f310"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-mounted.png",
+      "sha256": "6f55245a1105deb07e4cd5aa3742962dd467a220240ba1cbf76a35bfc20b501e"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/buttons.json",
+      "sha256": "21a2762649aa84ff58fc87d2a66221cce5ccffa22f4b63d60f35bebf25b07056"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/evidence.json",
+      "sha256": "e33927b3c1c2f70a77a9595bcc65308abafc6be229b259d511f83890d6fa92b8"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fifth.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/final-first.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fixture.vue",
+      "sha256": "735f0c8a87654e768eadc8c89ac6b39a7ce76d5d937a3ae38d67ab2600f5480c"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fourth.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial-dom.txt",
+      "sha256": "82a25208446ba2df4c5fd906bc7f5c739e088645b4e8af80b99f67675b9075ee"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.json",
+      "sha256": "a516d048e9f90ac7c782b00537c077c34f9beb87e9f816a0cf84b81e8582bef5"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.png",
+      "sha256": "d8e68d065557437a192b149bacc37ab72ac0b3726af13eda611453fd2a67d63e"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/inspect-discovery.mjs",
+      "sha256": "5ef422e6ead276f0f4f6857838eb3e49856cd14bb9593a3e21e2a77a4b4591b1"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/inspect-initial.mjs",
+      "sha256": "0f8bac7096bfc6065e1ff1f8f2b8bc6d355bbf0fe70cffddd5aad19b89079045"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/inspect.mjs",
+      "sha256": "3df8ba60cca1d76f63508978a7e23c4af8ee56b7a84462f76b9c55ec3767788f"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/second.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/server.log",
+      "sha256": "c80bf117ca0986e72ccdd07289a3b6e1b979b724c94f2d3a0229b47a1bb66abf"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/seventh.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/sixth.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/third.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/runtime-final-focused.log",
+      "sha256": "d2930056ce2c9dbe1bdb19d5290088e2974baeaa700ac512bef08e860eb44770"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/selected-handoff-rule.json",
+      "sha256": "07c28af8d9456e826700be5247e5b7eb4e14e4d92228331e1501a499f8c0b0a4"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-first.log",
+      "sha256": "75bb86022bf0379968600fcccdb1a119f9f7bc91be86830f24156a5fbd58c2ab"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-second.log",
+      "sha256": "e4cd807956eeef0cba5693fd0d3c97d411e46b4dcb9b357bbe8da7bab28fb94c"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-third.log",
+      "sha256": "a988e7d479975695b98cfb758fa640e16581373d9a0a19b0197a8a06eb6558b9"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-cohort-second.log",
+      "sha256": "fc8d950665f8af66a29f01ec6f3246fe33061c6f8f0e248959b27a524f84ffcc"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-cohort.log",
+      "sha256": "3d0dc4fa6860c7b869cb094c189d7f3588c76417c170eecee43477c4a72fdfe9"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-first.log",
+      "sha256": "1c46d232b33df258c95e8add4b8dfbcd340e75d94d15d56f42be600bc07eca3b"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-focused.log",
+      "sha256": "5b263f3bb47c8a3b9f4ff4552be30450517f750db7506ab7107d036ec7a24c86"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-paths.txt",
+      "sha256": "1d8e73d048f9e2f28e9030c9df226b59547687a9a46ed56065dfd4160ccce8e0"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-prerequisites.log",
+      "sha256": "88eebd919859d57d08bf08c28b1acc262f9087b4f72c2d65924465e270183326"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-second.log",
+      "sha256": "36344adb321030ab28aa19de565993f0fbfeb119e668638f1f8e10f3d0609740"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/source-commit.txt",
+      "sha256": "f491404b29c65804ff263afd1774362f618a72f56d3cc04863d49e6ea030bf81"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/source-inventory.json",
+      "sha256": "76283464093d67b52d8b953fb0a4650650d3cd5b5f78d67b774cc88622865621"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/source-paths.txt",
+      "sha256": "ea549f59b17200d309cae84cac1699629ba1646a83e9288cfc78dc4c6eb0116b"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/typecheck-comparison-current.json",
+      "sha256": "233472c9f9cda12d2d112b31b2ee34c14db2a6dfae1bb5b7f9847108b799f37c"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/typecheck-comparison.json",
+      "sha256": "ff74f7076a381e4eebd43afc8b892329164477919fc99109add9aa83192923f2"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/upstream-reference-files.txt",
+      "sha256": "98f71d0f3bd28b794310261de9989d406a48d3faf9f11a1a8a093b136141203b"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-checks.json",
+      "sha256": "c462b7d8161bc08112a568dab1e176dcd954b62ebf4041042e069f10d7b3facf"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-checks.py",
+      "sha256": "95c79fb8975d029076c6a1d7c1b507c86493b21bea385badb66c6046f4e7f891"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-web-typecheck.log",
+      "sha256": "cddc46b667097629866c6ecb84239cd73caac7464b0239a7c0a5248a529c4f12"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-web.log",
+      "sha256": "79a5284e269540c176f6b228e1e44383787298815e5e2700e00920020a32516a"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-cohort.log",
+      "sha256": "c58583dc0cd4a01f80c7934714c537b619342fb29eb473c69bb997bd53e3abcf"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-focused-first.log",
+      "sha256": "6528277934cd517bf74ec42b000bd218a278db78b5055601324fa9fa33d0ad4a"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-paths.txt",
+      "sha256": "091b8565e35163c47d5f1efc34e117880ad39548affaba3e66e35e66ce2a4098"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-first.log",
+      "sha256": "545e44657ccbbb9149b6cce7df76b1e04f638080a673eed34bb7652b5f9ae149"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log",
+      "sha256": "f2a96dd97102d2188374a67aeb5d9bcd7e378f2e7b168e28581c4f1131b0342a"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-typecheck-first.log",
+      "sha256": "daa19247c7e1ec2f506acb499738f02250245fe8ca6663c6a19581d3b6d974f2"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-typecheck-pinned.log",
+      "sha256": "17931f4e6a0c5d261b78488de21c757d8bf1f4552a327b1f2c7594a1b8a4caa4"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-typecheck-tooling.log",
+      "sha256": "549a76dbcf09428bb9258fd96523f3e092235c955d1247c7da3f206d03637395"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-handoff.md",
+      "sha256": "1ed430ac9d684f76504ebe90c17618fff7e04fc5ad4eef8d9a71a53dcbf36e99"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/implementation-revision-record.md",
+      "sha256": "423343ea9284101913b2294c8c9a08a1434e2187a9e75ca445f6d724b1ba753a"
+    }
+  ]
+}

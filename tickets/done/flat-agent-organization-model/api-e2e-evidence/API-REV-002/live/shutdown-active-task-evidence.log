@@ -1,0 +1,38 @@
+First graceful shutdown failure:
+257:[2026-09-01T19:48:16.405Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+403:[2026-09-01T20:01:21.397Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+405:[2026-09-01T20:01:21.544Z] [ERROR] [server.runtime] Error during shutdown: AggregateError: General process run supervisor close failed.
+
+Post-failure active task stayed active and unsettled until explicit restore normalized it:
+{
+  "taskId": "task_cbd139cb628e49cdb38a5e95c5826cd8",
+  "status": "interrupted",
+  "updates": [
+    {
+      "submissionId": "submission_b2629427d16f4b2d9497e7db2f61a1fb",
+      "message": "AORG-TEAM-TASK-DRAFT-002\nValidation confirms the initial task output uses the required marker and concise format.",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T19:54:54.938Z"
+    },
+    {
+      "reviewId": "review_488653cd733443e1bd3bfa9cbe780398",
+      "reviewedSubmissionId": "submission_b2629427d16f4b2d9497e7db2f61a1fb",
+      "decision": "request_revision",
+      "comment": "Change the first line to AORG-TEAM-TASK-REVISED-002 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T19:55:02.323Z"
+    },
+    {
+      "interruptionId": "task_cbd139cb628e49cdb38a5e95c5826cd8_interruption_restart",
+      "reason": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+      "createdAt": "2026-09-01T20:11:06.828Z"
+    }
+  ]
+}
+{
+  "address": "/analyst",
+  "agentRunId": "aorg_e2e_analyst_647ecebd7ced43fdbc02ff40a4cbf9ed",
+  "platformAgentRunId": "01a05e89-d3ec-7a50-ae61-b18dfd87a029",
+  "startedAt": "2026-09-01T19:54:46.106Z",
+  "settledAt": "2026-09-01T20:11:06.828Z"
+}

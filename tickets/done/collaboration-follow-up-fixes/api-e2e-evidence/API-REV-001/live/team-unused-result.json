@@ -1,0 +1,297 @@
+{
+  "at": "2026-09-13T11:38:58.743Z",
+  "id": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+  "tree": {
+    "schemaVersion": 2,
+    "createdAt": "2026-09-13T11:38:58.149Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/coordinator",
+        "to": "/lead",
+        "rules": [
+          "When the user requests a message to the lead."
+        ]
+      },
+      {
+        "from": "/lead",
+        "to": "/coordinator",
+        "rules": [
+          "When the user asks to return a message to the coordinator."
+        ]
+      }
+    ],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "followup-flat-team",
+      "teamDefinitionName": "Followup Flat Team",
+      "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+      "coordinatorAddress": "/coordinator",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+      },
+      "members": [
+        {
+          "address": "/coordinator",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_caf73835e91b406c9d21a773d978f62c",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/lead",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_3216f1eef95047aeaf4e5ef3ddfc3724",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/reviewer",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_cb0fba23888c47c381cc9c403109ff15",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "statuses": [
+    {
+      "testId": "workspace-team-member-followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c-/coordinator",
+      "label": "Agent, coordinator, level 1, initializing, /coordinator",
+      "green": false
+    },
+    {
+      "testId": "workspace-team-member-followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c-/lead",
+      "label": "Agent, lead, level 1, initializing, /lead",
+      "green": false
+    },
+    {
+      "testId": "workspace-team-member-followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c-/reviewer",
+      "label": "Agent, reviewer, level 1, initializing, /reviewer",
+      "green": false
+    }
+  ],
+  "views": [
+    {
+      "index": 0,
+      "label": "Agent, coordinator, level 1, offline, /coordinator",
+      "center": "C\ncoordinator\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    {
+      "index": 1,
+      "label": "Agent, lead, level 1, offline, /lead",
+      "center": "L\nlead\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    {
+      "index": 2,
+      "label": "Agent, reviewer, level 1, offline, /reviewer",
+      "center": "R\nreviewer\nOffline\nContext Files (0)\n(drag, paste, or upload)"
+    }
+  ],
+  "raw": [
+    {
+      "id": "followup_assistant_caf73835e91b406c9d21a773d978f62c",
+      "binding": null,
+      "rawExists": false,
+      "rawLines": null
+    },
+    {
+      "id": "followup_assistant_3216f1eef95047aeaf4e5ef3ddfc3724",
+      "binding": null,
+      "rawExists": false,
+      "rawLines": null
+    },
+    {
+      "id": "followup_assistant_cb0fba23888c47c381cc9c403109ff15",
+      "binding": null,
+      "rawExists": false,
+      "rawLines": null
+    }
+  ],
+  "checks": {
+    "rootActive": true,
+    "threeUnusedOffline": false,
+    "allCentersOffline": true,
+    "unboundBeforeAndAfterInspection": true,
+    "noUserWork": true,
+    "oneLaunch": true
+  },
+  "requests": [
+    {
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+        }
+      },
+      "query": "mutation CreateWorkspace($input: CreateWorkspaceInput!) {\n  createWorkspace(input: $input) {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "followup-flat-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/coordinator",
+              "agentDefinitionId": "followup-assistant",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+            },
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "followup-assistant",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "followup-assistant",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+            }
+          ]
+        }
+      },
+      "query": "mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {\n  createAgentTeamRun(input: $input) {\n    __typename\n    success\n    message\n    teamRunId\n  }\n}"
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_6581ad1449a00efe015766ed616f3a86c6da709a669f17ded1ae4e3b8df4f8f8",
+        "folderPath": ""
+      },
+      "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c"
+      },
+      "query": "query GetTaskDelegationRecords($teamRunId: String!) {\n  getTaskDelegationRecords(teamRunId: $teamRunId) {\n    taskId\n    delegatorAgentRunId\n    recipientAddress\n    targetAgentRunId\n    targetTeamRunId\n    status\n    description\n    referenceFiles {\n      referenceId\n      path\n      type\n      createdAt\n      updatedAt\n      __typename\n    }\n    updates {\n      kind\n      submissionId\n      reviewId\n      interruptionId\n      reviewedSubmissionId\n      decision\n      content\n      referenceFiles {\n        referenceId\n        path\n        type\n        createdAt\n        updatedAt\n        __typename\n      }\n      createdAt\n      __typename\n    }\n    createdAt\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c"
+      },
+      "query": "query GetTeamCommunicationMessages($teamRunId: String!) {\n  getTeamCommunicationMessages(teamRunId: $teamRunId) {\n    messageId\n    senderAgentRunId\n    receiverAgentRunId\n    content\n    messageType\n    createdAt\n    referenceFiles {\n      referenceId\n      path\n      type\n      createdAt\n      updatedAt\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+        "agentRunId": "followup_assistant_caf73835e91b406c9d21a773d978f62c"
+      },
+      "query": "query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {\n  getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {\n    agentRunId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+        "agentRunId": "followup_assistant_3216f1eef95047aeaf4e5ef3ddfc3724"
+      },
+      "query": "query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {\n  getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {\n    agentRunId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+        "agentRunId": "followup_assistant_cb0fba23888c47c381cc9c403109ff15"
+      },
+      "query": "query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {\n  getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {\n    agentRunId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {},
+      "query": "query GetSkillImprovementCapability {\n  skillImprovementCapability {\n    ...SkillImprovementCapabilityFields\n    __typename\n  }\n}\n\nfragment SkillImprovementCapabilityFields on SkillImprovementCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+        "agentRunId": "followup_assistant_cb0fba23888c47c381cc9c403109ff15"
+      },
+      "query": "query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {\n  getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {\n    agentRunId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    }
+  ],
+  "frames": [],
+  "errors": []
+}

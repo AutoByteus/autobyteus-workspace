@@ -106,7 +106,7 @@ class LifecycleServerManager extends BaseServerManager {
 
   public configureStartupTiming(intervalMs: number, timeoutMs: number): void {
     this.healthPollIntervalMs = intervalMs
-    this.maxStartupTime = timeoutMs
+    this.startupWarningAfterMs = timeoutMs
   }
 }
 

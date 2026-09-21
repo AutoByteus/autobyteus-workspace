@@ -1,0 +1,157 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:36756) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > keeps prior validators migration-only and default registry order explicit
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /tmp/authoring-migration-jCfITG
+
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts (23 tests) 1104ms
+   ✓ runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs  406ms
+ ❯ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts (16 tests | 1 failed) 1043ms
+     ✓ preflights every owned Team before writing and reports the exact deeper-member invariant 73ms
+     ✓ resumes a valid one-level definition after interruption commits an owned Team V2 file 92ms
+     ✓ resumes an exact prospective Org config written before interruption 85ms
+     ✓ validates terminal field-free prospective output before retry (non-version conflict=false) 95ms
+     ✓ validates terminal field-free prospective output before retry (non-version conflict=true) 67ms
+     ✓ skips terminal flat configs and recovers a canonical ordinary journal without recreating numeric authoring 24ms
+     ✓ cleans interrupted Org family retirement only after final target verification, source version 1 95ms
+     ✓ cleans interrupted Org family retirement only after final target verification, source version null 98ms
+     ✓ does not retire an Org source when a versioned owned child write is indeterminate; ordinary retry verifies every final target 121ms
+     ✓ keeps a native flat Team V2 package a strict zero-write cohort 39ms
+     ✓ converts one organization-like Team V2 package by direct family rename and transfers history 82ms
+     ✓ accepts the exact predecessor V1-to-released-V2 output before converting it to Org V1 52ms
+     ✓ rejects a released V2 member with an unrecognized compatibility field before mutation 18ms
+     × fails closed on a sidecar correlation mismatch without creating the Org family 18ms
+     ✓ reports a family collision without modifying either package 26ms
+     ✓ cleans retired Team authorities from a completely written current Org package on restart 56ms
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > preserves cross-view owner, archived/active line bytes and flat tree bytes, then strictly reads final bytes after the root move
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+AppConfig instance created.
+
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts (8 tests) 454ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > fails closed on a sidecar correlation mismatch without creating the Org family
+AssertionError: expected 3 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 3
+
+ ❯ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts:367:89
+    365|     await writeTeamPackage(source, runId, orgLikeTree(runId), "another…
+    366|     const original = await fs.readFile(getTeamRunExecutionTreePath(sou…
+    367|     expect(result.status).toBe("FAILED"); expect(detailCount(result, "…
+       |                                                                                         ^
+    368|     expect(await fs.readFile(getTeamRunExecutionTreePath(source))).toE…
+    369|     await expect(fs.access(env.layout.getOrgDirPath(runId))).rejects.t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 46 passed (47)
+   Start at  03:47:04
+   Duration  10.87s (transform 4.00s, setup 43ms, import 6.51s, tests 2.60s, environment 0ms)
+

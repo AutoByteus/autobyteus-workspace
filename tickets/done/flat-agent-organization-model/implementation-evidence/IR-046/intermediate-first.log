@@ -1,0 +1,262 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (4 tests) 18ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > restores an untouched rejected draft/attachments and shows local error without history or replay
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > rejects an already disconnected send without consuming its draft
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+    at submit (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:164:40)
+    at Object.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:209:74)
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:257:18)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:223:25
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves a newer attachment-only draft after rejection
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > handles a synchronous transport failure and retires its pending command
+Failed to send message via activeContextStore: Error: transport failed
+    at Socket.<anonymous> (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:244:67)
+    at Socket.mockCall (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+spy@3.2.4/node_modules/@vitest/spy/dist/index.js:96:15)
+    at Socket.send (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/tinyspy@4.0.4/node_modules/tinyspy/dist/index.js:47:80)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:221:16
+    at new Promise (<anonymous>)
+    at AgentOrgStreamingService.command (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:208:12)
+    at AgentOrgStreamingService.sendPrepared (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:171:17)
+    at submit (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:192:21)
+    at Object.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:209:74)
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:257:18)
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect
+Failed to send message via activeContextStore: Error: AgentOrg stream closed before command acknowledgement.
+    at AgentOrgStreamingService.rejectPending (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:467:22)
+    at Socket.socket.onclose (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:118:12)
+    at Socket.close (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:41:10)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:269:12
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests | 3 failed) 1552ms
+   ✓ AgentOrgStreamingService > rejects and records browser-reserved client close codes in the WebSocket double 2ms
+   × AgentOrgStreamingService > keeps the committed context until a checkpointed candidate is complete, then restores focus atomically 217ms
+     → expected last "spy" call to have been called with [ { isActive: true, …(10) } ]
+   ✓ AgentOrgStreamingService > recovers transparently when a strict snapshot arrives before CONNECTED 52ms
+   ✓ AgentOrgStreamingService > uses checkpointed transparent recovery after an established stream closes and preserves focus 153ms
+   ✓ AgentOrgStreamingService > shows the bounded error only after checkpointed transparent recovery is exhausted 54ms
+   ✓ AgentOrgStreamingService > retires a valid server ERROR with a browser-permitted close and publishes recovered context 103ms
+   × AgentOrgStreamingService > publishes one server ERROR only after recovery exhaustion and clears it on a later successful selection 9ms
+     → expected "spy" to be called with arguments: [ { isActive: true, …(10) } ]
+
+Received:
+
+  1st spy call:
+
+@@ -10,6 +10,7 @@
+      "select": [Function spy],
+      "selectedAddress": null,
+      "selection": null,
+      "setActive": [Function spy],
+    },
++   [Function spy],
+  ]
+
+
+Number of calls: 1
+
+   ✓ AgentOrgStreamingService > checkpoint-hydrates a fresh task activation instead of publishing a partial context 156ms
+   ✓ AgentOrgStreamingService > publishes one store-observable context identity so the mounted-Team task panel advances without refocus 211ms
+   ✓ AgentOrgStreamingService > completes a command only from an ACK with the exact command type and target 54ms
+   ✓ AgentOrgStreamingService > notifies history only after an accepted external SEND_MESSAGE ACK without exposing message text 53ms
+   ✓ AgentOrgStreamingService > fails closed and rejects the pending command for a miscorrelated ACK command type 53ms
+   ✓ AgentOrgStreamingService > fails closed and rejects the pending command for a miscorrelated ACK target AgentRun 53ms
+   ✓ AgentOrgStreamingService > ignores a queued frame from the retired socket while checkpoint replacement publishes atomically 212ms
+   ✓ AgentOrgStreamingService > does not publish hydration that completes after the AgentOrg context is released 56ms
+   × AgentOrgStreamingService > does not reconnect when an activation checkpoint completes after context release 112ms
+     → expected "spy" to be called with arguments: [ false ]
+
+Number of calls: 0
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (14 tests | 1 failed) 6056ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > clears exact agent-director text/attachments immediately, retains pending and projects one authoritative echo 100ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > clears exact agent-team-worker-configured text/attachments immediately, retains pending and projects one authoritative echo 65ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > clears exact agent-task-worker text/attachments immediately, retains pending and projects one authoritative echo 66ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > restores an untouched rejected draft/attachments and shows local error without history or replay 65ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is accepted 56ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is rejected 57ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration 59ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected 63ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > rejects an already disconnected send without consuming its draft 64ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves a newer attachment-only draft after rejection 58ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > handles a synchronous transport failure and retires its pending command 60ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect 117ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves actual textarea edits while a verified same-Agent replacement is held 218ms
+   × Org shared composer -> exact interaction -> correlated stream > releases the exact pending submission on disconnect without touching the newly focused draft 5007ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > releases the exact pending submission on disconnect without touching the newly focused draft
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:334:3
+    332|   })
+    333|
+    334|   it('releases the exact pending submission on disconnect without touc…
+       |   ^
+    335|     const { org, active, context } = await open()
+    336|     context.requirement = 'pending'
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts > AgentOrgStreamingService > keeps the committed context until a checkpointed candidate is complete, then restores focus atomically
+AssertionError: expected last "spy" call to have been called with [ { isActive: true, …(10) } ]
+
+- Expected
++ Received
+
+@@ -10,6 +10,7 @@
+      "select": [Function spy],
+      "selectedAddress": null,
+      "selection": null,
+      "setActive": [Function spy],
+    },
++   [Function spy],
+  ]
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:174:21
+    172|     await vi.waitFor(() => expect(publish).toHaveBeenCalledTimes(2))
+    173|     expect(second.select).toHaveBeenCalledWith({ kind: 'agent_executio…
+    174|     expect(publish).toHaveBeenLastCalledWith(second)
+       |                     ^
+    175|     expect(mocks.query).toHaveBeenCalledTimes(2)
+    176|     expect(reportError).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts > AgentOrgStreamingService > publishes one server ERROR only after recovery exhaustion and clears it on a later successful selection
+AssertionError: expected "spy" to be called with arguments: [ { isActive: true, …(10) } ]
+
+Received:
+
+  1st spy call:
+
+@@ -10,6 +10,7 @@
+      "select": [Function spy],
+      "selectedAddress": null,
+      "selection": null,
+      "setActive": [Function spy],
+    },
++   [Function spy],
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:317:23
+    315|       await vi.runAllTimersAsync()
+    316|
+    317|       expect(publish).toHaveBeenCalledWith(recovered)
+       |                       ^
+    318|       expect(visibleError).toBeNull()
+    319|       expect(reportError).toHaveBeenCalledTimes(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts > AgentOrgStreamingService > does not reconnect when an activation checkpoint completes after context release
+AssertionError: expected "spy" to be called with arguments: [ false ]
+
+Number of calls: 0
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:699:29
+    697|     expect(TestWebSocket.instances).toHaveLength(1)
+    698|     expect(publish).toHaveBeenCalledTimes(1)
+    699|     expect(first.setActive).toHaveBeenCalledWith(false)
+       |                             ^
+    700|     expect(reportError).not.toHaveBeenCalled()
+    701|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  4 failed | 30 passed (34)
+   Start at  23:40:10
+   Duration  15.80s (transform 4.90s, setup 24.08s, collect 746ms, tests 7.63s, environment 2.24s, prepare 1.13s)
+
+ ELIFECYCLE  Command failed with exit code 1.

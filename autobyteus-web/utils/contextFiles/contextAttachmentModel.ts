@@ -9,6 +9,8 @@ import { migrateContextLocalFileLocator } from '~/utils/contextFiles/contextLoca
 const UPLOADED_DRAFT_AGENT_ROUTE = /^\/rest\/drafts\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_DRAFT_TEAM_ROUTE =
   /^\/rest\/drafts\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
+const UPLOADED_DRAFT_ORG_ROUTE = /^\/rest\/drafts\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
+const UPLOADED_FINAL_ORG_ROUTE = /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_AGENT_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_TEAM_ROUTE =
   /^\/rest\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
@@ -28,6 +30,7 @@ const CONTEXT_ATTACHMENT_TYPE_BY_VALUE: Record<string, ContextAttachmentType> = 
   pptx: 'Pptx',
   python: 'Python',
   text: 'Text',
+  unknown: 'Unknown',
   video: 'Video',
   xlsx: 'Xlsx',
   xml: 'Xml',
@@ -35,7 +38,7 @@ const CONTEXT_ATTACHMENT_TYPE_BY_VALUE: Record<string, ContextAttachmentType> = 
 
 const normalizeExplicitContextAttachmentType = (value?: string | null): ContextAttachmentType | null => {
   const normalized = value?.trim().toLowerCase();
-  if (!normalized || normalized === 'unknown') {
+  if (!normalized) {
     return null;
   }
   return CONTEXT_ATTACHMENT_TYPE_BY_VALUE[normalized] ?? null;
@@ -111,6 +114,15 @@ const parseUploadedLocator = (
       },
     };
   }
+
+  const draftOrgMatch = pathname.match(UPLOADED_DRAFT_ORG_ROUTE);
+  if (draftOrgMatch) return {
+    storedFilename: decodeStoredFilename(draftOrgMatch[3]), phase: 'draft',
+    draftOwner: { kind: 'org_member_draft', orgRunId: decodePathSegment(draftOrgMatch[1]),
+      agentRunId: decodePathSegment(draftOrgMatch[2]) },
+  };
+  const finalOrgMatch = pathname.match(UPLOADED_FINAL_ORG_ROUTE);
+  if (finalOrgMatch) return { storedFilename: decodeStoredFilename(finalOrgMatch[3]), phase: 'final' };
 
   const finalAgentMatch = pathname.match(UPLOADED_FINAL_AGENT_ROUTE);
   if (finalAgentMatch?.[1] && finalAgentMatch?.[2]) {
@@ -232,10 +244,14 @@ export const hydrateContextAttachment = (input: {
 
   const uploaded = parseUploadedLocator(locator);
   if (uploaded) {
+    // ContextFile defaults its recorded name to the URI basename, not a custom label.
+    const isStoredBasename = input.displayName === uploaded.storedFilename
+      || input.displayName === getLocatorBasename(locator);
     return createUploadedContextAttachment({
       storedFilename: uploaded.storedFilename,
       locator,
-      displayName: input.displayName ?? getDisplayNameFromStoredFilename(uploaded.storedFilename),
+      displayName: isStoredBasename ? getDisplayNameFromStoredFilename(uploaded.storedFilename)
+        : input.displayName ?? getDisplayNameFromStoredFilename(uploaded.storedFilename),
       phase: uploaded.phase,
       type,
     });

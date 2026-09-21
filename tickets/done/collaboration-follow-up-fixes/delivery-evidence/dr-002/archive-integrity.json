@@ -1,0 +1,9 @@
+{
+  "incoming_ticket_entries_unchanged": 413,
+  "source_test_entries_unchanged": 39,
+  "mapped_references": 465,
+  "old_aorg_ticket_delta": [],
+  "ticket_move": "Complete in task worktree before final commit",
+  "other_owner_target_files": "434 hashes recorded; check after target merge",
+  "source_or_test_edited": false
+}

@@ -66,12 +66,12 @@ describe('event monitor active trace browse presentation', () => {
         __typename: 'EventMonitorUserVisual', kind: 'user', eventId: 'raw:user',
         visualId: 'visual:user', kindOrdinal: 0, text: 'attachments',
         attachments: [
-          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-workspace', mediaType: 'image', locator: 'images/out.png' },
-          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-external', mediaType: 'image', locator: 'https://cdn.example/out.png' },
-          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-rest', mediaType: 'image', locator: '/rest/media/render.png' },
-          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-upload', mediaType: 'image', locator: '/rest/runs/r1/context-files/ctx_token__proof.png' },
-          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-canonical', mediaType: 'image', locator: 'local-file://local/tmp/proof.png' },
-          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-duplicate', mediaType: 'image', locator: 'images/out.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-workspace', fileType: 'image', fileName: null, locator: 'images/out.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-external', fileType: 'image', fileName: null, locator: 'https://cdn.example/out.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-rest', fileType: 'image', fileName: null, locator: '/rest/media/render.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-upload', fileType: 'image', fileName: null, locator: '/rest/runs/r1/context-files/ctx_token__proof.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-canonical', fileType: 'image', fileName: null, locator: 'local-file://local/tmp/proof.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-duplicate', fileType: 'image', fileName: null, locator: 'images/out.png' },
         ],
       }],
     };

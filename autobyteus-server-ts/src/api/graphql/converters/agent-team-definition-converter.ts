@@ -1,8 +1,7 @@
-import type { AgentTeamDefinition as DomainAgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
+import type { AgentTeamDefinition as DomainAgentTeamDefinition } from "../../../agent-team-definition/domain/agent-team-definition.js";
 import {
   AgentMemberRefScope,
   AgentTeamDefinitionOwnershipScope,
-  NodeType,
 } from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as GraphqlAgentTeamDefinition,
@@ -15,8 +14,6 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const toGraphqlRefType = (value: "agent" | "agent_team"): NodeType =>
-  value === "agent" ? NodeType.AGENT : NodeType.AGENT_TEAM;
 
 const toGraphqlRefScope = (
   value: "shared" | "team_local" | "application_owned" | null | undefined,
@@ -35,12 +32,11 @@ const toGraphqlRefScope = (
 
 const toGraphqlOwnershipScope = (
   value: DomainAgentTeamDefinition["ownershipScope"],
-): AgentTeamDefinitionOwnershipScope =>
-  value === "application_owned"
-    ? AgentTeamDefinitionOwnershipScope.APPLICATION_OWNED
-    : value === "team_local"
-      ? AgentTeamDefinitionOwnershipScope.TEAM_LOCAL
-      : AgentTeamDefinitionOwnershipScope.SHARED;
+): AgentTeamDefinitionOwnershipScope => {
+  if (value === "application_owned") return AgentTeamDefinitionOwnershipScope.APPLICATION_OWNED;
+  if (value === "agent_org_owned") return AgentTeamDefinitionOwnershipScope.AGENT_ORG_OWNED;
+  return AgentTeamDefinitionOwnershipScope.SHARED;
+};
 
 export class AgentTeamDefinitionConverter {
   static toGraphql(domainDefinition: DomainAgentTeamDefinition): GraphqlAgentTeamDefinition {
@@ -48,8 +44,7 @@ export class AgentTeamDefinitionConverter {
       const graphqlNodes: GraphqlTeamMember[] = domainDefinition.nodes.map((member) => ({
         memberName: member.memberName,
         ref: member.ref,
-        refType: toGraphqlRefType(member.refType),
-        refScope: toGraphqlRefScope(member.refScope),
+        refScope: toGraphqlRefScope(member.refScope)!,
       }));
       const graphqlHandoffs: GraphqlAgentTeamHandoff[] = domainDefinition.handoffs.map(
         (handoff) => ({
@@ -72,11 +67,14 @@ export class AgentTeamDefinitionConverter {
         ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
         ownerTeamId: domainDefinition.ownerTeamId ?? null,
         ownerTeamName: domainDefinition.ownerTeamName ?? null,
+        ownerOrgId: domainDefinition.ownerOrgId ?? null,
+        ownerOrgName: domainDefinition.ownerOrgName ?? null,
         ownerApplicationId: domainDefinition.ownerApplicationId ?? null,
         ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
+        revision: domainDefinition.revision,
       };
     } catch (error) {
       logger.error(

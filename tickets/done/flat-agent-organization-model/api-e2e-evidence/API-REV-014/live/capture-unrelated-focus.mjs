@@ -1,0 +1,13 @@
+import fs from 'node:fs/promises';
+import pw from '../../../../../../autobyteus-web/node_modules/playwright-core/index.js';
+const browser=await pw.chromium.connectOverCDP('http://127.0.0.1:9222');
+const page=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('127.0.0.1:3594'));
+if(!page) throw new Error('open_tab page missing');
+const dispatcherRunId='aorg_e2e_lead_79f9cb8e0fce4348bda220c4215cdcc2';
+const markers=['APIREV14-DIRECT-MOUNTED-MSG-001 from /concierge to /research-team/analyst','APIREV14-MOUNTED-DIRECT-MSG-001 from /research-team/lead to /concierge','APIREV14-CROSS-TEAM-MSG-001 from /research-team/lead to /support-team/specialist'];
+const result=await page.evaluate(({dispatcherRunId,markers})=>{const section=document.querySelector('[data-test="collaboration-messages-section"]');const selected=[...document.querySelectorAll('[data-test^="agent-org-agent-row-"]')].filter(x=>x.classList.contains('is-selected')).map(x=>x.getAttribute('data-test'));const inbound=[...document.querySelectorAll('*')].filter(x=>x.children.length===0&&x.textContent?.trim().startsWith('You received a message from sender')&&markers.some(m=>x.textContent.includes(m))&&!section?.contains(x)).map(x=>x.textContent);const rows=[...document.querySelectorAll('[data-test="team-communication-message-row"]')].filter(x=>markers.some(m=>x.textContent?.includes(m))).map(x=>x.innerText);const h=document.querySelector('[data-test="collaboration-messages-header"]')?.innerText;return{at:new Date().toISOString(),url:location.href,selected,messagesHeader:h,sectionText:section?.innerText,markerRows:rows,inboundCenter:inbound,scroll:{width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth},assertions:{exactOneSelected:selected.length===1&&selected[0].endsWith(dispatcherRunId),noRows:rows.length===0,noInbound:inbound.length===0,zeroMessageHeader:h?.includes('0 Messages'),noOverflow:document.documentElement.scrollWidth===document.documentElement.clientWidth}}},{dispatcherRunId,markers});
+await page.screenshot({path:new URL('screenshots/LIVE-002-unrelated-focus.png',import.meta.url).pathname,fullPage:false});
+await fs.writeFile(new URL('LIVE-002-unrelated-focus.json',import.meta.url),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result,null,2));
+await browser.close();
+if(Object.values(result.assertions).some(v=>v!==true))process.exit(2);

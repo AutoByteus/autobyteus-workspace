@@ -1,0 +1,148 @@
+{
+  "recorded_at": "2026-09-13T12:51:25.069411+00:00",
+  "result": "Completed",
+  "ticket_worktree_removed": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+  "local_task_branch_deleted": "requirements/collaboration-follow-up-fixes",
+  "base_worktree_preserved": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+  "base_head_unchanged_during_cleanup": "8547bc56ebd9fa91473a54f598101c7c891fcef0",
+  "remote_task_branch_deleted": false,
+  "remote_task_branch_policy": "Retained published review trail; remote deletion not requested",
+  "tracked_source_and_evidence": "Already merged and published; no tracked/untracked candidate changes before removal",
+  "ignored_local_backup": {
+    "backup_directory": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR003-20260913T124743Z",
+    "archive": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR003-20260913T124743Z/ignored-local-files.tar.gz",
+    "archive_sha256": "8a88601c7a8f27f3a90e13754e9d0000b7f3052d283a5e6c8d50f8b7b30d401c",
+    "archive_bytes": 554438367,
+    "ignored_roots": [
+      "applications/brief-studio/node_modules/",
+      "applications/socratic-math-teacher/node_modules/",
+      "autobyteus-agent-presentation-contracts/node_modules/",
+      "autobyteus-application-backend-sdk/node_modules/",
+      "autobyteus-application-devkit/node_modules/",
+      "autobyteus-application-frontend-sdk/node_modules/",
+      "autobyteus-application-sdk-contracts/node_modules/",
+      "autobyteus-collaboration-stream-contracts/node_modules/",
+      "autobyteus-message-gateway/node_modules/",
+      "autobyteus-server-ts/node_modules/",
+      "autobyteus-server-ts/tests/.tmp/",
+      "autobyteus-team-stream-contracts/node_modules/",
+      "autobyteus-ts/dist/",
+      "autobyteus-ts/node_modules/",
+      "autobyteus-web/.nuxt/",
+      "autobyteus-web/.nuxtrc",
+      "autobyteus-web/dist/",
+      "autobyteus-web/node_modules/",
+      "node_modules/"
+    ],
+    "verified_entries": 75286,
+    "regular_files": 70068,
+    "symlinks": 5218,
+    "regular_bytes": 1641509671,
+    "all_archived_entries_verified": true,
+    "followed_external_symlinks": false,
+    "published": false,
+    "validation_note": "Archive creation completed. Initial read-only random-access gzip verifier was deliberately interrupted and replaced by full sequential verification, resolving already-verified hardlink hashes without gzip rewinds. No product test or archive-content failure."
+  },
+  "input_stat_or_symlink_drift": false,
+  "active_process_cwds": [],
+  "durable_terminal_references_resolve": 513,
+  "base_other_owner_hashes_unchanged": 434,
+  "prune": "Not required; exact worktree remove unregistered its metadata, other worktrees left alone",
+  "commands": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+      "exit_code": 0,
+      "stdout": "8547bc56ebd9fa91473a54f598101c7c891fcef0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+      "exit_code": 0,
+      "stdout": "8547bc56ebd9fa91473a54f598101c7c891fcef0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "requirements/collaboration-follow-up-fixes",
+        "requirements/flat-agent-organization-model"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "worktree",
+        "remove",
+        "--force",
+        "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "-d",
+        "requirements/collaboration-follow-up-fixes"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+      "exit_code": 0,
+      "stdout": "Deleted branch requirements/collaboration-follow-up-fixes (was 8547bc56e).\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+      "exit_code": 0,
+      "stdout": "worktree /home/autobyteus/workspace/autobyteus-workspace\nHEAD 5645b49d6f51faa60bd3545bc8e3f0e7e3f96793\nbranch refs/heads/personal\n\nworktree /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance\nHEAD 7985cf6cd88bd70b3637de523a5291327587e7ab\nbranch refs/heads/codex/agent-run-history-performance\n\nworktree /home/autobyteus/workspace/.codex/worktrees/agent-team-project-task-navigation\nHEAD 30a7d6f0271b88b01cb6491c84defbd29807bc49\nbranch refs/heads/codex/agent-team-project-task-navigation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/agent-team-universal-task-delegation\nHEAD eb79671448e7a2485f30476155e9f7cb6ea363ff\nbranch refs/heads/codex/agent-team-universal-task-delegation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/browser-tab-crash-memory-investigation\nHEAD ce83847296d9eace2f6eb832521c1d6b135c4722\nbranch refs/heads/codex/browser-tab-crash-memory-investigation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/codex-ultrafast-mode-frontend\nHEAD 090d3d4041ff75605bb396ffa49ffdfae0611bf8\nbranch refs/heads/requirements/codex-ultrafast-mode-frontend\n\nworktree /home/autobyteus/workspace/.codex/worktrees/deepseek-v41-flash-only\nHEAD d31932426b5612081aa2cb6b19e213114be2ce5f\nbranch refs/heads/requirements/deepseek-v41-flash-only\n\nworktree /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\nHEAD 8547bc56ebd9fa91473a54f598101c7c891fcef0\nbranch refs/heads/requirements/flat-agent-organization-model\n\nworktree /home/autobyteus/workspace/.codex/worktrees/fruit-shopping-nuxt-ssr\nHEAD 4d567832f71b312abd0ffb9f54585f6dd9d51b9e\nbranch refs/heads/codex/fruit-shopping-nuxt-ssr\n\nworktree /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline\nHEAD 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4\nbranch refs/heads/codex/initial-prototype-baseline\n\nworktree /home/autobyteus/workspace/.codex/worktrees/mcp-circular-result-investigation\nHEAD 008a6eeaeb8363368cda293ce4fa9fb61ebe92c2\nbranch refs/heads/codex/mcp-circular-result-investigation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker\nHEAD 40a8060ade8766a0b2f66b013a30e99350636d4b\nbranch refs/heads/codex/mcp-tool-exposure-docker\n\nworktree /home/autobyteus/workspace/.codex/worktrees/server-settings-8001-investigation\nHEAD fbd7b6764bd43751956d69ffe22b943d06188444\nbranch refs/heads/codex/server-settings-8001-investigation\n\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model",
+      "exit_code": 0,
+      "stdout": "8547bc56ebd9fa91473a54f598101c7c891fcef0\n",
+      "stderr": ""
+    }
+  ]
+}

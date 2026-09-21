@@ -1,0 +1,432 @@
+
+> autobyteus@1.4.63 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run --reporter=dot components/agentOrgs/__tests__/AgentOrgExperience.spec.ts components/agentTeams/__tests__/AgentTeamCard.spec.ts components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts components/agentTeams/__tests__/AgentTeamDetail.spec.ts components/agentTeams/__tests__/AgentTeamList.spec.ts components/collaboration/handoffs/__tests__/HandoffManager.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/history/__tests__/AgentOrgRunHistoryPanel.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts services/rootExecution/__tests__/rootExecutionViewState.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamDefinitionStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/teamRunConfigStore.spec.ts stores/__tests__/windowNodeContextStore.spec.ts utils/__tests__/nodeEndpoints.spec.ts utils/__tests__/workspaceTeamAggregateStatus.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/history/__tests__/AgentOrgRunHistoryPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/AgentOrgRunHistoryPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·································stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders exact focused Agent identity, status, avatar, and composer target from the current view
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders a different exact focused AgentRun without coordinator substitution
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders persistent actionable guidance while the selected Team stream requires recovery
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > opens selected Team configuration from the header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+····stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > seeds an editable new Team configuration without sharing nested LLM config state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+·stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > keeps configured Team placement non-focusable while retaining its exact Agent child focus
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+·······stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects task-Agent details without changing the exact focused send target
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentUserInputTextArea data-test="workflow-composer" > 
+  at <Anonymous team= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  teamRunId: 'classroom-root-run',
+  teamAddress: '/',
+  teamDefinitionName: 'Nested Classroom Test Team',
+  coordinatorAddress: '/Teacher',
+  focusedMemberAddress: '/Teacher',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedAgentContext: AgentContext {
+    config: {
+      agentDefinitionId: '-Teacher-definition',
+      agentDefinitionName: 'Teacher',
+      llmModelIdentifier: 'test-model',
+      runtimeKind: 'autobyteus',
+      workspaceId: null,
+      workspaceMetadata: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'NONE',
+      llmConfig: null,
+      isLocked: true
+    },
+    state: AgentRunState {
+      runId: 'teacher-persistent-run',
+      currentStatus: 'idle',
+      conversation: [Object],
+      agent_tool_invocation_counts: Map(0) {},
+      compactionStatus: null,
+      eventMonitorPresentationRevision: 0,
+      hasEarlierActiveTraceEvents: false
+    },
+    requirement: '',
+    contextFilePaths: [],
+    submissionPending: false
+  },
+  listMembers: [Function: listMembers],
+  senderNameByAgentRunId: [Function: senderNameByAgentRunId],
+  listCommunicationMessages: [Function: listCommunicationMessages],
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  communicationReferenceContentPath: [Function: communicationReferenceContentPath],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+·stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects a task-Team summary without making its placement a send target
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentUserInputTextArea data-test="workflow-composer" > 
+  at <Anonymous team= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  teamRunId: 'classroom-root-run',
+  teamAddress: '/',
+  teamDefinitionName: 'Nested Classroom Test Team',
+  coordinatorAddress: '/Teacher',
+  focusedMemberAddress: '/Teacher',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedAgentContext: AgentContext {
+    config: {
+      agentDefinitionId: '-Teacher-definition',
+      agentDefinitionName: 'Teacher',
+      llmModelIdentifier: 'test-model',
+      runtimeKind: 'autobyteus',
+      workspaceId: null,
+      workspaceMetadata: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'NONE',
+      llmConfig: null,
+      isLocked: true
+    },
+    state: AgentRunState {
+      runId: 'teacher-persistent-run',
+      currentStatus: 'idle',
+      conversation: [Object],
+      agent_tool_invocation_counts: Map(0) {},
+      compactionStatus: null,
+      eventMonitorPresentationRevision: 0,
+      hasEarlierActiveTraceEvents: false
+    },
+    requirement: '',
+    contextFilePaths: [],
+    submissionPending: false
+  },
+  listMembers: [Function: listMembers],
+  senderNameByAgentRunId: [Function: senderNameByAgentRunId],
+  listCommunicationMessages: [Function: listCommunicationMessages],
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  communicationReferenceContentPath: [Function: communicationReferenceContentPath],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+·································stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+Error terminating Team 'team-terminate-reject': Error: not found
+    at Proxy.terminateTeamRun (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentTeamRunStore.ts:198:58)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:438:12
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+·······················stdout | components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·········stdout | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+····stdout | components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+······stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > uses context avatar URL in header when available
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > does not render the token usage header chip
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > does not render the removed conversation copy control
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > falls back to definition avatar URL in header when context avatar is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > opens selected run config from header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > passes the selected run to the composer skill-improvement CTA
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > marks the Retrospective Skill Improver helper run for CTA hiding
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > seeds a new agent config from the selected run without sharing nested llmConfig
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+··················stderr | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/windowNodeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··stderr | stores/__tests__/agentTeamDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+···stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+······stdout | stores/__tests__/teamRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/windowNodeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··················stdout | services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··········stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······stderr | components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeEndpoints.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/workspaceTeamAggregateStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+································stdout | utils/__tests__/nodeEndpoints.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+······stdout | utils/__tests__/workspaceTeamAggregateStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+········stdout | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··stdout | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·
+
+ Test Files  32 passed (32)
+      Tests  234 passed (234)
+   Start at  19:44:40
+   Duration  33.40s (transform 8.41s, setup 191.32s, collect 11.64s, tests 2.86s, environment 48.57s, prepare 18.11s)
+

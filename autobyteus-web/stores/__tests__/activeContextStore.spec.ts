@@ -61,7 +61,7 @@ describe('activeContextStore interrupt routing', () => {
     setActivePinia(createPinia());
   });
 
-  it('targets the focused team member route key at click time', () => {
+  it('targets the focused team member route key at click time', async () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const teamRunStore = useAgentTeamRunStore();
@@ -82,16 +82,15 @@ describe('activeContextStore interrupt routing', () => {
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
       .mockReturnValue(true);
 
-    const result = activeContextStore.interruptGeneration();
+    await activeContextStore.interruptGeneration();
 
-    expect(result).toBe(true);
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
       agentRunId: 'team-1::code_reviewer',
     });
   });
 
-  it('preserves single-agent interrupt routing', () => {
+  it('preserves single-agent interrupt routing', async () => {
     const selectionStore = useAgentSelectionStore();
     const agentContextsStore = useAgentContextsStore();
     const agentRunStore = useAgentRunStore();
@@ -105,14 +104,13 @@ describe('activeContextStore interrupt routing', () => {
     const interruptAgent = vi.spyOn(agentRunStore, 'interruptGeneration').mockReturnValue(true);
     const interruptTeam = vi.spyOn(teamRunStore, 'interruptFocusedMemberGeneration');
 
-    const result = activeContextStore.interruptGeneration();
+    await activeContextStore.interruptGeneration();
 
-    expect(result).toBe(true);
     expect(interruptAgent).toHaveBeenCalledWith('agent-run-1');
     expect(interruptTeam).not.toHaveBeenCalled();
   });
 
-  it('routes only the exact focused AgentRun through the team target', () => {
+  it('routes only the exact focused AgentRun through the team target', async () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const teamRunStore = useAgentTeamRunStore();
@@ -131,7 +129,7 @@ describe('activeContextStore interrupt routing', () => {
       .mockReturnValue(true);
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
-    expect(activeContextStore.interruptGeneration()).toBe(true);
+    await activeContextStore.interruptGeneration();
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
       agentRunId: 'team-1::solution_designer',

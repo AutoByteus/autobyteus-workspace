@@ -1,0 +1,11 @@
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-backend-sdk@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json

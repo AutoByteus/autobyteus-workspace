@@ -1,0 +1,15 @@
+{
+  "start": 1789624977809,
+  "workspaceObserved": 1789624989269,
+  "orgObserved": 1789624989665,
+  "control": {
+    "hold": [
+      "ListWorkspaceRunHistory",
+      "GetWorkspaceRunHistory",
+      "GetAgentDefinitions",
+      "GetAgentTeamDefinitions",
+      "GetAgentOrgDefinitions",
+      "GetAllWorkspaces"
+    ]
+  }
+}

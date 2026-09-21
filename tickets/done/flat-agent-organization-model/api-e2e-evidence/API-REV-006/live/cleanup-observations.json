@@ -1,0 +1,54 @@
+{
+  "caseId": "LIVE-014",
+  "result": "Pass",
+  "artifactHead": "c969b480a2aaabf7ae68cd2b576110f2de513ad6",
+  "fixture": {
+    "checkedFiles": 18,
+    "allOk": true
+  },
+  "source": {
+    "gitDiffCheckPassed": true,
+    "productionSourceChangesCreatedByApiE2e": false,
+    "generatedBuildOutputsRemoved": true,
+    "statusEvidence": [
+      " M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md",
+      " M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md",
+      " M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md",
+      " M tickets/in-progress/flat-agent-organization-model/code-review-report.md",
+      " M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md",
+      "?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/",
+      "?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/",
+      "?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/",
+      "?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md",
+      "?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md",
+      "?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md",
+      "?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md"
+    ]
+  },
+  "shutdown": {
+    "ownedBackendPid": 63308,
+    "signal": "SIGTERM",
+    "exitedBySecond250msPoll": true,
+    "serverClosedCleanly": true,
+    "aggregateError": false
+  },
+  "cleanup": {
+    "ownedRendererPid": 51923,
+    "rendererStopped": true,
+    "ports8487And3487Closed": true,
+    "openTabIdsClosed": [
+      "8",
+      "7"
+    ],
+    "remainingAutoByteusTabs": 0,
+    "isolatedEvidenceAndDataRetained": true
+  },
+  "evidence": [
+    "live/persistence/LIVE-014-fixture-final-sha256-check.log",
+    "live/persistence/LIVE-014-git-status-after-cleanup.log",
+    "live/process/LIVE-014-final-backend-sigterm.log",
+    "live/process/LIVE-014-final-backend-shutdown-tail.log",
+    "live/process/LIVE-014-ports-after-cleanup.log",
+    "live/process/LIVE-014-owned-processes-after.log"
+  ]
+}

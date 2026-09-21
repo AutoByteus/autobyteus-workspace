@@ -7,6 +7,7 @@ import process from 'node:process'
 import { spawn } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
+import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
@@ -64,6 +65,12 @@ const assert = (condition, message, details = undefined) => {
   throw error
 }
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
+// Hold canonical reads until the browser has actually observed loading. A fixed
+// delay can expire during cold module/render work before the assertion runs.
+let releaseInitialAgentRead
+let releaseInitialTeamRead
+const initialAgentRead = new Promise((resolve) => { releaseInitialAgentRead = resolve })
+const initialTeamRead = new Promise((resolve) => { releaseInitialTeamRead = resolve })
 const clone = (value) => JSON.parse(JSON.stringify(value))
 const waitFor = async (description, fn, timeout = timeoutMs, interval = 100) => {
   const startedAt = Date.now()
@@ -190,55 +197,23 @@ const teamTree = {
         platform_agent_run_id: null,
         launch_configuration: launch('low'),
       },
-      {
-        kind: 'configured_team',
-        address: '/Nested',
-        team_definition_id: 'nested-team-definition',
-        role: 'Review Team',
+      ...['lead', 'reviewer'].map((name) => ({
+        kind: 'configured_agent',
+        address: '/' + name,
+        agent_definition_id: name + '-definition',
+        role: name,
         description: null,
-        team_run_id: 'nested-team-run-browser-1',
-        coordinator_address: '/Nested/lead',
-        default_launch_configuration: launch('low'),
-        task_executions: [],
-        members: [
-          {
-            kind: 'configured_agent',
-            address: '/Nested/lead',
-            agent_definition_id: 'lead-definition',
-            role: 'Lead',
-            description: null,
-            agent_run_id: 'lead-run-browser-1',
-            platform_agent_run_id: null,
-            launch_configuration: launch('low'),
-          },
-          {
-            kind: 'configured_agent',
-            address: '/Nested/reviewer',
-            agent_definition_id: 'reviewer-definition',
-            role: 'Reviewer',
-            description: null,
-            agent_run_id: 'reviewer-run-browser-1',
-            platform_agent_run_id: null,
-            launch_configuration: launch('low'),
-          },
-        ],
-      },
+        agent_run_id: name + '-run-browser-1',
+        platform_agent_run_id: null,
+        launch_configuration: launch('low'),
+      })),
     ],
   },
 }
-const findConfigured = (tree, address) => {
-  const visit = (members) => {
-    for (const member of members) {
-      if (member.address === address) return member
-      if (member.kind === 'configured_team') {
-        const nested = visit(member.members)
-        if (nested) return nested
-      }
-    }
-    return null
-  }
-  return address === '/' ? tree.root_team : visit(tree.root_team.members)
-}
+const findConfigured = (tree, address) => address === '/'
+  ? tree.root_team
+  : tree.root_team.members.find((member) => member.address === address)
+
 const catalogSnapshot = {
   __typename: 'ProviderModelCatalogSnapshotObject',
   runtimeKind: 'autobyteus',
@@ -286,7 +261,7 @@ const state = {
   teamMutationMode: 'success',
   failTeamReads: 0,
   agentConfig: modelConfig('low'),
-  teamTree: clone(teamTree),
+  teamTree: teamRunExecutionTreeDtoSchema.parse(teamTree),
   agentResumeReads: 0,
   teamResumeReads: 0,
   agentMutations: [],
@@ -296,7 +271,7 @@ const state = {
 const operationResponse = async (operationName, variables) => {
   if (operationName === 'GetAgentRunResumeConfig') {
     state.agentResumeReads += 1
-    if (state.agentResumeReads === 1) await delay(700)
+    await initialAgentRead
     return { data: { getAgentRunResumeConfig: {
       runId: 'agent-run-browser-1',
       isActive: false,
@@ -316,7 +291,7 @@ const operationResponse = async (operationName, variables) => {
   if (operationName === 'GetTeamRunResumeConfig') {
     state.teamResumeReads += 1
     if (state.failTeamReads > 0) { state.failTeamReads -= 1; return { errors: [{ message: 'Canonical verification temporarily unavailable.' }] } }
-    if (state.teamResumeReads === 1) await delay(700)
+    await initialTeamRead
     return { data: { getTeamRunResumeConfig: {
       teamRunId: 'team-run-browser-1',
       isActive: false,
@@ -330,13 +305,13 @@ const operationResponse = async (operationName, variables) => {
       ? [{ llmModelIdentifier: 'browser-larger-model', contextTokens: 272000 }] : [],
     unavailableReason: state.replacementsEnabled ? null : 'Fixture has no replacement metadata.' })
   if (operationName === 'AgentRunModelOptions') return { data: { agentRunModelOptions: options(state.agentModel) } }
-  if (operationName === 'TeamRunModelOptions') return { data: { teamRunModelOptions: state.replacementsEnabled
-    ? ['/', '/coordinator', '/Nested', '/Nested/lead', '/Nested/reviewer'].map(scopeAddress => {
+  if (operationName === 'TeamRunModelOptions') return { data: { teamRunModelOptions:
+    ['/', ...state.teamTree.root_team.members.map(member => member.address)].map(scopeAddress => {
       const node = findConfigured(state.teamTree, scopeAddress)
-      const config = node.default_launch_configuration ?? node.launch_configuration
+      const config = scopeAddress === '/' ? node.default_launch_configuration : node.launch_configuration
       return { ...options(config.llm_model_identifier), __typename: 'TeamScopeModelOptionsObject', scopeAddress,
-        scopeKind: node.default_launch_configuration ? 'CONFIGURED_TEAM' : 'CONFIGURED_AGENT' }
-    }) : [] } }
+        scopeKind: scopeAddress === '/' ? 'CONFIGURED_TEAM' : 'CONFIGURED_AGENT' }
+    }) } }
   if (operationName === 'GetProviderModelCatalogSnapshots') return { data: { providerModelCatalogSnapshots: [catalogSnapshot] } }
   if (operationName === 'GetRuntimeAvailabilities') return { data: { runtimeAvailabilities: [{ runtimeKind: 'autobyteus', enabled: true, reason: null }] } }
   if (operationName === 'UpdateStoppedAgentRunModelConfig') {
@@ -367,17 +342,20 @@ const operationResponse = async (operationName, variables) => {
   }
   if (operationName === 'UpdateStoppedTeamRunModelConfigs') {
     const previousTree = clone(state.teamTree)
+    const nextTree = clone(state.teamTree)
     state.teamMutations.push(clone(variables))
     await delay(250)
     for (const patch of variables.input.patches) {
-      const target = findConfigured(state.teamTree, patch.scopeAddress)
+      const target = findConfigured(nextTree, patch.scopeAddress)
       assert(target, `Mutation patch addressed unknown scope ${patch.scopeAddress}`)
-      const configuration = patch.scopeAddress === '/' || target.kind === 'configured_team'
+      assert(patch.scopeKind === (patch.scopeAddress === '/' ? 'CONFIGURED_TEAM' : 'CONFIGURED_AGENT'), 'Mutation scope kind must match the exact flat configured scope', patch)
+      const configuration = patch.scopeAddress === '/'
         ? target.default_launch_configuration
         : target.launch_configuration
       configuration.llm_model_identifier = patch.llmModelIdentifier
       configuration.llm_config = clone(patch.llmConfig)
     }
+    state.teamTree = teamRunExecutionTreeDtoSchema.parse(nextTree)
     if (state.teamMutationMode === 'indeterminate') {
       state.failTeamReads = 1
       return { data: { updateStoppedTeamRunModelConfigs: {
@@ -438,6 +416,9 @@ const runScenario = async (id, description, fn) => {
       try { await page.screenshot({ path: path.join(outputDir, `${id}-failure.png`), fullPage: true }) } catch {}
     }
   } finally {
+    // Failed observations must not leave a fixture response blocked for cleanup.
+    if (id === 'API-E2E-004-A') releaseInitialAgentRead()
+    if (id === 'API-E2E-004-B') releaseInitialTeamRead()
     // Persist each independent case before starting the next long-running journey.
     await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8')
   }
@@ -505,6 +486,7 @@ try {
     assert(await editor.getAttribute('aria-busy') === 'true', 'Agent Settings must remain busy while the network-fresh canonical read is delayed')
     const save = page.locator('[data-test="save-existing-model-config"]')
     assert(await save.isDisabled(), 'Save must be disabled during Agent canonical loading')
+    releaseInitialAgentRead()
     const effort = page.locator('#agent-run-reasoning_effort')
     await effort.waitFor({ state: 'visible', timeout: timeoutMs })
     await waitFor('Agent schema readiness', async () => await effort.isEnabled())
@@ -527,12 +509,13 @@ try {
     return { mutation: state.agentMutations[0], resumeReads: state.agentResumeReads }
   })
 
-  await runScenario('API-E2E-004-B', 'Full nested Team Settings renders and saves one exact configured-Agent patch', async () => {
+  await runScenario('API-E2E-004-B', 'Flat Team Settings renders root plus direct Agents and saves one exact configured-Agent patch', async () => {
     await page.locator('[data-test="show-team"]').click()
     const editor = page.locator('[data-test="editor-host"] > div')
     await waitFor('Team canonical loading state', async () => await editor.getAttribute('aria-busy') === 'true')
     const save = page.locator('[data-test="save-existing-model-config"]')
     assert(await save.isDisabled(), 'Save must be disabled during Team canonical loading')
+    releaseInitialTeamRead()
     const form = page.locator('[data-test="team-run-config-form"]')
     await form.waitFor({ state: 'visible', timeout: timeoutMs })
     assert(await form.getAttribute('data-mode') === 'existing', 'Team must render in existing-run mode')
@@ -542,13 +525,13 @@ try {
     assert(await disclosure.getAttribute('aria-expanded') === 'false', 'Team member hierarchy must begin collapsed')
     await disclosure.click()
     assert(await disclosure.getAttribute('aria-expanded') === 'true', 'Team member hierarchy disclosure must be operable')
-    assert(await page.locator('[data-test="member-override-item"]').count() === 3, 'Full configured hierarchy must render coordinator, nested lead, and nested reviewer')
-    const nestedEditor = page.locator('[data-test="team-scope-config-editor"][data-team-address="/Nested"]')
-    await nestedEditor.locator('button[aria-controls="team-scope-Nested-panel"]').click()
-    const reviewerEffort = page.locator('#existing--Nested-reviewer-reasoning_effort')
+    assert(await page.locator('[data-test="member-override-item"]').count() === 3, 'Flat configured hierarchy must render coordinator, direct lead, and direct reviewer')
+    assert(await page.locator('[data-test="root-team-config-fields"]').count() === 1, 'Exactly one root Team editor is present')
+    assert(await page.locator('[data-test="team-scope-config-editor"]').count() === 0, 'Flat Team settings expose no mounted-Team scope editor')
+    const reviewerEffort = page.locator('#existing--reviewer-reasoning_effort')
     await reviewerEffort.waitFor({ state: 'visible', timeout: timeoutMs })
     await waitFor('all Team schemas ready', async () => await reviewerEffort.isEnabled())
-    assert(await page.locator('#existing--Nested-reviewer-runtime-kind').isDisabled(), 'Nested reviewer runtime must remain fixed')
+    assert(await page.locator('#existing--reviewer-runtime-kind').isDisabled(), 'Direct reviewer runtime must remain fixed')
     await reviewerEffort.selectOption('high')
     await waitFor('Team Save enablement', async () => !(await save.isDisabled()))
     await save.click()
@@ -557,7 +540,7 @@ try {
     assert(state.teamMutations.length === 1, 'Exactly one Team mutation must be sent', state.teamMutations)
     assert(JSON.stringify(state.teamMutations[0]) === JSON.stringify({ input: {
       teamRunId: 'team-run-browser-1',
-      patches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/Nested/reviewer', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }],
+      patches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/reviewer', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }],
     } }), 'Team mutation must contain one narrow configured-Agent patch with no revision/runtime input', state.teamMutations[0])
     await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-B-team-saved.png'), fullPage: true })
     return { mutation: state.teamMutations[0], renderedMembers: 3, resumeReads: state.teamResumeReads }
@@ -643,7 +626,7 @@ try {
     return { mutation, canonicalModel: state.agentModel, canonicalConfig: state.agentConfig }
   })
 
-  await runScenario('API-E2E-004-F', 'Team replacement preserves divergent branch and verifies an indeterminate outcome with Retry, never a duplicate Save', async () => {
+  await runScenario('API-E2E-004-F', 'Flat Team replacement preserves divergent and directly edited Agents and verifies one all-scope save with Retry', async () => {
     state.teamMutationMode = 'indeterminate'
     await page.locator('[data-test="show-team"]').click()
     const runtime = page.locator('#team-scope-root-runtime-kind')
@@ -651,6 +634,16 @@ try {
     await waitFor('Team replacement options', async () => !(await page.locator('[data-test="model-capacity-status"]').count()))
     const beforeMutations = state.teamMutations.length
     const beforeReads = state.teamResumeReads
+    const priorTree = clone(state.teamTree)
+    const disclosure = page.locator('[data-test="team-member-overrides-toggle"]')
+    assert(await disclosure.getAttribute('aria-expanded') === 'false', 'Fresh Team settings begin collapsed')
+    await disclosure.focus()
+    await page.keyboard.press('Enter')
+    const leadEffort = page.locator('#existing--lead-reasoning_effort')
+    await leadEffort.waitFor({ state: 'visible' })
+    assert(await leadEffort.inputValue() === 'low', 'Lead begins linked to the saved root')
+    await leadEffort.selectOption('high')
+    assert(await page.locator('#existing--reviewer-reasoning_effort').inputValue() === 'high', 'Reviewer begins divergent from its earlier saved edit')
     const picker = runtime.locator('xpath=../following-sibling::div[1]//button').first()
     await picker.click()
     const search = page.getByPlaceholder('Search models...')
@@ -660,6 +653,9 @@ try {
     await page.keyboard.press('Enter')
     const save = page.locator('[data-test="save-existing-model-config"]')
     await waitFor('Team replacement Save', async () => await save.isEnabled())
+    assert(await leadEffort.inputValue() === 'high', 'Directly edited lead must not inherit root replacement defaults')
+    assert(await page.locator('#existing--coordinator-reasoning_effort').inputValue() === 'low', 'Linked coordinator follows replacement defaults')
+    assert(await page.locator('#existing--reviewer-reasoning_effort').inputValue() === 'high', 'Divergent reviewer remains unchanged')
     await save.click()
     const retry = page.getByRole('button', {name:'Retry',exact:true})
     await retry.waitFor({ state: 'visible' })
@@ -671,10 +667,25 @@ try {
     assert(state.teamMutations.length === beforeMutations + 1, 'Retry must not repeat the mutation')
     assert(state.teamResumeReads === beforeReads + 2, 'One failed and one successful canonical verification')
     const patches = state.teamMutations.at(-1).input.patches
-    assert(JSON.stringify(patches.map(p => p.scopeAddress).sort()) === JSON.stringify(['/', '/Nested', '/Nested/lead', '/coordinator'].sort()), 'Only originally linked branches follow root; earlier directly edited reviewer stays divergent', patches)
-    assert(findConfigured(state.teamTree, '/Nested/reviewer').launch_configuration.llm_model_identifier === 'gpt-5.6-luna', 'Divergent reviewer model is retained')
+    assert(JSON.stringify(patches.map(p => p.scopeAddress).sort()) === JSON.stringify(['/', '/coordinator', '/lead'].sort()), 'One save includes root, linked coordinator and independently edited lead; saved divergent reviewer is excluded', patches)
+    const expectedTree = clone(priorTree)
+    for (const address of ['/', '/coordinator']) {
+      const patch = patches.find(patch => patch.scopeAddress === address)
+      assert(patch.llmModelIdentifier === 'browser-larger-model' && patch.llmConfig === null, 'Linked selections commit the exact replacement/null pair', patch)
+      const node = findConfigured(expectedTree, address)
+      const launchConfig = address === '/' ? node.default_launch_configuration : node.launch_configuration
+      Object.assign(launchConfig, { llm_model_identifier: 'browser-larger-model', llm_config: null })
+    }
+    const leadPatch = patches.find(patch => patch.scopeAddress === '/lead')
+    assert(JSON.stringify(leadPatch) === JSON.stringify({ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/lead',
+      llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }), 'Directly edited lead retains its own model/settings pair', leadPatch)
+    findConfigured(expectedTree, '/lead').launch_configuration.llm_config = modelConfig('high')
+    assert(JSON.stringify(state.teamTree) === JSON.stringify(teamRunExecutionTreeDtoSchema.parse(expectedTree)), 'Canonical flat tree preserves divergent member, identities, task records and all fixed configuration', state.teamTree)
+    assert(await leadEffort.inputValue() === 'high', 'Verification restores directly edited member value')
+    assert(await page.locator('#existing--reviewer-reasoning_effort').inputValue() === 'high', 'Verification preserves divergent member value')
     assert(!(await page.locator('[role="alert"]').allTextContents()).some(text => text.includes('Verify the saved outcome')), 'Verified feedback must clear obsolete error')
-    await page.setViewportSize({ width: 520, height: 900 })
+    await page.setViewportSize({ width: 390, height: 844 })
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Verified expanded flat members must fit the narrow viewport')
     await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-F-team-verified-narrow.png'), fullPage: true })
     return { mutation: state.teamMutations.at(-1), verificationReads: state.teamResumeReads - beforeReads }
   })

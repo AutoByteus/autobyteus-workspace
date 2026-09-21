@@ -1,0 +1,10 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at /tmp/aorg-ir058/inspect.mjs:12:14 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.2

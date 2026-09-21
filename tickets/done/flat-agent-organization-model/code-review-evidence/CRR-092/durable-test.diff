@@ -1,0 +1,180 @@
+diff --git a/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+index f2b600d0e..940e4c0e4 100644
+--- a/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+@@ -16,6 +16,9 @@ import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
+ import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
++import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
++import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
++import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+@@ -229,6 +232,12 @@ const trackRawTraceReads = () => {
+   return { paths, restore: () => spy.mockRestore() };
+ };
+ 
++// History queries use production managers/registry; activating providers is outside
++// this read-only suite and must fail rather than silently supplying fake history.
++const unavailableExecution = (): never => { throw new Error("Projection test must not activate execution."); };
++const unusedExecutionBoundary = <T extends object>(): T =>
++  new Proxy(Object.create(null) as T, { get: unavailableExecution });
++
+ describe("recent run projection GraphQL e2e", () => {
+   let schema: GraphQLSchema;
+   let graphql: typeof graphqlFn;
+@@ -236,6 +245,8 @@ describe("recent run projection GraphQL e2e", () => {
+   let workspaceRootPath: string;
+   let memoryDir: string;
+   let closeStudioServices: (() => void) | null = null;
++  let ownedAgentRunManager: AgentRunManager | null = null;
++  let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
+ 
+   beforeAll(async () => {
+     testDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-gql-"));
+@@ -247,6 +258,27 @@ describe("recent run projection GraphQL e2e", () => {
+     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-workspace-"));
+     appConfigProvider.config.setCustomAppDataDir(testDataDir);
+     memoryDir = appConfigProvider.config.getMemoryDir();
++    // This file runs in its own Vitest worker. Never borrow or replace another
++    // process instance: initialize explicitly and release only these instances.
++    ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
++      autoByteusBackendFactory: unusedExecutionBoundary(),
++      codexBackendFactory: unusedExecutionBoundary(),
++      claudeBackendFactory: unusedExecutionBoundary(),
++      activationRegistry: new AgentRunActivationRegistry(unusedExecutionBoundary()),
++      memoryRecorder: unusedExecutionBoundary(),
++      providerInputNormalizer: { normalizeForProvider: unavailableExecution },
++      agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
++    });
++    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
++      memoryDir,
++      flatTeamExecutionFactory: unusedExecutionBoundary(),
++      memberExecutionContextBuilder: unusedExecutionBoundary(),
++      taskExecutionIdentity: {
++        agentRuns: { allocateForAgentDefinition: unavailableExecution },
++        taskTeams: { create: unavailableExecution },
++      },
++      modelSelectionValidator: { validate: unavailableExecution },
++    });
+     closeStudioServices = configureE2eStudioApplicationApiServices().close;
+     schema = await buildGraphqlSchema();
+ 
+@@ -263,6 +295,8 @@ describe("recent run projection GraphQL e2e", () => {
+ 
+   afterAll(async () => {
+     closeStudioServices?.();
++    if (ownedAgentTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);
++    if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
+     await fs.rm(workspaceRootPath, { recursive: true, force: true });
+     await fs.rm(testDataDir, { recursive: true, force: true });
+   });
+diff --git a/autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts b/autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts
+index 222f670da..e7c3d4566 100644
+--- a/autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts
+@@ -7,6 +7,9 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
+ import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
+ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
++import { TaskDelegationRecordsV1Store } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
++import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
++import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
+ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+ 
+ const touch = async (filePath: string, mtime: number) => {
+@@ -36,7 +39,14 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
+         createdAt,
+         children: [testAgentNode("/Teacher", { agentRunId, workspaceRootPath: `/tmp/${runId}` })],
+       });
+-      await store.write(layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] }), tree);
++      const packageDir = layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
++      await store.write(packageDir, tree);
++      await new TaskDelegationRecordsV1Store().write(packageDir, {
++        schemaVersion: 1, rootTeamRunId: runId, records: [],
++      });
++      await new TeamCommunicationV1Store().write(packageDir, {
++        schemaVersion: 1, rootTeamRunId: runId, messages: [],
++      });
+     }
+     await new TeamRunHistoryIndexStore(memoryDir).writeIndex([
+       { teamRunId: "classroom-run-1", teamDefinitionId: "classroom-team", teamDefinitionName: "Classroom Team", workspaceRootPath: "/tmp/classroom-run-1", summary: "first lesson", createdAt: "2026-08-14T00:00:00.000Z", archivedAt: null, terminatedAt: null },
+@@ -45,10 +55,15 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
+     await touch(path.join(memoryDir, "agent_teams", "classroom-run-1", "teacher-run-1", "raw_traces_active.jsonl"), Date.parse("2026-08-14T01:00:00.000Z"));
+     await touch(path.join(memoryDir, "agent_teams", "classroom-run-2", "teacher-run-2", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+     resetTeamRunHistoryCatalogState(memoryDir);
++    const readiness = new RootRunPackageReadinessIndex(memoryDir);
++    await readiness.rebuild();
++    expect(readiness.listDiagnostics()).toEqual([]);
++    expect(readiness.listAdmitted("agent_team")).toEqual(["classroom-run-1", "classroom-run-2"]);
+   });
+ 
+   afterEach(async () => {
+     resetTeamRunHistoryCatalogState(memoryDir);
++    resetRootRunPackageReadinessIndex(memoryDir);
+     await fs.rm(memoryDir, { recursive: true, force: true });
+   });
+ 
+diff --git a/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs b/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs
+index 2c43f13c7..aa0333b77 100644
+--- a/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs
++++ b/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs
+@@ -65,6 +65,12 @@ const assert = (condition, message, details = undefined) => {
+   throw error
+ }
+ const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
++// Hold canonical reads until the browser has actually observed loading. A fixed
++// delay can expire during cold module/render work before the assertion runs.
++let releaseInitialAgentRead
++let releaseInitialTeamRead
++const initialAgentRead = new Promise((resolve) => { releaseInitialAgentRead = resolve })
++const initialTeamRead = new Promise((resolve) => { releaseInitialTeamRead = resolve })
+ const clone = (value) => JSON.parse(JSON.stringify(value))
+ const waitFor = async (description, fn, timeout = timeoutMs, interval = 100) => {
+   const startedAt = Date.now()
+@@ -265,7 +271,7 @@ const state = {
+ const operationResponse = async (operationName, variables) => {
+   if (operationName === 'GetAgentRunResumeConfig') {
+     state.agentResumeReads += 1
+-    if (state.agentResumeReads === 1) await delay(700)
++    await initialAgentRead
+     return { data: { getAgentRunResumeConfig: {
+       runId: 'agent-run-browser-1',
+       isActive: false,
+@@ -285,7 +291,7 @@ const operationResponse = async (operationName, variables) => {
+   if (operationName === 'GetTeamRunResumeConfig') {
+     state.teamResumeReads += 1
+     if (state.failTeamReads > 0) { state.failTeamReads -= 1; return { errors: [{ message: 'Canonical verification temporarily unavailable.' }] } }
+-    if (state.teamResumeReads === 1) await delay(700)
++    await initialTeamRead
+     return { data: { getTeamRunResumeConfig: {
+       teamRunId: 'team-run-browser-1',
+       isActive: false,
+@@ -410,6 +416,9 @@ const runScenario = async (id, description, fn) => {
+       try { await page.screenshot({ path: path.join(outputDir, `${id}-failure.png`), fullPage: true }) } catch {}
+     }
+   } finally {
++    // Failed observations must not leave a fixture response blocked for cleanup.
++    if (id === 'API-E2E-004-A') releaseInitialAgentRead()
++    if (id === 'API-E2E-004-B') releaseInitialTeamRead()
+     // Persist each independent case before starting the next long-running journey.
+     await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8')
+   }
+@@ -477,6 +486,7 @@ try {
+     assert(await editor.getAttribute('aria-busy') === 'true', 'Agent Settings must remain busy while the network-fresh canonical read is delayed')
+     const save = page.locator('[data-test="save-existing-model-config"]')
+     assert(await save.isDisabled(), 'Save must be disabled during Agent canonical loading')
++    releaseInitialAgentRead()
+     const effort = page.locator('#agent-run-reasoning_effort')
+     await effort.waitFor({ state: 'visible', timeout: timeoutMs })
+     await waitFor('Agent schema readiness', async () => await effort.isEnabled())
+@@ -505,6 +515,7 @@ try {
+     await waitFor('Team canonical loading state', async () => await editor.getAttribute('aria-busy') === 'true')
+     const save = page.locator('[data-test="save-existing-model-config"]')
+     assert(await save.isDisabled(), 'Save must be disabled during Team canonical loading')
++    releaseInitialTeamRead()
+     const form = page.locator('[data-test="team-run-config-form"]')
+     await form.waitFor({ state: 'visible', timeout: timeoutMs })
+     assert(await form.getAttribute('data-mode') === 'existing', 'Team must render in existing-run mode')

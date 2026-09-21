@@ -1,0 +1,11 @@
+{
+  "before": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+  "config": {
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&mode=configuration",
+    "body": "Loading Agent Org…\nRun Agent Org\n\nWorkspace is required to run an Agent Org."
+  },
+  "after": {
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+    "body": "AE\naorg e2e analyst\nIdle\nContext Files (0)\n(drag, paste, or upload)"
+  }
+}

@@ -65,15 +65,6 @@ export const projectExistingTeamRunFormModel = (input: {
     members: readonly ConfiguredMemberExecutionDto[],
     coordinatorAddress: string,
   ): readonly ExistingTeamFormMemberNode[] => members.map((member) => {
-    if (member.kind === 'configured_team') {
-      return {
-        mode: 'existing',
-        kind: 'agent_team',
-        address: member.address as AgentTeamAddress,
-        scope: scope(member.address as AgentTeamAddress, nameAt(member.address), member.default_launch_configuration),
-        children: visit(member.members, member.coordinator_address),
-      }
-    }
     const draft = input.planner.scopesByAddress[member.address]
     if (!draft) throw new Error(`Existing Team draft is missing configured Agent '${member.address}'.`)
     return {

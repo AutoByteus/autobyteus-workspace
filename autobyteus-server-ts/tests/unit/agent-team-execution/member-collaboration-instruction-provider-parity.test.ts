@@ -6,7 +6,7 @@ import {
 } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { renderMemberCollaborationInstruction } from "../../../src/agent-team-execution/services/member-collaboration-instruction-renderer.js";
-import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
 import { AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION } from "../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 const occurrences = (value: string, fragment: string): number =>
@@ -58,7 +58,7 @@ const agentDefinition = new AgentDefinition({
 
 describe("member collaboration instruction provider parity", () => {
   it("composes one exact provider-shared block and the three intrinsic Team tools", () => {
-    const memberTeamContext = testMemberTeamContext({
+    const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "root-classroom-run",
       teamRunId: "study-group-task-run",
       teamDefinitionId: "study-group-definition",
@@ -70,20 +70,20 @@ describe("member collaboration instruction provider parity", () => {
       teamInstruction: "Teach and learn collaboratively.",
       deliverInterAgentMessage: vi.fn(async () => undefined) as never,
     });
-    const expected = renderMemberCollaborationInstruction({ memberAddress: memberTeamContext.identity.memberAddress });
+    const expected = renderMemberCollaborationInstruction({ memberAddress: memberExecutionContext.identity.memberAddress });
 
     const providerSharedPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
-      memberTeamContext,
+      memberExecutionContext,
     });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
       agentDefinition,
       workspaceRootPath: "/tmp/classroom-workspace",
-      memberTeamContext,
+      memberExecutionContext,
     });
     const runtimeExposure = resolveRuntimeAgentToolExposure(
       agentDefinition,
-      memberTeamContext,
+      memberExecutionContext,
     );
 
     expect(expected).toBe(expectedInstruction("/StudentStudyGroup/student_one"));
@@ -142,12 +142,12 @@ describe("member collaboration instruction provider parity", () => {
   it("does not inject the Team collaboration block or intrinsic tools for standalone Agents", () => {
     const providerSharedPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
-      memberTeamContext: null,
+      memberExecutionContext: null,
     });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
       agentDefinition,
       workspaceRootPath: "/tmp/standalone-workspace",
-      memberTeamContext: null,
+      memberExecutionContext: null,
     });
 
     for (const prompt of [providerSharedPrompt, nativeAutoByteusPrompt]) {

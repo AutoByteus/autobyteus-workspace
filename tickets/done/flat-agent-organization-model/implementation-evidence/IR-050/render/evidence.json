@@ -1,0 +1,1857 @@
+{
+  "states": [
+    {
+      "name": "desktop-direct-uploaded-inactive",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [
+            {
+              "kind": "uploaded",
+              "id": "ctx_56d83dc1cf35__notes.txt",
+              "locator": "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_56d83dc1cf35__notes.txt",
+              "storedFilename": "ctx_56d83dc1cf35__notes.txt",
+              "displayName": "notes.txt",
+              "phase": "draft",
+              "type": "Text"
+            }
+          ],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_56d83dc1cf35__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "desktop-mounted-uploaded-inactive",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [
+            {
+              "kind": "uploaded",
+              "id": "ctx_17769b1c020e__notes.txt",
+              "locator": "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_17769b1c020e__notes.txt",
+              "storedFilename": "ctx_17769b1c020e__notes.txt",
+              "displayName": "notes.txt",
+              "phase": "draft",
+              "type": "Text"
+            }
+          ],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_17769b1c020e__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "desktop-sent-canonical",
+      "overflow": false,
+      "access": "live",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_48e32d9f040f__notes.txt",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_48e32d9f040f__notes.txt",
+                  "storedFilename": "ctx_48e32d9f040f__notes.txt",
+                  "displayName": "notes.txt",
+                  "phase": "final",
+                  "type": "Text"
+                }
+              ],
+              "messageId": "8acf2691-81f1-4a8b-be79-b5be88b1e724",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:8acf2691-81f1-4a8b-be79-b5be88b1e724"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_48e32d9f040f__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "narrow-direct-uploaded-inactive",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [
+            {
+              "kind": "uploaded",
+              "id": "ctx_b3f40b695d26__notes.txt",
+              "locator": "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_b3f40b695d26__notes.txt",
+              "storedFilename": "ctx_b3f40b695d26__notes.txt",
+              "displayName": "notes.txt",
+              "phase": "draft",
+              "type": "Text"
+            }
+          ],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_b3f40b695d26__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "narrow-mounted-uploaded-inactive",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [
+            {
+              "kind": "uploaded",
+              "id": "ctx_3729c8d35d9b__notes.txt",
+              "locator": "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_3729c8d35d9b__notes.txt",
+              "storedFilename": "ctx_3729c8d35d9b__notes.txt",
+              "displayName": "notes.txt",
+              "phase": "draft",
+              "type": "Text"
+            }
+          ],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_3729c8d35d9b__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "narrow-sent-canonical",
+      "overflow": false,
+      "access": "live",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "user",
+              "text": "Use narrow attachment",
+              "timestamp": "2026-09-12T03:44:18.481Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_77855c245da3__notes.txt",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_77855c245da3__notes.txt",
+                  "storedFilename": "ctx_77855c245da3__notes.txt",
+                  "displayName": "notes.txt",
+                  "phase": "final",
+                  "type": "Text"
+                }
+              ],
+              "messageId": "601a4725-80d8-49f0-9c77-8b0827df191e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:601a4725-80d8-49f0-9c77-8b0827df191e"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_77855c245da3__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "narrow-direct-retained-open",
+      "url": "http://localhost:8000/rest/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_acab6849993c__retained.png",
+      "width": 1,
+      "noActivation": true
+    },
+    {
+      "name": "narrow-direct-retained-history",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Keep direct retained image",
+              "timestamp": "2026-09-12T03:44:18.830Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_acab6849993c__retained.png",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_acab6849993c__retained.png",
+                  "storedFilename": "ctx_acab6849993c__retained.png",
+                  "displayName": "retained.png",
+                  "phase": "final",
+                  "type": "Image"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "user",
+              "text": "Use narrow attachment",
+              "timestamp": "2026-09-12T03:44:18.481Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-mounted-retained-open",
+      "url": "http://localhost:8000/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_0d0b23947171__retained.png",
+      "width": 1,
+      "noActivation": true
+    },
+    {
+      "name": "narrow-mounted-retained-history",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Keep direct retained image",
+              "timestamp": "2026-09-12T03:44:18.830Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_acab6849993c__retained.png",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_acab6849993c__retained.png",
+                  "storedFilename": "ctx_acab6849993c__retained.png",
+                  "displayName": "retained.png",
+                  "phase": "final",
+                  "type": "Image"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "user",
+              "text": "Use narrow attachment",
+              "timestamp": "2026-09-12T03:44:18.481Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "user",
+              "text": "Keep mounted retained image",
+              "timestamp": "2026-09-12T03:44:19.285Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_0d0b23947171__retained.png",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_0d0b23947171__retained.png",
+                  "storedFilename": "ctx_0d0b23947171__retained.png",
+                  "displayName": "retained.png",
+                  "phase": "final",
+                  "type": "Image"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "opened-exact-content",
+      "url": "http://localhost:8000/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_5771d84070e6__notes.txt",
+      "content": "IR050 exact selected Org file contents"
+    },
+    {
+      "name": "narrow-delayed-upload-exact-owner",
+      "overflow": false,
+      "access": "continuable",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [
+            {
+              "kind": "uploaded",
+              "id": "ctx_5771d84070e6__notes.txt",
+              "locator": "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_5771d84070e6__notes.txt",
+              "storedFilename": "ctx_5771d84070e6__notes.txt",
+              "displayName": "notes.txt",
+              "phase": "draft",
+              "type": "Text"
+            }
+          ],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Keep direct retained image",
+              "timestamp": "2026-09-12T03:44:18.830Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_acab6849993c__retained.png",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_acab6849993c__retained.png",
+                  "storedFilename": "ctx_acab6849993c__retained.png",
+                  "displayName": "retained.png",
+                  "phase": "final",
+                  "type": "Image"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "New mounted draft stays here",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "Use desktop attachment",
+              "timestamp": "2026-09-12T03:44:15.230Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "user",
+              "text": "Use narrow attachment",
+              "timestamp": "2026-09-12T03:44:18.481Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "user",
+              "text": "Keep mounted retained image",
+              "timestamp": "2026-09-12T03:44:19.285Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_0d0b23947171__retained.png",
+                  "locator": "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_0d0b23947171__retained.png",
+                  "storedFilename": "ctx_0d0b23947171__retained.png",
+                  "displayName": "retained.png",
+                  "phase": "final",
+                  "type": "Image"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    }
+  ],
+  "pageErrors": [],
+  "commands": [
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "f5236421-d746-4ee5-a020-8cb21f9809c4",
+        "content": "Use desktop attachment",
+        "context_file_paths": [
+          "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_48e32d9f040f__notes.txt"
+        ],
+        "image_urls": [],
+        "message_id": "8acf2691-81f1-4a8b-be79-b5be88b1e724",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:8acf2691-81f1-4a8b-be79-b5be88b1e724"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "aec41c97-2161-42bd-a83e-3401111709ec",
+        "content": "Use narrow attachment",
+        "context_file_paths": [
+          "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_77855c245da3__notes.txt"
+        ],
+        "image_urls": [],
+        "message_id": "601a4725-80d8-49f0-9c77-8b0827df191e",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:601a4725-80d8-49f0-9c77-8b0827df191e"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-director",
+        "command_id": "4b278b9b-9ddd-41e1-8193-a3d94b562627",
+        "content": "Keep direct retained image",
+        "context_file_paths": [
+          "/rest/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_acab6849993c__retained.png"
+        ],
+        "image_urls": [],
+        "message_id": "c727634b-d4e6-4e12-a1b6-bf4861cdad42",
+        "dedupe_key": "member_input:org-run:agent-director:c727634b-d4e6-4e12-a1b6-bf4861cdad42"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "de12d3c2-af40-4db0-898e-3d8ad63ca99b",
+        "content": "Keep mounted retained image",
+        "context_file_paths": [
+          "/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_0d0b23947171__retained.png"
+        ],
+        "image_urls": [],
+        "message_id": "d5aee240-6b76-4111-9b12-36ddb5057a94",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:d5aee240-6b76-4111-9b12-36ddb5057a94"
+      }
+    }
+  ],
+  "mutations": [
+    "RestoreAgentOrgRun",
+    "RestoreAgentOrgRun",
+    "TerminateAgentOrgRun",
+    "RestoreAgentOrgRun",
+    "TerminateAgentOrgRun"
+  ],
+  "queries": [
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "RestoreAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "RestoreAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "RestoreAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "limits": "Implementation renderer only; real shared surfaces, input, Pinia/context/submission/inspection/stream, synthetic GraphQL/provider/stream I/O; attachment requests forward unchanged to actual Fastify routes/services and disposable stored filesystem. Header selection/stop diagnostic controls; route mode behavior separately component/action tested. No native/provider/API/Delivery claim.",
+  "passed": true,
+  "uploads": [
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-director"
+      },
+      "storedFilename": "ctx_56d83dc1cf35__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-director"
+      },
+      "storedFilename": "ctx_00a3e27a34e6__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_17769b1c020e__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_06aa0bff5368__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_48e32d9f040f__notes.txt"
+    },
+    {
+      "finalize": {
+        "draftOwner": {
+          "kind": "org_member_draft",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-team-worker-configured"
+        },
+        "finalOwner": {
+          "kind": "org_member_final",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-team-worker-configured"
+        },
+        "attachments": [
+          {
+            "storedFilename": "ctx_48e32d9f040f__notes.txt",
+            "displayName": "notes.txt"
+          }
+        ]
+      }
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-director"
+      },
+      "storedFilename": "ctx_b3f40b695d26__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-director"
+      },
+      "storedFilename": "ctx_e9e94c25776d__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_3729c8d35d9b__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_c77b3b8030be__notes.txt"
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_77855c245da3__notes.txt"
+    },
+    {
+      "finalize": {
+        "draftOwner": {
+          "kind": "org_member_draft",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-team-worker-configured"
+        },
+        "finalOwner": {
+          "kind": "org_member_final",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-team-worker-configured"
+        },
+        "attachments": [
+          {
+            "storedFilename": "ctx_77855c245da3__notes.txt",
+            "displayName": "notes.txt"
+          }
+        ]
+      }
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-director"
+      },
+      "storedFilename": "ctx_acab6849993c__retained.png"
+    },
+    {
+      "finalize": {
+        "draftOwner": {
+          "kind": "org_member_draft",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-director"
+        },
+        "finalOwner": {
+          "kind": "org_member_final",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-director"
+        },
+        "attachments": [
+          {
+            "storedFilename": "ctx_acab6849993c__retained.png",
+            "displayName": "retained.png"
+          }
+        ]
+      }
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "storedFilename": "ctx_0d0b23947171__retained.png"
+    },
+    {
+      "finalize": {
+        "draftOwner": {
+          "kind": "org_member_draft",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-team-worker-configured"
+        },
+        "finalOwner": {
+          "kind": "org_member_final",
+          "orgRunId": "org-run",
+          "agentRunId": "agent-team-worker-configured"
+        },
+        "attachments": [
+          {
+            "storedFilename": "ctx_0d0b23947171__retained.png",
+            "displayName": "retained.png"
+          }
+        ]
+      }
+    },
+    {
+      "owner": {
+        "kind": "org_member_draft",
+        "orgRunId": "org-run",
+        "agentRunId": "agent-director"
+      },
+      "storedFilename": "ctx_5771d84070e6__notes.txt"
+    }
+  ],
+  "deletes": [
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_56d83dc1cf35__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_00a3e27a34e6__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_17769b1c020e__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_06aa0bff5368__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_b3f40b695d26__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_e9e94c25776d__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_3729c8d35d9b__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/ctx_c77b3b8030be__notes.txt",
+    "/rest/drafts/agent-org-runs/org-run/agent-runs/agent-director/context-files/ctx_5771d84070e6__notes.txt"
+  ]
+}

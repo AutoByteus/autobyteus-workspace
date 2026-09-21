@@ -228,7 +228,7 @@ export class CodexThreadBootstrapper {
       this.skillService.resolveConfiguredSkillBindingsForAgent(agentDefinition);
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
       agentDefinition,
-      runContext.config.memberTeamContext,
+      runContext.config.memberExecutionContext,
     );
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
@@ -236,7 +236,7 @@ export class CodexThreadBootstrapper {
     );
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
-      memberTeamContext: runContext.config.memberTeamContext,
+      memberExecutionContext: runContext.config.memberExecutionContext,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
     const codexThreadConfig = this.buildThreadConfig({
@@ -304,20 +304,20 @@ export class CodexThreadBootstrapper {
     runtimeToolExposure: RuntimeAgentToolExposure;
     workingDirectory: string;
   }): ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null {
-    const memberTeamContext = input.runContext.config.memberTeamContext;
+    const memberExecutionContext = input.runContext.config.memberExecutionContext;
     const result = this.agentToolMcpRunSessions.activateForRun({
-      owner: memberTeamContext
+      owner: memberExecutionContext
         ? {
             runId: input.runContext.runId,
-            teamIdentity: memberTeamContext.identity,
-            displayName: getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress),
+            collaborationIdentity: memberExecutionContext.identity,
+            displayName: getAgentTeamAddressBasename(memberExecutionContext.identity.memberAddress),
           }
         : { runId: input.runContext.runId },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: input.runContext.runId,
-        senderName: (memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress) : null) ?? input.runContext.config.agentDefinitionId,
+        senderName: (memberExecutionContext ? getAgentTeamAddressBasename(memberExecutionContext.identity.memberAddress) : null) ?? input.runContext.config.agentDefinitionId,
         runtimeKind: input.runContext.config.runtimeKind,
-        memberTeamContext: memberTeamContext ?? null,
+        memberExecutionContext: memberExecutionContext ?? null,
       }),
       runtimeExposure: input.runtimeToolExposure,
       executionContext: {

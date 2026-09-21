@@ -1,0 +1,20 @@
+=== canonical artifacts ===
+2988493d6fefdaf7179b322abf715b18c8ac90f160e20211257b8e3f3ac86595  tickets/in-progress/org-history-row-toggle/api-e2e-coverage-investigation.md
+9816c0447d8eee5de9bd5cbf6072b6fa2fd33bc9f41a5643964c5d0cb2828b41  tickets/in-progress/org-history-row-toggle/api-e2e-execution-coverage-report.md
+3eaec52c7ebc1b4aca90f88ec5e9b481f980668c54e34b772940fe3bde052e19  tickets/in-progress/org-history-row-toggle/api-e2e-test-case-ledger.md
+3f9d38f07586ec11de062781b360ae9cd5b4cf1acb220812fd80df51d166e56b  tickets/in-progress/org-history-row-toggle/api-e2e-revision-record.md
+=== JSON assertions ===
+browser-results=PASS
+persistence-comparison=PASS
+=== resources ===
+=== final owned resource check ===
+port51581=closed
+port51583=closed
+ownedProfile=removed
+sdkContractsDist=removed
+backendSdkDist=removed
+=== git status ===
+ M autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+ M autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+?? tickets/in-progress/org-history-row-toggle/
+ARTIFACT_AUDIT=PASS

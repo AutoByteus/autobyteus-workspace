@@ -28,7 +28,7 @@ describe('AgentTeamList', () => {
       instructions: 'Alpha orchestration instructions',
       category: 'creative',
       coordinatorMemberName: 'alpha_lead',
-      nodes: [{ memberName: 'alpha_lead', refType: 'AGENT', ref: 'a1' }],
+      nodes: [{ memberName: 'alpha_lead', ref: 'a1' }],
     },
     {
       id: 't2',
@@ -37,7 +37,7 @@ describe('AgentTeamList', () => {
       instructions: 'Beta orchestration instructions',
       category: 'ops',
       coordinatorMemberName: 'beta_lead',
-      nodes: [{ memberName: 'beta_lead', refType: 'AGENT', ref: 'a2' }],
+      nodes: [{ memberName: 'beta_lead', ref: 'a2' }],
     },
   ];
 

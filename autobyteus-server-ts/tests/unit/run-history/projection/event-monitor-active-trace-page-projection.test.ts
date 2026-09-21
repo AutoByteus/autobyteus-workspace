@@ -65,7 +65,7 @@ describe("event monitor active trace page projection", () => {
     ]);
     expect(buildEventMonitorActiveTracePageEvents(events)[0]?.visuals[0]).toMatchObject({
       kind: "user",
-      attachments: [{ mediaType: "image", locator: "image://attachment" }],
+      attachments: [{ fileType: "image", locator: "image://attachment" }],
     });
   });
 

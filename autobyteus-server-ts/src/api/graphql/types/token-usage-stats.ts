@@ -204,7 +204,7 @@ const summaryAggregate = (summary: TokenUsageRunSummaryPayload): TokenUsageCostS
   observed_model_providers: summary.latest_model_provider ? [summary.latest_model_provider] : [],
 });
 
-const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): TokenUsageRunSummaryGraphql => ({
+export const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): TokenUsageRunSummaryGraphql => ({
   ...toTokenUsageCostSummaryAggregateGraphql(summaryAggregate(summary)),
   runId: summary.run_id,
   rootTeamRunId: summary.root_team_run_id,

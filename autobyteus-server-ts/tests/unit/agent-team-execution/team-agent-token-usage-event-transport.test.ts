@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { parseTeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import { describe, expect, it } from "vitest";
 import {
@@ -115,7 +116,7 @@ const productionFixture = (): {
 };
 
 const executionBinding = () => createTeamAgentExecutionBinding({
-  rootTeamRunId: "team-run-1",
+  root: createTeamRootExecutionIdentity("team-run-1"),
   memberAddress: "/member",
   agentRunId: "member-run-1",
 });

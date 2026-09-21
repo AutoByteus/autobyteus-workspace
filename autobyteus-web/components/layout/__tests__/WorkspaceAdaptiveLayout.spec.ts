@@ -18,6 +18,7 @@ const routerMock = vi.hoisted(() => ({
 const routeMock = vi.hoisted(() => ({
   path: '/workspace',
   fullPath: '/workspace',
+  query: {} as Record<string, string>,
 }));
 
 vi.mock('vue-router', () => ({
@@ -78,6 +79,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   beforeEach(() => {
     routerMock.push.mockReset();
     routerMock.push.mockResolvedValue(undefined);
+    routeMock.query = {};
     mockClientWidth = 1200;
     mockClientHeight = 700;
     setViewport(1440, 900);
@@ -131,6 +133,8 @@ describe('WorkspaceAdaptiveLayout', () => {
           AgentWorkspaceView: AgentWorkspaceViewValue,
           TeamWorkspaceView: TeamWorkspaceViewValue,
           RunConfigPanel: RunConfigPanelValue,
+          AgentOrgRunConfigPanel: { template: '<div class="org-config-view"></div>' },
+          AgentOrgWorkspaceView: { template: '<div class="org-workspace-view"></div>' },
         },
         provide: {
           [RESPONSIVE_WORKSPACE_SHELL_KEY]: responsiveWorkspaceShellState,
@@ -195,6 +199,44 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.find('[data-test="workspace-empty-state"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-empty-state-choose"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-empty-state-runs"]').exists()).toBe(true);
+  });
+
+  it('renders the AgentOrg workspace surface for an inactive historical root route', async () => {
+    routeMock.query = {
+      rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-run', mode: 'history',
+    };
+    const wrapper = await mountComponent({
+      agentSelection: { subject: null },
+      workspaceCenterView: { mode: 'chat' },
+      agentRunConfig: { config: null },
+      teamRunConfig: { config: null },
+    });
+
+    expect(wrapper.find('.org-workspace-view').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-empty-state"]').exists()).toBe(false);
+  });
+
+  it('keeps AgentOrg route ownership exclusive until standalone navigation clears it', async () => {
+    routeMock.query = {
+      rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-run', mode: 'active',
+    };
+    const orgWrapper = await mountComponent({
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'standalone-team' } },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(orgWrapper.find('.org-workspace-view').exists()).toBe(true);
+    expect(orgWrapper.find('.team-view').exists()).toBe(false);
+    orgWrapper.unmount();
+
+    routeMock.query = {};
+    const teamWrapper = await mountComponent({
+      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: 'standalone-team' } },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(teamWrapper.find('.org-workspace-view').exists()).toBe(false);
+    expect(teamWrapper.find('.team-view').exists()).toBe(true);
   });
 
   it('keeps the adaptive root and center/right split shrink-safe', async () => {

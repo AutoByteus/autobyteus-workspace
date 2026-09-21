@@ -1,0 +1,52 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts --run -t 'resolves inactive history'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests | 1 failed | 7 skipped) 54ms
+   ↓ exact Org task inspection independent of history drawer initialization > awaits the canonical cold read, then opens the settled non-coordinator; warm same-name links keep exact identity
+   × exact Org task inspection independent of history drawer initialization > resolves inactive history through the same read owner and inspects without Restore, transport or activation 53ms
+     → AgentOrg history run 'org-run' is unavailable.
+   ↓ exact Org task inspection independent of history drawer initialization > retains strict network unavailability without inferring root activity from the current context
+   ↓ exact Org task inspection independent of history drawer initialization > retains strict graphql unavailability without inferring root activity from the current context
+   ↓ exact Org task inspection independent of history drawer initialization > retains strict schema unavailability without inferring root activity from the current context
+   ↓ exact Org task inspection independent of history drawer initialization > retains strict missing unavailability without inferring root activity from the current context
+   ↓ exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun
+   ↓ exact Org task inspection independent of history drawer initialization > retains the exact AgentRun requirement before issuing navigation
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > resolves inactive history through the same read owner and inspects without Restore, transport or activation
+Error: AgentOrg history run 'org-run' is unavailable.
+ ❯ execute composables/useWorkspaceHistorySubjectActions.ts:25:21
+     23|   const execute = async (command: WorkspaceHistorySubjectAction): Prom…
+     24|     const run = historyStore.agentOrgHistory.find((item) => item.rootR…
+     25|     if (!run) throw new Error(`AgentOrg history run '${command.rootRun…
+       |                     ^
+     26|     const definitionId = run.executionTree.rootOrg.orgDefinitionId
+     27|
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:128:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  15:02:23
+   Duration  8.07s (transform 4.79s, setup 6.76s, collect 348ms, tests 54ms, environment 327ms, prepare 234ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

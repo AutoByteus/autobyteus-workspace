@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
+import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
@@ -127,6 +128,57 @@ const buildTeamResumeMetadata = (input: {
   handoffs: [],
 });
 
+const buildAgentOrgHistoryRow = (input: {
+  rootRunId: string;
+  workspaceRootPath?: string | null;
+  definitionId?: string;
+  definitionName?: string;
+  summary?: string;
+  treeRootRunId?: string;
+}): Record<string, unknown> => {
+  const launchConfiguration = {
+    runtimeKind: 'codex_app_server',
+    llmModelIdentifier: 'gpt-5.6-sol',
+    llmConfig: null,
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+    workspaceRootPath: input.workspaceRootPath ?? null,
+  };
+  return {
+    root_subject_kind: 'agent_org',
+    root_run_id: input.rootRunId,
+    created_at: '2026-09-03T00:00:00.000Z',
+    archived_at: null,
+    is_active: false,
+    summary: input.summary ?? 'Agent Org run',
+    org: {
+      schemaVersion: 1,
+      subjectKind: 'agent_org',
+      createdAt: '2026-09-03T00:00:00.000Z',
+      archivedAt: null,
+      applicationBinding: null,
+      handoffs: [],
+      rootOrg: {
+        address: '/',
+        orgDefinitionId: input.definitionId ?? 'org-definition',
+        orgDefinitionName: input.definitionName ?? 'Delivery Org',
+        orgRunId: input.treeRootRunId ?? input.rootRunId,
+        defaultLaunchConfiguration: launchConfiguration,
+        taskExecutions: [],
+        members: [{
+          address: '/writer',
+          agentDefinitionId: 'writer-definition',
+          role: null,
+          description: null,
+          agentRunId: `writer-${input.rootRunId}`,
+          platformAgentRunId: null,
+          launchConfiguration,
+        }],
+      },
+    },
+  };
+};
+
 const {
   queryMock,
   mutateMock,
@@ -146,6 +198,7 @@ const {
   hydrateTeamMemberActivitiesFromProjectionMock,
 } = vi.hoisted(() => {
   const selection = {
+    beginSelectionIntent: () => ({ isCurrent: () => true }),
     selectedType: null as string | null,
     selectedRunId: null as string | null,
     selectRun: vi.fn((runId: string, type: string) => {
@@ -308,6 +361,10 @@ vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
   GetTeamCommunicationMessages: 'GetTeamCommunicationMessages',
+}));
+
+vi.mock('~/graphql/queries/collaborationRootHistoryQueries', () => ({
+  ListCollaborationRootHistory: 'ListCollaborationRootHistory',
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -573,6 +630,248 @@ describe('runHistoryStore', () => {
     expect(flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])).toHaveLength(1);
     expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs[0]?.runId).toBe('run-1');
     expect(store.agentAvatarByDefinitionId['agent-def-1']).toBe('https://a');
+  });
+
+  it('strictly merges only AgentOrg roots beneath Teams using stable normalized workspace keys', async () => {
+    workspaceStoreMock.allWorkspaces = [{
+      workspaceId: 'ws-a', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A',
+    }];
+    workspaceStoreMock.workspaces = { 'ws-a': workspaceStoreMock.allWorkspaces[0] };
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') {
+        return {
+          data: { listWorkspaceRunHistory: [buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a', workspaceName: 'Workspace A', agents: [],
+            teamRuns: [{
+              teamRunId: 'team-1', teamDefinitionId: 'team-definition', teamDefinitionName: 'Team One',
+              workspaceRootPath: '/ws/a', summary: 'Standalone Team', lastActivityAt: '2026-09-01T00:00:00.000Z',
+              isActive: false, deleteLifecycle: 'READY', members: [],
+            }],
+          })] },
+          errors: [],
+        };
+      }
+      if (query === 'ListCollaborationRootHistory') {
+        return {
+          data: { listCollaborationRootHistory: [
+            { root_subject_kind: 'agent_team', root_run_id: 'team-1' },
+            buildAgentOrgHistoryRow({ rootRunId: 'org-a', workspaceRootPath: '/ws/a/' }),
+            buildAgentOrgHistoryRow({ rootRunId: 'org-missing', workspaceRootPath: '/catalog/missing' }),
+            buildAgentOrgHistoryRow({ rootRunId: 'org-no-workspace', workspaceRootPath: null }),
+          ] },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+
+    const nodes = store.getTreeNodes();
+    expect(nodes.map((node) => [node.workspaceRootPath, node.stableKey])).toEqual([
+      ['/ws/a', 'workspace:/ws/a'],
+      ['/catalog/missing', 'workspace:/catalog/missing'],
+      ['__workspace_history_no_workspace__', 'workspace:__workspace_history_no_workspace__'],
+    ]);
+    expect(nodes[0]?.agentOrgDefinitions[0]?.runs.map((run) => run.rootRunId)).toEqual(['org-a']);
+    expect(store.getTeamNodes('/ws/a').map((team) => team.teamRunId)).toEqual(['team-1']);
+    expect(store.getTeamNodes('/ws/a')).toHaveLength(1);
+    expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
+  });
+
+  it('retains each successful history-family slice when the other query fails', async () => {
+    workspaceStoreMock.allWorkspaces = [{
+      workspaceId: 'ws-a', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A',
+    }];
+    workspaceStoreMock.workspaces = { 'ws-a': workspaceStoreMock.allWorkspaces[0] };
+    let round = 0;
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') {
+        if (round === 1) throw new Error('Workspace history unavailable');
+        return {
+          data: { listWorkspaceRunHistory: [buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a', workspaceName: 'Workspace A', agents: [{
+              agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{
+                runId: round === 0 ? 'agent-old' : 'agent-new', summary: 'Agent run',
+                lastActivityAt: '2026-09-03T00:00:00.000Z', isActive: false,
+              }],
+            }], teamRuns: [],
+          })] }, errors: [],
+        };
+      }
+      if (query === 'ListCollaborationRootHistory') {
+        if (round === 2) throw new Error('AgentOrg history unavailable');
+        return {
+          data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({
+            rootRunId: round === 0 ? 'org-old' : 'org-new', workspaceRootPath: '/ws/a',
+          })] }, errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+    expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs[0]?.runId).toBe('agent-old');
+    expect(store.agentOrgHistory[0]?.rootRunId).toBe('org-old');
+
+    round = 1;
+    await store.fetchTree();
+    expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs[0]?.runId).toBe('agent-old');
+    expect(store.agentOrgHistory[0]?.rootRunId).toBe('org-new');
+    expect(store.historyFamilyErrors).toEqual({
+      workspace: 'Workspace history unavailable', agentOrg: null,
+    });
+
+    round = 2;
+    await store.fetchTree();
+    expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs[0]?.runId).toBe('agent-new');
+    expect(store.agentOrgHistory[0]?.rootRunId).toBe('org-new');
+    expect(store.historyFamilyErrors).toEqual({
+      workspace: null, agentOrg: 'AgentOrg history unavailable',
+    });
+  });
+
+  it('retains the prior AgentOrg slice when strict root correlation rejects a later response', async () => {
+    let invalid = false;
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') {
+        return { data: { listWorkspaceRunHistory: [] }, errors: [] };
+      }
+      if (query === 'ListCollaborationRootHistory') {
+        return {
+          data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({
+            rootRunId: 'org-run',
+            treeRootRunId: invalid ? 'different-org-run' : 'org-run',
+            workspaceRootPath: '/ws/a',
+          })] },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+    const accepted = store.agentOrgHistory[0];
+    invalid = true;
+    await store.fetchTree();
+
+    expect(store.agentOrgHistory[0]).toBe(accepted);
+    expect(store.historyFamilyErrors.agentOrg).toContain('does not match its execution tree root')
+  });
+
+  it('commits only the newest initiated AgentOrg refresh and retains its slice on a later failure', async () => {
+    let resolveOlder!: (value: unknown) => void;
+    let resolveNewer!: (value: unknown) => void;
+    const older = new Promise((resolve) => { resolveOlder = resolve; });
+    const newer = new Promise((resolve) => { resolveNewer = resolve; });
+    queryMock.mockReturnValueOnce(older).mockReturnValueOnce(newer);
+    const store = useRunHistoryStore();
+    store.agentOrgHistory = [buildAgentOrgHistoryRow({ rootRunId: 'org-existing', summary: 'Existing' }) as any];
+
+    const olderRefresh = store.refreshAgentOrgHistory();
+    const newerRefresh = store.refreshAgentOrgHistory();
+    resolveNewer({ data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({ rootRunId: 'org-winner', summary: 'Winner' })] }, errors: [] });
+    await newerRefresh;
+    resolveOlder({ data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({ rootRunId: 'org-stale', summary: 'Stale' })] }, errors: [] });
+    await olderRefresh;
+    expect(store.agentOrgHistory[0]?.rootRunId).toBe('org-winner');
+
+    queryMock.mockRejectedValueOnce(new Error('Focused Org refresh failed'));
+    await store.refreshAgentOrgHistory();
+    expect(store.agentOrgHistory[0]?.rootRunId).toBe('org-winner');
+    expect(store.historyFamilyErrors.agentOrg).toBe('Focused Org refresh failed');
+  });
+
+  it('publishes only the confirmed exact root activity and preserves other rows before refresh', async () => {
+    let resolveRefresh!: (value: unknown) => void;
+    queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveRefresh = resolve; }));
+    const store = useRunHistoryStore();
+    const rows = [buildAgentOrgHistoryRow({ rootRunId: 'org-restored', summary: 'Restored title' }),
+      buildAgentOrgHistoryRow({ rootRunId: 'org-unrelated', summary: 'Other title' })];
+    store.agentOrgHistory = parseAgentOrgHistoryItems(rows);
+    const projectedRows = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs);
+    const original = projectedRows().find((run) => run.rootRunId === 'org-restored')!;
+    const unrelated = projectedRows().find((run) => run.rootRunId === 'org-unrelated')!;
+    store.applyAgentOrgActivity('org-restored', true);
+    expect(projectedRows().find((run) => run.rootRunId === 'org-restored')).toEqual({ ...original, isActive: true });
+    expect(projectedRows().find((run) => run.rootRunId === 'org-unrelated')).toBe(unrelated);
+    expect(projectedRows()).toHaveLength(2);
+    await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
+    resolveRefresh({ data: { listCollaborationRootHistory: rows.map((row) => row.root_run_id === 'org-restored' ? { ...row, is_active: true } : row) }, errors: [] });
+    await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBeNull());
+  });
+
+  it.each(['old-first', 'failure-first'])('publishes confirmed Stop to existing navigation before I/O (%s)', async (order) => {
+    let resolveOlder!: (value: unknown) => void;
+    let rejectFresh!: (reason: Error) => void;
+    queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveOlder = resolve; }))
+      .mockReturnValueOnce(new Promise((_resolve, reject) => { rejectFresh = reject; }));
+    const store = useRunHistoryStore();
+    const activeRow = { ...buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title' }), is_active: true };
+    store.agentOrgHistory = parseAgentOrgHistoryItems([activeRow]);
+    const projectedRow = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions)
+      .flatMap((group) => group.runs).find((run) => run.rootRunId === 'org-confirmed')!;
+    const original = projectedRow(); // The visible projection must exist BEFORE Stop.
+    expect(original.isActive).toBe(true);
+    const pending = store.refreshAgentOrgHistory();
+    await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
+    store.applyAgentOrgActivity('org-confirmed', false);
+    expect(projectedRow()).toEqual({ ...original, isActive: false });
+    await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(2));
+    const releaseOld = async () => {
+      resolveOlder({ data: { listCollaborationRootHistory: [activeRow] }, errors: [] });
+      await pending;
+      expect(projectedRow()).toEqual({ ...original, isActive: false });
+    };
+    const failFresh = async () => {
+      rejectFresh(new Error('fresh history unavailable'));
+      await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable'));
+      expect(projectedRow()).toEqual({ ...original, isActive: false });
+    };
+    if (order === 'old-first') { await releaseOld(); await failFresh(); }
+    else { await failFresh(); await releaseOld(); }
+    expect(store.agentOrgHistory).toEqual([{ ...original, isActive: false }]);
+    expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable');
+  });
+
+  it('shares AgentOrg request generation between full history loads and focused refreshes', async () => {
+    let resolveFullOrg!: (value: unknown) => void;
+    const fullOrg = new Promise((resolve) => { resolveFullOrg = resolve; });
+    let orgRequestCount = 0;
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') {
+        return { data: { listWorkspaceRunHistory: [] }, errors: [] };
+      }
+      if (query === 'ListCollaborationRootHistory') {
+        orgRequestCount += 1;
+        if (orgRequestCount === 1) return fullOrg;
+        return {
+          data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({
+            rootRunId: 'org-focused-winner', summary: 'Committed winner',
+          })] },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+    const store = useRunHistoryStore();
+
+    const olderFullLoad = store.fetchTree();
+    await vi.waitFor(() => expect(orgRequestCount).toBe(1));
+    await store.refreshAgentOrgHistory();
+    resolveFullOrg({
+      data: { listCollaborationRootHistory: [buildAgentOrgHistoryRow({
+        rootRunId: 'org-stale-full-load', summary: 'Stale',
+      })] },
+      errors: [],
+    });
+    await olderFullLoad;
+
+    expect(store.agentOrgHistory[0]?.rootRunId).toBe('org-focused-winner');
+    expect(store.agentOrgHistory[0]?.summary).toBe('Committed winner');
   });
 
   it('hydrates and connects newly discovered active runs from workspace history', async () => {
@@ -1737,12 +2036,14 @@ describe('runHistoryStore', () => {
     expect(alphaAgent?.runs[1]?.source).toBe('history');
 
     expect(nodes[1]).toEqual({
+      stableKey: 'workspace:/ws/b',
       workspaceId: 'ws-2',
       workspaceRootPath: '/ws/b',
       workspaceName: 'Beta',
       workspaceKind: 'filesystem',
       canRemoveFromWorkspaces: true,
       agents: [],
+      agentOrgDefinitions: [],
     });
   });
 
@@ -1930,7 +2231,7 @@ describe('runHistoryStore', () => {
 
   it('selectTreeRun delegates to openRun for history rows', async () => {
     const store = useRunHistoryStore();
-    const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue(undefined);
+    const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue({ disposition: 'committed' });
 
     await store.selectTreeRun(asRunTreeRow({
       runId: 'run-1',
@@ -1943,7 +2244,7 @@ describe('runHistoryStore', () => {
       isDraft: false,
     }));
 
-    expect(openRunSpy).toHaveBeenCalledWith('run-1');
+    expect(openRunSpy).toHaveBeenCalledWith('run-1', expect.objectContaining({ selectionIntent: expect.any(Object) }));
   });
 
   it('selectTreeRun selects local temp context for draft rows', async () => {

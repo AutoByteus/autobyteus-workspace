@@ -1,0 +1,243 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/.env
+[dotenv@17.3.1] injecting env (9) from .local/api-org-local/data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50682
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50682
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:74827) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T08:12:24.211Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:readfix-broken:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external/agent-orgs/readfix-broken
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:agent-org-owned-team:readfix-broken:squad:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/external/agent-orgs/readfix-broken/agent-teams/squad
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-16T08:12:24.354Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-16T08:12:24.355Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1789546344360,"pid":74827,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:53239"}
+{"level":30,"time":1789546344385,"pid":74827,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:50681"}
+[2026-09-16T08:12:24.385Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50681
+[2026-09-16T08:12:24.386Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50681
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session 8e258756-1d7e-4a03-9ce0-332b2b12b839 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/home
+Terminal WebSocket connected: 8e258756-1d7e-4a03-9ce0-332b2b12b839
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/home
+Closed PTY session 8e258756-1d7e-4a03-9ce0-332b2b12b839
+Terminal WebSocket disconnected: 8e258756-1d7e-4a03-9ce0-332b2b12b839
+Discovering LM Studio models from host: http://127.0.0.1:50684
+Discovering Ollama models from host: http://127.0.0.1:50684
+Could not connect to LM Studio at http://127.0.0.1:50684. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://127.0.0.1:50684. Ensure it's running. fetch failed
+Created terminal session e4f79965-2844-46c2-a62e-8361566089a0 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/home
+Terminal WebSocket connected: e4f79965-2844-46c2-a62e-8361566089a0
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/home
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1/readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1/readfix_alpha_squad_2afe8174b0524871b30fd0130432b4b8/readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1/readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1/readfix_alpha_squad_2afe8174b0524871b30fd0130432b4b8/readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab/raw_traces_active.jsonl
+Closed PTY session e4f79965-2844-46c2-a62e-8361566089a0
+Terminal WebSocket disconnected: e4f79965-2844-46c2-a62e-8361566089a0
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_beta_5a5172a18ee64e48acff25c6d89bb449/readfix_beta_guide_364994d6309e4702a7435a2e2827e6df/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_beta_5a5172a18ee64e48acff25c6d89bb449/readfix_beta_squad_ff3858e1ddb24586999c369ffb5c31a9/readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_beta_5a5172a18ee64e48acff25c6d89bb449/readfix_beta_guide_364994d6309e4702a7435a2e2827e6df/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_beta_5a5172a18ee64e48acff25c6d89bb449/readfix_beta_squad_ff3858e1ddb24586999c369ffb5c31a9/readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/media
+AgentRuntimeState initialized for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': LLM instance 'OpenAILLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' with config: 'Readfix Beta Squad Worker'.
+AgentWorker initialized for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'.
+Registered AgentContext for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'. Context registered.
+Agent facade initialized for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' created and stored successfully.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' requesting runtime to start.
+AgentRuntime for 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Starting worker.
+AgentWorker 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Starting...
+AgentWorker 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' asyncRun(): Starting.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Runtime init completed (event store initialized).
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Runtime init completed (status deriver initialized).
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Runtime init completed (AgentEventInbox initialized).
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' to become idle (timeout: 30s)...
+AgentEventStream (ID: 49eb89c7-0f37-4dff-a016-8545aeea6189) initialized for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'. Subscribed to notifier.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Bootstrapper starting direct lifecycle execution.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Executing McpServerPrewarmingStep.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Executing SystemPromptProcessingStep.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': No configured skills. Skipping skill catalog.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Final processed system prompt configured and captured. Trace ID: rt_1789546496063_a7a7fbb7-a828-405c-b107-ec123400d770. Final length: 8063.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' initialized successfully. Entering main event scheduler loop.
+Agent 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4' has become idle.
+AgentEventStream (ID: 49eb89c7-0f37-4dff-a016-8545aeea6189) for 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 306f6248-2012-4ea2-b961-bfff77248643) initialized for agent_id 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'. Subscribed to notifier.
+Published autobyteus agent run 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4'.
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4': UserInputContextBuildingProcessor completed. Final content length: 138
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bce0d41-066f-45aa-9d63-b5b17afbec68, AgentID: readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/media
+AgentRuntimeState initialized for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': LLM instance 'OpenAILLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' with config: 'Readfix Alpha Squad Worker'.
+AgentWorker initialized for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'.
+Registered AgentContext for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'. Context registered.
+Agent facade initialized for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' created and stored successfully.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' requesting runtime to start.
+AgentRuntime for 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Starting worker.
+AgentWorker 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Starting...
+AgentWorker 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' asyncRun(): Starting.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Runtime init completed (event store initialized).
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Runtime init completed (status deriver initialized).
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Runtime init completed (AgentEventInbox initialized).
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' to become idle (timeout: 30s)...
+AgentEventStream (ID: 0132a1cb-8985-450e-a99b-74d724734db9) initialized for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'. Subscribed to notifier.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Bootstrapper starting direct lifecycle execution.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Executing McpServerPrewarmingStep.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Executing SystemPromptProcessingStep.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': No configured skills. Skipping skill catalog.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Final processed system prompt configured and captured. Trace ID: rt_1789546509403_56bff86e-6536-4138-8ec7-6a058f6cc09f. Final length: 8066.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' initialized successfully. Entering main event scheduler loop.
+Agent 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab' has become idle.
+AgentEventStream (ID: 0132a1cb-8985-450e-a99b-74d724734db9) for 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: b02aab91-ad18-4889-a670-1d2fc6af1dcb) initialized for agent_id 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'. Subscribed to notifier.
+Published autobyteus agent run 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab'.
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab': UserInputContextBuildingProcessor completed. Final content length: 138
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 847706e3-51d0-4ff5-af7b-b49a5dacd7bf, AgentID: readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+[2026-09-16T08:16:38.694Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-16T08:16:38.695Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+[2026-09-16T08:16:58.057Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-16T08:16:58.057Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.

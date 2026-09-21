@@ -1,0 +1,40 @@
+{"level":30,"time":1788705288005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fc","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.28379200398921967,"msg":"http request completed"}
+{"level":30,"time":1788705288016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fd","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.657416999340057,"msg":"http request completed"}
+{"level":30,"time":1788705288030,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fe","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.717749997973442,"msg":"http request completed"}
+{"level":30,"time":1788705288976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ff","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9606250002980232,"msg":"http request completed"}
+{"level":30,"time":1788705288982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fg","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3897090032696724,"msg":"http request completed"}
+{"level":30,"time":1788705288983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fh","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1544170007109642,"msg":"http request completed"}
+{"level":30,"time":1788705288994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fi","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.525666996836662,"msg":"http request completed"}
+{"level":30,"time":1788705289013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fj","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":28.148500002920628,"msg":"http request completed"}
+{"level":30,"time":1788705293973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fk","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.738125003874302,"msg":"http request completed"}
+{"level":30,"time":1788705293991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fl","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":12.497208997607231,"msg":"http request completed"}
+{"level":30,"time":1788705294007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fm","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":26.95395800471306,"msg":"http request completed"}
+{"level":30,"time":1788705299345,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fn","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8122910037636757,"msg":"http request completed"}
+{"level":30,"time":1788705299350,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fo","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3270839974284172,"msg":"http request completed"}
+{"level":30,"time":1788705299353,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fq","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1715419963002205,"msg":"http request completed"}
+{"level":30,"time":1788705299367,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fp","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.886790998280048,"msg":"http request completed"}
+{"level":30,"time":1788705299380,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fr","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.92645899951458,"msg":"http request completed"}
+{"level":30,"time":1788705304343,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fs","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5197920054197311,"msg":"http request completed"}
+{"level":30,"time":1788705304349,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ft","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.604332998394966,"msg":"http request completed"}
+{"level":30,"time":1788705304360,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fu","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.619874998927116,"msg":"http request completed"}
+{"level":30,"time":1788705309341,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fv","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3642499968409538,"msg":"http request completed"}
+{"level":30,"time":1788705309343,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fw","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.19620899856090546,"msg":"http request completed"}
+{"level":30,"time":1788705309344,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fx","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1394590064883232,"msg":"http request completed"}
+{"level":30,"time":1788705309350,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fy","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.957874998450279,"msg":"http request completed"}
+{"level":30,"time":1788705309364,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fz","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.680583000183105,"msg":"http request completed"}
+{"level":30,"time":1788705314343,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g0","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9605409950017929,"msg":"http request completed"}
+{"level":30,"time":1788705314348,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g1","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3243330046534538,"msg":"http request completed"}
+{"level":30,"time":1788705314349,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g2","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3264169991016388,"msg":"http request completed"}
+{"level":30,"time":1788705314359,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.751667000353336,"msg":"http request completed"}
+{"level":30,"time":1788705314372,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.880666993558407,"msg":"http request completed"}
+{"level":30,"time":1788705319344,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g5","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3496669977903366,"msg":"http request completed"}
+{"level":30,"time":1788705319352,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.4577910006046295,"msg":"http request completed"}
+{"level":30,"time":1788705319363,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.19666700065136,"msg":"http request completed"}
+{"level":30,"time":1788705324347,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g8","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.1763329952955246,"msg":"http request completed"}
+{"level":30,"time":1788705324351,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g9","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.43025000393390656,"msg":"http request completed"}
+{"level":30,"time":1788705324352,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ga","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18850000202655792,"msg":"http request completed"}
+{"level":30,"time":1788705324364,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-gb","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.360959000885487,"msg":"http request completed"}
+{"level":30,"time":1788705324379,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-gc","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.900833003222942,"msg":"http request completed"}
+[2026-09-06T14:35:26.187Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-06T14:35:26.329Z] [INFO] [server.runtime] Server closed cleanly.
+Waiting for the debugger to disconnect...

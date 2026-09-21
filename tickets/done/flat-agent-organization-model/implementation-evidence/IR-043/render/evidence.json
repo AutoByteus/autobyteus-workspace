@@ -1,0 +1,68 @@
+{
+  "states": [
+    {
+      "name": "narrow-before",
+      "overflow": false,
+      "target": "lead / live"
+    },
+    {
+      "name": "narrow-exact-read-only",
+      "overflow": false,
+      "target": "task-verifier-one / read_only"
+    },
+    {
+      "name": "narrow-second-same-address",
+      "overflow": false,
+      "target": "task-verifier-two / read_only"
+    },
+    {
+      "name": "desktop-before",
+      "overflow": false,
+      "target": "lead / live"
+    },
+    {
+      "name": "desktop-exact-read-only",
+      "overflow": false,
+      "target": "task-verifier-one / read_only"
+    }
+  ],
+  "errors": [],
+  "queries": [
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "render-team",
+        "agentRunId": "task-verifier-one"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "render-team",
+        "agentRunId": "lead"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "render-team",
+        "agentRunId": "task-verifier-two"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "render-team",
+        "agentRunId": "task-verifier-one"
+      }
+    }
+  ],
+  "assertions": [
+    "Actual shared exact task button keyboard action reaches correct retained AgentRun",
+    "Same-address repeated task IDs remain distinct",
+    "Active root remains active; accepted task monitor and Activity are authoritative",
+    "Read-only hides composer, no mutation/lifecycle requests",
+    "Desktop/narrow no pageerrors or horizontal overflow"
+  ],
+  "limits": "Isolated normal Nuxt renderer, real task component/navigation/Pinia/hydration/view/target/monitor and ActivityFeed; synthetic exact stored tree and network projections, memory router. Not production root/provider/API-E2E/native signoff."
+}

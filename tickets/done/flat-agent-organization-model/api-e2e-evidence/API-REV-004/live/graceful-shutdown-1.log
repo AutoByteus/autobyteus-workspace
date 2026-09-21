@@ -1,0 +1,169 @@
+SIGTERM 61855 at 2026-09-02T07:14:29+00:00
+
+--- backend tail ---
+[2026-09-02T07:00:44.676Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1788332444701,"pid":61855,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:35971"}
+{"level":30,"time":1788332444737,"pid":61855,"hostname":"9b5212eb33a8","msg":"Server listening at http://127.0.0.1:8457"}
+[2026-09-02T07:00:44.737Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8457
+[2026-09-02T07:00:44.739Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8457
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788332473606,"pid":61855,"hostname":"9b5212eb33a8","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3461249992251396,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 54 items.
+[2026-09-02T07:01:32.674Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-02T07:01:32.701Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Created terminal session b090e5b1-edce-4514-8c7f-0f94e28e9940 using backend PtySession for target /root
+Terminal WebSocket connected: b090e5b1-edce-4514-8c7f-0f94e28e9940
+Terminal websocket attached for cwd /root
+Closed PTY session b090e5b1-edce-4514-8c7f-0f94e28e9940
+Terminal WebSocket disconnected: b090e5b1-edce-4514-8c7f-0f94e28e9940
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[CodexAppServerClient] stderr: [2m2026-09-02T07:02:00.739756Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: c09d4c76-78ea-4077-b05c-78f1305377ab for workspace temp_ws_default
+Created file explorer session c09d4c76-78ea-4077-b05c-78f1305377ab for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: c09d4c76-78ea-4077-b05c-78f1305377ab for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:02:12.408511Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_lead_3a0c4827f0d5400795c9eb9b4ba50520'.
+Published codex_app_server agent run 'aorg_e2e_analyst_6496fb4a7d4046d58527593b9540affb'.
+Published codex_app_server agent run 'aorg_e2e_verifier_61f9b8f55b3b4b92abce38d72e25f7e2'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+FileExplorerSession closed: c09d4c76-78ea-4077-b05c-78f1305377ab
+Closed file explorer session c09d4c76-78ea-4077-b05c-78f1305377ab. Active sessions: 0
+File explorer WebSocket disconnected: c09d4c76-78ea-4077-b05c-78f1305377ab
+Agent team websocket attached for team run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Created agent session 9c6429b8-e2f0-4a93-9a39-08e21abcf29b for run aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Agent Team WebSocket connected: session=9c6429b8-e2f0-4a93-9a39-08e21abcf29b, run=aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_815eed087b724a6086eae346b87a4221'.
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 02ba63d5-56b8-4fde-836e-b014616e5660 for workspace temp_ws_default
+Created file explorer session 02ba63d5-56b8-4fde-836e-b014616e5660 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 02ba63d5-56b8-4fde-836e-b014616e5660 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.093709Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.275089Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.451006Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.629689Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.807988Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:36.986453Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:37.162524Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:37.338807Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: [2m2026-09-02T07:04:37.512517Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 6,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 9,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_concierge_43e1792fa8ac4c2fbac06fad0b447d65'.
+Published codex_app_server agent run 'aorg_e2e_lead_aa2a675cc88b43c49ebce805c73ebdaf'.
+Published codex_app_server agent run 'aorg_e2e_analyst_c8b634cdeab84768808ecc6418be4a17'.
+Published codex_app_server agent run 'aorg_e2e_verifier_def8f219af854830a8ae537d07ebeaf6'.
+Published codex_app_server agent run 'aorg_e2e_lead_880f206ad11e4c2d92f105daeda5ef46'.
+Published codex_app_server agent run 'aorg_e2e_verifier_4675576c08874d0081b84b8a82a288b9'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+FileExplorerSession closed: 02ba63d5-56b8-4fde-836e-b014616e5660
+Closed file explorer session 02ba63d5-56b8-4fde-836e-b014616e5660. Active sessions: 0
+File explorer WebSocket disconnected: 02ba63d5-56b8-4fde-836e-b014616e5660
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 10,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_analyst_c3fbe579693345a98cf04485b42eb88d'.
+[2026-09-02T07:14:29.951Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 9c6429b8-e2f0-4a93-9a39-08e21abcf29b
+[2026-09-02T07:14:30.019Z] [INFO] [server.runtime] Server closed cleanly.
+
+--- owned Codex children after shutdown ---
+  558    52 node /usr/bin/codex app-server
+  565   558 /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/bin/codex app-server
+64475   565 /bin/bash -lc set -euo pipefail E='tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live' pid=$(cat "$E/process/backend-initial.pid") echo "SIGTERM $pid at $(date -Iseconds)" | tee "$E/graceful-shutdown-1.log" kill -TERM "$pid" for i in $(seq 1 120); do if ! kill -0 "$pid" 2>/dev/null; then break; fi; sleep 1; done if kill -0 "$pid" 2>/dev/null; then echo 'PROCESS_STILL_ALIVE_AFTER_120S' | tee -a "$E/graceful-shutdown-1.log"; exit 1; fi printf '\n--- backend tail ---\n' | tee -a "$E/graceful-shutdown-1.log" tail -n 160 "$E/backend-initial.log" | tee -a "$E/graceful-shutdown-1.log" printf '\n--- owned Codex children after shutdown ---\n' | tee -a "$E/graceful-shutdown-1.log" ps -eo pid,ppid,args | awk '$2=='"$pid"' || /codex app-server/ {print}' | tee -a "$E/graceful-shutdown-1.log" grep -E 'Server closed cleanly|AggregateError|ERROR|Error' "$E/graceful-shutdown-1.log" | tail -n 40 || true
+64491 64475 awk $2==61855 || /codex app-server/ {print}

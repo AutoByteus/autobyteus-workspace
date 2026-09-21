@@ -1,0 +1,41 @@
+Scope: 9 of 14 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-agent-presentation-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-agent-presentation-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-frontend-sdk build$ tsc -p tsconfig.build.json
+...byteus-collaboration-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+autobyteus-application-frontend-sdk build: Done
+...byteus-collaboration-stream-contracts build: Done
+autobyteus-team-stream-contracts build: Done
+autobyteus-server-ts prebuild$ pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+autobyteus-server-ts prebuild: > autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+autobyteus-server-ts prebuild: > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+autobyteus-server-ts prebuild: Scope: 3 of 14 workspace projects
+autobyteus-server-ts prebuild: autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-server-ts prebuild: autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-server-ts prebuild: autobyteus-application-sdk-contracts build: Done
+autobyteus-server-ts prebuild: autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-server-ts prebuild: autobyteus-ts build: Done
+autobyteus-server-ts prebuild: autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-server-ts prebuild: autobyteus-application-backend-sdk build: Done
+autobyteus-server-ts prebuild: Prisma schema loaded from prisma/schema.prisma
+autobyteus-server-ts prebuild: ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 199ms
+autobyteus-server-ts prebuild: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+autobyteus-server-ts prebuild: Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+autobyteus-server-ts prebuild: Done
+autobyteus-server-ts build$ pnpm run build:full
+autobyteus-server-ts build: > autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+autobyteus-server-ts build: > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+autobyteus-server-ts build: AgentFactory (Singleton) initialized.
+autobyteus-server-ts build: Built-in agents bootstrap smoke check passed.
+autobyteus-server-ts build: Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+autobyteus-server-ts build: Done
+autobyteus-application-devkit build$ tsc -p tsconfig.build.json
+autobyteus-application-devkit build: Done

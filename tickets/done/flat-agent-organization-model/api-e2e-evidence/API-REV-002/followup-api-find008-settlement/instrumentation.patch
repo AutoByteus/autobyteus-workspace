@@ -1,0 +1,1527 @@
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts b/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts
+index c7ec82864..8cea33dc4 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts
+@@ -40,6 +40,7 @@ import type {
+ import type { PreparedLocalExecutionTermination } from "../domain/prepared-local-execution-termination.js";
+ import { ConfiguredAgentActivationPlanner } from "./configured-agent-activation-planner.js";
+ import { ConfiguredAgentStatusOverlay } from "./configured-agent-status-overlay.js";
++import { apiE2eProbe, serializeApiE2eError } from "../../../api-e2e-probe/correlation-probe.js";
+ 
+ export type PreparedConfiguredAgentActivation = Readonly<{
+   stagedPlatformBindings: readonly CollaborationAgentPlatformBinding[];
+@@ -181,8 +182,32 @@ export class ConfiguredAgentExecutionHandle {
+   }
+ 
+   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
++    apiE2eProbe("configured_handle_prepare_termination_entry", {
++      identity: this.identity,
++      platformAgentRunId: this.platformAgentRunId,
++      readinessAttemptPending: Boolean(this.readinessAttempt),
++      agentRunPresent: Boolean(this.agentRun),
++      agentRunActive: this.agentRun?.isActive() ?? false,
++      status: this.getStatusSnapshot(),
++      hasOpenExecutionWork: this.hasOpenExecutionWork(),
++    });
+     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
+-    const prepared = this.agentRun ? await this.manager.prepareAgentRunTermination(this.agentRun) : null;
++    const currentRun = this.agentRun;
++    if (currentRun) apiE2eProbe("configured_handle_manager_prepare_start", {
++      identity: this.identity,
++      agentRunId: currentRun.runId,
++      agentRunActive: currentRun.isActive(),
++      status: currentRun.getStatusSnapshot(),
++    });
++    const prepared = currentRun ? await this.manager.prepareAgentRunTermination(currentRun) : null;
++    apiE2eProbe("configured_handle_manager_prepare_complete", {
++      identity: this.identity,
++      agentRunId: currentRun?.runId ?? null,
++      prepared: Boolean(prepared),
++      agentRunActive: currentRun?.isActive() ?? false,
++      status: this.getStatusSnapshot(),
++      hasOpenExecutionWork: this.hasOpenExecutionWork(),
++    });
+     let state: "prepared" | "cancelled" | "committed" = "prepared";
+     let committed: ReturnType<PreparedLocalExecutionTermination["commit"]> | null = null;
+     return Object.freeze({
+@@ -191,11 +216,55 @@ export class ConfiguredAgentExecutionHandle {
+         if (state === "cancelled") throw new Error(`AgentRun '${this.identity.agentRunId}' termination was cancelled.`);
+         if (committed) return committed;
+         state = "committed";
++        apiE2eProbe("configured_handle_termination_commit_start", {
++          identity: this.identity,
++          agentRunId: currentRun?.runId ?? null,
++          agentRunActive: currentRun?.isActive() ?? false,
++          status: this.getStatusSnapshot(),
++          hasOpenExecutionWork: this.hasOpenExecutionWork(),
++        });
+         const local = prepared?.commit() ?? null;
++        apiE2eProbe("configured_handle_termination_commit_complete", {
++          identity: this.identity,
++          agentRunId: currentRun?.runId ?? null,
++          localPresent: Boolean(local),
++        });
+         committed = Object.freeze({ finish: async () => {
+-          const result = local ? await local.finish() : { accepted: true as const };
+-          if (result.accepted) this.dispose();
+-          return result;
++          apiE2eProbe("configured_handle_termination_finish_start", {
++            identity: this.identity,
++            agentRunId: currentRun?.runId ?? null,
++            agentRunActive: currentRun?.isActive() ?? false,
++            status: this.getStatusSnapshot(),
++            hasOpenExecutionWork: this.hasOpenExecutionWork(),
++          });
++          try {
++            const result = local ? await local.finish() : { accepted: true as const };
++            apiE2eProbe("configured_handle_termination_finish_result", {
++              identity: this.identity,
++              agentRunId: currentRun?.runId ?? null,
++              result,
++              agentRunActive: currentRun?.isActive() ?? false,
++              statusBeforeDispose: this.getStatusSnapshot(),
++            });
++            if (result.accepted) this.dispose();
++            apiE2eProbe("configured_handle_termination_finish_complete", {
++              identity: this.identity,
++              agentRunId: currentRun?.runId ?? null,
++              result,
++              disposed: result.accepted,
++              statusAfter: this.getStatusSnapshot(),
++            });
++            return result;
++          } catch (error) {
++            apiE2eProbe("configured_handle_termination_finish_error", {
++              identity: this.identity,
++              agentRunId: currentRun?.runId ?? null,
++              error: serializeApiE2eError(error),
++              agentRunActive: currentRun?.isActive() ?? false,
++              status: this.getStatusSnapshot(),
++            });
++            throw error;
++          }
+         } });
+         return committed;
+       },
+@@ -207,6 +276,13 @@ export class ConfiguredAgentExecutionHandle {
+     return prepared.commit().finish();
+   }
+   dispose(): void {
++    apiE2eProbe("configured_handle_dispose", {
++      identity: this.identity,
++      platformAgentRunId: this.platformAgentRunId,
++      agentRunId: this.agentRun?.runId ?? null,
++      agentRunActive: this.agentRun?.isActive() ?? false,
++      status: this.getStatusSnapshot(),
++    });
+     this.unsubscribe?.();
+     this.unsubscribe = null;
+     this.agentRun = null;
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-command-queue.ts b/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-command-queue.ts
+index f7d019e96..44c1621b0 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-command-queue.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-command-queue.ts
+@@ -1,3 +1,5 @@
++import { apiE2eProbe } from "../../../api-e2e-probe/correlation-probe.js";
++
+ export type RootTaskCommandKind =
+   | "activate"
+   | "submit_result"
+@@ -7,6 +9,7 @@ export type RootTaskCommandKind =
+ 
+ export type RootTaskQueuedCommand<TResult = unknown> = Readonly<{
+   kind: RootTaskCommandKind;
++  probeTaskId?: string;
+   executeAtQueueHead(): Promise<TResult>;
+ }>;
+ 
+@@ -23,6 +26,8 @@ export class RootTaskFailStoppedError extends Error {
+ }
+ 
+ type QueueEntry<TResult = unknown> = {
++  entryId: number;
++  admittedAt: string;
+   command: RootTaskQueuedCommand<TResult>;
+   resolve(value: TResult): void;
+   reject(reason: unknown): void;
+@@ -38,9 +43,18 @@ export class RootTaskLifecycleCommandQueue {
+   private externalAdmissionOpen = true;
+   private rootFailStopped = false;
+   private running = false;
++  private activeEntry: QueueEntry | null = null;
++  private nextEntryId = 1;
+   private drainWaiters: Array<() => void> = [];
+ 
+   submit<TResult>(command: RootTaskQueuedCommand<TResult>): Promise<TResult> {
++    apiE2eProbe("task_queue_admission_attempt", {
++      commandKind: command.kind,
++      probeTaskId: command.probeTaskId ?? null,
++      rootFailStopped: this.rootFailStopped,
++      externalAdmissionOpen: this.externalAdmissionOpen,
++      queue: this.probeSnapshot(),
++    });
+     if (this.rootFailStopped) return Promise.reject(new RootTaskFailStoppedError());
+     if (!this.externalAdmissionOpen) {
+       return Promise.reject(new Error("Task delegation command admission is closed."));
+@@ -79,10 +93,19 @@ export class RootTaskLifecycleCommandQueue {
+ 
+   private enqueue<TResult>(command: RootTaskQueuedCommand<TResult>): Promise<TResult> {
+     return new Promise<TResult>((resolve, reject) => {
+-      this.entries.push({
++      const entry: QueueEntry<TResult> = {
++        entryId: this.nextEntryId++,
++        admittedAt: new Date().toISOString(),
+         command,
+         resolve: resolve as (value: unknown) => void,
+         reject,
++      };
++      this.entries.push(entry);
++      apiE2eProbe("task_queue_admitted", {
++        entryId: entry.entryId,
++        commandKind: command.kind,
++        probeTaskId: command.probeTaskId ?? null,
++        queue: this.probeSnapshot(),
+       });
+       this.schedule();
+     });
+@@ -99,10 +122,40 @@ export class RootTaskLifecycleCommandQueue {
+       while (this.entries.length > 0) {
+         const entry = this.entries.shift();
+         if (!entry) continue;
++        this.activeEntry = entry;
+         try {
+-          entry.resolve(await entry.command.executeAtQueueHead());
++          apiE2eProbe("task_queue_command_start", {
++            entryId: entry.entryId,
++            commandKind: entry.command.kind,
++            probeTaskId: entry.command.probeTaskId ?? null,
++            admittedAt: entry.admittedAt,
++            queue: this.probeSnapshot(),
++          });
++          const result = await entry.command.executeAtQueueHead();
++          apiE2eProbe("task_queue_command_complete", {
++            entryId: entry.entryId,
++            commandKind: entry.command.kind,
++            probeTaskId: entry.command.probeTaskId ?? null,
++            queue: this.probeSnapshot(),
++          });
++          entry.resolve(result);
+         } catch (error) {
++          apiE2eProbe("task_queue_command_error", {
++            entryId: entry.entryId,
++            commandKind: entry.command.kind,
++            probeTaskId: entry.command.probeTaskId ?? null,
++            queue: this.probeSnapshot(),
++            error: error instanceof Error ? error.message : String(error),
++          });
+           entry.reject(error);
++        } finally {
++          this.activeEntry = null;
++          apiE2eProbe("task_queue_head_released", {
++            entryId: entry.entryId,
++            commandKind: entry.command.kind,
++            probeTaskId: entry.command.probeTaskId ?? null,
++            queue: this.probeSnapshot(),
++          });
+         }
+       }
+     } finally {
+@@ -121,4 +174,26 @@ export class RootTaskLifecycleCommandQueue {
+     this.drainWaiters = [];
+     waiters.forEach((resolve) => resolve());
+   }
++
++  private probeSnapshot() {
++    return {
++      running: this.running,
++      externalAdmissionOpen: this.externalAdmissionOpen,
++      rootFailStopped: this.rootFailStopped,
++      activeHead: this.activeEntry
++        ? {
++            entryId: this.activeEntry.entryId,
++            kind: this.activeEntry.command.kind,
++            probeTaskId: this.activeEntry.command.probeTaskId ?? null,
++            admittedAt: this.activeEntry.admittedAt,
++          }
++        : null,
++      queuedEntries: this.entries.map((entry) => ({
++        entryId: entry.entryId,
++        kind: entry.command.kind,
++        probeTaskId: entry.command.probeTaskId ?? null,
++        admittedAt: entry.admittedAt,
++      })),
++    };
++  }
+ }
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-engine.ts b/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-engine.ts
+index e6a7b3fb1..61a236700 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-engine.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-engine.ts
+@@ -23,6 +23,7 @@ import {
+   type TaskDelegationContext,
+ } from "./task-lifecycle-command.js";
+ import { validateTaskDelegationRecordArrayV1 } from "./task-delegation-record-v1-schema.js";
++import { apiE2eProbe } from "../../../api-e2e-probe/correlation-probe.js";
+ import type {
+   TaskDelegationRecordV1,
+   TaskReview,
+@@ -63,7 +64,7 @@ export class RootTaskLifecycleEngine<TPlacement> {
+     for (const task of ordered) {
+       const current = this.records.find((candidate) => candidate.taskId === task.taskId);
+       if (current?.status === "accepted" || current?.status === "interrupted") {
+-        await this.queue.submitShutdown({ kind: "settle", executeAtQueueHead: () => this.settleAtHead(current.taskId) });
++        await this.queue.submitShutdown({ kind: "settle", probeTaskId: current.taskId, executeAtQueueHead: () => this.settleAtHead(current.taskId) });
+       }
+     }
+     await this.drain();
+@@ -96,6 +97,7 @@ export class RootTaskLifecycleEngine<TPlacement> {
+       const exact = prepared;
+       return await this.queue.submit({
+         kind: "activate",
++        probeTaskId: taskId,
+         executeAtQueueHead: () => this.activateAtHead(context.identity, taskId, placement, description, referenceFiles, startedAt, exact),
+       });
+     } catch (error) {
+@@ -106,10 +108,13 @@ export class RootTaskLifecycleEngine<TPlacement> {
+   }
+ 
+   async submitTaskResult(context: TaskDelegationContext, input: SubmitTaskResultInput): Promise<SubmitTaskResultResult> {
++    apiE2eProbe("task_engine_submit_entry", { identity: context.identity, recordStatuses: this.records.map((record) => ({ taskId: record.taskId, status: record.status })) });
+     this.assertExternal(context.identity);
+     const message = requireTaskString(input.message, "message");
+     const referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
+-    return this.queue.submit({ kind: "submit_result", executeAtQueueHead: () => this.submitAtHead(context.identity, message, referenceFiles) });
++    const result = await this.queue.submit({ kind: "submit_result", executeAtQueueHead: () => this.submitAtHead(context.identity, message, referenceFiles) });
++    apiE2eProbe("task_engine_submit_return", { result });
++    return result;
+   }
+ 
+   async reviewTaskResult(context: TaskDelegationContext, input: ReviewTaskResultInput): Promise<ReviewTaskResultResult> {
+@@ -122,6 +127,7 @@ export class RootTaskLifecycleEngine<TPlacement> {
+     const referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
+     return this.queue.submit({
+       kind: "review_result",
++      probeTaskId: taskId,
+       executeAtQueueHead: () => this.reviewAtHead(context.identity, taskId, input.decision, comment, referenceFiles),
+     });
+   }
+@@ -129,12 +135,14 @@ export class RootTaskLifecycleEngine<TPlacement> {
+   interrupt(taskId: string, reason: string): Promise<void> {
+     return this.queue.submitShutdown({
+       kind: "interrupt",
++      probeTaskId: taskId,
+       executeAtQueueHead: () => this.interruptAtHead(requireTaskString(taskId, "taskId"), requireTaskString(reason, "reason")),
+     });
+   }
+   settle(taskId: string): Promise<void> {
+     return this.queue.submitShutdown({
+       kind: "settle",
++      probeTaskId: taskId,
+       executeAtQueueHead: async () => { await this.settleAtHead(requireTaskString(taskId, "taskId")); },
+     });
+   }
+@@ -177,8 +185,10 @@ export class RootTaskLifecycleEngine<TPlacement> {
+     message: string,
+     referenceFiles: readonly string[],
+   ): Promise<SubmitTaskResultResult> {
++    apiE2eProbe("task_engine_submit_at_head_start", { identity, recordStatuses: this.records.map((record) => ({ taskId: record.taskId, status: record.status })) });
+     this.adapter.authorize(identity);
+     const task = this.findAssignedTask(identity.agentRunId);
++    apiE2eProbe("task_engine_task_selected", { selectedTaskId: task?.taskId ?? null, selectedStatus: task?.status ?? null });
+     if (!task || task.status !== "active") throw new TaskDelegationError("TASK_NOT_ACTIVE", "The caller has no active assigned task.");
+     const submission: TaskSubmission = Object.freeze({
+       submissionId: `submission_${randomUUID().replace(/-/g, "")}`,
+@@ -187,9 +197,15 @@ export class RootTaskLifecycleEngine<TPlacement> {
+       createdAt: new Date().toISOString(),
+     });
+     const next = Object.freeze({ ...task, status: "awaiting_review" as const, updates: Object.freeze([...task.updates, submission]) });
++    apiE2eProbe("task_engine_submission_built", { taskId: task.taskId, previousStatus: task.status, nextStatus: next.status, submissionId: submission.submissionId });
+     await this.commitTransition(task, next, Object.freeze({ kind: "submitted", task: next, submission }));
++    apiE2eProbe("task_engine_submission_committed", { taskId: task.taskId, currentStatus: this.records.find((record) => record.taskId === task.taskId)?.status ?? null });
++    apiE2eProbe("task_engine_delegator_notify_start", { taskId: task.taskId, delegatorAgentRunId: task.delegatorAgentRunId });
+     const warning = await this.notify(task.delegatorAgentRunId, `Task ${task.taskId} result submitted:\n${message}`);
+-    return { task_id: task.taskId, status: "awaiting_review", ...(warning ? { message: warning } : {}) };
++    apiE2eProbe("task_engine_delegator_notify_complete", { taskId: task.taskId, warning });
++    const result = { task_id: task.taskId, status: "awaiting_review" as const, ...(warning ? { message: warning } : {}) };
++    apiE2eProbe("task_engine_submit_at_head_complete", { result });
++    return result;
+   }
+ 
+   private async reviewAtHead(
+@@ -199,6 +215,12 @@ export class RootTaskLifecycleEngine<TPlacement> {
+     comment: string | null,
+     referenceFiles: readonly string[],
+   ): Promise<ReviewTaskResultResult> {
++    apiE2eProbe("task_engine_review_at_head_start", {
++      identity,
++      taskId,
++      decision,
++      recordStatuses: this.records.map((record) => ({ taskId: record.taskId, status: record.status })),
++    });
+     this.adapter.authorize(identity);
+     const task = this.requireTask(taskId);
+     if (task.delegatorAgentRunId !== identity.agentRunId) {
+@@ -220,12 +242,29 @@ export class RootTaskLifecycleEngine<TPlacement> {
+       status: decision === "accept" ? "accepted" as const : "active" as const,
+       updates: Object.freeze([...task.updates, review]),
+     });
++    apiE2eProbe("task_engine_review_transition_built", {
++      taskId,
++      previousStatus: task.status,
++      nextStatus: next.status,
++      decision,
++      reviewId: review.reviewId,
++    });
+     await this.commitTransition(task, next, Object.freeze({ kind: "reviewed", task: next, review }));
++    apiE2eProbe("task_engine_review_transition_committed", {
++      taskId,
++      decision,
++      currentStatus: this.records.find((record) => record.taskId === taskId)?.status ?? null,
++    });
+     const warning = decision === "request_revision"
+       ? await this.notify(this.adapter.taskAssigneeAgentRunId(next), `Task ${taskId} revision requested:\n${comment}`)
+       : null;
+-    if (decision === "accept") this.scheduleTerminalSettlementSweep();
+-    return { task_id: taskId, status: next.status, ...(warning ? { message: warning } : {}) };
++    if (decision === "accept") {
++      apiE2eProbe("task_engine_accept_schedule_settlement", { taskId });
++      this.scheduleTerminalSettlementSweep();
++    }
++    const result = { task_id: taskId, status: next.status, ...(warning ? { message: warning } : {}) };
++    apiE2eProbe("task_engine_review_at_head_complete", { taskId, decision, result });
++    return result;
+   }
+ 
+   private async commitTransition(
+@@ -236,13 +275,18 @@ export class RootTaskLifecycleEngine<TPlacement> {
+     const nextRecords = validateTaskDelegationRecordArrayV1(
+       this.records.map((record) => record.taskId === previous.taskId ? next : record),
+     );
++    apiE2eProbe("task_engine_commit_transition_start", { taskId: previous.taskId, previousStatus: previous.status, nextStatus: next.status, eventKind: event?.kind ?? null });
+     await this.adapter.commitRecordTransition({
+       previous,
+       next,
+       nextRecords,
+       event,
+-      commitRecords: () => { this.records = nextRecords; },
++      commitRecords: () => {
++        this.records = nextRecords;
++        apiE2eProbe("task_engine_in_memory_commit", { taskId: previous.taskId, status: next.status });
++      },
+     });
++    apiE2eProbe("task_engine_commit_transition_complete", { taskId: previous.taskId, status: next.status });
+   }
+ 
+   private async interruptAtHead(taskId: string, reason: string): Promise<void> {
+@@ -264,12 +308,26 @@ export class RootTaskLifecycleEngine<TPlacement> {
+ 
+   private async settleAtHead(taskId: string): Promise<boolean> {
+     const task = this.requireTask(taskId);
++    apiE2eProbe("task_engine_settle_at_head_start", {
++      taskId,
++      taskStatus: task.status,
++      isExecutionSettled: this.adapter.isTaskExecutionSettled(task),
++      blockedByOpenChild: this.hasOpenChildTask(task),
++      recordStatuses: this.records.map((record) => ({ taskId: record.taskId, status: record.status })),
++    });
+     if (task.status !== "accepted" && task.status !== "interrupted") {
+       throw new TaskDelegationError("TASK_NOT_SETTLEABLE", `Task '${taskId}' is not terminal.`);
+     }
+-    if (this.adapter.isTaskExecutionSettled(task)) return true;
+-    if (this.hasOpenChildTask(task)) return false;
++    if (this.adapter.isTaskExecutionSettled(task)) {
++      apiE2eProbe("task_engine_settle_at_head_already_settled", { taskId });
++      return true;
++    }
++    if (this.hasOpenChildTask(task)) {
++      apiE2eProbe("task_engine_settle_at_head_open_child", { taskId });
++      return false;
++    }
+     const settledAt = new Date().toISOString();
++    apiE2eProbe("task_engine_settle_adapter_start", { taskId, settledAt });
+     const settled = await this.adapter.settleTaskExecution({
+       task,
+       currentRecords: this.records,
+@@ -277,6 +335,7 @@ export class RootTaskLifecycleEngine<TPlacement> {
+       remainsBlockedByOpenChild: () => this.hasOpenChildTask(task),
+       event: Object.freeze({ kind: "settled", task, settledAt }),
+     });
++    apiE2eProbe("task_engine_settle_adapter_complete", { taskId, settledAt, settled });
+     if (settled) this.scheduleTerminalSettlementSweep();
+     return settled;
+   }
+@@ -313,14 +372,31 @@ export class RootTaskLifecycleEngine<TPlacement> {
+   }
+ 
+   private scheduleTerminalSettlementSweep(): void {
++    apiE2eProbe("task_engine_settlement_sweep_schedule_attempt", {
++      rootFailStopped: this.rootFailStopped,
++      alreadyScheduled: this.settlementSweepScheduled,
++      terminalUnsettledTaskIds: this.records
++        .filter((task) => (task.status === "accepted" || task.status === "interrupted") && !this.adapter.isTaskExecutionSettled(task))
++        .map((task) => task.taskId),
++    });
+     if (this.rootFailStopped || this.settlementSweepScheduled) return;
+     this.settlementSweepScheduled = true;
+     queueMicrotask(() => {
+       this.settlementSweepScheduled = false;
++      apiE2eProbe("task_engine_settlement_sweep_start", {
++        recordStatuses: this.records.map((task) => ({ taskId: task.taskId, status: task.status, settled: this.adapter.isTaskExecutionSettled(task) })),
++      });
+       if (this.rootFailStopped) return;
+       for (const task of this.records) {
+         if (task.status !== "accepted" && task.status !== "interrupted") continue;
+-        void this.settle(task.taskId).catch((error) => console.error(`Task '${task.taskId}' settlement failed:`, error));
++        apiE2eProbe("task_engine_settlement_sweep_enqueue", { taskId: task.taskId });
++        void this.settle(task.taskId).then(
++          () => apiE2eProbe("task_engine_settlement_sweep_task_complete", { taskId: task.taskId }),
++          (error) => {
++            apiE2eProbe("task_engine_settlement_sweep_task_error", { taskId: task.taskId, error: error instanceof Error ? error.message : String(error) });
++            console.error(`Task '${task.taskId}' settlement failed:`, error);
++          },
++        );
+       }
+     });
+   }
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts b/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+index 55cab98a9..4accb5541 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+@@ -35,6 +35,7 @@ import {
+   type CodexPendingMcpToolCall,
+ } from "./codex-pending-mcp-tool-call-registry.js";
+ import type { SystemInstructionTraceRecord } from "autobyteus-ts";
++import { apiE2eProbe } from "../../../../api-e2e-probe/correlation-probe.js";
+ 
+ export type { CodexPendingMcpToolCall } from "./codex-pending-mcp-tool-call-registry.js";
+ 
+@@ -156,6 +157,13 @@ export class CodexThread {
+   }
+ 
+   markTurnStarted(turnId: string | null): void {
++    apiE2eProbe("codex_thread_turn_started", {
++      agentRunId: this.runId,
++      threadId: this.threadId,
++      turnId,
++      previousStatus: this.currentStatus,
++      previousActiveTurnId: this.activeTurnId,
++    });
+     this.currentStatus = "RUNNING";
+     this.runContext.runtimeContext.activeTurnId = turnId;
+     this.lastTerminalTurnId = null;
+@@ -163,6 +171,14 @@ export class CodexThread {
+ 
+   markTurnCompleted(turnId?: string | null): void {
+     const completedTurnId = turnId ?? null;
++    apiE2eProbe("codex_thread_turn_completed_observed", {
++      agentRunId: this.runId,
++      threadId: this.threadId,
++      completedTurnId,
++      currentStatus: this.currentStatus,
++      activeTurnId: this.activeTurnId,
++      admitted: Boolean(completedTurnId && this.activeTurnId === completedTurnId),
++    });
+     if (!completedTurnId || this.activeTurnId !== completedTurnId) {
+       return;
+     }
+@@ -170,9 +186,23 @@ export class CodexThread {
+     this.lastTerminalTurnId = completedTurnId;
+     this.runContext.runtimeContext.activeTurnId = null;
+     this.pendingMcpToolCalls.clear();
++    apiE2eProbe("codex_thread_turn_completed_committed", {
++      agentRunId: this.runId,
++      threadId: this.threadId,
++      completedTurnId,
++      currentStatus: this.currentStatus,
++      activeTurnId: this.activeTurnId,
++    });
+   }
+ 
+   setCurrentStatus(status: string | null): void {
++    apiE2eProbe("codex_thread_status_observed", {
++      agentRunId: this.runId,
++      threadId: this.threadId,
++      previousStatus: this.currentStatus,
++      nextStatus: status,
++      activeTurnId: this.activeTurnId,
++    });
+     this.currentStatus = status;
+     const normalizedStatus = status?.trim().toUpperCase() ?? null;
+     if (normalizedStatus === "IDLE") {
+@@ -366,6 +396,15 @@ export class CodexThread {
+     method: string,
+     params: JsonObject,
+   ): void {
++    apiE2eProbe("codex_provider_request", {
++      agentRunId: this.runId,
++      threadId: this.threadId,
++      turnId: this.activeTurnId,
++      providerRequestId: requestId,
++      method,
++      params,
++      currentStatus: this.currentStatus,
++    });
+     void applyAppServerRequest({
+       codexThread: this,
+       requestId,
+diff --git a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+index 0b440b7ba..5a1a72f07 100644
+--- a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
++++ b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+@@ -31,6 +31,7 @@ import {
+   type AgentApiStatus,
+   type AgentStatusPayload,
+ } from "./agent-status-payload.js";
++import { apiE2eProbe, serializeApiE2eError } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ type AgentRunEventListener = (event: AgentRunEvent) => void;
+ type ClaimedInputDispatch = { claim: AgentRunInputDispatchClaim; commandToken: number | null };
+@@ -473,10 +474,25 @@ export class AgentRun {
+   }
+ 
+   private async prepareTerminationOnce(): Promise<PreparedAgentRunTermination> {
++    apiE2eProbe("agent_run_prepare_termination_once_start", {
++      agentRunId: this.runId,
++      runtimeKind: this.runtimeKind,
++      isActive: this.isActive(),
++      status: this.getStatusSnapshot(),
++      backendLifecycle: this.backend.getLifecycleSnapshot(),
++      activeInputDispatch: Boolean(this.activeInputDispatch),
++    });
+     await this.dispatchQueue.enqueue(this.runId, () => this.inputAdmissionState.quiesce());
++    apiE2eProbe("agent_run_input_admission_quiesced", { agentRunId: this.runId, status: this.getStatusSnapshot(), backendLifecycle: this.backend.getLifecycleSnapshot() });
+     await this.drainInputAfterLifecycleChange();
+     await this.inputAdmissionState.waitForQuiescence();
+     await this.waitForActiveInputDispatch();
++    apiE2eProbe("agent_run_prepare_termination_quiescence_complete", {
++      agentRunId: this.runId,
++      isActive: this.isActive(),
++      status: this.getStatusSnapshot(),
++      backendLifecycle: this.backend.getLifecycleSnapshot(),
++    });
+ 
+     const prepared = createPreparedAgentRunTermination({
+       runId: this.runId,
+@@ -488,6 +504,7 @@ export class AgentRun {
+       finishCommitted: () => this.finishCommittedTermination(),
+     });
+     this.preparedTermination = prepared;
++    apiE2eProbe("agent_run_prepare_termination_once_complete", { agentRunId: this.runId, status: this.getStatusSnapshot(), backendLifecycle: this.backend.getLifecycleSnapshot() });
+     return prepared;
+   }
+ 
+@@ -504,7 +521,27 @@ export class AgentRun {
+   }
+ 
+   private async finishCommittedTerminationOnce(): Promise<AgentOperationResult> {
+-    const result = await this.backend.terminate();
++    apiE2eProbe("agent_run_backend_termination_start", {
++      agentRunId: this.runId,
++      runtimeKind: this.runtimeKind,
++      isActive: this.isActive(),
++      status: this.getStatusSnapshot(),
++      backendLifecycle: this.backend.getLifecycleSnapshot(),
++    });
++    let result: AgentOperationResult;
++    try {
++      result = await this.backend.terminate();
++    } catch (error) {
++      apiE2eProbe("agent_run_backend_termination_error", { agentRunId: this.runId, error: serializeApiE2eError(error) });
++      throw error;
++    }
++    apiE2eProbe("agent_run_backend_termination_complete", {
++      agentRunId: this.runId,
++      result,
++      isActive: this.isActive(),
++      status: this.getStatusSnapshot(),
++      backendLifecycle: this.backend.getLifecycleSnapshot(),
++    });
+     if (!result.accepted) return result;
+     await this.dispatchQueue.enqueue(this.runId, async () => {
+       this.inputAdmissionState.settleAcceptedTermination();
+@@ -515,6 +552,12 @@ export class AgentRun {
+       this.dispatchCanonicalStatus();
+     });
+     this.unsubscribeFromBackendSource();
++    apiE2eProbe("agent_run_committed_termination_complete", {
++      agentRunId: this.runId,
++      result,
++      isActive: this.isActive(),
++      status: this.getStatusSnapshot(),
++    });
+     return result;
+   }
+ 
+diff --git a/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts b/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+index e216651b0..daef4b6e2 100644
+--- a/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
++++ b/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+@@ -1,3 +1,4 @@
++import { apiE2eProbe, serializeApiE2eError } from "../../api-e2e-probe/correlation-probe.js";
+ import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+ import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+ import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
+@@ -337,18 +338,27 @@ export class GeneralProcessRunSupervisor {
+     this.agentTeamRunManager.closeRootAdmission();
+     this.agentRunManager.closeActivationAdmission();
+     try {
++      apiE2eProbe("shutdown_phase_start", { phase: "agent_org_runs" });
+       await this.agentOrgRunManager.stopAllAgentOrgRuns();
++      apiE2eProbe("shutdown_phase_complete", { phase: "agent_org_runs" });
+     } catch (error) {
++      apiE2eProbe("shutdown_phase_error", { phase: "agent_org_runs", error: serializeApiE2eError(error) });
+       errors.push(error);
+     }
+     try {
++      apiE2eProbe("shutdown_phase_start", { phase: "agent_team_runs" });
+       await this.agentTeamRunManager.stopAllTeamRuns();
++      apiE2eProbe("shutdown_phase_complete", { phase: "agent_team_runs" });
+     } catch (error) {
++      apiE2eProbe("shutdown_phase_error", { phase: "agent_team_runs", error: serializeApiE2eError(error) });
+       errors.push(error);
+     }
+     try {
++      apiE2eProbe("shutdown_phase_start", { phase: "agent_runs" });
+       await this.agentRunManager.stopAllAgentRuns();
++      apiE2eProbe("shutdown_phase_complete", { phase: "agent_runs" });
+     } catch (error) {
++      apiE2eProbe("shutdown_phase_error", { phase: "agent_runs", error: serializeApiE2eError(error) });
+       errors.push(error);
+     }
+     try {
+@@ -366,8 +376,11 @@ export class GeneralProcessRunSupervisor {
+       errors.push(error);
+     }
+     if (errors.length) {
+-      throw new AggregateError(errors, "General process run supervisor close failed.");
++      const aggregate = new AggregateError(errors, "General process run supervisor close failed.");
++      apiE2eProbe("shutdown_supervisor_aggregate", { error: serializeApiE2eError(aggregate) });
++      throw aggregate;
+     }
++    apiE2eProbe("shutdown_supervisor_complete");
+   }
+ 
+ }
+diff --git a/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts b/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+index 2605d25e3..8790bc35c 100644
+--- a/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
++++ b/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+@@ -33,6 +33,7 @@ import {
+ } from "../runtime/agent-run-activation-registry.js";
+ import { AgentRunActivationCandidate, type AgentRunCandidateAbortResult } from "./agent-run-activation-candidate.js";
+ import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
++import { apiE2eProbe, serializeApiE2eError } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ const logger = console;
+ 
+@@ -188,6 +189,13 @@ export class AgentRunManager {
+   prepareAgentRunTermination(
+     expectedRun: AgentRun,
+   ): Promise<PreparedAgentRunTermination> {
++    apiE2eProbe("agent_run_manager_prepare_termination_entry", {
++      agentRunId: expectedRun.runId,
++      isCurrentPublishedRun: this.activationRegistry.getActiveRun(expectedRun.runId) === expectedRun,
++      isActive: expectedRun.isActive(),
++      status: expectedRun.getStatusSnapshot(),
++      existingPreparation: this.managedTerminationPreparations.has(expectedRun),
++    });
+     if (this.activationRegistry.getActiveRun(expectedRun.runId) !== expectedRun) {
+       return Promise.reject(new AgentTerminationError(
+         `Agent run '${expectedRun.runId}' is not the current published run.`,
+@@ -196,6 +204,11 @@ export class AgentRunManager {
+     const existing = this.managedTerminationPreparations.get(expectedRun);
+     if (existing) return existing;
+     const preparation = expectedRun.prepareTermination().then((runPreparation) => {
++      apiE2eProbe("agent_run_manager_run_prepare_complete", {
++        agentRunId: expectedRun.runId,
++        isActive: expectedRun.isActive(),
++        status: expectedRun.getStatusSnapshot(),
++      });
+       let state: "prepared" | "cancelled" | "committed" = "prepared";
+       let committed: CommittedAgentRunTermination | null = null;
+       return Object.freeze({
+@@ -215,7 +228,13 @@ export class AgentRunManager {
+           }
+           if (committed) return committed;
+           state = "committed";
++          apiE2eProbe("agent_run_manager_termination_commit_start", {
++            agentRunId: expectedRun.runId,
++            isActive: expectedRun.isActive(),
++            status: expectedRun.getStatusSnapshot(),
++          });
+           const runTermination = runPreparation.commit();
++          apiE2eProbe("agent_run_manager_termination_commit_complete", { agentRunId: expectedRun.runId });
+           let currentAttempt: Promise<AgentOperationResult> | null = null;
+           let terminalAttempt: Promise<AgentOperationResult> | null = null;
+           committed = Object.freeze({
+@@ -226,6 +245,11 @@ export class AgentRunManager {
+                 expectedRun,
+                 runTermination,
+               );
++              apiE2eProbe("agent_run_manager_finish_attempt_created", {
++                agentRunId: expectedRun.runId,
++                isActive: expectedRun.isActive(),
++                status: expectedRun.getStatusSnapshot(),
++              });
+               currentAttempt = attempt;
+               void attempt.then((result) => {
+                 if (result.accepted) terminalAttempt = attempt;
+@@ -458,7 +482,29 @@ export class AgentRunManager {
+     expectedRun: AgentRun,
+     runTermination: CommittedAgentRunTermination,
+   ) {
+-    const result = await runTermination.finish();
++    apiE2eProbe("agent_run_manager_finish_published_start", {
++      agentRunId: expectedRun.runId,
++      isActive: expectedRun.isActive(),
++      status: expectedRun.getStatusSnapshot(),
++    });
++    let result;
++    try {
++      result = await runTermination.finish();
++    } catch (error) {
++      apiE2eProbe("agent_run_manager_run_termination_error", {
++        agentRunId: expectedRun.runId,
++        error: serializeApiE2eError(error),
++        isActive: expectedRun.isActive(),
++        status: expectedRun.getStatusSnapshot(),
++      });
++      throw error;
++    }
++    apiE2eProbe("agent_run_manager_run_termination_complete", {
++      agentRunId: expectedRun.runId,
++      result,
++      isActive: expectedRun.isActive(),
++      status: expectedRun.getStatusSnapshot(),
++    });
+     if (!result.accepted) return result;
+     if (expectedRun.isActive()) {
+       throw new AgentTerminationError(
+@@ -470,12 +516,22 @@ export class AgentRunManager {
+       expectedRun,
+       reason: "explicit_termination",
+     });
++    apiE2eProbe("agent_run_manager_activation_registry_remove", {
++      agentRunId: expectedRun.runId,
++      removalKind: removal.kind,
++      isActive: expectedRun.isActive(),
++    });
+     if (removal.kind !== "removed") {
+       throw new AgentTerminationError(
+         `Agent run '${expectedRun.runId}' is no longer the current published run.`,
+       );
+     }
+     this.activationRegistry.assertCleanupSucceeded(removal);
++    apiE2eProbe("agent_run_manager_finish_published_complete", {
++      agentRunId: expectedRun.runId,
++      result,
++      isActive: expectedRun.isActive(),
++    });
+     return result;
+   }
+ 
+diff --git a/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts b/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+index addb5ea75..b33449a51 100644
+--- a/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
++++ b/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+@@ -5,6 +5,7 @@ import type {
+ import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+ import type { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
+ import type { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
++import { apiE2eProbe, serializeApiE2eError } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ export type AgentRunResourceReleaseResult = Readonly<{
+   state: "released" | "already_released";
+@@ -75,6 +76,11 @@ export class AgentRunResourceManager {
+ 
+   release(runId: string, expectedRun: AgentRun): AgentRunResourceReleaseResult {
+     const record = this.resourcesByRunId.get(runId);
++    apiE2eProbe("agent_run_resources_release_entry", {
++      runId,
++      recordPresent: Boolean(record),
++      expectedRunMatches: record?.run === expectedRun,
++    });
+     if (!record || record.run !== expectedRun) {
+       return this.alreadyReleased(runId);
+     }
+@@ -88,21 +94,26 @@ export class AgentRunResourceManager {
+     };
+ 
+     try {
++      apiE2eProbe("agent_run_mcp_sessions_deactivate_start", { runId });
+       deactivatedSessionCount = this.dependencies.runSessions.deactivateForRun(runId);
++      apiE2eProbe("agent_run_mcp_sessions_deactivate_complete", { runId, deactivatedSessionCount });
+     } catch (error) {
++      apiE2eProbe("agent_run_mcp_sessions_deactivate_error", { runId, error: serializeApiE2eError(error) });
+       errors.push(toError(error));
+     }
+     this.detach(record.fileChanges, "fileChanges", detached, errors);
+     this.detach(record.artifactRelay, "artifactRelay", detached, errors);
+     this.detach(record.memoryRecorder, "memoryRecorder", detached, errors);
+ 
+-    return Object.freeze({
++    const result = Object.freeze({
+       state: "released" as const,
+       runId,
+       deactivatedSessionCount,
+       detached: Object.freeze(detached),
+       errors: Object.freeze(errors),
+     });
++    apiE2eProbe("agent_run_resources_release_complete", { result });
++    return result;
+   }
+ 
+   private detach(
+diff --git a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts
+index aa9cd0939..d08ae9a96 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts
+@@ -1,3 +1,5 @@
++import { apiE2eProbe } from "../../api-e2e-probe/correlation-probe.js";
++
+ /** Root-private barrier for operations that can change the materialized Team tree. */
+ export class RootTeamRunMaterializationGate {
+   private open = true;
+@@ -11,10 +13,18 @@ export class RootTeamRunMaterializationGate {
+       throw new Error(`RootTeamRun '${this.options.rootTeamRunId}' is not accepting materializing operations.`);
+     }
+     this.admitted += 1;
++    apiE2eProbe("team_materialization_gate_admitted", { rootRunId: this.options.rootTeamRunId, admitted: this.admitted });
+     try {
+-      return await operation();
++      apiE2eProbe("team_materialization_gate_command_start", { rootRunId: this.options.rootTeamRunId });
++      const result = await operation();
++      apiE2eProbe("team_materialization_gate_command_complete", { rootRunId: this.options.rootTeamRunId });
++      return result;
++    } catch (error) {
++      apiE2eProbe("team_materialization_gate_command_error", { rootRunId: this.options.rootTeamRunId, error: error instanceof Error ? error.message : String(error) });
++      throw error;
+     } finally {
+       this.admitted -= 1;
++      apiE2eProbe("team_materialization_gate_released", { rootRunId: this.options.rootTeamRunId, admitted: this.admitted });
+       if (this.admitted === 0) {
+         const waiters = this.drainWaiters;
+         this.drainWaiters = [];
+diff --git a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+index 7e5b6e2f5..5e2151f96 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+@@ -1,3 +1,4 @@
++import { apiE2eProbe } from "../../api-e2e-probe/correlation-probe.js";
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+ import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
+@@ -282,6 +283,12 @@ export class RootTeamRun {
+   }
+ 
+   submitTaskResult(context: TaskDelegationContext, input: SubmitTaskResultInput): Promise<SubmitTaskResultResult> {
++    apiE2eProbe("team_task_capability_submit_entry", {
++      rootSubjectKind: "agent_team",
++      rootRunId: this.teamRunId,
++      callerAgentRunId: context.identity.agentRunId,
++      callerMemberAddress: context.identity.memberAddress,
++    });
+     return this.materializationGate.run(() => this.taskDelegation.submitTaskResult(context, input));
+   }
+ 
+diff --git a/autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts b/autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts
+index 83bd3e7f4..1bca7b25c 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts
+@@ -43,6 +43,7 @@ export class FlatTeamAgentExecutionHandle {
+ 
+   isActive(): boolean { return this.handle?.isActive() ?? false; }
+   hasOpenExecutionWork(): boolean { return this.handle?.hasOpenExecutionWork() ?? false; }
++  getProbeStatusSnapshot() { return this.handle?.getStatusSnapshot() ?? null; }
+   getLeafAgentStatusSnapshots() {
+     const status = this.handle?.getStatusSnapshot();
+     return [createTeamAgentStatusSnapshot({
+diff --git a/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts b/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+index 61e3687b0..cfc0ed0e9 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+@@ -12,6 +12,7 @@ import type { RootedAgentMemoryLocator } from "../../../agent-collaboration/exec
+ import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
+ import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
+ import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
++import { apiE2eProbe, serializeApiE2eError } from "../../../api-e2e-probe/correlation-probe.js";
+ 
+ type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
+ 
+@@ -125,17 +126,56 @@ export class TaskAgentExecutionRegistry {
+ 
+   async prepareSettlement(taskId: string, agentRunId: string): Promise<PreparedTaskSettlement | null> {
+     const handle = this.active.get(agentRunId);
++    apiE2eProbe("task_agent_registry_prepare_settlement_entry", {
++      taskId,
++      agentRunId,
++      activeRunIds: [...this.active.keys()],
++      settlingRunIds: [...this.settling],
++      handlePresent: Boolean(handle),
++      handleSnapshot: handle ? {
++        isActive: handle.isActive(),
++        hasOpenExecutionWork: handle.hasOpenExecutionWork(),
++        status: handle.getProbeStatusSnapshot(),
++      } : null,
++    });
+     if (!handle) return null;
+     if (this.settling.has(agentRunId)) throw new Error(`Task AgentRun '${agentRunId}' is already preparing settlement.`);
+     this.settling.add(agentRunId);
+     let local;
+     try {
++      apiE2eProbe("task_agent_registry_handle_prepare_termination_start", {
++        taskId,
++        agentRunId,
++        isActive: handle.isActive(),
++        hasOpenExecutionWork: handle.hasOpenExecutionWork(),
++        status: handle.getProbeStatusSnapshot(),
++      });
+       local = await handle.prepareTermination();
++      apiE2eProbe("task_agent_registry_handle_prepare_termination_complete", {
++        taskId,
++        agentRunId,
++        isActive: handle.isActive(),
++        hasOpenExecutionWork: handle.hasOpenExecutionWork(),
++        status: handle.getProbeStatusSnapshot(),
++      });
+     } catch (error) {
++      apiE2eProbe("task_agent_registry_handle_prepare_termination_error", {
++        taskId,
++        agentRunId,
++        error: serializeApiE2eError(error),
++      });
+       this.settling.delete(agentRunId);
+       throw error;
+     }
+     if (this.active.get(agentRunId) !== handle || handle.hasOpenExecutionWork()) {
++      apiE2eProbe("task_agent_registry_prepare_settlement_cancel_open_work", {
++        taskId,
++        agentRunId,
++        sameActiveHandle: this.active.get(agentRunId) === handle,
++        isActive: handle.isActive(),
++        hasOpenExecutionWork: handle.hasOpenExecutionWork(),
++        status: handle.getProbeStatusSnapshot(),
++      });
+       local.cancel();
+       this.settling.delete(agentRunId);
+       return null;
+@@ -151,16 +191,58 @@ export class TaskAgentExecutionRegistry {
+         state = "cancelled";
+         local.cancel();
+         this.settling.delete(agentRunId);
++        apiE2eProbe("task_agent_registry_settlement_cancel_before_durability", { taskId, agentRunId });
+       },
+       commitAfterDurability: () => {
+         if (state === "cancelled") throw new Error(`Task AgentRun '${agentRunId}' settlement was cancelled.`);
+         if (committed) return committed;
+         if (this.active.get(agentRunId) !== handle) throw new Error(`Task AgentRun '${agentRunId}' changed before settlement commit.`);
+         state = "committed";
++        apiE2eProbe("task_agent_registry_settlement_commit_after_durability_start", {
++          taskId,
++          agentRunId,
++          isActive: handle.isActive(),
++          hasOpenExecutionWork: handle.hasOpenExecutionWork(),
++          status: handle.getProbeStatusSnapshot(),
++        });
+         this.active.delete(agentRunId);
+         this.settling.delete(agentRunId);
+         const localCommit = local.commit();
+-        committed = Object.freeze({ finishLocalTeardown: () => localCommit.finish() });
++        apiE2eProbe("task_agent_registry_settlement_commit_after_durability_complete", {
++          taskId,
++          agentRunId,
++          activeRunIds: [...this.active.keys()],
++        });
++        committed = Object.freeze({ finishLocalTeardown: async () => {
++          apiE2eProbe("task_agent_registry_finish_local_teardown_start", {
++            taskId,
++            agentRunId,
++            handleIsActive: handle.isActive(),
++            handleHasOpenExecutionWork: handle.hasOpenExecutionWork(),
++            handleStatus: handle.getProbeStatusSnapshot(),
++          });
++          try {
++            const result = await localCommit.finish();
++            apiE2eProbe("task_agent_registry_finish_local_teardown_complete", {
++              taskId,
++              agentRunId,
++              result,
++              handleIsActive: handle.isActive(),
++              handleHasOpenExecutionWork: handle.hasOpenExecutionWork(),
++              handleStatus: handle.getProbeStatusSnapshot(),
++            });
++            return result;
++          } catch (error) {
++            apiE2eProbe("task_agent_registry_finish_local_teardown_error", {
++              taskId,
++              agentRunId,
++              error: serializeApiE2eError(error),
++              handleIsActive: handle.isActive(),
++              handleStatus: handle.getProbeStatusSnapshot(),
++            });
++            throw error;
++          }
++        } });
+         return committed;
+       },
+     });
+diff --git a/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-lifecycle-adapter.ts b/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-lifecycle-adapter.ts
+index 255684059..43eed1280 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-lifecycle-adapter.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-lifecycle-adapter.ts
+@@ -26,6 +26,7 @@ import { taskAssigneeAgentRunId } from "./task-delegation-record-resolver.js";
+ import { taskOwnsAgent } from "./task-delegation-ownership.js";
+ import type { TaskDelegationServiceOptions } from "./task-delegation-service-contract.js";
+ import { projectTaskAgentExecution, projectTaskTeamExecution } from "./task-execution-tree-projection.js";
++import { apiE2eProbe } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ /** Team-private tree/index/persistence/event adapter for RootTaskLifecycleEngine. */
+ export class TeamTaskLifecycleAdapter implements RootTaskLifecycleAdapter<ResolvedTeamRecipient> {
+@@ -100,18 +101,25 @@ export class TeamTaskLifecycleAdapter implements RootTaskLifecycleAdapter<Resolv
+ 
+   async commitRecordTransition(input: Parameters<RootTaskLifecycleAdapter<ResolvedTeamRecipient>["commitRecordTransition"]>[0]): Promise<void> {
+     const nextTasks = this.tasksEnvelope(input.nextRecords);
++    apiE2eProbe("team_task_adapter_persistence_start", { taskId: input.previous.taskId, previousStatus: input.previous.status, nextStatus: input.next.status });
+     const result = await this.options.commitTaskMutation({
+       kind: "record_transition",
+       nextTasks,
+       cancelBeforeDurability: () => undefined,
+       commitAfterDurability: () => {
++        apiE2eProbe("team_task_adapter_durable_write_complete", { taskId: input.previous.taskId });
+         input.commitRecords();
+         this.options.replaceState({ tree: this.options.getTree(), tasks: nextTasks });
+         const event = input.event ? this.toTeamEvent(input.event) : null;
+-        if (event) this.options.publish(event);
++        if (event) {
++          this.options.publish(event);
++          apiE2eProbe("team_task_adapter_event_published", { taskId: input.previous.taskId, eventKind: input.event?.kind ?? null });
++        }
+       },
+     });
++    apiE2eProbe("team_task_adapter_persistence_result", { taskId: input.previous.taskId, outcome: result.outcome });
+     this.assertCommitted(result, `Task '${input.previous.taskId}' transition`);
++    apiE2eProbe("team_task_adapter_transition_complete", { taskId: input.previous.taskId });
+   }
+ 
+   taskAssigneeAgentRunId(task: TaskDelegationRecordV1): string {
+@@ -126,10 +134,40 @@ export class TeamTaskLifecycleAdapter implements RootTaskLifecycleAdapter<Resolv
+ 
+   async settleTaskExecution(input: Parameters<RootTaskLifecycleAdapter<ResolvedTeamRecipient>["settleTaskExecution"]>[0]): Promise<boolean> {
+     const indexed = this.options.getIndex().getTaskExecution(input.task.taskExecution);
+-    if (!indexed || indexed.source.settledAt) return true;
+-    if (input.remainsBlockedByOpenChild()) return false;
++    apiE2eProbe("team_task_adapter_settlement_entry", {
++      rootTeamRunId: this.options.rootTeamRunId,
++      taskId: input.task.taskId,
++      taskStatus: input.task.status,
++      settledAtRequested: input.settledAt,
++      indexed: indexed ? {
++        ownerTeamRunId: indexed.ownerTeamRunId,
++        address: indexed.address,
++        sourceSettledAt: indexed.source.settledAt ?? null,
++        taskExecution: input.task.taskExecution,
++      } : null,
++    });
++    if (!indexed || indexed.source.settledAt) {
++      apiE2eProbe("team_task_adapter_settlement_already_complete", { rootTeamRunId: this.options.rootTeamRunId, taskId: input.task.taskId });
++      return true;
++    }
++    if (input.remainsBlockedByOpenChild()) {
++      apiE2eProbe("team_task_adapter_settlement_blocked_child", { rootTeamRunId: this.options.rootTeamRunId, taskId: input.task.taskId });
++      return false;
++    }
+     const owner = await this.options.requireTeamRun(indexed.ownerTeamRunId);
++    apiE2eProbe("team_task_adapter_prepare_direct_settlement_start", {
++      rootTeamRunId: this.options.rootTeamRunId,
++      ownerTeamRunId: indexed.ownerTeamRunId,
++      taskId: input.task.taskId,
++    });
+     const prepared = await owner.prepareDirectTaskSettlement(input.task.taskId, input.task.taskExecution);
++    apiE2eProbe("team_task_adapter_prepare_direct_settlement_complete", {
++      rootTeamRunId: this.options.rootTeamRunId,
++      ownerTeamRunId: indexed.ownerTeamRunId,
++      taskId: input.task.taskId,
++      prepared: Boolean(prepared),
++      binding: prepared?.binding ?? null,
++    });
+     if (!prepared) return false;
+     const refreshed = this.options.getIndex().getTaskExecution(input.task.taskExecution);
+     if (!refreshed || refreshed.source.settledAt
+@@ -138,15 +176,32 @@ export class TeamTaskLifecycleAdapter implements RootTaskLifecycleAdapter<Resolv
+       || !sameTaskExecutionBinding(input.task.taskExecution, prepared.binding)
+       || input.remainsBlockedByOpenChild()) {
+       prepared.cancelBeforeDurability();
++      apiE2eProbe("team_task_adapter_settlement_cancelled_before_durability", {
++        rootTeamRunId: this.options.rootTeamRunId,
++        taskId: input.task.taskId,
++        refreshedPresent: Boolean(refreshed),
++        refreshedSettledAt: refreshed?.source.settledAt ?? null,
++      });
+       return !refreshed || Boolean(refreshed.source.settledAt);
+     }
+     const runId = "agentRunId" in input.task.taskExecution
+       ? input.task.taskExecution.agentRunId
+       : input.task.taskExecution.teamRunId;
+     let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
++    apiE2eProbe("team_task_adapter_settlement_persistence_start", {
++      rootTeamRunId: this.options.rootTeamRunId,
++      taskId: input.task.taskId,
++      taskExecutionRunId: runId,
++      settledAt: input.settledAt,
++    });
+     const result = await this.options.commitTaskSettlement({
+       settlement: prepared,
+       prepareAgainstCurrent: () => {
++        apiE2eProbe("team_task_adapter_settlement_prepare_against_current", {
++          rootTeamRunId: this.options.rootTeamRunId,
++          taskId: input.task.taskId,
++          settledAt: input.settledAt,
++        });
+         const nextTree = settleTaskExecutionInTree({
+           tree: this.options.getTree(),
+           taskExecutionRunId: runId,
+@@ -157,24 +212,55 @@ export class TeamTaskLifecycleAdapter implements RootTaskLifecycleAdapter<Resolv
+           nextTree,
+           commitTreeAndEvent: () => {
+             if (!nextTreeAtCommit) throw new Error("Task settlement tree was not prepared at the lock head.");
++            apiE2eProbe("team_task_adapter_settlement_durable_write_complete", {
++              rootTeamRunId: this.options.rootTeamRunId,
++              taskId: input.task.taskId,
++              settledAt: input.settledAt,
++            });
+             this.options.replaceState({ tree: nextTreeAtCommit, tasks: this.tasksEnvelope(input.currentRecords) });
+             this.options.publish(this.toTeamEvent(input.event));
++            apiE2eProbe("team_task_adapter_settlement_in_memory_and_event_complete", {
++              rootTeamRunId: this.options.rootTeamRunId,
++              taskId: input.task.taskId,
++              settledAt: input.settledAt,
++            });
+           },
+         };
+       },
+     });
++    apiE2eProbe("team_task_adapter_settlement_persistence_result", {
++      rootTeamRunId: this.options.rootTeamRunId,
++      taskId: input.task.taskId,
++      outcome: result.outcome,
++    });
+     if (result.outcome === "not_committed") return false;
+     if (result.outcome === "finalization_indeterminate") {
+       throw new TeamRunPersistenceFinalizationIndeterminateError(result.file, result.stage);
+     }
+     try {
++      apiE2eProbe("team_task_adapter_finish_local_teardown_start", {
++        rootTeamRunId: this.options.rootTeamRunId,
++        taskId: input.task.taskId,
++        binding: prepared.binding,
++      });
+       const cleanup = await result.settlement.finishLocalTeardown();
++      apiE2eProbe("team_task_adapter_finish_local_teardown_complete", {
++        rootTeamRunId: this.options.rootTeamRunId,
++        taskId: input.task.taskId,
++        cleanup,
++      });
+       if (!cleanup.accepted) throw new Error(cleanup.message ?? `Task '${input.task.taskId}' execution cleanup was rejected.`);
+     } catch (error) {
++      apiE2eProbe("team_task_adapter_finish_local_teardown_error", {
++        rootTeamRunId: this.options.rootTeamRunId,
++        taskId: input.task.taskId,
++        error: error instanceof Error ? error.message : String(error),
++      });
+       this.options.enterLifecycleFailStop();
+       throw error;
+     }
+     this.options.teamRunResolver.unregisterTerminated();
++    apiE2eProbe("team_task_adapter_settlement_complete", { rootTeamRunId: this.options.rootTeamRunId, taskId: input.task.taskId });
+     return true;
+   }
+ 
+diff --git a/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts b/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+index 75180b625..387bffb7b 100644
+--- a/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
++++ b/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+@@ -17,6 +17,7 @@ import {
+   type ConfiguredMcpAgentToolSource,
+ } from "./configured-mcp/configured-mcp-agent-tool-source.js";
+ import { cloneAgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
++import { apiE2eProbe } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ type AgentToolMcpSessionRegistryDeps = {
+   now?: () => Date;
+@@ -58,6 +59,13 @@ export class AgentToolMcpSessionRegistry {
+       toolExecutionObserver: input.toolExecutionObserver ?? null,
+     };
+     this.sessions.set(sessionId, session);
++    apiE2eProbe("mcp_session_activated", {
++      sessionId,
++      owner: session.owner,
++      runtimeKind: session.runtimeKind,
++      enabledTools: session.enabledTools,
++      activeSessionIds: [...this.sessions.keys()],
++    });
+     return session;
+   }
+ 
+@@ -73,7 +81,20 @@ export class AgentToolMcpSessionRegistry {
+   }
+ 
+   deactivateSession(sessionId: string): boolean {
+-    return this.sessions.delete(sessionId as AgentToolMcpRunSessionId);
++    const existing = this.sessions.get(sessionId as AgentToolMcpRunSessionId) ?? null;
++    apiE2eProbe("mcp_session_deactivate_start", {
++      sessionId,
++      owner: existing?.owner ?? null,
++      activeSessionIds: [...this.sessions.keys()],
++    });
++    const deleted = this.sessions.delete(sessionId as AgentToolMcpRunSessionId);
++    apiE2eProbe("mcp_session_deactivate_complete", {
++      sessionId,
++      owner: existing?.owner ?? null,
++      deleted,
++      activeSessionIds: [...this.sessions.keys()],
++    });
++    return deleted;
+   }
+ 
+   clear(): void {
+diff --git a/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts b/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts
+index eeddc65f8..7adc246bb 100644
+--- a/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts
++++ b/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts
+@@ -7,6 +7,7 @@ import type {
+   AgentToolMcpSession,
+   AgentToolMcpToolExecutionEvent,
+ } from "./agent-tool-mcp-session.js";
++import { apiE2eProbe } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ export type ExecuteAgentToolMcpCallInput = {
+   session: AgentToolMcpSession;
+@@ -37,12 +38,20 @@ export class AgentToolMcpToolExecutor {
+     input: ExecuteAgentToolMcpCallInput,
+   ): Promise<AgentToolMcpExecutionResult> {
+     const event = this.buildExecutionEvent(input.session, input.toolName);
++    apiE2eProbe("mcp_executor_start", { sessionId: event.sessionId, senderRunId: event.senderRunId, toolName: event.toolName });
+     await this.notifyStart(input.session, event);
+     try {
+       const result = await this.executeKnownTool(input);
++      apiE2eProbe("mcp_executor_adapter_complete", {
++        accepted: isExecutionResultAccepted(result),
++        code: executionResultCode(result),
++        resultKind: result.kind,
++      });
+       await this.notifyComplete(input.session, event, result);
++      apiE2eProbe("mcp_executor_observer_complete");
+       return result;
+     } catch (error) {
++      apiE2eProbe("mcp_executor_error", { error: error instanceof Error ? error.message : String(error) });
+       await this.notifyError(input.session, event, error);
+       throw error;
+     }
+diff --git a/autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts b/autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+index 5021de425..e765687d0 100644
+--- a/autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
++++ b/autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+@@ -17,6 +17,7 @@ import {
+   sendSseCompatibilityResponse,
+ } from "./agent-tools-mcp-http-gate.js";
+ import type { AgentToolsMcpLocalAccessGate } from "./agent-tools-mcp-local-access.js";
++import { apiE2eProbe, withApiE2eProbeContext } from "../../api-e2e-probe/correlation-probe.js";
+ 
+ const MCP_ROUTE = "/mcp/agent-tools/:sessionId";
+ const SUPPORTED_PROTOCOL_VERSIONS = new Set(["2025-03-26", "2025-06-18", "2025-11-25"]);
+@@ -111,15 +112,50 @@ const handleAgentToolsMcpRequest = async (input: {
+     return sendJsonRpcRouteError(reply, 400, -32700, "Parse error", null);
+   }
+ 
+-  const dispatchResult = await dispatcher.dispatch({
+-    payload: parseResult.payload,
+-    session: resolvedSession.session,
+-    protocolVersion: protocolVersion.version,
++  const payload = parseResult.payload && typeof parseResult.payload === "object" && !Array.isArray(parseResult.payload)
++    ? parseResult.payload as Record<string, unknown>
++    : {};
++  const params = payload.params && typeof payload.params === "object" && !Array.isArray(payload.params)
++    ? payload.params as Record<string, unknown>
++    : {};
++  const collaboration = resolvedSession.session.owner.collaborationIdentity ?? null;
++  const context = {
++    mcpSessionId: resolvedSession.session.sessionId,
++    ownerRunId: resolvedSession.session.owner.runId,
++    ownerRootSubjectKind: collaboration?.root.rootSubjectKind ?? null,
++    ownerRootRunId: collaboration?.root.rootRunId ?? null,
++    ownerMemberAddress: collaboration?.memberAddress ?? null,
++    ownerAgentRunId: collaboration?.agentRunId ?? null,
++    jsonRpcRequestId: typeof payload.id === "string" || typeof payload.id === "number" || payload.id === null ? payload.id : null,
++    jsonRpcMethod: typeof payload.method === "string" ? payload.method : null,
++    normalizedToolName: typeof params.name === "string" ? params.name.trim() : null,
++    ingressAt: new Date().toISOString(),
++  };
++  return withApiE2eProbeContext(context, async () => {
++    apiE2eProbe("mcp_http_ingress", {
++      httpMethod: request.method,
++      routeSessionId: request.params.sessionId,
++      protocolVersion: protocolVersion.version,
++    });
++    try {
++      const dispatchResult = await dispatcher.dispatch({
++        payload: parseResult.payload,
++        session: resolvedSession.session,
++        protocolVersion: protocolVersion.version,
++      });
++      apiE2eProbe("mcp_http_dispatch_complete", {
++        dispatchKind: dispatchResult.kind,
++        statusCode: dispatchResult.statusCode,
++      });
++      if (dispatchResult.kind === "empty") {
++        return reply.code(dispatchResult.statusCode).send();
++      }
++      return reply.code(dispatchResult.statusCode).type("application/json; charset=utf-8").send(dispatchResult.body);
++    } catch (error) {
++      apiE2eProbe("mcp_http_dispatch_error", { error: error instanceof Error ? error.message : String(error) });
++      throw error;
++    }
+   });
+-  if (dispatchResult.kind === "empty") {
+-    return reply.code(dispatchResult.statusCode).send();
+-  }
+-  return reply.code(dispatchResult.statusCode).type("application/json; charset=utf-8").send(dispatchResult.body);
+ };
+ 
+ const sendJsonRpcRouteError = (
+diff --git a/autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts b/autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+index dbbf0f207..ced84eeb7 100644
+--- a/autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
++++ b/autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+@@ -17,6 +17,7 @@ import {
+   createAgentToolsMcpSuccessResult,
+ } from "../agent-tools-mcp-operation-result.js";
+ import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
++import { apiE2eProbe } from "../../../api-e2e-probe/correlation-probe.js";
+ 
+ const asRawArguments = (value: unknown): Record<string, unknown> =>
+   value && typeof value === "object" && !Array.isArray(value)
+@@ -40,6 +41,12 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
+       isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext),
+       execute: async ({ session, rawArguments }) => {
+         const capabilities = session.executionCapabilities;
++        apiE2eProbe("task_mcp_adapter_start", {
++          manifestToolName: entry.name,
++          capabilityKind: capabilities.kind,
++          ownerRunId: session.owner.runId,
++          rawArgumentKeys: Object.keys(rawArguments),
++        });
+         if (capabilities.kind !== "collaboration_member") {
+           return createAgentToolsMcpErrorResult(
+             toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(
+@@ -49,16 +56,22 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
+           );
+         }
+         try {
++          const parsedInput = entry.parseInput(asRawArguments(rawArguments));
++          apiE2eProbe("task_mcp_adapter_parsed", {
++            identity: capabilities.taskDelegation.identity,
++          });
+           const result = await entry.execute(
+             this.taskDelegationToolService,
+             capabilities.taskDelegation,
+-            entry.parseInput(asRawArguments(rawArguments)),
++            parsedInput,
+           );
++          apiE2eProbe("task_mcp_adapter_command_complete", { result });
+           const serializedResult = toTaskDelegationJsonString(result);
+           return entry.resultSchema
+             ? toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(serializedResult))
+             : createAgentToolsMcpSuccessResult(serializedResult);
+         } catch (error) {
++          apiE2eProbe("task_mcp_adapter_command_error", { error: error instanceof Error ? error.message : String(error) });
+           return createAgentToolsMcpErrorResult(
+             toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(error)),
+             "task_delegation_tool_execution_failed",
+diff --git a/autobyteus-server-ts/src/server-runtime.ts b/autobyteus-server-ts/src/server-runtime.ts
+index 308c62875..dba769024 100644
+--- a/autobyteus-server-ts/src/server-runtime.ts
++++ b/autobyteus-server-ts/src/server-runtime.ts
+@@ -34,6 +34,7 @@ import {
+   configureTokenUsageMigrationReadiness,
+ } from "./token-usage/providers/token-usage-migration-readiness.js";
+ import { buildStudioServer } from "./compositions/build-studio-server.js";
++import { apiE2eProbe, serializeApiE2eError } from "./api-e2e-probe/correlation-probe.js";
+ 
+ const logger = createServerLogger("server.runtime");
+ 
+@@ -48,7 +49,9 @@ const registerShutdownHandlers = (app: FastifyInstance): void => {
+       logger.info("Server closed cleanly.");
+       process.exit(0);
+     } catch (error) {
+-      logger.error(`Error during shutdown: ${String(error)}`);
++      const serialized = serializeApiE2eError(error);
++      apiE2eProbe("shutdown_server_error", { signal, error: serialized });
++      logger.error(`Error during shutdown: ${JSON.stringify(serialized)}`);
+       process.exit(1);
+     }
+   };
+diff --git a/autobyteus-server-ts/src/api-e2e-probe/correlation-probe.ts b/autobyteus-server-ts/src/api-e2e-probe/correlation-probe.ts
+new file mode 100644
+index 000000000..657106dca
+--- /dev/null
++++ b/autobyteus-server-ts/src/api-e2e-probe/correlation-probe.ts
+@@ -0,0 +1,59 @@
++import { appendFileSync } from "node:fs";
++import { AsyncLocalStorage } from "node:async_hooks";
++
++type ProbeContext = Readonly<Record<string, unknown>>;
++
++const contextStorage = new AsyncLocalStorage<ProbeContext>();
++
++export const withApiE2eProbeContext = <T>(
++  context: ProbeContext,
++  operation: () => T,
++): T => contextStorage.run(Object.freeze({ ...context }), operation);
++
++export const getApiE2eProbeContext = (): ProbeContext | null =>
++  contextStorage.getStore() ?? null;
++
++export const apiE2eProbe = (
++  stage: string,
++  fields: Readonly<Record<string, unknown>> = {},
++): void => {
++  const file = process.env.AUTOBYTEUS_API_E2E_PROBE_LOG?.trim();
++  if (!file) return;
++  const record = {
++    probeSchemaVersion: 1,
++    ts: new Date().toISOString(),
++    monotonicNs: process.hrtime.bigint().toString(),
++    pid: process.pid,
++    stage,
++    context: getApiE2eProbeContext(),
++    ...fields,
++  };
++  appendFileSync(file, `${JSON.stringify(record)}\n`, "utf8");
++};
++
++export const serializeApiE2eError = (
++  value: unknown,
++  seen = new Set<unknown>(),
++): unknown => {
++  if (!(value instanceof Error)) return { type: typeof value, value: String(value) };
++  if (seen.has(value)) return { name: value.name, message: value.message, circular: true };
++  seen.add(value);
++  const error = value as Error & {
++    code?: unknown;
++    cause?: unknown;
++    errors?: unknown;
++  };
++  const errors = error instanceof AggregateError
++    ? Array.from(error.errors, (item) => serializeApiE2eError(item, seen))
++    : Array.isArray(error.errors)
++      ? error.errors.map((item) => serializeApiE2eError(item, seen))
++      : undefined;
++  return {
++    name: error.name,
++    message: error.message,
++    ...(error.code !== undefined ? { code: error.code } : {}),
++    ...(error.stack ? { stack: error.stack } : {}),
++    ...(error.cause !== undefined ? { cause: serializeApiE2eError(error.cause, seen) } : {}),
++    ...(errors ? { errors } : {}),
++  };
++};

@@ -1,0 +1,9 @@
+$ pnpm run build:full
+
+> autobyteus-server-ts@0.1.1 build:full /tmp/aorg-api-find008-correlated-probe/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit_code=0 (recorded by exec_command)

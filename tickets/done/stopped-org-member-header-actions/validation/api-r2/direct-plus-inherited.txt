@@ -1,0 +1,110 @@
+HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&sourceOrgRunId=config_lab_55cf971aeb934826aedbc1a7983e7ecc&mode=configuration
+					20 container
+						21 container 智能体和团队
+							22 container 主要导航
+								23 Inhaltsliste
+									24 container
+										25 Button 智能体
+										26 Button 折叠左侧面板
+											27 Bild
+									28 Button 智能体团队
+									29 Button 智能体组织
+									30 Button 技能
+									31 Button 记忆
+									32 Button 节点
+							33 container
+								34 Kopfzeile Workspaces, Value: 3
+									35 Text Workspaces
+								36 Button 添加工作区
+								37 Button Temp Workspace
+								38 Text 组织
+								39 Button Config Lab (1)
+									40 Text Config Lab
+									41 Text (1)
+								42 Button 折叠 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready. 下的成员
+								43 Button 已停止 Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+									44 container 已停止
+									45 Text Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.
+								46 Text 58 分钟
+								47 Gliederung Config Lab 执行层级
+									48 row guide, 离线, /guide, config_guide_58b1481c340743b5a5933a2eb4a314b5
+										49 Text G
+										50 Text guide
+									51 row squad. 团队状态：离线
+										52 Bild 团队状态：离线
+										53 Text squad
+							54 Button 设置
+						55 container
+							56 container
+								57 text 智能体组织 Config Lab Runtime
+								58 Pop-up-Button Runtime, Value: AutoByteus
+									59 (selected) AutoByteus
+								60 text 选择此组织运行所使用的运行时。 默认大语言模型
+								61 Einblendmenü OpenAI / gpt-5.4-mini
+								62 text 应用于整个组织，除非某个位置已自定义。 Thinking
+								63 Button 使用设置
+								64 Button 高级
+								65 Text 工作区目录
+								66 Titelgruppe
+									67 tab (selected) Existing, Value: 1
+									68 tab (settable, integer) New, Value: 0
+								69 Button 📁 Temp Workspace (Default) Default temporary workspace
+									70 Text 📁 Temp Workspace (Default)
+									71 Text Default temporary workspace
+									72 Bild
+								73 text Workspace: Temp Workspace 自动批准工具 自动允许本次运行中的工具调用和访问请求。
+								74 wechseln 自动批准工具, Value: off
+								75 Button 成员覆盖 (2)
+								76 Button Config Guide 已覆盖 /guide
+									77 Text Config Guide
+									78 Text 已覆盖
+									79 Text /guide
+								80 container
+									81 text Config Guide 已覆盖
+									82 Text guide
+									83 Text 运行时
+									84 Pop-up-Button 全局默认
+										85 (selected) 全局默认
+									86 Text LLM 模型
+									87 Einblendmenü OpenAI / gpt-5.4
+									88 Text 自动批准
+									89 Kästchen 全局默认, Value: 2
+									90 Text Thinking
+									91 Button 使用设置
+									92 Button 高级
+									93 container reasoning_effort
+										94 Text Reasoning Effort 
+										95 Text ⓘ
+									96 Pop-up-Button medium
+										97 (selected) medium
+									98 container reasoning_summary
+										99 Text Reasoning Summary 
+										100 Text ⓘ
+									101 Pop-up-Button none
+										102 (selected) none
+								103 container Config Squad
+									104 Button Config Squad 团队 /squad 已继承
+										105 Text Config Squad
+										106 Text 团队
+										107 Text /squad
+										108 Text 已继承
+							109 Button 运行智能体组织
+							110 Titelgruppe 工作区工具
+								111 tab (selected) 文件, Value: 1
+									112 Text 文件
+								113 tab (settable, integer) 终端, Value: 0
+								114 tab (settable, integer) 活动, Value: 0
+								115 tab (settable, integer) Token, Value: 0
+								116 tab (settable, integer) 产物, Value: 0
+								117 tab (settable, integer) VNC 查看器, Value: 0
+							118 Button 切换侧边栏
+								119 Bild
+							120 container
+								121 Text 没有可用的工作区。添加工作区以查看文件。
+								122 Button Maximize view
+								123 container
+									124 Bild
+									125 Kopfzeile No file selected, Value: 3
+										126 Text No file selected
+									127 Text Select a file from the explorer to view or edit its content.
+			128 

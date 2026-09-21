@@ -3,6 +3,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 const shellMessages = {
   'shell.navigation.agents': '智能体',
   'shell.navigation.agentTeams': '智能体团队',
+  'shell.navigation.agentOrgs': '智能体组织',
   'shell.navigation.applications': '应用程序',
   'shell.navigation.skills': '技能',
   'shell.navigation.memory': '记忆',
@@ -10,6 +11,8 @@ const shellMessages = {
   'shell.navigation.settings': '设置',
   'shell.rightTabs.files': '文件',
   'shell.rightTabs.team': '团队',
+  'shell.rightTabs.org': '组织',
+  'shell.rightTabs.agentOrg': '智能体组织',
   'shell.rightTabs.terminal': '终端',
   'shell.rightTabs.usage': 'Token',
   'shell.tokenUsage.title': 'Token 用量计',

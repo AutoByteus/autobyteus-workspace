@@ -1,0 +1,11 @@
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+tests/unit/agent-org-execution/agent-org-task-publication.test.ts
+tests/unit/agent-org-execution/agent-org-task-settlement-event-retirement.test.ts
+tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+tests/unit/agent-team-execution/root-team-run-termination.test.ts
+tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts
+tests/unit/agent-team-execution/flat-team-execution-factory.test.ts

@@ -1,0 +1,4 @@
+  PID  PPID STAT COMMAND
+
+Both ports29695/50572 listener check empty after cleanup.
+All11 manifest hashes match; no stagedfiles; scoped git diff --check exit0.

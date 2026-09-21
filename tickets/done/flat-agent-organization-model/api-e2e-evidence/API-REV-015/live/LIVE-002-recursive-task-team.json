@@ -1,0 +1,81 @@
+{
+  "at": "2026-09-06T13:11:33.258Z",
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "parentTeamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+  "coordinator": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+  "beforeCount": 2,
+  "afterCount": 3,
+  "approved": true,
+  "record": {
+    "taskId": "task_0035bd13c1f44dc895a5c070139f8e6d",
+    "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+    "recipientAddress": "/research-team",
+    "taskExecution": {
+      "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171"
+    },
+    "description": "As the recursively nested research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-NESTED-TASK-TEAM-READY-001 and wait.",
+    "referenceFiles": [],
+    "status": "active",
+    "updates": [],
+    "createdAt": "2026-09-06T13:11:23.884Z"
+  },
+  "parent": {
+    "address": "/support-team",
+    "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+    "members": [
+      {
+        "address": "/support-team/dispatcher",
+        "agentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+        "platformAgentRunId": "01a076d2-3107-7343-b83f-f737cd6000f8"
+      },
+      {
+        "address": "/support-team/specialist",
+        "agentRunId": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+        "platformAgentRunId": null
+      }
+    ],
+    "taskExecutions": [],
+    "startedAt": "2026-09-06T13:04:41.683Z",
+    "settledAt": null
+  },
+  "nested": null,
+  "ready": [
+    {
+      "file": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_research_squad_a0abc2df913443e88d00d073614a2171/aorg_e2e_lead_40fa603e7a044ab181ba6df6ef64bf30/raw_traces_active.jsonl",
+      "trace": {
+        "id": "rt_1788700292739_250ddb59-848b-489e-bb21-99b7e3ed72b1",
+        "ts": 1788700292.739,
+        "turn_id": "01a076d8-5556-77f0-b557-b9b395f6a90f",
+        "seq": 2,
+        "trace_type": "assistant",
+        "content": "APIREV15-NESTED-TASK-TEAM-READY-001",
+        "source_event": "SEGMENT_END"
+      }
+    }
+  ],
+  "view": {
+    "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=active",
+    "selected": [],
+    "nestedRows": [
+      "Task: research team"
+    ],
+    "alerts": [],
+    "overflow": false
+  },
+  "errors": [],
+  "responses": [],
+  "assertions": {
+    "oneAdded": true,
+    "exactDelegator": false,
+    "exactRecipient": true,
+    "activeTeam": true,
+    "parentFound": true,
+    "nestedUnderParent": false,
+    "readyExactlyOnce": true,
+    "coordinatorSelected": false,
+    "nestedVisible": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  }
+}

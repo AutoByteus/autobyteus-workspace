@@ -1,0 +1,20 @@
+## git diff --check
+PASS
+
+## temporary artifacts created by IR-003
+absent temporary nested dependency link
+absent temporary reviewer probe
+Note: autobyteus-web/node_modules is an existing real dependency directory created by the active API/E2E workflow before IR-003; it was preserved.
+
+## legacy exact-member production symbols
+PASS: no legacy exact-member production symbol remains
+
+## IR-003 changed production source effective non-empty lines
+220 autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+PASS: changed implementation source <=500 effective non-empty lines
+
+## IR-002 preservation
+preserved=45 changed=2
+autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts
+PASS: only semantic watcher source and new production-boundary regression differ from IR-002

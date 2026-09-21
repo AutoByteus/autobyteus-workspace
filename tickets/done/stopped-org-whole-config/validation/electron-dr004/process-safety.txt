@@ -1,0 +1,4 @@
+intake_and_pre_replacement_process_check=PASS_no_base_output_process
+prior_output_preserved=/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/.local/electron-whole-org-base-build-20260918/previous-electron-dist
+no_process_terminated=true
+post_build_gui_launch=false

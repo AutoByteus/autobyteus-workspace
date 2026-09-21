@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerGetAgentTeamDefinitionTool } from "../../../../src/agent-tools/agent-team-management/get-agent-team-definition.js";
-import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/models.js";
+import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 
 const mockService = {
   createDefinition: vi.fn(),

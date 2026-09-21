@@ -1,0 +1,62 @@
+{
+  "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+  "alerts": [
+    "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation."
+  ],
+  "noticeCount": 1,
+  "connecting": false,
+  "reconnectButtons": [],
+  "stopControl": [],
+  "statuses": [
+    "aorg e2e concierge, offline",
+    "apirev8 team. Team status: Offline",
+    "aorg e2e lead, offline",
+    "aorg e2e analyst, offline"
+  ],
+  "errors": [],
+  "rejections": [],
+  "closes": [
+    {
+      "at": "2026-09-04T14:53:32.727Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:32.738Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:33.753Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:35.758Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:39.765Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:47.774Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    }
+  ]
+}

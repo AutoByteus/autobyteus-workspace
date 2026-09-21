@@ -1,0 +1,122 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-server-ts
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > reads/admit data authored packages with exact immediate owner, metadata and unchanged bytes
+[2026-09-16T07:02:18.037Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > reads/admit external authored packages with exact immediate owner, metadata and unchanged bytes
+[2026-09-16T07:02:18.146Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > normal cached Team service reads work before/after catalog fill and refresh without catalog insertion
+[2026-09-16T07:02:18.234Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > normal cached Team service reads work before/after catalog fill and refresh without catalog insertion
+[2026-09-16T07:02:18.237Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > normal cached Team service reads work before/after catalog fill and refresh without catalog insertion
+[2026-09-16T07:02:18.238Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > normal cached Team service reads work before/after catalog fill and refresh without catalog insertion
+[2026-09-16T07:02:18.239Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > normal cached Team service reads work before/after catalog fill and refresh without catalog insertion
+[2026-09-16T07:02:18.240Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > rejects missing owned agent, never borrows same-name shared/other Org children
+[2026-09-16T07:02:18.251Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > rejects missing owned team, never borrows same-name shared/other Org children
+[2026-09-16T07:02:18.295Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > keeps shared and application-owned Team/local-Agent read controls unchanged
+[2026-09-16T07:02:18.325Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > keeps shared and application-owned Team/local-Agent read controls unchanged
+[2026-09-16T07:02:18.326Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > keeps shared and application-owned Team/local-Agent read controls unchanged
+[2026-09-16T07:02:18.327Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > leaves independent owned writes unavailable and package bytes unchanged
+[2026-09-16T07:02:18.337Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > does not fall through to an unrelated shared directory whose name equals a missing tagged Team ID
+[2026-09-16T07:02:18.360Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > plans exact configured identities through real providers and normal cached Team service without activation
+[2026-09-16T07:02:18.370Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > requires current parent membership even when the owned Team folder remains on disk
+[2026-09-16T07:02:18.390Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ✓ tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts (17 tests) 378ms
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getAll and reuses it
+[2026-09-16T07:02:18.515Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T07:02:18.517Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getAll and reuses it
+[2026-09-16T07:02:18.517Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getById
+[2026-09-16T07:02:18.518Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T07:02:18.518Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getById
+[2026-09-16T07:02:18.518Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > returns null for missing id
+[2026-09-16T07:02:18.519Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T07:02:18.519Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > returns null for missing id
+[2026-09-16T07:02:18.519Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create
+[2026-09-16T07:02:18.520Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T07:02:18.520Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create
+[2026-09-16T07:02:18.520Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create
+[2026-09-16T07:02:18.520Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID 3.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update
+[2026-09-16T07:02:18.521Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T07:02:18.521Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update
+[2026-09-16T07:02:18.521Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update
+[2026-09-16T07:02:18.521Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID 1.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete
+[2026-09-16T07:02:18.521Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-16T07:02:18.521Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete
+[2026-09-16T07:02:18.522Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete
+[2026-09-16T07:02:18.522Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID 1.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > reads owned identities without populating catalog, preserves null/error, and retries without negative caching
+[2026-09-16T07:02:18.522Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > reads owned identities without populating catalog, preserves null/error, and retries without negative caching
+[2026-09-16T07:02:18.523Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > reads owned identities without populating catalog, preserves null/error, and retries without negative caching
+[2026-09-16T07:02:18.523Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts (7 tests) 9ms
+
+ Test Files  2 passed (2)
+      Tests  24 passed (24)
+   Start at  09:02:15
+   Duration  3.24s (transform 1.82s, setup 0ms, import 2.63s, tests 387ms, environment 0ms)
+

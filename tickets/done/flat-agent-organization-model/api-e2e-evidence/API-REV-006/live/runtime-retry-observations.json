@@ -1,0 +1,8 @@
+{
+  "target":"/support-team/specialist",
+  "baseline":{"runtimeOverride":"","runEnabled":true,"rootAndTeamWorkspaces":"valid"},
+  "firstFailure":{"requestedRuntime":"claude_agent_sdk","transport":"Playwright CDP route over the same AutoByteus open_tab production page","exactOperation":"GetProviderModelCatalogSnapshots","runDisabled":true,"visibleError":"Could not load models for /support-team/specialist: Failed to fetch","retryVisible":true},
+  "retryPending":{"runtime":"claude_agent_sdk","visible":"Loading models for /support-team/specialist…","retryVisible":false,"runDisabled":true,"interceptDelayMs":8000},
+  "retryFailedAgain":{"selectedRuntimeRemained":"claude_agent_sdk","retryVisible":true,"runDisabled":true},
+  "realRetry":{"routeRemoved":true,"catalogModels":["haiku","sonnet","opus","default"],"runtimeCommitted":"claude_agent_sdk","inheritedGlobalModelRejected":true,"selectedCompatibleModel":"default","finalModelLabel":"Anthropic / Default (recommended)","finalRunEnabled":true}
+}

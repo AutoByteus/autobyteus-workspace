@@ -1,0 +1,6 @@
+[
+  "autobyteus-web/localization/messages/en/workspace.ts",
+  "autobyteus-web/localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts",
+  "autobyteus-web/localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts",
+  "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts"
+]

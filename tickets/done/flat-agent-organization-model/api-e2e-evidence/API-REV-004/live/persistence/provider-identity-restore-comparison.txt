@@ -1,0 +1,8 @@
+OrgRun aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28 active=True
+/concierge: agentRunSame=True providerSame=True 01a060ef-1a2a-7a90-9c87-e581fa9b7f6a -> 01a060ef-1a2a-7a90-9c87-e581fa9b7f6a
+/research-team/lead: agentRunSame=True providerSame=True 01a060ef-1a94-7790-8ffd-850583bb93d8 -> 01a060ef-1a94-7790-8ffd-850583bb93d8
+/research-team/analyst: agentRunSame=True providerSame=False 01a060ef-1b16-7313-a743-ca070e7460e7 -> 01a060ff-3b78-7032-adba-ac4964e087e2
+/research-team/verifier: agentRunSame=True providerSame=False 01a060ef-1b83-7940-a28f-2d8a38f50b53 -> 01a060ff-3bf3-7361-bcd6-be473cc748dc
+/support-team/dispatcher: agentRunSame=True providerSame=False 01a060ef-1bf0-7162-8f22-821c073668fd -> 01a060ff-3c78-7201-84f4-be55977b8b38
+/support-team/specialist: agentRunSame=True providerSame=False 01a060ef-1c73-75a3-a68b-768520925539 -> 01a060ff-3cf6-7ed2-b22e-20708ac55b72
+Interpretation: /concierge and /research-team/lead carried real conversations and retained exact provider identity; system-instruction-only configured members retained AgentRun identity and acquired new provider identity. Settled task execution remains historical with its original identity.

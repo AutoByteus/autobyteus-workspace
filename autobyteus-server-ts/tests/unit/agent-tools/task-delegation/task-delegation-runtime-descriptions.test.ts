@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
-import { testMemberTaskRootResolver } from "../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
@@ -30,7 +29,7 @@ const findParameter = (schema: ParameterSchema, name: string) =>
 const EXPECTED_RECIPIENT_ADDRESS_DESCRIPTION =
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION;
 
-const memberTeamContext = testMemberTeamContext({
+const memberExecutionContext = testMemberExecutionContext({
   teamRunId: "team-run-1",
   teamDefinitionId: "team-def-1",
   rootTeamRunId: "team-run-1",
@@ -185,8 +184,8 @@ describe("task delegation runtime descriptions", () => {
     expect(adapters.every((adapter) => adapter.isAvailable({
       runtimeExposure: { requestedToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
       sender: {
-        senderRunId: memberTeamContext.agentRunId,
-        memberTeamContext,
+        senderRunId: memberExecutionContext.agentRunId,
+        memberExecutionContext,
       } as never,
       executionContext: {},
     }))).toBe(true);
@@ -202,17 +201,16 @@ describe("task delegation runtime descriptions", () => {
     const adapter = provider.getAdapters().find(
       (candidate) => candidate.definition.name === DELEGATE_TASK_TOOL_NAME,
     )!;
-    const rootResolver = testMemberTaskRootResolver();
     const taskDelegation = Object.freeze({
-      identity: memberTeamContext.identity,
-      rootResolver,
+      identity: memberExecutionContext.identity,
+      commands: memberExecutionContext.tasks,
     });
     const publisher = { publishManyForRun: vi.fn(async () => []) };
 
     const accepted = await adapter.execute({
       session: {
         executionCapabilities: {
-          kind: "team_member",
+          kind: "collaboration_member",
           publishedArtifactPublisher: publisher,
           applicationAgentTools: null,
           taskDelegation,
@@ -247,7 +245,7 @@ describe("task delegation runtime descriptions", () => {
     const notStarted = await adapter.execute({
       session: {
         executionCapabilities: {
-          kind: "team_member",
+          kind: "collaboration_member",
           publishedArtifactPublisher: publisher,
           applicationAgentTools: null,
           taskDelegation,
@@ -280,7 +278,7 @@ describe("task delegation runtime descriptions", () => {
 
     const rejected = await adapter.execute({
       session: {
-        sender: { memberTeamContext },
+        sender: { memberExecutionContext },
         executionCapabilities: {
           kind: "agent",
           publishedArtifactPublisher: publisher,

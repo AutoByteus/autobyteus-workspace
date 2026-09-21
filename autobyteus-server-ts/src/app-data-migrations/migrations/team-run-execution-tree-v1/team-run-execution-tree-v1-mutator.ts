@@ -146,7 +146,8 @@ export const adoptAgentPlatformBindingInTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;
   binding: TeamAgentPlatformBinding;
 }): TeamAgentPlatformBindingMutation => {
-  if (input.binding.execution.rootTeamRunId !== input.tree.rootTeam.teamRunId) {
+  if (input.binding.execution.root.rootSubjectKind !== "agent_team" ||
+    input.binding.execution.root.rootRunId !== input.tree.rootTeam.teamRunId) {
     throw new TeamAgentPlatformBindingError(
       "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
       "The platform binding belongs to a different root TeamRun.",

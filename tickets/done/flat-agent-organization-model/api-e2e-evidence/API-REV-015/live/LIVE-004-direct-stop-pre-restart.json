@@ -1,0 +1,401 @@
+{
+  "at": "2026-09-06T13:35:13.615Z",
+  "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+  "beforeSha": "3beb46afaa3534fa9d79b39803b8aa3a7415c77bb6b6596a590fa873678c66a1",
+  "afterSha": "3beb46afaa3534fa9d79b39803b8aa3a7415c77bb6b6596a590fa873678c66a1",
+  "before": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+    "messages": [
+      {
+        "messageId": "collabmsg_bd3wSpHElhH5XY_IQyzNVj8en-IyGgdK",
+        "senderAgentRunId": "aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+        "receiverAgentRunId": "aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+        "content": "APIREV15-DIRECT-TO-DIRECT-MSG-001",
+        "messageType": "agent_message",
+        "referenceFiles": [
+          "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt"
+        ],
+        "createdAt": "2026-09-06T13:34:10.276Z"
+      }
+    ]
+  },
+  "after": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+    "messages": [
+      {
+        "messageId": "collabmsg_bd3wSpHElhH5XY_IQyzNVj8en-IyGgdK",
+        "senderAgentRunId": "aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+        "receiverAgentRunId": "aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+        "content": "APIREV15-DIRECT-TO-DIRECT-MSG-001",
+        "messageType": "agent_message",
+        "referenceFiles": [
+          "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt"
+        ],
+        "createdAt": "2026-09-06T13:34:10.276Z"
+      }
+    ]
+  },
+  "view": {
+    "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&mode=configuration",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(1)\nCall send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...\n1m\nL\nlead\nV\nverifier\nAORG E2E Mixed Org\n(2)\nCall delegate_task exactly once with recipient_address `/support-team` and description \"As the au...\n10m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nsupport team\nD\ndispatcher\nS\nspecialist\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the ne...\n36m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nsupport team\nD\ndispatcher\nS\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nTask: research team\nlead\nanalyst\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nAgent Org\nAORG E2E Direct Agents Org\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nOpenAI / GPT-5.6-Sol (default reasoning: low)\n\nUsed across the organization unless a placement is customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (2)\nRun Agent Org\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo workspaces available. Add a workspace to see files.\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+    "buttons": [
+      {
+        "a": null,
+        "title": "",
+        "text": "Agents"
+      },
+      {
+        "a": null,
+        "title": "Collapse left panel",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Agent Teams"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Agent Orgs"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Skills"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Memory"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Nodes"
+      },
+      {
+        "a": null,
+        "title": "Add workspace",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Temp Workspace"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "AORG E2E Direct Agents Org\n(1)"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO..."
+      },
+      {
+        "a": "lead, offline",
+        "title": "",
+        "text": "L\nlead"
+      },
+      {
+        "a": "verifier, offline",
+        "title": "",
+        "text": "V\nverifier"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "AORG E2E Mixed Org\n(2)"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Call delegate_task exactly once with recipient_address `/support-team` and description \"As the au..."
+      },
+      {
+        "a": "Stop Agent Org",
+        "title": "Stop Agent Org",
+        "text": ""
+      },
+      {
+        "a": "concierge, idle",
+        "title": "",
+        "text": "C\nconcierge"
+      },
+      {
+        "a": "research team. Team status: Idle",
+        "title": "",
+        "text": "research team"
+      },
+      {
+        "a": "lead, idle",
+        "title": "",
+        "text": "L\nlead"
+      },
+      {
+        "a": "analyst, idle",
+        "title": "",
+        "text": "A\nanalyst"
+      },
+      {
+        "a": "verifier, idle",
+        "title": "",
+        "text": "V\nverifier"
+      },
+      {
+        "a": "support team. Team status: Idle",
+        "title": "",
+        "text": "support team"
+      },
+      {
+        "a": "dispatcher, idle",
+        "title": "",
+        "text": "D\ndispatcher"
+      },
+      {
+        "a": "specialist, idle",
+        "title": "",
+        "text": "S\nspecialist"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Call delegate_task exactly once with recipient_address `/support-team` and description `As the ne..."
+      },
+      {
+        "a": "concierge, offline",
+        "title": "",
+        "text": "C\nconcierge"
+      },
+      {
+        "a": "research team. Team status: Offline",
+        "title": "",
+        "text": "research team"
+      },
+      {
+        "a": "lead, offline",
+        "title": "",
+        "text": "L\nlead"
+      },
+      {
+        "a": "analyst, offline",
+        "title": "",
+        "text": "A\nanalyst"
+      },
+      {
+        "a": "verifier, offline",
+        "title": "",
+        "text": "V\nverifier"
+      },
+      {
+        "a": "support team. Team status: Offline",
+        "title": "",
+        "text": "support team"
+      },
+      {
+        "a": "dispatcher, offline",
+        "title": "",
+        "text": "D\ndispatcher"
+      },
+      {
+        "a": "specialist, offline",
+        "title": "",
+        "text": "S\nspecialist"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace"
+      },
+      {
+        "a": "Remove from Workspaces",
+        "title": "Remove from Workspaces",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-team"
+      },
+      {
+        "a": "Remove from Workspaces",
+        "title": "Remove from Workspaces",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Settings"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "OpenAI / GPT-5.6-Sol (default reasoning: low)"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Use setting"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Advanced"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Existing"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "New"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "📁 Temp Workspace (Default)\nDefault temporary workspace"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Auto approve tools"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Member overrides (2)"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "AORG E2E Lead/lead"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Global default"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Use setting"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Advanced"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "AORG E2E Verifier/verifier"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Global default"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Use setting"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Advanced"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Run Agent Org"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Files"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Terminal"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Activity"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Token"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Artifacts"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "VNC Viewer"
+      },
+      {
+        "a": null,
+        "title": "Toggle Sidebar",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "Maximize view",
+        "text": ""
+      }
+    ],
+    "alerts": [],
+    "overflow": false
+  },
+  "errors": [],
+  "responses": [],
+  "assertions": {
+    "oneMessage": true,
+    "byteIdentical": true,
+    "configurationRoute": true,
+    "noConnectingReconnect": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  }
+}

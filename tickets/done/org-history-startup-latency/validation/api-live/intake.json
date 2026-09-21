@@ -1,0 +1,32 @@
+{
+  "manifest": [
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "610e06ecc7629f6a2bf301628b5974bb9191549e7d0a9603b399e66c4ce804b5",
+      "nonempty_lines": 395,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "sha256": "043d56987e7d27c7c46c921c1358cb2abac8ff18c94d6b719797dda74324043e",
+      "nonempty_lines": 298,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "sha256": "efc1329c7764fd036fdd98c7519c111cf22f6acdc4d35d0889b1d3747a1e987d",
+      "nonempty_lines": 136,
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/test-support/historyFamilyPublicationFixture.ts",
+      "sha256": "9929de1bfc6ab3f6456fb0077627e80d8cdf257bef79c425ce4aa80ac8dfcdd1",
+      "nonempty_lines": 59,
+      "match": true
+    }
+  ],
+  "sdkDistPresent": {
+    "autobyteus-application-backend-sdk/dist": false,
+    "autobyteus-application-sdk-contracts/dist": false
+  }
+}

@@ -12,8 +12,12 @@ import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-sto
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import type { TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import {
+  testAgentOrgExecutionTree,
+  testOrgAgentNode,
+  testOrgTeamNode,
+} from "../../fixtures/current-agent-org-run-fixtures.js";
 
 let memoryDir: string;
 
@@ -79,36 +83,6 @@ const agentMember = (input: {
   description: null,
 });
 
-const subTeamMember = (input: {
-  memberRunId: string;
-  memberPath: string[];
-  teamRunId: string;
-  memberTree: TeamRunNode[];
-}) => {
-  const coordinator = input.memberTree.find(
-    (node): node is Extract<TeamRunNode, { kind: "agent" }> => node.kind === "agent",
-  );
-  if (!coordinator) throw new Error("Subteam fixture requires an Agent coordinator.");
-  return {
-    kind: "agent_team" as const,
-    address: `/${input.memberPath.join("/")}`,
-    teamDefinitionId: `team-def-${input.teamRunId}`,
-    teamRunId: input.teamRunId,
-    coordinatorAddress: coordinator.address,
-    defaultLaunchConfiguration: {
-      runtimeKind: coordinator.runtimeKind,
-      llmModelIdentifier: coordinator.llmModelIdentifier,
-      llmConfig: coordinator.llmConfig,
-      autoExecuteTools: coordinator.autoExecuteTools,
-      skillAccessMode: coordinator.skillAccessMode,
-      workspaceRootPath: coordinator.workspaceRootPath,
-    },
-    children: input.memberTree,
-    role: null,
-    description: null,
-  };
-};
-
 const writeTeamMetadata = async (teamRunId: string, memberTree: unknown[]): Promise<void> => {
   const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
   await writeJson(path.join(teamDir, "team_run_execution_tree.json"),
@@ -118,7 +92,7 @@ const writeTeamMetadata = async (teamRunId: string, memberTree: unknown[]): Prom
       teamDefinitionName: "Cleanup Fixture Team",
       coordinatorAddress: "/lead",
       createdAt: "2026-07-31T00:00:00.000Z",
-      children: memberTree as TeamRunNode[],
+      children: memberTree as ReturnType<typeof agentMember>[],
     }));
   await writeJson(path.join(teamDir, "task_delegation_records.json"), {
     schemaVersion: 1,
@@ -128,6 +102,46 @@ const writeTeamMetadata = async (teamRunId: string, memberTree: unknown[]): Prom
   await writeJson(path.join(teamDir, "team_communication_messages.json"), {
     schemaVersion: 1,
     rootTeamRunId: teamRunId,
+    messages: [],
+  });
+};
+
+const writeOrgMetadata = async (orgRunId: string): Promise<void> => {
+  const orgDir = path.join(memoryDir, "agent_orgs", orgRunId);
+  const nestedClaude = {
+    ...testOrgAgentNode("/squad/researcher", "nested-claude"),
+    launchConfiguration: {
+      ...testOrgAgentNode("/squad/researcher", "nested-claude").launchConfiguration,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    },
+  };
+  const deepCodex = {
+    ...testOrgAgentNode("/squad/reviewer", "deep-codex"),
+    launchConfiguration: {
+      ...testOrgAgentNode("/squad/reviewer", "deep-codex").launchConfiguration,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    },
+  };
+  const tree = testAgentOrgExecutionTree({
+    orgRunId,
+    members: [testOrgTeamNode({
+      address: "/squad",
+      teamRunId: "child-team",
+      coordinatorAddress: "/squad/researcher",
+      members: [nestedClaude, deepCodex],
+    })],
+  });
+  await writeJson(path.join(orgDir, "agent_org_run_execution_tree.json"), tree);
+  await writeJson(path.join(orgDir, "agent_org_task_delegation_records.json"), {
+    schemaVersion: 1,
+    subjectKind: "agent_org",
+    orgRunId,
+    records: [],
+  });
+  await writeJson(path.join(orgDir, "agent_org_communication_messages.json"), {
+    schemaVersion: 1,
+    subjectKind: "agent_org",
+    orgRunId,
     messages: [],
   });
 };
@@ -151,7 +165,7 @@ afterEach(async () => {
 });
 
 describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
-  it("removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent", async () => {
+  it("removes only exact standalone, flat-Team, and AgentOrg Codex/Claude snapshots and is idempotent", async () => {
     const poisonRoot = path.join(memoryDir, "outside-owned-layout");
     const poisonSnapshot = await writeSnapshot(poisonRoot, "stored memoryDir must not be trusted");
     const standaloneFixtures = [
@@ -163,7 +177,6 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
         storedMemoryDir: poisonRoot,
       },
       { runId: "native-run", runtimeKind: RuntimeKind.AUTOBYTEUS },
-      { runId: "future-run", runtimeKind: "future_runtime" },
     ];
     for (const fixture of standaloneFixtures) {
       await writeStandaloneMetadata(fixture);
@@ -181,16 +194,6 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
       memberPath: ["lead"],
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
-    const nestedClaude = agentMember({
-      memberRunId: "nested-claude",
-      memberPath: ["squad", "researcher"],
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-    });
-    const deepCodex = agentMember({
-      memberRunId: "deep-codex",
-      memberPath: ["squad", "nested", "reviewer"],
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    });
     const nativeMember = agentMember({
       memberRunId: "native-member",
       memberPath: ["native"],
@@ -199,31 +202,17 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
     await writeTeamMetadata(teamRunId, [
       rootCodex,
       nativeMember,
-      subTeamMember({
-        memberRunId: "squad-member",
-        memberPath: ["squad"],
-        teamRunId: "child-team",
-        memberTree: [
-          nestedClaude,
-          subTeamMember({
-            memberRunId: "nested-team-member",
-            memberPath: ["squad", "nested"],
-            teamRunId: "grandchild-team",
-            memberTree: [deepCodex],
-          }),
-        ],
-      }),
     ]);
+    await writeOrgMetadata("org-run");
 
     const rootCodexDir = path.join(memoryDir, "agent_teams", teamRunId, "root-codex");
     const nativeMemberDir = path.join(memoryDir, "agent_teams", teamRunId, "native-member");
-    const nestedClaudeDir = path.join(memoryDir, "agent_teams", teamRunId, "child-team", "nested-claude");
+    const nestedClaudeDir = path.join(memoryDir, "agent_orgs", "org-run", "child-team", "nested-claude");
     const deepCodexDir = path.join(
       memoryDir,
-      "agent_teams",
-      teamRunId,
+      "agent_orgs",
+      "org-run",
       "child-team",
-      "grandchild-team",
       "deep-codex",
     );
     for (const runDir of [rootCodexDir, nativeMemberDir, nestedClaudeDir, deepCodexDir]) {
@@ -251,11 +240,10 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
       nestedClaudeDir,
       deepCodexDir,
     ]) {
-      expect(await exists(snapshotPath(runDir))).toBe(false);
+      expect(await exists(snapshotPath(runDir)), runDir).toBe(false);
     }
     for (const filePath of [
       snapshotPath(standaloneDir("native-run")),
-      snapshotPath(standaloneDir("future-run")),
       snapshotPath(nativeMemberDir),
       unclassifiedSnapshot,
       importedSnapshot,
@@ -266,6 +254,7 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
       preservedArtifact,
       path.join(standaloneDir("codex-run"), "run_metadata.json"),
       path.join(memoryDir, "agent_teams", teamRunId, "team_run_execution_tree.json"),
+      path.join(memoryDir, "agent_orgs", "org-run", "agent_org_run_execution_tree.json"),
     ]) {
       expect(await exists(filePath)).toBe(true);
     }
@@ -341,7 +330,7 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
       expect.objectContaining({
         itemId: "agents/mismatched-directory:metadata",
         status: "FAILED",
-        message: expect.stringContaining("does not match directory"),
+        message: expect.stringContaining("not valid current run metadata"),
       }),
     ]));
   });

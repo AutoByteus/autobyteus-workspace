@@ -56,6 +56,7 @@ export const GET_AGENT_RUN_MEMORY_VIEW = gql`
         toolResult
         toolError
         media
+        fileAttachments { uri fileType fileName }
         turnId
         seq
         ts
@@ -122,6 +123,7 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
         toolResult
         toolError
         media
+        fileAttachments { uri fileType fileName }
         turnId
         seq
         ts

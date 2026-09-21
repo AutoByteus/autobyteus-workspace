@@ -1,0 +1,56 @@
+2026-09-06T13:55:07Z
+ports:
+owned_ports_clear
+processes:
+owned_processes_clear
+tabs: verified empty via actual list_tabs at 2026-09-06T13:54:50Z
+copied_secrets:
+env_removed
+db_secret_removed
+shared_env:
+AUTOBYTEUS_AGENT_PACKAGE_ROOTS=/home/autobyteus/workspace/autobyteus-agents,/home/autobyteus/workspace/autobyteus-private-agents
+fixture_hashes:
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+source:
+43ef19f2de69b2c16133577dac40471f75ebd913
+reviewed_source_ancestor
+diff-check:
+status:
+ M autobyteus-server-ts/docs/modules/agent_orgs.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_orgs.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+ M tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+ M tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+ M tickets/in-progress/flat-agent-organization-model/release-notes.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/post-pass-user-discovery/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-005/

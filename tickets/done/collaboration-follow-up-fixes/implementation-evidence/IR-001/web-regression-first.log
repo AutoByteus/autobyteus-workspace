@@ -1,0 +1,496 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/agentSelectionStore.spec.ts stores/__tests__/runHistorySelectionActions.spec.ts stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts stores/__tests__/runHistoryStore.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts (44 tests | 10 failed) 507ms
+   ✓ runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 4ms
+   ✓ runHistoryStore > fetches run history tree from GraphQL 3ms
+   ✓ runHistoryStore > strictly merges only AgentOrg roots beneath Teams using stable normalized workspace keys 14ms
+   ✓ runHistoryStore > retains each successful history-family slice when the other query fails 3ms
+   ✓ runHistoryStore > retains the prior AgentOrg slice when strict root correlation rejects a later response 2ms
+   ✓ runHistoryStore > commits only the newest initiated AgentOrg refresh and retains its slice on a later failure 2ms
+   ✓ runHistoryStore > publishes only the confirmed exact root activity and preserves other rows before refresh 54ms
+   ✓ runHistoryStore > publishes confirmed Stop to existing navigation before I/O (old-first) 159ms
+   ✓ runHistoryStore > publishes confirmed Stop to existing navigation before I/O (failure-first) 157ms
+   ✓ runHistoryStore > shares AgentOrg request generation between full history loads and focused refreshes 52ms
+   ✓ runHistoryStore > hydrates and connects newly discovered active runs from workspace history 5ms
+   ✓ runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 2ms
+   ✓ runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 1ms
+   ✓ runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+   ✓ runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 2ms
+   ✓ runHistoryStore > does not project history-only removed workspace roots without visible descriptors 1ms
+   ✓ runHistoryStore > preserves failed-stream member statuses without background stream resurrection 2ms
+   ✓ runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+   ✓ runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 1ms
+   × runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 21ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > does not clobber live active context state when reopening an already subscribed run 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > creates draft run for selected workspace and agent 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > reuses model from existing context when creating draft run 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 0ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   ✓ runHistoryStore > reuses an existing workspace id when local cache has matching root path 0ms
+   ✓ runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 0ms
+   ✓ runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 1ms
+   ✓ runHistoryStore > overlays persisted run status with matching live context only 1ms
+   ✓ runHistoryStore > projects offline draft contexts as inactive in tree projection 1ms
+   × runHistoryStore > selectTreeRun delegates to openRun for history rows 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistoryStore > selectTreeRun selects local temp context for draft rows 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   ✓ runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 1ms
+   ✓ runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 2ms
+   ✓ runHistoryStore > archiveRun does not mutate local state when backend rejects archive 0ms
+   ✓ runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 1ms
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests) 244ms
+stderr | stores/__tests__/runHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistorySelectionActions.spec.ts (7 tests | 7 failed) 21ms
+   × runHistorySelectionActions failed Team stream recovery > routes a mounted exact shell through inspection instead of fresh Team replacement 6ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistorySelectionActions failed Team stream recovery > keeps the previous selection and row surface when mounted inspection is rejected 6ms
+     → expected [Function] to throw error including 'projection unavailable' but got '(0 , useAgentSe…'
+   × runHistorySelectionActions failed Team stream recovery > routes a known failed local Team selection only through checkpointed recovery 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × runHistorySelectionActions failed Team stream recovery > preserves navigation and avoids the panel-fatal error for retryable refusal TEAM_STREAM_RECOVERY_WAIT: still working 3ms
+     → expected [Function] to throw error including 'TEAM_STREAM_RECOVERY_WAIT: still work…' but got '(0 , useAgentSe…'
+   × runHistorySelectionActions failed Team stream recovery > preserves navigation and avoids the panel-fatal error for retryable refusal TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: changed during hydration 2ms
+     → expected [Function] to throw error including 'TEAM_STREAM_RECOVERY_CHECKPOINT_CHANG…' but got '(0 , useAgentSe…'
+   × runHistorySelectionActions failed Team stream recovery > preserves navigation and avoids the panel-fatal error for retryable refusal TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: candidate base changed 2ms
+     → expected [Function] to throw error including 'TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: c…' but got '(0 , useAgentSe…'
+   × runHistorySelectionActions failed Team stream recovery > retries the same Team member after a retryable refusal 1ms
+     → expected [Function] to throw error including 'TEAM_STREAM_RECOVERY_WAIT' but got '(0 , useAgentSe…'
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (5 tests) 6ms
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests | 3 failed) 15ms
+   × Org browse is inspection and Stop retains the same exact route > uses observed inactive truth, not stale active row, for open 8ms
+     → expected "spy" to be called once with arguments: [ 'org-run' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    "org-run",
++   {
++     "isCurrent": [Function isCurrent],
++   },
+  ]
+
+
+Number of calls: 1
+
+   × Org browse is inspection and Stop retains the same exact route > uses observed inactive truth, not stale active row, for select 1ms
+     → expected "spy" to be called once with arguments: [ 'org-run' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    "org-run",
++   {
++     "isCurrent": [Function isCurrent],
++   },
+  ]
+
+
+Number of calls: 1
+
+   × Org browse is inspection and Stop retains the same exact route > uses observed inactive truth, not stale active row, for inspect 1ms
+     → expected "spy" to be called once with arguments: [ 'org-run' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    "org-run",
++   {
++     "isCurrent": [Function isCurrent],
++   },
+  ]
+
+
+Number of calls: 1
+
+   ✓ Org browse is inspection and Stop retains the same exact route > browses a Team through its exact configured address after coherent active inspection 1ms
+   ✓ Org browse is inspection and Stop retains the same exact route > preserves selection and route if strict inspection or exact placement fails 1ms
+   ✓ Org browse is inspection and Stop retains the same exact route > keeps latest exact selection/history mode after confirmed Stop, even if final read fails=false 1ms
+   ✓ Org browse is inspection and Stop retains the same exact route > keeps latest exact selection/history mode after confirmed Stop, even if final read fails=true 0ms
+   ✓ Org browse is inspection and Stop retains the same exact route > does not steal a different current root on background Stop completion 0ms
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests | 2 failed) 7ms
+   ✓ workspaceNavigationService > builds and parses agent execution routes 1ms
+   ✓ workspaceNavigationService > builds and parses team execution routes with member focus 0ms
+   ✓ workspaceNavigationService > strips workspace execution query params without disturbing others 0ms
+   × workspaceNavigationService > routes agent execution links through the agent open coordinator 4ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+   × workspaceNavigationService > routes an absent exact team execution link through the history facade 1ms
+     → (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+stderr | composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentSelectionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentSelectionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts (1 test) 11ms
+ ✓ stores/__tests__/agentSelectionStore.spec.ts (5 tests) 6ms
+stderr | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts (1 test) 5ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts > Org browse is inspection and Stop retains the same exact route > uses observed inactive truth, not stale active row, for open
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts > Org browse is inspection and Stop retains the same exact route > uses observed inactive truth, not stale active row, for select
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts > Org browse is inspection and Stop retains the same exact route > uses observed inactive truth, not stale active row, for inspect
+AssertionError: expected "spy" to be called once with arguments: [ 'org-run' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    "org-run",
++   {
++     "isCurrent": [Function isCurrent],
++   },
+  ]
+
+
+Number of calls: 1
+
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts:35:46
+     33|     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKin…
+     34|       memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
+     35|     expect(mocks.contexts.openForInspection).toHaveBeenCalledExactlyOn…
+       |                                              ^
+     36|     expect(mocks.contexts.stopAndInspect).not.toHaveBeenCalled()
+     37|     expect(mocks.push).toHaveBeenCalledWith({ path: '/workspace', quer…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > routes a mounted exact shell through inspection instead of fresh Team replacement
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ Module.selectTreeRunFromHistory stores/runHistorySelectionActions.ts:117:70
+    115|   options: RunHistoryOpenOptions = {},
+    116| ): Promise<WorkspaceSelectionOutcome> => {
+    117|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    118|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    119|   const selectingOptions = { ...options, selectionIntent: intent };
+ ❯ stores/__tests__/runHistorySelectionActions.spec.ts:76:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > keeps the previous selection and row surface when mounted inspection is rejected
+AssertionError: expected [Function] to throw error including 'projection unavailable' but got '(0 , useAgentSe…'
+
+Expected: "projection unavailable"
+Received: "(0 , __vite_ssr_import_1__.useAgentSelectionStore)(...).beginSelectionIntent is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > routes a known failed local Team selection only through checkpointed recovery
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ Module.selectTreeRunFromHistory stores/runHistorySelectionActions.ts:117:70
+    115|   options: RunHistoryOpenOptions = {},
+    116| ): Promise<WorkspaceSelectionOutcome> => {
+    117|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    118|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    119|   const selectingOptions = { ...options, selectionIntent: intent };
+ ❯ stores/__tests__/runHistorySelectionActions.spec.ts:115:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > preserves navigation and avoids the panel-fatal error for retryable refusal TEAM_STREAM_RECOVERY_WAIT: still working
+AssertionError: expected [Function] to throw error including 'TEAM_STREAM_RECOVERY_WAIT: still work…' but got '(0 , useAgentSe…'
+
+Expected: "TEAM_STREAM_RECOVERY_WAIT: still working"
+Received: "(0 , __vite_ssr_import_1__.useAgentSelectionStore)(...).beginSelectionIntent is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > preserves navigation and avoids the panel-fatal error for retryable refusal TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: changed during hydration
+AssertionError: expected [Function] to throw error including 'TEAM_STREAM_RECOVERY_CHECKPOINT_CHANG…' but got '(0 , useAgentSe…'
+
+Expected: "TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: changed during hydration"
+Received: "(0 , __vite_ssr_import_1__.useAgentSelectionStore)(...).beginSelectionIntent is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > preserves navigation and avoids the panel-fatal error for retryable refusal TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: candidate base changed
+AssertionError: expected [Function] to throw error including 'TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: c…' but got '(0 , useAgentSe…'
+
+Expected: "TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: candidate base changed"
+Received: "(0 , __vite_ssr_import_1__.useAgentSelectionStore)(...).beginSelectionIntent is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  stores/__tests__/runHistorySelectionActions.spec.ts > runHistorySelectionActions failed Team stream recovery > retries the same Team member after a retryable refusal
+AssertionError: expected [Function] to throw error including 'TEAM_STREAM_RECOVERY_WAIT' but got '(0 , useAgentSe…'
+
+Expected: "TEAM_STREAM_RECOVERY_WAIT"
+Received: "(0 , __vite_ssr_import_1__.useAgentSelectionStore)(...).beginSelectionIntent is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:340:70
+    338|   options: RunHistoryOpenOptions = {},
+    339| ): Promise<WorkspaceSelectionOutcome> => {
+    340|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    341|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    342|   const stopWatching = watch(intent.isCurrent, (current) => { if (!cur…
+ ❯ Proxy.openRun stores/runHistoryStore.ts:125:28
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1438:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens an inactive run and hydrates offline status without connecting stream
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:340:70
+    338|   options: RunHistoryOpenOptions = {},
+    339| ): Promise<WorkspaceSelectionOutcome> => {
+    340|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    341|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    342|   const stopWatching = watch(intent.isCurrent, (current) => { if (!cur…
+ ❯ Proxy.openRun stores/runHistoryStore.ts:125:28
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1547:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:340:70
+    338|   options: RunHistoryOpenOptions = {},
+    339| ): Promise<WorkspaceSelectionOutcome> => {
+    340|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    341|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    342|   const stopWatching = watch(intent.isCurrent, (current) => { if (!cur…
+ ❯ Proxy.openRun stores/runHistoryStore.ts:125:28
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1641:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not clobber live active context state when reopening an already subscribed run
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:340:70
+    338|   options: RunHistoryOpenOptions = {},
+    339| ): Promise<WorkspaceSelectionOutcome> => {
+    340|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    341|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    342|   const stopWatching = watch(intent.isCurrent, (current) => { if (!cur…
+ ❯ Proxy.openRun stores/runHistoryStore.ts:125:28
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1747:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > creates draft run for selected workspace and agent
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:24:70
+     22|   options: { workspaceRootPath: string; agentDefinitionId: string; sel…
+     23| ): Promise<WorkspaceSelectionOutcome> => {
+     24|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+     25|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+     26|   const agentDefinitionStore = useAgentDefinitionStore();
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:135:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1769:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > reuses model from existing context when creating draft run
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:24:70
+     22|   options: { workspaceRootPath: string; agentDefinitionId: string; sel…
+     23| ): Promise<WorkspaceSelectionOutcome> => {
+     24|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+     25|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+     26|   const agentDefinitionStore = useAgentDefinitionStore();
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:135:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1812:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:24:70
+     22|   options: { workspaceRootPath: string; agentDefinitionId: string; sel…
+     23| ): Promise<WorkspaceSelectionOutcome> => {
+     24|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+     25|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+     26|   const agentDefinitionStore = useAgentDefinitionStore();
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:135:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1877:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:24:70
+     22|   options: { workspaceRootPath: string; agentDefinitionId: string; sel…
+     23| ): Promise<WorkspaceSelectionOutcome> => {
+     24|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+     25|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+     26|   const agentDefinitionStore = useAgentDefinitionStore();
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:135:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1929:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun delegates to openRun for history rows
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ selectTreeRunFromHistory stores/runHistorySelectionActions.ts:117:70
+    115|   options: RunHistoryOpenOptions = {},
+    116| ): Promise<WorkspaceSelectionOutcome> => {
+    117|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    118|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    119|   const selectingOptions = { ...options, selectionIntent: intent };
+ ❯ Proxy.selectTreeRun stores/runHistoryStore.ts:515:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:2235:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/22]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun selects local temp context for draft rows
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ selectTreeRunFromHistory stores/runHistorySelectionActions.ts:117:70
+    115|   options: RunHistoryOpenOptions = {},
+    116| ): Promise<WorkspaceSelectionOutcome> => {
+    117|   const intent = options.selectionIntent ?? useAgentSelectionStore().b…
+       |                                                                      ^
+    118|   if (!intent.isCurrent()) return { disposition: 'superseded' };
+    119|   const selectingOptions = { ...options, selectionIntent: intent };
+ ❯ Proxy.selectTreeRun stores/runHistoryStore.ts:515:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/runHistoryStore.spec.ts:2256:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/22]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes agent execution links through the agent open coordinator
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ Module.openWorkspaceExecutionLink services/workspace/workspaceNavigationService.ts:86:62
+     84|   selectionIntent?: WorkspaceSelectionIntent,
+     85| ): Promise<WorkspaceSelectionOutcome> => {
+     86|   const intent = selectionIntent ?? useAgentSelectionStore().beginSele…
+       |                                                              ^
+     87|   if (!intent.isCurrent()) return { disposition: 'superseded' }
+     88|   if (link.kind === 'agent') {
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:109:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/22]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes an absent exact team execution link through the history facade
+TypeError: (0 , useAgentSelectionStore)(...).beginSelectionIntent is not a function
+ ❯ Module.openWorkspaceExecutionLink services/workspace/workspaceNavigationService.ts:86:62
+     84|   selectionIntent?: WorkspaceSelectionIntent,
+     85| ): Promise<WorkspaceSelectionOutcome> => {
+     86|   const intent = selectionIntent ?? useAgentSelectionStore().beginSele…
+       |                                                              ^
+     87|   if (!intent.isCurrent()) return { disposition: 'superseded' }
+     88|   if (link.kind === 'agent') {
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:124:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/22]⎯
+
+
+ Test Files  4 failed | 5 passed (9)
+      Tests  22 failed | 62 passed (84)
+   Start at  10:46:52
+   Duration  29.71s (transform 6.20s, setup 40.55s, collect 1.72s, tests 822ms, environment 6.58s, prepare 3.24s)
+
+ ELIFECYCLE  Command failed with exit code 1.

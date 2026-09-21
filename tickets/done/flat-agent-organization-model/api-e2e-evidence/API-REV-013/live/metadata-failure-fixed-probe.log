@@ -1,0 +1,8 @@
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/metadata-failure-fixed-probe.mjs:166
+    throw new Error(`Assertion failure: ${JSON.stringify(assertions)}`);
+          ^
+
+Error: Assertion failure: {"acceptedFailureAck":true,"processReachableAfterFailure":true,"failureSocketRemainedOpen":true,"indexRestoreExact":true,"noFailedSummaryReplayOrRelabel":true,"acceptedLaterAck":true,"laterSamePathPersisted":false,"processReachableAfterLaterSuccess":true}
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/metadata-failure-fixed-probe.mjs:166:11
+
+Node.js v22.23.2

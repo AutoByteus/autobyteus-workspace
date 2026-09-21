@@ -1,0 +1,232 @@
+
+> autobyteus@1.4.68 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> nuxt build
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+●  Nitro preset: static
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ℹ Building client...
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+ℹ ✓ 3812 modules transformed.
+ℹ rendering chunks...
+ℹ computing gzip size...
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff                    4.42 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2                   4.93 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2                   5.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2                   5.47 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff                    5.98 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff                    6.19 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff                    6.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2             6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2                6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf                     7.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff              7.66 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff                 7.72 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2                  9.64 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2              10.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf                    10.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff                  10.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2                11.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2                   11.35 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf                    11.51 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2               12.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2                 12.22 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf                    12.23 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff               12.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf              12.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf                 12.37 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff                 13.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff                    13.30 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2             13.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff                14.11 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff                  14.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff              16.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2                16.40 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2                    16.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf                   16.65 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2                16.78 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2                    16.99 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff                 18.67 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff                     18.75 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff                 19.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf                19.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf                  19.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf                     19.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff                     19.68 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf                 22.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf                   24.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                      25.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2                   26.27 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf               27.56 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2                    28.08 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                       29.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff                    30.77 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf                  31.20 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                      31.31 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf                  32.97 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff                     33.52 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                      33.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                        51.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf                     53.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                      63.63 kB
+ℹ .nuxt/dist/client/manifest.json                                             68.37 kB │ gzip:     6.40 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                       0.20 kB │ gzip:     0.12 kB
+ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                                   0.23 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/DefinitionLaunchPreferencesSection.B4uhkLvJ.css      0.28 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css                    0.35 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.BrK5oVEn.css                        3.20 kB │ gzip:     1.02 kB
+ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.BuWjsrkA.css            3.51 kB │ gzip:     1.19 kB
+ℹ .nuxt/dist/client/_nuxt/default.D5N_dOYt.css                                 4.07 kB │ gzip:     0.97 kB
+ℹ .nuxt/dist/client/_nuxt/settings.y6Gl2Ol8.css                                4.29 kB │ gzip:     1.32 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.CkraqrK-.css                              10.19 kB │ gzip:     2.55 kB
+ℹ .nuxt/dist/client/_nuxt/skills.hZg4z6X7.css                                 14.02 kB │ gzip:     3.04 kB
+ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.Kr8OOoy4.css               50.71 kB │ gzip:    13.07 kB
+ℹ .nuxt/dist/client/_nuxt/entry.B7AQiYxr.css                                 122.76 kB │ gzip:    19.38 kB
+ℹ .nuxt/dist/client/_nuxt/BB13Gg9Q.js                                          0.09 kB │ gzip:     0.10 kB
+ℹ .nuxt/dist/client/_nuxt/DPKmNfSo.js                                          0.10 kB │ gzip:     0.11 kB
+ℹ .nuxt/dist/client/_nuxt/Gi6I4Gst.js                                          0.15 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/C_8iatKI.js                                          0.18 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/OnOYcUOt.js                                          0.21 kB │ gzip:     0.16 kB
+ℹ .nuxt/dist/client/_nuxt/Y0Vin_5X.js                                          0.22 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/b0dH-aeN.js                                          0.23 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/Be9CT1_V.js                                          0.26 kB │ gzip:     0.21 kB
+ℹ .nuxt/dist/client/_nuxt/c7I-kyr_.js                                          0.35 kB │ gzip:     0.26 kB
+ℹ .nuxt/dist/client/_nuxt/DjYGZfAS.js                                          0.43 kB │ gzip:     0.28 kB
+ℹ .nuxt/dist/client/_nuxt/DZLEebEe.js                                          0.45 kB │ gzip:     0.29 kB
+ℹ .nuxt/dist/client/_nuxt/B1NcEeJX.js                                          0.45 kB │ gzip:     0.29 kB
+ℹ .nuxt/dist/client/_nuxt/Bp8Z-2my.js                                          0.49 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/BHuszSLC.js                                          0.73 kB │ gzip:     0.45 kB
+ℹ .nuxt/dist/client/_nuxt/CE1G-McA.js                                          0.76 kB │ gzip:     0.40 kB
+ℹ .nuxt/dist/client/_nuxt/C-QKKh4c.js                                          0.80 kB │ gzip:     0.41 kB
+ℹ .nuxt/dist/client/_nuxt/CN-5KoOi.js                                          0.94 kB │ gzip:     0.45 kB
+ℹ .nuxt/dist/client/_nuxt/C7E0j9eW.js                                          0.94 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/BNS8JENk.js                                          1.08 kB │ gzip:     0.58 kB
+ℹ .nuxt/dist/client/_nuxt/CmKTTxBW.js                                          1.18 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/DCcvXVQK.js                                          1.42 kB │ gzip:     0.63 kB
+ℹ .nuxt/dist/client/_nuxt/BxcXMT3m.js                                          1.82 kB │ gzip:     0.83 kB
+ℹ .nuxt/dist/client/_nuxt/ybuABU3F.js                                          2.03 kB │ gzip:     0.97 kB
+ℹ .nuxt/dist/client/_nuxt/Bv4L8bhO.js                                          2.39 kB │ gzip:     1.01 kB
+ℹ .nuxt/dist/client/_nuxt/B7Isk4ac.js                                          2.56 kB │ gzip:     1.27 kB
+ℹ .nuxt/dist/client/_nuxt/DFZZ3t6z.js                                          2.63 kB │ gzip:     0.94 kB
+ℹ .nuxt/dist/client/_nuxt/CXaPChSQ.js                                          3.40 kB │ gzip:     1.47 kB
+ℹ .nuxt/dist/client/_nuxt/CuxK7aia.js                                          3.42 kB │ gzip:     1.47 kB
+ℹ .nuxt/dist/client/_nuxt/BThh5i_-.js                                          3.56 kB │ gzip:     1.28 kB
+ℹ .nuxt/dist/client/_nuxt/BcsE2S_y.js                                          3.63 kB │ gzip:     1.46 kB
+ℹ .nuxt/dist/client/_nuxt/DWvciECL.js                                          3.83 kB │ gzip:     1.50 kB
+ℹ .nuxt/dist/client/_nuxt/BhfCZynu.js                                          4.33 kB │ gzip:     1.87 kB
+ℹ .nuxt/dist/client/_nuxt/DX6XiGOO.js                                          4.69 kB │ gzip:     2.18 kB
+ℹ .nuxt/dist/client/_nuxt/DvCatb1H.js                                          4.74 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/C1DOeEUW.js                                          4.85 kB │ gzip:     1.45 kB
+ℹ .nuxt/dist/client/_nuxt/Cv2yJxNz.js                                          4.95 kB │ gzip:     2.03 kB
+ℹ .nuxt/dist/client/_nuxt/BEdBWXVu.js                                          4.98 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/ixNPpToT.js                                          5.25 kB │ gzip:     2.30 kB
+ℹ .nuxt/dist/client/_nuxt/C2qbxCH2.js                                          5.63 kB │ gzip:     2.29 kB
+ℹ .nuxt/dist/client/_nuxt/CfvtodrC.js                                          5.84 kB │ gzip:     2.33 kB
+ℹ .nuxt/dist/client/_nuxt/oCrg26pI.js                                          5.90 kB │ gzip:     1.85 kB
+ℹ .nuxt/dist/client/_nuxt/Dupks-GQ.js                                          5.93 kB │ gzip:     2.48 kB
+ℹ .nuxt/dist/client/_nuxt/kVHshO7S.js                                          7.00 kB │ gzip:     2.90 kB
+ℹ .nuxt/dist/client/_nuxt/uxUxfL5q.js                                          7.30 kB │ gzip:     2.65 kB
+ℹ .nuxt/dist/client/_nuxt/D_1e55eq.js                                          7.77 kB │ gzip:     2.81 kB
+ℹ .nuxt/dist/client/_nuxt/BJTqmcfQ.js                                          8.08 kB │ gzip:     2.12 kB
+ℹ .nuxt/dist/client/_nuxt/Hmns3lwP.js                                          8.63 kB │ gzip:     1.79 kB
+ℹ .nuxt/dist/client/_nuxt/Cgw80zYE.js                                          9.03 kB │ gzip:     3.06 kB
+ℹ .nuxt/dist/client/_nuxt/BJzmBn_N.js                                          9.24 kB │ gzip:     1.90 kB
+ℹ .nuxt/dist/client/_nuxt/BsWWX_wQ.js                                         10.39 kB │ gzip:     3.61 kB
+ℹ .nuxt/dist/client/_nuxt/BoOiwmwy.js                                         11.05 kB │ gzip:     4.11 kB
+ℹ .nuxt/dist/client/_nuxt/BHsmfHmX.js                                         11.48 kB │ gzip:     2.58 kB
+ℹ .nuxt/dist/client/_nuxt/70Ol1qHN.js                                         11.88 kB │ gzip:     4.64 kB
+ℹ .nuxt/dist/client/_nuxt/i2CiUIbE.js                                         13.22 kB │ gzip:     4.45 kB
+ℹ .nuxt/dist/client/_nuxt/CYrUyd19.js                                         15.62 kB │ gzip:     4.09 kB
+ℹ .nuxt/dist/client/_nuxt/Ci0IB_k2.js                                         15.85 kB │ gzip:     5.63 kB
+ℹ .nuxt/dist/client/_nuxt/CPvL79dB.js                                         17.66 kB │ gzip:     5.18 kB
+ℹ .nuxt/dist/client/_nuxt/BYULOaZy.js                                         18.13 kB │ gzip:     5.65 kB
+ℹ .nuxt/dist/client/_nuxt/DChkdfF5.js                                         18.47 kB │ gzip:     7.21 kB
+ℹ .nuxt/dist/client/_nuxt/C6p0gWuw.js                                         20.09 kB │ gzip:     6.91 kB
+ℹ .nuxt/dist/client/_nuxt/BJY7IqdZ.js                                         20.27 kB │ gzip:     7.19 kB
+ℹ .nuxt/dist/client/_nuxt/B-toVew9.js                                         22.19 kB │ gzip:     8.15 kB
+ℹ .nuxt/dist/client/_nuxt/ttSm1heg.js                                         23.59 kB │ gzip:     8.33 kB
+ℹ .nuxt/dist/client/_nuxt/BASW0g8-.js                                         23.67 kB │ gzip:     8.25 kB
+ℹ .nuxt/dist/client/_nuxt/CedLyk7P.js                                         24.14 kB │ gzip:     7.40 kB
+ℹ .nuxt/dist/client/_nuxt/BComHXmV.js                                         25.29 kB │ gzip:     8.83 kB
+ℹ .nuxt/dist/client/_nuxt/DgsB4xDJ.js                                         25.61 kB │ gzip:    10.06 kB
+ℹ .nuxt/dist/client/_nuxt/ElxJ5xt0.js                                         27.26 kB │ gzip:     6.44 kB
+ℹ .nuxt/dist/client/_nuxt/CCpgpyTv.js                                         27.35 kB │ gzip:     9.70 kB
+ℹ .nuxt/dist/client/_nuxt/DD6AAcOT.js                                         28.68 kB │ gzip:     8.49 kB
+ℹ .nuxt/dist/client/_nuxt/Dr6k6DqQ.js                                         30.14 kB │ gzip:     9.43 kB
+ℹ .nuxt/dist/client/_nuxt/Coq-uP86.js                                         32.10 kB │ gzip:    10.09 kB
+ℹ .nuxt/dist/client/_nuxt/B8uchd7I.js                                         33.90 kB │ gzip:     9.95 kB
+ℹ .nuxt/dist/client/_nuxt/Z57I3X9N.js                                         36.30 kB │ gzip:    11.79 kB
+ℹ .nuxt/dist/client/_nuxt/D9ErX76v.js                                         40.23 kB │ gzip:    11.35 kB
+ℹ .nuxt/dist/client/_nuxt/-2gVDgEv.js                                         45.25 kB │ gzip:    14.64 kB
+ℹ .nuxt/dist/client/_nuxt/CNeh8Mq1.js                                         46.47 kB │ gzip:    10.17 kB
+ℹ .nuxt/dist/client/_nuxt/DWklkk2J.js                                         49.83 kB │ gzip:    12.59 kB
+ℹ .nuxt/dist/client/_nuxt/EAGEzh_g.js                                         50.62 kB │ gzip:    13.51 kB
+ℹ .nuxt/dist/client/_nuxt/BplwGrmF.js                                         54.76 kB │ gzip:    13.95 kB
+ℹ .nuxt/dist/client/_nuxt/DW9hGC0U.js                                         60.48 kB │ gzip:    19.41 kB
+ℹ .nuxt/dist/client/_nuxt/DeIp4caS.js                                         68.37 kB │ gzip:    23.16 kB
+ℹ .nuxt/dist/client/_nuxt/CkvfwAcT.js                                         70.20 kB │ gzip:    19.70 kB
+ℹ .nuxt/dist/client/_nuxt/Cml_9e82.js                                         71.82 kB │ gzip:    20.50 kB
+ℹ .nuxt/dist/client/_nuxt/BJRaYWh_.js                                         74.80 kB │ gzip:    17.32 kB
+ℹ .nuxt/dist/client/_nuxt/DN0MBz3e.js                                         81.77 kB │ gzip:    22.50 kB
+ℹ .nuxt/dist/client/_nuxt/EYE2b7Uk.js                                         85.24 kB │ gzip:    21.03 kB
+ℹ .nuxt/dist/client/_nuxt/C-QV36gE.js                                         85.73 kB │ gzip:    25.02 kB
+ℹ .nuxt/dist/client/_nuxt/Cpbz1FGU.js                                         88.65 kB │ gzip:    20.06 kB
+ℹ .nuxt/dist/client/_nuxt/BhVQgVED.js                                         97.86 kB │ gzip:    26.86 kB
+ℹ .nuxt/dist/client/_nuxt/Dv99HtVo.js                                        113.91 kB │ gzip:    30.66 kB
+ℹ .nuxt/dist/client/_nuxt/Bh-rSgTP.js                                        148.65 kB │ gzip:    42.02 kB
+ℹ .nuxt/dist/client/_nuxt/BlSCwjwB.js                                        401.78 kB │ gzip:    89.31 kB
+ℹ .nuxt/dist/client/_nuxt/5J0xJHOV.js                                        441.64 kB │ gzip:   141.47 kB
+ℹ .nuxt/dist/client/_nuxt/BssvYPFL.js                                        452.84 kB │ gzip:   107.02 kB
+ℹ .nuxt/dist/client/_nuxt/B4hnzjmA.js                                        473.93 kB │ gzip:   123.47 kB
+ℹ .nuxt/dist/client/_nuxt/YgsYRP5P.js                                        735.26 kB │ gzip:   194.52 kB
+ℹ .nuxt/dist/client/_nuxt/DzxGBR-Z.js                                      1,030.36 kB │ gzip:   276.19 kB
+ℹ .nuxt/dist/client/_nuxt/DLWI2oTB.js                                      3,764.38 kB │ gzip: 1,211.56 kB
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+ℹ ✓ built in 30.70s
+✔ Client built in 30711ms
+ℹ Building server...
+ℹ vite v7.3.1 building ssr environment for production...
+ℹ transforming...
+ℹ ✓ 1 modules transformed.
+ℹ rendering chunks...
+ℹ ✓ built in 20ms
+✔ Server built in 180ms
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 16 initial routes with crawler
+[nitro]   ├─ /media (50ms)
+[nitro]   ├─ /agents (52ms)
+[nitro]   ├─ /nodes (51ms)
+[nitro]   ├─ /tools (51ms)
+[nitro]   ├─ /mobile (52ms)
+[nitro]   ├─ /settings (54ms)
+[nitro]   ├─ /skills (53ms)
+[nitro]   ├─ /memory (52ms)
+[nitro]   ├─ /workspace (54ms)
+[nitro]   ├─ /agent-orgs (55ms)
+[nitro]   ├─ /applications (55ms)
+[nitro]   ├─ /agent-teams (55ms)
+[nitro]   ├─ / (51ms)
+[nitro]   ├─ /200.html (55ms)
+[nitro]   ├─ /index.html (56ms)
+[nitro]   ├─ /404.html (56ms)
+[nitro] ℹ Prerendered 16 routes in 1.312 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+└  ✨ Build complete!

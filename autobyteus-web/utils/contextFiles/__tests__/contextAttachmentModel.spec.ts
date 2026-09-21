@@ -46,3 +46,24 @@ describe('hydrateContextAttachment local-file transition', () => {
     });
   });
 });
+
+describe('recognized upload basename labels', () => {
+  it.each([
+    '/rest/drafts/agent-runs/draft/context-files/',
+    '/rest/drafts/team-runs/draft/members/lead/context-files/',
+    '/rest/drafts/agent-org-runs/root/agent-runs/task/context-files/',
+    '/rest/runs/agent/context-files/',
+    '/rest/team-runs/team/members/lead/context-files/',
+    '/rest/agent-org-runs/root/agent-runs/task/context-files/',
+  ])('formats an encoded or decoded recorded basename only on %s', route => {
+    const storedFilename = 'ctx_token__notes 100%.txt';
+    const encoded = encodeURIComponent(storedFilename);
+    for (const displayName of [storedFilename, encoded, null]) {
+      const attachment = hydrateContextAttachment({ locator: route + encoded, type: 'text', displayName });
+      expect(attachment).toMatchObject({ kind: 'uploaded', id: storedFilename, storedFilename,
+        locator: route + encoded, displayName: 'notes 100%.txt', type: 'Text' });
+    }
+    expect(hydrateContextAttachment({ locator: route + encoded, displayName: 'ctx_custom__notes.txt' }).displayName)
+      .toBe('ctx_custom__notes.txt');
+  });
+});

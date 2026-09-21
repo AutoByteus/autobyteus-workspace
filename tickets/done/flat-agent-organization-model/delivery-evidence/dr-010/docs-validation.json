@@ -1,0 +1,74 @@
+{
+  "at": "2026-09-13T03:45:26.489379+00:00",
+  "result": "Pass",
+  "scope": "Documentation/source identity/reference/whitespace only; no executable feature rerun",
+  "checks": [
+    {
+      "check": "Current authored scope is org_local",
+      "pass": true
+    },
+    {
+      "check": "No obsolete family intermediate target assertion",
+      "pass": true
+    },
+    {
+      "check": "Authored JSON has no version field",
+      "pass": true
+    },
+    {
+      "check": "Current strict owner route source",
+      "pass": true
+    },
+    {
+      "check": "Current non-media source field",
+      "pass": true
+    },
+    {
+      "check": "Scoped physical read option autobyteus-web/stores/agentOrgContextsStore.ts",
+      "pass": true
+    },
+    {
+      "check": "Scoped physical read option autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts",
+      "pass": true
+    },
+    {
+      "check": "Continuable exact configured source",
+      "pass": true
+    },
+    {
+      "check": "Archived known issues",
+      "pass": true
+    },
+    {
+      "check": "Original API Fail not rewritten",
+      "pass": true
+    },
+    {
+      "check": "All 6504 cumulative references resolve",
+      "pass": true
+    },
+    {
+      "check": "Only documentation changed after reviewed checkpoint",
+      "pass": true
+    },
+    {
+      "check": "No unmerged entries",
+      "pass": true
+    },
+    {
+      "check": "git diff --check",
+      "pass": true
+    },
+    {
+      "check": "git diff --cached --check",
+      "pass": true
+    }
+  ],
+  "changedLongLivedPaths": [
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-web/docs/agent_artifacts.md",
+    "autobyteus-web/docs/agent_execution_architecture.md",
+    "autobyteus-web/docs/agent_orgs.md"
+  ]
+}

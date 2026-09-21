@@ -1,0 +1,11 @@
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+AgentFactory (Singleton) initialized.
+(node:14314) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:57:02.070Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:57:02.070Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+this.appConfig.getAgentOrgsDir is not a function

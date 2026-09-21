@@ -267,45 +267,13 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       agentRunManager: object;
     }).agentRunManager;
     const teamRunManager = (kernel.teamRunService as unknown as {
-      manager: { factory: { options: {
-        createTeamManager(input: unknown): object;
-      } } };
+      manager: { factory: { dependencies: Record<string, unknown> } };
     }).manager;
-    const factoryOptions = teamRunManager.factory.options;
-    const callbacks = {
-      taskRootResolver: { resolveActiveRoot: vi.fn() },
-      publish: vi.fn(),
-      deliverInterAgentMessage: vi.fn(),
-      acceptPlatformBinding: vi.fn(),
-    };
-    const constructionInput = {
-      context: {} as never,
-      subTeamRunFactory: {} as never,
-      callbacks,
-    };
-    const mixedManager = factoryOptions.createTeamManager(constructionInput) as {
-      configured: { options: Record<string, unknown> };
-      taskAgents: { options: Record<string, unknown> };
-    };
-    const configured = mixedManager.configured.options;
-    const taskAgents = mixedManager.taskAgents.options;
-    for (const options of [configured, taskAgents]) {
-      expect(options.agentRunManager).toBe(agentRunManager);
-      expect(options.memoryLocationService).toBe(kernel.memoryLocationService);
-      expect(options.workspaceManager).toBe(harness.buildInput.workspaceManager);
-      expect(options.taskRootResolver).toBe(callbacks.taskRootResolver);
-      expect(options.publish).toBe(callbacks.publish);
-      expect(options.deliverInterAgentMessage)
-        .toBe(callbacks.deliverInterAgentMessage);
-      expect(options.acceptPlatformBinding).toBe(callbacks.acceptPlatformBinding);
-      expect(options.activityInspector).toBeTruthy();
-      expect(options.memberTeamContextBuilder).toBeTruthy();
-    }
-    expect(configured.subTeamRunFactory)
-      .toBe(constructionInput.subTeamRunFactory);
-    expect(taskAgents.activityInspector).toBe(configured.activityInspector);
-    expect(taskAgents.memberTeamContextBuilder)
-      .toBe(configured.memberTeamContextBuilder);
+    const factoryDependencies = teamRunManager.factory.dependencies;
+    expect(factoryDependencies.agentRunManager).toBe(agentRunManager);
+    expect(factoryDependencies.workspaceManager).toBe(harness.buildInput.workspaceManager);
+    expect(factoryDependencies.memoryLocator).toBeTruthy();
+    expect(factoryDependencies.activityInspector).toBeTruthy();
 
     kernel.abortConstruction();
     kernel.abortConstruction();

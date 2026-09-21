@@ -1,0 +1,23 @@
+## git diff --check
+PASS
+
+## temporary environment artifacts
+absent autobyteus-web/node_modules
+absent autobyteus-server-ts/node_modules
+absent autobyteus-ts/node_modules
+absent autobyteus-application-backend-sdk/node_modules
+absent autobyteus-application-sdk-contracts/node_modules
+absent temporary reviewer probe
+
+## legacy exact-member production symbols
+PASS: no legacy exact-member production symbol remains
+
+## IR-002 changed production source effective non-empty lines
+489 autobyteus-web/stores/existingRunModelConfigStore.ts
+PASS: changed implementation source <=500 effective non-empty lines
+
+## IR-001 preservation
+preserved=44 changed=2
+autobyteus-web/stores/__tests__/existingRunModelConfigStore.spec.ts
+autobyteus-web/stores/existingRunModelConfigStore.ts
+PASS: only owning store and its durable test changed from IR-001

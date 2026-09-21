@@ -1,0 +1,118 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts utils/contextFiles/__tests__/contextAttachmentModel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/contextFiles/__tests__/contextAttachmentModel.spec.ts (9 tests | 6 failed) 17ms
+   ✓ hydrateContextAttachment local-file transition > hydrates legacy and canonical locators into the canonical external current variant 2ms
+   ✓ hydrateContextAttachment local-file transition > retains unsupported local locator metadata in an explicit non-executable variant 0ms
+   ✓ hydrateContextAttachment local-file transition > leaves non-local external and workspace locator classification unchanged 1ms
+   × recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/drafts/agent-runs/draft/context-files/ 8ms
+     → expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+   × recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/drafts/team-runs/draft/members/lead/context-files/ 2ms
+     → expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+   × recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/drafts/agent-org-runs/root/agent-runs/task/context-files/ 1ms
+     → expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+   × recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/runs/agent/context-files/ 1ms
+     → expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+   × recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/team-runs/team/members/lead/context-files/ 1ms
+     → expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+   × recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/agent-org-runs/root/agent-runs/task/context-files/ 1ms
+     → expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+stdout | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts (3 tests | 3 failed) 10ms
+   × ordinary stored upload names through raw/history/page/shared Open > initial formats only the recognized ordinary upload basename 7ms
+     → expected 'ctx_token__notes.txt' to be 'notes.txt' // Object.is equality
+   × ordinary stored upload names through raw/history/page/shared Open > cold formats only the recognized ordinary upload basename 1ms
+     → expected 'ctx_token__notes.txt' to be 'notes.txt' // Object.is equality
+   × ordinary stored upload names through raw/history/page/shared Open > page formats only the recognized ordinary upload basename 1ms
+     → expected 'ctx_token__notes.txt' to be 'notes.txt' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts > ordinary stored upload names through raw/history/page/shared Open > initial formats only the recognized ordinary upload basename
+ FAIL  components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts > ordinary stored upload names through raw/history/page/shared Open > cold formats only the recognized ordinary upload basename
+ FAIL  components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts > ordinary stored upload names through raw/history/page/shared Open > page formats only the recognized ordinary upload basename
+AssertionError: expected 'ctx_token__notes.txt' to be 'notes.txt' // Object.is equality
+
+Expected: "notes.txt"
+Received: "ctx_token__notes.txt"
+
+ ❯ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts:57:38
+     55|         }).messages[0] as UserMessage;
+     56|       const attachment = message.contextFilePaths![0];
+     57|       expect(attachment.displayName).toBe(input.label);
+       |                                      ^
+     58|       expect(attachment.locator).toBe(input.uri);
+     59|       expect(attachment.type).toBe(input.type === ContextFileType.UNKN…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  utils/contextFiles/__tests__/contextAttachmentModel.spec.ts > recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/drafts/agent-runs/draft/context-files/
+ FAIL  utils/contextFiles/__tests__/contextAttachmentModel.spec.ts > recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/drafts/team-runs/draft/members/lead/context-files/
+ FAIL  utils/contextFiles/__tests__/contextAttachmentModel.spec.ts > recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/drafts/agent-org-runs/root/agent-runs/task/context-files/
+ FAIL  utils/contextFiles/__tests__/contextAttachmentModel.spec.ts > recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/runs/agent/context-files/
+ FAIL  utils/contextFiles/__tests__/contextAttachmentModel.spec.ts > recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/team-runs/team/members/lead/context-files/
+ FAIL  utils/contextFiles/__tests__/contextAttachmentModel.spec.ts > recognized upload basename labels > formats an encoded or decoded recorded basename only on /rest/agent-org-runs/root/agent-runs/task/context-files/
+AssertionError: expected { kind: 'uploaded', …(6) } to match object { kind: 'uploaded', …(5) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,7 +1,7 @@
+  {
+-   "displayName": "notes 100%.txt",
++   "displayName": "ctx_token__notes 100%.txt",
+    "id": "ctx_token__notes 100%.txt",
+    "kind": "uploaded",
+    "locator": "/rest/drafts/agent-runs/draft/context-files/ctx_token__notes%20100%25.txt",
+    "storedFilename": "ctx_token__notes 100%.txt",
+    "type": "Text",
+
+ ❯ utils/contextFiles/__tests__/contextAttachmentModel.spec.ts:63:26
+     61|     for (const displayName of [storedFilename, encoded, null]) {
+     62|       const attachment = hydrateContextAttachment({ locator: route + e…
+     63|       expect(attachment).toMatchObject({ kind: 'uploaded', id: storedF…
+       |                          ^
+     64|         locator: route + encoded, displayName: 'notes 100%.txt', type:…
+     65|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  9 failed | 3 passed (12)
+   Start at  17:40:33
+   Duration  12.16s (transform 6.69s, setup 15.67s, collect 3.07s, tests 27ms, environment 1.24s, prepare 643ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

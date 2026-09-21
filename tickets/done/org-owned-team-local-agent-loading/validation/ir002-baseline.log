@@ -1,0 +1,70 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts --run -t 'direct configuration'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-web
+
+stderr | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts (16 tests | 1 failed | 15 skipped) 22ms
+   × selected Org launch references through real panel, stores, projector and Apollo reader > direct configuration resolves exact owned Teams and Agents without prior detail/public insertion, then issues ordinary Create 22ms
+     → expected [] to deeply equal [ …(3) ]
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > blocks while pending without premature missing-Team error and preserves drafts without refetch on form edits
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on missing-team even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on missing-child even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on network even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on graphql even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-id even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-scope even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-org even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > fails closed on wrong-team-owner even with a partial Team snapshot
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after route invalidation
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after revision invalidation
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after members invalidation
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > ignores a pending completion after unmount invalidation
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > retains unknown overrides as a blocked projection instead of discarding them
+   ↓ selected Org launch references through real panel, stores, projector and Apollo reader > localizes loading and unavailable status in Simplified Chinese
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts > selected Org launch references through real panel, stores, projector and Apollo reader > direct configuration resolves exact owned Teams and Agents without prior detail/public insertion, then issues ordinary Create
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent-org-owned-agent:alpha:guide",
+-   "agent-org-owned-team:alpha:squad",
+-   "team-local-agent:agent-org-owned-team%3Aalpha%3Asquad:worker",
+- ]
++ []
+
+ ❯ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts:105:8
+    103|     await flushPromises()
+    104|     expect(transport.query.mock.calls.map(([request]) => request.varia…
+    105|       .toEqual([teamId('alpha'), directId('alpha'), localId('alpha')].…
+       |        ^
+    106|     expect(useAgentTeamDefinitionStore().agentTeamDefinitions).toEqual…
+    107|     expect(useAgentDefinitionStore().agentDefinitions).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 skipped (16)
+   Start at  09:39:21
+   Duration  4.65s (transform 2.66s, setup 3.91s, collect 281ms, tests 22ms, environment 119ms, prepare 111ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

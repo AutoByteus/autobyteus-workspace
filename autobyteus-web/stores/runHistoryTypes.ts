@@ -3,7 +3,9 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
-import type { TeamExecutionTaskPresentation } from '~/services/teamExecution/taskDelegationPresentation';
+import type { CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation';
+import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution';
+import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -31,6 +33,34 @@ export interface RunHistoryWorkspaceGroup {
   workspaceName: string;
   agentDefinitions: RunHistoryAgentGroup[];
   teamDefinitions: TeamRunHistoryDefinitionGroup[];
+}
+
+export interface AgentOrgRunHistoryItem {
+  stableKey: string;
+  rootSubjectKind: 'agent_org';
+  rootRunId: string;
+  createdAt: string;
+  archivedAt: string | null;
+  isActive: boolean;
+  summary: string;
+  executionTree: AgentOrgExecutionTree;
+}
+
+export interface AgentOrgHistoryDefinitionGroup {
+  stableKey: string;
+  definitionId: string;
+  name: string;
+  runs: AgentOrgRunHistoryItem[];
+}
+
+export interface WorkspaceHistoryWorkspaceNode extends RunTreeWorkspaceNode {
+  stableKey: string;
+  agentOrgDefinitions: AgentOrgHistoryDefinitionGroup[];
+}
+
+export interface RunHistoryFamilyErrors {
+  workspace: string | null;
+  agentOrg: string | null;
 }
 
 export interface RunModelConfigEditability {
@@ -162,7 +192,7 @@ export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecution
   kind: 'transient_execution';
   transientKind: 'task_agent' | 'task_team' | 'task_team_child';
   currentStatus: AgentStatus | string | null;
-  task: TeamExecutionTaskPresentation | null;
+  task: CollaborationTaskHeadingPresentation | null;
 }
 
 export type RunHistoryTeamExecutionRow =

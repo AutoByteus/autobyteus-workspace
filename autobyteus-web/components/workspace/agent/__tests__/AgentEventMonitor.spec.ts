@@ -136,3 +136,19 @@ describe('AgentEventMonitor.vue', () => {
     ]));
   });
 });
+
+it('retains the exact historical conversation while removing all composer slots for a read-only execution', async () => {
+  const wrapper = mount(AgentEventMonitor, {
+    props: { conversation, readOnly: true, browseSubject: { kind: 'agentOrgMember', orgRunId: 'org-run', agentRunId: 'task-run', memberAddress: '/worker' } },
+    slots: { composerContext: '<button data-test="composer-action">Compose</button>' },
+    global: { stubs: {
+      AgentUserInputForm: { template: '<textarea data-test="composer" />' },
+      AgentConversationFeed: { props: ['conversation'], template: '<article>{{ conversation.messages[0].text }}</article>' },
+    } },
+  });
+  expect(wrapper.text()).toContain('Please write a summary.');
+  expect(wrapper.find('[data-test="composer"]').exists()).toBe(false);
+  expect(wrapper.find('[data-test="composer-action"]').exists()).toBe(false);
+  await wrapper.setProps({ readOnly: false });
+  expect(wrapper.find('[data-test="composer"]').exists()).toBe(true);
+});

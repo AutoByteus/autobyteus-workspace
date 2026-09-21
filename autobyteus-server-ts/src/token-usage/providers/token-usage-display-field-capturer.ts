@@ -10,7 +10,11 @@ import {
   getTeamRunHistoryCatalogService,
   type TeamRunHistoryCatalogService,
 } from "../../run-history/services/team-run-history-catalog-service.js";
-import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import {
+  createStoredCollaborationExecutionLocationService,
+  type LocatedCollaborationAgentExecution,
+} from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
 const compactOptional = (value: string | null | undefined): string | null => {
@@ -30,12 +34,16 @@ export class TokenUsageDisplayFieldCapturer {
     agentCatalog?: Pick<AgentRunHistoryCatalogService, "getCatalogRow">;
     teamCatalog?: Pick<TeamRunHistoryCatalogService, "getCatalogRow">;
     agentMetadata?: Pick<AgentRunMetadataService, "readMetadata">;
-    executionTreeLocation?: Pick<TeamRunExecutionTreeLocationService, "findAgent">;
+    executionLocation?: Readonly<{
+      findAgent(input: { agentRunId: string }): Promise<LocatedCollaborationAgentExecution | null>;
+    }>;
   } = {}) {}
 
   async capture(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
+    const located = await this.getExecutionLocation().findAgent({ agentRunId: payload.run_id }).catch(() => null);
+    if (located?.rootSubjectKind === "agent_org") return this.captureOrgUsage(payload, located);
     return payload.root_team_run_id
-      ? this.captureTeamUsage(payload, payload.root_team_run_id)
+      ? this.captureTeamUsage(payload, payload.root_team_run_id, located)
       : this.captureStandaloneUsage(payload);
   }
 
@@ -61,12 +69,17 @@ export class TokenUsageDisplayFieldCapturer {
   private async captureTeamUsage(
     payload: TokenUsageUpdatedPayload,
     teamRunId: string,
+    prelocated: LocatedCollaborationAgentExecution | null,
   ): Promise<TokenUsageUpdatedPayload> {
     const [catalogRow, located] = await Promise.all([
       this.getTeamCatalog().getCatalogRow(teamRunId).catch(() => null),
-      this.getExecutionTreeLocation().findAgent({ agentRunId: payload.run_id }).catch(() => null),
+      prelocated
+        ? Promise.resolve(prelocated)
+        : this.getExecutionLocation().findAgent({ agentRunId: payload.run_id }).catch(() => null),
     ]);
-    const tree = located?.rootTeamRunId === teamRunId ? located.tree : null;
+    const tree = located?.rootSubjectKind === "agent_team" && located.rootRunId === teamRunId
+      ? located.tree
+      : null;
 
     return {
       ...payload,
@@ -83,6 +96,23 @@ export class TokenUsageDisplayFieldCapturer {
     };
   }
 
+  private captureOrgUsage(
+    payload: TokenUsageUpdatedPayload,
+    located: Extract<LocatedCollaborationAgentExecution, { rootSubjectKind: "agent_org" }>,
+  ): TokenUsageUpdatedPayload {
+    return {
+      ...payload,
+      team_name: compactOptional(payload.team_name)
+        ?? compactOptional(located.tree.rootOrg.orgDefinitionName),
+      agent_name: compactOptional(payload.agent_name),
+      run_summary: compactOptional(payload.run_summary),
+      run_created_at: normalizeDateString(payload.run_created_at)
+        ?? normalizeDateString(located.tree.createdAt),
+      member_display_name: compactOptional(payload.member_display_name)
+        ?? compactOptional(located.memberAddress),
+    };
+  }
+
   private getAgentCatalog(): Pick<AgentRunHistoryCatalogService, "getCatalogRow"> {
     return this.dependencies.agentCatalog ?? getAgentRunHistoryCatalogService();
   }
@@ -95,7 +125,8 @@ export class TokenUsageDisplayFieldCapturer {
     return this.dependencies.agentMetadata ?? getAgentRunMetadataService();
   }
 
-  private getExecutionTreeLocation(): Pick<TeamRunExecutionTreeLocationService, "findAgent"> {
-    return this.dependencies.executionTreeLocation ?? new TeamRunExecutionTreeLocationService();
+  private getExecutionLocation(): NonNullable<typeof this.dependencies.executionLocation> {
+    return this.dependencies.executionLocation
+      ?? createStoredCollaborationExecutionLocationService(appConfigProvider.config.getMemoryDir());
   }
 }

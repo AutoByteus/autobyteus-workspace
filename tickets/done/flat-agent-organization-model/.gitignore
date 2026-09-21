@@ -1,0 +1,5 @@
+# Raw execution data is retained locally and in the restricted Delivery archive.
+# Existing tracked evidence stays tracked; new published evidence is explicitly allowlisted.
+/api-e2e-evidence/
+/code-review-evidence/
+/delivery-evidence/

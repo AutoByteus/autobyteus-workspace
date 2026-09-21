@@ -1,0 +1,57 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+FA
+Followup Assistant
+(1)
+**[Context]** File: ../server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt Original text attachment for COLLAB-FOLLOWUP-001. Token: orchard-cobalt-47 **[Message]** Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools. Reference files: - /tmp/collab-api01-yyjdm4jz/server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt
+2m
+TEAMS
+FF
+Followup Flat Team
+(1)
+ORGS
+Followup Organization
+(1)
+Settings
+FA
+Followup Assistant - 6286
+Idle
+You
+**[Context]**
+File: ../server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt
+Original text attachment for COLLAB-FOLLOWUP-001.
+Token: orchard-cobalt-47
+
+
+**[Message]**
+Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools.
+
+Reference files:
+- /tmp/collab-api01-yyjdm4jz/server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt
+
+Context files
+
+COLLAB-API01-first-text.txt
+FA
+Followup Assistant
+Thinking
+
+COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47
+
+Context Files (0)
+(drag, paste, or upload)
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+ 

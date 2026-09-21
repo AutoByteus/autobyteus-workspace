@@ -7,9 +7,9 @@ import type {
 } from "../../services/published-artifacts/published-artifact-publisher.js";
 import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
-import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
-import { cloneTeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
-import type { MemberTaskRootResolver } from "../../agent-team-execution/task-delegation/member-task-root-resolver.js";
+import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { cloneCollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 import type { AgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
@@ -27,7 +27,7 @@ export type AgentToolMcpDescriptor = {
 
 export type AgentToolMcpSessionOwnerIdentity = {
   runId: string;
-  teamIdentity?: TeamMemberExecutionIdentity | null;
+  collaborationIdentity?: CollaborationMemberExecutionIdentity | null;
   displayName?: string | null;
 };
 
@@ -64,19 +64,19 @@ export type AgentSessionExecutionCapabilities = Readonly<{
   applicationAgentTools: ApplicationAgentToolCapability | null;
 }>;
 
-export type TeamMemberSessionExecutionCapabilities = Readonly<{
-  kind: "team_member";
+export type CollaborationMemberSessionExecutionCapabilities = Readonly<{
+  kind: "collaboration_member";
   publishedArtifactPublisher: PublishedArtifactPublisher;
   applicationAgentTools: ApplicationAgentToolCapability | null;
   taskDelegation: Readonly<{
-    identity: TeamMemberExecutionIdentity;
-    rootResolver: MemberTaskRootResolver;
+    identity: CollaborationMemberExecutionIdentity;
+    commands: MemberTaskCommandCapability;
   }>;
 }>;
 
 export type AgentToolMcpSessionExecutionCapabilities =
   | AgentSessionExecutionCapabilities
-  | TeamMemberSessionExecutionCapabilities;
+  | CollaborationMemberSessionExecutionCapabilities;
 
 export type AgentToolMcpSession = {
   sessionId: AgentToolMcpRunSessionId;
@@ -116,7 +116,9 @@ export const cloneAgentToolMcpSessionOwnerIdentity = (
   owner: AgentToolMcpSessionOwnerIdentity,
 ): AgentToolMcpSessionOwnerIdentity => ({
   runId: owner.runId,
-  teamIdentity: owner.teamIdentity ? cloneTeamMemberExecutionIdentity(owner.teamIdentity) : null,
+  collaborationIdentity: owner.collaborationIdentity
+    ? cloneCollaborationMemberExecutionIdentity(owner.collaborationIdentity)
+    : null,
   displayName: owner.displayName ?? null,
 });
 
@@ -141,12 +143,12 @@ export const cloneAgentToolMcpSessionExecutionCapabilities = (
     });
   }
   return Object.freeze({
-    kind: "team_member",
+    kind: "collaboration_member",
     publishedArtifactPublisher: capabilities.publishedArtifactPublisher,
     applicationAgentTools: capabilities.applicationAgentTools,
     taskDelegation: Object.freeze({
-      identity: cloneTeamMemberExecutionIdentity(capabilities.taskDelegation.identity),
-      rootResolver: capabilities.taskDelegation.rootResolver,
+      identity: cloneCollaborationMemberExecutionIdentity(capabilities.taskDelegation.identity),
+      commands: capabilities.taskDelegation.commands,
     }),
   });
 };

@@ -1,0 +1,408 @@
+{
+  "observations": [
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "org",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "org",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "team",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "team",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "agent",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "agent",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "custom",
+      "expectedLabel": "Custom report",
+      "actualLabel": "Custom report",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "custom",
+      "expectedLabel": "Custom report",
+      "actualLabel": "Custom report",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "custom-prefix",
+      "expectedLabel": "ctx_custom__literal.txt",
+      "actualLabel": "ctx_custom__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "custom-prefix",
+      "expectedLabel": "ctx_custom__literal.txt",
+      "actualLabel": "ctx_custom__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "literal-prefix",
+      "expectedLabel": "ctx_original__literal.txt",
+      "actualLabel": "ctx_original__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "literal-prefix",
+      "expectedLabel": "ctx_original__literal.txt",
+      "actualLabel": "ctx_original__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "external",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "https://example.test/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "external",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "https://example.test/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "workspace",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "/workspace/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "workspace",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "/workspace/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "unknown",
+      "expectedLabel": "payload.bin",
+      "actualLabel": "payload.bin",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "unknown",
+      "expectedLabel": "payload.bin",
+      "actualLabel": "payload.bin",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "cold",
+      "case": "image",
+      "expectedLabel": "image.png",
+      "actualLabel": "image.png",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png",
+      "openBytesMatch": "image URL control",
+      "overflow": false
+    },
+    {
+      "width": 1502,
+      "surface": "page",
+      "case": "image",
+      "expectedLabel": "image.png",
+      "actualLabel": "image.png",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png",
+      "openBytesMatch": "image URL control",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "org",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "org",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "team",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "team",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "agent",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "agent",
+      "expectedLabel": "notes.txt",
+      "actualLabel": "notes.txt",
+      "exactUri": "/rest/runs/agent/context-files/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "custom",
+      "expectedLabel": "Custom report",
+      "actualLabel": "Custom report",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "custom",
+      "expectedLabel": "Custom report",
+      "actualLabel": "Custom report",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "custom-prefix",
+      "expectedLabel": "ctx_custom__literal.txt",
+      "actualLabel": "ctx_custom__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "custom-prefix",
+      "expectedLabel": "ctx_custom__literal.txt",
+      "actualLabel": "ctx_custom__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__custom-prefix.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "literal-prefix",
+      "expectedLabel": "ctx_original__literal.txt",
+      "actualLabel": "ctx_original__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "literal-prefix",
+      "expectedLabel": "ctx_original__literal.txt",
+      "actualLabel": "ctx_original__literal.txt",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__ctx_original__literal.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "external",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "https://example.test/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "external",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "https://example.test/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "workspace",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "/workspace/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "workspace",
+      "expectedLabel": "ctx_token__notes.txt",
+      "actualLabel": "ctx_token__notes.txt",
+      "exactUri": "/workspace/ctx_token__notes.txt",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "unknown",
+      "expectedLabel": "payload.bin",
+      "actualLabel": "payload.bin",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "unknown",
+      "expectedLabel": "payload.bin",
+      "actualLabel": "payload.bin",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__payload.bin",
+      "openBytesMatch": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "cold",
+      "case": "image",
+      "expectedLabel": "image.png",
+      "actualLabel": "image.png",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png",
+      "openBytesMatch": "image URL control",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "surface": "page",
+      "case": "image",
+      "expectedLabel": "image.png",
+      "actualLabel": "image.png",
+      "exactUri": "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_token__image.png",
+      "openBytesMatch": "image URL control",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "mutations": [],
+  "scope": "Actual shared UserMessage/initial-cold/page hydration with real ContextFile default basename, raw codec and projection fixture generation. Controlled file transport; no real chooser/Send/Tasks navigation/provider/activation or server runtime.",
+  "passed": true
+}

@@ -1,0 +1,34 @@
+{
+  "taskId": "task_a8046819f5384e88a33c2aac40a8f5da",
+  "status": "accepted",
+  "updates": [
+    {
+      "submissionId": "submission_871ef91c5c584f59a10dbffd33e0601a",
+      "message": "APIREV5-MOUNTED-SUBMISSION-V1\nMounted-Team routing was confirmed.",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:31:21.843Z"
+    },
+    {
+      "reviewId": "review_7f4ab220a8304ddcb7baca345ba52386",
+      "reviewedSubmissionId": "submission_871ef91c5c584f59a10dbffd33e0601a",
+      "decision": "request_revision",
+      "comment": "APIREV5-MOUNTED-REVISION: resubmit as APIREV5-MOUNTED-SUBMISSION-V2",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:32:27.559Z"
+    },
+    {
+      "submissionId": "submission_7307158b8a184018836a68692450d278",
+      "message": "APIREV5-MOUNTED-SUBMISSION-V2\nMounted-Team routing remains confirmed.",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:32:33.335Z"
+    },
+    {
+      "reviewId": "review_3ca7a8a0de434ef1b47d17e8c311cecd",
+      "reviewedSubmissionId": "submission_7307158b8a184018836a68692450d278",
+      "decision": "accept",
+      "comment": "APIREV5-MOUNTED-ACCEPTED",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:33:29.797Z"
+    }
+  ]
+}

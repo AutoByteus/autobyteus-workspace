@@ -1,6 +1,8 @@
 <template>
   <button
     role="tab"
+    :aria-label="ariaLabel"
+    :title="title"
     :aria-selected="isActive"
     class="tab-button relative shrink-0 whitespace-nowrap px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20"
     :class="{
@@ -24,6 +26,8 @@ import { computed } from "vue";
 const props = defineProps<{
   name?: string
   selected?: boolean
+  ariaLabel?: string
+  title?: string
 }>();
 
 const isActive = computed(() => props.selected);

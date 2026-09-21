@@ -1,0 +1,47 @@
+{
+  "agentOrgDefinitions": [
+    {
+      "id": "aorg-validation-org",
+      "name": "AORG Validation Org"
+    }
+  ],
+  "agentTeamDefinitions": [
+    {
+      "id": "aorg-validation-team",
+      "name": "AORG Validation Team"
+    }
+  ],
+  "providerModelCatalogSnapshots": [
+    {
+      "ownerProvider": {
+        "id": "OPENAI"
+      },
+      "llmModels": [
+        {
+          "modelIdentifier": "gpt-5.3-codex-spark",
+          "name": "GPT-5.3-Codex-Spark (default reasoning: high)"
+        },
+        {
+          "modelIdentifier": "gpt-5.5",
+          "name": "GPT-5.5 (default reasoning: medium)"
+        },
+        {
+          "modelIdentifier": "gpt-5.6-luna",
+          "name": "GPT-5.6-Luna (default reasoning: medium)"
+        },
+        {
+          "modelIdentifier": "gpt-5.6-sol",
+          "name": "GPT-5.6-Sol (default reasoning: low)"
+        },
+        {
+          "modelIdentifier": "gpt-5.6-terra",
+          "name": "GPT-5.6-Terra (default reasoning: medium)"
+        },
+        {
+          "modelIdentifier": "gpt-6-astra",
+          "name": "GPT-6-Astra (default reasoning: medium)"
+        }
+      ]
+    }
+  ]
+}

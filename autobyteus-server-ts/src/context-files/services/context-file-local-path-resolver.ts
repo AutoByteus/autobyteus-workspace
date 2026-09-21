@@ -13,9 +13,13 @@ import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
 const AGENT_FINAL_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const TEAM_MEMBER_FINAL_ROUTE =
   /^\/rest\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
+const ORG_MEMBER_FINAL_ROUTE =
+  /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const AGENT_DRAFT_ROUTE = /^\/rest\/drafts\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const TEAM_MEMBER_DRAFT_ROUTE =
   /^\/rest\/drafts\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
+const ORG_MEMBER_DRAFT_ROUTE =
+  /^\/rest\/drafts\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 
 const isLoopbackHostname = (hostname: string): boolean =>
   hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
@@ -30,12 +34,12 @@ const decodePathSegment = (value: string): string => {
 
 export class ContextFileLocalPathResolver {
   private readonly layout: ContextFileLayout;
-  private readonly ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync">;
+  private readonly ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync" | "validateDraftOwnerSync">;
   private readonly configuredOrigin: string;
 
   constructor(input: {
     layout: ContextFileLayout;
-    ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync">;
+    ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync" | "validateDraftOwnerSync">;
     baseUrl: string;
   }) {
     if (!input?.layout || !input.ownerResolver || typeof input.ownerResolver.resolveFinalOwnerSync !== "function") {
@@ -90,6 +94,15 @@ export class ContextFileLocalPathResolver {
       );
     }
 
+    const orgDraftMatch = pathname.match(ORG_MEMBER_DRAFT_ROUTE);
+    if (orgDraftMatch?.[1] && orgDraftMatch?.[2] && orgDraftMatch?.[3]) {
+      return this.resolveExistingDraftPath(parseDraftContextFileOwnerDescriptor({
+        kind: "org_member_draft",
+        orgRunId: decodePathSegment(orgDraftMatch[1]),
+        agentRunId: decodePathSegment(orgDraftMatch[2]),
+      }), decodePathSegment(orgDraftMatch[3]));
+    }
+
     const agentMatch = pathname.match(AGENT_FINAL_ROUTE);
     if (agentMatch?.[1] && agentMatch?.[2]) {
       return this.resolveExistingFinalPath(
@@ -111,6 +124,15 @@ export class ContextFileLocalPathResolver {
         }),
         decodePathSegment(teamMatch[3]),
       );
+    }
+
+    const orgMatch = pathname.match(ORG_MEMBER_FINAL_ROUTE);
+    if (orgMatch?.[1] && orgMatch?.[2] && orgMatch?.[3]) {
+      return this.resolveExistingFinalPath(parseFinalContextFileOwnerDescriptor({
+        kind: "org_member_final",
+        orgRunId: decodePathSegment(orgMatch[1]),
+        agentRunId: decodePathSegment(orgMatch[2]),
+      }), decodePathSegment(orgMatch[3]));
     }
 
     return null;
@@ -155,6 +177,7 @@ export class ContextFileLocalPathResolver {
     storedFilename: string,
   ): string | null {
     try {
+      if (owner.kind === "org_member_draft") this.ownerResolver.validateDraftOwnerSync(owner);
       const filePath = this.layout.getDraftFilePath(owner, storedFilename);
       const resolvedPath = path.resolve(filePath);
       return fs.existsSync(resolvedPath) ? resolvedPath : null;

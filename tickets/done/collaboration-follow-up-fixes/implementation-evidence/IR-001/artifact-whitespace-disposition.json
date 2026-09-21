@@ -1,0 +1,6 @@
+{
+  "command": "git diff --cached --check",
+  "exit": 2,
+  "scope": "Initial staged evidence package before artifact commit",
+  "disposition": "Raw test/build logs, captured actual HTML and unified diff contain original whitespace. Preserve diagnostic/render bytes; do not normalize evidence to manufacture a check Pass. Source/test whitespace and canonical Markdown are separately checked. No source behavior change or lost test result."
+}

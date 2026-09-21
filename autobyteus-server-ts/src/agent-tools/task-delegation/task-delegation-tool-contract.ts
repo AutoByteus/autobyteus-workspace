@@ -5,12 +5,16 @@ import type {
   ReviewTaskResultResult,
   SubmitTaskResultInput,
   SubmitTaskResultResult,
-} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+} from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 import {
-  cloneTeamMemberExecutionIdentity,
-  type TeamMemberExecutionIdentity,
-} from "../../agent-team-execution/domain/team-member-execution-identity.js";
-import type { MemberTaskRootResolver } from "../../agent-team-execution/task-delegation/member-task-root-resolver.js";
+  cloneCollaborationMemberExecutionIdentity,
+  sameRootExecutionIdentity,
+  type CollaborationMemberExecutionIdentity,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  requireMemberTaskCommandCapability,
+  type MemberTaskCommandCapability,
+} from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 
 export const DELEGATE_TASK_TOOL_NAME = "delegate_task";
@@ -34,8 +38,8 @@ export const isTaskDelegationToolName = (value: string | null | undefined): bool
   typeof value === "string" && TASK_DELEGATION_TOOL_NAMES.has(value.trim());
 
 export type TaskDelegationToolContext = Readonly<{
-  identity: TeamMemberExecutionIdentity;
-  rootResolver: MemberTaskRootResolver;
+  identity: CollaborationMemberExecutionIdentity;
+  commands: MemberTaskCommandCapability;
 }>;
 
 export const TASK_DELEGATION_TOOL_CONFIG_KEY = "taskDelegation";
@@ -51,20 +55,25 @@ export const requireConfiguredTaskDelegationToolContext = (
   const identity = context.identity;
   if (
     !identity ||
-    typeof identity.rootTeamRunId !== "string" ||
-    !identity.rootTeamRunId.trim() ||
+    !identity.root ||
+    (identity.root.rootSubjectKind !== "agent_team" && identity.root.rootSubjectKind !== "agent_org") ||
+    typeof identity.root.rootRunId !== "string" ||
+    !identity.root.rootRunId.trim() ||
     typeof identity.memberAddress !== "string" ||
     !identity.memberAddress.trim() ||
     typeof identity.agentRunId !== "string" ||
     !identity.agentRunId.trim() ||
-    !context.rootResolver ||
-    typeof context.rootResolver.resolveActiveRoot !== "function"
+    !context.commands
   ) {
     throw new Error("Task delegation tools require a valid bound taskDelegation context.");
   }
+  const commands = requireMemberTaskCommandCapability(context.commands);
+  if (!sameRootExecutionIdentity(identity.root, commands.root)) {
+    throw new Error("Task delegation tool identity and commands belong to different roots.");
+  }
   return Object.freeze({
-    identity: cloneTeamMemberExecutionIdentity(identity),
-    rootResolver: context.rootResolver,
+    identity: cloneCollaborationMemberExecutionIdentity(identity),
+    commands,
   });
 };
 

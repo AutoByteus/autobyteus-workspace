@@ -1,0 +1,17 @@
+{
+  "package": "COLLAB-FOLLOWUP-001",
+  "revision": "AD-REV-001",
+  "recordedAt": "2026-09-13T10:20:26.168671+00:00",
+  "entryHead": "53fffe8bd4845b902e48b567649e061bea39ddfc",
+  "currentHead": "53fffe8bd4845b902e48b567649e061bea39ddfc",
+  "base": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+  "originalPin": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+  "trackedRegularChecked": 32136,
+  "trackedRegularDrift": [],
+  "statusBeforeArchitectureCommit": "?? tickets/in-progress/collaboration-follow-up-fixes/architecture-design-revision-record.md\n?? tickets/in-progress/collaboration-follow-up-fixes/architecture-design-self-validation.md\n?? tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/\n?? tickets/in-progress/collaboration-follow-up-fixes/architecture-investigation.md\n?? tickets/in-progress/collaboration-follow-up-fixes/design-spec.md\n",
+  "sourceOrTestsEdited": false,
+  "upstreamEdited": false,
+  "oldTicketEdited": false,
+  "buildInstallProviderRuntimeMigrationActions": "None; only read-only source inspection and controlled architecture diagnostics",
+  "scope": "Checksum verification of initial tracked regular files. No claim of a new full runtime or untracked filesystem inventory; old tree was accessed read-only."
+}

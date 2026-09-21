@@ -24,6 +24,7 @@ export class ContextFileReadService {
     owner: ContextFileDraftOwnerDescriptor,
     storedFilename: string,
   ): Promise<string | null> {
+    await this.ownerResolver.validateDraftOwner(owner);
     await this.cleanupService.cleanupExpiredDrafts();
     return this.resolveExistingFilePath(this.layout.getDraftFilePath(owner, storedFilename));
   }
@@ -41,6 +42,7 @@ export class ContextFileReadService {
     owner: ContextFileDraftOwnerDescriptor,
     storedFilename: string,
   ): Promise<boolean> {
+    await this.ownerResolver.validateDraftOwner(owner);
     await this.cleanupService.cleanupExpiredDrafts();
     const draftFilePath = this.layout.getDraftFilePath(owner, assertStoredFilename(storedFilename));
 

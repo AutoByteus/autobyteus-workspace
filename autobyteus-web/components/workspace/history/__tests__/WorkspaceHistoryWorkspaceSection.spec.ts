@@ -1,16 +1,24 @@
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { reactive, ref } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref } from 'vue';
+import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
-import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type {
+  AgentOrgHistoryDefinitionGroup,
+  TeamMemberTreeRow,
+  TeamTreeNode,
+} from '~/stores/runHistoryTypes';
 import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
   testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
+
+vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
 
 const stableAgent = (
   memberAddress: string,
@@ -48,10 +56,59 @@ const rootRow = (children: TeamMemberTreeRow[], teamRunId = 'team-run-1'): TeamM
   children,
 });
 
+const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
+  const launch = {
+    runtimeKind: 'codex_app_server' as const,
+    llmModelIdentifier: 'gpt-5.6-sol',
+    llmConfig: null,
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY' as const,
+    workspaceRootPath: '/ws/a',
+  };
+  return {
+    stableKey: 'agent_org_definition:org-definition',
+    definitionId: 'org-definition',
+    name: 'Delivery Org',
+    runs: [{
+      stableKey: 'agent_org_run:org-run',
+      rootSubjectKind: 'agent_org',
+      rootRunId: 'org-run',
+      createdAt: '2026-09-03T00:00:00.000Z',
+      archivedAt: null,
+      isActive: true,
+      summary: 'Deliver current package',
+      executionTree: {
+        schemaVersion: 1,
+        subjectKind: 'agent_org',
+        createdAt: '2026-09-03T00:00:00.000Z',
+        archivedAt: null,
+        applicationBinding: null,
+        handoffs: [],
+        rootOrg: {
+          address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
+          defaultLaunchConfiguration: launch, taskExecutions: [],
+          members: [{
+            address: '/software', teamDefinitionId: 'software-team', role: null, description: null,
+            teamRunId: 'mounted-team-run', coordinatorAddress: '/software/implementation',
+            defaultLaunchConfiguration: launch, taskExecutions: [],
+            members: [{
+              address: '/software/implementation', agentDefinitionId: 'implementation-agent', role: null,
+              description: null, agentRunId: 'implementation-run', platformAgentRunId: null,
+              launchConfiguration: launch,
+            }],
+          }],
+        },
+      },
+    }],
+  };
+};
+
 const mountSubject = (options: {
   stableChildren?: TeamMemberTreeRow[];
   liveContext?: ReturnType<typeof buildTestTeamContext>;
   workspaceTeams?: TeamTreeNode[];
+  agentOrgDefinitions?: AgentOrgHistoryDefinitionGroup[];
+  avatars?: ReturnType<typeof useRunHistoryAvatarState>;
   teamExpanded?: boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
@@ -98,6 +155,7 @@ const mountSubject = (options: {
     onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(),
     onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(),
     onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(),
+    onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onTerminateAgentOrg: vi.fn(),
   };
   const expandedTeamMembers = reactive<Record<string, boolean>>({});
   const selectedTeamRunId = ref<string | null>(options.selectedTeamRunId ?? 'team-run-1');
@@ -122,6 +180,17 @@ const mountSubject = (options: {
       const key = expansionKey(workspaceId, teamRunId, rowKey);
       expandedTeamMembers[key] = !expandedTeamMembers[key];
     }),
+    isAgentOrgDefinitionExpanded: () => true,
+    toggleAgentOrgDefinition: vi.fn(),
+    isAgentOrgRunExpanded: () => true,
+    toggleAgentOrgRun: vi.fn(),
+    isAgentOrgTeamExpanded: () => false,
+    toggleAgentOrgTeam: vi.fn(),
+    isAgentOrgRunSelected: () => false,
+    isAgentOrgMemberSelected: () => false,
+    isAgentOrgTerminating: () => false,
+    agentOrgTerminationError: () => null,
+    agentOrgContextFor: () => null,
   };
 
   const wrapper = mount(WorkspaceHistoryWorkspaceSection, {
@@ -129,29 +198,29 @@ const mountSubject = (options: {
       workspaceNode: {
         workspaceId: 'workspace:/ws/a', workspaceRootPath: '/ws/a', workspaceName: 'Workspace A',
         workspaceKind: 'filesystem', canRemoveFromWorkspaces: false, agents: [],
+        stableKey: 'workspace:/ws/a', agentOrgDefinitions: options.agentOrgDefinitions ?? [],
       },
       workspaceTeams: options.workspaceTeams ?? [team], workspaceTeamHistoryGroups: [], state,
-      avatars: {
+      avatars: options.avatars ?? {
         showAgentAvatar: () => false, onAgentAvatarError: vi.fn(), getAgentInitials: () => 'A',
-        showTeamAvatar: () => false, getTeamAvatarUrl: () => '', onTeamAvatarError: vi.fn(), getTeamInitials: () => 'TA',
+        showTeamAvatar: () => false, getTeamAvatarUrl: () => '', getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {}, onTeamAvatarError: vi.fn(),
         showTeamMemberAvatar: () => false, getTeamMemberAvatarUrl: () => '', onTeamMemberAvatarError: vi.fn(),
         getTeamMemberDisplayName: (member: any) => member.displayName, getTeamMemberInitials: () => 'W',
       },
       actions,
     },
     global: {
-      stubs: { Icon: { template: '<span data-test="icon" />' } },
       mocks: { $t: (key: string) => ({
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title': 'Temporary task execution',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs': 'Active team runs',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs': 'No active team runs',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run': 'Active team run',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run': 'Inactive team run',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_running': 'Team status: Running',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_initializing': 'Team status: Initializing',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_error': 'Team status: Error',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_idle': 'Team status: Idle',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline': 'Team status: Offline',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running': 'Team status: Running',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing': 'Team status: Initializing',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error': 'Team status: Error',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle': 'Team status: Idle',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_offline': 'Team status: Offline',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Localized delete team history permanently',
       }[key] ?? key) },
     },
@@ -161,6 +230,62 @@ const mountSubject = (options: {
 };
 
 describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
+  it('keeps supplied Team images and uses the group glyph for missing or broken images', async () => {
+    const definitions = ref<{id: string; avatarUrl?: string}[]>([]);
+    const scope = effectScope();
+    const avatars = scope.run(() => useRunHistoryAvatarState({loading: ref(false),
+      agentDefinitions: computed(() => []), orgDefinitions: computed(() => []), teamDefinitions: computed(() => definitions.value),
+    }))!;
+    const {wrapper} = mountSubject({avatars});
+    const header = () => wrapper.get('[data-test^="workspace-team-definition-row-"]');
+    expect(header().find('img').exists()).toBe(false);
+    expect(header().find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
+    definitions.value = [{id:'team-def-1', avatarUrl:'/team-old.png'}]; await nextTick();
+    const old = header().get('img');
+    definitions.value = [{id:'team-def-1', avatarUrl:'/team-new.png'}]; await nextTick();
+    await old.trigger('error');
+    expect(header().get('img').attributes('src')).toBe('/team-new.png');
+    await header().get('img').trigger('error');
+    expect(header().find('img').exists()).toBe(false);
+    expect(header().find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
+    wrapper.unmount(); scope.stop();
+  });
+
+  it('renders Orgs directly after standalone Teams and delegates exact root/member actions', async () => {
+    const group = agentOrgDefinitionGroup()
+    const { wrapper, actions, state } = mountSubject({ agentOrgDefinitions: [group] })
+    const text = wrapper.text()
+    expect(text.indexOf('Teams')).toBeGreaterThanOrEqual(0)
+    expect(text.indexOf('Orgs')).toBeGreaterThan(text.indexOf('Teams'))
+    expect(wrapper.findAll('[data-test="workspace-team-row-team-run-1"]')).toHaveLength(1)
+    const collection = wrapper.get('[data-test="workspace-agent-orgs"]')
+    const heading = collection.get('div.uppercase')
+    expect(heading.text()).toBe('Orgs')
+    const teamElement = wrapper.get('[data-test="workspace-team-row-team-run-1"]').element
+    const orgElement = wrapper.get('[data-test="agent-org-team-row-mounted-team-run"]').element
+    const oldProps = wrapper.props()
+    await localizationRuntime.setPreference('zh-CN')
+    await wrapper.vm.$nextTick()
+    expect(heading.text()).toBe('组织')
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"]').element).toBe(teamElement)
+    expect(wrapper.get('[data-test="agent-org-team-row-mounted-team-run"]').element).toBe(orgElement)
+    expect(wrapper.props().state).toBe(oldProps.state)
+    expect(state.toggleAgentOrgRun).not.toHaveBeenCalled()
+    expect(state.toggleAgentOrgTeam).not.toHaveBeenCalled()
+    await localizationRuntime.setPreference('en')
+    await wrapper.vm.$nextTick()
+    expect(heading.text()).toBe('Orgs')
+    expect(wrapper.text()).not.toContain('Restore')
+
+    await wrapper.get('[data-test="agent-org-team-row-mounted-team-run"]').trigger('click')
+    expect(state.toggleAgentOrgTeam).toHaveBeenCalledWith('org-run', '/software')
+    expect(actions.onSelectAgentOrgMember).toHaveBeenCalledWith(group.runs[0], '/software')
+
+    const stop = wrapper.get(`button[aria-label="Stop Agent Org"]`)
+    await stop.trigger('click')
+    expect(actions.onTerminateAgentOrg).toHaveBeenCalledWith(group.runs[0])
+  })
+
   it('renders any-active definition activity and exact sibling run activity reactively', async () => {
     const activeRun: TeamTreeNode = {
       teamRunId: 'team-run-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
@@ -382,8 +507,8 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     });
     const nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/product_team"]');
     expect(wrapper.find('[data-test="workspace-team-member-team-run-1-/product_team/product_prototyper"]').exists()).toBe(false);
-    expect(nestedRow.findAll('[data-test="nested-team-aggregate-status-dot"]')).toHaveLength(1);
-    let dot = nestedRow.get('[data-test="nested-team-aggregate-status-dot"]');
+    expect(nestedRow.findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
+    let dot = nestedRow.get('[data-test="team-aggregate-status-dot"]');
     expect(dot.attributes()).toMatchObject({
       'data-status': AgentStatus.Running,
       'aria-label': 'Team status: Running',
@@ -406,7 +531,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     });
     await wrapper.setProps({ workspaceTeams: [{ ...team, executionRows: idleRows }] });
     await wrapper.vm.$nextTick();
-    dot = nestedRow.get('[data-test="nested-team-aggregate-status-dot"]');
+    dot = nestedRow.get('[data-test="team-aggregate-status-dot"]');
     expect(dot.attributes()).toMatchObject({
       'data-status': AgentStatus.Idle,
       'aria-label': 'Team status: Idle',

@@ -1,0 +1,1 @@
+{"query":"query PackageCatalog { agentDefinitions { id name toolNames defaultLaunchConfig { llmModelIdentifier runtimeKind } } agentTeamDefinitions { id name coordinatorMemberName nodes { memberName ref refScope } } agentOrgDefinitions { id name members { memberName ref refType refScope } } }"}

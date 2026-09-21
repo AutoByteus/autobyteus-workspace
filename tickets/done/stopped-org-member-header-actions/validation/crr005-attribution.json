@@ -1,0 +1,224 @@
+{
+  "base": "36c149b26c429a0ca6689442fe2aea067533a638",
+  "scope": "Focused observed Save\u2192Plus failure path; no original-HEAD live browser test and no originating-commit attribution",
+  "owner_comparison": [
+    {
+      "path": "autobyteus-web/stores/existingRunModelConfigStore.ts",
+      "working_sha256": "aef76e9a9d97ae57107fa1833fa5d79e4bb4c038a1684bccb361012e7191a2d2",
+      "head_sha256": "aef76e9a9d97ae57107fa1833fa5d79e4bb4c038a1684bccb361012e7191a2d2",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "working_sha256": "e525f720e882d38adca48ec7fe347cf1e1d6b950d0e48b82d104eb3e4a8ab2f3",
+      "head_sha256": "e525f720e882d38adca48ec7fe347cf1e1d6b950d0e48b82d104eb3e4a8ab2f3",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamContextsStore.ts",
+      "working_sha256": "b6d54eef047e8efac13631dedf0b57f11f5cd0a2a99952cce56566741952b707",
+      "head_sha256": "b6d54eef047e8efac13631dedf0b57f11f5cd0a2a99952cce56566741952b707",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/teamRunConfigStore.ts",
+      "working_sha256": "95a126c0715f6ddf973f4f167fb242f0fc240073ac6508c9505561e7f505a445",
+      "head_sha256": "95a126c0715f6ddf973f4f167fb242f0fc240073ac6508c9505561e7f505a445",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentSelectionStore.ts",
+      "working_sha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483",
+      "head_sha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "working_sha256": "27aafcc938ae840c2aea8140cfd61b30986c2047b4d217d97c3acf5575ed28d5",
+      "head_sha256": "27aafcc938ae840c2aea8140cfd61b30986c2047b4d217d97c3acf5575ed28d5",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts",
+      "working_sha256": "86cdd227cc9e694e4009ae40ff135c76b2687706b58fdf975c91f4dbcc6b8e76",
+      "head_sha256": "86cdd227cc9e694e4009ae40ff135c76b2687706b58fdf975c91f4dbcc6b8e76",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/services/runHydration/teamRunContextHydrationService.ts",
+      "working_sha256": "0eb96cb9e409d47c87740a9cfee61e8a6f6972c3b05b2e7af17ba98b543fa7ab",
+      "head_sha256": "0eb96cb9e409d47c87740a9cfee61e8a6f6972c3b05b2e7af17ba98b543fa7ab",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts",
+      "working_sha256": "765e3e86416211dafef5ad29299a8b6e978bc186b9fda2569965b72f573b1db4",
+      "head_sha256": "765e3e86416211dafef5ad29299a8b6e978bc186b9fda2569965b72f573b1db4",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts",
+      "working_sha256": "f75781b241f3b882c2ad518eb69cfed36200b906d7dddc31f8ef5022990f98ba",
+      "head_sha256": "f75781b241f3b882c2ad518eb69cfed36200b906d7dddc31f8ef5022990f98ba",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/composables/useDefinitionLaunchDefaults.ts",
+      "working_sha256": "d151ec19dc95f25b619d389191bb079abc5516e2fbc7a9eebc47a4a255eea1a7",
+      "head_sha256": "d151ec19dc95f25b619d389191bb079abc5516e2fbc7a9eebc47a4a255eea1a7",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/TeamWorkspaceView.vue",
+      "working_sha256": "a67301cf4abaa0eee86f13b383becba6ed5c662e6847dd5d76e90104605670eb",
+      "head_sha256": "a67301cf4abaa0eee86f13b383becba6ed5c662e6847dd5d76e90104605670eb",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "working_sha256": "2de03f4800b068a140ca2f046956612819110fac1e535706043089e92c4a41dc",
+      "head_sha256": "2de03f4800b068a140ca2f046956612819110fac1e535706043089e92c4a41dc",
+      "identical": true
+    }
+  ],
+  "ir002_manifest_check": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/composables/useAgentOrgMemberModelConfig.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/orgSeedFixture.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgRunLaunchSeed.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgRunConfigStore.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentOrgRunLaunchSeed.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/RuntimeModelConfigSchemaState.ts",
+      "matches": true
+    }
+  ],
+  "manifest_all_match": true,
+  "probe": "crr005-owner-probe.spec.ts / crr005-owner-probe.log: current real store/context/view/seed boundary with captured canonical mutation response, no field components mounted; 2 diagnostic assertions passed"
+}

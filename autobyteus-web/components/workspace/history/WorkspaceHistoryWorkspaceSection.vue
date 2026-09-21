@@ -5,21 +5,21 @@
       data-test="workspace-row"
       :data-workspace-id="workspaceNode.workspaceId"
       :data-workspace-root="workspaceNode.workspaceRootPath"
-      :aria-expanded="state.isWorkspaceExpanded(workspaceNode.workspaceId)"
+      :aria-expanded="state.isWorkspaceExpanded(workspacePresentationId)"
     >
       <button
         type="button"
         class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left"
-        :aria-expanded="state.isWorkspaceExpanded(workspaceNode.workspaceId)"
+        :aria-expanded="state.isWorkspaceExpanded(workspacePresentationId)"
         @click="state.toggleWorkspace(workspaceNode)"
       >
         <Icon
           icon="heroicons:chevron-down-20-solid"
           class="mr-1.5 h-4 w-4 text-gray-400 transition-transform"
-          :class="state.isWorkspaceExpanded(workspaceNode.workspaceId) ? 'rotate-0' : '-rotate-90'"
+          :class="state.isWorkspaceExpanded(workspacePresentationId) ? 'rotate-0' : '-rotate-90'"
         />
         <Icon icon="heroicons:folder-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
-        <span class="truncate">{{ workspaceNode.workspaceName }}</span>
+        <span class="truncate">{{ workspaceDisplayName }}</span>
       </button>
       <button
         v-if="workspaceNode.canRemoveFromWorkspaces"
@@ -34,17 +34,21 @@
       </button>
     </div>
 
-    <div v-if="state.isWorkspaceExpanded(workspaceNode.workspaceId)" class="ml-2 mt-0.5 space-y-1">
+    <div v-if="state.isWorkspaceExpanded(workspacePresentationId)" class="ml-2 mt-0.5 space-y-1">
       <div
         v-if="state.isWorkspaceHistoryLoading(workspaceNode.workspaceId)"
         class="px-3 py-1 text-xs text-gray-400"
       >{{$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.loading_workspace_history')}}</div>
       <div
-        v-else-if="state.workspaceHistoryError(workspaceNode.workspaceId)"
+        v-if="state.workspaceHistoryError(workspaceNode.workspaceId)"
         class="px-3 py-1 text-xs text-red-500"
       >{{ state.workspaceHistoryError(workspaceNode.workspaceId) }}</div>
       <div
-        v-else-if="workspaceNode.agents.length === 0 && workspaceTeams.length === 0"
+        v-if="!state.isWorkspaceHistoryLoading(workspaceNode.workspaceId)
+          && !state.workspaceHistoryError(workspaceNode.workspaceId)
+          && workspaceNode.agents.length === 0
+          && workspaceTeams.length === 0
+          && !(workspaceNode.agentOrgDefinitions?.length)"
         class="px-3 py-1 text-xs text-gray-400"
       >{{ $t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_task_history_in_this_workspace') }}</div>
 
@@ -62,13 +66,13 @@
             data-test="workspace-agent-row"
             :data-workspace-root="workspaceNode.workspaceRootPath"
             :data-agent-definition-id="agentNode.agentDefinitionId"
-            :aria-expanded="state.isAgentExpanded(workspaceNode.workspaceId, agentNode.agentDefinitionId)"
-            @click="state.toggleAgent(workspaceNode.workspaceId, agentNode.agentDefinitionId)"
+            :aria-expanded="state.isAgentExpanded(workspacePresentationId, agentNode.agentDefinitionId)"
+            @click="state.toggleAgent(workspacePresentationId, agentNode.agentDefinitionId)"
           >
             <Icon
               icon="heroicons:chevron-down-20-solid"
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
-              :class="state.isAgentExpanded(workspaceNode.workspaceId, agentNode.agentDefinitionId) ? 'rotate-0' : '-rotate-90'"
+              :class="state.isAgentExpanded(workspacePresentationId, agentNode.agentDefinitionId) ? 'rotate-0' : '-rotate-90'"
             />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
@@ -97,7 +101,7 @@
         </div>
 
         <div
-          v-if="state.isAgentExpanded(workspaceNode.workspaceId, agentNode.agentDefinitionId)"
+          v-if="state.isAgentExpanded(workspacePresentationId, agentNode.agentDefinitionId)"
           class="ml-3 space-y-0.5"
         >
           <button
@@ -186,13 +190,13 @@
             type="button"
             class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
             :data-test="`workspace-team-definition-row-${group.key}`"
-            :aria-expanded="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key)"
-            @click="state.toggleTeamDefinition(workspaceNode.workspaceId, group.key)"
+            :aria-expanded="state.isTeamDefinitionExpanded(workspacePresentationId, group.key)"
+            @click="state.toggleTeamDefinition(workspacePresentationId, group.key)"
           >
             <Icon
               icon="heroicons:chevron-down-20-solid"
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
-              :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key) ? 'rotate-0' : '-rotate-90'"
+              :class="state.isTeamDefinitionExpanded(workspacePresentationId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
             <TeamActivityDot
               class="mr-1.5"
@@ -206,18 +210,19 @@
             >
               <img
                 v-if="avatars.showTeamAvatar(group.representativeRun)"
+                :key="avatars.getTeamAvatarUrl(group.representativeRun)"
                 :src="avatars.getTeamAvatarUrl(group.representativeRun)"
                 :alt="`${group.teamDefinitionName} avatar`"
                 class="h-full w-full object-cover"
-                @error="avatars.onTeamAvatarError(group.representativeRun)"
+                @error="avatars.onTeamAvatarError(group.representativeRun, ($event.target as HTMLImageElement).getAttribute('src') || '')"
               >
-              <span v-else>{{ avatars.getTeamInitials(group.teamDefinitionName) }}</span>
+              <Icon v-else icon="heroicons:user-group-20-solid" class="h-3.5 w-3.5" />
             </span>
             <span class="truncate font-medium">{{ group.teamDefinitionName }}</span>
             <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
           </button>
 
-          <div v-if="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key)" class="ml-3 mt-0.5 space-y-0.5">
+          <div v-if="state.isTeamDefinitionExpanded(workspacePresentationId, group.key)" class="ml-3 mt-0.5 space-y-0.5">
             <div
               v-for="team in group.runs"
               :key="team.teamRunId"
@@ -301,6 +306,14 @@
           </div>
         </div>
       </div>
+
+      <WorkspaceAgentOrgHistoryCollection
+        :avatars="avatars"
+        :workspace-id="workspacePresentationId"
+        :groups="workspaceNode.agentOrgDefinitions ?? []"
+        :state="state"
+        :actions="actions"
+      />
     </div>
   </section>
 </template>
@@ -311,6 +324,7 @@ import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue';
+import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
@@ -329,16 +343,23 @@ import type {
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
-import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
+import type { WorkspaceHistoryWorkspaceNode } from '~/stores/runHistoryTypes';
+import { NO_WORKSPACE_HISTORY_ROOT } from '~/utils/runTreeProjection';
+import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
-  workspaceNode: RunTreeWorkspaceNode;
+  workspaceNode: WorkspaceHistoryWorkspaceNode;
   workspaceTeams: TeamTreeNode[];
   workspaceTeamHistoryGroups: TeamRunHistoryDefinitionGroup[];
   state: WorkspaceHistorySectionState;
   avatars: WorkspaceHistoryAvatarBindings;
   actions: WorkspaceHistorySectionActions;
 }>();
+const { t } = useLocalization();
+const workspacePresentationId = computed(() => props.workspaceNode.stableKey);
+const workspaceDisplayName = computed(() => props.workspaceNode.workspaceRootPath === NO_WORKSPACE_HISTORY_ROOT
+  ? t('workspace.agentOrg.history.noWorkspace')
+  : props.workspaceNode.workspaceName);
 
 const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGroup[]>(() =>
   buildWorkspaceTeamDefinitionDisplayGroups(
@@ -364,7 +385,7 @@ const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
   rowKey: string,
 ): boolean => props.state.isTeamMemberExpanded(
-  props.workspaceNode.workspaceId,
+  workspacePresentationId.value,
   team.teamRunId,
   rowKey,
 );
@@ -373,7 +394,7 @@ const toggleTeamDisplayRow = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
 ): void => props.state.toggleTeamMember(
-  props.workspaceNode.workspaceId,
+  workspacePresentationId.value,
   team.teamRunId,
   row.rowKey,
 );

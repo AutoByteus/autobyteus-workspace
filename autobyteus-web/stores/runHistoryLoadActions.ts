@@ -1,3 +1,7 @@
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
+import { watch } from 'vue';
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
+import type { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import { getApolloClient } from '~/utils/apolloClient';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -8,8 +12,11 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import {
   ListWorkspaceRunHistory,
 } from '~/graphql/queries/runHistoryQueries';
+import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries';
 import type {
+  AgentOrgRunHistoryItem,
   ListWorkspaceRunHistoryQueryData,
+  RunHistoryFamilyErrors,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
   TeamRunHistoryItem,
@@ -18,6 +25,7 @@ import type {
 import {
   buildNextAgentAvatarIndex,
   flattenWorkspaceTeamRuns,
+  parseAgentOrgHistoryItems,
 } from '~/stores/runHistoryStoreSupport';
 import {
   findAgentNameByRunId,
@@ -39,6 +47,7 @@ import {
 export type RunHistorySelectionMode = 'desktop' | 'mobile';
 
 interface RunHistoryOpenOptions {
+  selectionIntent?: WorkspaceSelectionIntent;
   selectionMode?: RunHistorySelectionMode;
 }
 
@@ -53,10 +62,28 @@ export interface RunHistoryFetchStoreLike {
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
   openingRun: boolean;
+  agentOrgHistory: AgentOrgRunHistoryItem[];
+  historyFamilyErrors: RunHistoryFamilyErrors;
+  agentOrgRequestGeneration: number;
+  refreshRunNavigationTopology(reason: string): void;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
 }
+
+const readAgentOrgHistory = async (
+  client: ApolloClient<NormalizedCacheObject>,
+): Promise<AgentOrgRunHistoryItem[]> => {
+  const result = await client.query<{ listCollaborationRootHistory: unknown }>({
+    query: ListCollaborationRootHistory,
+    fetchPolicy: 'network-only',
+    context: { queryDeduplication: false },
+  });
+  if (result.errors?.length) {
+    throw new Error(result.errors.map((error) => error.message).join(', '));
+  }
+  return parseAgentOrgHistoryItems(result.data?.listCollaborationRootHistory ?? []);
+};
 
 export const fetchRunHistoryTree = async (
   store: RunHistoryFetchStoreLike,
@@ -64,6 +91,7 @@ export const fetchRunHistoryTree = async (
   options: { quiet?: boolean } = {},
 ): Promise<void> => {
   const quiet = options.quiet === true;
+  const agentOrgGeneration = ++store.agentOrgRequestGeneration;
   if (!quiet) {
     store.loading = true;
     store.error = null;
@@ -77,30 +105,84 @@ export const fetchRunHistoryTree = async (
     }
 
     const client = getApolloClient();
-    const workspaceHistoryResult = await client.query<ListWorkspaceRunHistoryQueryData>({
-      query: ListWorkspaceRunHistory,
-      variables: { limitPerAgent },
-      fetchPolicy: 'network-only',
-    });
+    const workspaceBranch = (async () => {
+      try {
+        const result = await client.query<ListWorkspaceRunHistoryQueryData>({
+          query: ListWorkspaceRunHistory,
+          variables: { limitPerAgent },
+          fetchPolicy: 'network-only',
+        });
+        if (result.errors?.length) {
+          throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '));
+        }
+        store.workspaceGroups = result.data?.listWorkspaceRunHistory || [];
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
+        store.error = null;
+        store.refreshRunNavigationTopology('workspace-history-ready');
+        store.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
+          store.agentAvatarByDefinitionId,
+          { loadDefinitionsIfNeeded: true },
+        );
+        await reconcileDiscoveredActiveRuns(store);
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
+        if (!quiet) store.error = detail;
+      }
+    })();
 
-    if (workspaceHistoryResult.errors && workspaceHistoryResult.errors.length > 0) {
-      throw new Error(workspaceHistoryResult.errors.map((error: { message: string }) => error.message).join(', '));
-    }
+    const agentOrgBranch = (async () => {
+      try {
+        const rows = await readAgentOrgHistory(client);
+        if (agentOrgGeneration !== store.agentOrgRequestGeneration) return;
+        store.agentOrgHistory = rows;
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
+        store.refreshRunNavigationTopology('agent-org-history-ready');
+        useAgentOrgContextsStore().reconcileRetainedHistory(rows.map((row) => row.rootRunId));
+      } catch (error) {
+        if (agentOrgGeneration !== store.agentOrgRequestGeneration) return;
+        const detail = error instanceof Error ? error.message : String(error);
+        store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: detail };
+      }
+    })();
 
-    store.workspaceGroups = workspaceHistoryResult.data?.listWorkspaceRunHistory || [];
-    store.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
-      store.agentAvatarByDefinitionId,
-      { loadDefinitionsIfNeeded: true },
-    );
-    await reconcileDiscoveredActiveRuns(store);
+    // Completion still includes enrichment/reconnection; visible families do not wait for it.
+    await Promise.all([workspaceBranch, agentOrgBranch]);
   } catch (error: any) {
+    const detail = error?.message || 'Failed to load run history.';
+    store.historyFamilyErrors = {
+      workspace: detail,
+      agentOrg: agentOrgGeneration === store.agentOrgRequestGeneration
+        ? detail
+        : store.historyFamilyErrors.agentOrg,
+    };
     if (!quiet) {
-      store.error = error?.message || 'Failed to load run history.';
+      store.error = detail;
     }
   } finally {
     if (!quiet) {
       store.loading = false;
     }
+  }
+};
+
+export const refreshAgentOrgHistoryForStore = async (
+  store: RunHistoryFetchStoreLike,
+): Promise<void> => {
+  const generation = ++store.agentOrgRequestGeneration;
+  try {
+    const windowNodeContextStore = useWindowNodeContextStore();
+    const isReady = await windowNodeContextStore.waitForBoundBackendReady();
+    if (!isReady) throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
+    const rows = await readAgentOrgHistory(getApolloClient());
+    if (generation !== store.agentOrgRequestGeneration) return;
+    store.agentOrgHistory = rows;
+    useAgentOrgContextsStore().reconcileRetainedHistory(rows.map((row) => row.rootRunId));
+    store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
+  } catch (error) {
+    if (generation !== store.agentOrgRequestGeneration) return;
+    const detail = error instanceof Error ? error.message : String(error);
+    store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: detail };
   }
 };
 
@@ -216,7 +298,8 @@ export const reconcileDiscoveredActiveRuns = async (
       const streamReopenRequired = agentTeamRunStore.isTeamStreamReopenRequired(teamRunId);
       const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
       if (!streamReopenRequired) {
-        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
+        // Retired executions keep their terminal history status even when the root is active.
+        existingTeamContext.view.listLiveAgentContextEntries().forEach(({ agentContext }) => {
           agentContext.config.isLocked = true;
           applyActiveRuntimePlaceholder(agentContext, {
             preserveExistingLive: true,
@@ -251,28 +334,36 @@ export const openHistoricalRun = async (
   store: RunHistoryFetchStoreLike,
   runId: string,
   options: RunHistoryOpenOptions = {},
-): Promise<void> => {
+): Promise<WorkspaceSelectionOutcome> => {
+  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
+  const stopWatching = watch(intent.isCurrent, (current) => { if (!current) store.openingRun = false; }, { flush: 'sync' });
   store.openingRun = true;
   store.error = null;
 
   try {
     const result = await openAgentRun({
       runId,
+      selectionIntent: intent,
       fallbackAgentName: store.findAgentNameByRunId(runId),
       resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
         store.resolveWorkspaceMetadataByRootPath(rootPath),
       selectionMode: options.selectionMode,
     });
 
+    if (result.disposition === 'superseded' || !intent.isCurrent()) return { disposition: 'superseded' };
     store.resumeConfigByRunId[runId] = result.resumeConfig;
     store.selectedRunId = result.runId;
     store.selectedTeamRunId = null;
     store.selectedTeamMemberAddress = null;
+    return { disposition: 'committed' };
   } catch (error: any) {
+    if (!intent.isCurrent()) return { disposition: 'superseded' };
     store.error = error?.message || `Failed to open run '${runId}'.`;
     throw error;
   } finally {
-    store.openingRun = false;
+    stopWatching();
+    if (intent.isCurrent()) store.openingRun = false;
   }
 };
 

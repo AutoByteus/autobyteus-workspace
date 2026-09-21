@@ -1,0 +1,15 @@
+Owned ports50561/50562 after cleanup:
+Whitespace:
+Staged diff (expected empty):
+Status:
+ M autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts
+ M autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts
+ M autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts
+ M autobyteus-server-ts/src/agent-team-definition/providers/agent-team-definition-config.ts
+ M autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts
+ M autobyteus-server-ts/tests/unit/agent-team-definition/agent-team-definition-config.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/collaboration-definition-admission/tolerant-team-package-reading.test.ts
+?? autobyteus-server-ts/tests/unit/collaboration-definition-admission/optional-avatar-config.test.ts
+?? autobyteus-server-ts/tests/unit/collaboration-definition-admission/optional-avatar-placement.test.ts
+?? tickets/in-progress/optional-definition-avatar/

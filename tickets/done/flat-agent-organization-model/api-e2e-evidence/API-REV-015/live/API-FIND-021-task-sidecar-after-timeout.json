@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_2bca3e83e531484ca08af4446c716dfd",
+  "records": [
+    {
+      "taskId": "task_14677c387408431b896143b6e82eba2f",
+      "delegatorAgentRunId": "aorg_e2e_lead_d050d7b8e66e47c68ef5df65fa6ff818",
+      "recipientAddress": "/verifier",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_verifier_63c52739dfc64a2ba19ed3631b15711c"
+      },
+      "description": "Return exactly APIREV15-TEAM-TASK-RESULT-001. Then call submit_task_result exactly once with message \"APIREV15-TEAM-TASK-RESULT-001\" and reference_files []. Do not call review_task_result.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [],
+      "createdAt": "2026-09-06T13:46:35.851Z"
+    }
+  ]
+}

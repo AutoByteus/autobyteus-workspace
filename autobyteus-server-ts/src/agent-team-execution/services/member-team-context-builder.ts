@@ -1,14 +1,23 @@
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import type { InterAgentMessageDeliveryHandler } from "../domain/inter-agent-message-delivery.js";
-import { MemberCollaborationContext } from "../domain/member-collaboration-context.js";
-import { MemberTeamContext } from "../domain/member-team-context.js";
+import {
+  MemberCollaborationContext,
+  MemberExecutionContext,
+} from "../../agent-collaboration/execution/domain/member-execution-context.js";
+import {
+  createCollaborationMemberExecutionIdentity,
+  requireRootExecutionIdentityKind,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import {
+  buildDeliveryEndpointForParticipant,
+  type InterAgentMessageDeliveryHandler,
+} from "../domain/inter-agent-message-delivery.js";
 import type { TeamRunAgentNode } from "../domain/team-run-config.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
-import { createTeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
-import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
 
-export class MemberTeamContextBuilder {
-  private readonly summaryCache = new Map<string, Promise<{ name: string; instruction: string | null }>>();
+/** Team subject adapter that prepares the root-neutral AgentRun member context. */
+export class MemberExecutionContextBuilder {
+  private readonly summaryCache = new Map<string, Promise<{ instruction: string | null }>>();
 
   constructor(
     private readonly teamDefinitionService: AgentTeamDefinitionService = AgentTeamDefinitionService.getInstance(),
@@ -17,40 +26,50 @@ export class MemberTeamContextBuilder {
   async build(input: {
     teamContext: TeamRunContext<unknown>;
     agentNode: TeamRunAgentNode;
-    deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
-    taskRootResolver: MemberTaskRootResolver;
-  }): Promise<MemberTeamContext> {
+    deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
+    taskCommands: MemberTaskCommandCapability;
+  }): Promise<MemberExecutionContext> {
+    const root = requireRootExecutionIdentityKind(input.teamContext.rootIdentity, "agent_team");
+    const identity = createCollaborationMemberExecutionIdentity({
+      root,
+      memberAddress: input.agentNode.address,
+      agentRunId: input.agentNode.agentRunId,
+    });
     const collaboration = new MemberCollaborationContext({
       outgoingHandoffs: input.teamContext.handoffs.filter(
         (handoff) => handoff.from === input.agentNode.address,
       ),
-      deliverInterAgentMessage: input.deliverInterAgentMessage ?? null,
+      deliverLogicalMessage: (message) => input.deliverInterAgentMessage({
+        rootTeamRunId: root.rootRunId,
+        recipientAddress: message.recipientAddress,
+        sender: buildDeliveryEndpointForParticipant(Object.freeze({
+          kind: "agent",
+          identity,
+          displayName: input.agentNode.address.split("/").at(-1) ?? input.agentNode.agentRunId,
+        })),
+        content: message.content,
+        messageType: message.messageType,
+        referenceFiles: message.referenceFiles ? [...message.referenceFiles] : null,
+      }),
     });
     const summary = await this.resolveSummary(input.teamContext.teamNode.teamDefinitionId);
-    return new MemberTeamContext({
-      identity: createTeamMemberExecutionIdentity({
-        rootTeamRunId: input.teamContext.rootTeamRunId,
-        memberAddress: input.agentNode.address,
-        agentRunId: input.agentNode.agentRunId,
-      }),
-      authoredTeamInstruction: summary.instruction,
+    return new MemberExecutionContext({
+      identity,
+      authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
-      taskRootResolver: input.taskRootResolver,
+      tasks: input.taskCommands,
     });
   }
 
-  private resolveSummary(teamDefinitionId: string): Promise<{ name: string; instruction: string | null }> {
+  private resolveSummary(teamDefinitionId: string): Promise<{ instruction: string | null }> {
     if (!this.summaryCache.has(teamDefinitionId)) {
       this.summaryCache.set(teamDefinitionId, this.teamDefinitionService.getDefinitionById(teamDefinitionId)
-        .then((definition) => ({
-          name: definition?.name?.trim() || teamDefinitionId,
-          instruction: definition?.instructions?.trim() || null,
-        })));
+        .then((definition) => ({ instruction: definition?.instructions?.trim() || null })));
     }
     return this.summaryCache.get(teamDefinitionId)!;
   }
 }
 
-let cached: MemberTeamContextBuilder | null = null;
-export const getMemberTeamContextBuilder = (): MemberTeamContextBuilder =>
-  cached ??= new MemberTeamContextBuilder();
+let cached: MemberExecutionContextBuilder | null = null;
+export const getMemberExecutionContextBuilder = (): MemberExecutionContextBuilder =>
+  cached ??= new MemberExecutionContextBuilder();

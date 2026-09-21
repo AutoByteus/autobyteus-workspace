@@ -1,0 +1,76 @@
+[
+  {
+    "at": "2026-09-17T23:15:41.341Z",
+    "id": 313,
+    "type": "request",
+    "op": "UpdateStoppedAgentOrgRunModelConfigs",
+    "status": null,
+    "control": null,
+    "variables": {
+      "input": {
+        "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+        "patches": [
+          {
+            "scopeKind": "CONFIGURED_ORG",
+            "scopeAddress": "/",
+            "llmModelIdentifier": "gpt-5.4-mini",
+            "llmConfig": {
+              "reasoning_effort": "medium"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "at": "2026-09-17T23:15:41.358Z",
+    "id": 313,
+    "type": "backend_response",
+    "op": "UpdateStoppedAgentOrgRunModelConfigs",
+    "status": 200,
+    "control": {
+      "failResponseOps": [
+        "UpdateStoppedAgentOrgRunModelConfigs"
+      ]
+    }
+  },
+  {
+    "at": "2026-09-17T23:15:41.358Z",
+    "id": 313,
+    "type": "released_fault",
+    "op": "UpdateStoppedAgentOrgRunModelConfigs",
+    "status": 503,
+    "control": null
+  },
+  {
+    "at": "2026-09-17T23:15:41.400Z",
+    "id": 314,
+    "type": "request",
+    "op": "AgentOrgRunModelConfig",
+    "status": null,
+    "control": null,
+    "variables": {
+      "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d"
+    }
+  },
+  {
+    "at": "2026-09-17T23:15:41.401Z",
+    "id": 314,
+    "type": "backend_response",
+    "op": "AgentOrgRunModelConfig",
+    "status": 200,
+    "control": {
+      "failResponseOps": [
+        "UpdateStoppedAgentOrgRunModelConfigs"
+      ]
+    }
+  },
+  {
+    "at": "2026-09-17T23:15:41.402Z",
+    "id": 314,
+    "type": "released",
+    "op": "AgentOrgRunModelConfig",
+    "status": 200,
+    "control": null
+  }
+]

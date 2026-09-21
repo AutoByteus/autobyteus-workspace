@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_b64ab122404a414ca49c5da44ef9bfc0",
+  "records": [
+    {
+      "taskId": "task_67c02e48943849ffac37231cc7e2bf63",
+      "delegatorAgentRunId": "aorg_e2e_lead_3535c877f616405288e243edb38a1ef6",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_875c5eba2b4442a5b161af199d41943a"
+      },
+      "description": "Produce a two-stage validation result. First send an ordinary message to /lead whose first line is exactly APIREV5-ANALYST-LIVE-ONE and whose second line says the task is active. Then inspect the provided objective carefully and do a second visible work step before calling submit_task_result. Submit exactly APIREV5-TASK-SUBMISSION-V1 followed by a concise statement that standalone Team task routing succeeded. Do not call review_task_result.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_0e729ed2ef2e4280b7ae675ca3ec0b8f",
+          "message": "APIREV5-TASK-SUBMISSION-V1\nStandalone Team task routing succeeded.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:22:11.728Z"
+        },
+        {
+          "reviewId": "review_b7b88f4d0a0948c3acbae0385d77ab6d",
+          "reviewedSubmissionId": "submission_0e729ed2ef2e4280b7ae675ca3ec0b8f",
+          "decision": "request_revision",
+          "comment": "APIREV5-REVISION-REQUEST: resubmit with marker APIREV5-TASK-SUBMISSION-V2.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:25:56.297Z"
+        },
+        {
+          "submissionId": "submission_04b548f040eb41bcb4fe6ec2e1014cbf",
+          "message": "APIREV5-TASK-SUBMISSION-V2\nStandalone Team task routing succeeded after revision.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:26:02.460Z"
+        },
+        {
+          "reviewId": "review_ddeca7eb779f47f8879db313df57fae9",
+          "reviewedSubmissionId": "submission_04b548f040eb41bcb4fe6ec2e1014cbf",
+          "decision": "accept",
+          "comment": "APIREV5-ACCEPTED",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:27:27.479Z"
+        }
+      ],
+      "createdAt": "2026-09-02T09:21:46.441Z"
+    }
+  ]
+}

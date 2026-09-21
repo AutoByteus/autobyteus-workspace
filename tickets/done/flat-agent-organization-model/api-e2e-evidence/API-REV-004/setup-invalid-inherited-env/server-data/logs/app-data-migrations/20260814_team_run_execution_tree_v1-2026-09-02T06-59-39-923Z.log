@@ -1,0 +1,8 @@
+migrationId=20260814_team_run_execution_tree_v1
+displayName=TeamRun execution-tree V1 migration
+statusSummary={"scannedCount":3,"migratedCount":1,"skippedCount":1,"failedCount":1}
+error=1 TeamRun V1 migration warning item(s) were isolated; startup may continue.
+details=
+{"itemId":"team-root:aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9","status":"FAILED","message":"Preserved and excluded before mutation: TeamRun V1 package is invalid: TeamRun execution tree schemaVersion must be 1."}
+{"itemId":"token-usage:root-update-transaction","status":"SKIPPED","message":"Token runtime root schema/index are current; no row root update was required."}
+{"itemId":"team-history-index","backupPath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/app-data-migration-backups/20260814_team_run_execution_tree_v1/team-history-index/2026-09-02T06-59-39-905Z-61709","status":"MIGRATED","message":"Reconciled 0 independently admitted TeamRun history row(s)."}

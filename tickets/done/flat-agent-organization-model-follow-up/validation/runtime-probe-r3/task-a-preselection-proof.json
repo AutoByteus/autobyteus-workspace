@@ -1,0 +1,472 @@
+{
+  "request": {
+    "at": "2026-09-14T10:07:03.747Z",
+    "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+    "kind": "incoming",
+    "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+    "frame": {
+      "type": "TOOL_APPROVAL_REQUESTED",
+      "payload": {
+        "invocation_id": "exec-8da84a98-32dd-4210-a6d2-255f0f8a3d9f",
+        "tool_name": "submit_task_result",
+        "turn_id": "01a09f62-4101-78b2-a449-c536fb35882d",
+        "arguments": {
+          "message": "TASK05-R3-A"
+        },
+        "change_sequence": 78,
+        "agent_run_id": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3"
+      }
+    }
+  },
+  "state": {
+    "at": "2026-09-14T10:07:03.755Z",
+    "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+    "kind": "owning-context-state",
+    "trigger": "periodic-read-only",
+    "roots": [
+      {
+        "root": "aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+        "focused": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+        "ready": true,
+        "members": [
+          {
+            "id": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+            "address": "/lead",
+            "status": "idle",
+            "autoExecuteTools": false,
+            "draft": "",
+            "tools": [
+              {
+                "type": "tool_call",
+                "invocationId": "exec-600ee998-f70b-4f41-b002-ef5766935861",
+                "toolName": "delegate_task",
+                "arguments": {
+                  "recipient_address": "/worker",
+                  "description": "Reply with exactly TASK-RESULT-R2, then submit that exact text once using submit_task_result. Do not use any other tool and do not read files."
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "status": "active",
+                  "target_agent_run_id": "aorg_validation_agent_688d943bb70140cbbbfa5606a66fc564"
+                },
+                "error": null,
+                "rawContent": ""
+              },
+              {
+                "type": "tool_call",
+                "invocationId": "exec-d88ae2b7-21b0-4565-9fdb-c09f3465f84f",
+                "toolName": "review_task_result",
+                "arguments": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "decision": "accept"
+                },
+                "status": "error",
+                "logs": [],
+                "result": null,
+                "error": "Task 'task_df359fe62c3d4417adb4003fcc1f4418' is not awaiting review.",
+                "rawContent": ""
+              },
+              {
+                "type": "tool_call",
+                "invocationId": "exec-a4d2b006-9488-418c-b712-2635f66f0698",
+                "toolName": "review_task_result",
+                "arguments": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "decision": "accept"
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "status": "accepted"
+                },
+                "error": null,
+                "rawContent": ""
+              },
+              {
+                "type": "tool_call",
+                "invocationId": "exec-1d6b24a8-0520-4996-bdc5-2b5db07f0de5",
+                "toolName": "delegate_task",
+                "arguments": {
+                  "recipient_address": "/worker",
+                  "description": "Immediately submit exactly APPROVAL-REPRO-R2 once using submit_task_result, then stop. Do not use other tools or read files."
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "task_id": "task_afa32c990cca4dd091dab14c61e4cc57",
+                  "status": "active",
+                  "target_agent_run_id": "aorg_validation_agent_1b465e696bc04339a92d9ec8d2ee291b"
+                },
+                "error": null,
+                "rawContent": ""
+              },
+              {
+                "type": "tool_call",
+                "invocationId": "exec-8cdc3a35-5434-45b9-98cd-43e2ff42acca",
+                "toolName": "delegate_task",
+                "arguments": {
+                  "recipient_address": "/worker",
+                  "description": "Immediately submit exactly TASK05-R3-A once using submit_task_result, then stop. Do not use other tools or read files."
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "task_id": "task_b72f110a2fc6491c8b7d01bf01141149",
+                  "status": "active",
+                  "target_agent_run_id": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3"
+                },
+                "error": null,
+                "rawContent": "",
+                "_streamSegmentIdentity": {
+                  "turnId": "01a09f61-c19a-70c2-a507-7b33afd7a958",
+                  "id": "exec-8cdc3a35-5434-45b9-98cd-43e2ff42acca",
+                  "segmentType": "tool_call",
+                  "presentationComplete": true
+                },
+                "approvalTarget": null
+              }
+            ],
+            "activity": [
+              {
+                "kind": "tool",
+                "activityId": "exec-600ee998-f70b-4f41-b002-ef5766935861",
+                "invocationId": "exec-600ee998-f70b-4f41-b002-ef5766935861",
+                "toolName": "delegate_task",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "delegate_task",
+                "arguments": {
+                  "recipient_address": "/worker",
+                  "description": "Reply with exactly TASK-RESULT-R2, then submit that exact text once using submit_task_result. Do not use any other tool and do not read files."
+                },
+                "logs": [],
+                "result": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "status": "active",
+                  "target_agent_run_id": "aorg_validation_agent_688d943bb70140cbbbfa5606a66fc564"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T08:59:25.528Z"
+              },
+              {
+                "kind": "tool",
+                "activityId": "exec-d88ae2b7-21b0-4565-9fdb-c09f3465f84f",
+                "invocationId": "exec-d88ae2b7-21b0-4565-9fdb-c09f3465f84f",
+                "toolName": "review_task_result",
+                "type": "tool_call",
+                "status": "error",
+                "contextText": "review_task_result",
+                "arguments": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "decision": "accept"
+                },
+                "logs": [],
+                "result": null,
+                "error": "Task 'task_df359fe62c3d4417adb4003fcc1f4418' is not awaiting review.",
+                "timestamp": "2026-09-14T08:59:25.528Z"
+              },
+              {
+                "kind": "tool",
+                "activityId": "exec-a4d2b006-9488-418c-b712-2635f66f0698",
+                "invocationId": "exec-a4d2b006-9488-418c-b712-2635f66f0698",
+                "toolName": "review_task_result",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "review_task_result",
+                "arguments": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "decision": "accept"
+                },
+                "logs": [],
+                "result": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "status": "accepted"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T09:02:28.095Z"
+              },
+              {
+                "kind": "tool",
+                "activityId": "exec-1d6b24a8-0520-4996-bdc5-2b5db07f0de5",
+                "invocationId": "exec-1d6b24a8-0520-4996-bdc5-2b5db07f0de5",
+                "toolName": "delegate_task",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "delegate_task",
+                "arguments": {
+                  "recipient_address": "/worker",
+                  "description": "Immediately submit exactly APPROVAL-REPRO-R2 once using submit_task_result, then stop. Do not use other tools or read files."
+                },
+                "logs": [],
+                "result": {
+                  "task_id": "task_afa32c990cca4dd091dab14c61e4cc57",
+                  "status": "active",
+                  "target_agent_run_id": "aorg_validation_agent_1b465e696bc04339a92d9ec8d2ee291b"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T09:10:05.096Z"
+              },
+              {
+                "kind": "tool",
+                "activityId": "exec-8cdc3a35-5434-45b9-98cd-43e2ff42acca",
+                "invocationId": "exec-8cdc3a35-5434-45b9-98cd-43e2ff42acca",
+                "toolName": "delegate_task",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "delegate_task",
+                "arguments": {
+                  "recipient_address": "/worker",
+                  "description": "Immediately submit exactly TASK05-R3-A once using submit_task_result, then stop. Do not use other tools or read files."
+                },
+                "approvalTarget": null,
+                "logs": [],
+                "result": {
+                  "task_id": "task_b72f110a2fc6491c8b7d01bf01141149",
+                  "status": "active",
+                  "target_agent_run_id": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T10:06:32.392Z"
+              }
+            ]
+          },
+          {
+            "id": "aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181",
+            "address": "/worker",
+            "status": "offline",
+            "autoExecuteTools": false,
+            "draft": "",
+            "tools": [
+              {
+                "type": "tool_call",
+                "invocationId": "exec-5dfe8a89-cf19-44f8-8b96-e83bfd34a5b7",
+                "toolName": "send_message_to",
+                "arguments": {
+                  "recipient_address": "/lead",
+                  "content": "Reply TEAM-PEER-C-REV001 only. Do not use tools."
+                },
+                "status": "parsed",
+                "logs": [],
+                "result": null,
+                "error": null,
+                "rawContent": ""
+              },
+              {
+                "type": "tool_call",
+                "invocationId": "exec-f110b5bc-003e-45a6-8adc-b25268bca240",
+                "toolName": "send_message_to",
+                "arguments": {
+                  "recipient_address": "/lead",
+                  "content": "Reply TEAM-PEER-R2 only. Do not use tools."
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "accepted": true,
+                  "code": "DELIVERED",
+                  "message": "Delivered message to /lead.",
+                  "target_agent_run_id": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf"
+                },
+                "error": null,
+                "rawContent": ""
+              }
+            ],
+            "activity": [
+              {
+                "kind": "tool",
+                "activityId": "exec-5dfe8a89-cf19-44f8-8b96-e83bfd34a5b7",
+                "invocationId": "exec-5dfe8a89-cf19-44f8-8b96-e83bfd34a5b7",
+                "toolName": "send_message_to",
+                "type": "tool_call",
+                "status": "parsed",
+                "contextText": "send_message_to",
+                "arguments": {
+                  "recipient_address": "/lead",
+                  "content": "Reply TEAM-PEER-C-REV001 only. Do not use tools."
+                },
+                "logs": [],
+                "result": null,
+                "error": null,
+                "timestamp": "2026-09-14T03:56:26.017Z"
+              },
+              {
+                "kind": "tool",
+                "activityId": "exec-f110b5bc-003e-45a6-8adc-b25268bca240",
+                "invocationId": "exec-f110b5bc-003e-45a6-8adc-b25268bca240",
+                "toolName": "send_message_to",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "send_message_to",
+                "arguments": {
+                  "recipient_address": "/lead",
+                  "content": "Reply TEAM-PEER-R2 only. Do not use tools."
+                },
+                "logs": [],
+                "result": {
+                  "accepted": true,
+                  "code": "DELIVERED",
+                  "message": "Delivered message to /lead.",
+                  "target_agent_run_id": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T08:58:08.455Z"
+              }
+            ]
+          },
+          {
+            "id": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+            "address": "/unused",
+            "status": "offline",
+            "autoExecuteTools": false,
+            "draft": "",
+            "tools": [],
+            "activity": []
+          },
+          {
+            "id": "aorg_validation_agent_688d943bb70140cbbbfa5606a66fc564",
+            "address": "/worker",
+            "status": "offline",
+            "autoExecuteTools": false,
+            "draft": "",
+            "tools": [
+              {
+                "type": "tool_call",
+                "invocationId": "exec-184e5665-6811-45ca-a0cd-39f9ed53d33f",
+                "toolName": "submit_task_result",
+                "arguments": {
+                  "message": "TASK-RESULT-R2"
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "status": "awaiting_review"
+                },
+                "error": null,
+                "rawContent": ""
+              }
+            ],
+            "activity": [
+              {
+                "kind": "tool",
+                "activityId": "exec-184e5665-6811-45ca-a0cd-39f9ed53d33f",
+                "invocationId": "exec-184e5665-6811-45ca-a0cd-39f9ed53d33f",
+                "toolName": "submit_task_result",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "submit_task_result",
+                "arguments": {
+                  "message": "TASK-RESULT-R2"
+                },
+                "logs": [],
+                "result": {
+                  "task_id": "task_df359fe62c3d4417adb4003fcc1f4418",
+                  "status": "awaiting_review"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T09:02:23.817Z"
+              }
+            ]
+          },
+          {
+            "id": "aorg_validation_agent_1b465e696bc04339a92d9ec8d2ee291b",
+            "address": "/worker",
+            "status": "offline",
+            "autoExecuteTools": false,
+            "draft": "",
+            "tools": [
+              {
+                "type": "tool_call",
+                "invocationId": "exec-af52c5ae-35a0-487b-a3a9-308721f15547",
+                "toolName": "submit_task_result",
+                "arguments": {
+                  "message": "APPROVAL-REPRO-R2"
+                },
+                "status": "success",
+                "logs": [],
+                "result": {
+                  "task_id": "task_afa32c990cca4dd091dab14c61e4cc57",
+                  "status": "awaiting_review"
+                },
+                "error": null,
+                "rawContent": ""
+              }
+            ],
+            "activity": [
+              {
+                "kind": "tool",
+                "activityId": "exec-af52c5ae-35a0-487b-a3a9-308721f15547",
+                "invocationId": "exec-af52c5ae-35a0-487b-a3a9-308721f15547",
+                "toolName": "submit_task_result",
+                "type": "tool_call",
+                "status": "success",
+                "contextText": "submit_task_result",
+                "arguments": {
+                  "message": "APPROVAL-REPRO-R2"
+                },
+                "logs": [],
+                "result": {
+                  "task_id": "task_afa32c990cca4dd091dab14c61e4cc57",
+                  "status": "awaiting_review"
+                },
+                "error": null,
+                "timestamp": "2026-09-14T09:11:23.160Z"
+              }
+            ]
+          },
+          {
+            "id": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3",
+            "address": "/worker",
+            "status": "running",
+            "autoExecuteTools": false,
+            "draft": "",
+            "tools": [
+              {
+                "type": "tool_call",
+                "invocationId": "exec-8da84a98-32dd-4210-a6d2-255f0f8a3d9f",
+                "toolName": "submit_task_result",
+                "arguments": {
+                  "message": "TASK05-R3-A"
+                },
+                "status": "awaiting-approval",
+                "logs": [],
+                "result": null,
+                "error": null,
+                "rawContent": "",
+                "_streamSegmentIdentity": {
+                  "turnId": "01a09f62-4101-78b2-a449-c536fb35882d",
+                  "id": "exec-8da84a98-32dd-4210-a6d2-255f0f8a3d9f",
+                  "segmentType": "tool_call",
+                  "presentationComplete": false
+                },
+                "approvalTarget": null
+              }
+            ],
+            "activity": [
+              {
+                "kind": "tool",
+                "activityId": "exec-8da84a98-32dd-4210-a6d2-255f0f8a3d9f",
+                "invocationId": "exec-8da84a98-32dd-4210-a6d2-255f0f8a3d9f",
+                "toolName": "submit_task_result",
+                "type": "tool_call",
+                "status": "awaiting-approval",
+                "contextText": "submit_task_result",
+                "arguments": {
+                  "message": "TASK05-R3-A"
+                },
+                "approvalTarget": null,
+                "logs": [],
+                "result": null,
+                "error": null,
+                "timestamp": "2026-09-14T10:07:03.682Z"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "checked_at_utc": "2026-09-16T09:38:07.136129+00:00",
+  "head": "755831eb8fe185ee9a32f6a77ebabdf773350cc0",
+  "remote_base": "755831eb8fe185ee9a32f6a77ebabdf773350cc0",
+  "integration": "fetch + merge --ff-only: Already up to date before edits",
+  "matched": 9,
+  "total": 9,
+  "checks": [
+    {
+      "path": "autobyteus-web/components/agentOrgs/AgentOrgCatalogMemberChips.vue",
+      "sha256": "3d644dd81434133d8051ac54bd9bd63af069c01d74e971d522931615422ddda4",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue",
+      "sha256": "e50cfd2ca671cfeeaab7b600c5f5cc4b68d5f911490541285a7492c8a875889c",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts",
+      "sha256": "216a9fecc7cdc58c2ed8ba9df37b071b8f941318962caf81572156fb62529372",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgExperience.spec.ts",
+      "sha256": "557778b68eec01a47da04949a56f3bbdf96e74eca33bc4bd16120c1e0f7be65c",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "sha256": "e67cd888e28b506138e90cf8da0d045aee1d6796433a6b2630ba514575a4f52b",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/agentOrgs.ts",
+      "sha256": "6685428bb6ceee6d85908307b23b30d2791348f9057c3d136a45f7fe5f54c378",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/agentOrgs.ts",
+      "sha256": "ea27fcf0ace46a219cb9b0a6a1da8623a5e45faeea8ea661c7e4a1e6b2d88a42",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgDefinition/__tests__/agentOrgDefinitionReferences.spec.ts",
+      "sha256": "f84f0d60ca353cb720e9f2446b0cff8dcc0d43125cc18f73b0174629984fceef",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts",
+      "sha256": "24f078a643088a39fa8bf1ecf705a7ec5d9f8c610add858ed50f4407747e61a0",
+      "matches": true
+    }
+  ]
+}

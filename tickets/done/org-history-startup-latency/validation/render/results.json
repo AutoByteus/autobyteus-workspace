@@ -1,0 +1,16 @@
+{
+  "scope": "Implementation synthetic transport only; NOT real server startup or ten-second claim",
+  "results": [
+    {
+      "family": "org",
+      "syntheticResolveClickToVisibleIncludingExpansionMs": 46,
+      "pendingOtherDidNotGate": true
+    },
+    {
+      "family": "workspace",
+      "syntheticResolveClickToVisibleIncludingExpansionMs": 52,
+      "pendingOtherDidNotGate": true
+    }
+  ],
+  "errors": []
+}

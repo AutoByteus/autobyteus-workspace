@@ -1,0 +1,42 @@
+{
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "taskId": "task_3d122cc68edc47d6884c21bfcc816369",
+  "taskExecution": {
+    "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2"
+  },
+  "statusCount": 8,
+  "statusPairs": [
+    "/concierge|aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+    "/research-team/lead|aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+    "/research-team/analyst|aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+    "/research-team/verifier|aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+    "/support-team/dispatcher|aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+    "/support-team/specialist|aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+    "/support-team/dispatcher|aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+    "/support-team/specialist|aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab"
+  ],
+  "assertions": {
+    "exactRoot": true,
+    "exactDelegator": true,
+    "exactRecipient": true,
+    "oneCurrentTask": true,
+    "taskTeamMaterialized": true,
+    "taskStillActive": true,
+    "realCoordinatorReadyExactlyOnce": true,
+    "snapshotAvailable": true,
+    "completeCurrentRoot": true,
+    "allConfiguredStatusesPresent": true,
+    "uniqueStatusPairs": true,
+    "uniqueAgentRunStatuses": true,
+    "taskTeamInSnapshot": true,
+    "taskVisibleBeforeReselect": true,
+    "taskVisibleAfterReselect": true,
+    "noRecoveryNoticeBeforeReselect": true,
+    "noRecoveryNoticeAfterReselect": true,
+    "desktopNoOverflow": true,
+    "noNetworkFailures": true,
+    "noPageErrors": true
+  },
+  "networkFailures": [],
+  "pageErrors": []
+}

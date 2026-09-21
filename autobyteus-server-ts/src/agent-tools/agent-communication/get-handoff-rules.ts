@@ -4,7 +4,7 @@ import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
-import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import {
   getGetHandoffRulesService,
   type GetHandoffRulesService,
@@ -23,7 +23,7 @@ export class AutoByteusGetHandoffRulesTool extends BaseTool<unknown, Record<stri
   constructor(
     config?: ToolConfig,
     private readonly options: {
-      memberTeamContext?: MemberTeamContext | null;
+      memberExecutionContext?: MemberExecutionContext | null;
       service?: GetHandoffRulesService;
     } = {},
   ) { super(config); }
@@ -34,7 +34,7 @@ export class AutoByteusGetHandoffRulesTool extends BaseTool<unknown, Record<stri
 
   protected async _execute(): Promise<string> {
     const result = (this.options.service ?? getGetHandoffRulesService())
-      .getRules(this.options.memberTeamContext?.collaboration);
+      .getRules(this.options.memberExecutionContext?.collaboration);
     return JSON.stringify(result);
   }
 }
@@ -56,10 +56,10 @@ export const ensureAutoByteusGetHandoffRulesToolRegistered = (): ToolDefinition 
 };
 
 export const createBoundAutoByteusGetHandoffRulesTool = (
-  memberTeamContext: MemberTeamContext,
+  memberExecutionContext: MemberExecutionContext,
 ): AutoByteusGetHandoffRulesTool => {
   const definition = ensureAutoByteusGetHandoffRulesToolRegistered();
-  const tool = new AutoByteusGetHandoffRulesTool(undefined, { memberTeamContext });
+  const tool = new AutoByteusGetHandoffRulesTool(undefined, { memberExecutionContext });
   tool.definition = definition;
   return tool;
 };

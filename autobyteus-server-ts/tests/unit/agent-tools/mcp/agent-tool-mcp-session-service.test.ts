@@ -16,8 +16,8 @@ import {
   type AgentToolMcpToolAdapter,
 } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import {
-  testMemberTaskRootResolver,
-  testMemberTeamContext,
+  testMemberTaskCommandCapability,
+  testMemberExecutionContext,
 } from "../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationAgentToolCapability } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
 import type { ApplicationAgentToolRoute } from "../../../../src/application-agent-tools/domain/application-agent-tool-route.js";
@@ -186,35 +186,35 @@ describe("AgentToolMcpSessionService", () => {
 
   it("builds exact Team-member capabilities and rejects mismatched ownership", () => {
     const registry = new AgentToolMcpSessionRegistry();
-    const rootResolver = testMemberTaskRootResolver();
-    const memberTeamContext = testMemberTeamContext({
+    const taskCommands = testMemberTaskCommandCapability("root-team");
+    const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "root-team",
       memberAddress: "/researcher",
       agentRunId: "researcher-run",
-      taskRootResolver: rootResolver,
+      taskCommands,
     });
     const service = buildService(registry);
     const result = service.activateForRun({
-      owner: { runId: "researcher-run", teamIdentity: memberTeamContext.identity },
+      owner: { runId: "researcher-run", collaborationIdentity: memberExecutionContext.identity },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: "researcher-run",
-        memberTeamContext,
+        memberExecutionContext,
       }),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     if (result.kind !== "active") throw new Error("Expected active result.");
     const resolved = registry.resolveSession(result.sessionId);
-    if (!resolved.ok || resolved.session.executionCapabilities.kind !== "team_member") {
+    if (!resolved.ok || resolved.session.executionCapabilities.kind !== "collaboration_member") {
       throw new Error("Expected Team-member capabilities.");
     }
-    expect(resolved.session.executionCapabilities.taskDelegation.rootResolver).toBe(rootResolver);
+    expect(resolved.session.executionCapabilities.taskDelegation.commands).toBe(memberExecutionContext.tasks);
     expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
 
     expect(() => service.activateForRun({
-      owner: { runId: "other-run", teamIdentity: memberTeamContext.identity },
+      owner: { runId: "other-run", collaborationIdentity: memberExecutionContext.identity },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: "researcher-run",
-        memberTeamContext,
+        memberExecutionContext,
       }),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     })).toThrow("does not match");

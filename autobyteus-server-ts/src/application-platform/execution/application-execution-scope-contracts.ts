@@ -1,5 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
+import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
@@ -104,7 +104,7 @@ export interface ApplicationTeamExecution {
     teamRunId: string,
     listener: (event: ObservedRunLifecycleEvent) => void,
   ): Promise<(() => void) | null>;
-  requireLiveTeamMember(identity: TeamMemberExecutionIdentity): Promise<void>;
+  requireLiveTeamMember(identity: CollaborationMemberExecutionIdentity): Promise<void>;
 }
 
 export interface ApplicationExecutionStreaming {

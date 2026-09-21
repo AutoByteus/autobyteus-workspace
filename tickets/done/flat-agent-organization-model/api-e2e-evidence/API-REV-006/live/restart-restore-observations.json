@@ -1,0 +1,141 @@
+{
+  "caseId": "LIVE-009",
+  "result": "Pass",
+  "observedAt": "2026-09-02T16:40:45Z",
+  "shutdown": {
+    "signal": "SIGTERM",
+    "cleanExit": true,
+    "exitLatencyMsLessThan": 500,
+    "aggregateError": false,
+    "evidence": [
+      "live/process/LIVE-009-sigterm.log",
+      "live/process/LIVE-009-graceful-shutdown-tail.log"
+    ]
+  },
+  "restart": {
+    "firstHistoryGraphQlErrors": false,
+    "agentOrgInitiallyInactive": true,
+    "standaloneTeamRehydratedByExistingBrowserContext": true,
+    "supportedJourney": [
+      "Refresh Agent Org history",
+      "select inactive concierge row",
+      "whole Org restored"
+    ],
+    "automaticRecoveryNoticeObservedBeforeRestore": true,
+    "automaticRecoveryNoticeClearedAfterVerifiedRestore": true
+  },
+  "identity": {
+    "/concierge": {
+      "before": {
+        "agentRunId": "aorg_e2e_concierge_29b8b40561a0427684f09765473bbdc2",
+        "platformAgentRunId": "01a062f2-8c95-74f1-aba1-6a41846dab4c"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_concierge_29b8b40561a0427684f09765473bbdc2",
+        "platformAgentRunId": "01a062f2-8c95-74f1-aba1-6a41846dab4c"
+      },
+      "sameAgentRunId": true,
+      "samePlatformAgentRunId": true
+    },
+    "/research-team": {
+      "before": {
+        "teamRunId": "aorg_e2e_research_squad_5e5427c5d304400ca2eda172e118afab"
+      },
+      "after": {
+        "teamRunId": "aorg_e2e_research_squad_5e5427c5d304400ca2eda172e118afab"
+      },
+      "sameAgentRunId": null,
+      "samePlatformAgentRunId": null
+    },
+    "/research-team/lead": {
+      "before": {
+        "agentRunId": "aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6",
+        "platformAgentRunId": "01a062f2-8d4f-7102-a6cc-1cbad0c7e1e0"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6",
+        "platformAgentRunId": "01a062f2-8d4f-7102-a6cc-1cbad0c7e1e0"
+      },
+      "sameAgentRunId": true,
+      "samePlatformAgentRunId": true
+    },
+    "/research-team/analyst": {
+      "before": {
+        "agentRunId": "aorg_e2e_analyst_48b635708c134b4dbab576f060a0e925",
+        "platformAgentRunId": "01a062f2-8dd7-7032-bd8f-7f1acc0b2dde"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_analyst_48b635708c134b4dbab576f060a0e925",
+        "platformAgentRunId": "01a062fb-b3e5-7a52-b1e9-b9c7eb90f838"
+      },
+      "sameAgentRunId": true,
+      "samePlatformAgentRunId": false
+    },
+    "/research-team/verifier": {
+      "before": {
+        "agentRunId": "aorg_e2e_verifier_d10066b6d1ab4d57888fce0bb22da5db",
+        "platformAgentRunId": "01a062f2-8e67-7b03-b0c5-0f2d01c4ac4d"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_verifier_d10066b6d1ab4d57888fce0bb22da5db",
+        "platformAgentRunId": "01a062fb-b46c-74c2-819f-6a2c1638d4c7"
+      },
+      "sameAgentRunId": true,
+      "samePlatformAgentRunId": false
+    },
+    "/support-team": {
+      "before": {
+        "teamRunId": "aorg_e2e_support_pair_7a72baa6d8ff4903b31c334ac4d53728"
+      },
+      "after": {
+        "teamRunId": "aorg_e2e_support_pair_7a72baa6d8ff4903b31c334ac4d53728"
+      },
+      "sameAgentRunId": null,
+      "samePlatformAgentRunId": null
+    },
+    "/support-team/dispatcher": {
+      "before": {
+        "agentRunId": "aorg_e2e_lead_92c973e9b61743d8aa29bc5ff8744839",
+        "platformAgentRunId": "01a062f2-8efd-7e33-b2fd-bf9cbf45a4f3"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_lead_92c973e9b61743d8aa29bc5ff8744839",
+        "platformAgentRunId": "01a062fb-b4e9-7360-8096-bab8b0e32727"
+      },
+      "sameAgentRunId": true,
+      "samePlatformAgentRunId": false
+    },
+    "/support-team/specialist": {
+      "before": {
+        "agentRunId": "aorg_e2e_verifier_ef755fd6b4354fbe8097683305830490",
+        "platformAgentRunId": "01a062f2-8f8a-7721-963d-acfb121a41b2"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_verifier_ef755fd6b4354fbe8097683305830490",
+        "platformAgentRunId": "01a062fb-b59d-75e3-a89e-fdacdcc362c3"
+      },
+      "sameAgentRunId": true,
+      "samePlatformAgentRunId": false
+    }
+  },
+  "postRestore": {
+    "wholeOrgActive": true,
+    "allStableMembersIdle": true,
+    "continuationPrompt": "Return exactly APIREV6-POST-RESTORE-CONTINUE on one line and nothing else.",
+    "continuationResponse": "APIREV6-POST-RESTORE-CONTINUE",
+    "markerCountInDom": 2,
+    "researchTeamAriaLabel": "research team. Team status: Idle",
+    "taskSidecarRetained": true,
+    "taskRecordCount": 1
+  },
+  "evidence": [
+    "live/api/LIVE-009-first-post-restart-history-response.json",
+    "live/api/LIVE-009-immediate-active-checkpoints.json",
+    "live/api/LIVE-009-immediate-team-checkpoint.json",
+    "live/api/LIVE-009-post-restore-response.json",
+    "live/persistence/LIVE-009-provider-identity-comparison.json",
+    "live/persistence/LIVE-009-post-restore-agent-org-run-execution-tree.json",
+    "live/persistence/LIVE-009-post-restore-task-records.json",
+    "live/screenshots/LIVE-009-post-restart-org-restored.png"
+  ]
+}

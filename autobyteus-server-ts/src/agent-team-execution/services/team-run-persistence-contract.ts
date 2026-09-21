@@ -1,3 +1,4 @@
+import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
@@ -6,16 +7,18 @@ import type {
   PreparedTaskSettlement,
 } from "../domain/prepared-task-settlement.js";
 import type {
-  TeamRunDirectoryFinalizationStage,
-  TeamRunFileRole,
-} from "../../run-history/store/team-run-file-commit-writer.js";
+  RunPackageDirectoryFinalizationStage,
+} from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 
-export class TeamRunPersistenceFinalizationIndeterminateError extends Error {
+export type TeamRunFileRole = "execution_tree" | "task_records" | "communication_messages";
+type TeamRunDirectoryFinalizationStage = RunPackageDirectoryFinalizationStage;
+
+export class TeamRunPersistenceFinalizationIndeterminateError extends RootTaskPersistenceFinalizationIndeterminateError {
   constructor(
     readonly file: TeamRunFileRole,
     readonly stage: TeamRunDirectoryFinalizationStage,
   ) {
-    super(`TeamRun '${file}' finalization is indeterminate at '${stage}'.`);
+    super("agent_team", file, stage, `TeamRun '${file}' finalization is indeterminate at '${stage}'.`);
     this.name = "TeamRunPersistenceFinalizationIndeterminateError";
   }
 }

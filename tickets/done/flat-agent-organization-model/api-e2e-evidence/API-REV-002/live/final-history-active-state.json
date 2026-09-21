@@ -1,0 +1,17 @@
+[
+  {
+    "kind": "agent_org",
+    "id": "aorg_e2e_mixed_org_b38932216a9846059d16a80b8a622b60",
+    "active": false
+  },
+  {
+    "kind": "agent_org",
+    "id": "aorg_e2e_direct_agents_org_71932050c9304dd58bdd7fdb06622ef2",
+    "active": false
+  },
+  {
+    "kind": "agent_team",
+    "id": "aorg_e2e_research_squad_406e38c2bf72449ea5685e1489282463",
+    "active": false
+  }
+]

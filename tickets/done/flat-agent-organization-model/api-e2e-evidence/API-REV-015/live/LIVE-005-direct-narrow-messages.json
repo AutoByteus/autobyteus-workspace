@@ -1,0 +1,4187 @@
+{
+  "at": "2026-09-06T13:43:53.442Z",
+  "events": [
+    {
+      "label": "narrow-before-drawer",
+      "at": "2026-09-06T13:43:51.250Z",
+      "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30&mode=active",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "body": "V\nverifier - 9041\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9\nmessage:\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'\n\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\nVerified: reference file contains “API-REV-015 direct-to-direct exact reference.”\n\nYou\nReturn exactly APIREV15-DIRECT-RESTORED-CONTINUE-001 and confirm that the prior direct-to-direct message is visible in your restored context.\nV\nverifier\n\nAPIREV15-DIRECT-RESTORED-CONTINUE-001\nVerified: the prior direct-to-direct message is visible in my restored context.\n\nContext Files (0)\n(drag, paste, or upload)",
+      "doc": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "buttons": [
+        {
+          "text": "",
+          "aria": "Agents",
+          "title": "Agents",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 16,
+            "width": 36,
+            "height": 36,
+            "top": 16,
+            "right": 42.5,
+            "bottom": 52,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Agent Teams",
+          "title": "Agent Teams",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 60,
+            "width": 36,
+            "height": 36,
+            "top": 60,
+            "right": 42.5,
+            "bottom": 96,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Agent Orgs",
+          "title": "Agent Orgs",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 104,
+            "width": 36,
+            "height": 36,
+            "top": 104,
+            "right": 42.5,
+            "bottom": 140,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Skills",
+          "title": "Skills",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 148,
+            "width": 36,
+            "height": 36,
+            "top": 148,
+            "right": 42.5,
+            "bottom": 184,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Memory",
+          "title": "Memory",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 192,
+            "width": 36,
+            "height": 36,
+            "top": 192,
+            "right": 42.5,
+            "bottom": 228,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Nodes",
+          "title": "Nodes",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 236,
+            "width": 36,
+            "height": 36,
+            "top": 236,
+            "right": 42.5,
+            "bottom": 272,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Settings",
+          "title": "Settings",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 6.5,
+            "y": 792,
+            "width": 36,
+            "height": 36,
+            "top": 792,
+            "right": 42.5,
+            "bottom": 828,
+            "left": 6.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Edit Config",
+          "title": null,
+          "test": "workspace-header-edit-config",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 244,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 284,
+            "bottom": 48,
+            "left": 244
+          }
+        },
+        {
+          "text": "",
+          "aria": "New Agent",
+          "title": null,
+          "test": "workspace-header-new-run",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 328,
+            "bottom": 48,
+            "left": 288
+          }
+        },
+        {
+          "text": "Thinking",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 122,
+            "y": 757,
+            "width": 125.171875,
+            "height": 31.890625,
+            "top": 757,
+            "right": 247.171875,
+            "bottom": 788.890625,
+            "left": 122
+          }
+        },
+        {
+          "text": "",
+          "aria": "Upload files",
+          "title": "Upload files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 283,
+            "y": 589,
+            "width": 28,
+            "height": 28,
+            "top": 589,
+            "right": 311,
+            "bottom": 617,
+            "left": 283
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Send message",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 279,
+            "y": 783,
+            "width": 36,
+            "height": 36,
+            "top": 783,
+            "right": 315,
+            "bottom": 819,
+            "left": 279
+          }
+        },
+        {
+          "text": "",
+          "aria": "Files",
+          "title": "Files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 16,
+            "width": 36,
+            "height": 36,
+            "top": 16,
+            "right": 383.5,
+            "bottom": 52,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Agent Org",
+          "title": "Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 68,
+            "width": 36,
+            "height": 36,
+            "top": 68,
+            "right": 383.5,
+            "bottom": 104,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Terminal",
+          "title": "Terminal",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 120,
+            "width": 36,
+            "height": 36,
+            "top": 120,
+            "right": 383.5,
+            "bottom": 156,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Activity",
+          "title": "Activity",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 172,
+            "width": 36,
+            "height": 36,
+            "top": 172,
+            "right": 383.5,
+            "bottom": 208,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Token",
+          "title": "Token",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 224,
+            "width": 36,
+            "height": 36,
+            "top": 224,
+            "right": 383.5,
+            "bottom": 260,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Artifacts",
+          "title": "Artifacts",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 276,
+            "width": 36,
+            "height": 36,
+            "top": 276,
+            "right": 383.5,
+            "bottom": 312,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "VNC Viewer",
+          "title": "VNC Viewer",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 328,
+            "width": 36,
+            "height": 36,
+            "top": 328,
+            "right": 383.5,
+            "bottom": 364,
+            "left": 347.5
+          }
+        }
+      ],
+      "selected": [],
+      "tests": [
+        {
+          "test": "workspace-left-navigation-strip",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 50,
+            "height": 844,
+            "top": 0,
+            "right": 50,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 50,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 50
+          }
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 50,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 50
+          }
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 50,
+            "y": 0,
+            "width": 290,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 50
+          }
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 50,
+            "y": 0,
+            "width": 290,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 50
+          }
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 50,
+            "y": 0,
+            "width": 290,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 50
+          }
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 244,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 284,
+            "bottom": 48,
+            "left": 244
+          }
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 288,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 328,
+            "bottom": 48,
+            "left": 288
+          }
+        },
+        {
+          "test": "tool-context-summary",
+          "text": "· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'",
+          "expanded": null,
+          "box": {
+            "x": 228,
+            "y": 809.890625,
+            "width": 0,
+            "height": 16,
+            "top": 809.890625,
+            "right": 228,
+            "bottom": 825.890625,
+            "left": 228
+          }
+        },
+        {
+          "test": "workspace-right-tool-strip",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 340,
+            "y": 0,
+            "width": 50,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 340
+          }
+        }
+      ]
+    },
+    {
+      "label": "narrow-strip-drawer",
+      "at": "2026-09-06T13:43:51.836Z",
+      "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30&mode=active",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(1)\nCall send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...\n10m\nL\nlead\nV\nverifier\nAORG E2E Mixed Org\n(2)\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nV\nverifier - 9041\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9\nmessage:\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'\n\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\nVerified: reference file contains “API-REV-015 direct-to-direct exact reference.”\n\nYou\nReturn exactly APIREV15-DIRECT-RESTORED-CONTINUE-001 and confirm that the prior direct-to-direct message is visible in your restored context.\nV\nverifier\n\nAPIREV15-DIRECT-RESTORED-CONTINUE-001\nVerified: the prior direct-to-direct message is visible in my restored context.\n\nContext Files (0)\n(drag, paste, or upload)",
+      "doc": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "buttons": [
+        {
+          "text": "Agents",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36,
+            "top": 12,
+            "right": 312,
+            "bottom": 48,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Collapse left panel",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Agent Teams",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36,
+            "top": 52,
+            "right": 312,
+            "bottom": 88,
+            "left": 8
+          }
+        },
+        {
+          "text": "Agent Orgs",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36,
+            "top": 92,
+            "right": 312,
+            "bottom": 128,
+            "left": 8
+          }
+        },
+        {
+          "text": "Skills",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36,
+            "top": 132,
+            "right": 312,
+            "bottom": 168,
+            "left": 8
+          }
+        },
+        {
+          "text": "Memory",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36,
+            "top": 172,
+            "right": 312,
+            "bottom": 208,
+            "left": 8
+          }
+        },
+        {
+          "text": "Nodes",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 212,
+            "width": 304,
+            "height": 36,
+            "top": 212,
+            "right": 312,
+            "bottom": 248,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Add workspace",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 284,
+            "y": 269,
+            "width": 24,
+            "height": 24,
+            "top": 269,
+            "right": 308,
+            "bottom": 293,
+            "left": 284
+          }
+        },
+        {
+          "text": "Temp Workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 301,
+            "width": 312,
+            "height": 32,
+            "top": 301,
+            "right": 316,
+            "bottom": 333,
+            "left": 4
+          }
+        },
+        {
+          "text": "AORG E2E Direct Agents Org (1)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 12,
+            "y": 363.5,
+            "width": 304,
+            "height": 28,
+            "top": 363.5,
+            "right": 316,
+            "bottom": 391.5,
+            "left": 12
+          }
+        },
+        {
+          "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": "true",
+          "box": {
+            "x": 32,
+            "y": 397.5,
+            "width": 217.03125,
+            "height": 20,
+            "top": 397.5,
+            "right": 249.03125,
+            "bottom": 417.5,
+            "left": 32
+          }
+        },
+        {
+          "text": "",
+          "aria": "Stop Agent Org",
+          "title": "Stop Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 253.03125,
+            "y": 397.5,
+            "width": 20,
+            "height": 20,
+            "top": 397.5,
+            "right": 273.03125,
+            "bottom": 417.5,
+            "left": 253.03125
+          }
+        },
+        {
+          "text": "L lead",
+          "aria": "lead, idle",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "text": "V verifier",
+          "aria": "verifier, idle",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "expanded": null,
+          "selected": "true",
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "text": "AORG E2E Mixed Org (2)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 12,
+            "y": 481.5,
+            "width": 304,
+            "height": 28,
+            "top": 481.5,
+            "right": 316,
+            "bottom": 509.5,
+            "left": 12
+          }
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 513.5,
+            "width": 284,
+            "height": 32,
+            "top": 513.5,
+            "right": 288,
+            "bottom": 545.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 517.5,
+            "width": 24,
+            "height": 24,
+            "top": 517.5,
+            "right": 312,
+            "bottom": 541.5,
+            "left": 288
+          }
+        },
+        {
+          "text": "workspace-team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 549.5,
+            "width": 284,
+            "height": 32,
+            "top": 549.5,
+            "right": 288,
+            "bottom": 581.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 553.5,
+            "width": 24,
+            "height": 24,
+            "top": 553.5,
+            "right": 312,
+            "bottom": 577.5,
+            "left": 288
+          }
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 585.5,
+            "width": 312,
+            "height": 32,
+            "top": 585.5,
+            "right": 316,
+            "bottom": 617.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 621.5,
+            "width": 312,
+            "height": 32,
+            "top": 621.5,
+            "right": 316,
+            "bottom": 653.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 657.5,
+            "width": 312,
+            "height": 32,
+            "top": 657.5,
+            "right": 316,
+            "bottom": 689.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 693.5,
+            "width": 312,
+            "height": 32,
+            "top": 693.5,
+            "right": 316,
+            "bottom": 725.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 729.5,
+            "width": 312,
+            "height": 32,
+            "top": 729.5,
+            "right": 316,
+            "bottom": 761.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "Settings",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 800,
+            "width": 304,
+            "height": 36,
+            "top": 800,
+            "right": 312,
+            "bottom": 836,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": "Edit Config",
+          "title": null,
+          "test": "workspace-header-edit-config",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 244,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 284,
+            "bottom": 48,
+            "left": 244
+          }
+        },
+        {
+          "text": "",
+          "aria": "New Agent",
+          "title": null,
+          "test": "workspace-header-new-run",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 328,
+            "bottom": 48,
+            "left": 288
+          }
+        },
+        {
+          "text": "Thinking",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 72,
+            "y": 565,
+            "width": 125.171875,
+            "height": 31.890625,
+            "top": 565,
+            "right": 197.171875,
+            "bottom": 596.890625,
+            "left": 72
+          }
+        },
+        {
+          "text": "",
+          "aria": "Upload files",
+          "title": "Upload files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 283,
+            "y": 589,
+            "width": 28,
+            "height": 28,
+            "top": 589,
+            "right": 311,
+            "bottom": 617,
+            "left": 283
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Send message",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 279,
+            "y": 783,
+            "width": 36,
+            "height": 36,
+            "top": 783,
+            "right": 315,
+            "bottom": 819,
+            "left": 279
+          }
+        },
+        {
+          "text": "",
+          "aria": "Files",
+          "title": "Files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 16,
+            "width": 36,
+            "height": 36,
+            "top": 16,
+            "right": 383.5,
+            "bottom": 52,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Agent Org",
+          "title": "Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 68,
+            "width": 36,
+            "height": 36,
+            "top": 68,
+            "right": 383.5,
+            "bottom": 104,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Terminal",
+          "title": "Terminal",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 120,
+            "width": 36,
+            "height": 36,
+            "top": 120,
+            "right": 383.5,
+            "bottom": 156,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Activity",
+          "title": "Activity",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 172,
+            "width": 36,
+            "height": 36,
+            "top": 172,
+            "right": 383.5,
+            "bottom": 208,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Token",
+          "title": "Token",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 224,
+            "width": 36,
+            "height": 36,
+            "top": 224,
+            "right": 383.5,
+            "bottom": 260,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Artifacts",
+          "title": "Artifacts",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 276,
+            "width": 36,
+            "height": 36,
+            "top": 276,
+            "right": 383.5,
+            "bottom": 312,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "VNC Viewer",
+          "title": "VNC Viewer",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 328,
+            "width": 36,
+            "height": 36,
+            "top": 328,
+            "right": 383.5,
+            "bottom": 364,
+            "left": 347.5
+          }
+        }
+      ],
+      "selected": [
+        {
+          "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...",
+          "test": null
+        },
+        {
+          "text": "V verifier",
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-drawer-backdrop",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-navigation-drawer",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace w",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 844,
+            "top": 0,
+            "right": 320,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace w",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 792,
+            "top": 0,
+            "right": 320,
+            "bottom": 792,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 260,
+            "top": 0,
+            "right": 320,
+            "bottom": 260,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 255,
+            "width": 320,
+            "height": 10,
+            "top": 255,
+            "right": 320,
+            "bottom": 265,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace workspace-default workspace-default workspace-defau",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 260,
+            "width": 320,
+            "height": 532,
+            "top": 260,
+            "right": 320,
+            "bottom": 792,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "true",
+          "box": {
+            "x": 4,
+            "y": 301,
+            "width": 312,
+            "height": 32,
+            "top": 301,
+            "right": 316,
+            "bottom": 333,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2)",
+          "expanded": null,
+          "box": {
+            "x": 12,
+            "y": 337,
+            "width": 304,
+            "height": 172.5,
+            "top": 337,
+            "right": 316,
+            "bottom": 509.5,
+            "left": 12
+          }
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "text": "L lead",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "text": "V verifier",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 513.5,
+            "width": 312,
+            "height": 32,
+            "top": 513.5,
+            "right": 316,
+            "bottom": 545.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 549.5,
+            "width": 312,
+            "height": 32,
+            "top": 549.5,
+            "right": 316,
+            "bottom": 581.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 585.5,
+            "width": 312,
+            "height": 32,
+            "top": 585.5,
+            "right": 316,
+            "bottom": 617.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 621.5,
+            "width": 312,
+            "height": 32,
+            "top": 621.5,
+            "right": 316,
+            "bottom": 653.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 657.5,
+            "width": 312,
+            "height": 32,
+            "top": 657.5,
+            "right": 316,
+            "bottom": 689.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 693.5,
+            "width": 312,
+            "height": 32,
+            "top": 693.5,
+            "right": 316,
+            "bottom": 725.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 729.5,
+            "width": 312,
+            "height": 32,
+            "top": 729.5,
+            "right": 316,
+            "bottom": 761.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 244,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 284,
+            "bottom": 48,
+            "left": 244
+          }
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 288,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 328,
+            "bottom": 48,
+            "left": 288
+          }
+        },
+        {
+          "test": "tool-context-summary",
+          "text": "· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'",
+          "expanded": null,
+          "box": {
+            "x": 185.140625,
+            "y": 617.890625,
+            "width": 42.859375,
+            "height": 16,
+            "top": 617.890625,
+            "right": 228,
+            "bottom": 633.890625,
+            "left": 185.140625
+          }
+        },
+        {
+          "test": "workspace-right-tool-strip",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 340,
+            "y": 0,
+            "width": 50,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 340
+          }
+        }
+      ]
+    },
+    {
+      "label": "narrow-exact-verifier-focus",
+      "at": "2026-09-06T13:43:52.612Z",
+      "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30&mode=active",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(1)\nCall send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...\n10m\nL\nlead\nV\nverifier\nAORG E2E Mixed Org\n(2)\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nV\nverifier - 9041\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9\nmessage:\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'\n\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\nVerified: reference file contains “API-REV-015 direct-to-direct exact reference.”\n\nYou\nReturn exactly APIREV15-DIRECT-RESTORED-CONTINUE-001 and confirm that the prior direct-to-direct message is visible in your restored context.\nV\nverifier\n\nAPIREV15-DIRECT-RESTORED-CONTINUE-001\nVerified: the prior direct-to-direct message is visible in my restored context.\n\nContext Files (0)\n(drag, paste, or upload)",
+      "doc": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "buttons": [
+        {
+          "text": "Agents",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36,
+            "top": 12,
+            "right": 312,
+            "bottom": 48,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Collapse left panel",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Agent Teams",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36,
+            "top": 52,
+            "right": 312,
+            "bottom": 88,
+            "left": 8
+          }
+        },
+        {
+          "text": "Agent Orgs",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36,
+            "top": 92,
+            "right": 312,
+            "bottom": 128,
+            "left": 8
+          }
+        },
+        {
+          "text": "Skills",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36,
+            "top": 132,
+            "right": 312,
+            "bottom": 168,
+            "left": 8
+          }
+        },
+        {
+          "text": "Memory",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36,
+            "top": 172,
+            "right": 312,
+            "bottom": 208,
+            "left": 8
+          }
+        },
+        {
+          "text": "Nodes",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 212,
+            "width": 304,
+            "height": 36,
+            "top": 212,
+            "right": 312,
+            "bottom": 248,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Add workspace",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 284,
+            "y": 269,
+            "width": 24,
+            "height": 24,
+            "top": 269,
+            "right": 308,
+            "bottom": 293,
+            "left": 284
+          }
+        },
+        {
+          "text": "Temp Workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 301,
+            "width": 312,
+            "height": 32,
+            "top": 301,
+            "right": 316,
+            "bottom": 333,
+            "left": 4
+          }
+        },
+        {
+          "text": "AORG E2E Direct Agents Org (1)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 12,
+            "y": 363.5,
+            "width": 304,
+            "height": 28,
+            "top": 363.5,
+            "right": 316,
+            "bottom": 391.5,
+            "left": 12
+          }
+        },
+        {
+          "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": "true",
+          "box": {
+            "x": 32,
+            "y": 397.5,
+            "width": 217.03125,
+            "height": 20,
+            "top": 397.5,
+            "right": 249.03125,
+            "bottom": 417.5,
+            "left": 32
+          }
+        },
+        {
+          "text": "",
+          "aria": "Stop Agent Org",
+          "title": "Stop Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 253.03125,
+            "y": 397.5,
+            "width": 20,
+            "height": 20,
+            "top": 397.5,
+            "right": 273.03125,
+            "bottom": 417.5,
+            "left": 253.03125
+          }
+        },
+        {
+          "text": "L lead",
+          "aria": "lead, idle",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "text": "V verifier",
+          "aria": "verifier, idle",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "expanded": null,
+          "selected": "true",
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "text": "AORG E2E Mixed Org (2)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 12,
+            "y": 481.5,
+            "width": 304,
+            "height": 28,
+            "top": 481.5,
+            "right": 316,
+            "bottom": 509.5,
+            "left": 12
+          }
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 513.5,
+            "width": 284,
+            "height": 32,
+            "top": 513.5,
+            "right": 288,
+            "bottom": 545.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 517.5,
+            "width": 24,
+            "height": 24,
+            "top": 517.5,
+            "right": 312,
+            "bottom": 541.5,
+            "left": 288
+          }
+        },
+        {
+          "text": "workspace-team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 549.5,
+            "width": 284,
+            "height": 32,
+            "top": 549.5,
+            "right": 288,
+            "bottom": 581.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 553.5,
+            "width": 24,
+            "height": 24,
+            "top": 553.5,
+            "right": 312,
+            "bottom": 577.5,
+            "left": 288
+          }
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 585.5,
+            "width": 312,
+            "height": 32,
+            "top": 585.5,
+            "right": 316,
+            "bottom": 617.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 621.5,
+            "width": 312,
+            "height": 32,
+            "top": 621.5,
+            "right": 316,
+            "bottom": 653.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 657.5,
+            "width": 312,
+            "height": 32,
+            "top": 657.5,
+            "right": 316,
+            "bottom": 689.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 693.5,
+            "width": 312,
+            "height": 32,
+            "top": 693.5,
+            "right": 316,
+            "bottom": 725.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 729.5,
+            "width": 312,
+            "height": 32,
+            "top": 729.5,
+            "right": 316,
+            "bottom": 761.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "Settings",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 800,
+            "width": 304,
+            "height": 36,
+            "top": 800,
+            "right": 312,
+            "bottom": 836,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": "Edit Config",
+          "title": null,
+          "test": "workspace-header-edit-config",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 244,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 284,
+            "bottom": 48,
+            "left": 244
+          }
+        },
+        {
+          "text": "",
+          "aria": "New Agent",
+          "title": null,
+          "test": "workspace-header-new-run",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 328,
+            "bottom": 48,
+            "left": 288
+          }
+        },
+        {
+          "text": "Thinking",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 72,
+            "y": 565,
+            "width": 125.171875,
+            "height": 31.890625,
+            "top": 565,
+            "right": 197.171875,
+            "bottom": 596.890625,
+            "left": 72
+          }
+        },
+        {
+          "text": "",
+          "aria": "Upload files",
+          "title": "Upload files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 283,
+            "y": 589,
+            "width": 28,
+            "height": 28,
+            "top": 589,
+            "right": 311,
+            "bottom": 617,
+            "left": 283
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Send message",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 279,
+            "y": 783,
+            "width": 36,
+            "height": 36,
+            "top": 783,
+            "right": 315,
+            "bottom": 819,
+            "left": 279
+          }
+        },
+        {
+          "text": "",
+          "aria": "Files",
+          "title": "Files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 16,
+            "width": 36,
+            "height": 36,
+            "top": 16,
+            "right": 383.5,
+            "bottom": 52,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Agent Org",
+          "title": "Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 68,
+            "width": 36,
+            "height": 36,
+            "top": 68,
+            "right": 383.5,
+            "bottom": 104,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Terminal",
+          "title": "Terminal",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 120,
+            "width": 36,
+            "height": 36,
+            "top": 120,
+            "right": 383.5,
+            "bottom": 156,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Activity",
+          "title": "Activity",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 172,
+            "width": 36,
+            "height": 36,
+            "top": 172,
+            "right": 383.5,
+            "bottom": 208,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Token",
+          "title": "Token",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 224,
+            "width": 36,
+            "height": 36,
+            "top": 224,
+            "right": 383.5,
+            "bottom": 260,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "Artifacts",
+          "title": "Artifacts",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 276,
+            "width": 36,
+            "height": 36,
+            "top": 276,
+            "right": 383.5,
+            "bottom": 312,
+            "left": 347.5
+          }
+        },
+        {
+          "text": "",
+          "aria": "VNC Viewer",
+          "title": "VNC Viewer",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 347.5,
+            "y": 328,
+            "width": 36,
+            "height": 36,
+            "top": 328,
+            "right": 383.5,
+            "bottom": 364,
+            "left": 347.5
+          }
+        }
+      ],
+      "selected": [
+        {
+          "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...",
+          "test": null
+        },
+        {
+          "text": "V verifier",
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041"
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-drawer-backdrop",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-navigation-drawer",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace w",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 844,
+            "top": 0,
+            "right": 320,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace w",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 792,
+            "top": 0,
+            "right": 320,
+            "bottom": 792,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 260,
+            "top": 0,
+            "right": 320,
+            "bottom": 260,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 255,
+            "width": 320,
+            "height": 10,
+            "top": 255,
+            "right": 320,
+            "bottom": 265,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace workspace-default workspace-default workspace-defau",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 260,
+            "width": 320,
+            "height": 532,
+            "top": 260,
+            "right": 320,
+            "bottom": 792,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "true",
+          "box": {
+            "x": 4,
+            "y": 301,
+            "width": 312,
+            "height": 32,
+            "top": 301,
+            "right": 316,
+            "bottom": 333,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2)",
+          "expanded": null,
+          "box": {
+            "x": 12,
+            "y": 337,
+            "width": 304,
+            "height": 172.5,
+            "top": 337,
+            "right": 316,
+            "bottom": 509.5,
+            "left": 12
+          }
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "text": "L lead",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "text": "V verifier",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 513.5,
+            "width": 312,
+            "height": 32,
+            "top": 513.5,
+            "right": 316,
+            "bottom": 545.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 549.5,
+            "width": 312,
+            "height": 32,
+            "top": 549.5,
+            "right": 316,
+            "bottom": 581.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 585.5,
+            "width": 312,
+            "height": 32,
+            "top": 585.5,
+            "right": 316,
+            "bottom": 617.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 621.5,
+            "width": 312,
+            "height": 32,
+            "top": 621.5,
+            "right": 316,
+            "bottom": 653.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 657.5,
+            "width": 312,
+            "height": 32,
+            "top": 657.5,
+            "right": 316,
+            "bottom": 689.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 693.5,
+            "width": 312,
+            "height": 32,
+            "top": 693.5,
+            "right": 316,
+            "bottom": 725.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 729.5,
+            "width": 312,
+            "height": 32,
+            "top": 729.5,
+            "right": 316,
+            "bottom": 761.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 244,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 284,
+            "bottom": 48,
+            "left": 244
+          }
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 288,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 328,
+            "bottom": 48,
+            "left": 288
+          }
+        },
+        {
+          "test": "tool-context-summary",
+          "text": "· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'",
+          "expanded": null,
+          "box": {
+            "x": 185.140625,
+            "y": 617.890625,
+            "width": 42.859375,
+            "height": 16,
+            "top": 617.890625,
+            "right": 228,
+            "bottom": 633.890625,
+            "left": 185.140625
+          }
+        },
+        {
+          "test": "workspace-right-tool-strip",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 340,
+            "y": 0,
+            "width": 50,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 340
+          }
+        }
+      ]
+    },
+    {
+      "label": "narrow-org-messages",
+      "at": "2026-09-06T13:43:53.362Z",
+      "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30&mode=active",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(1)\nCall send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...\n10m\nL\nlead\nV\nverifier\nAORG E2E Mixed Org\n(2)\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nV\nverifier - 9041\nIdle\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9\nmessage:\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt\nV\nverifier\nThinking\nrun_bash\n· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'\n\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\nVerified: reference file contains “API-REV-015 direct-to-direct exact reference.”\n\nYou\nReturn exactly APIREV15-DIRECT-RESTORED-CONTINUE-001 and confirm that the prior direct-to-direct message is visible in your restored context.\nV\nverifier\n\nAPIREV15-DIRECT-RESTORED-CONTINUE-001\nVerified: the prior direct-to-direct message is visible in my restored context.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 01:34 PM\n\nfrom lead\n\n/lead\n\nAPIREV15-DIRECT-TO-DIRECT-MSG-001\n\ndirect-to-direct.txt\nMessage\nlead\nSep 6, 01:34 PM\n\n/lead\n\nAPIREV15-DIRECT-TO-DIRECT-MSG-001",
+      "doc": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "buttons": [
+        {
+          "text": "Agents",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36,
+            "top": 12,
+            "right": 312,
+            "bottom": 48,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Collapse left panel",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Agent Teams",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36,
+            "top": 52,
+            "right": 312,
+            "bottom": 88,
+            "left": 8
+          }
+        },
+        {
+          "text": "Agent Orgs",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36,
+            "top": 92,
+            "right": 312,
+            "bottom": 128,
+            "left": 8
+          }
+        },
+        {
+          "text": "Skills",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36,
+            "top": 132,
+            "right": 312,
+            "bottom": 168,
+            "left": 8
+          }
+        },
+        {
+          "text": "Memory",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36,
+            "top": 172,
+            "right": 312,
+            "bottom": 208,
+            "left": 8
+          }
+        },
+        {
+          "text": "Nodes",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 212,
+            "width": 304,
+            "height": 36,
+            "top": 212,
+            "right": 312,
+            "bottom": 248,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Add workspace",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 284,
+            "y": 269,
+            "width": 24,
+            "height": 24,
+            "top": 269,
+            "right": 308,
+            "bottom": 293,
+            "left": 284
+          }
+        },
+        {
+          "text": "Temp Workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 301,
+            "width": 312,
+            "height": 32,
+            "top": 301,
+            "right": 316,
+            "bottom": 333,
+            "left": 4
+          }
+        },
+        {
+          "text": "AORG E2E Direct Agents Org (1)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 12,
+            "y": 363.5,
+            "width": 304,
+            "height": 28,
+            "top": 363.5,
+            "right": 316,
+            "bottom": 391.5,
+            "left": 12
+          }
+        },
+        {
+          "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "selected": "true",
+          "box": {
+            "x": 32,
+            "y": 397.5,
+            "width": 217.03125,
+            "height": 20,
+            "top": 397.5,
+            "right": 249.03125,
+            "bottom": 417.5,
+            "left": 32
+          }
+        },
+        {
+          "text": "",
+          "aria": "Stop Agent Org",
+          "title": "Stop Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 253.03125,
+            "y": 397.5,
+            "width": 20,
+            "height": 20,
+            "top": 397.5,
+            "right": 273.03125,
+            "bottom": 417.5,
+            "left": 253.03125
+          }
+        },
+        {
+          "text": "L lead",
+          "aria": "lead, idle",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "text": "V verifier",
+          "aria": "verifier, idle",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "expanded": null,
+          "selected": "true",
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "text": "AORG E2E Mixed Org (2)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 12,
+            "y": 481.5,
+            "width": 304,
+            "height": 28,
+            "top": 481.5,
+            "right": 316,
+            "bottom": 509.5,
+            "left": 12
+          }
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 513.5,
+            "width": 284,
+            "height": 32,
+            "top": 513.5,
+            "right": 288,
+            "bottom": 545.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 517.5,
+            "width": 24,
+            "height": 24,
+            "top": 517.5,
+            "right": 312,
+            "bottom": 541.5,
+            "left": 288
+          }
+        },
+        {
+          "text": "workspace-team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 549.5,
+            "width": 284,
+            "height": 32,
+            "top": 549.5,
+            "right": 288,
+            "bottom": 581.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 288,
+            "y": 553.5,
+            "width": 24,
+            "height": 24,
+            "top": 553.5,
+            "right": 312,
+            "bottom": 577.5,
+            "left": 288
+          }
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 585.5,
+            "width": 312,
+            "height": 32,
+            "top": 585.5,
+            "right": 316,
+            "bottom": 617.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 621.5,
+            "width": 312,
+            "height": 32,
+            "top": 621.5,
+            "right": 316,
+            "bottom": 653.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 657.5,
+            "width": 312,
+            "height": 32,
+            "top": 657.5,
+            "right": 316,
+            "bottom": 689.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 693.5,
+            "width": 312,
+            "height": 32,
+            "top": 693.5,
+            "right": 316,
+            "bottom": 725.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "selected": null,
+          "box": {
+            "x": 4,
+            "y": 729.5,
+            "width": 312,
+            "height": 32,
+            "top": 729.5,
+            "right": 316,
+            "bottom": 761.5,
+            "left": 4
+          }
+        },
+        {
+          "text": "Settings",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 8,
+            "y": 800,
+            "width": 304,
+            "height": 36,
+            "top": 800,
+            "right": 312,
+            "bottom": 836,
+            "left": 8
+          }
+        },
+        {
+          "text": "",
+          "aria": "Edit Config",
+          "title": null,
+          "test": "workspace-header-edit-config",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 294,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 334,
+            "bottom": 48,
+            "left": 294
+          }
+        },
+        {
+          "text": "",
+          "aria": "New Agent",
+          "title": null,
+          "test": "workspace-header-new-run",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 338,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 378,
+            "bottom": 48,
+            "left": 338
+          }
+        },
+        {
+          "text": "Thinking",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 72,
+            "y": 469,
+            "width": 125.171875,
+            "height": 31.890625,
+            "top": 469,
+            "right": 197.171875,
+            "bottom": 500.890625,
+            "left": 72
+          }
+        },
+        {
+          "text": "",
+          "aria": "Upload files",
+          "title": "Upload files",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 333,
+            "y": 595,
+            "width": 28,
+            "height": 28,
+            "top": 595,
+            "right": 361,
+            "bottom": 623,
+            "left": 333
+          }
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Send message",
+          "test": null,
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 329,
+            "y": 783,
+            "width": 36,
+            "height": 36,
+            "top": 783,
+            "right": 365,
+            "bottom": 819,
+            "left": 329
+          }
+        },
+        {
+          "text": "Files",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 4,
+            "y": 8,
+            "width": 75.109375,
+            "height": 48,
+            "top": 8,
+            "right": 79.109375,
+            "bottom": 56,
+            "left": 4
+          }
+        },
+        {
+          "text": "Org",
+          "aria": "Agent Org",
+          "title": "Agent Org",
+          "test": null,
+          "expanded": null,
+          "selected": "true",
+          "box": {
+            "x": 79.109375,
+            "y": 8,
+            "width": 69.046875,
+            "height": 48,
+            "top": 8,
+            "right": 148.15625,
+            "bottom": 56,
+            "left": 79.109375
+          }
+        },
+        {
+          "text": "Terminal",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 148.15625,
+            "y": 8,
+            "width": 107.625,
+            "height": 48,
+            "top": 8,
+            "right": 255.78125,
+            "bottom": 56,
+            "left": 148.15625
+          }
+        },
+        {
+          "text": "Activity",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 255.78125,
+            "y": 8,
+            "width": 99.84375,
+            "height": 48,
+            "top": 8,
+            "right": 355.625,
+            "bottom": 56,
+            "left": 255.78125
+          }
+        },
+        {
+          "text": "Token",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 355.625,
+            "y": 8,
+            "width": 85.53125,
+            "height": 48,
+            "top": 8,
+            "right": 441.15625,
+            "bottom": 56,
+            "left": 355.625
+          }
+        },
+        {
+          "text": "Artifacts",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 441.15625,
+            "y": 8,
+            "width": 107.09375,
+            "height": 48,
+            "top": 8,
+            "right": 548.25,
+            "bottom": 56,
+            "left": 441.15625
+          }
+        },
+        {
+          "text": "VNC Viewer",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "selected": "false",
+          "box": {
+            "x": 548.25,
+            "y": 8,
+            "width": 133.5625,
+            "height": 48,
+            "top": 8,
+            "right": 681.8125,
+            "bottom": 56,
+            "left": 548.25
+          }
+        },
+        {
+          "text": "Messages 1 Messages",
+          "aria": null,
+          "title": null,
+          "test": "collaboration-messages-header",
+          "expanded": "true",
+          "selected": null,
+          "box": {
+            "x": 0,
+            "y": 58,
+            "width": 390,
+            "height": 33,
+            "top": 58,
+            "right": 390,
+            "bottom": 91,
+            "left": 0
+          }
+        },
+        {
+          "text": "Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "aria": null,
+          "title": null,
+          "test": "team-communication-message-summary",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 2,
+            "y": 91,
+            "width": 388,
+            "height": 98,
+            "top": 91,
+            "right": 390,
+            "bottom": 189,
+            "left": 2
+          }
+        },
+        {
+          "text": "direct-to-direct.txt",
+          "aria": null,
+          "title": null,
+          "test": "team-communication-reference-row",
+          "expanded": null,
+          "selected": null,
+          "box": {
+            "x": 38,
+            "y": 189,
+            "width": 340,
+            "height": 28,
+            "top": 189,
+            "right": 378,
+            "bottom": 217,
+            "left": 38
+          }
+        }
+      ],
+      "selected": [
+        {
+          "text": "Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...",
+          "test": null
+        },
+        {
+          "text": "V verifier",
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041"
+        },
+        {
+          "text": "Org",
+          "test": null
+        }
+      ],
+      "tests": [
+        {
+          "test": "app-left-drawer-backdrop",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 340,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-navigation-drawer",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace w",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 844,
+            "top": 0,
+            "right": 320,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace w",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 792,
+            "top": 0,
+            "right": 320,
+            "bottom": 792,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Agent Orgs Skills Memory Nodes",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 260,
+            "top": 0,
+            "right": 320,
+            "bottom": 260,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 255,
+            "width": 320,
+            "height": 10,
+            "top": 255,
+            "right": 320,
+            "bottom": 265,
+            "left": 0
+          }
+        },
+        {
+          "test": "app-left-panel-run-history",
+          "text": "Workspaces Temp Workspace AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2) workspace workspace-team workspace workspace-default workspace-default workspace-defau",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 260,
+            "width": 320,
+            "height": 532,
+            "top": 260,
+            "right": 320,
+            "bottom": 792,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "expanded": "true",
+          "box": {
+            "x": 4,
+            "y": 301,
+            "width": 312,
+            "height": 32,
+            "top": 301,
+            "right": 316,
+            "bottom": 333,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-agent-orgs",
+          "text": "AGENT ORGS AORG E2E Direct Agents Org (1) Call send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO... 10m L lead V verifier AORG E2E Mixed Org (2)",
+          "expanded": null,
+          "box": {
+            "x": 12,
+            "y": 337,
+            "width": 304,
+            "height": 172.5,
+            "top": 337,
+            "right": 316,
+            "bottom": 509.5,
+            "left": 12
+          }
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "text": "L lead",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 421.5,
+            "width": 280,
+            "height": 28,
+            "top": 421.5,
+            "right": 316,
+            "bottom": 449.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "text": "V verifier",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-hierarchy-branches",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 36,
+            "y": 451.5,
+            "width": 280,
+            "height": 28,
+            "top": 451.5,
+            "right": 316,
+            "bottom": 479.5,
+            "left": 36
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 513.5,
+            "width": 312,
+            "height": 32,
+            "top": 513.5,
+            "right": 316,
+            "bottom": 545.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-team",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 549.5,
+            "width": 312,
+            "height": 32,
+            "top": 549.5,
+            "right": 316,
+            "bottom": 581.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 585.5,
+            "width": 312,
+            "height": 32,
+            "top": 585.5,
+            "right": 316,
+            "bottom": 617.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 621.5,
+            "width": 312,
+            "height": 32,
+            "top": 621.5,
+            "right": 316,
+            "bottom": 653.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 657.5,
+            "width": 312,
+            "height": 32,
+            "top": 657.5,
+            "right": 316,
+            "bottom": 689.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 693.5,
+            "width": 312,
+            "height": 32,
+            "top": 693.5,
+            "right": 316,
+            "bottom": 725.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-row",
+          "text": "workspace-default",
+          "expanded": "false",
+          "box": {
+            "x": 4,
+            "y": 729.5,
+            "width": 312,
+            "height": 32,
+            "top": 729.5,
+            "right": 316,
+            "bottom": 761.5,
+            "left": 4
+          }
+        },
+        {
+          "test": "workspace-adaptive-layout",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-right-flow",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-pane",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-center-content-shell",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "agent-org-workspace-view",
+          "text": "V verifier - 9041 Idle You You received a message from sender name: lead, sender id: aorg_e2e_lead_93381295647446bfb032c112c75acab9 message: APIREV15-DIRECT-TO-DIRECT-MSG-001 Reference files: - /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-o",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "workspace-header-edit-config",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 294,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 334,
+            "bottom": 48,
+            "left": 294
+          }
+        },
+        {
+          "test": "workspace-header-new-run",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 338,
+            "y": 8,
+            "width": 40,
+            "height": 40,
+            "top": 8,
+            "right": 378,
+            "bottom": 48,
+            "left": 338
+          }
+        },
+        {
+          "test": "tool-context-summary",
+          "text": "· /bin/bash -lc 'cat /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-direct.txt'",
+          "expanded": null,
+          "box": {
+            "x": 185.140625,
+            "y": 521.890625,
+            "width": 92.859375,
+            "height": 16,
+            "top": 521.890625,
+            "right": 278,
+            "bottom": 537.890625,
+            "left": 185.140625
+          }
+        },
+        {
+          "test": "workspace-right-tool-drawer-backdrop",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 50,
+            "y": 0,
+            "width": 340,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 50
+          }
+        },
+        {
+          "test": "workspace-right-tool-drawer",
+          "text": "Files Org Terminal Activity Token Artifacts VNC Viewer Messages 1 Messages Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt Message lead Sep 6, 01:34 PM /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "top": 0,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "right-side-tab-list",
+          "text": "Files Org Terminal Activity Token Artifacts VNC Viewer",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 8,
+            "width": 386,
+            "height": 49,
+            "top": 8,
+            "right": 386,
+            "bottom": 57,
+            "left": 0
+          }
+        },
+        {
+          "test": "right-side-tab-content-shell",
+          "text": "Messages 1 Messages Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt Message lead Sep 6, 01:34 PM /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 58,
+            "width": 390,
+            "height": 786,
+            "top": 58,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "collaboration-messages-section",
+          "text": "Messages 1 Messages Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt Message lead Sep 6, 01:34 PM /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 58,
+            "width": 390,
+            "height": 786,
+            "top": 58,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "collaboration-messages-header",
+          "text": "Messages 1 Messages",
+          "expanded": "true",
+          "box": {
+            "x": 0,
+            "y": 58,
+            "width": 390,
+            "height": 33,
+            "top": 58,
+            "right": 390,
+            "bottom": 91,
+            "left": 0
+          }
+        },
+        {
+          "test": "collaboration-messages-disclosure",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 12,
+            "y": 66,
+            "width": 16,
+            "height": 16,
+            "top": 66,
+            "right": 28,
+            "bottom": 82,
+            "left": 12
+          }
+        },
+        {
+          "test": "team-communication-split",
+          "text": "Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt Message lead Sep 6, 01:34 PM /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 91,
+            "width": 390,
+            "height": 753,
+            "top": 91,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "team-communication-left-list",
+          "text": "Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 91,
+            "width": 390,
+            "height": 147,
+            "top": 91,
+            "right": 390,
+            "bottom": 238,
+            "left": 0
+          }
+        },
+        {
+          "test": "team-communication-message-list",
+          "text": "Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 91,
+            "width": 390,
+            "height": 138,
+            "top": 91,
+            "right": 390,
+            "bottom": 229,
+            "left": 0
+          }
+        },
+        {
+          "test": "team-communication-message-row",
+          "text": "Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001 direct-to-direct.txt",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 91,
+            "width": 390,
+            "height": 134,
+            "top": 91,
+            "right": 390,
+            "bottom": 225,
+            "left": 0
+          }
+        },
+        {
+          "test": "team-communication-message-summary",
+          "text": "Message Sep 6, 01:34 PM from lead /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 2,
+            "y": 91,
+            "width": 388,
+            "height": 98,
+            "top": 91,
+            "right": 390,
+            "bottom": 189,
+            "left": 2
+          }
+        },
+        {
+          "test": "team-communication-direction-icon",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 14,
+            "y": 103,
+            "width": 16,
+            "height": 16,
+            "top": 103,
+            "right": 30,
+            "bottom": 119,
+            "left": 14
+          }
+        },
+        {
+          "test": "team-communication-reference-row",
+          "text": "direct-to-direct.txt",
+          "expanded": null,
+          "box": {
+            "x": 38,
+            "y": 189,
+            "width": 340,
+            "height": 28,
+            "top": 189,
+            "right": 378,
+            "bottom": 217,
+            "left": 38
+          }
+        },
+        {
+          "test": "team-communication-reference-icon",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 44,
+            "y": 195,
+            "width": 16,
+            "height": 16,
+            "top": 195,
+            "right": 60,
+            "bottom": 211,
+            "left": 44
+          }
+        },
+        {
+          "test": "team-communication-resize-handle",
+          "text": "",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "test": "team-communication-detail-pane",
+          "text": "Message lead Sep 6, 01:34 PM /lead APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 0,
+            "y": 238,
+            "width": 390,
+            "height": 606,
+            "top": 238,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          }
+        },
+        {
+          "test": "team-communication-message-markdown",
+          "text": "APIREV15-DIRECT-TO-DIRECT-MSG-001",
+          "expanded": null,
+          "box": {
+            "x": 16,
+            "y": 308,
+            "width": 358,
+            "height": 24,
+            "top": 308,
+            "right": 374,
+            "bottom": 332,
+            "left": 16
+          }
+        }
+      ]
+    }
+  ],
+  "exactRows": 1,
+  "referenceButtonCount": 1,
+  "assertions": {
+    "exactViewport": true,
+    "supportedStripOpenedUnifiedDrawer": true,
+    "exactFocus": true,
+    "agentOrgFacetAccessible": true,
+    "oneMessageRow": true,
+    "referenceAccessible": true,
+    "restoredContinuationVisible": true,
+    "noReconnect": true,
+    "noHorizontalOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

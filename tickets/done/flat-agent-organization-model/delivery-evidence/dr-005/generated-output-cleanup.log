@@ -1,0 +1,4 @@
+destination=/tmp/aorg-dr005-generated-sdk-dist-20260906T024526Z
+move=autobyteus-application-backend-sdk/dist
+move=autobyteus-application-sdk-contracts/dist
+post_cleanup_status:

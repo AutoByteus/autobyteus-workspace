@@ -1,0 +1,100 @@
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 6,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_concierge_29b8b40561a0427684f09765473bbdc2'.
+Published codex_app_server agent run 'aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6'.
+Published codex_app_server agent run 'aorg_e2e_analyst_48b635708c134b4dbab576f060a0e925'.
+Published codex_app_server agent run 'aorg_e2e_verifier_d10066b6d1ab4d57888fce0bb22da5db'.
+Published codex_app_server agent run 'aorg_e2e_lead_92c973e9b61743d8aa29bc5ff8744839'.
+Published codex_app_server agent run 'aorg_e2e_verifier_ef755fd6b4354fbe8097683305830490'.
+Closed agent session f4f99374-b8d6-4789-9d36-58752ac71345
+{"level":30,"time":1788367286668,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-10","err":{"type":"GraphQLError","message":"Active RootTeamRun 'aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f' was not found.","stack":"Error: Active RootTeamRun 'aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f' was not found.\n    at TeamRunHistoryResolver.getTeamRunExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/team-run-history.js:159:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTeamRunExecutionCheckpoint"],"locations":[{"line":1,"column":43}],"extensions":{}},"msg":"Active RootTeamRun 'aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f' was not found."}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517'.
+Published codex_app_server agent run 'aorg_e2e_analyst_311e08b5d76249ea945d3ec3a44edb19'.
+Published codex_app_server agent run 'aorg_e2e_verifier_d4ba043897fb4cbf911cb3bbe842502d'.
+Agent team websocket attached for team run aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f
+Created agent session 44296d2d-e53b-40c6-932a-cc6fb412c53d for run aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f
+Agent Team WebSocket connected: session=44296d2d-e53b-40c6-932a-cc6fb412c53d, run=aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f
+Created terminal session 8d500e41-1c3d-47e6-b4aa-93084ea67ecb using backend PtySession for target /root
+Terminal WebSocket connected: 8d500e41-1c3d-47e6-b4aa-93084ea67ecb
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788367470222,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-3s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8049999922513962,"msg":"http request completed"}
+Closed PTY session 8d500e41-1c3d-47e6-b4aa-93084ea67ecb
+Terminal WebSocket disconnected: 8d500e41-1c3d-47e6-b4aa-93084ea67ecb
+Created terminal session 3306f894-cbf0-47e7-9913-29e8e271e69d using backend PtySession for target /root
+Terminal WebSocket connected: 3306f894-cbf0-47e7-9913-29e8e271e69d
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788367502585,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-4i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5817919969558716,"msg":"http request completed"}
+Closed PTY session 3306f894-cbf0-47e7-9913-29e8e271e69d
+Terminal WebSocket disconnected: 3306f894-cbf0-47e7-9913-29e8e271e69d
+Created terminal session 7e15af24-4d0b-4cf8-b424-e4a211c82378 using backend PtySession for target /root
+Terminal WebSocket connected: 7e15af24-4d0b-4cf8-b424-e4a211c82378
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788367552903,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-5h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6075000017881393,"msg":"http request completed"}
+Closed PTY session 7e15af24-4d0b-4cf8-b424-e4a211c82378
+Terminal WebSocket disconnected: 7e15af24-4d0b-4cf8-b424-e4a211c82378
+{"level":40,"time":1788367676999,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-60","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4068330079317093,"msg":"http request completed"}
+{"level":30,"time":1788367790192,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-72","err":{"type":"GraphQLError","message":"Task records for RootTeamRun 'aorg_e2e_research_squad_5e5427c5d304400ca2eda172e118afab' were not found.","stack":"Error: Task records for RootTeamRun 'aorg_e2e_research_squad_5e5427c5d304400ca2eda172e118afab' were not found.\n    at TaskDelegationProjectionService.read (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:73:19)\n    at async TaskDelegationProjectionService.list (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:46:26)\n    at async TaskDelegationResolver.getTaskDelegationRecords (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/task-delegation.js:152:17)\n    at async Promise.all (index 3)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTaskDelegationRecords"],"locations":[{"line":1,"column":475}],"extensions":{}},"msg":"Task records for RootTeamRun 'aorg_e2e_research_squad_5e5427c5d304400ca2eda172e118afab' were not found."}
+{"level":30,"time":1788367799776,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-76","err":{"type":"GraphQLError","message":"Task records for RootTeamRun 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' were not found.","stack":"Error: Task records for RootTeamRun 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' were not found.\n    at TaskDelegationProjectionService.read (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:73:19)\n    at async TaskDelegationProjectionService.list (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:46:26)\n    at async TaskDelegationResolver.getTaskDelegationRecords (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/task-delegation.js:152:17)\n    at async Promise.all (index 3)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTaskDelegationRecords"],"locations":[{"line":1,"column":475}],"extensions":{}},"msg":"Task records for RootTeamRun 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' were not found."}
+Created terminal session d41bad9e-6049-42ca-b796-100dcabff4fe using backend PtySession for target /root
+Terminal WebSocket connected: d41bad9e-6049-42ca-b796-100dcabff4fe
+Terminal websocket attached for cwd /root
+{"level":30,"time":1788367938903,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-85","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found."}
+{"level":30,"time":1788367974656,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-89","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":1,"column":34}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found."}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 6,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_concierge_29b8b40561a0427684f09765473bbdc2'.
+Published codex_app_server agent run 'aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6'.
+Published codex_app_server agent run 'aorg_e2e_analyst_48b635708c134b4dbab576f060a0e925'.
+Published codex_app_server agent run 'aorg_e2e_verifier_d10066b6d1ab4d57888fce0bb22da5db'.
+Published codex_app_server agent run 'aorg_e2e_lead_92c973e9b61743d8aa29bc5ff8744839'.
+Published codex_app_server agent run 'aorg_e2e_verifier_ef755fd6b4354fbe8097683305830490'.
+{"level":30,"time":1788368020490,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-8m","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'.","stack":"Error: AgentRun 'aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":78}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'."}
+{"level":30,"time":1788368020498,"pid":63308,"hostname":"1da6e6043ac7","reqId":"req-8n","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'.","stack":"Error: AgentRun 'aorg_e2e_lead_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":78}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9'."}
+Closed agent session 44296d2d-e53b-40c6-932a-cc6fb412c53d
+[2026-09-02T16:54:51.530Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed PTY session d41bad9e-6049-42ca-b796-100dcabff4fe
+Terminal WebSocket disconnected: d41bad9e-6049-42ca-b796-100dcabff4fe
+[2026-09-02T16:54:51.684Z] [INFO] [server.runtime] Server closed cleanly.

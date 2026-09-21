@@ -80,7 +80,7 @@ export const parseTeamChannelOutputEvent = (
       : null,
     agentRunId: event.execution.agentRunId,
     memberAddress: event.execution.memberAddress,
-    teamRunId: event.execution.rootTeamRunId,
+    teamRunId: event.execution.root.rootRunId,
     turnId,
     text: text.text,
     textKind: text.kind,
@@ -101,8 +101,20 @@ const isTeamAgentEvent = (
   if (candidate.eventSourceType !== TeamRunEventSourceType.AGENT) {
     return false;
   }
-  return !!candidate.execution && typeof candidate.execution === "object" &&
-    !!candidate.payload && typeof candidate.payload === "object";
+  if (!candidate.execution || typeof candidate.execution !== "object"
+    || !candidate.payload || typeof candidate.payload !== "object") return false;
+  const execution = candidate.execution as {
+    root?: { rootSubjectKind?: unknown; rootRunId?: unknown };
+    agentRunId?: unknown;
+    memberAddress?: unknown;
+  };
+  return execution.root?.rootSubjectKind === "agent_team"
+    && typeof execution.root.rootRunId === "string"
+    && execution.root.rootRunId.trim().length > 0
+    && typeof execution.agentRunId === "string"
+    && execution.agentRunId.trim().length > 0
+    && typeof execution.memberAddress === "string"
+    && execution.memberAddress.trim().length > 0;
 };
 
 const resolveAgentRunEventText = (

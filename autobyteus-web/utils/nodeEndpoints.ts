@@ -73,6 +73,7 @@ export function deriveNodeEndpoints(baseUrl: string): NodeEndpoints {
     rest: `${httpBase}/rest`,
     agentWs: `${wsBase}/ws/agent`,
     teamWs: `${wsBase}/ws/agent-team`,
+    orgWs: `${wsBase}/ws/agent-org`,
     terminalWs: `${wsBase}/ws/terminal`,
     fileExplorerWs: `${wsBase}/ws/file-explorer`,
     health: `${httpBase}/rest/health`,

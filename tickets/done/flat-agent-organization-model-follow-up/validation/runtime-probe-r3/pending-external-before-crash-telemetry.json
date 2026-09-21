@@ -1,0 +1,19 @@
+{
+  "pid": 9642,
+  "at": "2026-09-14T10:32:19.613Z",
+  "active": [],
+  "pending": [
+    {
+      "runId": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+      "state": "constructing"
+    }
+  ],
+  "events": [
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+      "startedAt": "2026-09-14T10:32:19.580Z",
+      "outcome": "pending"
+    }
+  ]
+}

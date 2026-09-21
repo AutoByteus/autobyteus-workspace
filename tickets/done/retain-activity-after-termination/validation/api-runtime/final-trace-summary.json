@@ -1,0 +1,47 @@
+[
+  {
+    "path": "final-memory/agent_orgs/aorg_validation_org_dce247fcf58a48128bef2e7d75151be3/aorg_validation_agent_1129a188d95c45c1a3713f8ff6fb1416/raw_traces_active.jsonl",
+    "userCount": 2,
+    "repeatedExactUserContents": {},
+    "systemCaptures": 2,
+    "assistantTail": [
+      "\n\nACTIVITY-RETAIN-ORANGE-731 ORG-DIRECT-TWO"
+    ]
+  },
+  {
+    "path": "final-memory/agent_orgs/aorg_validation_org_dce247fcf58a48128bef2e7d75151be3/aorg_validation_team_b16c9cdcf1324704a8eef2dd59608f03/aorg_validation_agent_c04d1a9ec42d4425ad0291000295c869/raw_traces_active.jsonl",
+    "userCount": 2,
+    "repeatedExactUserContents": {},
+    "systemCaptures": 1,
+    "assistantTail": [
+      "\n\nACTIVITY-RETAIN-ORANGE-731 ORG-MOUNTED-TWO"
+    ]
+  },
+  {
+    "path": "final-memory/agents/aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345/raw_traces_active.jsonl",
+    "userCount": 2,
+    "repeatedExactUserContents": {},
+    "systemCaptures": 1,
+    "assistantTail": [
+      "\n\nACTIVITY-RETAIN-ORANGE-731 AGENT-TWO"
+    ]
+  },
+  {
+    "path": "final-memory/agent_teams/aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843/aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66/raw_traces_active.jsonl",
+    "userCount": 2,
+    "repeatedExactUserContents": {},
+    "systemCaptures": 1,
+    "assistantTail": [
+      "TEAM-WORKER-TWO"
+    ]
+  },
+  {
+    "path": "final-memory/agent_teams/aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843/aorg_validation_agent_8738bf014c4c4574bd07a4d948135562/raw_traces_active.jsonl",
+    "userCount": 5,
+    "repeatedExactUserContents": {},
+    "systemCaptures": 1,
+    "assistantTail": [
+      "TEAM-AFTER-STOP-READY"
+    ]
+  }
+]

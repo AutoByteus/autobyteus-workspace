@@ -1,0 +1,127 @@
+{
+  "run": "launch-1",
+  "port": 51381,
+  "launchedAt": "2026-09-18T10:00:06.929755+00:00",
+  "serverPid": 28685,
+  "firstHealthMs": null,
+  "healthStatus": null,
+  "healthBody": null,
+  "healthAttemptCount": 21,
+  "healthAttempts": [
+    {
+      "elapsedMs": 10.035,
+      "durationMs": 7.811,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 60.535,
+      "durationMs": 0.315,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 115.757,
+      "durationMs": 0.317,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 170.793,
+      "durationMs": 0.31,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 221.394,
+      "durationMs": 0.301,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 274.312,
+      "durationMs": 0.323,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 328.958,
+      "durationMs": 0.428,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 382.838,
+      "durationMs": 0.345,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 437.298,
+      "durationMs": 0.428,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 490.156,
+      "durationMs": 0.389,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 545.532,
+      "durationMs": 0.345,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 600.895,
+      "durationMs": 0.324,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 653.9,
+      "durationMs": 0.358,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 709.237,
+      "durationMs": 0.334,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 764.659,
+      "durationMs": 0.39,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 819.992,
+      "durationMs": 0.298,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 871.483,
+      "durationMs": 0.337,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 923.331,
+      "durationMs": 0.406,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 973.741,
+      "durationMs": 0.349,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1029.115,
+      "durationMs": 0.334,
+      "errorType": "URLError"
+    },
+    {
+      "elapsedMs": 1079.487,
+      "durationMs": 0.319,
+      "errorType": "URLError"
+    }
+  ],
+  "processExitBeforeHealth": 1,
+  "finalExitCode": 1,
+  "observerEventCounts": {
+    "observer-ready": 1,
+    "process-start": 1
+  },
+  "rawTraceReads": [],
+  "externalFetches": [],
+  "readiness": [],
+  "migrations": []
+}

@@ -1,0 +1,199 @@
+{
+  "review": "CRR-008 proportional API test review",
+  "manifest": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/running/RunningAgentsPanel.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/TeamWorkspaceView.vue",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/composables/useAgentOrgMemberModelConfig.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/composables/useDefinitionLaunchDefaults.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_teams.md",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/orgSeedFixture.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgRunLaunchSeed.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/teamRunLaunchSeed.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgRunConfigStore.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentOrgRunLaunchSeed.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/RuntimeModelConfigSchemaState.ts",
+      "matches": true
+    }
+  ],
+  "all_manifest_entries_match": true,
+  "changed_durable_test_paths_since_base": [
+    "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+    "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+    "autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+    "autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+    "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+    "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+    "autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+    "autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts",
+    "autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts",
+    "autobyteus-web/services/runConfigEditing/__tests__/agentOrgRunLaunchSeed.spec.ts",
+    "autobyteus-web/services/runConfigEditing/__tests__/orgSeedFixture.ts",
+    "autobyteus-web/services/runConfigEditing/__tests__/teamRunLaunchSeed.spec.ts"
+  ],
+  "durable_test_paths_outside_reviewed_IR004_manifest": [],
+  "interpretation": "Existing implementation changes still present and hash-exact; no API-owned durable delta. Evidence under tickets is excluded from durable test scope."
+}

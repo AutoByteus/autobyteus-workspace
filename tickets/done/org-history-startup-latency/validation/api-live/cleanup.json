@@ -1,0 +1,42 @@
+{
+  "ownedProcesses": [
+    {
+      "pid": 844,
+      "ppid": 211,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-server-ts/dist/app.js --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data --host 127.0.0.1 --port 51181"
+    },
+    {
+      "pid": 99477,
+      "ppid": 99170,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/tickets/in-progress/org-history-startup-latency/validation/api-live/proxy.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency"
+    },
+    {
+      "pid": 99784,
+      "ppid": 99478,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web/node_modules/nuxt/bin/nuxt.mjs dev /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web --host 127.0.0.1 --port 51183"
+    },
+    {
+      "pid": 99785,
+      "ppid": 99784,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+    },
+    {
+      "pid": 99789,
+      "ppid": 99784,
+      "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web --host 127.0.0.1 --port 51183"
+    },
+    {
+      "pid": 99790,
+      "ppid": 99784,
+      "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web --host 127.0.0.1 --port 51183"
+    }
+  ],
+  "tabClosed": "1211480705",
+  "userProcessesTouched": false,
+  "listenersAfter": "",
+  "generatedRemoved": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "privateData": "Retained only in ignored .local/api-history-latency; secret DB/key never attached."
+}

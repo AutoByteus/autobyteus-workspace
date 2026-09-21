@@ -1,0 +1,29 @@
+{
+  "rules": [
+    {
+      "when": "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+      "recipient_address": "/software_engineering_team/code_reviewer"
+    },
+    {
+      "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+      "recipient_address": "/software_engineering_team/code_reviewer"
+    },
+    {
+      "when": "When implementation is complete, implementation-scoped validation and the lightweight implementation self-review are complete, the carried classification is task_size=Small or Medium and architectural_risk=Low, and the cumulative package is ready for direct API/E2E validation without Code Reviewer.",
+      "recipient_address": "/software_engineering_team/api_e2e_engineer"
+    },
+    {
+      "when": "When a direct-route implementation-owned Local Fix requested by delivery engineer is complete, the rechecked classification remains task_size=Small or Medium and architectural_risk=Low, and the updated package is ready for direct API/E2E validation.",
+      "recipient_address": "/software_engineering_team/api_e2e_engineer"
+    },
+    {
+      "when": "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues.",
+      "recipient_address": "/software_engineering_team/architecture_designer"
+    }
+  ],
+  "selected": {
+    "when": "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+    "recipient_address": "/software_engineering_team/code_reviewer"
+  },
+  "reason": "Architecture-approved AD028/ARCH025 reconciliation is complete. Cumulative Large/High and implementation-scoped validation complete; independent cumulative source review required. Not a direct Local Fix ingress in this round."
+}

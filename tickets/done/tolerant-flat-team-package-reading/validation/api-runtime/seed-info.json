@@ -1,0 +1,10 @@
+{
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001",
+  "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "rootId": "api-migrated-org",
+  "directId": "api-migrated-direct",
+  "mountedId": "api-migrated-worker",
+  "attachment": "/rest/team-runs/api-migrated-mounted/members/%2Fmounted%2Flead/context-files/ctx_saved__retained-note.txt",
+  "note": "Synthetic historical data, not captured prior provider conversation; actual continuation still required."
+}

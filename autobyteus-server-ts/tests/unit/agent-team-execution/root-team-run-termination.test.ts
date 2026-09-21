@@ -72,8 +72,7 @@ describe("RootTeamRun termination stabilization", () => {
     const command = deferred<AgentOperationResult>();
     const order: string[] = [];
     const scope: FrozenTeamRunTerminationScope = {
-      interruptActiveTurns: vi.fn(async () => { order.push("interrupt"); return { accepted: true }; }),
-      prepareMemberRuns: vi.fn(async () => { order.push("prepare"); }),
+      fenceAgentRunsForRootShutdown: vi.fn(async () => { order.push("fence"); return { accepted: true }; }),
       finish: vi.fn(async () => { order.push("finish"); return { accepted: true }; }),
     };
     const onTerminated = vi.fn(() => { order.push("terminated"); });
@@ -109,8 +108,7 @@ describe("RootTeamRun termination stabilization", () => {
       "command-entered",
       "command-settled",
       "freeze",
-      "interrupt",
-      "prepare",
+      "fence",
       "finish",
       "terminated",
     ]);
@@ -124,8 +122,7 @@ describe("RootTeamRun termination stabilization", () => {
       .mockResolvedValueOnce({ accepted: false, code: "DESCENDANT_BUSY" })
       .mockResolvedValueOnce({ accepted: true });
     const scope: FrozenTeamRunTerminationScope = {
-      interruptActiveTurns: vi.fn(async () => ({ accepted: true })),
-      prepareMemberRuns: vi.fn(async () => undefined),
+      fenceAgentRunsForRootShutdown: vi.fn(async () => ({ accepted: true })),
       finish,
     };
     const { root, freezeForRootTermination } = buildRoot({ scope, onTerminated });
@@ -135,9 +132,39 @@ describe("RootTeamRun termination stabilization", () => {
     await expect(root.terminate()).resolves.toEqual({ accepted: true });
 
     expect(freezeForRootTermination).toHaveBeenCalledOnce();
-    expect(scope.interruptActiveTurns).toHaveBeenCalledTimes(2);
-    expect(scope.prepareMemberRuns).toHaveBeenCalledTimes(2);
+    expect(scope.fenceAgentRunsForRootShutdown).toHaveBeenCalledTimes(2);
     expect(finish).toHaveBeenCalledTimes(2);
     expect(onTerminated).toHaveBeenCalledOnce();
+  });
+
+  it("completes the Agent fence before task drain, persistence drain, and local finish", async () => {
+    const order: string[] = [];
+    const scope: FrozenTeamRunTerminationScope = {
+      fenceAgentRunsForRootShutdown: vi.fn(async () => {
+        order.push("agent-fence");
+        return { accepted: true };
+      }),
+      finish: vi.fn(async () => {
+        order.push("local-finish");
+        return { accepted: true };
+      }),
+    };
+    const { root, persistence } = buildRoot({ scope });
+    const taskDelegation = (root as never as {
+      taskDelegation: { shutdownAndSettle(reason: string): Promise<void> };
+    }).taskDelegation;
+    vi.spyOn(taskDelegation, "shutdownAndSettle").mockImplementation(async () => {
+      order.push("task-drain");
+    });
+    persistence.drain.mockImplementation(async () => { order.push("persistence-drain"); });
+
+    await expect(root.terminate()).resolves.toEqual({ accepted: true });
+
+    expect(order).toEqual([
+      "agent-fence",
+      "task-drain",
+      "persistence-drain",
+      "local-finish",
+    ]);
   });
 });

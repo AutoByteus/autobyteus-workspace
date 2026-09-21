@@ -7,7 +7,7 @@ import type { TeamAgentEvent, TeamTokenUsageDetails } from "../../agent-team-exe
 import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
 import { projectLiveTeamAgentStatusMessage } from "./team-agent-status-websocket-projector.js";
 
-export const projectTeamMemberExecutionIdentityDto = (
+export const projectCollaborationMemberExecutionIdentityDto = (
   identity: TeamAgentExecutionBinding,
 ): TeamMemberExecutionIdentityDto => Object.freeze({
   agent_run_id: identity.agentRunId,
@@ -102,7 +102,7 @@ export const projectTeamAgentEventMessage = (
     case "TOOL_EXECUTION_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason } });
     case "TOOL_LOG": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId } });
     case "TODO_LIST_UPDATE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, todos: event.details.todos.map((todo) => ({ todo_id: todo.todoId, description: todo.description, status: todo.status })) } });
-    case "SYSTEM_TASK_NOTIFICATION": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: projectTeamMemberExecutionIdentityDto(event.details.sender.identity) }, content: event.details.content } });
+    case "SYSTEM_TASK_NOTIFICATION": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: projectCollaborationMemberExecutionIdentityDto(event.details.sender.identity) }, content: event.details.content } });
     case "ARTIFACT_PERSISTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
     case "FILE_CHANGE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
     case "ERROR": return parseTeamStreamServerMessage({ type: "ERROR", payload: {

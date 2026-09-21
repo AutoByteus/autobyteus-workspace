@@ -1,0 +1,45 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Teams":
+    - generic: ←
+    - text: Back to Agent Teams
+  - generic: AT
+  - heading "Avatar Team null" [level=1]
+  - generic: Uncategorized
+  - button "Run"
+  - button "Edit"
+  - button "Delete"
+  - heading "Description" [level=2]
+  - paragraph: API owned optional avatar avatar-team-null
+  - heading "Instructions" [level=2]
+  - generic: You are an isolated API fixture.
+  - heading "Handoffs" [level=2]
+  - paragraph: No handoffs yet
+  - heading "Members (1)" [level=2]
+  - article:
+    - generic: L
+    - paragraph: lead
+    - generic: COORDINATOR
+    - paragraph: Avatar Local Worker null
+    - button "View ↗"

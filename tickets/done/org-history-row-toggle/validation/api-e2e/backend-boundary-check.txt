@@ -1,0 +1,16 @@
+=== disposable run evidence ===
+273:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/test_teacher_19721c04bfe248b7a11f56c2f60104bd/raw_traces_active.jsonl
+274:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/student_study_group_c96c629b0ed54edbb69d710318927662/student_one_7b64666336304125a1c3b3d582360c92/raw_traces_active.jsonl
+275:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/student_study_group_c96c629b0ed54edbb69d710318927662/student_two_ffc4e310ea1f49858a46037056480228/raw_traces_active.jsonl
+276:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/test_teacher_19721c04bfe248b7a11f56c2f60104bd/raw_traces_active.jsonl
+277:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/student_study_group_c96c629b0ed54edbb69d710318927662/student_one_7b64666336304125a1c3b3d582360c92/raw_traces_active.jsonl
+278:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/student_study_group_c96c629b0ed54edbb69d710318927662/student_two_ffc4e310ea1f49858a46037056480228/raw_traces_active.jsonl
+279:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/test_teacher_19721c04bfe248b7a11f56c2f60104bd/raw_traces_active.jsonl
+280:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/student_study_group_c96c629b0ed54edbb69d710318927662/student_one_7b64666336304125a1c3b3d582360c92/raw_traces_active.jsonl
+281:Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-row-toggle/.local/api-row-toggle-profile/memory/agent_orgs/nested_classroom_test_org_5bbe63deffa741beb8ba955f3cd2efac/student_study_group_c96c629b0ed54edbb69d710318927662/student_two_ffc4e310ea1f49858a46037056480228/raw_traces_active.jsonl
+=== catalog-only local model discovery ===
+269:Discovering LM Studio models from host: http://127.0.0.1:1234
+270:Discovering Ollama models from host: http://127.0.0.1:11434
+271:Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+=== external inference/provider generation markers (expected none) ===
+=== server errors (expected none) ===

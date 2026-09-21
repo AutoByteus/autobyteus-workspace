@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_b64ab122404a414ca49c5da44ef9bfc0",
+  "messages": [
+    {
+      "messageId": "collabmsg_argMbNZs19FO8fiW9a4hCESCd8ocivNt",
+      "senderAgentRunId": "aorg_e2e_analyst_875c5eba2b4442a5b161af199d41943a",
+      "receiverAgentRunId": "aorg_e2e_lead_3535c877f616405288e243edb38a1ef6",
+      "content": "APIREV5-ANALYST-LIVE-ONE\nthe task is active.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:21:58.067Z"
+    },
+    {
+      "messageId": "collabmsg_f-R0XWOb4zGLBAMWTWJ6yFpjRM7ec62X",
+      "senderAgentRunId": "aorg_e2e_analyst_875c5eba2b4442a5b161af199d41943a",
+      "receiverAgentRunId": "aorg_e2e_lead_3535c877f616405288e243edb38a1ef6",
+      "content": "Validation step two complete: the objective was inspected, including the exact submission marker and standalone Team task-routing requirement.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:22:06.411Z"
+    }
+  ]
+}

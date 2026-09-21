@@ -243,11 +243,11 @@ flowchart LR
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
 | Task Delegation store | `autobyteus-web/stores/taskDelegationStore.ts` | Owns hydrated persisted task-delegation records keyed by root team run. |
 | Task Delegation hydration | `autobyteus-web/services/runHydration/taskDelegationHydrationService.ts` | Loads `getTaskDelegationRecords(teamRunId)` for live and historical team runs and supports event-triggered refresh. |
-| Team Tasks section | `autobyteus-web/components/workspace/team/TeamDelegatedTasksSection.vue` | Owns the Team-tab Tasks split layout, section-local selected task/reference state, left-pane resizing, and empty state; it does not own actor/member focus emits. |
+| Shared Tasks section | `autobyteus-web/components/workspace/collaboration/CollaborationDelegatedTasksSection.vue` | Replaces the Team-only section with root-neutral Tasks facets, split layout, local task/reference selection, resizing, and exact participant navigation for Team and AgentOrg roots. Adapters own record projection and reference routes. |
 | Team Tasks lifecycle projector | `autobyteus-web/utils/teamDelegatedTaskEntries.ts` | Projects strict task records into an ordered assignment/submission/review/interruption conversation with stable item/reference locators, readable participants, result ordinals, current human task status, and item-owned references. |
 | Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamDelegatedTaskNavigator.vue`, `TeamDelegatedTaskLifecycleRow.vue` | Renders the assignment, current human task status, every durable lifecycle update, and each item's reference rows as the complete left-side navigation. It renders no raw ids, routing JSON, execution hierarchy, or Technical details. |
-| Team delegated-task detail pane | `autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue`, `TeamDelegatedTaskItemDetail.vue` | Renders exactly one selected assignment/update Markdown detail or selected task-owned reference preview without duplicating the left lifecycle/reference navigation. |
-| Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Builds the task-owned content route from `teamRunId + taskId + referenceId` for the selected right-side reference preview. |
+| Team delegated-task detail pane | `autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue`, `TeamDelegatedTaskItemDetail.vue` | Renders exactly one selected assignment/update Markdown detail or task reference. Familiar direction names carry exact participant links; optional identity disclosure replaces the permanent top strip. It does not duplicate left lifecycle/reference navigation or own runtime selection. |
+| Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Resolves the root-specific content path supplied by the Tasks facet against the bound node's REST base for the selected task reference; it does not assume a Team root. |
 | Task reference preview shell | `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` | Route-agnostic read-only Team reference shell used for task references; delegates raw/preview/media/PDF/CSV/Excel rendering to `FileViewer`. |
 | Generic Team reference type/presentation | `autobyteus-web/types/teamReferenceFile.ts`, `autobyteus-web/utils/teamReferences/*` | Shared task-reference file model and file-type/name/icon presentation for the Tasks surface. |
 
@@ -281,3 +281,24 @@ the Tasks right pane until the task navigator selects the task summary or
 another reference. The generic task reference shell uses authorized fetch/object
 URLs and the shared read-only `FileViewer` modes for text/Markdown, protected
 media, PDF, CSV, and Excel content.
+
+
+## Uploaded Context Files Versus Collaboration References
+
+Uploaded user context files retain their recorded URI/type/name through raw
+trace, initial/cold/earlier-page projection and shared UserMessage hydration.
+They are not a new task artifact family. Org uploads are owned by root plus
+exact AgentRun; message/task reference URLs remain separately root-owned. Open
+uses saved ownership, not the current viewer or configured source at the same
+address. Separate text/JSON links remain accepted existing presentation.
+
+The local submission handle and conversation now share the same canonical Vue
+reactive UserMessage. Finalization replaces that message's attachment descriptors
+through the existing presentation effect, so its mounted chip uses the finalized
+locator without a remount, duplicate message, reload or resend. Current
+AutoByteus/DeepSeek standalone first text Send includes an actual immediate
+sent-chip Open returning final200 with original bytes, as well as narrow and
+ordinary same-input reopen. Retained-file checks alone are not that live-chip
+proof. Storage and separate-link opening are unchanged; the archived API-FIND-040
+failure remains historical evidence, not evidence of durable loss. No additional
+media/provider or native Electron-shell coverage is implied.

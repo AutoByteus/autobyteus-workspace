@@ -1,0 +1,29 @@
+Agent Orgs
+Search Agent Orgs
+Reload
+Create Agent Org
+Featured organizations
+RO
+Research Organization
+
+Synthetic catalog check: owned and shared Agent/Team references.
+
+Run
+View Details
+→
+research group
+lead agent
+shared group
+shared worker
+OO
+Operations Organization
+
+Synthetic catalog check: owned and shared Agent/Team references.
+
+Run
+View Details
+→
+research group
+lead agent
+shared group
+shared worker

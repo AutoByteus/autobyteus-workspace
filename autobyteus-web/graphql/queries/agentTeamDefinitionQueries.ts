@@ -11,6 +11,8 @@ export const GetAgentTeamDefinitions = gql`
       category
       avatarUrl
       coordinatorMemberName
+      revision
+      handoffs { from to rules }
       ownershipScope
       ownerTeamId
       ownerTeamName
@@ -27,7 +29,6 @@ export const GetAgentTeamDefinitions = gql`
         __typename
         memberName
         ref
-        refType
         refScope
       }
     }

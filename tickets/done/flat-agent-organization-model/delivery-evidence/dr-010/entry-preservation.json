@@ -1,0 +1,10 @@
+{
+  "at": "2026-09-13T03:39:59.793028+00:00",
+  "head": "3155da09c33c0bb5aeea19d0b2243a8163cc9595",
+  "branch": "requirements/flat-agent-organization-model",
+  "latestPersonal": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+  "paths": 35330,
+  "archiveBytes": 722826260,
+  "finalizationTarget": "current task branch only; user supersedes personal target",
+  "release": false
+}

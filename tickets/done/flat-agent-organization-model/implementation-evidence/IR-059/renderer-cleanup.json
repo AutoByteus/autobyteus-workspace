@@ -1,0 +1,43 @@
+{
+  "ownedStopped": [
+    {
+      "pid": 62283,
+      "ppid": 62278,
+      "args": "node /usr/bin/corepack pnpm -C autobyteus-web dev --host 127.0.0.1 --port 43159"
+    },
+    {
+      "pid": 62295,
+      "ppid": 62283,
+      "args": "sh -c nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 43159"
+    },
+    {
+      "pid": 62296,
+      "ppid": 62295,
+      "args": "node /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 0.0.0.0 --host 127.0.0.1 --port 43159"
+    },
+    {
+      "pid": 62360,
+      "ppid": 62296,
+      "args": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@esbuild+linux-arm64@0.27.3/node_modules/@esbuild/linux-arm64/bin/esbuild --service=0.27.3 --ping"
+    },
+    {
+      "pid": 62424,
+      "ppid": 62296,
+      "args": "/usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 43159"
+    },
+    {
+      "pid": 62430,
+      "ppid": 62296,
+      "args": "/usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 43159"
+    }
+  ],
+  "browser": "inspector finally closed own browser",
+  "route": "removed before build",
+  "portClosed": true,
+  "routeRemoved": true,
+  "removedInitiallyAbsentSdkDist": [
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-sdk-contracts/dist",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-backend-sdk/dist",
+    "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-application-frontend-sdk/dist"
+  ]
+}

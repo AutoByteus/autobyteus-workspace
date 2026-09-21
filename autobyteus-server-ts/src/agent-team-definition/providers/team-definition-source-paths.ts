@@ -2,9 +2,20 @@ import { promises as fs } from "node:fs";
 import { constants as fsConstants } from "node:fs";
 import path from "node:path";
 import { parseCanonicalApplicationOwnedTeamId } from "../../application-bundles/utils/application-bundle-identity.js";
-import { parseTeamLocalDefinitionId } from "../utils/team-local-definition-id.js";
-import type { ApplicationOwnedTeamSourcePaths } from "./application-owned-team-source.js";
-import { parseTeamMd } from "../utils/team-md-parser.js";
+type ApplicationOwnedTeamSourcePaths = {
+  definitionId: string;
+  teamDir: string;
+  mdPath: string;
+  configPath: string;
+  rootPath: string;
+  applicationId: string;
+  applicationName: string;
+  packageId: string;
+  localApplicationId: string;
+  localTeamId: string;
+};
+import { findAgentOrgOwnedDefinitionSource, type AgentOrgOwnedDefinitionSourcePaths } from "../../agent-org-definition/providers/agent-org-owned-definition-source-index.js";
+import { isAgentOrgOwnedTeamDefinitionId } from "../../agent-org-definition/utils/agent-org-owned-definition-id.js";
 
 export type SharedTeamSourcePaths = {
   kind: "shared";
@@ -16,26 +27,10 @@ export type SharedTeamSourcePaths = {
   rootPath: string;
 };
 
-export type TeamLocalTeamSourcePaths = {
-  kind: "team_local";
-  definitionId: string;
-  ownerTeamId: string;
-  ownerTeamName?: string | null;
-  localTeamId: string;
-  teamDir: string;
-  mdPath: string;
-  configPath: string;
-  rootPath: string;
-  ownerApplicationId?: string | null;
-  ownerApplicationName?: string | null;
-  ownerPackageId?: string | null;
-  ownerLocalApplicationId?: string | null;
-};
-
 export type ResolvedTeamSourcePaths =
   | SharedTeamSourcePaths
   | ({ kind: "application_owned" } & ApplicationOwnedTeamSourcePaths)
-  | TeamLocalTeamSourcePaths;
+  | (AgentOrgOwnedDefinitionSourcePaths & { subject: "agent_team"; teamDir: string; localTeamId: string });
 
 type ApplicationOwnedTeamSourceLookup = {
   getApplicationOwnedTeamSourceById: (definitionId: string) => Promise<{
@@ -64,15 +59,6 @@ const isWritable = async (filePath: string): Promise<boolean> => {
     return true;
   } catch {
     return false;
-  }
-};
-
-const readTeamName = async (sourcePaths: ResolvedTeamSourcePaths): Promise<string | null> => {
-  try {
-    const content = await fs.readFile(sourcePaths.mdPath, "utf-8");
-    return parseTeamMd(content, sourcePaths.mdPath).name;
-  } catch {
-    return null;
   }
 };
 
@@ -127,50 +113,6 @@ export const buildApplicationOwnedTeamSourcePaths = (
   };
 };
 
-export const buildTeamLocalTeamSourcePaths = async (
-  ownerSourcePaths: ResolvedTeamSourcePaths,
-  definitionId: string,
-  localTeamId: string,
-): Promise<TeamLocalTeamSourcePaths> => {
-  const teamDir = path.join(ownerSourcePaths.teamDir, "agent-teams", localTeamId);
-  const ownerTeamId = getCanonicalTeamDefinitionIdFromSourcePaths(ownerSourcePaths);
-  return {
-    kind: "team_local",
-    definitionId,
-    ownerTeamId,
-    ownerTeamName: await readTeamName(ownerSourcePaths),
-    localTeamId,
-    teamDir,
-    mdPath: path.join(teamDir, "team.md"),
-    configPath: path.join(teamDir, "team-config.json"),
-    rootPath: ownerSourcePaths.teamDir,
-    ownerApplicationId:
-      ownerSourcePaths.kind === "application_owned"
-        ? ownerSourcePaths.applicationId
-        : ownerSourcePaths.kind === "team_local"
-          ? ownerSourcePaths.ownerApplicationId ?? null
-          : null,
-    ownerApplicationName:
-      ownerSourcePaths.kind === "application_owned"
-        ? ownerSourcePaths.applicationName
-        : ownerSourcePaths.kind === "team_local"
-          ? ownerSourcePaths.ownerApplicationName ?? null
-          : null,
-    ownerPackageId:
-      ownerSourcePaths.kind === "application_owned"
-        ? ownerSourcePaths.packageId
-        : ownerSourcePaths.kind === "team_local"
-          ? ownerSourcePaths.ownerPackageId ?? null
-          : null,
-    ownerLocalApplicationId:
-      ownerSourcePaths.kind === "application_owned"
-        ? ownerSourcePaths.localApplicationId
-        : ownerSourcePaths.kind === "team_local"
-          ? ownerSourcePaths.ownerLocalApplicationId ?? null
-          : null,
-  };
-};
-
 const findSharedTeamSourcePaths = async (
   readTeamRoots: string[],
   teamId: string,
@@ -198,43 +140,22 @@ const findApplicationOwnedTeamSourcePaths = async (
   return buildApplicationOwnedTeamSourcePaths(source);
 };
 
-const findTeamLocalTeamSourcePaths = async (
-  teamId: string,
-  readTeamRoots: string[],
-  applicationBundleService: ApplicationOwnedTeamSourceLookup,
-): Promise<ResolvedTeamSourcePaths | null> => {
-  const parsed = parseTeamLocalDefinitionId(teamId);
-  if (parsed?.subject !== "agent_team") {
-    return null;
-  }
-  const ownerSourcePaths = await findTeamSourcePaths(
-    parsed.ownerTeamId,
-    readTeamRoots,
-    applicationBundleService,
-  );
-  if (!ownerSourcePaths) {
-    return null;
-  }
-  const localSourcePaths = await buildTeamLocalTeamSourcePaths(
-    ownerSourcePaths,
-    teamId,
-    parsed.localDefinitionId,
-  );
-  try {
-    await fs.access(localSourcePaths.mdPath);
-    return localSourcePaths;
-  } catch {
-    return null;
-  }
-};
-
 export const findTeamSourcePaths = async (
   teamId: string,
   readTeamRoots: string[],
   applicationBundleService: ApplicationOwnedTeamSourceLookup,
+  readOrgRoots: readonly string[] = [],
 ): Promise<ResolvedTeamSourcePaths | null> => {
-  if (parseTeamLocalDefinitionId(teamId)?.subject === "agent_team") {
-    return findTeamLocalTeamSourcePaths(teamId, readTeamRoots, applicationBundleService);
+  if (isAgentOrgOwnedTeamDefinitionId(teamId)) {
+    const source = await findAgentOrgOwnedDefinitionSource({
+      definitionId: teamId,
+      subject: "agent_team",
+      orgRoots: readOrgRoots,
+    });
+    // A missing indexed owner must never borrow a similarly named shared source.
+    return source
+      ? { ...source, subject: "agent_team", teamDir: source.definitionDir, localTeamId: source.localDefinitionId }
+      : null;
   }
   if (parseCanonicalApplicationOwnedTeamId(teamId)) {
     return findApplicationOwnedTeamSourcePaths(applicationBundleService, teamId);

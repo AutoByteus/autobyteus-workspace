@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_3ba09981d7344c2ea15a577d2d1604d3",
+  "records": [
+    {
+      "taskId": "task_3110f35c97b54ee3b3ae8fddb0f6103e",
+      "delegatorAgentRunId": "aorg_e2e_lead_cf66995dd5664e69ba3d2dffe50abbb3",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_bda68d61c1b44d208a13d73245299375"
+      },
+      "description": "Return exactly AORG-FIND008-DRAFT-001 on the first line and one short sentence on the second line, then formally call submit_task_result. If a revision is requested, change the first line to AORG-FIND008-REVISED-001 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "status": "awaiting_review",
+      "updates": [
+        {
+          "submissionId": "submission_be1b77ab6cb947b5bb91a44be4bdf91b",
+          "message": "AORG-FIND008-DRAFT-001\nThe requested deterministic draft marker is complete.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:02:07.217Z"
+        }
+      ],
+      "createdAt": "2026-09-01T21:01:56.668Z"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "packageId": "local:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fflat-agent-organization-model%2Ftickets%2Fin-progress%2Fflat-agent-organization-model%2Fapi-e2e-fixtures%2Faorg-api-rev-002-agent-package",
+    "rootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "sourceKind": "LOCAL_PATH",
+    "source": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "normalizedSource": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "managedInstallPath": null,
+    "sourceMetadata": null,
+    "createdAt": "2026-09-02T09:18:39.684Z",
+    "updatedAt": "2026-09-02T09:18:39.684Z"
+  }
+]

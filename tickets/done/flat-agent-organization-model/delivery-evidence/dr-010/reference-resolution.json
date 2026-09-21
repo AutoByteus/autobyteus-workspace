@@ -1,0 +1,10 @@
+{
+  "sourceIndex": "code-review-evidence/CRR-092/handoff-reference-files.txt",
+  "originalCount": 6504,
+  "resolvedCount": 6504,
+  "oldPrefix": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model",
+  "archivedPrefix": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model",
+  "missing": [],
+  "externalReferences": "Unchanged absolute references; no external artifact edits",
+  "rawEvidence": "Retained locally in archived folder; only explicit curated subset published; old report bytes/paths are historical and resolved with this prefix map"
+}

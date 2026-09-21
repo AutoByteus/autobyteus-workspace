@@ -1,0 +1,12 @@
+Scope: 5 of 14 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        |    +1248 ++++++++++++++++++++++++++++
+Progress: resolved 1248, reused 1247, downloaded 0, added 131
+Progress: resolved 1248, reused 1247, downloaded 0, added 437
+Progress: resolved 1248, reused 1247, downloaded 0, added 780
+Progress: resolved 1248, reused 1247, downloaded 0, added 1108
+Progress: resolved 1248, reused 1247, downloaded 0, added 1248, done
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../node_modules/vue-demi postinstall: Done
+Done in 5.7s using pnpm v10.28.2

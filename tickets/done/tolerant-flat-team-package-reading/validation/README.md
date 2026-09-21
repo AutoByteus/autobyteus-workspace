@@ -1,0 +1,35 @@
+# IR-001 implementation evidence — TEAM-PACKAGE-READ-20260915-001
+
+2026-09-15. Implementation-scoped checks only; not API/E2E acceptance. No commit/staging/push/merge, no user server, external definition, auth or conversation mutation.
+
+## Setup / execution
+Fresh worktree dependencies: `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts prepare:shared`, `pnpm -C autobyteus-server-ts exec prisma generate` completed. Initial registry test import failed because Prisma client was not generated; corrected by repository generation before final successful run. Install warns about absent devkit CLI bins. Own two untracked SDK dist directories removed after validation; ignored dependencies/generated build output remain local. No generated JavaScript tracked or source emitted by typechecks.
+
+Final command from worktree root:
+```
+pnpm -C autobyteus-server-ts exec vitest run tests/unit/app-data-migrations tests/unit/collaboration-definition-admission tests/unit/agent-team-definition tests/unit/application-bundles tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts tests/unit/agent-execution/agent-run-restore-service.test.ts tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts --no-watch
+```
+Result: **52 files,356 tests pass**, `implementation-tests.log`. Includes all current migration tests;36 input projection cases; actual Team/Agent providers + scoped admission/catalog/launch guard; application Team input cases; strict writer roundtrip; real registry/runner/SQLite ledger with authored nonmutation/runtime conversion; enclosing-instruction restore nonlookup, native backend restore controls. No provider/network command acceptance claimed.
+
+## Supplied-package read-only probe
+`package-inventory-probe.test.ts` was temporarily executed at `autobyteus-server-ts/tests/unit/collaboration-definition-admission/package-inventory-probe.test.ts` using the same Vitest command, then moved here. Relative imports require that test location. **One test passes**, `package-inventory-probe.log`. Real file providers/scoped admission and catalog facade, not mock-all-Agents. Source config hashes compared to Designer inventory before and after: all14 identical.
+- Available5: classroom-simulation-team; evidence-driven-delivery-team; product-design-prototyping-team; software-engineering-team; storm-team.
+- Missing avatarUrl7: article-writing-team; kids-coloring-story-team; kids-picture-story-team; manga-video-studio-team; narrated-presentation-video-team; research-to-deck-team; software-product-promo-video-team.
+- Actual missing scoped Agent2: northstar-operating-company (engineering_org→engineering-org) and software-development-department (product_design_prototyping_team→product-design-prototyping-team). No partial Team or Org generated.
+This is not actual frontend package registration/reload/selection or real launch proof. Source files were neither rewritten nor copied into fixture overrides.
+
+## Typecheck / guardrails
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`: **PASS exit0**, source-typecheck.log empty. This uses repository production compiler profile (not the stricter test profile).
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.json --noEmit`: **FAIL exit2**, strict-typecheck.log2912 lines: source rootDir excludes tests included by this tsconfig.
+- Additional diagnostic `tsc -p tsconfig.json --noEmit --rootDir ..`: **FAIL exit2**, expanded-typecheck.log8395 lines: index-signature/override/test typing and broader workspace errors. New reader and new test diagnostics identified during work were corrected; no remaining new-code line diagnostic in inspected changed spans. No clean strict baseline comparison or full strict pass claimed; unrelated existing-code repairs not attempted.
+- `git diff --check`: pass. `preservation-check.txt`: exact retained migration-method comparison with source HEAD. `implementation-file-manifest.json`: current reviewed-delta file hashes/deletions, including untracked durable tests.
+- Six changed source effective nonempty lines: codec176/provider218/admission170/application453/registry112/runtime migration252. Runtime migration delta258 lines is predominantly approved deletion (253 removed,5 added), assessed explicitly; split would contradict bounded removal. All remain below500, no new subsystem.
+
+## Runtime/startup scope and frontend limitation
+Default production registry/runner test uses owned temporary definitions/memory/SQLite. It exercises normal registered startup migration execution, not an actual listening server process. Preserves owned/external authored bytes/names/assets; converts supported stored runtime history/attachment locators, native flat runtime zero-write, and successful family-ledger skip. Old authoring ledger SUCCEEDED/FAILED/RUNNING rows remain inert in real repository/runner tests. Temporary fixture data is cleaned by tests.
+No frontend source, layout or interaction code changes. Rendered-result loop N/A for this backend-only implementation; no browser/server was started. API owner still must execute real import/reload/catalog/selection/default entry and isolated full startup/history/continuation journeys. Native Agent restore still depends on its Agent definition; no blanket no-definition independence or all-provider claim.
+
+# API-REV-001 — actual executable acceptance
+2026-09-15 **Pass95.0%**, canonical API investigation/report/ledger/revision in parent directory. No API production/durable test edits. Independent api-narrow.log59, api-broad.log356 (includes59), api-build.log Pass; inherited strict-typecheck limits retained. api-intake-manifest.json validates actual uncommitted files, not HEAD alone.
+Actual Chrome + built isolated server + native LM Studio: api-runtime/package-import-dom.txt, package-reload-dom.txt, team-catalog-dom.txt, live-catalog-readonly.json; absent/null/valid selection and Classroom/valid actual reply DOMs, valid-launch-tree.json. Full startup/restart: api-runtime/complete/*audit.json, restart-ledger-proof.json, old-ledger-before.json. Actual history/attachment/continuation: complete/reopened-history-dom.txt, attachment-preview-dom.txt, direct-continuation-dom.txt, mounted-continuation-dom.txt/png, continuation-proof.json, final-runtime.
+Reproduction scripts seed.py/server.mjs/audit.py for original import dataset; seed-complete.py + seed-snapshots.mjs/server-complete.mjs/audit-complete.py for fresh complete historical dataset. Do not rerun seed against existing root or reset/replay ledger. Both datasets local test-owned, preserved, no private DB/key in evidence. Initial fixture qualification and mounted new-vs-restore correction in authoritative report. Full command details report. Cleanup exact-owned process actions and emptyports in api-finalization.log. No commit/stage/user process/external package mutation.

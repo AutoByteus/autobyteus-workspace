@@ -1,0 +1,36 @@
+
+> autobyteus@1.4.69 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+> node scripts/run-electron-e2e.mjs -- --skip-build --data-root /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data --port 51291 --hold-ms 3600000
+
+[electron-e2e] Unknown argument: --
+ ELIFECYCLE  Command failed with exit code 1.
+
+> autobyteus@1.4.69 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --data-root /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data --port 51291 --hold-ms 3600000
+
+[electron-e2e] Electron E2E process exited before readiness
+ ELIFECYCLE  Command failed with exit code 1.
+
+> autobyteus@1.4.69 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --data-root /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data --port 51291 --hold-ms 3600000
+
+[electron-e2e] Electron E2E process exited before readiness
+ ELIFECYCLE  Command failed with exit code 1.
+
+> autobyteus@1.4.69 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter playwright --data-root /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/.local/api-whole-org-config/data --port 51291 --hold-ms 3600000
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/electron/electron.js:247
+  const failError = new Error("Process failed to launch!");
+                    ^
+
+Error: Process failed to launch!
+    at waitForLine (/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/electron/electron.js:247:21)
+    at Electron.launch (/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/electron/electron.js:195:32)
+    at async ElectronDispatcher.launch (/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/dispatchers/electronDispatcher.js:38:33)
+    at async ProgressController.run (/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/progress.js:98:22)
+    at async ElectronDispatcher._runCommand (/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/dispatchers/dispatcher.js:91:14)
+    at async DispatcherConnection.dispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/dispatchers/dispatcher.js:325:22)
+
+Node.js v22.23.1
+ ELIFECYCLE  Command failed with exit code 1.

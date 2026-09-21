@@ -1,3 +1,4 @@
+import { createPinia, setActivePinia } from 'pinia'
 import { reactive } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -17,6 +18,7 @@ const routerReplaceMock = vi.fn(async (location: { path: string; query: Record<s
 })
 
 vi.mock('vue-router', () => ({
+  onBeforeRouteLeave: vi.fn(), onBeforeRouteUpdate: vi.fn(),
   useRoute: () => routeMock,
   useRouter: () => ({
     replace: routerReplaceMock,
@@ -44,12 +46,16 @@ const Harness = {
 describe('useWorkspaceRouteSelection', () => {
   afterEach(() => {
     routeMock.path = '/workspace'
+    setActivePinia(createPinia())
+    openWorkspaceExecutionLinkMock.mockResolvedValue({ disposition: 'committed' })
     routeMock.query = {}
     openWorkspaceExecutionLinkMock.mockReset()
     routerReplaceMock.mockClear()
   })
 
   it('opens a team execution link from the workspace route and clears the query', async () => {
+    setActivePinia(createPinia())
+    openWorkspaceExecutionLinkMock.mockResolvedValue({ disposition: 'committed' })
     routeMock.query = {
       workspaceExecutionKind: 'team',
       workspaceExecutionRunId: 'team-run-1',
@@ -63,7 +69,7 @@ describe('useWorkspaceRouteSelection', () => {
       kind: 'team',
       teamRunId: 'team-run-1',
       agentRunId: 'writer-run-1',
-    })
+    }, expect.objectContaining({ isCurrent: expect.any(Function) }))
     expect(routerReplaceMock).toHaveBeenCalledWith({
       path: '/workspace',
       query: {},

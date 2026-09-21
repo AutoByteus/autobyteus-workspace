@@ -1,0 +1,3 @@
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory/agent_teams/aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a/aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df/raw_traces_active.jsonl
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory/agent_teams/aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a/aorg_e2e_lead_40ab463de3a341a18ba9756664500250/raw_traces_active.jsonl
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory/agent_teams/aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a/task_delegation_records.json

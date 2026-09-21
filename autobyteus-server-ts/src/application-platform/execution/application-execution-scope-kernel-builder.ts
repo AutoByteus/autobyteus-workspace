@@ -9,12 +9,13 @@ import { AgentRunResourceManager } from "../../agent-execution/services/agent-ru
 import { AgentRunProviderInputNormalizer } from "../../agent-execution/input/agent-run-provider-input-normalizer.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
-import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
+import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
 import { TaskDelegationRecordsV1Store } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
-import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
+import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
+import { createTeamFlatExecutionCallbacks } from "../../agent-team-execution/services/team-flat-execution-callbacks.js";
+import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -87,9 +88,7 @@ export const buildApplicationExecutionScopeKernel = (
       locationService: storedTeamLocations,
     });
     const runFileChangeService = new RunFileChangeService({
-      memoryDir: input.memoryDir,
       workspaceManager: input.workspaceManager,
-      teamLocations: storedTeamLocations,
     });
     const relay = new ApplicationPublishedArtifactRelayService({
       bindingReader: input.bindingReader,
@@ -152,31 +151,22 @@ export const buildApplicationExecutionScopeKernel = (
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       agentRunIdentityAllocator,
     );
-    const memberTeamContextBuilder = new MemberTeamContextBuilder(
+    const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
     );
+    const memoryLocator = new RootedAgentMemoryLocator({ memoryDir: input.memoryDir });
     const activityInspector = new AgentConversationActivityInspector();
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
       taskExecutionIdentity,
       modelSelectionValidator: input.modelSelectionValidator,
-      mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-        createTeamManager: (managerInput) =>
-          new MixedTeamManager(managerInput.context, {
-            subTeamRunFactory: managerInput.subTeamRunFactory,
-            taskRootResolver: managerInput.callbacks.taskRootResolver,
-            agentRunManager,
-            memoryLocationService,
-            activityInspector,
-            memberTeamContextBuilder,
-            workspaceManager: input.workspaceManager,
-            publish: managerInput.callbacks.publish,
-            deliverInterAgentMessage:
-              managerInput.callbacks.deliverInterAgentMessage,
-            acceptPlatformBinding:
-              managerInput.callbacks.acceptPlatformBinding,
-          }),
+      flatTeamExecutionFactory: new FlatTeamExecutionFactory({
+        agentRunManager,
+        memoryLocator,
+        activityInspector,
+        workspaceManager: input.workspaceManager,
       }),
+      memberExecutionContextBuilder,
       executionTreeStore: new TeamRunExecutionTreeStore(),
       taskRecordsStore: new TaskDelegationRecordsV1Store(),
       communicationStore: new TeamCommunicationV1Store(),
@@ -289,6 +279,16 @@ const buildRunServices = (
     memoryDir: input.memoryDir,
     memoryLocationService: kernel.memoryLocationService,
     tokenUsageReadiness,
+    definitionAdmissionService: {
+      requireAvailable: async (subjectKind, definitionId) => {
+        if (subjectKind !== "agent_team") {
+          throw new Error(`Application execution scope does not admit '${subjectKind}' definitions.`);
+        }
+        const definition = await input.agentTeamDefinitionService.getDefinitionById(definitionId);
+        if (!definition) throw new Error(`AgentTeam definition '${definitionId}' is unavailable.`);
+        return { status: "available", subjectKind: "agent_team", definitionId, definition } as const;
+      },
+    },
   });
   return { agentRunService, teamRunService, metadataService };
 };

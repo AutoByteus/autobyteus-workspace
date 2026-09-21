@@ -4,11 +4,12 @@ import type { RunProjectionConversationEntry } from "../run-projection-types.js"
 export const buildRunProjectionConversation = (
   events: EventMonitorReplayEvent[],
 ): RunProjectionConversationEntry[] =>
-  events.flatMap((event) => {
+  events.flatMap<RunProjectionConversationEntry>((event) => {
     if (event.kind === "message") {
       return [{
         kind: "message",
         role: event.role,
+        ...(event.role === "user" && event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
         content: event.content,
         media: event.media,
         ts: event.ts,

@@ -4,17 +4,23 @@ import type {
   RunProjectionCompactionPhase,
   RunProjectionSourceDetailLevel,
 } from "./run-projection-types.js";
+import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
-export interface HistoricalReplayMessageEvent {
+interface HistoricalReplayMessageEventBase {
   eventId: string;
   turnGroupId: string;
   kind: "message";
-  role: string | null;
+
   content: string | null;
   media: RawTraceMedia | null;
   ts: number | null;
 }
+
+export type HistoricalReplayMessageEvent = HistoricalReplayMessageEventBase & (
+  | { role: "user"; fileAttachments?: readonly ContextFileReference[] }
+  | { role: string | null; fileAttachments?: never }
+);
 
 export interface HistoricalReplayReasoningEvent {
   eventId: string;

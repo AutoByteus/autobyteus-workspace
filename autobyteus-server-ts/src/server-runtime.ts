@@ -25,7 +25,7 @@ import { getManagedMessagingGatewayService } from "./managed-capabilities/messag
 import type { ServerOptions } from "./app.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
-import { TeamRunPackageCatalog } from "./run-history/services/team-run-package-catalog.js";
+import { RootRunPackageReadinessIndex } from "./run-history/services/root-run-package-readiness-index.js";
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 import { assertTokenUsageCurrentSchema } from "./startup/token-usage-current-schema-readiness.js";
 import { TokenUsageAnalyticsProjectionWriter } from "./token-usage/services/token-usage-analytics-projection-writer.js";
@@ -208,7 +208,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
             logPath: tokenUsageStatus?.logPath ?? null,
           },
     );
-    await new TeamRunPackageCatalog(config.getMemoryDir()).rebuild();
+    await new RootRunPackageReadinessIndex(config.getMemoryDir()).rebuild();
     const teamRunV2Status = statuses.find(
       (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
     );

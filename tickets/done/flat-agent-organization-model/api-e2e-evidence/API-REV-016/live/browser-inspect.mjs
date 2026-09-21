@@ -1,0 +1,12 @@
+import fs from 'node:fs/promises';
+import pw from '../../../../../../autobyteus-web/node_modules/playwright-core/index.js';
+const browser=await pw.chromium.connectOverCDP('http://127.0.0.1:9222');
+const pages=browser.contexts().flatMap(c=>c.pages());
+const page=pages.find(p=>p.url().includes('127.0.0.1:3596'));
+if(!page) throw new Error('tab missing');
+await page.waitForTimeout(1200);
+const result=await page.evaluate(()=>({url:location.href,title:document.title,body:document.body.innerText,buttons:[...document.querySelectorAll('button')].map(b=>({text:(b.innerText||'').trim(),title:b.title,test:b.getAttribute('data-test'),aria:b.getAttribute('aria-label')})),links:[...document.querySelectorAll('a')].map(a=>({text:(a.innerText||'').trim(),href:a.getAttribute('href')})),local:Object.fromEntries(Object.entries(localStorage))}));
+await fs.writeFile(new URL('browser-initial.json',import.meta.url),JSON.stringify(result,null,2));
+await page.screenshot({path:new URL('screenshots/browser-initial.png',import.meta.url).pathname});
+console.log(JSON.stringify({url:result.url,title:result.title,body:result.body.slice(0,4000),buttons:result.buttons.slice(0,80),links:result.links.slice(0,40)},null,2));
+await browser.close();

@@ -656,6 +656,164 @@ describe("AgentRun input admission", () => {
     expect([...firstLifecycle, ...secondLifecycle].some((fact) => fact.kind === "cancelled")).toBe(false);
   });
 
+  it("returns null without side effects when quiescent preparation sees an active turn", async () => {
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("still admitted")))
+      .resolves.toMatchObject({ accepted: true });
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+  });
+
+  it("prepares an already-quiescent run and ordinary cancellation reopens admission", async () => {
+    const harness = createHarness();
+
+    const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
+    expect(prepared).not.toBeNull();
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+    prepared!.cancel();
+
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("after cancel")))
+      .resolves.toMatchObject({ accepted: true });
+  });
+
+  it("root shutdown silently invalidates reservations and cancels admitted pre-forward input once", async () => {
+    const harness = createHarness();
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    const reserved = await harness.run.reserveUserMessage(new AgentInputUserMessage("reserved"));
+    const admitted = await harness.run.reserveUserMessage(
+      new AgentInputUserMessage("admitted"),
+      { lifecycleObserver: (fact) => lifecycle.push(fact) },
+    );
+    if (!reserved.reserved || !admitted.reserved) throw new Error("Expected reservations.");
+    const committed = admitted.reservation.commit();
+
+    await expect(harness.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
+    expect(lifecycle).toEqual([
+      { kind: "admitted" },
+      { kind: "cancelled", code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD" },
+    ]);
+    expect(() => reserved.reservation.cancel()).toThrow("cannot be cancelled");
+    expect(() => committed.release()).toThrow("cannot be released");
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("late"))).resolves.toMatchObject({
+      accepted: false,
+      code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+    });
+  });
+
+  it("tracks provider-started pre-turn work through canonical interruption before completing the root fence", async () => {
+    const dispatch = createDeferred<AgentRunBackendInputDispatchResult>();
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    const harness = createHarness({
+      dispatchUserInput: vi.fn().mockReturnValue(dispatch.promise),
+      interrupt: vi.fn().mockResolvedValue({ accepted: true, turnId: "turn-fenced" }),
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("task input"), {
+      lifecycleObserver: (fact) => lifecycle.push(fact),
+    });
+
+    let fenceSettled = false;
+    const fence = harness.run.fenceInputAndInterruptForRootShutdown()
+      .then((result) => { fenceSettled = true; return result; });
+    await Promise.resolve();
+    expect(fenceSettled).toBe(false);
+
+    harness.setSnapshot({
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId: "turn-fenced" },
+    });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-fenced" }),
+    ]);
+    await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledWith("turn-fenced"));
+    dispatch.resolve({ forwarded: true, turnId: "turn-fenced" });
+    await vi.waitFor(() => expect(lifecycle).toContainEqual({
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-fenced",
+    }));
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-fenced" }),
+    ]);
+    await expect(fence).resolves.toEqual({ accepted: true });
+    expect(lifecycle).toContainEqual({ kind: "interrupted", turnId: "turn-fenced" });
+    expect(lifecycle.some((fact) => fact.kind === "cancelled")).toBe(false);
+
+    await harness.run.fenceInputAndInterruptForRootShutdown();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("after fence")))
+      .resolves.toMatchObject({ accepted: false });
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce();
+  });
+
+  it("interrupts an already-active approval-wait turn before the root fence completes", async () => {
+    const interrupt = vi.fn().mockResolvedValue({ accepted: true, turnId: "turn-approval" });
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-approval" },
+      },
+      interrupt,
+    });
+
+    let settled = false;
+    const fence = harness.run.fenceInputAndInterruptForRootShutdown()
+      .then((result) => { settled = true; return result; });
+    await vi.waitFor(() => expect(interrupt).toHaveBeenCalledWith("turn-approval"));
+    expect(settled).toBe(false);
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-approval" }),
+    ]);
+    await expect(fence).resolves.toEqual({ accepted: true });
+  });
+
+  it("waits for the provider interrupt request even when canonical terminal truth arrives first", async () => {
+    const providerInterrupt = createDeferred<AgentOperationResult>();
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-terminal-first" },
+      },
+      interrupt: vi.fn().mockReturnValue(providerInterrupt.promise),
+    });
+    let settled = false;
+    const fence = harness.run.fenceInputAndInterruptForRootShutdown()
+      .then((result) => { settled = true; return result; });
+    await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledOnce());
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-terminal-first" }),
+    ]);
+    expect(settled).toBe(false);
+
+    providerInterrupt.resolve({ accepted: true, turnId: "turn-terminal-first" });
+    await expect(fence).resolves.toEqual({ accepted: true });
+  });
+
+  it("does not reopen root-fenced admission when an earlier prepared termination is cancelled", async () => {
+    const harness = createHarness();
+    const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
+    if (!prepared) throw new Error("Expected preparation.");
+
+    await expect(harness.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
+    prepared.cancel();
+
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("cannot reopen")))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT" });
+  });
+
   it("fails retained input once and closes admission on a runtime-global terminal error", async () => {
     const lifecycle: AgentRunInputLifecycle[] = [];
     const harness = createHarness({

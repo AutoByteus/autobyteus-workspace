@@ -1,3 +1,4 @@
+import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 export type MemoryMessage = {
@@ -24,6 +25,7 @@ type MemoryTraceEventBase = {
 
 export type MemoryTurnTraceEvent = MemoryTraceEventBase & {
   scope: "turn";
+  fileAttachments?: readonly ContextFileReference[];
   turnId: string;
   seq: number;
 };

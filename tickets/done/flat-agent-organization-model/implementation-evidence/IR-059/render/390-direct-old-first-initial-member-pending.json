@@ -1,0 +1,102 @@
+{
+  "errors": [],
+  "activities": [],
+  "mode": "active",
+  "rootRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+  "pending": false,
+  "historyError": null,
+  "socketSends": 0,
+  "requests": [
+    {
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {},
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "independent": false,
+      "delivered": false
+    }
+  ],
+  "rows": [
+    {
+      "rootRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+      "active": true,
+      "summary": "Exact retained conversation"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ export {
   parseAgentExternalSourceMetadata
 } from './external-source-metadata.js';
 export type { AgentExternalSourceMetadata } from './external-source-metadata.js';
+export * from './context-file-reference.js';
 export { ContextFile } from './context-file.js';
 export { ContextFileType } from './context-file-type.js';
 export {

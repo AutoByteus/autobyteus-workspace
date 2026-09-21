@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+  "records": [
+    {
+      "taskId": "task_9df98cdc92da40e4ac557daceedbc99a",
+      "delegatorAgentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "recipientAddress": "/apirev8_team/aorg_e2e_analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626"
+      },
+      "description": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_2ca1fdb0b26a487ca5f0180bc91054ad",
+          "message": "APIREV8-TASK-PAYLOAD-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T21:39:26.018Z"
+        },
+        {
+          "reviewId": "review_0a14b2dbd01a4ab79c18ac6fb93d044a",
+          "reviewedSubmissionId": "submission_2ca1fdb0b26a487ca5f0180bc91054ad",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T21:39:46.996Z"
+        }
+      ],
+      "createdAt": "2026-09-02T21:39:16.429Z"
+    }
+  ]
+}

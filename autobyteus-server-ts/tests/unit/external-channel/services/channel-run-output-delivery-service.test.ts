@@ -30,8 +30,7 @@ const baseRoute = {
 const target = {
   targetType: "TEAM" as const,
   teamRunId: "team-1",
-  entryMemberRunId: "coordinator-run-1",
-  entryMemberRouteKey: "coordinator",
+  entryAgentRunId: "coordinator-run-1",
 };
 
 describe("ChannelRunOutputDeliveryService", () => {
@@ -70,26 +69,13 @@ describe("ChannelRunOutputDeliveryService", () => {
     expect(published.status).toBe("PUBLISHED");
   });
 
-  it("keeps team delivery keys stable when a coordinator member run id is learned later", async () => {
+  it("requires an exact entry AgentRun identity for Team delivery keys", () => {
     const service = createService();
-    const byNameOnly = service.buildDeliveryKey({
+    expect(() => service.buildDeliveryKey({
       bindingId: "binding-1",
       route: baseRoute,
-      target: {
-        targetType: "TEAM",
-        teamRunId: "team-1",
-        entryMemberRunId: null,
-        entryMemberRouteKey: "coordinator",
-      },
+      target: { targetType: "TEAM", teamRunId: "team-1", entryAgentRunId: null },
       turnId: "turn-1",
-    });
-    const byNameAndRunId = service.buildDeliveryKey({
-      bindingId: "binding-1",
-      route: baseRoute,
-      target,
-      turnId: "turn-1",
-    });
-
-    expect(byNameAndRunId).toBe(byNameOnly);
+    })).toThrow("Team output delivery keys require entryAgentRunId.");
   });
 });

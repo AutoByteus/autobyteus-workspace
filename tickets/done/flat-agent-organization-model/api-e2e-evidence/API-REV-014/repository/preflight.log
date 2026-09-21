@@ -1,0 +1,75 @@
+timestamp=2026-09-06T11:15:47Z
+head=3656220d2f7a1551aa54d8e7e9d3eb8d767b96f6
+source=f519a2093c98f265df9ea958bb5be15d6a5b2494
+source_is_ancestor=0
+head_subject=docs: record IR-031 implementation handoff
+--- instructions ---
+e641ea74f36bf96753253dc164cd7816426b040e664374a1f046f523a5c2623e  autobyteus-server-ts/AGENTS.md
+36ce08f5c256733dbc2ddd1bc57275b8862d1405ac96e9538e1ab6204a64a1f1  autobyteus-web/AGENTS.md
+b1da397a24655d90aebdf0884eb9e4c0a1bbe823f5248e54f93ee25af8a3543f  autobyteus-server-ts/README.md
+8d74791499993ea90eaa69df5c5983b2b06e2bf6ea4c6fbe9e9264273e37bab7  autobyteus-web/README.md
+--- package manifest ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+--- fixture inventory ---
+PACKAGE.sha256
+README.md
+TEST-MANIFEST.md
+agent-orgs/aorg-direct-agents-org/org-config.json
+agent-orgs/aorg-direct-agents-org/org.md
+agent-orgs/aorg-mixed-org/org-config.json
+agent-orgs/aorg-mixed-org/org.md
+agent-teams/aorg-research-squad/team-config.json
+agent-teams/aorg-research-squad/team.md
+agent-teams/aorg-support-pair/team-config.json
+agent-teams/aorg-support-pair/team.md
+agents/aorg-analyst/agent-config.json
+agents/aorg-analyst/agent.md
+agents/aorg-concierge/agent-config.json
+agents/aorg-concierge/agent.md
+agents/aorg-lead/agent-config.json
+agents/aorg-lead/agent.md
+agents/aorg-verifier/agent-config.json
+agents/aorg-verifier/agent.md
+--- fixture counts ---
+agents=4
+teams=2
+orgs=2
+--- ports ---
+--- processes ---
+--- dirty state (preserve other owners) ---
+ M autobyteus-server-ts/docs/modules/agent_orgs.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_orgs.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+ M tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+ M tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+ M tickets/in-progress/flat-agent-organization-model/release-notes.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/post-pass-user-discovery/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-005/
+--- diff check ---

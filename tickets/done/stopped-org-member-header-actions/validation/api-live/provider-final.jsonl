@@ -1,0 +1,8 @@
+{"type":"request","id":1,"at":"2026-09-17T01:16:05.547Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":1,"status":200,"at":"2026-09-17T01:16:10.651Z"}
+{"type":"request","id":2,"at":"2026-09-17T01:16:22.312Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4-mini"}
+{"type":"response","id":2,"status":200,"at":"2026-09-17T01:16:24.903Z"}
+{"type":"request","id":3,"at":"2026-09-17T01:20:08.557Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4","reasoning":{"effort":"low"}}
+{"type":"response","id":3,"status":200,"at":"2026-09-17T01:20:11.162Z"}
+{"type":"request","id":4,"at":"2026-09-17T01:20:37.440Z","origin":"https://api.openai.com","path":"/v1/responses","model":"gpt-5.4","reasoning":{"effort":"low"}}
+{"type":"response","id":4,"status":200,"at":"2026-09-17T01:20:40.439Z"}

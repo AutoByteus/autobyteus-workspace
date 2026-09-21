@@ -1,0 +1,51 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Agent Org
+Readfix Alpha
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime used by this organization run.
+
+Default LLM Model
+OpenAI / gpt-5.4-mini
+
+Used across the organization unless a placement is customized.
+
+Thinking
+Use setting
+Advanced
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+Automatically allows tool calls and access requests for this run.
+
+Auto approve tools
+Member overrides (2)
+Run Agent Org
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No workspaces available. Add a workspace to see files.
+No file selected
+
+Select a file from the explorer to view or edit its content.

@@ -1,0 +1,5 @@
+Removed only build-generated intake-absent untracked outputs:
+- autobyteus-application-backend-sdk/dist
+- autobyteus-application-sdk-contracts/dist
+Retained electron-dist and .local build logs/previous output for user verification.
+No user process/profile/data changed.

@@ -1,0 +1,26 @@
+{
+  "shutdown": {"signal": "SIGTERM", "pid": 37401, "exit": 0, "clean": true, "aggregateError": false},
+  "restart": {"sessionId": 16739, "pid": 44310, "sameDataDirectory": true, "migrations": "24 found; none pending"},
+  "firstHistoryAfterRestart": {
+    "agentOrg": {"orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba", "isActive": false},
+    "standaloneTeam": {"teamRunId": "apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89", "isActive": true, "reason": "the still-open standalone Team stream used its supported reconnect/restore path"}
+  },
+  "automaticRecoveryDuringServerDowntime": {
+    "observed": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+    "noticeCount": 1,
+    "manualReconnectControl": false,
+    "interpretation": "bounded attempts exhausted while the server was unavailable; one notice remained until supported history selection"
+  },
+  "supportedRestore": {
+    "path": "Refresh Agent Org history -> inactive run -> expand -> select offline member",
+    "wholeOrgActive": true,
+    "priorDirectContentVisible": true,
+    "priorMountedTeamContentAndAcceptedTaskVisible": true,
+    "directContinuationMarker": "APIREV8-ORG-DIRECT-RESUMED-001",
+    "mountedTeamContinuationMarker": "APIREV8-ORG-TEAM-RESUMED-001",
+    "standaloneTeamContinuationMarker": "APIREV8-TEAM-RESUMED-001"
+  },
+  "identity": "live/persistence/LIVE-003-provider-identity-comparison.json",
+  "identityResult": "conversation-bearing direct Agent and mounted-Team coordinator kept provider identity; system-instruction-only steady Analyst obtained a different durable provider identity; all logical AgentRun IDs and the settled task execution stayed stable",
+  "terminalStop": {"control": "Stop Agent Org", "finalRouteMode": "configuration", "activeConversationSurfaceRemoved": true}
+}

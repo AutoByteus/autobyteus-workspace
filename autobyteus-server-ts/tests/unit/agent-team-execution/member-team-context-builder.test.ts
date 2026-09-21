@@ -1,235 +1,162 @@
 import { describe, expect, it, vi } from "vitest";
-import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import {
+  createRootExecutionPhysicalScope,
+  createTeamRootExecutionIdentity,
+} from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import {
-  createChildTeamRunPhysicalScope,
-  createRootTeamRunPhysicalScope,
-  type TeamRunPhysicalScope,
-} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
-import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testAgentTeamNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+  FlatAgentExecutionContext,
+  FlatTeamExecutionContext,
+} from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
+import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
+import {
+  testAgentNode,
+  testMemberTaskCommandCapability,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
 const buildBuilder = (definitions: Record<string, { name?: string; instructions?: string }> = {}) =>
-  new MemberTeamContextBuilder({
+  new MemberExecutionContextBuilder({
     getDefinitionById: vi.fn(async (id: string) => definitions[id] ?? null),
   } as never);
 
-const findTeam = (root: TeamRunAgentTeamNode, address: string): TeamRunAgentTeamNode => {
-  if (root.address === address) return root;
-  const visit = (node: TeamRunNode): TeamRunAgentTeamNode | null => {
-    if (node.kind === "agent") return null;
-    if (node.address === address) return node;
-    for (const child of node.children) {
-      const found = visit(child);
-      if (found) return found;
-    }
-    return null;
-  };
-  const found = visit(root);
-  if (!found) throw new Error(`missing Team node '${address}'`);
-  return found;
-};
-
-const physicalScopeForTeam = (
-  root: TeamRunAgentTeamNode,
-  address: string,
-): TeamRunPhysicalScope => {
-  const visit = (
-    node: TeamRunAgentTeamNode,
-    scope: TeamRunPhysicalScope,
-  ): TeamRunPhysicalScope | null => {
-    if (node.address === address) return scope;
-    for (const child of node.children) {
-      if (child.kind !== "agent_team") continue;
-      const found = visit(child, createChildTeamRunPhysicalScope(scope, child.teamRunId));
-      if (found) return found;
-    }
-    return null;
-  };
-  const found = visit(root, createRootTeamRunPhysicalScope(root.teamRunId));
-  if (!found) throw new Error(`missing Team node '${address}'`);
-  return found;
-};
-
-const buildContext = (input: {
-  config: TeamRunConfig;
-  teamRunId: string;
-  teamAddress: string;
-  agentNode: TeamRunAgentNode;
-}) => new TeamRunContext({
-  physicalScope: physicalScopeForTeam(input.config.rootTeam, input.teamAddress),
-  teamRunId: input.teamRunId,
+const buildContext = (config: TeamRunConfig, agents: readonly TeamRunAgentNode[]) => new TeamRunContext({
+  physicalScope: createRootExecutionPhysicalScope({
+    root: createTeamRootExecutionIdentity(config.rootTeam.teamRunId),
+    ancestorTeamRunIds: [],
+  }),
+  teamRunId: config.rootTeam.teamRunId,
   teamBackendKind: TeamBackendKind.MIXED,
-  teamNode: findTeam(input.config.rootTeam, input.teamAddress),
-  handoffs: input.config.handoffs,
-  runtimeContext: new MixedTeamRunContext({
-    memberContexts: [new MixedAgentMemberContext({
-      address: input.agentNode.address,
-      agentRunId: input.agentNode.agentRunId,
-      runtimeKind: input.agentNode.runtimeKind,
-      platformAgentRunId: null,
-    })],
+  teamNode: config.rootTeam,
+  handoffs: config.handoffs,
+  runtimeContext: new FlatTeamExecutionContext({
+    configuredMemberActivationMode: "fresh",
+    memberContexts: agents.map((agent) => new FlatAgentExecutionContext({
+      address: agent.address,
+      agentRunId: agent.agentRunId,
+      runtimeKind: agent.runtimeKind,
+      platformAgentRunId: agent.platformAgentRunId,
+    })),
   }),
 });
 
-describe("MemberTeamContextBuilder", () => {
-  it("builds one root-canonical execution identity and filters outgoing handoffs", async () => {
-    const taskRootResolver = testMemberTaskRootResolver();
-    const deliverInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
-    const productManager = testAgentNode("/product_manager", { agentRunId: "run-product-manager" });
-    const researchLead = testAgentNode("/research_team/research_lead", { agentRunId: "run-research-lead" });
-    const effectiveHandoffs = [
-      { from: "/product_manager", to: "/research_team", rules: ["When research is needed."] },
-      { from: "/research_team/research_lead", to: "/product_manager", rules: ["When research is ready."] },
+const acceptedDelivery = vi.fn(async () => ({ accepted: true }));
+
+describe("MemberExecutionContextBuilder", () => {
+  it("builds one tagged Team-root identity and preserves filtered handoff order", async () => {
+    const coordinator = testAgentNode("/coordinator", { agentRunId: "run-coordinator" });
+    const reviewer = testAgentNode("/reviewer", { agentRunId: "run-reviewer" });
+    const handoffs = [
+      { from: "/coordinator", to: "/reviewer", rules: ["First rule.", "Second rule."] },
+      { from: "/reviewer", to: "/coordinator", rules: ["Return when ready."] },
     ];
     const config = testTeamRunConfig({
       rootTeamRunId: "team-1",
       rootTeamDefinitionId: "team-def-1",
-      coordinatorAddress: "/product_manager",
-      handoffs: effectiveHandoffs,
-      children: [
-        productManager,
-        testAgentTeamNode({
-          address: "/research_team",
-          coordinatorAddress: "/research_team/research_lead",
-          teamDefinitionId: "research-def",
-          teamRunId: "research-run",
-          children: [researchLead],
-        }),
-      ],
+      coordinatorAddress: coordinator.address,
+      children: [coordinator, reviewer],
+      handoffs,
     });
-
-    const builder = buildBuilder({
+    const taskCommands = testMemberTaskCommandCapability("team-1");
+    const result = await buildBuilder({
       "team-def-1": { name: "Product Team", instructions: "Coordinate carefully." },
+    }).build({
+      teamContext: buildContext(config, [coordinator, reviewer]),
+      agentNode: coordinator,
+      deliverInterAgentMessage: acceptedDelivery,
+      taskCommands,
     });
-    const build = (resolver: typeof taskRootResolver | null | undefined) => builder.build({
-      teamContext: buildContext({ config, teamRunId: "team-1", teamAddress: "/", agentNode: productManager }),
-      agentNode: productManager,
-      deliverInterAgentMessage,
-      taskRootResolver: resolver,
-    } as never);
-    const result = await build(taskRootResolver);
 
-    expect(result.authoredTeamInstruction).toBe("Coordinate carefully.");
+    expect(result.authoredEnclosingScopeInstruction).toBe("Coordinate carefully.");
     expect(result.identity).toEqual({
-      rootTeamRunId: "team-1",
-      memberAddress: "/product_manager",
-      agentRunId: "run-product-manager",
+      root: { rootSubjectKind: "agent_team", rootRunId: "team-1" },
+      memberAddress: "/coordinator",
+      agentRunId: "run-coordinator",
     });
-    expect(result.collaboration.outgoingHandoffs).toEqual([effectiveHandoffs[0]]);
-    expect(result.collaboration.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
-    expect(result.taskRootResolver).toBe(taskRootResolver);
+    expect(result.collaboration.outgoingHandoffs).toEqual([handoffs[0]]);
+    expect(result.tasks.root).toEqual({ rootSubjectKind: "agent_team", rootRunId: "team-1" });
+    expect(Object.keys(result.identity).sort()).toEqual(["agentRunId", "memberAddress", "root"]);
     expect(Object.isFrozen(result.identity)).toBe(true);
-    expect(Object.keys(result.identity).sort()).toEqual(["agentRunId", "memberAddress", "rootTeamRunId"]);
     expect(Object.isFrozen(result.collaboration.outgoingHandoffs)).toBe(true);
-    expect(result).not.toHaveProperty("executionAddress");
-    await expect(build(undefined)).rejects.toThrow("MemberTaskRootResolver is required");
-    await expect(build(null)).rejects.toThrow("MemberTaskRootResolver is required");
   });
 
-  it("uses the exact root-visible child address with the local AgentRun ID", async () => {
-    const interviewer = testAgentNode("/research_team/field_team/interviewer", {
-      agentRunId: "run-interviewer",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-    });
-    const fieldTeam = testAgentTeamNode({
-      address: "/research_team/field_team",
-      coordinatorAddress: interviewer.address,
-      teamDefinitionId: "field-team-def",
-      teamRunId: "field-team-run",
-      children: [interviewer],
-    });
-    const researchLead = testAgentNode("/research_team/research_lead");
+  it("delivers through the Team-private adapter with the exact sender identity", async () => {
+    const coordinator = testAgentNode("/coordinator", { agentRunId: "run-coordinator" });
+    const reviewer = testAgentNode("/reviewer", { agentRunId: "run-reviewer" });
     const config = testTeamRunConfig({
-      rootTeamRunId: "root-run",
-      coordinatorAddress: "/root_lead",
-      handoffs: [{ from: interviewer.address, to: researchLead.address, rules: ["When the report is ready."] }],
-      children: [
-        testAgentNode("/root_lead"),
-        testAgentTeamNode({
-          address: "/research_team",
-          coordinatorAddress: researchLead.address,
-          teamRunId: "research-run",
-          children: [researchLead, fieldTeam],
-        }),
-      ],
+      rootTeamRunId: "team-1",
+      coordinatorAddress: coordinator.address,
+      children: [coordinator, reviewer],
+    });
+    const deliver = vi.fn(async () => ({ accepted: true }));
+    const result = await buildBuilder().build({
+      teamContext: buildContext(config, [coordinator, reviewer]),
+      agentNode: coordinator,
+      deliverInterAgentMessage: deliver,
+      taskCommands: testMemberTaskCommandCapability("team-1"),
     });
 
-    const result = await buildBuilder({ "field-team-def": { name: "Field Team" } }).build({
-      teamContext: buildContext({ config, teamRunId: "field-team-run", teamAddress: "/research_team/field_team", agentNode: interviewer }),
-      agentNode: interviewer,
-      taskRootResolver: testMemberTaskRootResolver(),
+    await expect(result.collaboration.deliverLogicalMessage({
+      recipientAddress: "/reviewer",
+      content: " Please review. ",
+      referenceFiles: ["/tmp/context.md"],
+    })).resolves.toEqual({ accepted: true });
+    expect(deliver).toHaveBeenCalledWith({
+      rootTeamRunId: "team-1",
+      recipientAddress: "/reviewer",
+      sender: {
+        participant: {
+          kind: "agent",
+          identity: result.identity,
+          displayName: "coordinator",
+        },
+      },
+      content: "Please review.",
+      messageType: null,
+      referenceFiles: ["/tmp/context.md"],
     });
-
-    expect(result.identity).toEqual({
-      rootTeamRunId: "root-run",
-      memberAddress: "/research_team/field_team/interviewer",
-      agentRunId: "run-interviewer",
-    });
-    expect(result.collaboration.outgoingHandoffs).toHaveLength(1);
-    expect(result.collaboration.deliverInterAgentMessage).toBeNull();
   });
 
-  it("keeps delivery enabled with no configured outgoing handoffs", async () => {
+  it("keeps delivery enabled when no outgoing handoff is configured", async () => {
     const solo = testAgentNode("/solo", { agentRunId: "run-solo" });
-    const config = testTeamRunConfig({ rootTeamRunId: "team-solo", coordinatorAddress: solo.address, children: [solo] });
-    const deliverInterAgentMessage = vi.fn();
+    const config = testTeamRunConfig({
+      rootTeamRunId: "team-solo",
+      coordinatorAddress: solo.address,
+      children: [solo],
+    });
+    const deliver = vi.fn(async () => ({ accepted: true }));
     const result = await buildBuilder().build({
-      teamContext: buildContext({ config, teamRunId: "team-solo", teamAddress: "/", agentNode: solo }),
+      teamContext: buildContext(config, [solo]),
       agentNode: solo,
-      deliverInterAgentMessage,
-      taskRootResolver: testMemberTaskRootResolver(),
+      deliverInterAgentMessage: deliver,
+      taskCommands: testMemberTaskCommandCapability("team-solo"),
     });
 
     expect(result.collaboration.outgoingHandoffs).toEqual([]);
-    expect(result.collaboration.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
+    await result.collaboration.deliverLogicalMessage({ recipientAddress: "/solo", content: "Continue." });
+    expect(deliver).toHaveBeenCalledOnce();
   });
 
-  it("keeps cloned identity and handoffs unchanged after source mutation", async () => {
-    const researchLead = testAgentNode("/research_team/research_lead", { agentRunId: "run-research-lead" });
-    const fieldLead = testAgentNode("/research_team/field_team/field_lead");
-    const rules = ["When field research is required."];
-    const handoffs = [{ from: researchLead.address, to: "/research_team/field_team", rules }];
+  it("rejects missing or differently rooted task command capabilities", async () => {
+    const solo = testAgentNode("/solo", { agentRunId: "run-solo" });
     const config = testTeamRunConfig({
-      rootTeamRunId: "root-run",
-      coordinatorAddress: "/root_lead",
-      handoffs,
-      children: [
-        testAgentNode("/root_lead"),
-        testAgentTeamNode({
-          address: "/research_team",
-          coordinatorAddress: researchLead.address,
-          teamDefinitionId: "research-def",
-          teamRunId: "research-run",
-          children: [
-            researchLead,
-            testAgentTeamNode({
-              address: "/research_team/field_team",
-              coordinatorAddress: fieldLead.address,
-              children: [fieldLead],
-            }),
-          ],
-        }),
-      ],
+      rootTeamRunId: "team-solo",
+      coordinatorAddress: solo.address,
+      children: [solo],
     });
-    const result = await buildBuilder().build({
-      teamContext: buildContext({ config, teamRunId: "research-run", teamAddress: "/research_team", agentNode: researchLead }),
-      agentNode: researchLead,
-      taskRootResolver: testMemberTaskRootResolver(),
-    });
+    const input = {
+      teamContext: buildContext(config, [solo]),
+      agentNode: solo,
+      deliverInterAgentMessage: acceptedDelivery,
+    };
 
-    rules[0] = "mutated";
-    handoffs[0]!.to = "/mutated";
-
-    expect(result.identity.memberAddress).toBe("/research_team/research_lead");
-    expect(result.collaboration.outgoingHandoffs).toEqual([{
-      from: "/research_team/research_lead",
-      to: "/research_team/field_team",
-      rules: ["When field research is required."],
-    }]);
+    await expect(buildBuilder().build({ ...input, taskCommands: undefined as never }))
+      .rejects.toThrow("MemberTaskCommandCapability is required");
+    await expect(buildBuilder().build({
+      ...input,
+      taskCommands: testMemberTaskCommandCapability("other-team"),
+    })).rejects.toThrow("same root");
   });
-
 });

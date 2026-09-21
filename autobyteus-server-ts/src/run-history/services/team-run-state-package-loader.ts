@@ -48,19 +48,13 @@ const repairTree = (input: {
       members: member.members.map(repairTaskMember),
       taskExecutions: member.taskExecutions.map(repairTask).filter(notNull),
     };
-  const repairConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredExecutionNode =>
-    "agentRunId" in member ? member : {
-      ...member,
-      members: member.members.map(repairConfiguredMember),
-      taskExecutions: member.taskExecutions.map(repairTask).filter(notNull),
-    };
   const notNull = <T>(value: T | null): value is T => value !== null;
 
   return validateTeamRunExecutionTreePayload({
     ...input.tree,
     rootTeam: {
       ...input.tree.rootTeam,
-      members: input.tree.rootTeam.members.map(repairConfiguredMember),
+      members: input.tree.rootTeam.members,
       taskExecutions: input.tree.rootTeam.taskExecutions.map(repairTask).filter(notNull),
     },
   }, input.tree.rootTeam.teamRunId);

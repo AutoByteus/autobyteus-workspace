@@ -22,6 +22,7 @@ import { useWindowNodeContextStore } from "~/stores/windowNodeContextStore";
 import { useWorkspaceStore } from "~/stores/workspace";
 import Terminal from "~/components/workspace/tools/Terminal.vue";
 import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+import type { WorkspaceMetadata } from "~/types/workspace/WorkspaceMetadata";
 import {
   createTerminalTargetCacheScope,
   getTerminalEndpointScopeKey,
@@ -36,6 +37,7 @@ interface CachedTerminalEntry {
 
 const props = withDefaults(defineProps<{
   active?: boolean;
+  workspaceMetadata?: WorkspaceMetadata | null;
 }>(), {
   active: false,
 });
@@ -58,7 +60,11 @@ const terminalEndpointScopeKey = computed(() =>
 );
 
 const currentTerminalTarget = computed<TerminalTarget | null>(() =>
-  terminalTargetFromWorkspaceMetadata(workspaceStore.activeWorkspaceMetadata),
+  terminalTargetFromWorkspaceMetadata(
+    props.workspaceMetadata === undefined
+      ? workspaceStore.activeWorkspaceMetadata
+      : props.workspaceMetadata,
+  ),
 );
 
 const activeTerminalTargetKey = computed(() =>

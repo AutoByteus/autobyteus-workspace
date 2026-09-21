@@ -1,0 +1,22 @@
+{
+  "at": "2026-09-13T02:03:39.464835+00:00",
+  "userDecision": "For the two issues remain open, I could accept it for now. ... Continue with your still planned test.",
+  "acceptedKnownIssues": [
+    {
+      "id": "USER-pre-message-member-lifecycle",
+      "description": "Original Team Offline/unstarted members versus current eager preparation/Idle before messages",
+      "status": "User accepted for current ticket; not fixed; source/lifecycle difference retained"
+    },
+    {
+      "id": "LIVE-PUB-mounted-navigation",
+      "description": "Single unexpected Org-to-prior-Team navigation; distinct followup did not reproduce",
+      "status": "User accepted for current ticket; not fixed; original failed observation retained"
+    }
+  ],
+  "scope": "Applies only to these two known issues. Continue previously listed remaining tests. No waiver of new failures, no declaration that untested scenarios passed, no production change.",
+  "references": [
+    "live/USER-pre-message-status-source-comparison.json",
+    "live/LIVE-PUB-mounted-result.json",
+    "live/LIVE-PUB-mounted-confirm-result.json"
+  ]
+}

@@ -1,0 +1,93 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs Sidebar Broken Team (1)":
+    - img "Active team runs"
+    - generic: Sidebar Broken Team
+    - generic: (1)
+  - button "Active team runs Sidebar Empty Team (1)":
+    - img "Active team runs"
+    - generic: Sidebar Empty Team
+    - generic: (1)
+  - button "Active team runs Sidebar Image Team avatar Sidebar Image Team (1)":
+    - img "Active team runs"
+    - img "Sidebar Image Team avatar"
+    - generic: Sidebar Image Team
+    - generic: (1)
+  - generic: Orgs
+  - button "Sidebar Broken Org (1)":
+    - generic: Sidebar Broken Org
+    - generic: (1)
+  - button "Sidebar Image Org Sidebar Image Org (2)" [expanded]:
+    - img "Sidebar Image Org"
+    - generic: Sidebar Image Org
+    - generic: (2)
+  - 'button "Expand SIDEBAR_HISTORY_INPUT: keep this conversation visible during collapse. descendants" [active]':
+  - 'treeitem "Running SIDEBAR_HISTORY_INPUT: keep this conversation visible during collapse."':
+    - generic "Running"
+    - generic: "SIDEBAR_HISTORY_INPUT: keep this conversation visible during collapse."
+  - button "Stop Agent Org":
+  - generic: now
+  - button "Expand Sidebar Image Org descendants":
+  - treeitem "Stopped New - Sidebar Image Org":
+    - generic "Stopped"
+    - generic: New - Sidebar Image Org
+  - generic: 20m
+  - button "Sidebar Readonly Org (1)":
+    - generic: Sidebar Readonly Org
+    - generic: (1)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: D
+  - heading "direct - D045" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: "SIDEBAR_HISTORY_INPUT: keep this conversation visible during collapse."
+  - generic: D
+  - generic: direct
+  - paragraph: "SIDEBAR_HISTORY_REPLY: retained browser conversation fixture."
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message...": UNSENT after real retained conversation
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

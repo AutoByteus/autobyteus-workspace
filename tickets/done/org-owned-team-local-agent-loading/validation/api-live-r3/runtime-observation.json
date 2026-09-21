@@ -1,0 +1,24 @@
+{
+  "operations": {
+    "GetProviderModelCatalogSnapshots": 1,
+    "GetApplicationsCapability": 1,
+    "GetAllWorkspaces": 1,
+    "ListWorkspaceRunHistory": 44,
+    "ListCollaborationRootHistory": 50,
+    "GetAgentDefinitions": 3,
+    "GetAgentTeamDefinitions": 3,
+    "GetAgentOrgDefinitions": 2,
+    "GetAgentOrgReferencedAgent": 7,
+    "GetAgentOrgReferencedTeam": 3,
+    "GetRuntimeAvailabilities": 1,
+    "EnsureProviderModelCatalog": 3,
+    "CreateAgentOrgRun": 2,
+    "GetAgentOrgRunInspection": 2,
+    "GetAgentOrgMemberRunProjection": 8,
+    "RefreshAgentTeamDefinitionCatalog": 1,
+    "RefreshAgentDefinitionCatalog": 1,
+    "GetAgentPackages": 1,
+    "ReloadAgentPackage": 1
+  },
+  "readLazinessQualification": "Before-send actual DOM Offline plus no new traces; no direct in-memory provider count injected. System instructions and user traces appear only for deliberately sent recipients. Settings model discovery is not an agent execution."
+}

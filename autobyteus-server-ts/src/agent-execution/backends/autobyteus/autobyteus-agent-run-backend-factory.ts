@@ -38,7 +38,7 @@ import {
   type AutoByteusAgentLike,
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
-import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
+import { buildAutoByteusManagedCollaborationContext } from "./autobyteus-managed-collaboration-context-builder.js";
 import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
 import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
 import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
@@ -198,7 +198,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       llmConfig: built.resolvedRunConfig.llmConfig,
       skillAccessMode: built.resolvedRunConfig.skillAccessMode,
       runtimeKind: built.resolvedRunConfig.runtimeKind,
-      memberTeamContext: built.resolvedRunConfig.memberTeamContext,
+      memberExecutionContext: built.resolvedRunConfig.memberExecutionContext,
       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
     });
     const createAgentWithId = (
@@ -260,7 +260,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           llmConfig: context.config.llmConfig,
           skillAccessMode: context.config.skillAccessMode,
           runtimeKind: context.config.runtimeKind,
-          memberTeamContext: context.config.memberTeamContext,
+          memberExecutionContext: context.config.memberExecutionContext,
           applicationExecutionContext: context.config.applicationExecutionContext,
         }),
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
@@ -324,7 +324,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
     const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(
       agentDef,
-      options.memberTeamContext,
+      options.memberExecutionContext,
     );
 
     const { tools } = resolveApplicationAwareAgentTools({
@@ -332,7 +332,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       runtimeToolExposure,
       senderRunId: runId,
       runtimeKind: options.runtimeKind,
-      memberTeamContext: options.memberTeamContext,
+      memberExecutionContext: options.memberExecutionContext,
       applicationExecutionContext: options.applicationExecutionContext,
       capability: this.applicationAgentTools,
       logger,
@@ -340,7 +340,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     const resolvedPrompt = composeNativeAutoByteusPrompt({
       agentDefinition: agentDef,
       workspaceRootPath,
-      memberTeamContext: options.memberTeamContext ?? null,
+      memberExecutionContext: options.memberExecutionContext ?? null,
     });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
@@ -440,8 +440,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
       workspace_is_temp:
         workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
-      ...(options.memberTeamContext
-        ? { teamContext: buildAutoByteusManagedTeamContext(options.memberTeamContext) }
+      ...(options.memberExecutionContext
+        ? { teamContext: buildAutoByteusManagedCollaborationContext(options.memberExecutionContext) }
         : {}),
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }
@@ -481,7 +481,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         llmConfig: llmConfig ?? null,
         skillAccessMode: skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: effectiveRuntimeKind,
-        memberTeamContext: options.memberTeamContext ?? null,
+        memberExecutionContext: options.memberExecutionContext ?? null,
         applicationExecutionContext: options.applicationExecutionContext ?? null,
       }),
       agentConfig: new AgentConfig(
@@ -503,7 +503,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         null,
         skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         memoryCompaction,
-        resolveCompactionLineageScope(runId, options.memberTeamContext),
+        resolveCompactionLineageScope(runId, options.memberExecutionContext),
       ),
     };
   }

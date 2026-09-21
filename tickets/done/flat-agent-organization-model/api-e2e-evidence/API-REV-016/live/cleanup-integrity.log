@@ -1,0 +1,48 @@
+2026-09-06T14:43:03Z
+HEAD=43ef19f2de69b2c16133577dac40471f75ebd913
+source_ancestor=yes
+git_diff_check=pass
+autobyteus-server-ts/dist/agent-tools/mcp/agent-tools-mcp-routes.js: OK
+autobyteus-server-ts/dist/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js: OK
+autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-tool-executor.js: OK
+autobyteus-server-ts/dist/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js: OK
+autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-command-queue.js: OK
+autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-engine.js: OK
+autobyteus-server-ts/dist/agent-team-execution/task-delegation/team-task-lifecycle-adapter.js: OK
+fixture:
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+ports:
+owned_ports_clear=yes
+owned_processes:
+ 8545 tee tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/live/cleanup-integrity.log
+secret_cleanup:
+copied_env_absent=yes
+copied_db_secret_absent=yes
+generated_contract_dist_absent=yes
+generated_backend_dist_absent=yes
+shared_package_roots:
+AUTOBYTEUS_AGENT_PACKAGE_ROOTS=/home/autobyteus/workspace/autobyteus-agents,/home/autobyteus/workspace/autobyteus-private-agents
+post-command-owned-runtime-processes:
+   48 node            node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+owned_runtime_process_count=1
+api16-owned-runtime-processes-only:
+api16_owned_runtime_process_count=0
+other_owner_server_preserved:
+   48 Sl   node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data

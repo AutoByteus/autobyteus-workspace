@@ -1,0 +1,13 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    { "memberName": "lead", "ref": "whole-config-agent", "refScope": "shared" }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "gpt-5.4-mini",
+    "llmConfig": { "reasoning_effort": "low" }
+  }
+}

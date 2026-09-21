@@ -1,0 +1,32 @@
+[
+  {
+    "teamRunId": "aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace",
+    "summary": "Call delegate_task exactly once to /analyst now. The task description must be: Produce AORG-CONFO...",
+    "createdAt": "2026-09-01T21:40:43.805Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "teamRunId": "aorg_e2e_research_squad_10cc5717e1934cfcaa15ce00a87ac702",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace",
+    "summary": "Call delegate_task exactly once to /analyst now. The task description must be: Produce AORG-SETTL...",
+    "createdAt": "2026-09-01T21:37:27.657Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "teamRunId": "aorg_e2e_research_squad_f35d812bf984490290de59d28df83334",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/temp_workspace",
+    "summary": "Call delegate_task exactly once to /analyst now. The task description must be: Produce AORG-SETTL...",
+    "createdAt": "2026-09-01T21:27:33.724Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

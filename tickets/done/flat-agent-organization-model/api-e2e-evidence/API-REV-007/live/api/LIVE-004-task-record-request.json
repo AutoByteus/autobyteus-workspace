@@ -1,0 +1,1 @@
+{"query":"query Live004Tasks(\u0024teamRunId:String!){getTaskDelegationRecords(teamRunId:\u0024teamRunId){taskId delegatorAgentRunId recipientAddress targetAgentRunId targetTeamRunId status description createdAt updates{kind submissionId reviewId reviewedSubmissionId decision content createdAt}}}","variables":{"teamRunId":"apirev7_5bfe50658a4144928ed4046deb4e2c41"}}

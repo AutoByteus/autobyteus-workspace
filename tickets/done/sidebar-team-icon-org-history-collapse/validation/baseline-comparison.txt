@@ -1,0 +1,6 @@
+Original HEAD panel suites: 16 failed / 49 passed; 16 errors.
+Original HEAD Activity suite: 2 failed / 4 passed.
+Current failed cases equal baseline: True
+Added: []
+Removed: []
+Source temporarily substituted from git show HEAD and restored byte-for-byte in finally; no reset or source commit.

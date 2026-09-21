@@ -1,3 +1,5 @@
+import { contextFileReferenceToDict, type ContextFileReference } from '../../agent/message/context-file-reference.js';
+import { parseRawTraceFileAttachments, validateFileAttachments } from './raw-trace-attachments.js';
 import { MemoryType, MemoryItem } from './memory-types.js';
 
 export type RawTraceMedia = {
@@ -15,6 +17,7 @@ export type RawTraceItemOptions = {
   content: string;
   sourceEvent: string;
   media?: RawTraceMedia | null;
+  fileAttachments?: readonly ContextFileReference[];
   toolName?: string | null;
   toolCallId?: string | null;
   toolArgs?: Record<string, unknown> | null;
@@ -32,6 +35,7 @@ export class RawTraceItem implements MemoryItem {
   content: string;
   sourceEvent: string;
   media: RawTraceMedia | null;
+  readonly fileAttachments: readonly ContextFileReference[];
   toolName: string | null;
   toolCallId: string | null;
   toolArgs: Record<string, unknown> | null;
@@ -48,6 +52,10 @@ export class RawTraceItem implements MemoryItem {
     this.content = options.content;
     this.sourceEvent = options.sourceEvent;
     this.media = options.media ?? null;
+    this.fileAttachments = validateFileAttachments(options.fileAttachments ?? []);
+    if (this.traceType !== 'user' && this.fileAttachments.length) {
+      throw new TypeError('Only user raw traces may contain file_attachments.');
+    }
     this.toolName = options.toolName ?? null;
     this.toolCallId = options.toolCallId ?? null;
     this.toolArgs = options.toolArgs ?? null;
@@ -72,6 +80,7 @@ export class RawTraceItem implements MemoryItem {
     };
 
     if (this.media) data.media = this.media;
+    if (this.fileAttachments.length) data.file_attachments = this.fileAttachments.map(contextFileReferenceToDict);
     if (this.toolName) data.tool_name = this.toolName;
     if (this.toolCallId) data.tool_call_id = this.toolCallId;
     if (this.toolArgs) data.tool_args = this.toolArgs;
@@ -91,6 +100,7 @@ export class RawTraceItem implements MemoryItem {
       traceType: String(data.trace_type),
       content: typeof data.content === 'string' ? data.content : '',
       sourceEvent: String(data.source_event),
+      fileAttachments: parseRawTraceFileAttachments(data.file_attachments, String(data.trace_type)),
       media: (data.media as RawTraceMedia | undefined) ?? null,
       toolName: typeof data.tool_name === 'string' ? data.tool_name : null,
       toolCallId: typeof data.tool_call_id === 'string' ? data.tool_call_id : null,

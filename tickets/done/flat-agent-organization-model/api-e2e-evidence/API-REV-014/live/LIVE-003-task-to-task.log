@@ -1,0 +1,17 @@
+{
+  "assertions": {
+    "twoSidecarRecords": true,
+    "exactClarificationRuns": true,
+    "exactTaskRuns": true,
+    "exactReference": true,
+    "taskACalledTool": true,
+    "taskBDelivery": true,
+    "configuredNoRows": true,
+    "configuredNoInbound": true,
+    "configuredLeadSelected": true,
+    "tasksRemainActive": true,
+    "noOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

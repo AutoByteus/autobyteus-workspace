@@ -1,0 +1,7 @@
+captured_at_utc=2026-09-02T22:13:53Z
+git_diff_check=PASS
+markdown_fence_balance=PASS
+current_model_stale_term_audit=PASS
+changed_relative_link_check=PASS
+pre_existing_note=autobyteus-web/AGENTS.md: ./docs/prompt_engineering.md remains an unrelated pre-existing broken link
+validated_docs=README.md,autobyteus-server-ts/docs/README.md,autobyteus-server-ts/docs/PROJECT_OVERVIEW.md,autobyteus-server-ts/docs/modules/README.md,autobyteus-server-ts/docs/modules/agent_team_definition.md,autobyteus-server-ts/docs/modules/agent_team_execution.md,autobyteus-server-ts/docs/modules/agent_orgs.md,autobyteus-server-ts/docs/modules/run_history.md,autobyteus-web/AGENTS.md,autobyteus-web/docs/agent_teams.md,autobyteus-web/docs/agent_orgs.md,autobyteus-web/docs/agent_execution_architecture.md

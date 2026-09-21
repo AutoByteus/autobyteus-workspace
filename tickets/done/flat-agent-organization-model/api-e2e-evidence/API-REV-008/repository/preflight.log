@@ -1,0 +1,74 @@
+timestamp=2026-09-02T21:12:51Z
+worktree=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model
+artifact=06a918c71fc192e0b4ed9c3ef6b4df7163aef530
+source_commit=3199ba081ad450be72fba239fe86e76c0c697a33
+source_is_ancestor=yes
+--- instructions ---
+36ce08f5c256733dbc2ddd1bc57275b8862d1405ac96e9538e1ab6204a64a1f1  autobyteus-web/AGENTS.md
+e641ea74f36bf96753253dc164cd7816426b040e664374a1f046f523a5c2623e  autobyteus-server-ts/AGENTS.md
+8d74791499993ea90eaa69df5c5983b2b06e2bf6ea4c6fbe9e9264273e37bab7  autobyteus-web/README.md
+b1da397a24655d90aebdf0884eb9e4c0a1bbe823f5248e54f93ee25af8a3543f  autobyteus-server-ts/README.md
+--- fixture manifest ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+fixture_file_count=19
+--- candidate ports 8588/3588 ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+--- owned-name process scan ---
+33293 /bin/bash -lc set -euo pipefail BASE=tickets/in-progress/flat-agent-organization-model E=$BASE/api-e2e-evidence/API-REV-008 F=$BASE/api-e2e-fixtures/aorg-api-rev-002-agent-package mkdir -p "$E/repository" "$E/live/api" "$E/live/screenshots" "$E/live/persistence" "$E/live/process" {   echo "timestamp=$(date -u +%FT%TZ)"   echo "worktree=$PWD"   echo "artifact=$(git rev-parse HEAD)"   echo "source_commit=3199ba081ad450be72fba239fe86e76c0c697a33"   git merge-base --is-ancestor 3199ba081ad450be72fba239fe86e76c0c697a33 HEAD && echo source_is_ancestor=yes   echo '--- instructions ---'   for f in autobyteus-web/AGENTS.md autobyteus-server-ts/AGENTS.md autobyteus-web/README.md autobyteus-server-ts/README.md; do test -f "$f" && sha256sum "$f"; done   echo '--- fixture manifest ---'   (cd "$F" && sha256sum -c PACKAGE.sha256)   echo "fixture_file_count=$(find "$F" -type f | wc -l)"   echo '--- candidate ports 8588/3588 ---'   ss -ltnp '( sport = :8588 or sport = :3588 )' || true   echo '--- owned-name process scan ---'   pgrep -af 'API-REV-008|AUTOBYTEUS_SERVER_PORT=8588|--port 3588' || true   echo '--- worktree status ---'   git status --short   echo '--- diff check ---'   git diff --check && echo diff_check=pass   echo '--- exact source delta since failed API-REV-007 artifact ---'   git diff --stat 5bfc54c11ef82e4fec217c84dc66887965cf98ac..HEAD -- autobyteus-web autobyteus-server-ts   git diff --name-status 5bfc54c11ef82e4fec217c84dc66887965cf98ac..HEAD -- autobyteus-web autobyteus-server-ts } | tee "$E/repository/preflight.log"
+33297 /bin/bash -lc set -euo pipefail BASE=tickets/in-progress/flat-agent-organization-model E=$BASE/api-e2e-evidence/API-REV-008 F=$BASE/api-e2e-fixtures/aorg-api-rev-002-agent-package mkdir -p "$E/repository" "$E/live/api" "$E/live/screenshots" "$E/live/persistence" "$E/live/process" {   echo "timestamp=$(date -u +%FT%TZ)"   echo "worktree=$PWD"   echo "artifact=$(git rev-parse HEAD)"   echo "source_commit=3199ba081ad450be72fba239fe86e76c0c697a33"   git merge-base --is-ancestor 3199ba081ad450be72fba239fe86e76c0c697a33 HEAD && echo source_is_ancestor=yes   echo '--- instructions ---'   for f in autobyteus-web/AGENTS.md autobyteus-server-ts/AGENTS.md autobyteus-web/README.md autobyteus-server-ts/README.md; do test -f "$f" && sha256sum "$f"; done   echo '--- fixture manifest ---'   (cd "$F" && sha256sum -c PACKAGE.sha256)   echo "fixture_file_count=$(find "$F" -type f | wc -l)"   echo '--- candidate ports 8588/3588 ---'   ss -ltnp '( sport = :8588 or sport = :3588 )' || true   echo '--- owned-name process scan ---'   pgrep -af 'API-REV-008|AUTOBYTEUS_SERVER_PORT=8588|--port 3588' || true   echo '--- worktree status ---'   git status --short   echo '--- diff check ---'   git diff --check && echo diff_check=pass   echo '--- exact source delta since failed API-REV-007 artifact ---'   git diff --stat 5bfc54c11ef82e4fec217c84dc66887965cf98ac..HEAD -- autobyteus-web autobyteus-server-ts   git diff --name-status 5bfc54c11ef82e4fec217c84dc66887965cf98ac..HEAD -- autobyteus-web autobyteus-server-ts } | tee "$E/repository/preflight.log"
+33298 tee tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/repository/preflight.log
+--- worktree status ---
+ M README.md
+ M autobyteus-server-ts/docs/PROJECT_OVERVIEW.md
+ M autobyteus-server-ts/docs/README.md
+ M autobyteus-server-ts/docs/modules/README.md
+ M autobyteus-server-ts/docs/modules/agent_team_definition.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-web/AGENTS.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? autobyteus-server-ts/docs/modules/agent_orgs.md
+?? autobyteus-web/docs/agent_orgs.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+?? tickets/in-progress/flat-agent-organization-model/release-notes.md
+--- diff check ---
+diff_check=pass
+--- exact source delta since failed API-REV-007 artifact ---
+ .../__tests__/agentOrgStreamingService.spec.ts     | 45 ++++++++++++++++++++--
+ .../agentOrgExecution/agentOrgStreamingService.ts  |  6 ++-
+ 2 files changed, 47 insertions(+), 4 deletions(-)
+M	autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+M	autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts

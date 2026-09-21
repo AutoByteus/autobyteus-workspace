@@ -25,6 +25,8 @@ import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
 import { dispatchUserMessageForwarded } from "./agent-run-command-observer-dispatch.js";
 import type { AgentOperationResult } from "./agent-operation-result.js";
+import { AgentRunInterruptState } from "./agent-run-interrupt-state.js";
+import { AgentRunRootShutdownFence } from "./agent-run-root-shutdown-fence.js";
 import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
 import {
   buildAgentStatusPayload,
@@ -34,18 +36,6 @@ import {
 
 type AgentRunEventListener = (event: AgentRunEvent) => void;
 type ClaimedInputDispatch = { claim: AgentRunInputDispatchClaim; commandToken: number | null };
-
-type AgentRunInterruptReservation = {
-  turnId: string | null;
-  result: Promise<AgentOperationResult>;
-  resolve(result: AgentOperationResult): void;
-  reject(error: unknown): void;
-};
-
-type AgentRunInterruptDecision =
-  | { kind: "rejected"; result: AgentOperationResult }
-  | { kind: "joined"; reservation: AgentRunInterruptReservation }
-  | { kind: "claimed"; reservation: AgentRunInterruptReservation };
 
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>; backend: AgentRunBackend;
@@ -67,7 +57,15 @@ export class AgentRun {
   private readonly inputAdmissionState = new AgentRunInputAdmissionState();
   private readonly unsubscribeFromBackendSource: () => void;
   private activeInputDispatch: Promise<void> | null = null;
-  private activeInterruptReservation: AgentRunInterruptReservation | null = null;
+  private readonly interruptState: AgentRunInterruptState;
+  private readonly rootShutdownFence = new AgentRunRootShutdownFence({
+    snapshot: () => ({
+      quiescent: this.isRootShutdownQuiescent(),
+      hasActiveTurn: this.lifecycleState.activeTurn.kind !== "NONE",
+    }),
+    interruptActiveTurn: () => this.interruptState.interrupt(),
+  });
+  private tryingQuiescentTermination: Promise<PreparedAgentRunTermination | null> | null = null;
   private preparingTermination: Promise<PreparedAgentRunTermination> | null = null;
   private preparedTermination: PreparedAgentRunTermination | null = null;
   private termination: Promise<AgentOperationResult> | null = null;
@@ -79,6 +77,16 @@ export class AgentRun {
       throw new Error("AgentRun provider input normalizer is required.");
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.commandObservers = [...(options.commandObservers ?? [])];
+    this.interruptState = new AgentRunInterruptState({
+      runId: this.runId,
+      backend: this.backend,
+      dispatchQueue: this.dispatchQueue,
+      lifecycleState: this.lifecycleState,
+      onReservationReleased: () => {
+        void this.drainInputAfterLifecycleChange();
+        this.scheduleRootShutdownFenceEvaluation();
+      },
+    });
     this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
     this.unsubscribeFromBackendSource = this.backend.subscribeToSourceEventBatches(
       async (events) => {
@@ -127,23 +135,19 @@ export class AgentRun {
         observer,
         this.backend.isActive(),
       );
-      if (!admission.accepted) return { admission, dispatch: null } as const;
+      if (!admission.accepted) return { admission, appendTurnId: null } as const;
       const dispatch = this.claimNextInput();
-      return { admission, dispatch } as const;
+      const appendTurnId = dispatch?.claim.dispatch.kind === "append_to_active_turn"
+        ? dispatch.claim.dispatch.turnId
+        : null;
+      if (dispatch) this.startInputDispatch(dispatch);
+      return { admission, appendTurnId } as const;
     });
 
     if (!decision.admission.accepted) {
       return decision.admission;
     }
-    if (decision.dispatch) this.startInputDispatch(decision.dispatch);
-    const appendTurnId = decision.dispatch?.claim.dispatch.kind === "append_to_active_turn" &&
-      this.inputAdmissionState.isClaimForEntry(
-        decision.dispatch.claim,
-        decision.admission.entrySequence,
-      )
-      ? decision.dispatch.claim.dispatch.turnId
-      : null;
-    return { accepted: true, turnId: appendTurnId };
+    return { accepted: true, turnId: decision.appendTurnId };
   }
 
   async reserveUserMessage(
@@ -182,24 +186,50 @@ export class AgentRun {
   }
 
   async interrupt(turnId: string | null = null): Promise<AgentOperationResult> {
-    const decision = await this.dispatchQueue.enqueue(this.runId, () => {
-      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-      return this.reserveInterrupt(turnId);
-    });
-    if (decision.kind === "rejected") return decision.result;
-    if (decision.kind === "claimed") this.startInterrupt(decision.reservation);
-    return decision.reservation.result;
+    return this.interruptState.interrupt(turnId);
   }
 
   prepareTermination(): Promise<PreparedAgentRunTermination> {
     if (this.preparedTermination) return Promise.resolve(this.preparedTermination);
     if (this.preparingTermination) return this.preparingTermination;
+    if (this.tryingQuiescentTermination) {
+      return this.tryingQuiescentTermination.then((prepared) => prepared ?? this.prepareTermination());
+    }
     const preparation = this.prepareTerminationOnce();
     this.preparingTermination = preparation;
     void preparation.finally(() => {
       if (this.preparingTermination === preparation) this.preparingTermination = null;
     }).catch(() => undefined);
     return preparation;
+  }
+
+  tryPrepareTerminationIfQuiescent(): Promise<PreparedAgentRunTermination | null> {
+    if (this.preparedTermination) return Promise.resolve(this.preparedTermination);
+    if (this.preparingTermination) return Promise.resolve(null);
+    if (this.tryingQuiescentTermination) return this.tryingQuiescentTermination;
+    const attempt = this.dispatchQueue.enqueue(this.runId, () => {
+      if (this.preparedTermination) return this.preparedTermination;
+      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+      if (this.activeInputDispatch || this.interruptState.hasActiveReservation
+        || this.lifecycleState.activeTurn.kind !== "NONE" || this.lifecycleState.hasPendingCommand
+        || !this.inputAdmissionState.tryQuiesceIfAlreadyQuiescent()) return null;
+      return this.createTerminationPreparation();
+    });
+    this.tryingQuiescentTermination = attempt;
+    void attempt.finally(() => {
+      if (this.tryingQuiescentTermination === attempt) this.tryingQuiescentTermination = null;
+    }).catch(() => undefined);
+    return attempt;
+  }
+
+  async fenceInputAndInterruptForRootShutdown(): Promise<AgentOperationResult> {
+    await this.dispatchQueue.enqueue(this.runId, () => {
+      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+      this.inputAdmissionState.fenceForRootShutdown();
+      this.rootShutdownFence.begin();
+    });
+    this.scheduleRootShutdownFenceEvaluation();
+    return this.rootShutdownFence.result;
   }
 
   async terminate(): Promise<AgentOperationResult> {
@@ -219,6 +249,7 @@ export class AgentRun {
       getRuntimeLifecycleSnapshot: () => this.backend.getLifecycleSnapshot(),
       onCanonicalEventsDispatched: (canonicalEvents) => {
         this.observeInputCanonicalEvents(canonicalEvents);
+        this.scheduleRootShutdownFenceEvaluation();
       },
       onListenerError: (error) => {
         logger.warn(`[AgentRun] listener failed for run '${this.runId}': ${String(error)}`);
@@ -228,7 +259,7 @@ export class AgentRun {
   }
 
   private claimNextInput(): ClaimedInputDispatch | null {
-    if (this.activeInterruptReservation) return null;
+    if (this.interruptState.hasActiveReservation) return null;
     const claim = this.inputAdmissionState.claimNext({
       activeTurn: this.lifecycleState.activeTurn,
       hasPendingTurnStart: this.lifecycleState.hasPendingCommand,
@@ -255,6 +286,7 @@ export class AgentRun {
     const settle = () => {
       if (this.activeInputDispatch === task) this.activeInputDispatch = null;
       void this.drainInputAfterLifecycleChange();
+      this.scheduleRootShutdownFenceEvaluation();
     };
     void task.then(settle, settle);
   }
@@ -289,13 +321,17 @@ export class AgentRun {
         this.inputAdmissionState.applyDispatchFailure(input.claim, failure);
       }
       this.dispatchCanonicalStatus();
+      this.scheduleRootShutdownFenceEvaluation();
     });
   }
 
   private async drainInputAfterLifecycleChange(): Promise<void> {
     if (this.activeInputDispatch) return;
-    const next = await this.dispatchQueue.enqueue(this.runId, () => this.claimNextInput());
-    if (next && !this.activeInputDispatch) this.startInputDispatch(next);
+    await this.dispatchQueue.enqueue(this.runId, () => {
+      if (this.activeInputDispatch) return;
+      const next = this.claimNextInput();
+      if (next) this.startInputDispatch(next);
+    });
   }
 
   private observeInputCanonicalEvents(events: readonly AgentRunEvent[]): void {
@@ -305,7 +341,7 @@ export class AgentRun {
         continue;
       }
       if (event.eventType === AgentRunEventType.TURN_COMPLETED) {
-        this.releaseInterruptReservation(resolveAgentRunEventTurnId(event));
+        this.interruptState.observeTerminal(resolveAgentRunEventTurnId(event));
         this.inputAdmissionState.observeTurnTerminal({
           kind: "completed",
           turnId: resolveAgentRunEventTurnId(event),
@@ -313,7 +349,7 @@ export class AgentRun {
         continue;
       }
       if (event.eventType === AgentRunEventType.TURN_INTERRUPTED) {
-        this.releaseInterruptReservation(resolveAgentRunEventTurnId(event));
+        this.interruptState.observeTerminal(resolveAgentRunEventTurnId(event));
         this.inputAdmissionState.observeTurnTerminal({
           kind: "interrupted",
           turnId: resolveAgentRunEventTurnId(event),
@@ -326,14 +362,14 @@ export class AgentRun {
         ? event.payload.message
         : null;
       if (evidence?.kind === "TURN_TERMINAL") {
-        this.releaseInterruptReservation(evidence.turnId);
+        this.interruptState.observeTerminal(evidence.turnId);
         this.inputAdmissionState.observeTurnFailure({
           turnId: evidence.turnId,
           code: "RUNTIME_TURN_FAILED",
           message: errorMessage ?? "Runtime turn failed.",
         });
       } else if (evidence?.kind === "RUNTIME_GLOBAL") {
-        this.activeInterruptReservation = null;
+        this.interruptState.clear();
         this.inputAdmissionState.observeRuntimeFailure({
           code: "RUNTIME_GLOBAL_FAILURE",
           message: errorMessage ?? "Runtime failed.",
@@ -349,104 +385,6 @@ export class AgentRun {
     return (fact: AgentRunInputLifecycle): void => {
       if (fact.kind === "forwarded") this.notifyUserMessageForwarded(message, fact.turnId);
       options.lifecycleObserver?.(fact);
-    };
-  }
-
-  private reserveInterrupt(requestedTurnId: string | null): AgentRunInterruptDecision {
-    const existing = this.activeInterruptReservation;
-    if (existing) {
-      if (requestedTurnId !== null && requestedTurnId !== existing.turnId) {
-        return { kind: "rejected", result: this.interruptTurnMismatch(requestedTurnId, existing.turnId) };
-      }
-      return { kind: "joined", reservation: existing };
-    }
-
-    const activeTurn = this.lifecycleState.activeTurn;
-    if (activeTurn.kind === "NONE") {
-      return {
-        kind: "rejected",
-        result: {
-          accepted: false,
-          code: "NO_ACTIVE_TURN",
-          message: `AgentRun '${this.runId}' has no canonical active turn to interrupt.`,
-        },
-      };
-    }
-    const canonicalTurnId = activeTurn.kind === "IDENTIFIED" ? activeTurn.turnId : null;
-    if (requestedTurnId !== null && requestedTurnId !== canonicalTurnId) {
-      return {
-        kind: "rejected",
-        result: this.interruptTurnMismatch(requestedTurnId, canonicalTurnId),
-      };
-    }
-
-    let resolve!: (result: AgentOperationResult) => void;
-    let reject!: (error: unknown) => void;
-    const result = new Promise<AgentOperationResult>((resolveResult, rejectResult) => {
-      resolve = resolveResult;
-      reject = rejectResult;
-    });
-    const reservation = { turnId: canonicalTurnId, result, resolve, reject };
-    this.activeInterruptReservation = reservation;
-    return { kind: "claimed", reservation };
-  }
-
-  private startInterrupt(reservation: AgentRunInterruptReservation): void { void this.executeInterrupt(reservation); }
-
-  private async executeInterrupt(reservation: AgentRunInterruptReservation): Promise<void> {
-    let result: AgentOperationResult;
-    try {
-      result = await this.backend.interrupt(reservation.turnId);
-    } catch (error) {
-      const released = await this.dispatchQueue.enqueue(this.runId, () => {
-        if (this.activeInterruptReservation === reservation) {
-          this.activeInterruptReservation = null;
-          return true;
-        }
-        return false;
-      });
-      if (released) await this.drainInputAfterLifecycleChange();
-      reservation.reject(error);
-      return;
-    }
-
-    const application = await this.dispatchQueue.enqueue(this.runId, () => {
-      const providerTurnId = result.turnId;
-      const applied = providerTurnId !== undefined && providerTurnId !== null &&
-        providerTurnId !== reservation.turnId
-        ? {
-            accepted: false,
-            code: "AGENT_RUN_INTERRUPT_PROVIDER_PROTOCOL_VIOLATION",
-            message: `Interrupt result targeted '${providerTurnId}' instead of canonical turn '${reservation.turnId}'.`,
-          }
-        : result;
-      let released = false;
-      if (this.activeInterruptReservation === reservation && !applied.accepted) {
-        this.activeInterruptReservation = null;
-        released = true;
-      }
-      return { applied, released };
-    });
-    if (application.released) await this.drainInputAfterLifecycleChange();
-    reservation.resolve(application.applied);
-  }
-
-  private releaseInterruptReservation(turnId: string | null): void {
-    if (this.activeInterruptReservation?.turnId === turnId) {
-      this.activeInterruptReservation = null;
-    }
-  }
-
-  private interruptTurnMismatch(
-    requestedTurnId: string,
-    canonicalTurnId: string | null,
-  ): AgentOperationResult {
-    return {
-      accepted: false,
-      code: "TURN_MISMATCH",
-      message: canonicalTurnId
-        ? `AgentRun '${this.runId}' active turn is '${canonicalTurnId}', not '${requestedTurnId}'.`
-        : `AgentRun '${this.runId}' has an anonymous active turn, not '${requestedTurnId}'.`,
     };
   }
 
@@ -478,6 +416,11 @@ export class AgentRun {
     await this.inputAdmissionState.waitForQuiescence();
     await this.waitForActiveInputDispatch();
 
+    return this.preparedTermination ?? this.createTerminationPreparation();
+  }
+
+  private createTerminationPreparation(): PreparedAgentRunTermination {
+    if (this.preparedTermination) return this.preparedTermination;
     const prepared = createPreparedAgentRunTermination({
       runId: this.runId,
       cancelPrepared: () => {
@@ -489,6 +432,17 @@ export class AgentRun {
     });
     this.preparedTermination = prepared;
     return prepared;
+  }
+
+  private isRootShutdownQuiescent(): boolean {
+    return this.inputAdmissionState.isQuiescentNow && !this.activeInputDispatch
+      && !this.interruptState.hasActiveReservation && !this.lifecycleState.hasPendingCommand
+      && !this.interruptState.hasPendingProviderRequest
+      && this.lifecycleState.activeTurn.kind === "NONE";
+  }
+
+  private scheduleRootShutdownFenceEvaluation(): void {
+    queueMicrotask(() => this.rootShutdownFence.evaluate());
   }
 
   private finishCommittedTermination(): Promise<AgentOperationResult> {
@@ -508,7 +462,7 @@ export class AgentRun {
     if (!result.accepted) return result;
     await this.dispatchQueue.enqueue(this.runId, async () => {
       this.inputAdmissionState.settleAcceptedTermination();
-      this.activeInterruptReservation = null;
+      this.interruptState.clear();
       this.lifecycleState.terminate();
       this.segmentLifecycleState.releaseRun();
       await getDefaultAgentRunEventPipeline().releaseRun(this.runId);

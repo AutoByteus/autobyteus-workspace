@@ -1,0 +1,16 @@
+{
+  "private_backup": "/Users/normy/autobyteus_org/delivery-retained/ORG-CATALOG-NAMES-20260916-001-DR002",
+  "mode": "0700",
+  "verified_entries": 71,
+  "retained": [
+    "isolated .local data",
+    "local .nuxtrc"
+  ],
+  "excluded_rebuildable": [
+    "node_modules",
+    "web .nuxt/dist",
+    "server dist",
+    "autobyteus-ts dist"
+  ],
+  "symlinks": "preserved as links, no target traversal"
+}

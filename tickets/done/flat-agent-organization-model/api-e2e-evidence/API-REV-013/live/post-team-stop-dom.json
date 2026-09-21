@@ -1,0 +1,1065 @@
+{
+  "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&mode=configuration",
+  "title": "",
+  "ready": "complete",
+  "buttons": [
+    {
+      "i": 0,
+      "text": "Agents",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 1,
+      "text": "",
+      "title": "Collapse left panel",
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 2,
+      "text": "Agent Teams",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 3,
+      "text": "Agent Orgs",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 4,
+      "text": "Skills",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 5,
+      "text": "Memory",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 6,
+      "text": "Nodes",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 7,
+      "text": "",
+      "title": "Add workspace",
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 8,
+      "text": "Temp Workspace",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 9,
+      "text": "workspace",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "true",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 10,
+      "text": "",
+      "title": "Remove from Workspaces",
+      "aria": "Remove from Workspaces",
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 11,
+      "text": "A本APIREV8 本地化 Team β(1)",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "true",
+      "test": "workspace-team-definition-row-apirev8-team",
+      "disabled": false
+    },
+    {
+      "i": 12,
+      "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "true",
+      "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+      "disabled": false
+    },
+    {
+      "i": 13,
+      "text": "",
+      "title": "Archive team history",
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 14,
+      "text": "",
+      "title": "Delete team history permanently",
+      "aria": "Delete team history permanently",
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 15,
+      "text": "APIREV8 组织 Ω(1)",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "true",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 16,
+      "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": "true",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 17,
+      "text": "AEaorg e2e concierge",
+      "title": null,
+      "aria": "aorg e2e concierge, offline",
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+      "disabled": false
+    },
+    {
+      "i": 18,
+      "text": "apirev8 team",
+      "title": null,
+      "aria": "apirev8 team. Team status: Offline",
+      "selected": "false",
+      "current": null,
+      "expanded": "true",
+      "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+      "disabled": false
+    },
+    {
+      "i": 19,
+      "text": "AEaorg e2e lead",
+      "title": null,
+      "aria": "aorg e2e lead, offline",
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "disabled": false
+    },
+    {
+      "i": 20,
+      "text": "AEaorg e2e analyst",
+      "title": null,
+      "aria": "aorg e2e analyst, offline",
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+      "disabled": false
+    },
+    {
+      "i": 21,
+      "text": "workspace-team",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 22,
+      "text": "",
+      "title": "Remove from Workspaces",
+      "aria": "Remove from Workspaces",
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 23,
+      "text": "workspace",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 24,
+      "text": "workspace-default",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 25,
+      "text": "workspace-default",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 26,
+      "text": "Settings",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 27,
+      "text": "Select a model",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 28,
+      "text": "Existing",
+      "title": null,
+      "aria": null,
+      "selected": "true",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 29,
+      "text": "New",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 30,
+      "text": "📁 Temp Workspace (Default)Default temporary workspace",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 31,
+      "text": "Auto approve tools",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 32,
+      "text": "Member overrides (3)",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": "org-member-overrides-toggle",
+      "disabled": false
+    },
+    {
+      "i": 33,
+      "text": "AORG E2E Concierge/aorg_e2e_concierge",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 34,
+      "text": "Global default",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 35,
+      "text": "APIREV8 本地化 Team βTeam/apirev8_teamInherited",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": "false",
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 36,
+      "text": "Select a model",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 37,
+      "text": "Existing",
+      "title": null,
+      "aria": null,
+      "selected": "true",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 38,
+      "text": "New",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 39,
+      "text": "📁 Temp Workspace (Default)Default temporary workspace",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 40,
+      "text": "Auto approve tools",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 41,
+      "text": "Global default",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 42,
+      "text": "Global default",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 43,
+      "text": "Run Agent Org",
+      "title": null,
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": "run-agent-org",
+      "disabled": true
+    },
+    {
+      "i": 44,
+      "text": "Files",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 45,
+      "text": "Terminal",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 46,
+      "text": "Activity",
+      "title": null,
+      "aria": null,
+      "selected": "true",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 47,
+      "text": "Token",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 48,
+      "text": "Artifacts",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 49,
+      "text": "VNC Viewer",
+      "title": null,
+      "aria": null,
+      "selected": "false",
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    },
+    {
+      "i": 50,
+      "text": "",
+      "title": "Toggle Sidebar",
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": "right-side-panel-toggle",
+      "disabled": false
+    },
+    {
+      "i": 51,
+      "text": "",
+      "title": "Maximize view",
+      "aria": null,
+      "selected": null,
+      "current": null,
+      "expanded": null,
+      "test": null,
+      "disabled": false
+    }
+  ],
+  "tests": [
+    {
+      "test": "app-left-panel-shell",
+      "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analystworkspace-teamworkspaceworkspace-defaultworkspace-defaultSettings",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-sections",
+      "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analystworkspace-teamworkspaceworkspace-defaultworkspace-default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-primary-nav",
+      "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-section-resize-handle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "app-left-panel-run-history",
+      "text": "WorkspacesTemp Workspaceworkspace Teams A本APIREV8 本地化 Team β(1)Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...3dAaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analystAgent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analystworkspace-teamworkspaceworkspace-defaultworkspace-default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "Temp Workspace",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace",
+      "expanded": "true",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-definition-row-apirev8-team",
+      "text": "A本APIREV8 本地化 Team β(1)",
+      "expanded": "true",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-activity-dot",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+      "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+      "expanded": "true",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-run-disclosure",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-activity-dot",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-execution-tree",
+      "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_leadAaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+      "text": "Aaorg_e2e_lead3dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+      "expanded": null,
+      "selected": "false",
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-member-avatar",
+      "text": "A",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+      "text": "Aaorg_e2e_analyst3dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+      "expanded": null,
+      "selected": "false",
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-team-member-avatar",
+      "text": "A",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-agent-orgs",
+      "text": "Agent OrgsAPIREV8 组织 Ω(1)Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...3dAEaorg e2e conciergeapirev8 teamAEaorg e2e leadAEaorg e2e analystTask: aorg e2e analystTask: aorg e2e analystTask: aorg e2e analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+      "text": "AEaorg e2e concierge",
+      "expanded": null,
+      "selected": "false",
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+      "text": "apirev8 team",
+      "expanded": "true",
+      "selected": "false",
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-aggregate-status-dot",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "text": "AEaorg e2e lead",
+      "expanded": null,
+      "selected": "false",
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-agent-row-aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+      "text": "AEaorg e2e analyst",
+      "expanded": null,
+      "selected": "false",
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+      "text": "Task: aorg e2e analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+      "text": "Task: aorg e2e analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-task-agent-row-aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63",
+      "text": "Task: aorg e2e analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-team",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-default",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-default",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-adaptive-layout",
+      "text": "Agent OrgAPIREV8 组织 ΩRuntimeAutoByteusCodex App ServerClaude Agent SDKSelects the runtime used by this organization run.Default LLM ModelSelect a modelUsed across the organization unless a placement is customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsAutomatically allows tool calls and access requests for this run.Auto approve toolsMember overrides (3)AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.Run Agent OrgFilesTerminalActivityTokenArtifactsVNC ViewerNo workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.To-Do0 TasksNo to-dos yetAsk the agent to break down the work. The plan will appear here automatically.Activity0 EventsNo activity history yet.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-center-right-flow",
+      "text": "Agent OrgAPIREV8 组织 ΩRuntimeAutoByteusCodex App ServerClaude Agent SDKSelects the runtime used by this organization run.Default LLM ModelSelect a modelUsed across the organization unless a placement is customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsAutomatically allows tool calls and access requests for this run.Auto approve toolsMember overrides (3)AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.Run Agent OrgFilesTerminalActivityTokenArtifactsVNC ViewerNo workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.To-Do0 TasksNo to-dos yetAsk the agent to break down the work. The plan will appear here automatically.Activity0 EventsNo activity history yet.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-center-pane",
+      "text": "Agent OrgAPIREV8 组织 ΩRuntimeAutoByteusCodex App ServerClaude Agent SDKSelects the runtime used by this organization run.Default LLM ModelSelect a modelUsed across the organization unless a placement is customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsAutomatically allows tool calls and access requests for this run.Auto approve toolsMember overrides (3)AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.Run Agent Org",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-center-content-shell",
+      "text": "Agent OrgAPIREV8 组织 ΩRuntimeAutoByteusCodex App ServerClaude Agent SDKSelects the runtime used by this organization run.Default LLM ModelSelect a modelUsed across the organization unless a placement is customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsAutomatically allows tool calls and access requests for this run.Auto approve toolsMember overrides (3)AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.Run Agent Org",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "agent-org-run-config",
+      "text": "Agent OrgAPIREV8 组织 ΩRuntimeAutoByteusCodex App ServerClaude Agent SDKSelects the runtime used by this organization run.Default LLM ModelSelect a modelUsed across the organization unless a placement is customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsAutomatically allows tool calls and access requests for this run.Auto approve toolsMember overrides (3)AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.Run Agent Org",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "org-auto-approve-row",
+      "text": "Auto approve toolsAutomatically allows tool calls and access requests for this run.Auto approve tools",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-overrides-disclosure",
+      "text": "Member overrides (3)AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "org-member-overrides-toggle",
+      "text": "Member overrides (3)",
+      "expanded": "false",
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "org-member-overrides-chevron",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "org-member-overrides-panel",
+      "text": "AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultAPIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "org-placement-/aorg_e2e_concierge",
+      "text": "AORG E2E Concierge/aorg_e2e_conciergeAORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-override-item",
+      "text": "AORG E2E Conciergeaorg_e2e_conciergeRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-override-breadcrumb",
+      "text": "aorg_e2e_concierge",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-member-config-tree",
+      "text": "APIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-scope-config-editor",
+      "text": "APIREV8 本地化 Team βTeam/apirev8_teamInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelSelect a modelAgents in this Team inherit this value unless customized.Workspace Directory Existing New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp WorkspaceAuto approve toolsInherited by descendant scopes without an override.Auto approve toolsaorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-scope-chevron",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "team-member-config-tree",
+      "text": "aorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal defaultaorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-override-item",
+      "text": "aorg_e2e_leadCoordinatorapirev8_team / aorg_e2e_leadRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-override-breadcrumb",
+      "text": "apirev8_team / aorg_e2e_lead",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-override-item",
+      "text": "aorg_e2e_analystapirev8_team / aorg_e2e_analystRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "member-override-breadcrumb",
+      "text": "apirev8_team / aorg_e2e_analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "org-config-schema-diagnostic",
+      "text": "Model configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "run-agent-org",
+      "text": "Run Agent Org",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-right-resize-handle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "workspace-right-panel",
+      "text": "FilesTerminalActivityTokenArtifactsVNC ViewerNo workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.To-Do0 TasksNo to-dos yetAsk the agent to break down the work. The plan will appear here automatically.Activity0 EventsNo activity history yet.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-tab-list",
+      "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-panel-toggle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-tab-content-shell",
+      "text": "No workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.To-Do0 TasksNo to-dos yetAsk the agent to break down the work. The plan will appear here automatically.Activity0 EventsNo activity history yet.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "right-side-files-panel",
+      "text": "No workspaces available. Add a workspace to see files.No file selectedSelect a file from the explorer to view or edit its content.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    },
+    {
+      "test": "activity-feed-scroll-container",
+      "text": "No activity history yet.",
+      "expanded": null,
+      "selected": null,
+      "current": null
+    }
+  ],
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAgent Org\nAPIREV8 组织 Ω\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nSelect a model\n\nUsed across the organization unless a placement is customized.\n\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (3)\n\nModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.\n\nRun Agent Org\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n0 Events\nNo activity history yet."
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "path": "data/memory/agent_orgs/config_lab_55cf971aeb934826aedbc1a7983e7ecc/config_guide_58b1481c340743b5a5933a2eb4a314b5/raw_traces_active.jsonl",
+    "user": [
+      "Remember test token DIRECT-917. Reply exactly: DIRECT-917 ready.",
+      "What test token did I previously ask you to remember? Reply with that token only."
+    ],
+    "assistant": [
+      "DIRECT-917 ready.",
+      "DIRECT-917"
+    ]
+  },
+  {
+    "path": "data/memory/agent_orgs/config_lab_55cf971aeb934826aedbc1a7983e7ecc/config_squad_35e656ca12ab48eeb9621366bb76935d/config_worker_8c88f091b3a94cf98cb519a0f6e13385/raw_traces_active.jsonl",
+    "user": [
+      "Remember test token MOUNTED-917. Reply exactly: MOUNTED-917 ready.",
+      "**[Context]**\nFile: ../memory/agent_orgs/config_lab_55cf971aeb934826aedbc1a7983e7ecc/config_squad_35e656ca12ab48eeb9621366bb76935d/config_worker_8c88f091b3a94cf98cb519a0f6e13385/context_files/ctx_cb9eb948b125__attachment.txt\nTEST_ATTACHMENT_TOKEN_CONFIG_917\nSynthetic evidence only.\n\n\n**[Message]**\nWhat test token did I previously ask you to remember? Reply with that token only.\n\nReference files:\n- /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/memory/agent_orgs/config_lab_55cf971aeb934826aedbc1a7983e7ecc/config_squad_35e656ca12ab48eeb9621366bb76935d/config_worker_8c88f091b3a94cf98cb519a0f6e13385/context_files/ctx_cb9eb948b125__attachment.txt"
+    ],
+    "assistant": [
+      "MOUNTED-917 ready.",
+      "MOUNTED-917"
+    ]
+  }
+]

@@ -1,0 +1,986 @@
+{
+  "observations": [
+    {
+      "name": "desktop-pending-lead",
+      "state": {
+        "ready": false,
+        "sequence": 0,
+        "focus": "lead",
+        "access": "live",
+        "hasInteraction": true,
+        "statuses": {
+          "lead": "initializing",
+          "configured-verifier": "initializing",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "initializing"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "desktop-pending-first",
+      "state": {
+        "ready": false,
+        "sequence": 0,
+        "focus": "first",
+        "access": "read_only",
+        "hasInteraction": false,
+        "statuses": {
+          "lead": "initializing",
+          "configured-verifier": "initializing",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "initializing"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "desktop-ready-first",
+      "state": {
+        "ready": true,
+        "sequence": 648,
+        "focus": "first",
+        "access": "read_only",
+        "hasInteraction": false,
+        "statuses": {
+          "lead": "idle",
+          "configured-verifier": "idle",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "running"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "desktop-ready-repeat",
+      "state": {
+        "ready": true,
+        "sequence": 648,
+        "focus": "repeat",
+        "access": "read_only",
+        "hasInteraction": false,
+        "statuses": {
+          "lead": "idle",
+          "configured-verifier": "idle",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "running"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "desktop-live-control",
+      "state": {
+        "ready": true,
+        "sequence": 648,
+        "focus": "live-task",
+        "access": "live",
+        "hasInteraction": true,
+        "statuses": {
+          "lead": "idle",
+          "configured-verifier": "idle",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "running"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "narrow-pending-lead",
+      "state": {
+        "ready": false,
+        "sequence": 0,
+        "focus": "lead",
+        "access": "live",
+        "hasInteraction": true,
+        "statuses": {
+          "lead": "initializing",
+          "configured-verifier": "initializing",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "initializing"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "narrow-pending-first",
+      "state": {
+        "ready": false,
+        "sequence": 0,
+        "focus": "first",
+        "access": "read_only",
+        "hasInteraction": false,
+        "statuses": {
+          "lead": "initializing",
+          "configured-verifier": "initializing",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "initializing"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "initializing",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "narrow-ready-first",
+      "state": {
+        "ready": true,
+        "sequence": 648,
+        "focus": "first",
+        "access": "read_only",
+        "hasInteraction": false,
+        "statuses": {
+          "lead": "idle",
+          "configured-verifier": "idle",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "running"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "narrow-ready-repeat",
+      "state": {
+        "ready": true,
+        "sequence": 648,
+        "focus": "repeat",
+        "access": "read_only",
+        "hasInteraction": false,
+        "statuses": {
+          "lead": "idle",
+          "configured-verifier": "idle",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "running"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    },
+    {
+      "name": "narrow-live-control",
+      "state": {
+        "ready": true,
+        "sequence": 648,
+        "focus": "live-task",
+        "access": "live",
+        "hasInteraction": true,
+        "statuses": {
+          "lead": "idle",
+          "configured-verifier": "idle",
+          "first": "offline",
+          "repeat": "offline",
+          "live-task": "running"
+        },
+        "rows": [
+          {
+            "key": "team:history-team",
+            "kind": "configured_team",
+            "address": "/",
+            "displayName": "History Team",
+            "accessibleName": "History Team",
+            "depth": 0,
+            "parentKey": null,
+            "agentRunId": null,
+            "teamRunId": "history-team",
+            "task": null,
+            "currentStatus": null,
+            "focusable": false,
+            "expandable": true,
+            "coordinator": false
+          },
+          {
+            "key": "agent:lead",
+            "kind": "configured_agent",
+            "address": "/lead",
+            "displayName": "lead",
+            "accessibleName": "lead",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "lead",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": true
+          },
+          {
+            "key": "agent:configured-verifier",
+            "kind": "configured_agent",
+            "address": "/verifier",
+            "displayName": "verifier",
+            "accessibleName": "verifier",
+            "depth": 1,
+            "parentKey": "team:history-team",
+            "agentRunId": "configured-verifier",
+            "teamRunId": null,
+            "task": null,
+            "currentStatus": "idle",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          },
+          {
+            "key": "agent:live-task",
+            "kind": "task_agent",
+            "address": "/verifier",
+            "displayName": "Task: Inspect live-task",
+            "accessibleName": "Task: Inspect live-task",
+            "depth": 2,
+            "parentKey": "agent:configured-verifier",
+            "agentRunId": "live-task",
+            "teamRunId": null,
+            "task": {
+              "taskId": "task-live-task",
+              "description": "Inspect live-task",
+              "displayStatus": "accepted"
+            },
+            "currentStatus": "running",
+            "focusable": true,
+            "expandable": false,
+            "coordinator": false
+          }
+        ],
+        "rootActive": true,
+        "sent": [],
+        "recovery": false
+      },
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "queries": [
+    {
+      "operation": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operation": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "history-team",
+        "agentRunId": "first"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "history-team",
+        "agentRunId": "repeat"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "history-team",
+        "agentRunId": "live-task"
+      }
+    },
+    {
+      "operation": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operation": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "history-team",
+        "agentRunId": "first"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "history-team",
+        "agentRunId": "repeat"
+      }
+    },
+    {
+      "operation": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "history-team",
+        "agentRunId": "live-task"
+      }
+    },
+    {
+      "operation": "GetSkillImprovementCapability",
+      "variables": {}
+    }
+  ],
+  "limits": "Isolated implementation renderer: actual TeamWorkspaceView, active/context/history reconciliation, strict Team stream and exact inspection/projection owners. Synthetic fixture, controlled socket/GraphQL and unrelated history effects; diagnostic inspection controls. Not normal full Workspaces navigation, actual server/provider/native or API acceptance.",
+  "passed": true
+}

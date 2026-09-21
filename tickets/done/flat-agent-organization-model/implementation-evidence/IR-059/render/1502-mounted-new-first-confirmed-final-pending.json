@@ -1,0 +1,193 @@
+{
+  "errors": [],
+  "activities": [],
+  "mode": "active",
+  "rootRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+  "pending": true,
+  "historyError": null,
+  "socketSends": 0,
+  "requests": [
+    {
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {},
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e"
+      },
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {},
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "independent": false,
+      "delivered": false
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "independent": false,
+      "delivered": false
+    }
+  ],
+  "rows": [
+    {
+      "rootRunId": "ir059-1235778d-2e1b-49b5-8867-30cd6955a22e",
+      "active": false,
+      "summary": "Exact retained conversation"
+    }
+  ]
+}

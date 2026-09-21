@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+  "records": [
+    {
+      "taskId": "task_b22e3bd3d6b3407786479dae3e64344a",
+      "delegatorAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495"
+      },
+      "description": "Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-A-READY and wait.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_b5e7f63e2ea8451bb921177055bf8d1a",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-06T12:07:23.618Z"
+        }
+      ],
+      "createdAt": "2026-09-06T11:49:30.663Z"
+    },
+    {
+      "taskId": "task_8130d2e5d40c410d841042409f12d7a9",
+      "delegatorAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "recipientAddress": "/research-team/verifier",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1"
+      },
+      "description": "Remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-B-READY and wait.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_fc43f70f2e5c4f5d919c27e80af8b8e7",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-06T12:07:23.624Z"
+        }
+      ],
+      "createdAt": "2026-09-06T11:55:17.564Z"
+    },
+    {
+      "taskId": "task_a7edf3fb6dfe49e3b032e0a18b4c270f",
+      "delegatorAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "recipientAddress": "/support-team",
+      "taskExecution": {
+        "teamRunId": "aorg_support_pair_381ed079b0f64287a7b9a38108a90371"
+      },
+      "description": "As the new task Team coordinator, remain active for a bounded communication test. Do not call submit_task_result until a later message explicitly tells you to settle. Reply exactly APIREV14-TASK-TEAM-READY and wait.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_bec26f6fedf345c98014e8f598fe271f",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-06T12:07:23.628Z"
+        }
+      ],
+      "createdAt": "2026-09-06T11:58:28.471Z"
+    }
+  ]
+}

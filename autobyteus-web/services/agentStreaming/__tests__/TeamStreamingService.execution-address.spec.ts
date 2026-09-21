@@ -68,6 +68,75 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     });
   });
 
+  it('settles Team send only from the exact accepted member-input identity', async () => {
+    const { callbacks, service } = createHarness();
+    let settled = false;
+    const admission = service.sendMessage('perform exact work', 'worker-run', [], [], {
+      messageId: 'message-admission', dedupeKey: 'dedupe-admission',
+    }).then(() => { settled = true; });
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'MEMBER_INPUT_MESSAGE', payload: {
+        change_sequence: 1, recipient_agent_run_id: 'worker-run',
+        message_id: 'different-message', dedupe_key: 'dedupe-admission', content: 'perform exact work',
+        input_origin: 'user_message', received_at: '2026-09-01T00:00:00.000Z', context_file_paths: [],
+        sender_agent_run_id: null, parent_communication_message_id: null,
+      },
+    }));
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'MEMBER_INPUT_MESSAGE', payload: {
+        change_sequence: 2, recipient_agent_run_id: 'worker-run',
+        message_id: 'message-admission', dedupe_key: 'dedupe-admission', content: 'perform exact work',
+        input_origin: 'user_message', received_at: '2026-09-01T00:00:01.000Z', context_file_paths: [],
+        sender_agent_run_id: null, parent_communication_message_id: null,
+      },
+    }));
+    await expect(admission).resolves.toBeUndefined();
+    expect(settled).toBe(true);
+  });
+
+  it('rejects a pending Team send from the exact target-correlated command failure', async () => {
+    const { callbacks, service } = createHarness();
+    let rejected = false;
+    const admission = service.sendMessage('preserve this prompt', 'task-agent-run-1', [], [], {
+      messageId: 'message-rejected', dedupeKey: 'dedupe-rejected',
+    }).catch((error) => { rejected = true; throw error; });
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'ERROR', payload: {
+        code: 'TEAM_SEND_MESSAGE_REJECTED', message: 'wrong target',
+        change_sequence: null, agent_run_id: 'worker-run',
+        error_scope: null, error_effect: null, turn_id: null,
+      },
+    }));
+    await Promise.resolve();
+    expect(rejected).toBe(false);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'ERROR', payload: {
+        code: 'TEAM_SEND_MESSAGE_REJECTED', message: 'runtime is stopping',
+        change_sequence: null, agent_run_id: 'task-agent-run-1',
+        error_scope: null, error_effect: null, turn_id: null,
+      },
+    }));
+    await expect(admission).rejects.toThrow('runtime is stopping');
+  });
+
+  it('rejects pending Team admission on disconnect and never sends a second in-flight prompt to the target', async () => {
+    const { callbacks, service, wsClient } = createHarness();
+    const admission = service.sendMessage('first prompt', 'worker-run', [], [], {
+      messageId: 'message-first', dedupeKey: 'dedupe-first',
+    });
+    expect(service.sendMessage('first prompt', 'worker-run', [], [], {
+      messageId: 'message-first', dedupeKey: 'dedupe-first',
+    })).toBe(admission);
+    expect(() => service.sendMessage('second prompt', 'worker-run', [], [], {
+      messageId: 'message-second', dedupeKey: 'dedupe-second',
+    })).toThrow("AgentRun 'worker-run' already has a pending Team message admission.");
+    expect(wsClient.send).toHaveBeenCalledTimes(1);
+    callbacks.get('onDisconnect')?.('socket closed');
+    await expect(admission).rejects.toThrow('socket closed');
+  });
+
   it.each(['worker-run', 'task-agent-run-1'])('serializes INTERRUPT_GENERATION only with current AgentRun %s', (agentRunId) => {
     const { service, wsClient } = createHarness();
     expect(service.interruptGeneration('interrupt-1', { agentRunId })).toBe(true);

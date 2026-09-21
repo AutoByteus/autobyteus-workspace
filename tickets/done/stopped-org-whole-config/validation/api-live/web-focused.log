@@ -1,0 +1,98 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts services/runConfigEditing/__tests__/existingAgentOrgModelConfigDraft.spec.ts stores/__tests__/existingRunModelConfigStore.spec.ts services/agentOrgExecution/__tests__/agentOrgRunModelConfigAdoption.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgRunModelConfigAdoption.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/existingRunModelConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/existingRunModelConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgRunModelConfigAdoption.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts (5 tests) 12ms
+ ✓ stores/__tests__/existingRunModelConfigStore.spec.ts (17 tests) 146ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgRunModelConfigAdoption.spec.ts (2 tests) 8ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (6 tests) 36ms
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts (3 tests) 76ms
+ ✓ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts (16 tests) 184ms
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts (10 tests) 210ms
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (13 tests) 80ms
+stderr | services/runConfigEditing/__tests__/existingAgentOrgModelConfigDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts (10 tests) 572ms
+stdout | services/runConfigEditing/__tests__/existingAgentOrgModelConfigDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runConfigEditing/__tests__/existingAgentOrgModelConfigDraft.spec.ts (3 tests) 10ms
+
+ Test Files  10 passed (10)
+      Tests  85 passed (85)
+   Start at  17:34:09
+   Duration  8.69s (transform 3.97s, setup 58.49s, collect 4.51s, tests 1.34s, environment 2.53s, prepare 1.61s)
+

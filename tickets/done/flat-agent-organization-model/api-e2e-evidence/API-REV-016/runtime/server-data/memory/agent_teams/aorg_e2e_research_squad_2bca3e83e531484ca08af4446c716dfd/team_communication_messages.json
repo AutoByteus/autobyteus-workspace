@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_2bca3e83e531484ca08af4446c716dfd",
+  "messages": [
+    {
+      "messageId": "collabmsg_-MUdYdBTP-xbMtrKhBxB33Bh9TKLqCnU",
+      "senderAgentRunId": "aorg_e2e_lead_d050d7b8e66e47c68ef5df65fa6ff818",
+      "receiverAgentRunId": "aorg_e2e_analyst_38a30d217ef74cf98870f579b60b7852",
+      "content": "APIREV15-TEAM-DIRECT-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/team-control.txt"
+      ],
+      "createdAt": "2026-09-06T13:46:35.814Z"
+    }
+  ]
+}

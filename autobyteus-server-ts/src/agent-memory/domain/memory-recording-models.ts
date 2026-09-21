@@ -1,3 +1,4 @@
+import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 export type RuntimeMemoryTraceType =
@@ -16,7 +17,7 @@ type RuntimeMemoryTraceInputBase = {
 };
 
 type RuntimeMemoryNonToolTraceInput = RuntimeMemoryTraceInputBase & {
-  traceType: "user" | "assistant" | "reasoning";
+  traceType: "assistant" | "reasoning";
   media?: RawTraceMedia | null;
   toolName?: never;
   toolCallId?: never;
@@ -59,7 +60,13 @@ type RuntimeMemoryProviderBoundaryTraceInput = RuntimeMemoryTraceInputBase & {
   toolError?: never;
 };
 
+type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceType"> & {
+  traceType: "user";
+  fileAttachments?: readonly ContextFileReference[];
+};
+
 export type RuntimeMemoryTraceInput =
+  | RuntimeMemoryUserTraceInput
   | RuntimeMemoryNonToolTraceInput
   | RuntimeMemoryToolCallTraceInput
   | RuntimeMemoryToolResultTraceInput

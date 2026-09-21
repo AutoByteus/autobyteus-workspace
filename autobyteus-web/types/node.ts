@@ -28,6 +28,7 @@ export interface NodeEndpoints {
   rest: string;
   agentWs: string;
   teamWs: string;
+  orgWs: string;
   terminalWs: string;
   fileExplorerWs: string;
   health: string;

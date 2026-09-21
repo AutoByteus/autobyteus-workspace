@@ -1,0 +1,85 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "LA Latency Agent (1)":
+    - generic: LA
+    - generic: Latency Agent
+    - generic: (1)
+  - button "使用此智能体开始新的运行":
+  - generic: Teams
+  - button "无活跃团队运行 Latency Team (1)":
+    - img "无活跃团队运行"
+    - generic: Latency Team
+    - generic: (1)
+  - generic: 组织
+  - button "Latency Org (1)" [expanded]:
+    - generic: Latency Org
+    - generic: (1)
+  - button "折叠 Reply exactly LATENCY-ORG-917. Do not call tools. 下的成员" [expanded]:
+  - treeitem "已停止 Reply exactly LATENCY-ORG-917. Do not call tools.":
+    - generic "已停止"
+    - generic: Reply exactly LATENCY-ORG-917. Do not call tools.
+  - generic: 7 分钟
+  - tree "Latency Org 执行层级":
+    - treeitem "guide, 离线, /guide, latency_agent_6fe64ab4f7524226b550158b338ec219" [level=1] [selected]:
+      - generic: G
+      - generic: guide
+    - treeitem "squad. 团队状态：离线" [level=1]:
+      - img "团队状态：离线"
+      - generic: squad
+  - button "设置":
+    - generic: 设置
+- main:
+  - generic: G
+  - heading "guide - C219" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - button "编辑配置":
+  - button "新建智能体":
+  - generic: You
+  - generic: Reply exactly LATENCY-ORG-917. Do not call tools.
+  - generic: G
+  - generic: guide
+  - paragraph: LATENCY-ORG-917
+  - button "Context Files (0) （拖动、粘贴或上传）" [expanded]:
+    - generic: Context Files (0)
+    - generic: （拖动、粘贴或上传）
+  - button "上传文件":
+  - textbox "输入消息...": UNSENT-LATENCY-DRAFT-917
+  - button "Send message":
+  - tablist "工作区工具":
+    - tab "文件"
+    - tab "智能体组织": 组织
+    - tab "终端"
+    - tab "活动" [active] [selected]: 活动
+    - tab "Token"
+    - tab "产物"
+    - tab "VNC 查看器"
+  - button "切换侧边栏":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 1 Events
+  - article:
+    - button "系统指令。由 AutoByteus 提供 · Native 已配置系统提示词。可用。捕获于 17.09.2026, 08:01:22。8204 个字符。":
+      - generic: 系统指令
+      - generic: 由 AutoByteus 提供 · Native 已配置系统提示词
+      - generic: 捕获于 17.09.2026, 08:01:22 · 8204 个字符
+      - generic: 可用

@@ -1,0 +1,16 @@
+[
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+    "kind": "production",
+    "action": "Modify",
+    "nonemptyLines": 420,
+    "sha256": "2d6fbf2aa0cd630b9eb83850bf4db1e31e5a0c5939e77355c22682f9e16404e2"
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+    "kind": "test",
+    "action": "Add",
+    "nonemptyLines": 167,
+    "sha256": "4f14fb47f841b0eb409af9c4a630ba361e1d1e1e3870d1dc4755f6f3d0482648"
+  }
+]

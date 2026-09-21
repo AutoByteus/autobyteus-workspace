@@ -2,7 +2,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import type { RunHistoryWorkspaceGroup } from './runHistoryTypes';
+import type { AgentOrgRunHistoryItem, RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
 import {
   buildRunHistoryNavigationProjection,
@@ -19,6 +19,7 @@ export interface RunHistoryNavigationStoreState {
   navigationProjection: RunHistoryNavigationProjectionState | null;
   navigationTopologyRevision: number;
   navigationPatchRevision: number;
+  agentOrgHistory: AgentOrgRunHistoryItem[];
 }
 
 export const refreshRunNavigationTopologyForStore = (
@@ -33,6 +34,7 @@ export const refreshRunNavigationTopologyForStore = (
     workspacesById: workspaceStore.workspaces,
     agentContexts: useAgentContextsStore().runs,
     teamContexts: useAgentTeamContextsStore().allTeamRuns ?? [],
+    agentOrgHistory: store.agentOrgHistory,
   }, store.navigationProjection);
   store.navigationTopologyRevision += 1;
 };

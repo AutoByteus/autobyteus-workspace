@@ -1,0 +1,2 @@
+/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-whole-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+1.4.69

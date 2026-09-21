@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_028212813e5f43e790d3caa270ade965",
+  "messages": [
+    {
+      "messageId": "collabmsg_8Nh_oMpttYjfslC7I9BlAHMQr0C9GaN3",
+      "senderAgentRunId": "aorg_e2e_concierge_e10555b3db7240b5a2df5a9f8cbd864b",
+      "receiverAgentRunId": "aorg_e2e_lead_41634375bf154510b08217595601a0a8",
+      "content": "APIREV5-ORG-MESSAGE-TO-RESEARCH-LEAD",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:30:11.455Z"
+    },
+    {
+      "messageId": "collabmsg_SMpB1Fv4mcWIPOeaVf6uG77fW03Tkp1p",
+      "senderAgentRunId": "aorg_e2e_analyst_a6027675f12f4c8091207e6ea5704344",
+      "receiverAgentRunId": "aorg_e2e_concierge_e10555b3db7240b5a2df5a9f8cbd864b",
+      "content": "APIREV5-MOUNTED-TASK-MESSAGE",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T09:31:17.037Z"
+    }
+  ]
+}

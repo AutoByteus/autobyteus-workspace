@@ -7,6 +7,8 @@ import { resetTeamRunHistoryCatalogState, TeamRunHistoryCatalogService } from ".
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
 import { TeamRunPackageCatalog } from "../../../../src/run-history/services/team-run-package-catalog.js";
+import { TaskDelegationRecordsV1Store } from "../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
+import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
 const buildTree = (teamRunId = "team-1") => testExecutionTree({
@@ -124,7 +126,11 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   it("durably compensates and validates the original row before reporting package removal failure", async () => {
     const tree = buildTree();
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
-    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    await Promise.all([
+      new TeamRunExecutionTreeStore().write(rootDir, tree),
+      new TaskDelegationRecordsV1Store().write(rootDir, { schemaVersion: 1, rootTeamRunId: "team-1", records: [] }),
+      new TeamCommunicationV1Store().write(rootDir, { schemaVersion: 1, rootTeamRunId: "team-1", messages: [] }),
+    ]);
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
     const packageCatalog = new TeamRunPackageCatalog(memoryDir);
     packageCatalog.admit("team-1");

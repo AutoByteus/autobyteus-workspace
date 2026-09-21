@@ -1,0 +1,22 @@
+[
+  {
+    "orgRunId": "aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d",
+    "orgDefinitionId": "aorg-mixed-org",
+    "orgDefinitionName": "AORG E2E Mixed Org",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default",
+    "summary": "",
+    "createdAt": "2026-09-03T15:47:18.313Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+    "orgDefinitionId": "apirev8",
+    "orgDefinitionName": "APIREV8 组织 Ω",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace",
+    "summary": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...",
+    "createdAt": "2026-09-02T21:38:04.066Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-04T14:51:38.794Z"
+  }
+]

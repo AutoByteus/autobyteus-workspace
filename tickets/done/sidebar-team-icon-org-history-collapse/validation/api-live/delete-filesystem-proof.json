@@ -1,0 +1,13 @@
+{
+  "deleted": [
+    "data/agent-orgs/sidebar-edit-org/org-config.json",
+    "data/agent-orgs/sidebar-edit-org/org.md",
+    "data/agent-orgs/sidebar-edit-org/agents/owned-worker/agent.md",
+    "data/agent-orgs/sidebar-edit-org/agents/owned-worker/agent-config.json",
+    "data/agent-orgs/sidebar-edit-org/agent-teams/owned-team/team-config.json",
+    "data/agent-orgs/sidebar-edit-org/agent-teams/owned-team/team.md"
+  ],
+  "changed_outside_package": [],
+  "preserved_count": 46,
+  "uploaded_asset_retained": true
+}

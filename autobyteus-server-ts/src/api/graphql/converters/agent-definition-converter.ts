@@ -15,6 +15,8 @@ const toGraphqlOwnershipScope = (
   switch (value) {
     case "team_local":
       return AgentDefinitionOwnershipScope.TEAM_LOCAL;
+    case "agent_org_owned":
+      return AgentDefinitionOwnershipScope.AGENT_ORG_OWNED;
     case "application_owned":
       return AgentDefinitionOwnershipScope.APPLICATION_OWNED;
     case "shared":
@@ -46,6 +48,8 @@ export class AgentDefinitionConverter {
         ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
         ownerTeamId: domainDefinition.ownerTeamId ?? null,
         ownerTeamName: domainDefinition.ownerTeamName ?? null,
+        ownerOrgId: domainDefinition.ownerOrgId ?? null,
+        ownerOrgName: domainDefinition.ownerOrgName ?? null,
         ownerApplicationId: domainDefinition.ownerApplicationId ?? null,
         ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
         ownerPackageId: domainDefinition.ownerPackageId ?? null,

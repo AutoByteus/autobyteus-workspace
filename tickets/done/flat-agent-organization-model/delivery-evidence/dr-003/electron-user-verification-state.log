@@ -1,0 +1,18 @@
+captured_at_utc=2026-09-02T22:14:01Z
+integrated_head=0fb57d902b63d2d927e34ead64a7fb62bf808c09
+display=:99
+health_url=http://127.0.0.1:29695/rest/health
+health_response={"status":"ok","message":"Server is running"}
+processes:
+  PID  PPID STAT     ELAPSED CMD
+50529 50524 S+         05:58 autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.67.AppImage --no-sandbox
+50564 50529 Sl+        05:50 /tmp/appimage_extracted_4c68202bd2fda5965253ff4baa95e944/autobyteus --no-sandbox
+50626 50564 Sl+        05:49 /tmp/appimage_extracted_4c68202bd2fda5965253ff4baa95e944/autobyteus /tmp/appimage_extracted_4c68202bd2fda5965253ff4baa95e944/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+listener:
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      511          0.0.0.0:29695      0.0.0.0:*    users:(("autobyteus",pid=50626,fd=80))
+windows:
+     0x3400001 "autobyteus": ("autobyteus" "Autobyteus")  10x10+10+10  +10+10
+        0x1800004 "autobyteus": ("autobyteus" "autobyteus")  1200x800+5+29  +155+71
+user_surface=Agent Orgs page ready; Create Agent Org action visible; zero existing organizations under current production data
+accepted_bounded_context=external definition packages remain pre-Team-V2 and are skipped until separately owned publication

@@ -55,6 +55,7 @@ export class ExternalRuntimeMemoryWriter {
       options.correlationId = input.correlationId;
     } else {
       options.media = input.media;
+      if (input.traceType === "user") options.fileAttachments = input.fileAttachments;
       options.correlationId = input.correlationId;
     }
     const trace = new RawTraceItem(options);

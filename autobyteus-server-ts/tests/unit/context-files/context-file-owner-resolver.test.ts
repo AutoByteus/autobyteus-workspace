@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
+import {
+  ContextFileOwnerResolver,
+  TeamContextFileOwnerNotFoundError,
+} from "../../../src/context-files/services/context-file-owner-resolver.js";
 
 const location = {
   rootTeamRunId: "root-team-run",
@@ -32,7 +35,7 @@ describe("ContextFileOwnerResolver", () => {
     const resolver = new ContextFileOwnerResolver({ locations });
     const owner = {
       kind: "team_member_final" as const,
-      teamRunId: "root-team-run",
+      teamRunId: "child-team-run",
       memberAddress: "/ReviewSquad/reviewer" as const,
     };
 
@@ -51,11 +54,11 @@ describe("ContextFileOwnerResolver", () => {
       memoryDir: location.memoryDir,
     });
     expect(locations.findAgent).toHaveBeenCalledWith({
-      containingTeamRunId: "root-team-run",
+      containingTeamRunId: "child-team-run",
       memberAddress: "/ReviewSquad/reviewer",
     });
     expect(locations.findAgentSync).toHaveBeenCalledWith({
-      containingTeamRunId: "root-team-run",
+      containingTeamRunId: "child-team-run",
       memberAddress: "/ReviewSquad/reviewer",
     });
   });
@@ -69,7 +72,21 @@ describe("ContextFileOwnerResolver", () => {
       memberAddress: "/missing" as const,
     };
 
-    await expect(resolver.resolveFinalOwner(owner)).rejects.toThrow("Unable to resolve");
-    expect(() => resolver.resolveFinalOwnerSync(owner)).toThrow("Unable to resolve");
+    await expect(resolver.resolveFinalOwner(owner)).rejects.toBeInstanceOf(TeamContextFileOwnerNotFoundError);
+    expect(() => resolver.resolveFinalOwnerSync(owner)).toThrow(TeamContextFileOwnerNotFoundError);
+  });
+
+  it("rejects a mis-correlated Team location with the typed not-found result", async () => {
+    const wrongLocation = { ...location, containingTeamRunId: "other-team-run" };
+    const locations = { findAgent: vi.fn(async () => wrongLocation), findAgentSync: vi.fn(() => wrongLocation) };
+    const resolver = new ContextFileOwnerResolver({ locations });
+    const owner = {
+      kind: "team_member_final" as const,
+      teamRunId: "child-team-run",
+      memberAddress: "/ReviewSquad/reviewer" as const,
+    };
+
+    await expect(resolver.resolveFinalOwner(owner)).rejects.toBeInstanceOf(TeamContextFileOwnerNotFoundError);
+    expect(() => resolver.resolveFinalOwnerSync(owner)).toThrow(TeamContextFileOwnerNotFoundError);
   });
 });

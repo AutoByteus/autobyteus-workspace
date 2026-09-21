@@ -1,0 +1,40 @@
+{
+  "packageIdentifier": "ORG-HISTORY-UNIFIED-ROW-20260921-001",
+  "deliveryRevision": "DR-001",
+  "checkedAt": "2026-09-21",
+  "ticketHead": "9a0d2c3fd0d13a28e00e8649c515a7d56c673a32",
+  "fetchedTarget": "9a0d2c3fd0d13a28e00e8649c515a7d56c673a32",
+  "aheadBehind": "0/0",
+  "integrationResult": "Already current",
+  "manifestPath": "tickets/done/org-history-unified-row-target/validation/ir001-source-manifest.json",
+  "manifestFiles": [
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "expectedCandidateSha256": "3ab623096351b4bb2051e88549fbb82804fd1f3da1219514891223cc98e74638",
+      "actualSha256": "3ab623096351b4bb2051e88549fbb82804fd1f3da1219514891223cc98e74638",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+      "expectedCandidateSha256": "d27d4ecab4775f1d7b257dd159b1d10576d80b9d69b5d0e15c3216731485cc28",
+      "actualSha256": "d27d4ecab4775f1d7b257dd159b1d10576d80b9d69b5d0e15c3216731485cc28",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "expectedCandidateSha256": "7aadb7864224e37ebb517a069c962003ca0fd0e29d277be7a9a1a722d7ef755c",
+      "actualSha256": "7aadb7864224e37ebb517a069c962003ca0fd0e29d277be7a9a1a722d7ef755c",
+      "exact": true
+    }
+  ],
+  "allManifestFilesExact": true,
+  "docsSync": [
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "sha256": "0152b8e6da5afbf3d8624a4388dd3dcb68decd7d8b56911a0a4f06e834777c75",
+      "result": "Updated"
+    }
+  ],
+  "executableRerunByDelivery": false,
+  "noRerunRationale": "Fresh-fetched target and candidate HEAD were identical, so no base commit changed the API-REV-001-validated implementation. Delivery independently confirmed all 3 manifest entries exact."
+}

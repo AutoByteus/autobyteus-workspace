@@ -1,0 +1,153 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:12560) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > keeps prior validators migration-only and default registry order explicit
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts (22 tests | 4 failed) 483ms
+   ✓ removes only the key across both families and unreferenced owned Teams, with current zero-write and runtime/external preservation 64ms
+   ✓ does not hide physical children behind an invalid parent and bounds failure diagnostics 44ms
+   ✓ recovers ordinary-authoring canonical journals before classifying both root and owned-child definitions 19ms
+   ✓ keeps linked sources read-only and reports a present unreadable inventory instead of empty success 7ms
+   ✓ fails not_renamed and resumes through an ordinary rerun without replaying successful files 11ms
+   ✓ fails indeterminate and resumes through an ordinary rerun without replaying successful files 22ms
+   ✓ fails reread_mismatch and resumes through an ordinary rerun without replaying successful files 16ms
+   ✓ fails after_commit and resumes through an ordinary rerun without replaying successful files 11ms
+   ✓ uses real file/registry/runner ordering for completed family without an authoring prerequisite 64ms
+   ✓ uses real file/registry/runner ordering for pending family without an authoring prerequisite 56ms
+   ✓ uses real file/registry/runner ordering for failed-runtime family without an authoring prerequisite 63ms
+   ✓ uses real file/registry/runner ordering for stale-running family without an authoring prerequisite 52ms
+   ✓ keeps prior validators migration-only and default registry order explicit 6ms
+   × commits exactly the final authoring candidate for version-only without normalizing other JSON 6ms
+   × commits exactly the final authoring candidate for scope-only without normalizing other JSON 1ms
+   × commits exactly the final authoring candidate for both without normalizing other JSON 1ms
+   × commits exactly the final authoring candidate for current without normalizing other JSON 1ms
+   ✓ rejects non-authorized Org scope "unknown" without writes 10ms
+   ✓ rejects non-authorized Org scope "team_local" without writes 6ms
+   ✓ rejects non-authorized Org scope "AGENT_ORG_OWNED" without writes 7ms
+   ✓ rejects non-authorized Org scope " org_local" without writes 7ms
+   ✓ rejects non-authorized Org scope null without writes 7ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts (16 tests) 490ms
+stdout | tests/unit/collaboration-definition-admission/definition-authoring.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/collaboration-definition-admission/definition-authoring.test.ts (24 tests) 56ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > commits exactly the final authoring candidate for version-only without normalizing other JSON
+ FAIL  tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > commits exactly the final authoring candidate for scope-only without normalizing other JSON
+ FAIL  tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > commits exactly the final authoring candidate for both without normalizing other JSON
+ FAIL  tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > commits exactly the final authoring candidate for current without normalizing other JSON
+CollaborationContractError: handoffs[0].rules[0] must be a non-empty trimmed string.
+ ❯ invalidHandoff src/agent-collaboration/domain/collaboration-handoff.ts:22:9
+     20| 
+     21| const invalidHandoff = (message: string): never => {
+     22|   throw new CollaborationContractError("COLLABORATION_HANDOFF_RULE_INV…
+       |         ^
+     23| };
+     24| 
+ ❯ src/agent-collaboration/domain/collaboration-handoff.ts:54:16
+ ❯ src/agent-collaboration/domain/collaboration-handoff.ts:52:35
+ ❯ normalizeCollaborationHandoffs src/agent-collaboration/domain/collaboration-handoff.ts:35:16
+ ❯ parseAgentOrgDefinitionConfig src/agent-org-definition/providers/agent-org-definition-config.ts:131:29
+ ❯ selectOrgAuthoringCandidate src/app-data-migrations/legacy/collaboration-definition-authoring-transition.ts:29:3
+ ❯ tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts:185:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  4 failed | 58 passed (62)
+   Start at  02:33:41
+   Duration  9.74s (transform 4.05s, setup 36ms, import 7.47s, tests 1.03s, environment 0ms)
+

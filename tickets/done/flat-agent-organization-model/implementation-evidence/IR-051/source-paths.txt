@@ -1,0 +1,8 @@
+autobyteus-web/components/agentOrgs/AgentOrgExperience.vue
+autobyteus-web/components/agentTeams/AgentTeamDetail.vue
+autobyteus-web/stores/agentTeamDefinitionStore.ts
+autobyteus-web/graphql/queries/agentOrgDefinitionQueries.ts
+autobyteus-web/localization/messages/en/agentOrgs.ts
+autobyteus-web/localization/messages/zh-CN/agentOrgs.ts
+autobyteus-web/services/agentOrgDefinition/agentOrgAuthoringReferences.ts
+autobyteus-web/components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts

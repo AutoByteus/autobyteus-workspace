@@ -44,6 +44,7 @@ const isProtectedRestFamily = (path: string): boolean =>
   || path.startsWith("/rest/drafts/")
   || path.startsWith("/rest/runs/")
   || path.startsWith("/rest/team-runs/")
+  || path.startsWith("/rest/agent-org-runs/")
   || path.startsWith("/rest/run-file-changes/")
   || path.startsWith("/rest/team-communication/");
 

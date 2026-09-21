@@ -1,0 +1,125 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts -t 'hydrates exact settled tasks under active=true'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts > shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=true without commands, restore or same-address substitution
+[Vue warn]: Unhandled error during execution of component event handler
+  at <TeamDelegatedTaskDetailPane key="agent_team:standalone-team:lead" onSelectParticipant=fn<selectParticipant> selected-entry= {
+  kind: 'task_agent',
+  entryKey: 'task:task-verifier-one',
+  root: { kind: 'agent_team', runId: 'standalone-team' },
+  taskId: 'task-verifier-one',
+  runId: 'verifier-one',
+  displayStatus: 'accepted',
+  lastActivityAt: '2026-09-01T00:04:00.000Z',
+  lifecycleItems: [
+    {
+      kind: 'assignment',
+      itemKey: 'task:task-verifier-one:assignment',
+      createdAt: '2026-08-10T12:00:00.000Z',
+      content: 'Verify the exact result',
+      direction: [Object],
+      referenceFiles: []
+    },
+    {
+      kind: 'submission',
+      itemKey: 'task:task-verifier-one:submission:submission-verifier-one',
+      createdAt: '2026-09-01T00:03:00.000Z',
+      content: 'Exact result',
+      direction: [Object],
+      referenceFiles: [],
+      resultOrdinal: 1,
+      revised: false
+    },
+    {
+      kind: 'review',
+      decision: 'accept',
+      itemKey: 'task:task-verifier-one:review:review-verifier-one',
+      createdAt: '2026-09-01T00:04:00.000Z',
+      content: null,
+      direction: [Object],
+      referenceFiles: [],
+      reviewedResultOrdinal: 1
+    }
+  ]
+}  ... >
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'standalone-team',
+  focusedAgentRunId: 'lead',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} >
+  at <Anonymous ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ❯ components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts (7 tests | 1 failed | 6 skipped) 64ms
+   × shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=true without commands, restore or same-address substitution 63ms
+     → expected "spy" to be called 1 times, but got 0 times
+   ↓ shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=false without commands, restore or same-address substitution
+   ↓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict missing failure
+   ↓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict wrong-projection failure
+   ↓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict unavailable failure
+   ↓ shared task detail -> retained standalone Team inspection > keeps prior focus and selection on strict root-replaced failure
+   ↓ shared task detail -> retained standalone Team inspection > repairs a live task focus on settlement, then retains deliberate read-only inspection through later task events
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts > shared task detail -> retained standalone Team inspection > hydrates exact settled tasks under active=true without commands, restore or same-address substitution
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+ ❯ components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts:87:25
+     85|     mocks.query.mockImplementationOnce(() => new Promise(resolve => { …
+     86|     await clickVerifier();
+     87|     expect(mocks.query).toHaveBeenCalledTimes(1);
+       |                         ^
+     88|     expect(mocks.query.mock.calls[0][0].variables).toEqual({ teamRunId…
+     89|     expect(team.view.getFocusedAgentRunId()).toBe('lead');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: AgentRun 'verifier-one' is not a visible member of Team 'standalone-team'.
+ ❯ openWorkspaceExecutionLink services/workspace/workspaceNavigationService.ts:98:50
+     96|   if (mounted && link.agentRunId) {
+     97|     const result = await useRunHistoryStore().inspectTeamMember(link.t…
+     98|     if (result.disposition === 'rejected') throw new Error(result.mess…
+       |                                                  ^
+     99|     return
+    100|   }
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+ ❯ selectParticipant components/workspace/collaboration/CollaborationDelegatedTasksSection.vue:129:5
+
+This error originated in "components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "hydrates exact settled tasks under active=true without commands, restore or same-address substitution". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+     Errors  1 error
+   Start at  16:20:31
+   Duration  8.12s (transform 4.71s, setup 6.77s, collect 349ms, tests 64ms, environment 356ms, prepare 257ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

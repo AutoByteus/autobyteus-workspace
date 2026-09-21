@@ -1,0 +1,4 @@
+shutdown_requested_at=2026-09-06T12:07:23Z pid=49540 signal=SIGTERM
+server_exit_observed_at=2026-09-06T12:07:24Z poll=2
+server_status=exited
+  PID  PPID STAT CMD

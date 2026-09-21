@@ -48,17 +48,6 @@ export const validateTeamRunStatePackage = (
     if (task.status === "interrupted" && settledAt === null) {
       throw new Error(`Interrupted task '${task.taskId}' references an unsettled execution.`);
     }
-    if (execution.kind === "team" && liveStatus) {
-      const configured = placement;
-      if (!("teamRunId" in configured)) {
-        throw new Error(`Team task '${task.taskId}' recipient is not a configured Team.`);
-      }
-      const coordinator = index.listDirectAgentExecutions(execution.teamRunId)
-        .find((agent) => agent.address === configured.coordinatorAddress);
-      if (!coordinator) {
-        throw new Error(`Live Team task '${task.taskId}' has no exact coordinator Agent binding.`);
-      }
-    }
   }
 
   for (const execution of index.listTeamExecutions()) {

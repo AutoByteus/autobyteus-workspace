@@ -1,0 +1,30 @@
+{
+  "identity": {
+    "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+    "address": "/apirev8_team/aorg_e2e_analyst",
+    "agentRunId": "aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+    "disabledCount": 6,
+    "enabled": [
+      {
+        "tag": "BUTTON",
+        "test": "agent-org-config-back-to-events",
+        "text": ""
+      },
+      {
+        "tag": "BUTTON",
+        "test": null,
+        "text": "Advanced"
+      }
+    ]
+  },
+  "assertions": {
+    "drawerWasOpen": true,
+    "escapeClosedDrawer": true,
+    "exactMountedIdentity": true,
+    "formLocked": true,
+    "backPreservedRootAndFocus": true,
+    "narrowNoHorizontalOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

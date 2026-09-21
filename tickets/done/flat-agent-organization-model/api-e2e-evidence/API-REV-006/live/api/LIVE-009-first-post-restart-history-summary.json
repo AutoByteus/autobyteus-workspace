@@ -1,0 +1,49 @@
+{
+  "errors": null,
+  "roots": [
+    {
+      "type": "AgentOrgRootHistoryObject",
+      "kind": "agent_org",
+      "id": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+      "active": null
+    },
+    {
+      "type": "AgentTeamRootHistoryObject",
+      "kind": "agent_team",
+      "id": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+      "active": null
+    },
+    {
+      "type": "AgentOrgRootHistoryObject",
+      "kind": "agent_org",
+      "id": "aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9",
+      "active": null
+    }
+  ],
+  "workspaces": [
+    {
+      "name": "temp_workspace",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/temp_workspace",
+      "teams": [
+        {
+          "id": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+          "active": true,
+          "members": [
+            {
+              "a": "/lead",
+              "status": "idle"
+            },
+            {
+              "a": "/analyst",
+              "status": "idle"
+            },
+            {
+              "a": "/verifier",
+              "status": "idle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

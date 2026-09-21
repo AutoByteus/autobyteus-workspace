@@ -105,6 +105,7 @@ export class RemoveExternalRuntimeWorkingContextSnapshotsMigration
     const snapshots = new Set<string>();
     await discoverSnapshots(this.layout.getStandaloneRootDirPath(), this.memoryDir, details, snapshots);
     await discoverSnapshots(this.layout.getTeamRootDirPath(), this.memoryDir, details, snapshots);
+    await discoverSnapshots(this.layout.getOrgRootDirPath(), this.memoryDir, details, snapshots);
     classification.diagnostics.forEach((diagnostic) => {
       if (diagnostic.workingContextSnapshotPath) {
         snapshots.delete(diagnostic.workingContextSnapshotPath);

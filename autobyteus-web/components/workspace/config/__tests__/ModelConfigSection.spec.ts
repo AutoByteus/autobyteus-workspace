@@ -120,7 +120,6 @@ describe('ModelConfigSection', () => {
     
     const wrapper = mount(ModelConfigSection, {
       props: {
-        modelId: 'claude',
         modelConfig: configA, 
         schema: {
           thinking_enabled: { type: 'boolean', default: true }
@@ -130,7 +129,6 @@ describe('ModelConfigSection', () => {
 
     // Switch "Agent" -> New Schema AND New Config Object
     await wrapper.setProps({
-      modelId: 'gpt',
       modelConfig: configB, // Different object ref
       schema: {
         temperature: { type: 'number', default: 0.7 }
@@ -195,6 +193,24 @@ describe('ModelConfigSection', () => {
       JSON.stringify(args[0]) === JSON.stringify({ temperature: 0.2 }),
     );
     expect(hasSanitizedUpdate).toBe(true);
+  });
+
+  it('preserves an invalid editable draft when the owning launch form requests validation', async () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: { temperature: -1 },
+        schema: { temperature: { type: 'number', minimum: 0, maximum: 1 } },
+        preserveInvalidDraft: true,
+        validationErrors: { temperature: 'Value must be at least 0.' },
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    expect((wrapper.get('input#config-temperature').element as HTMLInputElement).value).toBe('-1');
+    expect(wrapper.get('input#config-temperature').attributes('aria-invalid')).toBe('true');
+    expect(wrapper.text()).toContain('Value must be at least 0.');
+    expect(wrapper.emitted('update:config')).toBeUndefined();
   });
 
   it('renders a collapsed disclosure for non-thinking advanced schema parameters', async () => {

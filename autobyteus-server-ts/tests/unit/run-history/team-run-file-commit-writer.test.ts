@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { TeamRunFileCommitWriter } from "../../../src/run-history/store/team-run-file-commit-writer.js";
+import { AtomicRunPackageFileCommitWriter } from "../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 
 const disposableDirectories: string[] = [];
 
@@ -18,11 +18,11 @@ afterEach(async () => {
   ));
 });
 
-describe("TeamRunFileCommitWriter", () => {
+describe("AtomicRunPackageFileCommitWriter", () => {
   it("reports committed only after the renamed file and directory are synchronized", async () => {
     const directory = await createDirectory();
     const filePath = path.join(directory, "team_run_execution_tree.json");
-    const result = await new TeamRunFileCommitWriter().write({
+    const result = await new AtomicRunPackageFileCommitWriter().write({
       file: "execution_tree",
       filePath,
       payload: { schemaVersion: 1 },
@@ -35,7 +35,7 @@ describe("TeamRunFileCommitWriter", () => {
   it("distinguishes a rename failure from a post-rename finalization failure", async () => {
     const firstDirectory = await createDirectory();
     const renameFailurePath = path.join(firstDirectory, "task_delegation_records.json");
-    const renameFailure = new TeamRunFileCommitWriter({
+    const renameFailure = new AtomicRunPackageFileCommitWriter({
       operations: {
         mkdir: fs.mkdir,
         open: fs.open,
@@ -56,7 +56,7 @@ describe("TeamRunFileCommitWriter", () => {
 
     const secondDirectory = await createDirectory();
     const finalizationFailurePath = path.join(secondDirectory, "team_communication_messages.json");
-    const finalizationFailure = new TeamRunFileCommitWriter({
+    const finalizationFailure = new AtomicRunPackageFileCommitWriter({
       operations: {
         mkdir: fs.mkdir,
         rename: fs.rename,

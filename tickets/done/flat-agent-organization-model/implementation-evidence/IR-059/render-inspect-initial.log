@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.isDisabled: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Stop Agent Org', exact: true })[22m
+
+    at /tmp/aorg-ir059/inspect.mjs:16:97 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.2

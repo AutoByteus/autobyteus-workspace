@@ -54,7 +54,7 @@ const createRunContext = (runId: string) =>
       workspaceId: "/tmp/codex-thread-event-harness",
       llmConfig: null,
       skillAccessMode: SkillAccessMode.NONE,
-      memberTeamContext: null,
+      memberExecutionContext: null,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {

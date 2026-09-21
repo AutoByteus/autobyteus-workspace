@@ -1,5 +1,4 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { buildInterAgentMessageDeliveryIntentFromRecipientAddress } from "../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-sender.js";
 import { describeSendMessageTargetSelector } from "../domain/send-message-target-selector.js";
 import { isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
@@ -13,6 +12,7 @@ import {
   validateParsedSendMessageToToolArguments,
 } from "./send-message-to-tool-argument-parser.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "./send-message-to-tool-contract.js";
+import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export type SendMessageToDispatcherInput = {
   toolName?: string | null;
@@ -68,34 +68,24 @@ export class SendMessageToDispatcher {
       } satisfies GlobalAgentRunMessageDeliveryInput);
     }
 
-    const memberTeamContext = input.sender.memberTeamContext;
-    const delivery = memberTeamContext?.collaboration.deliverInterAgentMessage ?? null;
-    if (!memberTeamContext || !delivery) {
+    const memberExecutionContext = input.sender.memberExecutionContext;
+    const delivery = memberExecutionContext?.collaboration.deliverLogicalMessage ?? null;
+    if (!memberExecutionContext || !delivery) {
       return {
         accepted: false,
-        code: "TEAM_CONTEXT_REQUIRED",
-        message: `${toolName} recipient_address delivery requires an active Team collaboration context.`,
-      };
-    }
-
-    const intentResult = buildInterAgentMessageDeliveryIntentFromRecipientAddress({
-      memberTeamContext,
-      recipientAddress: parsed.target.recipientAddress,
-      content,
-      messageType: parsed.messageType,
-      referenceFiles: parsed.referenceFiles,
-    });
-    if (!intentResult.ok) {
-      return {
-        accepted: false,
-        code: intentResult.code,
-        message: intentResult.message,
+        code: "COLLABORATION_CONTEXT_REQUIRED",
+        message: `${toolName} recipient_address delivery requires an active collaboration context.`,
       };
     }
 
     let result: AgentOperationResult;
     try {
-      result = await delivery(intentResult.intent);
+      result = await delivery({
+      recipientAddress: assertAgentTeamAddress(parsed.target.recipientAddress),
+      content,
+      messageType: parsed.messageType,
+      referenceFiles: parsed.referenceFiles,
+      });
     } catch (error) {
       if (!isCollaborationContractError(error)) {
         throw error;

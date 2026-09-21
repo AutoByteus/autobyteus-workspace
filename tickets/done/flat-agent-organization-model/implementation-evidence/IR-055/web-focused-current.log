@@ -1,0 +1,74 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/UserMessageHistoryFiles.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts utils/contextFiles/__tests__ --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextLocalFileLocatorMigration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextAttachmentSend.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentSend.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextLocalFileLocatorMigration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/contextFiles/__tests__/contextAttachmentSend.spec.ts (1 test) 2ms
+ ✓ utils/contextFiles/__tests__/contextLocalFileLocatorMigration.spec.ts (5 tests) 4ms
+ ✓ utils/contextFiles/__tests__/contextAttachmentModel.spec.ts (3 tests) 3ms
+ ✓ utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts (6 tests) 5ms
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (10 tests) 9ms
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts (5 tests) 6ms
+ ✓ components/conversation/__tests__/UserMessageHistoryFiles.spec.ts (4 tests) 19ms
+
+ Test Files  7 passed (7)
+      Tests  34 passed (34)
+   Start at  15:55:29
+   Duration  11.89s (transform 5.32s, setup 66.26s, collect 353ms, tests 48ms, environment 9.77s, prepare 3.73s)
+

@@ -397,17 +397,17 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
   },
   {
     family: "team-context",
-    symbol: "MemberTeamContextBuilder",
+    symbol: "MemberExecutionContextBuilder",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
     kind: "new",
     requiredInputs: [{ kind: "positional", argumentIndex: 0, label: "agentTeamDefinitionService" }],
   },
   {
     family: "team-context",
-    symbol: "MixedTeamRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
+    symbol: "FlatTeamExecutionFactory",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
     kind: "new",
-    requiredInputs: ["createTeamManager"].map((path) => ({
+    requiredInputs: ["agentRunManager", "memoryLocator", "activityInspector", "workspaceManager"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 0,
       path,
@@ -415,30 +415,10 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
   },
   {
     family: "team-context",
-    symbol: "MixedTeamManager",
-    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts",
-    kind: "new",
-    requiredInputs: [
-      "subTeamRunFactory",
-      "agentRunManager",
-      "memoryLocationService",
-      "activityInspector",
-      "memberTeamContextBuilder",
-      "workspaceManager",
-      "taskRootResolver",
-      "publish",
-      "deliverInterAgentMessage",
-      "acceptPlatformBinding",
-    ].map(
-      (path) => ({ kind: "object-property" as const, argumentIndex: 1, path }),
-    ),
-  },
-  {
-    family: "team-context",
     symbol: "AgentTeamRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
     kind: "new",
-    requiredInputs: ["memoryDir", "mixedTeamRunBackendFactory", "executionTreeStore", "taskRecordsStore", "communicationStore"].map((path) => ({
+    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "taskExecutionIdentity", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 0,
       path,
@@ -480,11 +460,11 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "RunFileChangeService",
     moduleSuffix: "autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts",
     kind: "new",
-    requiredInputs: ["memoryDir", "workspaceManager"].map((path) => ({
-      kind: "object-property" as const,
+    requiredInputs: [{
+      kind: "object-property",
       argumentIndex: 0,
-      path,
-    })),
+      path: "workspaceManager",
+    }],
   },
   {
     family: "defaulting-owner",
@@ -2944,11 +2924,12 @@ describe("application framework architecture boundaries", () => {
     );
     for (const requiredConstruction of [
       "agentDefinitionService: input.agentDefinitionService",
-      "new MemberTeamContextBuilder(\n        input.agentTeamDefinitionService",
+      "new MemberExecutionContextBuilder(\n        input.agentTeamDefinitionService",
       "teamDefinitionService: input.agentTeamDefinitionService",
+      "orgDefinitions: input.agentOrgDefinitionService",
       "agentRunIdentityAllocator,",
       "agentToolMcpRunSessionDeactivator:",
-      "taskRootResolver: managerInput.callbacks.taskRootResolver",
+      "flatTeamExecutionFactory,",
       "bindProcessAgentRunService(agentRunService)",
       "bindProcessTeamRunService(teamRunService)",
     ]) {
@@ -3017,6 +2998,8 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
+      "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
@@ -3136,153 +3119,38 @@ describe("application framework architecture boundaries", () => {
     expect(normalStop.indexOf("runtime.stop()")).toBeLessThan(normalStop.indexOf("respondSuccess"));
   });
 
-  it("guards the exact SR-013 root-bound task construction inventory", () => {
-    const managerOccurrences = sr013NewOccurrences("MixedTeamManager");
-    expect(sr013OccurrencePaths(managerOccurrences)).toEqual([
+  it("guards the revised root-neutral Agent and flat-Team execution boundary", () => {
+    const serverSourceRoot = join(REPOSITORY_ROOT, "autobyteus-server-ts/src");
+    const sharedExecutionRoots = [
+      join(serverSourceRoot, "agent-collaboration/execution"),
+      join(serverSourceRoot, "agent-team-execution/local"),
+    ];
+    const forbidden = /RootTeamRun|AgentOrgRun|AgentTeamRunManager|AgentOrgRunManager|ExecutionTreeStore|HistoryIndexStore|RunEventPublisher/;
+    for (const file of sharedExecutionRoots.flatMap((entry) => walkSourceFiles(entry))) {
+      expect(readFileSync(file, "utf8"), normalizePath(relative(REPOSITORY_ROOT, file)))
+        .not.toMatch(forbidden);
+    }
+
+    const factoryRoots = walkSourceFiles(serverSourceRoot)
+      .filter((file) => readFileSync(file, "utf8").includes("new FlatTeamExecutionFactory("))
+      .map((file) => normalizePath(relative(REPOSITORY_ROOT, file)))
+      .sort();
+    expect(factoryRoots).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
-    ].sort());
-    const productionManagerResolverValues = new Map([
-      [
-        "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-        "managerInput.callbacks.taskRootResolver",
-      ],
-      [
-        "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
-        "managerInput.callbacks.taskRootResolver",
-      ],
     ]);
-    for (const occurrence of managerOccurrences) {
-      const value = sr013RequiredObjectProperty(occurrence, 1, "taskRootResolver");
-      const expectedValue = productionManagerResolverValues.get(
-        sr013RelativePath(occurrence.file),
-      );
-      if (expectedValue) {
-        expect(value.getText(occurrence.sourceFile)).toBe(expectedValue);
-      }
+
+    for (const retired of ["MixedAgentMemberHandle", "FlatTeamRunBackendFactory", "MemberTaskRootResolver"]) {
+      const occurrences = walkSourceFiles(serverSourceRoot)
+        .filter((file) => readFileSync(file, "utf8").includes(retired));
+      expect(occurrences, retired).toEqual([]);
     }
-
-    const factoryOccurrences = sr013NewOccurrences("MixedTeamRunBackendFactory");
-    expect(sr013OccurrencePaths(factoryOccurrences)).toEqual([
-      "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
-      "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
-      "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
-      "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
-    ].sort());
-
-    const builderOccurrences = sr013BuilderCalls();
-    expect(sr013OccurrencePaths(builderOccurrences)).toEqual([
-      "autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts",
-      "autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts",
-    ].sort());
-    for (const occurrence of builderOccurrences) {
-      sr013RequiredObjectProperty(occurrence, 0, "taskRootResolver");
-    }
-
-    const memberContextOccurrences = sr013NewOccurrences("MemberTeamContext");
-    expect(sr013OccurrencePaths(memberContextOccurrences)).toEqual([
-      "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
-      "autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts",
-      "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts",
-    ].sort());
-    for (const occurrence of memberContextOccurrences) {
-      sr013RequiredObjectProperty(occurrence, 0, "taskRootResolver");
-    }
-
-    const contextOnlyFactoryTest = readFileSync(
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts"),
+    const factory = readFileSync(
+      join(serverSourceRoot, "agent-team-execution/local/flat-team-execution-factory.ts"),
       "utf8",
     );
-    const contextOnlyFactoryPattern = new RegExp(
-      `${["new", "MixedTeamRunBackendFactory"].join(" ")}\\s*\\(`,
-      "g",
-    );
-    expect(contextOnlyFactoryTest.match(contextOnlyFactoryPattern)).toHaveLength(1);
-    expect(contextOnlyFactoryTest).not.toMatch(/\.(?:createBackend|restoreBackend|createBackendForNode)\s*\(/);
-
-    const factoryFile = join(
-      REPOSITORY_ROOT,
-      "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-    );
-    const factorySource = ts.createSourceFile(
-      factoryFile,
-      readFileSync(factoryFile, "utf8"),
-      ts.ScriptTarget.Latest,
-      true,
-      ts.ScriptKind.TS,
-    );
-    const factoryClass = factorySource.statements.find(
-      (statement): statement is ts.ClassDeclaration =>
-        ts.isClassDeclaration(statement)
-        && statement.name?.text === "MixedTeamRunBackendFactory",
-    )!;
-    for (const methodName of ["createBackend", "restoreBackend"]) {
-      const method = factoryClass.members.find(
-        (member): member is ts.MethodDeclaration =>
-          ts.isMethodDeclaration(member)
-          && ts.isIdentifier(member.name)
-          && member.name.text === methodName,
-      )!;
-      const callbacks = method.parameters[2]!;
-      expect(callbacks.name.getText(factorySource)).toBe("callbacks");
-      expect(callbacks.questionToken).toBeUndefined();
-      expect(callbacks.initializer).toBeUndefined();
-      expect(callbacks.type?.getText(factorySource)).toBe("MixedTeamRunCallbacks");
-    }
-
-    const forbiddenImports: string[] = [];
-    const forbiddenIdentifiers: string[] = [];
-    const taskExecutionRoots = [
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-tools/task-delegation"),
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts"),
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts"),
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts"),
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts"),
-    ];
-    for (const file of taskExecutionRoots.flatMap((entry) =>
-      statSync(entry).isDirectory() ? walkSourceFiles(entry) : [entry])) {
-      const sourceFile = ts.createSourceFile(
-        file,
-        readFileSync(file, "utf8"),
-        ts.ScriptTarget.Latest,
-        true,
-        ts.ScriptKind.TS,
-      );
-      const visit = (node: ts.Node): void => {
-        if (ts.isImportDeclaration(node)
-          && ts.isStringLiteral(node.moduleSpecifier)
-          && node.moduleSpecifier.text.includes("team-run-service")) {
-          const bindings = node.importClause?.namedBindings;
-          const importsAmbientAccessor = bindings
-            && ts.isNamedImports(bindings)
-            && bindings.elements.some(
-              (binding) => (binding.propertyName?.text ?? binding.name.text) === "getTeamRunService",
-            );
-          if (importsAmbientAccessor) forbiddenImports.push(sr013RelativePath(file));
-        }
-        if (ts.isIdentifier(node) && node.text === "noopCallbacks") {
-          forbiddenIdentifiers.push(sr013RelativePath(file));
-        }
-        ts.forEachChild(node, visit);
-      };
-      visit(sourceFile);
-    }
-    expect(forbiddenImports).toEqual([]);
-    expect(forbiddenIdentifiers).toEqual([]);
+    expect(factory).toContain("class FlatTeamExecutionFactory");
+    expect(factory).toContain("cannot contain a configured Team");
+    expect(factory).not.toMatch(/RootTeamRun|AgentOrgRun|ExecutionTreeStore|RunManager\.getInstance|registerRoot/);
   }, 15_000);
 });

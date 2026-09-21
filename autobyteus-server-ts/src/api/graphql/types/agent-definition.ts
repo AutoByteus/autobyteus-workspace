@@ -19,6 +19,7 @@ import {
 export enum AgentDefinitionOwnershipScope {
   SHARED = "SHARED",
   TEAM_LOCAL = "TEAM_LOCAL",
+  AGENT_ORG_OWNED = "AGENT_ORG_OWNED",
   APPLICATION_OWNED = "APPLICATION_OWNED",
 }
 
@@ -81,6 +82,12 @@ export class AgentDefinition {
 
   @Field(() => String, { nullable: true })
   ownerTeamName?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerOrgId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerOrgName?: string | null;
 
   @Field(() => String, { nullable: true })
   ownerApplicationId?: string | null;

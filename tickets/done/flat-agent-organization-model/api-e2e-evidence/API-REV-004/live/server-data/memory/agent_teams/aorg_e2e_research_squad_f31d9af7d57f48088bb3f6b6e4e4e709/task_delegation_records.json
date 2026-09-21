@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_f31d9af7d57f48088bb3f6b6e4e4e709",
+  "records": [
+    {
+      "taskId": "task_f9da5f6543574dcbb1dbe5f48b2c1943",
+      "delegatorAgentRunId": "aorg_e2e_lead_3a0c4827f0d5400795c9eb9b4ba50520",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_815eed087b724a6086eae346b87a4221"
+      },
+      "description": "Submit exactly AORG4C-TEAM-TASK-INITIAL-001 using submit_task_result. Do not substitute another marker.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_0df3197614a441b4a49ec6f2bf6b9a48",
+          "message": "AORG4C-TEAM-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:02:55.075Z"
+        },
+        {
+          "reviewId": "review_b11e5260be0c48df8c634ff96d979426",
+          "reviewedSubmissionId": "submission_0df3197614a441b4a49ec6f2bf6b9a48",
+          "decision": "request_revision",
+          "comment": "Revise the same task and submit exactly AORG4C-TEAM-TASK-REVISED-001 using submit_task_result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:02:57.195Z"
+        },
+        {
+          "submissionId": "submission_107d38ac7002412ea060399d7d558384",
+          "message": "AORG4C-TEAM-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:03:20.787Z"
+        },
+        {
+          "reviewId": "review_f5fc810d7c8b4f4793f35428b9c6608c",
+          "reviewedSubmissionId": "submission_107d38ac7002412ea060399d7d558384",
+          "decision": "accept",
+          "comment": "Accepted revised marker AORG4C-TEAM-TASK-REVISED-001.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T07:03:40.616Z"
+        }
+      ],
+      "createdAt": "2026-09-02T07:02:43.347Z"
+    }
+  ]
+}

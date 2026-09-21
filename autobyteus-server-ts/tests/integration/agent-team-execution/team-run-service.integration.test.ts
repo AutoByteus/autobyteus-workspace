@@ -5,29 +5,20 @@ import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execut
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-const definitions = new Map<string, unknown>([
-  ["classroom-team", {
-    id: "classroom-team",
-    name: "Classroom Team",
-    coordinatorMemberName: "Teacher",
-    nodes: [
-      { memberName: "Teacher", refType: "agent", refScope: "shared", ref: "agent-teacher" },
-      { memberName: "Observer", refType: "agent", refScope: "shared", ref: "agent-observer" },
-      { memberName: "StudentStudyGroup", refType: "agent_team", refScope: "shared", ref: "student-study-group" },
-    ],
-    handoffs: [{ from: "/Teacher", to: "/StudentStudyGroup", rules: ["Delegate classroom exercises here."] }],
-  }],
-  ["student-study-group", {
-    id: "student-study-group",
-    name: "Student Study Group",
-    coordinatorMemberName: "student_one",
-    nodes: [
-      { memberName: "student_one", refType: "agent", refScope: "shared", ref: "agent-student-one" },
-      { memberName: "student_two", refType: "agent", refScope: "shared", ref: "agent-student-two" },
-    ],
-    handoffs: [{ from: "/student_one", to: "/student_two", rules: ["Ask for an independent check."] }],
-  }],
-]);
+const definitions = new Map<string, unknown>([["classroom-team", {
+  id: "classroom-team",
+  name: "Classroom Team",
+  coordinatorMemberName: "Teacher",
+  nodes: [
+    { memberName: "Teacher", refScope: "shared", ref: "agent-teacher" },
+    { memberName: "Observer", refScope: "shared", ref: "agent-observer" },
+    { memberName: "Student", refScope: "shared", ref: "agent-student" },
+  ],
+  handoffs: [
+    { from: "/Teacher", to: "/Student", rules: ["Delegate classroom exercises here."] },
+    { from: "/Student", to: "/Observer", rules: ["Ask for an independent check."] },
+  ],
+}]]);
 
 const launch = (
   memberAddress: string,
@@ -123,8 +114,7 @@ const createHarness = () => {
     allocateForAgentDefinition: vi.fn(async (definitionId: string) => `${definitionId}-run-${++allocation}`),
   };
   const teamAllocator = {
-    allocateForTeamDefinitionName: vi.fn((definitionName: string) =>
-      definitionName === "Classroom Team" ? "classroom-root-run" : "student-study-group-run"),
+    allocateForTeamDefinitionName: vi.fn(() => "classroom-root-run"),
   };
   const service = new TeamRunService({
     agentTeamRunManager: manager as never,
@@ -134,14 +124,25 @@ const createHarness = () => {
     memoryDir: "/tmp/team-run-service-current-integration",
     agentRunIdentityAllocator: allocator,
     teamRunIdentityAllocator: teamAllocator,
+    tokenUsageReadiness: {
+      assertCurrentSchemaReady: vi.fn(),
+      assertExistingRunRestoreReady: vi.fn(),
+    },
+    definitionAdmissionService: {
+      requireAvailable: vi.fn(async (_kind: string, id: string) => {
+        const definition = definitions.get(id);
+        if (!definition) throw new Error(`Definition '${id}' is unavailable.`);
+        return { status: "available", subjectKind: "agent_team", definition };
+      }),
+    } as never,
   });
   return { service, manager, catalog, workspaceManager, allocator, teamAllocator };
 };
 
 afterEach(() => vi.clearAllMocks());
 
-describe("TeamRunService current recursive topology integration", () => {
-  it("expands one root launch configuration across every Team and exact recursive Agent address", async () => {
+describe("TeamRunService current flat Team V2 integration", () => {
+  it("expands one root launch configuration across every exact direct Agent address", async () => {
     const { service, manager } = createHarness();
     await service.createTeamRunFromRootConfig({
       teamDefinitionId: "classroom-team",
@@ -164,35 +165,23 @@ describe("TeamRunService current recursive topology integration", () => {
       children: expect.arrayContaining([
         expect.objectContaining({ address: "/Teacher", agentDefinitionId: "agent-teacher" }),
         expect.objectContaining({ address: "/Observer", agentDefinitionId: "agent-observer" }),
-        expect.objectContaining({
-          address: "/StudentStudyGroup",
-          defaultLaunchConfiguration: expect.objectContaining({
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            llmModelIdentifier: "shared-model",
-          }),
-          children: [
-            expect.objectContaining({ address: "/StudentStudyGroup/student_one", agentDefinitionId: "agent-student-one" }),
-            expect.objectContaining({ address: "/StudentStudyGroup/student_two", agentDefinitionId: "agent-student-two" }),
-          ],
-        }),
+        expect.objectContaining({ address: "/Student", agentDefinitionId: "agent-student" }),
       ]),
     });
   });
 
-  it("creates one rooted mixed-runtime recursive plan and records the current V2 execution tree", async () => {
+  it("creates one rooted mixed-runtime flat plan and records the current V2 execution tree", async () => {
     const { service, manager, catalog, workspaceManager } = createHarness();
     const root = await service.createTeamRun({
       teamDefinitionId: "classroom-team",
       applicationBinding: { applicationId: "classroom-app", bindingId: "binding-1" },
       teamConfigs: [
         teamLaunch("/", RuntimeKind.CODEX_APP_SERVER, "/tmp/classroom-workspace/"),
-        teamLaunch("/StudentStudyGroup", RuntimeKind.AUTOBYTEUS),
       ],
       memberConfigs: [
         launch("/Teacher", RuntimeKind.CODEX_APP_SERVER, "/tmp/classroom-workspace/"),
         launch("/Observer", RuntimeKind.CLAUDE_AGENT_SDK),
-        launch("/StudentStudyGroup/student_one", RuntimeKind.AUTOBYTEUS),
-        launch("/StudentStudyGroup/student_two", RuntimeKind.CODEX_APP_SERVER),
+        launch("/Student", RuntimeKind.AUTOBYTEUS),
       ],
     });
 
@@ -212,23 +201,12 @@ describe("TeamRunService current recursive topology integration", () => {
         children: [
           { kind: "agent", address: "/Teacher", runtimeKind: RuntimeKind.CODEX_APP_SERVER },
           { kind: "agent", address: "/Observer", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK },
-          {
-            kind: "agent_team",
-            address: "/StudentStudyGroup",
-            coordinatorAddress: "/StudentStudyGroup/student_one",
-            defaultLaunchConfiguration: expect.objectContaining({
-              runtimeKind: RuntimeKind.AUTOBYTEUS,
-            }),
-            children: [
-              { kind: "agent", address: "/StudentStudyGroup/student_one", runtimeKind: RuntimeKind.AUTOBYTEUS },
-              { kind: "agent", address: "/StudentStudyGroup/student_two", runtimeKind: RuntimeKind.CODEX_APP_SERVER },
-            ],
-          },
+          { kind: "agent", address: "/Student", runtimeKind: RuntimeKind.AUTOBYTEUS },
         ],
       },
       handoffs: [
-        { from: "/Teacher", to: "/StudentStudyGroup", rules: ["Delegate classroom exercises here."] },
-        { from: "/StudentStudyGroup/student_one", to: "/StudentStudyGroup/student_two", rules: ["Ask for an independent check."] },
+        { from: "/Teacher", to: "/Student", rules: ["Delegate classroom exercises here."] },
+        { from: "/Student", to: "/Observer", rules: ["Ask for an independent check."] },
       ],
     });
     expect(workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledOnce();
@@ -273,13 +251,11 @@ describe("TeamRunService current recursive topology integration", () => {
       teamDefinitionId: "classroom-team",
       teamConfigs: [
         teamLaunch("/", RuntimeKind.AUTOBYTEUS),
-        teamLaunch("/StudentStudyGroup", RuntimeKind.AUTOBYTEUS),
       ],
       memberConfigs: [
         launch("/Teacher", RuntimeKind.AUTOBYTEUS),
         launch("/Observer", RuntimeKind.AUTOBYTEUS),
-        launch("/StudentStudyGroup/student_one", RuntimeKind.AUTOBYTEUS),
-        launch("/StudentStudyGroup/student_two", RuntimeKind.AUTOBYTEUS),
+        launch("/Student", RuntimeKind.AUTOBYTEUS),
       ],
     })).rejects.toThrow("catalog unavailable");
     expect(manager.terminateTeamRun).toHaveBeenCalledWith("classroom-root-run");

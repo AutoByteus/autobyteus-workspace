@@ -1,0 +1,93 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "SC Standalone Control (1)":
+    - generic: SC
+    - generic: Standalone Control
+    - generic: (1)
+  - button "使用此智能体开始新的运行":
+  - generic: Teams
+  - button "有活跃团队运行 Team Control (3)" [expanded]:
+    - img "有活跃团队运行"
+    - generic: Team Control
+    - generic: (3)
+  - button "活跃团队运行 New - Team Control" [expanded]:
+    - img "活跃团队运行"
+    - generic: New - Team Control
+  - button "终止团队":
+  - generic: now
+  - tree "New - Team Control组织树":
+    - treeitem "智能体，lead，第 1 级，离线，/lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: now
+  - button "非活跃团队运行 Untitled team run":
+    - img "非活跃团队运行"
+    - generic: Untitled team run
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 49m
+  - button "非活跃团队运行 Reply exactly TEAM-CONTROL-917. Do not call tools." [expanded]:
+    - img "非活跃团队运行"
+    - generic: Reply exactly TEAM-CONTROL-917. Do not call tools.
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 51m
+  - tree "Reply exactly TEAM-CONTROL-917. Do not call tools.组织树":
+    - treeitem "智能体，lead，第 1 级，离线，/lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 51m
+  - generic: 组织
+  - button "Config Lab (4)":
+    - generic: Config Lab
+    - generic: (4)
+  - button "设置":
+    - generic: 设置
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - button "编辑配置":
+  - button "新建智能体":
+  - button "Context Files (0) （拖动、粘贴或上传）" [expanded]:
+    - generic: Context Files (0)
+    - generic: （拖动、粘贴或上传）
+  - button "上传文件":
+  - textbox "输入消息..."
+  - button "Send message" [disabled]:
+  - tablist "工作区工具":
+    - tab "文件"
+    - tab "团队" [selected]: 团队
+    - tab "终端"
+    - tab "活动"
+    - tab "Token"
+    - tab "产物"
+    - tab "VNC 查看器"
+  - button "切换侧边栏":
+  - button "消息 0 消息" [expanded]:
+    - heading "消息" [level=3]
+    - generic: 0 消息
+  - paragraph: 暂无团队消息
+  - paragraph: 已接受的智能体间消息及其引用文件会显示在这里。
+  - button "任务 0 个任务":
+    - generic: 任务
+    - generic: 0 个任务

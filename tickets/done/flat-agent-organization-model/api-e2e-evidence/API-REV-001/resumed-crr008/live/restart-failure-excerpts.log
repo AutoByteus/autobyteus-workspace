@@ -1,0 +1,35 @@
+154-Pre-loaded 0 MCP server configs into cache.
+155-Finished loading and registering all MCP server configurations.
+156-Background task 'MCP Tool Registration' completed successfully.
+157-Pre-loaded 28 LLM models into cache.
+158-Pre-loaded 7 image models into cache.
+159-Pre-loaded 4 audio models into cache.
+160-Background application cache pre-loading completed.
+161-Background task 'Cache Pre-loading' completed successfully.
+162:{"level":30,"time":1788281587620,"pid":5109,"hostname":"0d2d48492ef2","reqId":"req-3","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_12d450d507c447fda317be92ff257bcd' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_12d450d507c447fda317be92ff257bcd' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_12d450d507c447fda317be92ff257bcd' was not found."}
+163-Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+164-FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+165-Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data/temp_workspace
+166-Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+167-FileExplorerSession created: 2c640415-21c5-430e-9f93-520144768c4d for workspace temp_ws_default
+168-Created file explorer session 2c640415-21c5-430e-9f93-520144768c4d for workspace temp_ws_default. Active sessions: 1
+169-File explorer WebSocket connected: 2c640415-21c5-430e-9f93-520144768c4d for workspace temp_ws_default
+170-File explorer websocket attached for workspace temp_ws_default
+--
+229-[CodexClientThreadRouter] app-server message was not routed {
+230-  kind: 'notification',
+231-  method: 'deprecationNotice',
+232-  requestId: undefined,
+233-  threadCount: 4,
+234-  paramKeys: [ 'summary', 'details' ]
+235-}
+236-Resolved configured temp workspace root to TempWorkspace.
+237:Unexpected failure while preparing agent run 'aorg_e2e_verifier_2439b87f6c884b9092f714576d635f21' for runtime 'codex_app_server'. Error: Codex app server RPC error -32600: no rollout found for thread id 01a05de5-be94-7f71-afb0-30ef9c75ed8c
+238-    at CodexAppServerClient.handleLine (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client.js:245:32)
+239-    at CodexAppServerClient.onStdout (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client.js:193:18)
+240-    at Socket.<anonymous> (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client.js:36:18)
+241-    at Socket.emit (node:events:519:28)
+242-    at addChunk (node:internal/streams/readable:561:12)
+243-    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+244-    at Readable.push (node:internal/streams/readable:392:5)
+245-    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)

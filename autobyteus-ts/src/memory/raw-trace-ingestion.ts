@@ -1,3 +1,5 @@
+import type { LLMUserMessage } from '../llm/user-message.js';
+import type { ContextFileReference } from '../agent/message/context-file-reference.js';
 import { randomUUID } from 'node:crypto';
 import type { ToolResultEvent } from '../agent/events/agent-events.js';
 import type { ToolInvocation } from '../agent/tool-invocation.js';
@@ -135,3 +137,21 @@ export const buildNativeToolResultTrace = (
     correlationId: correlationId ?? null,
   });
 };
+
+/** Native media and processed text remain LLM-owned; non-media references are captured from original input. */
+export function buildNativeUserMessageTrace(
+  llmUserMessage: LLMUserMessage,
+  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[] },
+): RawTraceItem {
+  return new RawTraceItem({
+    id: `rt_${Date.now()}`, ts: Date.now() / 1000,
+    turnId: input.turnId, seq: input.seq, sourceEvent: input.sourceEvent,
+    traceType: 'user', content: llmUserMessage.content,
+    fileAttachments: input.fileAttachments,
+    media: {
+      images: llmUserMessage.image_urls ?? [],
+      audio: llmUserMessage.audio_urls ?? [],
+      video: llmUserMessage.video_urls ?? [],
+    },
+  });
+}

@@ -1,0 +1,683 @@
+{
+  "states": [
+    {
+      "name": "desktop-direct-pending",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "pending": true,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:14:34.040Z",
+              "contextFilePaths": [],
+              "messageId": "516cea40-5db9-429a-a788-197020eed26e",
+              "dedupeKey": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "desktop-direct-reply-cleared",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:14:34.119Z",
+              "contextFilePaths": [],
+              "messageId": "516cea40-5db9-429a-a788-197020eed26e",
+              "dedupeKey": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.133Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "516cea40-5db9-429a-a788-197020eed26e",
+                    "id": "reply-516cea40-5db9-429a-a788-197020eed26e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-mounted-pending",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:14:34.119Z",
+              "contextFilePaths": [],
+              "messageId": "516cea40-5db9-429a-a788-197020eed26e",
+              "dedupeKey": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.133Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "516cea40-5db9-429a-a788-197020eed26e",
+                    "id": "reply-516cea40-5db9-429a-a788-197020eed26e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "pending": true,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:14:34.319Z",
+              "contextFilePaths": [],
+              "messageId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:0ce2bc59-a0f6-47b1-948c-d6e46388586d"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-mounted-reply-newer-draft",
+      "overflow": false,
+      "textarea": "my newer draft",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:14:34.119Z",
+              "contextFilePaths": [],
+              "messageId": "516cea40-5db9-429a-a788-197020eed26e",
+              "dedupeKey": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.133Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "516cea40-5db9-429a-a788-197020eed26e",
+                    "id": "reply-516cea40-5db9-429a-a788-197020eed26e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "my newer draft",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:14:34.446Z",
+              "contextFilePaths": [],
+              "messageId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:0ce2bc59-a0f6-47b1-948c-d6e46388586d"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.450Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+                    "id": "reply-0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-rejection-newer-draft",
+      "overflow": false,
+      "textarea": "unsaved newer text",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:14:34.119Z",
+              "contextFilePaths": [],
+              "messageId": "516cea40-5db9-429a-a788-197020eed26e",
+              "dedupeKey": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.133Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "516cea40-5db9-429a-a788-197020eed26e",
+                    "id": "reply-516cea40-5db9-429a-a788-197020eed26e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "unsaved newer text",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:14:34.446Z",
+              "contextFilePaths": [],
+              "messageId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:0ce2bc59-a0f6-47b1-948c-d6e46388586d"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.450Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+                    "id": "reply-0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "rejected hello",
+              "timestamp": "2026-09-11T23:14:34.584Z",
+              "contextFilePaths": [],
+              "messageId": "a5f4de35-6224-4544-9f95-3af8f08ea60b",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:a5f4de35-6224-4544-9f95-3af8f08ea60b"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:14:34.598Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-rejection-restored",
+      "overflow": false,
+      "textarea": "retry me",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:14:34.119Z",
+              "contextFilePaths": [],
+              "messageId": "516cea40-5db9-429a-a788-197020eed26e",
+              "dedupeKey": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.133Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "516cea40-5db9-429a-a788-197020eed26e",
+                    "id": "reply-516cea40-5db9-429a-a788-197020eed26e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "retry me",
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:14:34.446Z",
+              "contextFilePaths": [],
+              "messageId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:0ce2bc59-a0f6-47b1-948c-d6e46388586d"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:14:34.450Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+                    "id": "reply-0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "rejected hello",
+              "timestamp": "2026-09-11T23:14:34.584Z",
+              "contextFilePaths": [],
+              "messageId": "a5f4de35-6224-4544-9f95-3af8f08ea60b",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:a5f4de35-6224-4544-9f95-3af8f08ea60b"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:14:34.598Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "retry me",
+              "timestamp": "2026-09-11T23:14:34.658Z",
+              "contextFilePaths": [],
+              "messageId": "a2835c3c-2e07-43d1-8a6a-05238598d369",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:a2835c3c-2e07-43d1-8a6a-05238598d369"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:14:34.665Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "pending": false,
+          "messages": []
+        }
+      }
+    }
+  ],
+  "pageErrors": [],
+  "queries": [
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "commands": [
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-director",
+        "command_id": "9464606c-a619-4087-a13b-8bd963d78b06",
+        "content": "hello",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "516cea40-5db9-429a-a788-197020eed26e",
+        "dedupe_key": "member_input:org-run:agent-director:516cea40-5db9-429a-a788-197020eed26e"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "e6a05c62-0c48-45b0-97eb-59af6613eaa4",
+        "content": "mounted hello",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "0ce2bc59-a0f6-47b1-948c-d6e46388586d",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:0ce2bc59-a0f6-47b1-948c-d6e46388586d"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "592234df-057f-4190-8647-4d1d9167f910",
+        "content": "rejected hello",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "a5f4de35-6224-4544-9f95-3af8f08ea60b",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:a5f4de35-6224-4544-9f95-3af8f08ea60b"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "e209eb0e-bce5-4e6f-b44b-47aecbe3d7ce",
+        "content": "retry me",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "a2835c3c-2e07-43d1-8a6a-05238598d369",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:a2835c3c-2e07-43d1-8a6a-05238598d369"
+      }
+    }
+  ],
+  "limits": "Implementation-scoped isolated Nuxt renderer, actual shared surfaces/composer/store/context/service and native browser socket, synthetic strict snapshot/member projections/stream replies. No provider/server/native-package/API-E2E pass.",
+  "passed": true
+}

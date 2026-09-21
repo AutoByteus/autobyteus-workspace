@@ -53,6 +53,8 @@ const mocks = vi.hoisted(() => {
   const hostDefinitionServices = {
     agentDefinitionService: {},
     agentTeamDefinitionService: {},
+    agentOrgDefinitionService: {},
+    definitionAdmissionService: { scan: vi.fn(async () => []) },
     close: vi.fn(),
   };
   const workspaceManager = {};
@@ -160,8 +162,8 @@ vi.mock("../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-
 vi.mock("../../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
   CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "readable-provider-v1",
 }));
-vi.mock("../../../src/run-history/services/team-run-package-catalog.js", () => ({
-  TeamRunPackageCatalog: class {
+vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
+  RootRunPackageReadinessIndex: class {
     rebuild = mocks.rebuildTeamRunCatalog;
   },
 }));
@@ -296,6 +298,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       },
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
+      agentOrgDefinitionService: mocks.hostDefinitionServices.agentOrgDefinitionService,
+      definitionAdmissionService: mocks.hostDefinitionServices.definitionAdmissionService,
       workspaceManager: mocks.workspaceManager,
       agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
       agentToolMcpSessionAuthority: mocks.generalAuthority,

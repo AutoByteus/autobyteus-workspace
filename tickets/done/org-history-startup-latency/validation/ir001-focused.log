@@ -1,0 +1,110 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts stores/__tests__/runHistoryStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (8 tests | 2 failed) 82ms
+   ✓ independent family publication through real initialized Pinia projection and sidebar > renders ready org while other query and catalogs remain pending 45ms
+   × independent family publication through real initialized Pinia projection and sidebar > renders ready workspace while other query and catalogs remain pending 15ms
+     → Unable to get [data-test="workspace-row"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div data-v-bf027b41="" class="px-3 py-4 text-xs text-gray-500">Loading task history</div>
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--teleport start-->
+  <!--teleport end-->
+  <!--teleport start-->
+  <!--teleport end-->
+</div>
+   × independent family publication through real initialized Pinia projection and sidebar > publishes both families before avatar enrichment and awaits later active hydration/connection 13ms
+     → expected 'WorkspacesLoading task historyfixture…' to contain 'History Agent'
+   ✓ independent family publication through real initialized Pinia projection and sidebar > preserves accepted workspace rows on failure while publishing successful empty other family 2ms
+   ✓ independent family publication through real initialized Pinia projection and sidebar > preserves accepted org rows on failure while publishing successful empty other family 2ms
+   ✓ independent family publication through real initialized Pinia projection and sidebar > older full Org cannot publish or reconcile after newer focused request (failure=false) 2ms
+   ✓ independent family publication through real initialized Pinia projection and sidebar > older full Org cannot publish or reconcile after newer focused request (failure=true) 2ms
+   ✓ independent family publication through real initialized Pinia projection and sidebar > quiet partial failure retains legacy global error while other accepted family publishes 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (44 tests) 469ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts > independent family publication through real initialized Pinia projection and sidebar > renders ready workspace while other query and catalogs remain pending
+Error: Unable to get [data-test="workspace-row"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div data-v-bf027b41="" class="px-3 py-4 text-xs text-gray-500">Loading task history</div>
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--teleport start-->
+  <!--teleport end-->
+  <!--teleport start-->
+  <!--teleport end-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ expandWorkspace components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts:58:22
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts:65:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts > independent family publication through real initialized Pinia projection and sidebar > publishes both families before avatar enrichment and awaits later active hydration/connection
+AssertionError: expected 'WorkspacesLoading task historyfixture…' to contain 'History Agent'
+
+Expected: "History Agent"
+Received: "WorkspacesLoading task historyfixtureOrgsHistory Org(1)"
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts:82:78
+     80|     const recovery=vi.spyOn(useAgentOrgContextsStore(),'reconcileRetai…
+     81|     workspace.resolve(workspaceResponse(true));org.resolve(orgResponse…
+     82|     expect(wrapper!.text()).toContain('History Org');expect(wrapper!.t…
+       |                                                                              ^
+     83|     expect(io.hydrate).not.toHaveBeenCalled();expect(recovery).toHaveB…
+     84|     useAgentDefinitionStore().agentDefinitions=[{id:'agent-definition'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 50 passed (52)
+   Start at  07:42:37
+   Duration  6.80s (transform 2.99s, setup 11.20s, collect 611ms, tests 551ms, environment 372ms, prepare 229ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

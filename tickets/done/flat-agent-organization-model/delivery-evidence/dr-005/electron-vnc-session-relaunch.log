@@ -1,0 +1,16 @@
+timestamp=2026-09-06T07:51:32Z
+launch_owner=vncuser interactive Xfce terminal session
+command=/tmp/start-autobyteus-dr005.sh
+reason=desktop-session ownership keeps the test app available after the tool execution returns
+health={"status":"ok","message":"Server is running"}
+window_id=23068676
+xwininfo: Window id: 0x1600004 "autobyteus"
+  Width: 1200
+  Height: 800
+  Map State: IsViewable
+appimage_wrapper_pid=3147
+electron_main_pid=3190
+embedded_server_pid=3253
+data_root=/home/vncuser/.autobyteus/server-data
+display=:99
+result=running and foregrounded

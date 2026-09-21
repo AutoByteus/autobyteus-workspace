@@ -1,0 +1,8 @@
+206 nonempty lines: autobyteus-web/components/workspace/collaboration/CollaborationDelegatedTasksSection.vue
+276 nonempty lines: autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue
+39 nonempty lines: autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue
+172 nonempty lines: autobyteus-web/components/workspace/team/TeamDelegatedTaskItemDetail.vue
+142 nonempty lines: autobyteus-web/services/agentOrgExecution/agentOrgTaskPresentation.ts
+75 nonempty lines: autobyteus-web/types/workspace/collaborationTaskPresentation.ts
+191 nonempty lines: autobyteus-web/utils/teamDelegatedTaskEntries.ts
+7 executable implementation files; max 276; no >220 changed-line source delta. Two existing locale data catalogs excluded from executable source limit.

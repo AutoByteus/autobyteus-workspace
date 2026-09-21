@@ -1,0 +1,1261 @@
+{
+  "states": [
+    {
+      "name": "desktop-direct-pending",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": true,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.613Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "desktop-direct-reply-cleared",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-mounted-pending",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": true,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:30:17.896Z",
+              "contextFilePaths": [],
+              "messageId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-mounted-reply-newer-draft",
+      "overflow": false,
+      "textarea": "my newer draft",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "my newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:30:18.005Z",
+              "contextFilePaths": [],
+              "messageId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:18.010Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "id": "reply-1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-rejection-newer-draft",
+      "overflow": false,
+      "textarea": "unsaved newer text",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "unsaved newer text",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:30:18.005Z",
+              "contextFilePaths": [],
+              "messageId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:18.010Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "id": "reply-1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "rejected hello",
+              "timestamp": "2026-09-11T23:30:18.145Z",
+              "contextFilePaths": [],
+              "messageId": "6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.159Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-rejection-restored",
+      "overflow": false,
+      "textarea": "retry me",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "retry me",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:30:18.005Z",
+              "contextFilePaths": [],
+              "messageId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:18.010Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "id": "reply-1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "rejected hello",
+              "timestamp": "2026-09-11T23:30:18.145Z",
+              "contextFilePaths": [],
+              "messageId": "6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.159Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "retry me",
+              "timestamp": "2026-09-11T23:30:18.219Z",
+              "contextFilePaths": [],
+              "messageId": "632e46fd-0927-4a47-b020-00adcef45c35",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:632e46fd-0927-4a47-b020-00adcef45c35"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.225Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-deliberate-discard",
+      "overflow": false,
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:30:18.005Z",
+              "contextFilePaths": [],
+              "messageId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:18.010Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "id": "reply-1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "rejected hello",
+              "timestamp": "2026-09-11T23:30:18.145Z",
+              "contextFilePaths": [],
+              "messageId": "6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.159Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "retry me",
+              "timestamp": "2026-09-11T23:30:18.219Z",
+              "contextFilePaths": [],
+              "messageId": "632e46fd-0927-4a47-b020-00adcef45c35",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:632e46fd-0927-4a47-b020-00adcef45c35"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.225Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "first message",
+              "timestamp": "2026-09-11T23:30:18.313Z",
+              "contextFilePaths": [
+                {
+                  "id": "original-file",
+                  "kind": "workspace_path",
+                  "locator": "/workspace/proof.txt",
+                  "displayName": "proof.txt",
+                  "type": "Text"
+                }
+              ],
+              "messageId": "b52f98b9-7bc5-4ab0-87ab-adb086e7fc50",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:b52f98b9-7bc5-4ab0-87ab-adb086e7fc50"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.332Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-replacement-held-edit",
+      "overflow": false,
+      "textarea": "still composing my next message",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "hello",
+              "timestamp": "2026-09-11T23:30:17.695Z",
+              "contextFilePaths": [],
+              "messageId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+              "dedupeKey": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:17.708Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "id": "reply-de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "still composing my next message",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "mounted hello",
+              "timestamp": "2026-09-11T23:30:18.005Z",
+              "contextFilePaths": [],
+              "messageId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+            },
+            {
+              "type": "ai",
+              "text": "",
+              "timestamp": "2026-09-11T23:30:18.010Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Hello! I received your message.",
+                  "_streamSegmentIdentity": {
+                    "turnId": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "id": "reply-1205bc16-25d5-4227-9bd3-cf382a20d47e",
+                    "segmentType": "text",
+                    "presentationComplete": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "rejected hello",
+              "timestamp": "2026-09-11T23:30:18.145Z",
+              "contextFilePaths": [],
+              "messageId": "6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.159Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "retry me",
+              "timestamp": "2026-09-11T23:30:18.219Z",
+              "contextFilePaths": [],
+              "messageId": "632e46fd-0927-4a47-b020-00adcef45c35",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:632e46fd-0927-4a47-b020-00adcef45c35"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.225Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            },
+            {
+              "type": "user",
+              "text": "first message",
+              "timestamp": "2026-09-11T23:30:18.313Z",
+              "contextFilePaths": [
+                {
+                  "id": "original-file",
+                  "kind": "workspace_path",
+                  "locator": "/workspace/proof.txt",
+                  "displayName": "proof.txt",
+                  "type": "Text"
+                }
+              ],
+              "messageId": "b52f98b9-7bc5-4ab0-87ab-adb086e7fc50",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:b52f98b9-7bc5-4ab0-87ab-adb086e7fc50"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:30:18.332Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Input was rejected",
+                  "details": "Error: Input was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-replacement-keeps-edit",
+      "overflow": false,
+      "textarea": "still composing my next message",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "still composing my next message",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "desktop-replacement-keeps-edit",
+      "overflow": false,
+      "textarea": "still composing my next message",
+      "contexts": {
+        "agent-director": {
+          "draft": "direct newer draft",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "still composing my next message",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    }
+  ],
+  "pageErrors": [],
+  "queries": [
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentOrgExecutionCheckpoint",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "GetAgentOrgExecutionCheckpoint",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    }
+  ],
+  "commands": [
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-director",
+        "command_id": "e38c4444-d459-4a28-92e8-7c97f85677c4",
+        "content": "hello",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "de0123bd-5f8b-46a1-abe1-0f4f10ba7884",
+        "dedupe_key": "member_input:org-run:agent-director:de0123bd-5f8b-46a1-abe1-0f4f10ba7884"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "d61e63b7-6a98-4732-ad73-de0d53d2fb87",
+        "content": "mounted hello",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "1205bc16-25d5-4227-9bd3-cf382a20d47e",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:1205bc16-25d5-4227-9bd3-cf382a20d47e"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "e1746a71-c9a4-4e85-a818-74b4d600a4f4",
+        "content": "rejected hello",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:6c3f7ce8-a056-4cd0-ad3e-c7f2496cb93e"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "764cd9b1-fe6a-4695-85de-166a775a9232",
+        "content": "retry me",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "632e46fd-0927-4a47-b020-00adcef45c35",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:632e46fd-0927-4a47-b020-00adcef45c35"
+      }
+    },
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "ae2f3ff8-e4e5-4ec0-a89e-1b948a17f3ba",
+        "content": "first message",
+        "context_file_paths": [
+          "/workspace/proof.txt"
+        ],
+        "image_urls": [],
+        "message_id": "b52f98b9-7bc5-4ab0-87ab-adb086e7fc50",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:b52f98b9-7bc5-4ab0-87ab-adb086e7fc50"
+      }
+    }
+  ],
+  "limits": "Implementation-scoped isolated Nuxt renderer, actual shared surfaces/composer/store/context/service and native browser socket, synthetic strict snapshot/member projections/stream replies. No provider/server/native-package/API-E2E pass.",
+  "passed": true
+}

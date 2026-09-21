@@ -80,7 +80,6 @@ const createTeamDefinition = async (serverUrl: string, input: {
   nodes: Array<{
     memberName: string;
     ref: string;
-    refType: "AGENT" | "AGENT_TEAM";
     refScope: "SHARED";
   }>;
 }): Promise<string> => {
@@ -224,34 +223,17 @@ const withoutSelectedTeamLlmConfigs = (
 ): JsonRecord => {
   const clone = structuredClone(tree);
   const targets = new Set(addresses);
-  const visit = (team: JsonRecord): void => {
-    if (targets.has(team.address)) delete team.defaultLaunchConfiguration.llmConfig;
-    for (const member of team.members as JsonRecord[]) {
-      if (Array.isArray(member.members)) {
-        visit(member);
-      } else if (targets.has(member.address)) {
-        delete member.launchConfiguration.llmConfig;
-      }
-    }
-  };
-  visit(clone.rootTeam);
+  if (targets.has(clone.rootTeam.address)) delete clone.rootTeam.defaultLaunchConfiguration.llmConfig;
+  for (const member of clone.rootTeam.members as JsonRecord[]) {
+    if (targets.has(member.address)) delete member.launchConfiguration.llmConfig;
+  }
   return clone;
 };
 
 const findPersistedScopeConfig = (tree: JsonRecord, address: string): JsonRecord | null => {
-  const visit = (team: JsonRecord): JsonRecord | null => {
-    if (team.address === address) return team.defaultLaunchConfiguration.llmConfig;
-    for (const member of team.members as JsonRecord[]) {
-      if (Array.isArray(member.members)) {
-        const nested = visit(member);
-        if (nested !== null) return nested;
-      } else if (member.address === address) {
-        return member.launchConfiguration.llmConfig;
-      }
-    }
-    return null;
-  };
-  return visit(tree.rootTeam);
+  if (tree.rootTeam.address === address) return tree.rootTeam.defaultLaunchConfiguration.llmConfig;
+  return tree.rootTeam.members.find((member: JsonRecord) => member.address === address)
+    ?.launchConfiguration.llmConfig ?? null;
 };
 
 afterEach(async () => {
@@ -485,20 +467,13 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const coordinatorId = await createAgentDefinition(first.serverUrl, `${label}-coordinator`);
     const leadId = await createAgentDefinition(first.serverUrl, `${label}-lead`);
     const reviewerId = await createAgentDefinition(first.serverUrl, `${label}-reviewer`);
-    const nestedTeamId = await createTeamDefinition(first.serverUrl, {
-      name: `${label}-nested`,
-      coordinatorMemberName: "lead",
-      nodes: [
-        { memberName: "lead", ref: leadId, refType: "AGENT", refScope: "SHARED" },
-        { memberName: "reviewer", ref: reviewerId, refType: "AGENT", refScope: "SHARED" },
-      ],
-    });
     const rootTeamId = await createTeamDefinition(first.serverUrl, {
       name: `${label}-root`,
       coordinatorMemberName: "coordinator",
       nodes: [
-        { memberName: "coordinator", ref: coordinatorId, refType: "AGENT", refScope: "SHARED" },
-        { memberName: "Nested", ref: nestedTeamId, refType: "AGENT_TEAM", refScope: "SHARED" },
+        { memberName: "coordinator", ref: coordinatorId, refScope: "SHARED" },
+        { memberName: "lead", ref: leadId, refScope: "SHARED" },
+        { memberName: "reviewer", ref: reviewerId, refScope: "SHARED" },
       ],
     });
     const model = await autoByteusReasoningModel(first.serverUrl);
@@ -524,12 +499,11 @@ describe("stopped run model-config GraphQL lifecycle", () => {
         teamDefinitionId: rootTeamId,
         teamConfigs: [
           { teamAddress: "/", ...launch },
-          { teamAddress: "/Nested", ...launch },
         ],
         memberConfigs: [
           { memberAddress: "/coordinator", agentDefinitionId: coordinatorId, ...launch },
-          { memberAddress: "/Nested/lead", agentDefinitionId: leadId, ...launch },
-          { memberAddress: "/Nested/reviewer", agentDefinitionId: reviewerId, ...launch },
+          { memberAddress: "/lead", agentDefinitionId: leadId, ...launch },
+          { memberAddress: "/reviewer", agentDefinitionId: reviewerId, ...launch },
         ],
       },
     });
@@ -547,10 +521,10 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const activeFile = fs.readFileSync(treePath, "utf8");
     const patches = [
       { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
-      { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/Nested", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
+      { scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
       {
         scopeKind: "CONFIGURED_AGENT" as const,
-        scopeAddress: "/Nested/reviewer", llmModelIdentifier: model,
+        scopeAddress: "/reviewer", llmModelIdentifier: model,
         llmConfig: UPDATED_CONFIG,
       },
     ];
@@ -580,8 +554,8 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const stoppedFile = fs.readFileSync(treePath, "utf8");
     // AC-004/007 applies to each configured patch, not only standalone commands.
     for (const patch of [
-      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/Nested/reviewer", llmConfig: null },
-      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/Nested/reviewer", llmModelIdentifier: model },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", llmConfig: null },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", llmModelIdentifier: model },
     ]) {
       const response = await fetch(`${first.serverUrl}/graphql`, {
         method: "POST",
@@ -611,17 +585,33 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       teamRunId,
       patches: [{
         scopeKind: "CONFIGURED_AGENT",
-        scopeAddress: "/Nested/reviewer", llmModelIdentifier: model,
+        scopeAddress: "/reviewer", llmModelIdentifier: model,
         llmConfig: { unsupported_setting: true },
       }],
     })).resolves.toMatchObject({
       success: false,
       outcome: "VALIDATION_FAILED",
-      fieldErrors: [{ path: "patches[/Nested/reviewer].llmConfig.unsupported_setting" }],
+      fieldErrors: [{ path: "patches[/reviewer].llmConfig.unsupported_setting" }],
     });
     expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
 
     const beforeUpdate = readJson(treePath);
+    expect(beforeUpdate.rootTeam.members.map((member: JsonRecord) => member.address)).toEqual([
+      "/coordinator", "/lead", "/reviewer",
+    ]);
+    expect(beforeUpdate.rootTeam.members.every((member: JsonRecord) =>
+      typeof member.agentRunId === "string" && !Array.isArray(member.members))).toBe(true);
+    // A valid first patch must not commit when another configured scope is invalid.
+    for (const invalidScope of [
+      { scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/missing" },
+      { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/coordinator" },
+    ]) {
+      await expect(updateTeam(first.serverUrl, {
+        teamRunId,
+        patches: [patches[0]!, { ...invalidScope, llmModelIdentifier: model, llmConfig: UPDATED_CONFIG }],
+      })).resolves.toMatchObject({ success: false });
+      expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
+    }
     await expect(updateTeam(first.serverUrl, { teamRunId, patches })).resolves.toMatchObject({
       success: true,
       outcome: "UPDATED",
@@ -630,18 +620,17 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     });
     const afterUpdate = readJson(treePath);
     expect(findPersistedScopeConfig(afterUpdate, "/")).toEqual(UPDATED_CONFIG);
-    expect(findPersistedScopeConfig(afterUpdate, "/Nested")).toEqual(UPDATED_CONFIG);
-    expect(findPersistedScopeConfig(afterUpdate, "/Nested/reviewer")).toEqual(UPDATED_CONFIG);
-    expect(findPersistedScopeConfig(afterUpdate, "/coordinator")).toEqual(INITIAL_CONFIG);
-    expect(findPersistedScopeConfig(afterUpdate, "/Nested/lead")).toEqual(INITIAL_CONFIG);
+    expect(findPersistedScopeConfig(afterUpdate, "/coordinator")).toEqual(UPDATED_CONFIG);
+    expect(findPersistedScopeConfig(afterUpdate, "/reviewer")).toEqual(UPDATED_CONFIG);
+    expect(findPersistedScopeConfig(afterUpdate, "/lead")).toEqual(INITIAL_CONFIG);
     expect(withoutSelectedTeamLlmConfigs(afterUpdate, [
       "/",
-      "/Nested",
-      "/Nested/reviewer",
+      "/coordinator",
+      "/reviewer",
     ])).toEqual(withoutSelectedTeamLlmConfigs(beforeUpdate, [
       "/",
-      "/Nested",
-      "/Nested/reviewer",
+      "/coordinator",
+      "/reviewer",
     ]));
 
     await stopServer(first);

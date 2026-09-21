@@ -1,0 +1,12 @@
+[
+  {
+    "orgRunId": "aorg_validation_org_dce247fcf58a48128bef2e7d75151be3",
+    "orgDefinitionId": "aorg-validation-org",
+    "orgDefinitionName": "AORG Validation Org",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/temp_workspace",
+    "summary": "Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-af...",
+    "createdAt": "2026-09-14T14:16:28.309Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

@@ -1,0 +1,17 @@
+FA
+Followup Assistant - 6286
+Idle
+You
+Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools.
+
+Context files
+
+COLLAB-API01-first-text.txt
+FA
+Followup Assistant
+Thinking
+
+COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47
+
+Context Files (0)
+(drag, paste, or upload)

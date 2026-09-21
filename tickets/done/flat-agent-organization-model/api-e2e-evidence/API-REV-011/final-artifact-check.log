@@ -1,0 +1,17 @@
+timestamp=2026-09-06T00:22:32Z
+head=54716ad0ffd4c4be7aab389a84d3d7e41f72ecb5
+source_is_ancestor=true
+report_latest=20:- Latest authoritative result: **`API-REV-011 / Fail / 95.7%`**.;191:## Latest Authoritative Result;
+revision_index=20:| API-REV-011 | Code Reviewer CRR-038 / DS-027 summary-parity renewal | RER-025; AD-REV-016; ARCH-REV-014; IR-029; CRR-038 | Pass / 98.3% | Fail / 95.7% |
+ledger_status=12:- Status: Fail — `API-FIND-018`; cleanup and canonical reporting complete;23:| LIVE-003 | completion winner/exclusions/metadata-failure ACK truth | QR-011; DS-027 | API/WebSocket/process | Fail |;24:| LIVE-004 | stop/history/Restore summary plus IR-028 route/config retention | AC-026; AC-028 | browser/API/files | Not Tested — fail-fast |;27:| LIVE-005 | retained Codex/task/strict/recovery/shutdown and cleanup | cumulative critical | browser/provider/API/process | Not Tested — fail-fast; cleanup only |;
+failure_artifacts:
+present tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/metadata-failure-v2/API-FIND-018-accepted-summary-write-crashes-server.md
+present tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/metadata-failure-v2/accepted-ack-rerun.json
+present tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/metadata-failure-v2/probe-rerun-result.json
+present tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/metadata-failure-v2/server-rerun.log
+present tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/metadata-failure-v2/index-restore-sha256.log
+present tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/cleanup.log
+ports:
+none
+diff_check:
+pass

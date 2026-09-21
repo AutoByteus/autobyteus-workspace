@@ -1,0 +1,62 @@
+{
+  "entryHead": "3e13333d24ac3cdc8cfe30251baab344f40fc0d7",
+  "sourceCheckpoint": "82343bb6531e8e4ac80edc0a13e896e611dd7c0e",
+  "files": [
+    {
+      "path": "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 342,
+      "sha256": "723609f3863927c89d0cf6e860a8cce28bd8f82268363288baee11db1157267e"
+    },
+    {
+      "path": "autobyteus-web/components/agentTeams/AgentTeamDetail.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 139,
+      "sha256": "4ba6b1cf61ce5ba4f76d96972c55f43c270b1abfb6c397ab4207f5163f98cb34"
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamDefinitionStore.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 293,
+      "sha256": "9017c8e18bda9da5192861b1d19ba9e7f5cfa0b281728eab4b9f6bd4f24168a1"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/agentOrgDefinitionQueries.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 36,
+      "sha256": "5422112133286736511e011348b543c4b3092cbc5da46fd99cc71014b72ea97b"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/agentOrgs.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 59,
+      "sha256": "c9fb0992753f8e6a1657838dd1315acd77b5aadb0bd6ccb0f3ec1a109e901ebb"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/agentOrgs.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 59,
+      "sha256": "044fbb8d28ad954f9dfc4ce1339f6748f15ccab8cb70f3395efc6dfddee4c697"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgDefinition/agentOrgAuthoringReferences.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 70,
+      "sha256": "5af2f2366173e2495868e447a1002f1f71c14b474c8f09165de9253b86aabba7"
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 226,
+      "sha256": "28eb4360683c9a9f608980748b9d072a37681b02cf39c8b5f351196685e31691"
+    }
+  ]
+}

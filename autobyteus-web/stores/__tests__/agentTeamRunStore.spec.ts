@@ -33,7 +33,6 @@ const {
   mockDenyTool,
   mockInterruptGeneration,
   mockMutate,
-  mockClearActivities,
   mockReplaceProjectionActivitiesIfRevisions,
   mockHydrateLiveTeamRunContext,
   teamContextsStoreMock,
@@ -55,7 +54,6 @@ const {
   mockDenyTool: vi.fn(),
   mockInterruptGeneration: vi.fn(),
   mockMutate: vi.fn(),
-  mockClearActivities: vi.fn(),
   mockReplaceProjectionActivitiesIfRevisions: vi.fn(() => 'replaced' as const),
   mockHydrateLiveTeamRunContext: vi.fn(),
   teamContextsStoreMock: {
@@ -118,7 +116,6 @@ vi.mock('~/utils/apolloClient', () => ({
 
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => ({
-    clearActivities: mockClearActivities,
     getCompactionActivities: vi.fn(() => []),
     replaceProjectionActivitiesIfRevisions: mockReplaceProjectionActivitiesIfRevisions,
   }),
@@ -150,7 +147,7 @@ vi.mock('~/stores/agentTeamDefinitionStore', async () => {
   teamDefinitionRevision.current = revision
   return {
     useAgentTeamDefinitionStore: () => ({
-      getAgentTeamDefinitionById: (id: string) => {
+      getCatalogAgentTeamDefinitionById: (id: string) => {
         revision.value
         return teamDefinitions.get(id) ?? null
       },
@@ -210,26 +207,18 @@ const twoMemberTeam = (input: {
   })
 }
 
-const configureSelectedNestedLaunchDraft = (): Readonly<{
+const configureSelectedFlatLaunchDraft = (): Readonly<{
   configStore: ReturnType<typeof useTeamRunConfigStore>
   draft: TeamLaunchDraft
 }> => {
   teamDefinitions.set('root-definition', {
     id: 'root-definition',
-    name: 'Nested Mixed Team',
+    name: 'Flat Mixed Team',
     coordinatorMemberName: 'program_manager',
     nodes: [
-      { memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' },
-      { memberName: 'BuildSquad', refType: 'AGENT_TEAM', ref: 'build-definition' },
-    ],
-  })
-  teamDefinitions.set('build-definition', {
-    id: 'build-definition',
-    name: 'Build Squad',
-    coordinatorMemberName: 'review_lead',
-    nodes: [
-      { memberName: 'review_lead', refType: 'AGENT', ref: 'review-definition' },
-      { memberName: 'implementer', refType: 'AGENT', ref: 'impl-definition' },
+      { memberName: 'program_manager', ref: 'pm-definition' },
+      { memberName: 'review_lead', ref: 'review-definition' },
+      { memberName: 'implementer', ref: 'impl-definition' },
     ],
   })
   notifyTeamDefinitionChange()
@@ -239,7 +228,7 @@ const configureSelectedNestedLaunchDraft = (): Readonly<{
   configStore.setRuntimeModelCatalog('autobyteus', ['gpt-5.6-luna'])
   const config: TeamRunConfig = {
     teamDefinitionId: 'root-definition',
-    teamDefinitionName: 'Nested Mixed Team',
+    teamDefinitionName: 'Flat Mixed Team',
     rootConfig: {
       runtimeKind: 'codex_app_server',
       workspace: {
@@ -256,14 +245,13 @@ const configureSelectedNestedLaunchDraft = (): Readonly<{
       autoExecuteTools: true,
       skillAccessMode: 'NONE',
     },
-    teamOverrides: {
-      '/BuildSquad': {
+    teamOverrides: {},
+    agentOverrides: {
+      '/review_lead': {
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
       },
-    },
-    agentOverrides: {
-      '/BuildSquad/implementer': {
+      '/implementer': {
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'gpt-5.6-luna',
       },
@@ -271,12 +259,23 @@ const configureSelectedNestedLaunchDraft = (): Readonly<{
     isLocked: true,
   }
   configStore.setConfig(config)
-  configStore.focusMember('/BuildSquad/review_lead')
+  configStore.focusMember('/review_lead')
   const draft = configStore.selectedDraft
   if (!draft) throw new Error('Expected the real selected Team launch draft.')
   useAgentSelectionStore().selectTeamDraft(draft.draftId)
   return { configStore, draft }
 }
+
+const flatHydratedTeam = (): AgentTeamContext => buildTestTeamContext({
+  teamRunId: 'team-flat-live',
+  teamDefinitionId: 'root-definition',
+  coordinatorAddress: '/program_manager',
+  rootChildren: [
+    testAgentNode('/program_manager', { agentRunId: 'pm-run' }),
+    testAgentNode('/review_lead', { agentRunId: 'review-run' }),
+    testAgentNode('/implementer', { agentRunId: 'impl-run' }),
+  ],
+})
 
 const nestedHydratedTeam = (): AgentTeamContext => {
   const programManager = testAgentNode('/program_manager', { agentRunId: 'pm-run' })
@@ -644,16 +643,66 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     )
   })
 
-  it('launches a nested mixed-runtime draft with exact rooted memberAddress inputs and focus', async () => {
-    const { configStore } = configureSelectedNestedLaunchDraft()
-    configStore.setPendingInput('/BuildSquad/review_lead', {
+  it('keeps the lazy-restore submission pending until exact Team admission is confirmed', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: true })
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-admission' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+    let admit!: () => void
+    mockSendMessage.mockReturnValueOnce(new Promise<void>((resolve) => { admit = resolve }))
+
+    let completed = false
+    const sending = useAgentTeamRunStore().sendMessageToFocusedMember('exact lazy prompt', [])
+      .then(() => { completed = true })
+    await vi.waitFor(() => expect(mockSendMessage).toHaveBeenCalledOnce())
+    expect(completed).toBe(false)
+    expect(hydrated.view.getAgentContext('team-admission-worker-run')?.submissionPending).toBe(true)
+
+    admit()
+    await sending
+    expect(completed).toBe(true)
+  })
+
+  it('retains the exact lazy-restore prompt and attachments for retry after admission failure', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: true })
+    const attachment: ContextAttachment = {
+      kind: 'workspace_path', id: 'retry-file', locator: '/tmp/retry.txt',
+      displayName: 'retry.txt', type: 'Text',
+    }
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-retry' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+    mockSendMessage.mockRejectedValueOnce(new Error('runtime is stopping'))
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('retry this exact prompt', [attachment])
+
+    const worker = hydrated.view.getAgentContext('team-retry-worker-run')!
+    expect(worker.requirement).toBe('retry this exact prompt')
+    expect(worker.contextFilePaths).toEqual([attachment])
+    expect(worker.submissionPending).toBe(false)
+    expect(worker.state.currentStatus).toBe(AgentStatus.Error)
+    expect(worker.state.conversation.messages).toEqual([
+      expect.objectContaining({ type: 'user', text: 'retry this exact prompt' }),
+      expect.objectContaining({ type: 'ai', text: 'Error Occurred' }),
+    ])
+  })
+
+  it('launches a flat mixed-runtime draft with exact direct memberAddress inputs and focus', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
+    configStore.setPendingInput('/review_lead', {
       text: 'Review the exact launch.',
       attachments: [],
     })
     const draft = configStore.selectedDraft!
-    const hydrated = nestedHydratedTeam()
+    const hydrated = flatHydratedTeam()
     mockMutate.mockResolvedValue({
-      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
       errors: [],
     })
     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
@@ -664,18 +713,13 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       variables: {
         input: {
           teamDefinitionId: 'root-definition',
-          teamConfigs: expect.arrayContaining([
+          teamConfigs: [
             expect.objectContaining({
               teamAddress: '/',
               runtimeKind: 'codex_app_server',
               llmModelIdentifier: 'gpt-5.4',
             }),
-            expect.objectContaining({
-              teamAddress: '/BuildSquad',
-              runtimeKind: 'claude_agent_sdk',
-              llmModelIdentifier: 'claude-sonnet',
-            }),
-          ]),
+          ],
           memberConfigs: expect.arrayContaining([
             expect.objectContaining({
               memberAddress: '/program_manager',
@@ -683,12 +727,12 @@ describe('agentTeamRunStore current rooted execution contract', () => {
               llmModelIdentifier: 'gpt-5.4',
             }),
             expect.objectContaining({
-              memberAddress: '/BuildSquad/review_lead',
+              memberAddress: '/review_lead',
               runtimeKind: 'claude_agent_sdk',
               llmModelIdentifier: 'claude-sonnet',
             }),
             expect.objectContaining({
-              memberAddress: '/BuildSquad/implementer',
+              memberAddress: '/implementer',
               runtimeKind: 'autobyteus',
               llmModelIdentifier: 'gpt-5.6-luna',
             }),
@@ -696,65 +740,57 @@ describe('agentTeamRunStore current rooted execution contract', () => {
         },
       },
     }))
-    expect(result.rootTeamRunId).toBe('team-nested-live')
+    expect(result.rootTeamRunId).toBe('team-flat-live')
     expect(result.agentRunId).toBe('review-run')
     expect(result.context.view.getFocusedAgentRunId()).toBe('review-run')
     expect(result.context.view.getAgentContext('review-run')?.requirement).toBe('Review the exact launch.')
     expect(configStore.selectedDraft).toBeNull()
     expect(configStore.hasInFlightLaunch).toBe(false)
-    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-nested-live' })
+    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
     expect(teamContextsStoreMock.addTeamContext).toHaveBeenCalledTimes(1)
   })
 
-  it('registers two active New Team scopes and creates exactly one TeamRun from the same launch activation', async () => {
-    const { configStore } = configureSelectedNestedLaunchDraft()
+  it('registers the one flat Team root workspace and creates exactly one TeamRun', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
     const initialDraftId = configStore.selectedDraft!.draftId
     configStore.applyTeamWorkspaceAuthoringCommand({
       kind: 'set_selection', draftId: initialDraftId, teamAddress: '/',
       selection: { mode: 'new', existingWorkspaceId: 'test-workspace', newWorkspacePath: '/workspace/root-new' },
     })
-    configStore.applyTeamWorkspaceAuthoringCommand({
-      kind: 'set_selection', draftId: initialDraftId, teamAddress: '/BuildSquad',
-      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/build-new' },
-    })
     const workspaces = useWorkspaceStore()
     const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockImplementation(async ({ root_path }) => {
-      const workspaceId = root_path.endsWith('root-new') ? 'ws-root-new' : 'ws-build-new'
+      const workspaceId = 'ws-root-new'
       workspaces.workspaceMetadataById[workspaceId] = {
         workspaceId, workspaceRootPath: root_path, displayName: workspaceId, kind: 'filesystem',
       }
       return workspaceId
     })
     mockMutate.mockResolvedValue({
-      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } }, errors: [],
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } }, errors: [],
     })
-    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(nestedHydratedTeam()))
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(flatHydratedTeam()))
 
     await useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
 
-    expect(createWorkspace).toHaveBeenCalledTimes(2)
-    expect(createWorkspace).toHaveBeenNthCalledWith(1, { root_path: '/workspace/build-new' })
-    expect(createWorkspace).toHaveBeenNthCalledWith(2, { root_path: '/workspace/root-new' })
+    expect(createWorkspace).toHaveBeenCalledOnce()
+    expect(createWorkspace).toHaveBeenCalledWith({ root_path: '/workspace/root-new' })
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({
       variables: { input: expect.objectContaining({
-        teamConfigs: expect.arrayContaining([
+        teamConfigs: [
           expect.objectContaining({ teamAddress: '/', workspaceRootPath: '/workspace/root-new' }),
-          expect.objectContaining({ teamAddress: '/BuildSquad', workspaceRootPath: '/workspace/build-new' }),
-        ]),
+        ],
       }) },
     }))
   })
 
-  it('deduplicates one canonical New path, scopes a registration failure to both Teams, and does not create a TeamRun', async () => {
-    const { configStore } = configureSelectedNestedLaunchDraft()
+  it('keeps a root workspace registration failure on the flat Team draft and does not create a TeamRun', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
     const draftId = configStore.selectedDraft!.draftId
-    for (const teamAddress of ['/', '/BuildSquad'] as const) {
-      configStore.applyTeamWorkspaceAuthoringCommand({
-        kind: 'set_selection', draftId, teamAddress,
-        selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/shared-new/' },
-      })
-    }
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/shared-new/' },
+    })
     const workspaces = useWorkspaceStore()
     const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockRejectedValue(new Error('registration unavailable'))
 
@@ -765,25 +801,14 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(createWorkspace).toHaveBeenCalledWith({ root_path: '/workspace/shared-new' })
     expect(mockMutate).not.toHaveBeenCalled()
     expect(configStore.teamWorkspaceAuthoringViewFor('/').operation).toEqual({ status: 'error', error: 'registration unavailable' })
-    expect(configStore.teamWorkspaceAuthoringViewFor('/BuildSquad').operation).toEqual({ status: 'error', error: 'registration unavailable' })
     expect(configStore.teamWorkspaceAuthoringViewFor('/').selection.mode).toBe('new')
-    expect(configStore.teamWorkspaceAuthoringViewFor('/BuildSquad').selection.mode).toBe('new')
   })
 
-  it('enables the first rendered repair activation for a stale empty Team and performs zero registration or create', async () => {
-    const { configStore } = configureSelectedNestedLaunchDraft()
-    configStore.applyTeamWorkspaceAuthoringCommand({
-      kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/BuildSquad',
-      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '   ' },
-    })
-    expect(configStore.launchReadiness.canLaunch).toBe(false)
-    expect(configStore.launchReadiness.blockingIssues).toContainEqual(expect.objectContaining({
-      code: 'WORKSPACE_REQUIRED', subjectAddress: '/BuildSquad',
-    }))
-
+  it('repairs a removed flat Agent before launch and performs zero registration or create', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
     teamDefinitions.set('root-definition', {
-      id: 'root-definition', name: 'Nested Mixed Team', coordinatorMemberName: 'program_manager',
-      nodes: [{ memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' }],
+      id: 'root-definition', name: 'Flat Mixed Team', coordinatorMemberName: 'program_manager',
+      nodes: [{ memberName: 'program_manager', ref: 'pm-definition' }],
     })
     notifyTeamDefinitionChange()
     await nextTick()
@@ -800,21 +825,20 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(configStore.repairNotice).toBeNull()
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
     await wrapper.find('.run-btn').trigger('click')
-    await vi.waitFor(() => expect(configStore.repairNotice?.addresses).toContain('/BuildSquad'))
+    await vi.waitFor(() => expect(configStore.repairNotice?.addresses).toEqual(['/implementer', '/review_lead']))
 
     expect(createWorkspace).not.toHaveBeenCalled()
     expect(mockMutate).not.toHaveBeenCalled()
-    expect(configStore.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/BuildSquad']).toBeUndefined()
-    expect(configStore.repairNotice?.addresses).toContain('/BuildSquad')
-    expect(wrapper.findComponent(TeamRunConfigForm).props('model').repairAddresses).toContain('/BuildSquad')
+    expect(configStore.selectedDraft!.config.agentOverrides).toEqual({})
+    expect(wrapper.findComponent(TeamRunConfigForm).props('model').repairAddresses).toEqual(['/implementer', '/review_lead'])
     expect(launchDraft).toHaveBeenCalledOnce()
   })
 
   it('rejects a workspace result when topology changes after registration dispatch and never creates a TeamRun', async () => {
-    const { configStore } = configureSelectedNestedLaunchDraft()
+    const { configStore } = configureSelectedFlatLaunchDraft()
     configStore.applyTeamWorkspaceAuthoringCommand({
-      kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/BuildSquad',
-      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/build-dispatched' },
+      kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/root-dispatched' },
     })
     const workspaces = useWorkspaceStore()
     let resolveWorkspace!: (workspaceId: string) => void
@@ -824,25 +848,24 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     const launch = useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
     await vi.waitFor(() => expect(createWorkspace).toHaveBeenCalledOnce())
     teamDefinitions.set('root-definition', {
-      id: 'root-definition', name: 'Nested Mixed Team', coordinatorMemberName: 'program_manager',
-      nodes: [{ memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' }],
+      id: 'root-definition', name: 'Flat Mixed Team', coordinatorMemberName: 'program_manager',
+      nodes: [{ memberName: 'program_manager', ref: 'pm-definition' }],
     })
     workspaces.workspaceMetadataById['ws-dispatched'] = {
-      workspaceId: 'ws-dispatched', workspaceRootPath: '/workspace/build-dispatched',
+      workspaceId: 'ws-dispatched', workspaceRootPath: '/workspace/root-dispatched',
       displayName: 'dispatched', kind: 'filesystem',
     }
     resolveWorkspace('ws-dispatched')
 
     await expect(launch).rejects.toThrow('Team topology changed during workspace preparation')
     expect(mockMutate).not.toHaveBeenCalled()
-    expect(configStore.selectedDraft!.config.teamOverrides['/BuildSquad']).toBeUndefined()
-    expect(configStore.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/BuildSquad']).toBeUndefined()
-    expect(configStore.repairNotice?.addresses).toContain('/BuildSquad')
+    expect(configStore.selectedDraft!.config.agentOverrides).toEqual({})
+    expect(configStore.repairNotice?.addresses).toEqual(['/implementer', '/review_lead'])
   })
 
   it('admits one exact draft before allocation and blocks edits, selection changes, and duplicate allocation until success', async () => {
-    const { configStore, draft } = configureSelectedNestedLaunchDraft()
-    const hydrated = nestedHydratedTeam()
+    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+    const hydrated = flatHydratedTeam()
     let resolveAllocation!: (value: unknown) => void
     mockMutate.mockReturnValue(new Promise((resolve) => { resolveAllocation = resolve }))
     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
@@ -854,8 +877,8 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(runStore.isDraftLaunchPending(draft.draftId)).toBe(true)
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(() => configStore.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier: 'other-model' })).toThrow(/in flight/)
-    expect(() => configStore.focusMember('/BuildSquad/implementer')).toThrow(/in flight/)
-    expect(() => configStore.setPendingInput('/BuildSquad/review_lead', { text: 'late', attachments: [] })).toThrow(/in flight/)
+    expect(() => configStore.focusMember('/implementer')).toThrow(/in flight/)
+    expect(() => configStore.setPendingInput('/review_lead', { text: 'late', attachments: [] })).toThrow(/in flight/)
     expect(() => configStore.applyTeamWorkspaceAuthoringCommand({
       kind: 'set_selection', draftId: draft.draftId, teamAddress: '/',
       selection: { mode: 'new', existingWorkspaceId: 'test-workspace', newWorkspacePath: '/tmp/late' },
@@ -867,18 +890,18 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockMutate).toHaveBeenCalledTimes(1)
 
     resolveAllocation({
-      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
       errors: [],
     })
-    await expect(launch).resolves.toMatchObject({ rootTeamRunId: 'team-nested-live' })
+    await expect(launch).resolves.toMatchObject({ rootTeamRunId: 'team-flat-live' })
 
     expect(configStore.hasInFlightLaunch).toBe(false)
     expect(configStore.selectedDraft).toBeNull()
-    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-nested-live' })
+    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
   })
 
   it('preserves and unlocks the exact selected draft after allocation failure, then permits one later canonical launch', async () => {
-    const { configStore, draft } = configureSelectedNestedLaunchDraft()
+    const { configStore, draft } = configureSelectedFlatLaunchDraft()
     const selectionStore = useAgentSelectionStore()
     mockMutate.mockRejectedValueOnce(new Error('allocation unavailable'))
 
@@ -893,23 +916,23 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(retryDraft.config.rootConfig.autoExecuteTools).toBe(false)
 
     mockMutate.mockResolvedValueOnce({
-      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
       errors: [],
     })
-    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(nestedHydratedTeam()))
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(flatHydratedTeam()))
     await expect(useAgentTeamRunStore().launchDraft(retryDraft)).resolves.toMatchObject({
-      rootTeamRunId: 'team-nested-live',
+      rootTeamRunId: 'team-flat-live',
     })
     expect(mockMutate).toHaveBeenCalledTimes(2)
     expect(configStore.selectedDraft).toBeNull()
-    expect(selectionStore.subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-nested-live' })
+    expect(selectionStore.subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
   })
 
   it('first-send launch uses the admitted selected draft and sends once to the exact promoted execution', async () => {
-    const { configStore, draft } = configureSelectedNestedLaunchDraft()
-    const hydrated = nestedHydratedTeam()
+    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+    const hydrated = flatHydratedTeam()
     mockMutate.mockResolvedValue({
-      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
       errors: [],
     })
     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
@@ -925,7 +948,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       target,
       [],
       [],
-      expect.objectContaining({ dedupeKey: expect.stringContaining('team-nested-live') }),
+      expect.objectContaining({ dedupeKey: expect.stringContaining('team-flat-live') }),
     )
     expect(hydrated.view.getAgentContext(target)?.state.conversation.messages).toEqual([
       expect.objectContaining({ type: 'user', text: 'FIRST_SEND_EXACT' }),
@@ -933,7 +956,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(hydrated.view.getAgentContext(target)?.requirement).toBe('')
     expect(configStore.selectedDraft).toBeNull()
     expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(false)
-    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-nested-live' })
+    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
   })
 
   it('preserves an explicit approval target and never synthesizes a default target', async () => {

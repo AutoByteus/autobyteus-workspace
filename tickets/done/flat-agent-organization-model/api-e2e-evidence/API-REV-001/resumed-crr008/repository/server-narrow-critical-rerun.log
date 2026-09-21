@@ -1,0 +1,291 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > orders the exact external-channel Team resolver after Save and restores committed config
+[2026-09-01T16:30:02.309Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (11 tests) 211ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts (10 tests) 224ms
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent team websocket attached for team run team-run-1
+Created agent session 4a84bfff-22a2-4b18-be76-c532b02829c8 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent Team WebSocket connected: session=4a84bfff-22a2-4b18-be76-c532b02829c8, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Closed agent session 4a84bfff-22a2-4b18-be76-c532b02829c8
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent team websocket attached for team run team-run-1
+Created agent session bb1649bd-0f7f-47e1-87d3-a0b4c281f1d8 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent Team WebSocket connected: session=bb1649bd-0f7f-47e1-87d3-a0b4c281f1d8, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Closed agent session bb1649bd-0f7f-47e1-87d3-a0b4c281f1d8
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent team websocket attached for team run team-run-1
+Created agent session fcb46252-3917-455d-9a35-5e8d7d063f1c for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent Team WebSocket connected: session=fcb46252-3917-455d-9a35-5e8d7d063f1c, run=team-run-1
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Error handling team message for fcb46252-3917-455d-9a35-5e8d7d063f1c: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Closed agent session fcb46252-3917-455d-9a35-5e8d7d063f1c
+
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts (3 tests) 173ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (6 tests) 111ms
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Published autobyteus agent run 'team-agent-tools-member-run'.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Published autobyteus agent run 'team-agent-tools-member-run'.
+
+ ✓ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts (1 test) 82ms
+ ✓ tests/unit/agent-team-execution/root-team-run-termination.test.ts (2 tests) 60ms
+ ✓ tests/unit/collaboration-definition-admission/definition-admission-service.test.ts (5 tests) 47ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Created agent session 83ea54ad-cf84-40a5-b5a4-6876964e3932 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Agent Team WebSocket connected: session=83ea54ad-cf84-40a5-b5a4-6876964e3932, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Closed agent session 83ea54ad-cf84-40a5-b5a4-6876964e3932
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Created agent session 3a0487c5-0047-4887-b2fb-69abeb143557 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Agent Team WebSocket connected: session=3a0487c5-0047-4887-b2fb-69abeb143557, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Closed agent session 3a0487c5-0047-4887-b2fb-69abeb143557
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session 01718c2c-f7ef-4add-b29d-ea83645a3287 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Agent Team WebSocket connected: session=01718c2c-f7ef-4add-b29d-ea83645a3287, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session 01718c2c-f7ef-4add-b29d-ea83645a3287
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session ca2b115f-833c-48b5-91d9-0d62ef4b6529 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Agent Team WebSocket connected: session=ca2b115f-833c-48b5-91d9-0d62ef4b6529, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session ca2b115f-833c-48b5-91d9-0d62ef4b6529
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (5 tests) 25ms
+stdout | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts (7 tests) 23ms
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts (3 tests) 35ms
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > owns one Agent, standalone Team, and AgentOrg process manager family
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.554Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > continues the exact Org, Team, Agent shutdown order and aggregates failures
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.558Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases AgentRunManager when exclusive Team manager initialization fails
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.561Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.561Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > unwinds both root managers when process AgentRunService binding fails
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.562Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects each required construction input before manager mutation
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.564Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.564Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.564Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.564Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.564Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.565Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.565Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.565Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.565Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T16:30:16.565Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts (5 tests) 15ms
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts (5 tests) 13ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts (3 tests) 9ms
+stdout | tests/unit/agent-communication/global-agent-run-message-router.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts (8 tests) 9ms
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts (4 tests) 6ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts (3 tests) 7ms
+ ✓ tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts (2 tests) 8ms
+stdout | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts (4 tests) 6ms
+stdout | tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > returns only the bound sender's ordered outgoing handoffs in canonical AutoByteus JSON
+Successfully registered tool definition: 'get_handoff_rules'
+
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts (5 tests) 5ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts (1 test) 5ms
+
+ Test Files  21 passed (21)
+      Tests  95 passed (95)
+   Start at  16:29:55
+   Duration  27.00s (transform 5.15s, setup 125ms, import 21.67s, tests 1.08s, environment 2ms)
+

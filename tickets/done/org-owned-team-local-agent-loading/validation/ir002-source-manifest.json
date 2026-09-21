@@ -1,0 +1,24 @@
+{
+  "head": "65fc02a99d0a9608ba4da195cf108dc8aef255e7",
+  "files": {
+    "autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts": "9d839c603ead6154b648863bd1c882ad8912cc538d5054f37e0f77fd1c40e003",
+    "autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts": "bef4af541b054501f30f7ccf7846bd8e524eed9594f4277e3e3029ab64e3fbbd",
+    "autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts": "a82752732845affc624d56d52bc93f59e2c0e6100ecabdd944a4926f81e6bb80",
+    "autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts": "a7724c9176e0e79f8548daad8a482e3b383033ec5381419b7e241017add98dec",
+    "autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts": "f8c48d4c3934783c0b1eaa765608cf4a9bb1e350d78dde6546fb76c650617e00",
+    "autobyteus-server-ts/tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts": "4e1e947127502bf8efe5550e8bf059926e9d1a36f5eba3d2dcafd375cf5b89df",
+    "autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts": "740a82ecbda9325ce63b96e01a0c266be5887a6777ca4bbf52b608a40d0e9542",
+    "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue": "0db81b7cd342ce03a587da7723dcc5b38eed19fd178e00688175751cc415a2b2",
+    "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue": "6e91f821e3c472fe87226b32426060952ff9df490a80793d23d07604f0a941e6",
+    "autobyteus-web/components/agentTeams/AgentTeamDetail.vue": "b30ba1b12866451a1ccf506dd0402722004e020b2085e739e6e134ecf515e35f",
+    "autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts": "a5f2cee26a82da94ad960baa7b90dbee0272e838c94f69906cac8fe20a031014",
+    "autobyteus-web/localization/messages/en/workspace.ts": "270f9f380537d7fe0f2b655ce792dcd6f79039b2edbce012e51d1b7e430fa0f8",
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts": "88acf7ca325223ea2a3d14e954c681e0cecf673368768200ede4002f55ecb513",
+    "autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts": "a67c3edd33ad370ceb2a5ced1a152af82b40211c052ab6ded723090dde61568f",
+    "autobyteus-web/components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts": "72e4d021ba1193c848c43d5603bb11010b8efbce691c3f1ab733616e2347151d"
+  },
+  "deleted": [
+    "autobyteus-web/services/agentOrgDefinition/agentOrgAuthoringReferences.ts"
+  ],
+  "revision": "IR-002"
+}

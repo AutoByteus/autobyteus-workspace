@@ -1,0 +1,118 @@
+{
+  "agents": [
+    "aorg-analyst",
+    "aorg-concierge",
+    "aorg-lead",
+    "aorg-verifier"
+  ],
+  "teams": [
+    {
+      "id": "aorg-research-squad",
+      "name": "AORG E2E Research Squad",
+      "coordinator": "lead",
+      "members": [
+        "lead",
+        "analyst",
+        "verifier"
+      ],
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/analyst",
+          "rules": [
+            "When a request needs bounded analysis.",
+            "After the lead identifies the exact validation question."
+          ]
+        },
+        {
+          "from": "/analyst",
+          "to": "/verifier",
+          "rules": [
+            "When a completed analysis needs an independent check."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aorg-support-pair",
+      "name": "AORG E2E Support Pair",
+      "coordinator": "dispatcher",
+      "members": [
+        "dispatcher",
+        "specialist"
+      ],
+      "handoffs": [
+        {
+          "from": "/dispatcher",
+          "to": "/specialist",
+          "rules": [
+            "When a support answer needs explicit verification."
+          ]
+        }
+      ]
+    }
+  ],
+  "orgs": [
+    {
+      "id": "aorg-direct-agents-org",
+      "name": "AORG E2E Direct Agents Org",
+      "members": [
+        {
+          "name": "lead",
+          "type": "agent"
+        },
+        {
+          "name": "verifier",
+          "type": "agent"
+        }
+      ],
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ],
+      "hasCoordinator": false
+    },
+    {
+      "id": "aorg-mixed-org",
+      "name": "AORG E2E Mixed Org",
+      "members": [
+        {
+          "name": "concierge",
+          "type": "agent"
+        },
+        {
+          "name": "research-team",
+          "type": "agent_team"
+        },
+        {
+          "name": "support-team",
+          "type": "agent_team"
+        }
+      ],
+      "handoffs": [
+        {
+          "from": "/concierge",
+          "to": "/research-team",
+          "rules": [
+            "When the direct request requires structured research.",
+            "After the concierge records the exact requested marker."
+          ]
+        },
+        {
+          "from": "/research-team/lead",
+          "to": "/support-team",
+          "rules": [
+            "When the research result needs a separate support verification."
+          ]
+        }
+      ],
+      "hasCoordinator": false
+    }
+  ]
+}
+PACKAGE_CONTRACT_PASS

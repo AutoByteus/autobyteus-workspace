@@ -1,6 +1,9 @@
+import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { reconcileTeamMemberToolState } from './teamMemberToolStateReconciliation';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
@@ -12,10 +15,11 @@ import {
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export type TeamMemberProjectionHydrationResult = Readonly<{
-  disposition: 'authoritative' | 'hydrated';
+  disposition: 'authoritative' | 'hydrated' | 'superseded';
   agentRunId: string;
 }>;
 
+// Content authority does not supersede currently observed live tool decisions.
 const authoritativeContexts = new WeakSet<AgentContext>();
 const hydrationByContext = new WeakMap<AgentContext, Promise<TeamMemberProjectionHydrationResult>>();
 const MAX_CONFLICT_ATTEMPTS = 3;
@@ -30,16 +34,21 @@ const exactMountedContext = (
   }
   const agent = team.view.getAgentContext(agentRunId);
   const location = team.view.getAgentExecutionLocation(agentRunId);
-  const visible = team.view.listNavigationRows().some((row) => row.agentRunId === agentRunId);
-  if (!agent || agent.state.runId !== agentRunId || !location || !visible) {
-    throw new Error(`AgentRun '${agentRunId}' is not a visible member of Team '${rootTeamRunId}'.`);
+  if (!agent || agent.state.runId !== agentRunId || !location || location.agentRunId !== agentRunId) {
+    throw new Error(`AgentRun '${agentRunId}' is not a retained member of Team '${rootTeamRunId}'.`);
   }
   return agent;
 };
 
+const hasLiveToolAuthority = (team: AgentTeamContext, agent: AgentContext): boolean =>
+  team.view.isRootTeamActive() && !team.view.needsStreamRecovery()
+  && team.view.listLiveAgentContextEntries().some(entry => entry.agentRunId === agent.state.runId && entry.agentContext === agent)
+  && useAgentTeamRunStore().isTeamStreamReady(team.view.getRootTeamRunId());
+
 const attemptHydration = async (
   team: AgentTeamContext,
   agentRunId: string,
+  intent?: WorkspaceSelectionIntent,
 ): Promise<TeamMemberProjectionHydrationResult | null> => {
   const agent = exactMountedContext(team, agentRunId);
   if (authoritativeContexts.has(agent)) {
@@ -51,11 +60,12 @@ const attemptHydration = async (
   if (!configured) {
     throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
   }
+  const liveToolAuthority = hasLiveToolAuthority(team, agent);
   const expectedPresentationRevision = agent.state.eventMonitorPresentationRevision;
   const activityStore = useAgentActivityStore();
   const expectedActivityRevision = activityStore.getActivityContentRevision(agentRunId);
   const projection = await fetchExactTeamMemberProjection(rootTeamRunId, agentRunId);
-  const conversation = buildConversationFromProjection(
+  let conversation = buildConversationFromProjection(
     agentRunId,
     projection.conversation ?? [],
     {
@@ -65,16 +75,23 @@ const attemptHydration = async (
     },
   );
   if (projection.lastActivityAt) conversation.updatedAt = projection.lastActivityAt;
-  const activities = buildActivitiesFromProjection(projection.activities ?? []);
+  let activities = buildActivitiesFromProjection(projection.activities ?? []);
 
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded', agentRunId };
   const currentAgent = exactMountedContext(team, agentRunId);
   const currentLocation = team.view.getAgentExecutionLocation(agentRunId)!;
-  if (currentAgent !== agent
+  if (hasLiveToolAuthority(team, currentAgent) !== liveToolAuthority
+    || currentAgent !== agent
     || currentLocation.memberAddress !== location.memberAddress
     || currentLocation.containingTeamRunId !== location.containingTeamRunId
     || agent.state.eventMonitorPresentationRevision !== expectedPresentationRevision
     || activityStore.getActivityContentRevision(agentRunId) !== expectedActivityRevision) {
     return null;
+  }
+  if (liveToolAuthority) {
+    ({ conversation, activities } = reconcileTeamMemberToolState({ agentRunId,
+      currentConversation: agent.state.conversation, currentActivities: activityStore.getActivities(agentRunId),
+      projectedConversation: conversation, projectedActivities: activities }));
   }
   const replacement = activityStore.replaceProjectionActivitiesIfRevisions([{
     runId: agentRunId,
@@ -95,6 +112,7 @@ const attemptHydration = async (
 export const ensureAuthoritativeTeamMemberProjection = async (input: {
   team: AgentTeamContext;
   agentRunId: string;
+  selectionIntent?: WorkspaceSelectionIntent;
 }): Promise<TeamMemberProjectionHydrationResult> => {
   const agentRunId = input.agentRunId.trim();
   const initialAgent = exactMountedContext(input.team, agentRunId);
@@ -102,16 +120,16 @@ export const ensureAuthoritativeTeamMemberProjection = async (input: {
     return Object.freeze({ disposition: 'authoritative', agentRunId });
   }
   const existing = hydrationByContext.get(initialAgent);
-  if (existing) return existing;
+  if (existing && !input.selectionIntent) return existing;
 
   const operation = (async () => {
     for (let attempt = 0; attempt < MAX_CONFLICT_ATTEMPTS; attempt += 1) {
-      const result = await attemptHydration(input.team, agentRunId);
+      const result = await attemptHydration(input.team, agentRunId, input.selectionIntent);
       if (result) return result;
     }
     throw new Error(`Task activity for '${agentRunId}' changed while it was loading.`);
   })();
-  hydrationByContext.set(initialAgent, operation);
+  if (!input.selectionIntent) hydrationByContext.set(initialAgent, operation);
   try {
     return await operation;
   } finally {

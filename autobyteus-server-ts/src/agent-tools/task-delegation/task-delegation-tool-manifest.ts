@@ -7,7 +7,7 @@ import type {
   ReviewTaskResultResult,
   SubmitTaskResultInput,
   SubmitTaskResultResult,
-} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+} from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 import { DelegateTaskResultSchema } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
 import { DELEGATE_TASK_LLM_DESCRIPTION } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import {

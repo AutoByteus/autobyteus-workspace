@@ -1,0 +1,287 @@
+[
+  {
+    "at": "2026-09-17T03:10:42.852Z",
+    "id": 33,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:10:42.860Z",
+    "id": 33,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"getTeamRunResumeConfig\":{\"teamRunId\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"isActive\":false,\"executionTree\":{\"schema_version\":2,\"created_at\":\"2026-09-17T02:22:07.645Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"control-team\",\"team_definition_name\":\"Team Control\",\"team_run_id\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"low\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"team-local-agent:control-team:worker\",\"role\":null,\"description\":null,\"agent_run_id\":\"control_worker_76fc3c6f4bce461d93b3d1972d7ef7fc\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"low\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"}}],\"task_executions\":[]}},\"modelConfigEditability\":{\"editable\":true,\"reason\":null,\"__typename\":\"RunModelConfigEditabilityObject\"},\"__typename\":\"TeamRunResumeConfigPayload\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:10:57.197Z",
+    "id": 46,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:10:57.199Z",
+    "id": 46,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"getTeamRunResumeConfig\":{\"teamRunId\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"isActive\":false,\"executionTree\":{\"schema_version\":2,\"created_at\":\"2026-09-17T02:22:07.645Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"control-team\",\"team_definition_name\":\"Team Control\",\"team_run_id\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"low\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"team-local-agent:control-team:worker\",\"role\":null,\"description\":null,\"agent_run_id\":\"control_worker_76fc3c6f4bce461d93b3d1972d7ef7fc\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"low\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"}}],\"task_executions\":[]}},\"modelConfigEditability\":{\"editable\":true,\"reason\":null,\"__typename\":\"RunModelConfigEditabilityObject\"},\"__typename\":\"TeamRunResumeConfigPayload\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:13:22.762Z",
+    "id": 176,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              }
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/lead",
+              "llmModelIdentifier": "gpt-5.4",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              }
+            }
+          ]
+        }
+      },
+      "query": "mutation UpdateStoppedTeamRunModelConfigs($input: UpdateStoppedTeamRunModelConfigsInput!) {\n  updateStoppedTeamRunModelConfigs(input: $input) {\n    success\n    outcome\n    message\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    canonicalExecutionTree\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:13:22.786Z",
+    "id": 176,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"updateStoppedTeamRunModelConfigs\":{\"success\":true,\"outcome\":\"UPDATED\",\"message\":\"Team model settings updated. They will be used when this team resumes.\",\"isActive\":false,\"editability\":{\"editable\":true,\"reason\":null,\"__typename\":\"RunModelConfigEditabilityObject\"},\"canonicalExecutionTree\":{\"schema_version\":2,\"created_at\":\"2026-09-17T02:22:07.645Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"control-team\",\"team_definition_name\":\"Team Control\",\"team_run_id\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"team-local-agent:control-team:worker\",\"role\":null,\"description\":null,\"agent_run_id\":\"control_worker_76fc3c6f4bce461d93b3d1972d7ef7fc\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"}}],\"task_executions\":[]}},\"fieldErrors\":[],\"__typename\":\"UpdateStoppedTeamRunModelConfigsResult\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:13:39.028Z",
+    "id": 189,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_ef5f8cb76cf74bd680919d02e743811a"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:13:39.030Z",
+    "id": 189,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"getTeamRunResumeConfig\":{\"teamRunId\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"isActive\":false,\"executionTree\":{\"schema_version\":2,\"created_at\":\"2026-09-17T02:22:07.645Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"control-team\",\"team_definition_name\":\"Team Control\",\"team_run_id\":\"team_control_ef5f8cb76cf74bd680919d02e743811a\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"team-local-agent:control-team:worker\",\"role\":null,\"description\":null,\"agent_run_id\":\"control_worker_76fc3c6f4bce461d93b3d1972d7ef7fc\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"}}],\"task_executions\":[]}},\"modelConfigEditability\":{\"editable\":true,\"reason\":null,\"__typename\":\"RunModelConfigEditabilityObject\"},\"__typename\":\"TeamRunResumeConfigPayload\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:14:01.066Z",
+    "id": 207,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "control-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4-mini",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "team-local-agent:control-team:worker",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.4",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"
+            }
+          ]
+        }
+      },
+      "query": "mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {\n  createAgentTeamRun(input: $input) {\n    __typename\n    success\n    message\n    teamRunId\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:14:01.149Z",
+    "id": 207,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"createAgentTeamRun\":{\"__typename\":\"CreateAgentTeamRunResult\",\"success\":true,\"message\":\"Agent team run created successfully.\",\"teamRunId\":\"team_control_879ceeadd3e2415a9737a5703bff3e77\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:14:01.157Z",
+    "id": 208,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_879ceeadd3e2415a9737a5703bff3e77"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:14:01.159Z",
+    "id": 208,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"getTeamRunResumeConfig\":{\"teamRunId\":\"team_control_879ceeadd3e2415a9737a5703bff3e77\",\"isActive\":true,\"executionTree\":{\"schema_version\":2,\"created_at\":\"2026-09-17T03:14:01.087Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"control-team\",\"team_definition_name\":\"Team Control\",\"team_run_id\":\"team_control_879ceeadd3e2415a9737a5703bff3e77\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"team-local-agent:control-team:worker\",\"role\":null,\"description\":null,\"agent_run_id\":\"control_worker_1adb0eab9fff42769860df13659564ed\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"}}],\"task_executions\":[]}},\"modelConfigEditability\":{\"editable\":false,\"reason\":\"RUN_ACTIVE\",\"__typename\":\"RunModelConfigEditabilityObject\"},\"__typename\":\"TeamRunResumeConfigPayload\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:14:15.921Z",
+    "id": 227,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "TerminateAgentTeamRun",
+      "variables": {
+        "teamRunId": "team_control_879ceeadd3e2415a9737a5703bff3e77"
+      },
+      "query": "mutation TerminateAgentTeamRun($teamRunId: String!) {\n  terminateAgentTeamRun(teamRunId: $teamRunId) {\n    __typename\n    success\n    message\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:14:15.942Z",
+    "id": 227,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"terminateAgentTeamRun\":{\"__typename\":\"TerminateAgentTeamRunResult\",\"success\":true,\"message\":\"Agent team run terminated successfully.\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:16:24.333Z",
+    "id": 360,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "AgentOrgMemberModelConfig",
+      "variables": {
+        "identity": {
+          "orgRunId": "task_policy_lab_8b14533624084d9cb384f6743a7cb4c5",
+          "memberAddress": "/parent",
+          "agentRunId": "test_parent_a53a09836ab64c73a90237fb73e8b4a0"
+        }
+      },
+      "query": "query AgentOrgMemberModelConfig($identity: AgentOrgMemberModelConfigIdentityInput!) {\n  getAgentOrgMemberModelConfig(identity: $identity) {\n    orgRunId\n    memberAddress\n    agentRunId\n    launchConfiguration\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    modelOptions {\n      ...RunModelOptionsFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment RunModelOptionsFields on RunModelOptionsObject {\n  currentModelIdentifier\n  currentContextTokens\n  unavailableReason\n  replacements {\n    llmModelIdentifier\n    contextTokens\n    __typename\n  }\n  __typename\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:16:24.336Z",
+    "id": 360,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"getAgentOrgMemberModelConfig\":{\"orgRunId\":\"task_policy_lab_8b14533624084d9cb384f6743a7cb4c5\",\"memberAddress\":\"/parent\",\"agentRunId\":\"test_parent_a53a09836ab64c73a90237fb73e8b4a0\",\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"isActive\":true,\"editability\":{\"editable\":false,\"reason\":\"RUN_ACTIVE\",\"__typename\":\"RunModelConfigEditabilityObject\"},\"modelOptions\":{\"currentModelIdentifier\":\"gpt-5.4-mini\",\"currentContextTokens\":400000,\"unavailableReason\":null,\"replacements\":[{\"llmModelIdentifier\":\"claude-fable-5\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"claude-opus-4.7\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"claude-opus-4.8\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"claude-opus-5\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"claude-sonnet-4.6\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"claude-sonnet-5\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"deepseek-v4-flash\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"deepseek-v4-pro\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gemini-3.1-pro-preview\",\"contextTokens\":1048576,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gemini-3.8-flash\",\"contextTokens\":1048576,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"glm-5.3\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gpt-5.4\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gpt-5.5\",\"contextTokens\":1050000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gpt-5.6-luna\",\"contextTokens\":1050000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gpt-5.6-sol\",\"contextTokens\":1050000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"gpt-5.6-terra\",\"contextTokens\":1050000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"grok-4.6\",\"contextTokens\":500000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"kimi-k3\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"minimax-m3\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"qwen:deepseek-v4-flash-0731\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"qwen:deepseek-v4-pro\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"},{\"llmModelIdentifier\":\"qwen3.8-max\",\"contextTokens\":1000000,\"__typename\":\"RunModelOptionObject\"}],\"__typename\":\"RunModelOptionsObject\"},\"__typename\":\"AgentOrgMemberModelConfigReadObject\"}}}",
+    "edge": {}
+  },
+  {
+    "at": "2026-09-17T03:17:39.035Z",
+    "id": 429,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "task_policy_lab_8b14533624084d9cb384f6743a7cb4c5"
+      },
+      "query": "mutation TerminateAgentOrgRun($agentOrgRunId: String!) {\n  terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:17:39.095Z",
+    "id": 429,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"terminateAgentOrgRun\":{\"success\":true,\"message\":\"Agent organization run terminated successfully.\",\"agentOrgRunId\":\"task_policy_lab_8b14533624084d9cb384f6743a7cb4c5\",\"__typename\":\"AgentOrgRunMutationResult\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:18:49.573Z",
+    "id": 497,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team_control_879ceeadd3e2415a9737a5703bff3e77"
+      },
+      "query": "query GetTeamRunResumeConfig($teamRunId: String!) {\n  getTeamRunResumeConfig(teamRunId: $teamRunId) {\n    teamRunId\n    isActive\n    executionTree\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:18:49.575Z",
+    "id": 497,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"getTeamRunResumeConfig\":{\"teamRunId\":\"team_control_879ceeadd3e2415a9737a5703bff3e77\",\"isActive\":true,\"executionTree\":{\"schema_version\":2,\"created_at\":\"2026-09-17T03:14:01.087Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"control-team\",\"team_definition_name\":\"Team Control\",\"team_run_id\":\"team_control_879ceeadd3e2415a9737a5703bff3e77\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"team-local-agent:control-team:worker\",\"role\":null,\"description\":null,\"agent_run_id\":\"control_worker_1adb0eab9fff42769860df13659564ed\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4\",\"llm_config\":{\"reasoning_effort\":\"medium\"},\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace\"}}],\"task_executions\":[]}},\"modelConfigEditability\":{\"editable\":false,\"reason\":\"RUN_ACTIVE\",\"__typename\":\"RunModelConfigEditabilityObject\"},\"__typename\":\"TeamRunResumeConfigPayload\"}}}"
+  },
+  {
+    "at": "2026-09-17T03:19:08.339Z",
+    "id": 523,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "payload": {
+      "operationName": "TerminateAgentTeamRun",
+      "variables": {
+        "teamRunId": "team_control_879ceeadd3e2415a9737a5703bff3e77"
+      },
+      "query": "mutation TerminateAgentTeamRun($teamRunId: String!) {\n  terminateAgentTeamRun(teamRunId: $teamRunId) {\n    __typename\n    success\n    message\n  }\n}"
+    }
+  },
+  {
+    "at": "2026-09-17T03:19:08.361Z",
+    "id": 523,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"terminateAgentTeamRun\":{\"__typename\":\"TerminateAgentTeamRunResult\",\"success\":true,\"message\":\"Agent team run terminated successfully.\"}}}"
+  }
+]

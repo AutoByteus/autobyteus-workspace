@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_b38932216a9846059d16a80b8a622b60",
+  "records": [
+    {
+      "taskId": "task_7f673f3a838e469bb6c813025f6d11ef",
+      "delegatorAgentRunId": "aorg_e2e_concierge_74c7d9965b6948be8dbd2098460c97d1",
+      "recipientAddress": "/research-team",
+      "taskExecution": {
+        "teamRunId": "aorg_research_squad_249a22c3e42c489d8226f8a320eb5490"
+      },
+      "description": "As the fresh task Team coordinator, return AORG-ORG-TASK-TEAM-002 on the first line and one short validation sentence, then formally call submit_task_result.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_fb6c23c765f1455489102d35b43cee99",
+          "message": "AORG-ORG-TASK-TEAM-002\nFresh task Team coordinator validation completed successfully.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T20:07:12.615Z"
+        },
+        {
+          "reviewId": "review_5ff7332617484eaf8204367a560cd504",
+          "reviewedSubmissionId": "submission_fb6c23c765f1455489102d35b43cee99",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T20:07:17.720Z"
+        }
+      ],
+      "createdAt": "2026-09-01T20:07:01.990Z"
+    }
+  ]
+}

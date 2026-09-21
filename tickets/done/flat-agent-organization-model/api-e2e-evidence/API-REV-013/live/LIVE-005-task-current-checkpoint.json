@@ -1,0 +1,16 @@
+{
+  "taskId": "task_520783d1cf8b44bf92db55a96fb87738",
+  "status": "awaiting_review",
+  "description": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.",
+  "updates": [
+    {
+      "submissionId": "submission_ca27a5011aa14ebe9db43b0530198e13",
+      "message": "APIREV13-TASK-INITIAL-001",
+      "referenceFiles": [],
+      "createdAt": "2026-09-06T02:15:12.256Z"
+    }
+  ],
+  "taskExecution": {
+    "agentRunId": "aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63"
+  }
+}

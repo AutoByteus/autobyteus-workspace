@@ -1,0 +1,60 @@
+{
+  "outPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-010/live/LIVE-004-stopped-root-recovery-cdp.jsonl",
+  "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+  "closes": [
+    {
+      "at": "2026-09-04T14:53:32.727Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:32.738Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:33.753Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:35.758Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:39.765Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-04T14:53:47.774Z",
+      "url": "ws://127.0.0.1:8589/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    }
+  ],
+  "errors": [],
+  "rejections": [],
+  "notice": true,
+  "connecting": false,
+  "priorMarker": false,
+  "stopControl": false,
+  "statuses": [
+    "aorg e2e concierge, offline",
+    "apirev8 team. Team status: Offline",
+    "aorg e2e lead, offline",
+    "aorg e2e analyst, offline"
+  ]
+}

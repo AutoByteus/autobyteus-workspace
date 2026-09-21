@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerUpdateAgentTeamDefinitionTool } from "../../../../src/agent-tools/agent-team-management/update-agent-team-definition.js";
-import { AgentTeamDefinitionUpdate } from "../../../../src/agent-team-definition/domain/models.js";
+import { AgentTeamDefinitionUpdate } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 
 const mockService = {
   createDefinition: vi.fn(),
@@ -27,7 +27,7 @@ describe("updateAgentTeamDefinitionTool", () => {
     const tool = registerUpdateAgentTeamDefinitionTool();
     const result = await tool.execute(
       { agentId: "test-agent" } as any,
-      { definition_id: "1", description: "New Description" },
+      { definition_id: "1", expected_revision: "rev-1", description: "New Description" },
     );
 
     expect(mockService.updateDefinition).toHaveBeenCalledOnce();
@@ -35,6 +35,7 @@ describe("updateAgentTeamDefinitionTool", () => {
     expect(definitionIdArg).toBe("1");
     expect(updateDataArg).toBeInstanceOf(AgentTeamDefinitionUpdate);
     expect(updateDataArg.description).toBe("New Description");
+    expect(updateDataArg.expectedRevision).toBe("rev-1");
     expect(updateDataArg.name).toBeNull();
     expect(updateDataArg.defaultLaunchConfig).toBeUndefined();
     expect(result).toContain("updated successfully");
@@ -43,7 +44,10 @@ describe("updateAgentTeamDefinitionTool", () => {
   it("throws when no update fields are provided", async () => {
     const tool = registerUpdateAgentTeamDefinitionTool();
     await expect(
-      tool.execute({ agentId: "test-agent" } as any, { definition_id: "1" }),
+      tool.execute(
+        { agentId: "test-agent" } as any,
+        { definition_id: "1", expected_revision: "rev-1" },
+      ),
     ).rejects.toThrow("At least one field must be provided");
   });
 
@@ -52,7 +56,10 @@ describe("updateAgentTeamDefinitionTool", () => {
 
     const tool = registerUpdateAgentTeamDefinitionTool();
     await expect(
-      tool.execute({ agentId: "test-agent" } as any, { definition_id: "99", name: "New Name" }),
+      tool.execute(
+        { agentId: "test-agent" } as any,
+        { definition_id: "99", expected_revision: "rev-1", name: "New Name" },
+      ),
     ).rejects.toThrow(/Definition not found/);
   });
 });

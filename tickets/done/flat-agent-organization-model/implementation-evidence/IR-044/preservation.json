@@ -1,0 +1,10 @@
+{
+  "baselineCount": 13883,
+  "unchangedCount": 13880,
+  "changedOtherOwnerPaths": [
+    "tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md",
+    "tickets/in-progress/flat-agent-organization-model/handoff-summary.md",
+    "tickets/in-progress/flat-agent-organization-model/release-deployment-report.md"
+  ],
+  "note": "Implementation did not edit or stage these paths. Three Delivery records received concurrent DR009 user-requested restart entries during this round. All other baseline hashes match; raw evidence and live app were not modified by Implementation. Own temporary renderer and initially absent SDK output removed."
+}

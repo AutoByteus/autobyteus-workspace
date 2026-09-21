@@ -1,0 +1,32 @@
+{
+  "entryHead": "f09cd68c3804b06752762db0b86cbf39f23bf5d5",
+  "sourceCheckpoint": "a1ce590b859518d813cbd35dbaf8294b58aa97f1",
+  "baselineRegularFiles": 17953,
+  "unchanged": 17953,
+  "changedOrMissing": [],
+  "unexpectedUntrackedOutsideEvidence": [],
+  "priorSourcePreservation": {
+    "IR-050": {
+      "checked": 27,
+      "changed": []
+    },
+    "IR-051": {
+      "checked": 8,
+      "changed": []
+    }
+  },
+  "ownRendererTreeStopped": [
+    96705,
+    96710,
+    96722,
+    96723,
+    96998,
+    97309,
+    97314
+  ],
+  "temporaryPageRemoved": true,
+  "initiallyAbsentSDKPrerequisitesRemoved": true,
+  "dr009ProcessStillPresent": true,
+  "noUnmergedPaths": true,
+  "sourceHashesMatch": true
+}

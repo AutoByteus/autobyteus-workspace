@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { CachedAgentDefinitionProvider } from "../../../src/agent-definition/providers/cached-agent-definition-provider.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { buildAgentOrgOwnedDefinitionId, isAgentOrgOwnedAgentDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
 
 describe("CachedAgentDefinitionProvider", () => {
   let persistenceProvider: {
@@ -131,5 +132,32 @@ describe("CachedAgentDefinitionProvider", () => {
     expect(result).toEqual(localDefinition);
     expect(persistenceProvider.getById).toHaveBeenCalledWith(localDefinitionId);
     expect(persistenceProvider.getAll).not.toHaveBeenCalled();
+  });
+
+  it("reads Org-owned ids through persistence without populating or contaminating the shared cache", async () => {
+    const provider = new CachedAgentDefinitionProvider(persistenceProvider as never);
+    const id = buildAgentOrgOwnedDefinitionId("agent", "org", "direct");
+    persistenceProvider.getById.mockResolvedValue(new AgentDefinition({ id, name: "Owned", description: "Exact", ownershipScope: "agent_org_owned", ownerOrgId: "org" }));
+    expect((await provider.getById(id))?.ownerOrgId).toBe("org");
+    expect(persistenceProvider.getAll).not.toHaveBeenCalled();
+    expect(await provider.getAll()).toEqual(sampleDefs);
+    persistenceProvider.getById.mockResolvedValue(null);
+    expect(await provider.getById(id)).toBeNull();
+    expect(persistenceProvider.getById).toHaveBeenCalledTimes(2);
+    expect(await provider.getAll()).toEqual(sampleDefs);
+  });
+
+  it("preserves persistence failures for an exact owned read", async () => {
+    const provider = new CachedAgentDefinitionProvider(persistenceProvider as never);
+    persistenceProvider.getById.mockRejectedValue(new Error("read unavailable"));
+    await expect(provider.getById(buildAgentOrgOwnedDefinitionId("agent", "org", "direct"))).rejects.toThrow("read unavailable");
+    expect(persistenceProvider.getAll).not.toHaveBeenCalled();
+  });
+
+  it("classifies only the tagged encoded Agent family without deriving owner paths", () => {
+    expect(isAgentOrgOwnedAgentDefinitionId(buildAgentOrgOwnedDefinitionId("agent", "org: name", "direct/encoded"))).toBe(true);
+    for (const id of ["shared", "agent-org-owned-agent:", "agent-org-owned-agent:org:", "agent-org-owned-agent:org:../../outside", "agent-org-owned-agent:org:a\\b", buildAgentOrgOwnedDefinitionId("agent_team", "org", "team")]) {
+      expect(isAgentOrgOwnedAgentDefinitionId(id)).toBe(false);
+    }
   });
 });

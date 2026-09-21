@@ -106,6 +106,18 @@ export class AgentRunViewProjectionService {
     return localProjection ?? buildRunProjectionBundle(runId, [], []);
   }
 
+  /** Strict consumers must distinguish an unavailable projection from a genuine empty trace. */
+  async getRequiredProjectionFromMetadata(input: {
+    runId: string;
+    metadata: AgentRunMetadata;
+  }): Promise<RunProjection> {
+    const projection = await this.localProjectionProvider.buildProjection({
+      source: this.buildSourceDescriptor(input.runId, input.metadata),
+    });
+    if (!projection) throw new Error(`Run projection '${input.runId}' is unavailable.`);
+    return dedupeProjectionBundle(projection);
+  }
+
   private buildSourceDescriptor(runId: string, metadata: AgentRunMetadata | null): RunProjectionSourceDescriptor {
     const runtimeKind = runtimeKindFromString(metadata?.runtimeKind, RuntimeKind.AUTOBYTEUS)
       ?? RuntimeKind.AUTOBYTEUS;

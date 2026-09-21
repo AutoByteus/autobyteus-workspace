@@ -1,0 +1,50 @@
+import { createRequire } from 'node:module'; import fs from 'node:fs/promises'; import assert from 'node:assert/strict';
+const root='/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web';
+const require=createRequire(`${root}/package.json`); const {chromium}=require('playwright-core'); const ts=require('typescript');
+const fixture=ts.transpileModule(await fs.readFile(`${root}/services/agentOrgExecution/__tests__/taskBearingOrgFixture.ts`,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText;
+const {taskBearingView}=await import(`data:text/javascript;base64,${Buffer.from(fixture).toString('base64')}`);
+const original=taskBearingView(); let isActive=false, sequence=original.base_change_sequence, ws, pendingRestore;
+let rejectRestore=false; let holdRestore=true, holdProjection=false, releaseProjection, projectionGate=Promise.resolve(), projectionStarted=false;
+const commands=[], mutations=[], queries=[], histories=new Map(['agent-director','agent-team-worker-configured'].map(id=>[id,[{kind:'message',role:'user',content:'Earlier saved message',ts:1789000000},{kind:'message',role:'assistant',content:'Previously completed work remains available for inspection.',ts:1789000001}]]));
+const view=()=>({...original,is_active:isActive,base_change_sequence:sequence,agent_statuses:isActive?original.agent_statuses:[]});
+const result={states:[],pageErrors:[],commands,mutations,queries,limits:'Implementation renderer only; real shared surfaces, input, Pinia/context/submission/inspection/stream, strict synthetic external I/O. Header selection/stop diagnostic controls; route mode behavior separately component/action tested. No native/provider/API/Delivery claim.'};
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox'],headless:true});const page=await browser.newPage({viewport:{width:1440,height:900},hasTouch:true});
+page.on('pageerror',e=>result.pageErrors.push(String(e)));
+await page.route('**/rest/health',r=>r.fulfill({status:200,contentType:'application/json',body:'{"status":"ok"}'}));
+await page.route('**/graphql',async r=>{ const q=r.request().postDataJSON(); queries.push({operation:q.operationName,variables:q.variables}); let data;
+ if(q.operationName==='RestoreAgentOrgRun'){mutations.push(q.operationName);if(rejectRestore){await r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({data:{restoreAgentOrgRun:{success:false,message:'Restore was rejected'}}})});return;}if(holdRestore)await new Promise(resolve=>pendingRestore=resolve);isActive=true;data={restoreAgentOrgRun:{success:true,agentOrgRunId:'org-run'}};}
+ else if(q.operationName==='TerminateAgentOrgRun'){mutations.push(q.operationName);isActive=false;data={terminateAgentOrgRun:{success:true}};}
+ else if(q.operationName==='GetAgentOrgRunInspection')data={getAgentOrgRunInspection:{schema_version:1,root_subject_kind:'agent_org',root_run_id:'org-run',root_org:view()}};
+ else if(q.operationName==='GetAgentOrgMemberRunProjection'){if(holdProjection){projectionStarted=true;await projectionGate;}data={getAgentOrgMemberRunProjection:{agentRunId:q.variables.agentRunId,memberAddress:q.variables.memberAddress,conversation:histories.get(q.variables.agentRunId)??[],activities:[],hasEarlierActiveTraceEvents:false}};}
+ else if(q.operationName==='GetAgentOrgExecutionCheckpoint')data={getAgentOrgExecutionCheckpoint:{orgRunId:'org-run',changeSequence:sequence,hasOpenExecutionWork:false}};
+ else if(q.operationName==='ListCollaborationRootHistory')data={listCollaborationRootHistory:[{root_subject_kind:'agent_org',root_run_id:'org-run',is_active:isActive,created_at:original.execution_tree.createdAt,archived_at:null,summary:'Retained mixed Org',org:original.execution_tree}]};
+ else data={agentDefinitions:[],runtimeCapabilities:[],agentTeams:[],workspaces:[]};
+ await r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({data})}); });
+await page.routeWebSocket('**/ws/agent-org/**',socket=>{ws=socket;socket.onMessage(raw=>commands.push(JSON.parse(raw)));socket.send(JSON.stringify({type:'CONNECTED',payload:{root_subject_kind:'agent_org',root_run_id:'org-run',session_id:'render'}}));socket.send(JSON.stringify({type:'ROOT_EXECUTION_VIEW_SNAPSHOT',payload:{root_subject_kind:'agent_org',root_run_id:'org-run',schema_version:1,root_org:view()}}));});
+const frame=message=>ws.send(JSON.stringify(message));
+const present=(c,message)=>frame({type:'ROOT_EXECUTION_EVENT',payload:{root_subject_kind:'agent_org',root_run_id:'org-run',change_sequence:++sequence,event:{kind:'agent_presentation',agent_run_id:c.payload.target_agent_run_id,member_address:original.agent_statuses.find(a=>a.agent_run_id===c.payload.target_agent_run_id).member_address,message}}});
+const finish=()=>{const c=commands.at(-1),p=c.payload; histories.set(p.target_agent_run_id,[...(histories.get(p.target_agent_run_id)??[]),{kind:'message',role:'user',content:p.content,ts:Date.now()/1000}]);
+ present(c,{type:'MEMBER_INPUT_MESSAGE',payload:{message_id:p.message_id,dedupe_key:p.dedupe_key,content:p.content,input_origin:'user_message',received_at:new Date().toISOString(),context_file_paths:[],sender_agent_run_id:null,parent_communication_message_id:null}});
+ frame({type:'AGENT_COMMAND_ACK',payload:{root_subject_kind:'agent_org',root_run_id:'org-run',command_id:p.command_id,command_type:c.type,target_agent_run_id:p.target_agent_run_id,state:'accepted',code:null,message:null}});
+ present(c,{type:'AGENT_STATUS',payload:{status:'idle',trigger:null,tool_name:null,error_message:null,error_details:null}});
+};
+const state=()=>page.evaluate(()=>window.__ir046());
+const shot=async name=>{const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert.equal(overflow,false);await page.screenshot({path:`/tmp/aorg-ir046-render/${name}.png`,fullPage:true});result.states.push({name,overflow,access:await page.locator('[data-test=access]').textContent(),textarea:await page.locator('textarea').count()?await page.locator('textarea').inputValue():null,contexts:await state()});};
+try {
+ await page.goto('http://127.0.0.1:43146/ir046-lifecycle?rootSubjectKind=agent_org&orgRunId=org-run&mode=history',{waitUntil:'networkidle',timeout:120000});await page.locator('textarea').waitFor();
+ assert.equal(mutations.length,0);assert.equal(commands.length,0);assert.equal(await page.locator('[data-test=access]').textContent(),'continuable');await shot('desktop-inactive-direct');
+ await page.locator('[data-test=mounted]').click();assert.equal(mutations.length,0);await shot('desktop-inactive-mounted');
+ await page.setViewportSize({width:390,height:844});await page.locator('textarea').fill('resume exact mounted Agent');await page.locator('button[title="Send message"]').click();
+ await page.waitForFunction(()=>window.__ir046()['agent-team-worker-configured'].pending);assert.equal(await page.locator('textarea').inputValue(),'');await page.locator('textarea').fill('new draft during restore');await shot('narrow-continuation-pending');
+ holdProjection=true;projectionGate=new Promise(resolve=>releaseProjection=resolve);pendingRestore();
+ for(let i=0;i<100&&!projectionStarted;i++)await new Promise(r=>setTimeout(r,20));assert.equal(projectionStarted,true);
+ await page.locator('textarea').fill('latest draft during readiness');await shot('narrow-readiness-draft');holdProjection=false;releaseProjection();
+ await page.waitForFunction(()=>document.querySelector('[data-test=phase]')?.textContent==='live');assert.equal(commands.length,1);assert.equal(commands[0].payload.target_agent_run_id,'agent-team-worker-configured');assert.equal(await page.locator('textarea').inputValue(),'latest draft during readiness');finish();
+ await page.waitForFunction(()=>!window.__ir046()['agent-team-worker-configured'].pending);assert.equal((await state())['agent-team-worker-configured'].messages.filter(m=>m.type==='user'&&m.text==='resume exact mounted Agent').length,1);await shot('narrow-continued-same-context');
+ await page.locator('[data-test=stop]').tap();await page.waitForFunction(()=>document.querySelector('[data-test=phase]')?.textContent==='historical');await page.waitForTimeout(250);
+ assert.equal(await page.locator('[data-test=identity]').textContent(),'agent-team-worker-configured');assert.equal(await page.locator('textarea').inputValue(),'latest draft during readiness');assert.equal(await page.locator('[data-test=access]').textContent(),'continuable');assert.equal((await state())['agent-team-worker-configured'].messages.filter(m=>m.type==='user'&&m.text==='resume exact mounted Agent').length,1);await shot('narrow-stopped-retained');
+ await page.setViewportSize({width:1440,height:900});await shot('desktop-stopped-retained');
+ await page.locator('[data-test=task]').click();assert.equal(await page.locator('[data-test=access]').textContent(),'read_only');assert.equal(await page.locator('textarea').count(),0);await shot('desktop-stopped-task-readonly');await page.setViewportSize({width:390,height:844});await shot('narrow-stopped-task-readonly');
+ await page.locator('[data-test=direct]').tap();rejectRestore=true;await page.locator('textarea').fill('preserve failed continuation');await page.locator('button[title="Send message"]').click();await page.waitForFunction(()=>!window.__ir046()['agent-director'].pending && window.__ir046()['agent-director'].messages.some(m=>m.type==='ai'&&m.segments?.some(s=>s.code==='LOCAL_SUBMISSION_ERROR')));assert.equal(await page.locator('textarea').inputValue(),'preserve failed continuation');await shot('narrow-failed-restore-draft');
+ assert.deepEqual(mutations,['RestoreAgentOrgRun','TerminateAgentOrgRun','RestoreAgentOrgRun']);assert.equal(commands.length,1);assert.deepEqual(result.pageErrors,[]);result.passed=true;
+} catch(error){result.passed=false;result.error=String(error);throw error;}finally {await fs.writeFile('/tmp/aorg-ir046-render/evidence.json',JSON.stringify(result,null,2));await browser.close();console.log(JSON.stringify({passed:result.passed,states:result.states.length,commands:commands.length,mutations,pageErrors:result.pageErrors}));}

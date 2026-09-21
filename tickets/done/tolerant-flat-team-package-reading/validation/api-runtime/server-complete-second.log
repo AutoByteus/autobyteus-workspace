@@ -1,0 +1,266 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/.env
+[dotenv@17.3.1] injecting env (7) from tests/.tmp/team-package-complete-api001/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50461
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50461
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-package-complete-api001.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/db/team-package-complete-api001.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:96133) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-15T03:37:44.775Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:api-untouched-org:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-orgs/api-untouched-org
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:api-invalid:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-teams/api-invalid
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:api-unconverted-parent:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-teams/api-unconverted-parent
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 11 items.
+Populating agent definition cache for the first time...
+[2026-09-15T03:37:44.945Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'api-invalid' at '/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-teams/api-invalid/team-config.json'; expected current Team Definition Config: defaultLaunchConfig must be an object.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+Agent definition cache populated with 11 items.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+[2026-09-15T03:37:44.953Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 11 items.
+{"level":30,"time":1789443464959,"pid":96133,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:56589"}
+{"level":30,"time":1789443464988,"pid":96133,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:50461"}
+[2026-09-15T03:37:44.988Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50461
+[2026-09-15T03:37:44.989Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50461
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/memory/agent_orgs/api-migrated-org/api-migrated-mounted/api-migrated-worker/raw_traces_active.jsonl
+Created terminal session 2917d1a1-9d82-409b-922c-8059663e58fa using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 2917d1a1-9d82-409b-922c-8059663e58fa
+Terminal websocket attached for cwd /Users/normy
+{"level":40,"time":1789443546963,"pid":96133,"hostname":"normys-MacBook-Pro.local","reqId":"req-1j","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":1.0410000085830688,"msg":"http request completed"}
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/memory/agent_orgs/api-migrated-org/api-migrated-mounted/api-migrated-worker/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/media
+Discovering LM Studio models from host: http://localhost:1234
+AgentRuntimeState initialized for agent_id 'api-migrated-direct'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'api-migrated-direct': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'api-migrated-direct'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'api-migrated-direct' with config: 'api-reading-agent'.
+AgentWorker initialized for agent_id 'api-migrated-direct'.
+Registered AgentContext for agent_id 'api-migrated-direct'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'api-migrated-direct'. Context registered.
+Agent facade initialized for agent_id 'api-migrated-direct'.
+Agent 'api-migrated-direct' restored and stored successfully.
+Agent 'api-migrated-direct' requesting runtime to start.
+AgentRuntime for 'api-migrated-direct': Starting worker.
+AgentWorker 'api-migrated-direct': Starting...
+AgentWorker 'api-migrated-direct' asyncRun(): Starting.
+Agent 'api-migrated-direct': Runtime init completed (event store initialized).
+Agent 'api-migrated-direct': Runtime init completed (status deriver initialized).
+Agent 'api-migrated-direct': Runtime init completed (AgentEventInbox initialized).
+Agent 'api-migrated-direct': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'api-migrated-direct' to become idle (timeout: 30s)...
+AgentEventStream (ID: 9eb4eb97-ba9c-4031-a53f-103dfcda823b) initialized for agent_id 'api-migrated-direct'. Subscribed to notifier.
+Agent 'api-migrated-direct': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'api-migrated-direct': Bootstrapper starting direct lifecycle execution.
+Agent 'api-migrated-direct': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'api-migrated-direct': Executing McpServerPrewarmingStep.
+Agent 'api-migrated-direct': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'api-migrated-direct': Executing SystemPromptProcessingStep.
+Agent 'api-migrated-direct': No configured skills. Skipping skill catalog.
+Agent 'api-migrated-direct': Final processed system prompt configured and captured. Trace ID: rt_1789443559366_9c3a7810-1c4d-417d-8685-64d2dda17050. Final length: 8114.
+Agent 'api-migrated-direct': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api-migrated-direct' initialized successfully. Entering main event scheduler loop.
+Agent 'api-migrated-direct' has become idle.
+AgentEventStream (ID: 9eb4eb97-ba9c-4031-a53f-103dfcda823b) for 'api-migrated-direct': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 6c6ccc49-f345-4ef3-81b4-6c077d7dd8f6) initialized for agent_id 'api-migrated-direct'. Subscribed to notifier.
+Published autobyteus agent run 'api-migrated-direct'.
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api-migrated-direct': UserInputContextBuildingProcessor completed. Final content length: 127
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api-migrated-direct': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/media
+AgentRuntimeState initialized for agent_id 'api-migrated-worker'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'api-migrated-worker': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'api-migrated-worker'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'api-migrated-worker' with config: 'api-reading-agent'.
+AgentWorker initialized for agent_id 'api-migrated-worker'.
+Registered AgentContext for agent_id 'api-migrated-worker'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'api-migrated-worker'. Context registered.
+Agent facade initialized for agent_id 'api-migrated-worker'.
+Agent 'api-migrated-worker' created and stored successfully.
+Agent 'api-migrated-worker' requesting runtime to start.
+AgentRuntime for 'api-migrated-worker': Starting worker.
+AgentWorker 'api-migrated-worker': Starting...
+AgentWorker 'api-migrated-worker' asyncRun(): Starting.
+Agent 'api-migrated-worker': Runtime init completed (event store initialized).
+Agent 'api-migrated-worker': Runtime init completed (status deriver initialized).
+Agent 'api-migrated-worker': Runtime init completed (AgentEventInbox initialized).
+Agent 'api-migrated-worker': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'api-migrated-worker' to become idle (timeout: 30s)...
+AgentEventStream (ID: 5fecb98d-dc9e-4ed8-a7f2-69c7f28e8281) initialized for agent_id 'api-migrated-worker'. Subscribed to notifier.
+Agent 'api-migrated-worker': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'api-migrated-worker': Bootstrapper starting direct lifecycle execution.
+Agent 'api-migrated-worker': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'api-migrated-worker': Executing McpServerPrewarmingStep.
+Agent 'api-migrated-worker': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'api-migrated-worker': Executing SystemPromptProcessingStep.
+Agent 'api-migrated-worker': No configured skills. Skipping skill catalog.
+Agent 'api-migrated-worker': Final processed system prompt configured and captured. Trace ID: rt_1789443614218_da67e429-f3ed-4dce-91c1-2482aa1275ec. Final length: 8120.
+Agent 'api-migrated-worker': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api-migrated-worker' initialized successfully. Entering main event scheduler loop.
+Agent 'api-migrated-worker' has become idle.
+AgentEventStream (ID: 5fecb98d-dc9e-4ed8-a7f2-69c7f28e8281) for 'api-migrated-worker': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 68a83e5a-7748-4b45-8956-e45cccfb4ccb) initialized for agent_id 'api-migrated-worker'. Subscribed to notifier.
+Published autobyteus agent run 'api-migrated-worker'.
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api-migrated-worker': UserInputContextBuildingProcessor completed. Final content length: 51
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api-migrated-worker': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 68a83e5a-7748-4b45-8956-e45cccfb4ccb) for 'api-migrated-worker': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'api-migrated-worker'. Attempting graceful shutdown.
+Agent 'api-migrated-worker' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api-migrated-worker': Stop requested.
+AgentExternalEventNotifier (NotifierID: bd5c64ff-9ed1-4cf7-b3d1-f7451a544158, AgentID: api-migrated-worker) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api-migrated-worker' asyncRun() loop has finished.
+AgentWorker 'api-migrated-worker': Running shutdown sequence on worker loop.
+AgentWorker 'api-migrated-worker': Shutdown resource cleanup completed successfully.
+AgentWorker 'api-migrated-worker': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'api-migrated-worker'.
+AgentRuntime for 'api-migrated-worker': Context unregistered.
+AgentRuntime for 'api-migrated-worker' stop() method completed.
+AgentEventStream (ID: 6c6ccc49-f345-4ef3-81b4-6c077d7dd8f6) for 'api-migrated-direct': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'api-migrated-direct'. Attempting graceful shutdown.
+Agent 'api-migrated-direct' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api-migrated-direct': Stop requested.
+AgentExternalEventNotifier (NotifierID: 7181ec8a-5557-4299-b79d-049f7724734e, AgentID: api-migrated-direct) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api-migrated-direct' asyncRun() loop has finished.
+AgentWorker 'api-migrated-direct': Running shutdown sequence on worker loop.
+AgentWorker 'api-migrated-direct': Shutdown resource cleanup completed successfully.
+AgentWorker 'api-migrated-direct': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'api-migrated-direct'.
+AgentRuntime for 'api-migrated-direct': Context unregistered.
+AgentRuntime for 'api-migrated-direct' stop() method completed.
+Closed PTY session 2917d1a1-9d82-409b-922c-8059663e58fa
+Terminal WebSocket disconnected: 2917d1a1-9d82-409b-922c-8059663e58fa
+[2026-09-15T03:41:40.141Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-15T03:41:40.369Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,4 +1,4 @@
-import { reactive, ref, shallowReactive, shallowRef, type Ref } from 'vue';
+import { reactive, ref, shallowRef } from 'vue';
 import {
   teamExecutionViewSnapshotPayloadSchema,
   type TaskDelegationRecordDto,
@@ -43,13 +43,16 @@ export interface TeamExecutionViewState {
   getFocusedAgentRunId(): string;
   getFocusedMemberAddress(): AgentTeamAddress;
   getFocusedAgentContext(): AgentContext | null;
+  getFocusedAgentAccess(): 'live' | 'read_only';
   getFocusedNavigationRow(): TeamExecutionNavigationRow | null;
   getAgentContext(agentRunId: string): AgentContext | null;
   getAgentExecutionLocation(agentRunId: string): TeamAgentExecutionLocation | null;
   getMemberAddress(agentRunId: string): AgentTeamAddress | null;
   hasAgentRun(agentRunId: string): boolean;
   focusAgent(agentRunId: string): MutationResult;
+  focusAgentForInspection(agentRunId: string): MutationResult;
   listAgentContextEntries(): readonly TeamAgentContextEntry[];
+  listLiveAgentContextEntries(): readonly TeamAgentContextEntry[];
   listNavigationRows(): readonly TeamExecutionNavigationRow[];
   listTaskHistoryRows(): readonly TeamTaskHistoryRow[];
   listCommunicationMessages(): readonly TeamCommunicationMessageDto[];
@@ -99,28 +102,34 @@ export const createTeamExecutionViewState = (
   if (input.executionTree.root_team.team_run_id !== rootTeamRunId) {
     throw new Error('Team execution tree root identity mismatch.');
   }
-  const tree = shallowRef(structuredClone(input.executionTree)) as Ref<TeamRunExecutionTreeDto>;
-  const tasks = shallowRef(structuredClone(input.tasks ?? [])) as Ref<TaskDelegationRecordDto[]>;
-  const messages = shallowRef(structuredClone(input.messages ?? [])) as Ref<TeamCommunicationMessageDto[]>;
-  const changeSequence = ref(input.baseChangeSequence ?? 0);
+  // Associations and their canonical tree/task placement are one publication.
+  // Mounted consumers (including the shared composer) can read synchronously;
+  // never expose a Map insertion before the rest of its validated view.
+  const publication = shallowRef({
+    tree: structuredClone(input.executionTree),
+    tasks: structuredClone(input.tasks ?? []),
+    messages: structuredClone(input.messages ?? []),
+    changeSequence: input.baseChangeSequence ?? 0,
+    contexts: new Map<string, AgentContext>() as ReadonlyMap<string, AgentContext>,
+    locations: new Map<string, TeamAgentExecutionLocation>() as ReadonlyMap<string, TeamAgentExecutionLocation>,
+  });
   const streamRecoveryRequired = ref(false);
   const rootActive = ref(input.rootActive);
   const focusedAgentRunId = ref(requiredId(input.initialFocusedAgentRunId, 'initialFocusedAgentRunId'));
-  const contexts = shallowReactive(new Map<string, AgentContext>());
-  const locations = shallowRef<ReadonlyMap<string, TeamAgentExecutionLocation>>(new Map());
+  const retainedInspection = ref(false);
 
   const validateAssociation = (entry: TeamAgentContextEntry): void => {
     const id = requiredId(entry.agentRunId, 'agentRunId');
     if (!entry.agentContext.state || typeof entry.agentContext.state !== 'object') throw new Error(`Agent context '${id}' has no state.`);
     if (entry.agentContext.state.runId !== id) throw new Error(`Agent context '${id}' has a mismatched run ID.`);
   };
-  const associate = (entry: TeamAgentContextEntry): void => {
+  const associate = (entry: TeamAgentContextEntry, candidate: Map<string, AgentContext>): void => {
     validateAssociation(entry);
     const id = requiredId(entry.agentRunId, 'agentRunId');
-    if (contexts.has(id)) throw new Error(`Duplicate AgentRun context '${id}'.`);
+    if (candidate.has(id)) throw new Error(`Duplicate AgentRun context '${id}'.`);
     entry.agentContext.state = reactive(entry.agentContext.state);
     const associatedContext = reactive(entry.agentContext);
-    contexts.set(id, associatedContext);
+    candidate.set(id, associatedContext);
   };
 
   const collectValidatedLocations = (
@@ -136,7 +145,7 @@ export const createTeamExecutionViewState = (
       if (nextLocations.has(location.agentRunId)) {
         throw new Error(`Duplicate AgentRun '${location.agentRunId}' in execution tree.`);
       }
-      const existing = locations.value.get(location.agentRunId);
+      const existing = publication.value.locations.get(location.agentRunId);
       if (existing && (existing.memberAddress !== location.memberAddress
         || existing.containingTeamRunId !== location.containingTeamRunId)) {
         throw new Error(`AgentRun '${location.agentRunId}' changed logical placement.`);
@@ -150,13 +159,13 @@ export const createTeamExecutionViewState = (
     nextTree: TeamRunExecutionTreeDto,
     nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation>,
   ): readonly TeamAgentContextEntry[] => {
-    const unplacedContext = [...contexts.keys()].find((agentRunId) => !nextLocations.has(agentRunId));
+    const unplacedContext = [...publication.value.contexts.keys()].find((agentRunId) => !nextLocations.has(agentRunId));
     if (unplacedContext) {
       throw new Error(`Agent context '${unplacedContext}' has no execution-tree location.`);
     }
     const planned: TeamAgentContextEntry[] = [];
     for (const location of nextLocations.values()) {
-      if (!contexts.has(location.agentRunId)) {
+      if (!publication.value.contexts.has(location.agentRunId)) {
         const context = input.createAgentContext(location.agentRunId, location.memberAddress, nextTree);
         if (!context || context.state.runId !== location.agentRunId) {
           throw new Error(`No exact Agent context could be created for '${location.agentRunId}'.`);
@@ -172,11 +181,13 @@ export const createTeamExecutionViewState = (
     }
     return Object.freeze(planned);
   };
-  const commitContextAssociations = (planned: readonly TeamAgentContextEntry[]): void => {
-    for (const entry of planned) associate(entry);
+  const prepareContextAssociations = (planned: readonly TeamAgentContextEntry[]): ReadonlyMap<string, AgentContext> => {
+    const candidate = new Map(publication.value.contexts);
+    for (const entry of planned) associate(entry, candidate);
+    return candidate;
   };
 
-  const initialLocations = collectValidatedLocations(tree.value);
+  const initialLocations = collectValidatedLocations(publication.value.tree);
   const initialContextIds = new Set<string>();
   for (const entry of input.agentContexts) {
     validateAssociation(entry);
@@ -188,24 +199,46 @@ export const createTeamExecutionViewState = (
     }
     initialContextIds.add(id);
   }
-  input.agentContexts.forEach(associate);
-  commitContextAssociations(planContextAssociations(tree.value, initialLocations));
-  locations.value = initialLocations;
-  if (!contexts.has(focusedAgentRunId.value)) throw new Error('Initial focused AgentRun is missing.');
+  publication.value = { ...publication.value, contexts: prepareContextAssociations(input.agentContexts) };
+  publication.value = { ...publication.value, locations: initialLocations,
+    contexts: prepareContextAssociations(planContextAssociations(publication.value.tree, initialLocations)) };
+  if (!publication.value.contexts.has(focusedAgentRunId.value)) throw new Error('Initial focused AgentRun is missing.');
 
   const navigationPurpose = (): TeamExecutionNavigationPurpose => rootActive.value
     ? 'LIVE_EXECUTION'
     : 'HISTORICAL_INSPECTION';
   const navigationRows = (): readonly TeamExecutionNavigationRow[] => projectNavigationRows({
-    tree: tree.value,
-    tasks: tasks.value,
-    contexts,
+    tree: publication.value.tree,
+    tasks: publication.value.tasks,
+    contexts: publication.value.contexts,
     purpose: navigationPurpose(),
   });
+  const inspectionRows = () => projectNavigationRows({
+    tree: publication.value.tree, tasks: publication.value.tasks, contexts: publication.value.contexts, purpose: 'HISTORICAL_INSPECTION',
+  });
+  const isRetainedAgent = (id: string): boolean => !collectLiveAgentExecutionLocations(publication.value.tree)
+    .some((location) => location.agentRunId === id);
+  const focusAgent = (agentRunId: string, inspect = false): MutationResult => {
+    const id = agentRunId.trim();
+    if (!publication.value.contexts.has(id)) return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND', message: `AgentRun '${id}' is not part of this Team execution.` };
+    const rows = inspect ? inspectionRows() : navigationRows();
+    if (!rows.some((row) => row.agentRunId === id)) {
+      return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_VISIBLE', message: `AgentRun '${id}' is not available for this selection.` };
+    }
+    const retained = inspect && isRetainedAgent(id);
+    if (focusedAgentRunId.value === id && retainedInspection.value === retained) return { disposition: 'unchanged' };
+    retainedInspection.value = retained;
+    focusedAgentRunId.value = id;
+    return { disposition: 'applied' };
+  };
   const repairFocus = (): void => {
+    // Explicit retained inspection is distinct from ordinary live navigation.
+    // A live task selected before settlement still repairs to a live member.
+    if (retainedInspection.value && inspectionRows().some((row) => row.agentRunId === focusedAgentRunId.value)) return;
+    retainedInspection.value = false;
     const rows = navigationRows();
     if (rows.some((row) => row.agentRunId === focusedAgentRunId.value)) return;
-    const coordinatorAddress = tree.value.root_team.coordinator_address;
+    const coordinatorAddress = publication.value.tree.root_team.coordinator_address;
     const fallback = rows.find((row) => row.agentRunId && row.address === coordinatorAddress)
       ?? rows.find((row) => row.agentRunId);
     if (fallback?.agentRunId) focusedAgentRunId.value = fallback.agentRunId;
@@ -222,7 +255,7 @@ export const createTeamExecutionViewState = (
     streamRecoveryRequired.value = true;
     return Object.freeze({
       disposition: 'rejected', code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP',
-      message: `Expected change sequence ${changeSequence.value + 1}, received ${received}.`,
+      message: `Expected change sequence ${publication.value.changeSequence + 1}, received ${received}.`,
       effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]),
     });
   };
@@ -246,7 +279,7 @@ export const createTeamExecutionViewState = (
         if (statusIds.has(status.agent_run_id) || location?.memberAddress !== status.member_address) {
           throw new Error(`Invalid Agent status identity '${status.agent_run_id}'.`);
         }
-        const context = contexts.get(status.agent_run_id) ?? plannedContexts.get(status.agent_run_id);
+        const context = publication.value.contexts.get(status.agent_run_id) ?? plannedContexts.get(status.agent_run_id);
         if (!context) throw new Error(`Agent status target '${status.agent_run_id}' is missing.`);
         statusIds.add(status.agent_run_id);
         validatedStatuses.push({ context, status: status.status as AgentStatus });
@@ -259,13 +292,12 @@ export const createTeamExecutionViewState = (
       if ([...statusIds].some((agentRunId) => !expected.includes(agentRunId))) {
         throw new Error('Snapshot contains a non-live Agent status.');
       }
-      commitContextAssociations(planned);
+      publication.value = {
+        tree: structuredClone(payload.execution_tree), locations: nextLocations,
+        tasks: structuredClone(payload.tasks), messages: structuredClone(payload.messages),
+        contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
+      };
       validatedStatuses.forEach(({ context, status }) => { context.state.currentStatus = status; });
-      tree.value = structuredClone(payload.execution_tree);
-      locations.value = nextLocations;
-      tasks.value = structuredClone(payload.tasks);
-      messages.value = structuredClone(payload.messages);
-      changeSequence.value = payload.base_change_sequence;
       streamRecoveryRequired.value = false;
       repairFocus();
       return Object.freeze({
@@ -291,21 +323,21 @@ export const createTeamExecutionViewState = (
       });
     }
     const sequence = sequenceOf(message);
-    if (sequence !== null && sequence !== changeSequence.value + 1) return rejectGap(sequence);
+    if (sequence !== null && sequence !== publication.value.changeSequence + 1) return rejectGap(sequence);
     const effects: TeamExecutionEffect[] = [];
     try {
       if (message.type === 'TASK_DELEGATION_EVENT') {
-        const index = tasks.value.findIndex((task) => task.task_id === message.payload.task.task_id);
-        const nextTasks = [...tasks.value];
+        const index = publication.value.tasks.findIndex((task) => task.task_id === message.payload.task.task_id);
+        const nextTasks = [...publication.value.tasks];
         if (index < 0) nextTasks.push(structuredClone(message.payload.task));
         else nextTasks.splice(index, 1, structuredClone(message.payload.task));
-        let nextTree = tree.value;
+        let nextTree = publication.value.tree;
         let planned: readonly TeamAgentContextEntry[] = Object.freeze([]);
         let nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation> | null = null;
         if (message.payload.event_type === 'TASK_AGENT_ACTIVATED'
           || message.payload.event_type === 'TASK_TEAM_ACTIVATED') {
           nextTree = insertTaskExecution({
-            tree: tree.value,
+            tree: publication.value.tree,
             parentTeamRunId: message.payload.parent_team_run_id,
             execution: message.payload.execution,
           });
@@ -313,17 +345,16 @@ export const createTeamExecutionViewState = (
           planned = planContextAssociations(nextTree, nextLocations);
         } else if (message.payload.event_type === 'TASK_EXECUTION_SETTLED') {
           nextTree = settleTaskExecution({
-            tree: tree.value,
+            tree: publication.value.tree,
             execution: message.payload.execution,
             settledAt: message.payload.settled_at,
           });
           nextLocations = collectValidatedLocations(nextTree);
           planned = planContextAssociations(nextTree, nextLocations);
         }
-        commitContextAssociations(planned);
-        tree.value = nextTree;
-        if (nextLocations) locations.value = nextLocations;
-        tasks.value = nextTasks;
+        publication.value = { ...publication.value, tree: nextTree, tasks: nextTasks,
+          locations: nextLocations ?? publication.value.locations,
+          contexts: prepareContextAssociations(planned), changeSequence: sequence ?? publication.value.changeSequence };
         const focusBeforeRepair = focusedAgentRunId.value;
         repairFocus();
         const focusChangedBySettlement = message.payload.event_type === 'TASK_EXECUTION_SETTLED'
@@ -339,15 +370,17 @@ export const createTeamExecutionViewState = (
           effects.push({ kind: 'reconcile_focused_team_member_projection' });
         }
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
-        if (messages.value.some((entry) => entry.message_id === message.payload.message.message_id)) {
+        if (publication.value.messages.some((entry) => entry.message_id === message.payload.message.message_id)) {
           return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });
         }
-        messages.value = [...messages.value, structuredClone(message.payload.message)];
+        publication.value = { ...publication.value,
+          messages: [...publication.value.messages, structuredClone(message.payload.message)],
+          changeSequence: sequence ?? publication.value.changeSequence };
       } else {
         const agentRunId = targetAgentRunId(message);
         if (agentRunId === null) {
           if (message.type !== 'ERROR') throw new Error(`Message '${message.type}' has no AgentRun target.`);
-        } else if (!contexts.has(agentRunId)) {
+        } else if (!publication.value.contexts.has(agentRunId)) {
           throw new Error(`Message '${message.type}' targets unknown AgentRun '${agentRunId}'.`);
         } else if (message.type === 'TOKEN_USAGE_UPDATED') {
           effects.push({ kind: 'record_team_token_usage', agentRunId, details: message.payload });
@@ -356,7 +389,9 @@ export const createTeamExecutionViewState = (
           effects.push({ kind: 'dispatch_agent', agentRunId, message: message as TeamAgentStreamMessage });
         }
       }
-      if (sequence !== null) changeSequence.value = sequence;
+      if (sequence !== null && sequence !== publication.value.changeSequence) {
+        publication.value = { ...publication.value, changeSequence: sequence };
+      }
       return Object.freeze({ disposition: 'applied', effects: Object.freeze(effects) });
     } catch (error) {
       return Object.freeze({ disposition: 'rejected', code: 'TEAM_EXECUTION_EVENT_INVALID', message: String(error), effects: Object.freeze([]) });
@@ -365,10 +400,10 @@ export const createTeamExecutionViewState = (
 
   return {
     getRootTeamRunId: () => rootTeamRunId,
-    getTeamDefinitionName: () => tree.value.root_team.team_definition_name,
-    getExecutionTree: () => tree.value,
+    getTeamDefinitionName: () => publication.value.tree.root_team.team_definition_name,
+    getExecutionTree: () => publication.value.tree,
     getConfigurationView: () => input.configuration,
-    getChangeSequence: () => changeSequence.value,
+    getChangeSequence: () => publication.value.changeSequence,
     needsStreamRecovery: () => streamRecoveryRequired.value,
     isRootTeamActive: () => rootActive.value,
     setRootTeamActive: (active) => {
@@ -378,31 +413,29 @@ export const createTeamExecutionViewState = (
       return { disposition: 'applied' };
     },
     getFocusedAgentRunId: () => focusedAgentRunId.value,
-    getFocusedMemberAddress: () => locations.value.get(focusedAgentRunId.value)!.memberAddress,
-    getFocusedAgentContext: () => contexts.get(focusedAgentRunId.value) ?? null,
-    getFocusedNavigationRow: () => navigationRows().find(
+    getFocusedMemberAddress: () => publication.value.locations.get(focusedAgentRunId.value)!.memberAddress,
+    getFocusedAgentContext: () => publication.value.contexts.get(focusedAgentRunId.value) ?? null,
+    getFocusedAgentAccess: () => isRetainedAgent(focusedAgentRunId.value) ? 'read_only' : 'live',
+    getFocusedNavigationRow: () => inspectionRows().find(
       (row) => row.agentRunId === focusedAgentRunId.value,
     ) ?? null,
-    getAgentContext: (agentRunId) => contexts.get(agentRunId.trim()) ?? null,
-    getAgentExecutionLocation: (agentRunId) => locations.value.get(agentRunId.trim()) ?? null,
-    getMemberAddress: (agentRunId) => locations.value.get(agentRunId.trim())?.memberAddress ?? null,
-    hasAgentRun: (agentRunId) => contexts.has(agentRunId.trim()),
-    focusAgent: (agentRunId) => {
-      const id = agentRunId.trim();
-      if (!contexts.has(id)) return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND', message: `AgentRun '${id}' is not part of this Team execution.` };
-      if (!navigationRows().some((row) => row.agentRunId === id)) {
-        return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_VISIBLE', message: `AgentRun '${id}' is not live.` };
-      }
-      if (focusedAgentRunId.value === id) return { disposition: 'unchanged' };
-      focusedAgentRunId.value = id;
-      return { disposition: 'applied' };
-    },
-    listAgentContextEntries: () => Object.freeze([...contexts].map(([agentRunId, agentContext]) => Object.freeze({
-      agentRunId, memberAddress: locations.value.get(agentRunId)!.memberAddress, agentContext,
+    getAgentContext: (agentRunId) => publication.value.contexts.get(agentRunId.trim()) ?? null,
+    getAgentExecutionLocation: (agentRunId) => publication.value.locations.get(agentRunId.trim()) ?? null,
+    getMemberAddress: (agentRunId) => publication.value.locations.get(agentRunId.trim())?.memberAddress ?? null,
+    hasAgentRun: (agentRunId) => publication.value.contexts.has(agentRunId.trim()),
+    focusAgent: (agentRunId) => focusAgent(agentRunId),
+    focusAgentForInspection: (agentRunId) => focusAgent(agentRunId, true),
+    listAgentContextEntries: () => Object.freeze([...publication.value.contexts].map(([agentRunId, agentContext]) => Object.freeze({
+      agentRunId, memberAddress: publication.value.locations.get(agentRunId)!.memberAddress, agentContext,
     }))),
+    // The stream snapshot covers live placements, not every retained context.
+    listLiveAgentContextEntries: () => Object.freeze(collectLiveAgentExecutionLocations(publication.value.tree)
+      .map(({ agentRunId, memberAddress }) => Object.freeze({
+        agentRunId, memberAddress, agentContext: publication.value.contexts.get(agentRunId)!,
+      }))),
     listNavigationRows: navigationRows,
-    listTaskHistoryRows: () => buildTaskHistoryRows(tasks.value),
-    listCommunicationMessages: () => Object.freeze([...messages.value]),
+    listTaskHistoryRows: () => buildTaskHistoryRows(publication.value.tasks),
+    listCommunicationMessages: () => Object.freeze([...publication.value.messages]),
     applySnapshot,
     applyMessage,
   };

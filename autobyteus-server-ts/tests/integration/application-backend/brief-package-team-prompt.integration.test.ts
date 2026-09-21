@@ -6,8 +6,11 @@ import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/s
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
-import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
+import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
+import {
+  createRootExecutionPhysicalScope,
+  createTeamRootExecutionIdentity,
+} from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -15,7 +18,7 @@ import { ApplicationExecutionResourceResolver } from "../../../src/application-o
 import { createBundleBackedDefinitionServices } from "../../../src/application-platform/definitions/create-bundle-backed-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTaskRootResolver } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCommandCapability } from "../../fixtures/current-team-run-fixtures.js";
 
 const packageRoot = path.resolve("../applications/brief-studio/dist/importable-package");
 const workspaceRoot = path.resolve("../applications/brief-studio");
@@ -30,6 +33,7 @@ describe("Brief package team prompt authority", () => {
       appConfig: {
         getAgentsDir: () => path.join(packageRoot, ".test-only", "agents"),
         getAgentTeamsDir: () => path.join(packageRoot, ".test-only", "agent-teams"),
+        getAgentOrgsDir: () => path.join(packageRoot, ".test-only", "agent-orgs"),
         getAdditionalAgentPackageRoots: () => [],
       } as never,
       bundleService: validated.bundleService,
@@ -73,11 +77,14 @@ describe("Brief package team prompt authority", () => {
       agentRunId: "brief-writer-run",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     } as const;
-    const memberTeamContext = await new MemberTeamContextBuilder(
+    const memberExecutionContext = await new MemberExecutionContextBuilder(
       definitions.agentTeamDefinitionService,
     ).build({
       teamContext: new TeamRunContext({
-        physicalScope: createRootTeamRunPhysicalScope("brief-team-run"),
+        physicalScope: createRootExecutionPhysicalScope({
+          root: createTeamRootExecutionIdentity("brief-team-run"),
+          ancestorTeamRunIds: [],
+        }),
         teamRunId: "brief-team-run",
         teamBackendKind: TeamBackendKind.MIXED,
         teamNode: {
@@ -97,7 +104,7 @@ describe("Brief package team prompt authority", () => {
       }),
       agentNode: researcherNode as never,
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
-      taskRootResolver: testMemberTaskRootResolver(),
+      taskCommands: testMemberTaskCommandCapability("brief-team-run"),
     });
     const activateForRun = vi.fn((input: {
       owner: { runId: string };
@@ -144,13 +151,13 @@ describe("Brief package team prompt authority", () => {
         llmConfig: null,
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        memberTeamContext,
+        memberExecutionContext,
       }),
       runtimeContext: null,
     }));
 
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
-    expect(memberTeamContext.authoredTeamInstruction).toBe(packageTeam.instructions.trim());
+    expect(memberExecutionContext.authoredEnclosingScopeInstruction).toBe(packageTeam.instructions.trim());
     expect(packageTeam.instructions).toContain(
       "researcher calls `get_brief_context` exactly once first, creates `brief-studio/research.md` with the exact marker and required business content",
     );
@@ -167,8 +174,11 @@ describe("Brief package team prompt authority", () => {
     expect(activateForRun).toHaveBeenCalledWith(expect.objectContaining({
       owner: expect.objectContaining({
         runId: "brief-researcher-run",
-        teamIdentity: {
-          rootTeamRunId: "brief-team-run",
+        collaborationIdentity: {
+          root: {
+            rootSubjectKind: "agent_team",
+            rootRunId: "brief-team-run",
+          },
           memberAddress: "/researcher",
           agentRunId: "brief-researcher-run",
         },

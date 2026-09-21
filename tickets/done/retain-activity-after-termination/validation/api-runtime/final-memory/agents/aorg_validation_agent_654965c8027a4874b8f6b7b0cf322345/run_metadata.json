@@ -1,0 +1,16 @@
+{
+  "runId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+  "agentDefinitionId": "aorg-validation-agent",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/temp_workspace",
+  "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/memory/agents/aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+  "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "llmConfig": null,
+  "autoExecuteTools": false,
+  "skillAccessMode": "PRELOADED_ONLY",
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+  "preparedAt": "2026-09-14T14:14:28.390Z",
+  "preparedExpiresAt": "2026-09-15T14:14:28.390Z",
+  "startedAt": "2026-09-14T14:14:28.562Z",
+  "applicationExecutionContext": null
+}

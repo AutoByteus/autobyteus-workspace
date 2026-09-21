@@ -10,7 +10,7 @@
         v-if="displayRow.row.kind === 'stable_member'"
         :row="displayRow.row"
         :avatars="avatars"
-        :aggregate-status="nestedTeamStatus(displayRow.row)"
+        :aggregate-status="teamBranchStatus(displayRow.row)"
         :age="formatRelativeTime(team.lastActivityAt)"
         :is-selected="isSelected(displayRow.row)"
         :has-children="displayRow.hasChildren"
@@ -39,7 +39,7 @@
 import { computed } from 'vue';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
-import { aggregateNestedTeamAgentStatus } from '~/components/workspace/history/workspaceHistoryNestedTeamStatus';
+import { aggregateTeamBranchAgentStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useLocalization } from '~/composables/useLocalization';
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts';
@@ -110,9 +110,9 @@ const isSelected = (row: RunHistoryTeamExecutionRow): boolean =>
   && row.agentRunId !== null
   && row.agentRunId === props.team.focusedAgentRunId;
 
-const nestedTeamStatus = (row: RunHistoryStableExecutionRow): AgentStatus =>
+const teamBranchStatus = (row: RunHistoryStableExecutionRow): AgentStatus =>
   row.memberKind === 'agent_team'
-    ? aggregateNestedTeamAgentStatus(props.team.executionRows, row)
+    ? aggregateTeamBranchAgentStatus(props.team.executionRows, row)
     : AgentStatus.Offline;
 
 const activateStableRow = (row: RunHistoryStableExecutionRow): void => {

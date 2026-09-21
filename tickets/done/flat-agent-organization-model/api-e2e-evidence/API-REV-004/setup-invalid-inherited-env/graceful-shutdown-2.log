@@ -1,0 +1,84 @@
+shutdown_requested_at=2026-09-02T06:53:47Z
+backend_pid=59079
+backend_exited_after_seconds=2
+backend_still_alive=false
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Unexpected failure while preparing agent run 'aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e' for runtime 'codex_app_server'. Error: Agent definition 'aorg-lead' was not found.
+    at CodexThreadBootstrapper.bootstrapInternal (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:115:19)
+    at async CodexAgentRunBackendFactory.restoreBackend (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:36:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:260:23)
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Unexpected failure while preparing agent run 'aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e' for runtime 'codex_app_server'. Error: Agent definition 'aorg-lead' was not found.
+    at CodexThreadBootstrapper.bootstrapInternal (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:115:19)
+    at async CodexAgentRunBackendFactory.restoreBackend (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:36:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:260:23)
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Unexpected failure while preparing agent run 'aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e' for runtime 'codex_app_server'. Error: Agent definition 'aorg-lead' was not found.
+    at CodexThreadBootstrapper.bootstrapInternal (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:115:19)
+    at async CodexAgentRunBackendFactory.restoreBackend (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:36:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:260:23)
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+Created terminal session 1af5d369-fa90-434d-8c01-6984ba2f66dd using backend PtySession for target /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Terminal WebSocket connected: 1af5d369-fa90-434d-8c01-6984ba2f66dd
+Terminal websocket attached for cwd /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created WorkspaceFileExplorer for agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: bc02a4af-4119-4062-a6c1-0f04d785dd5e for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Created file explorer session bc02a4af-4119-4062-a6c1-0f04d785dd5e for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d. Active sessions: 1
+File explorer WebSocket connected: bc02a4af-4119-4062-a6c1-0f04d785dd5e for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+File explorer websocket attached for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+FileExplorerSession closed: bc02a4af-4119-4062-a6c1-0f04d785dd5e
+Closed file explorer session bc02a4af-4119-4062-a6c1-0f04d785dd5e. Active sessions: 0
+File explorer WebSocket disconnected: bc02a4af-4119-4062-a6c1-0f04d785dd5e
+Closed PTY session 1af5d369-fa90-434d-8c01-6984ba2f66dd
+Closed PTY session 2333c741-2163-4512-ae33-0e43f34f412f
+Terminal WebSocket disconnected: 2333c741-2163-4512-ae33-0e43f34f412f
+Terminal WebSocket disconnected: 1af5d369-fa90-434d-8c01-6984ba2f66dd
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/working_context_snapshot.json
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/episodic.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/semantic.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/working_context_snapshot.json
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/episodic.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/semantic.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/working_context_snapshot.json
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/episodic.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/memory/agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c/semantic.jsonl
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Unexpected failure while preparing agent run 'aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e' for runtime 'codex_app_server'. Error: Agent definition 'aorg-lead' was not found.
+    at CodexThreadBootstrapper.bootstrapInternal (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:115:19)
+    at async CodexAgentRunBackendFactory.restoreBackend (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:36:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:260:23)
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Unexpected failure while preparing agent run 'aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e' for runtime 'codex_app_server'. Error: Agent definition 'aorg-lead' was not found.
+    at CodexThreadBootstrapper.bootstrapInternal (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:115:19)
+    at async CodexAgentRunBackendFactory.restoreBackend (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:36:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:260:23)
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Unexpected failure while preparing agent run 'aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e' for runtime 'codex_app_server'. Error: Agent definition 'aorg-lead' was not found.
+    at CodexThreadBootstrapper.bootstrapInternal (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:115:19)
+    at async CodexAgentRunBackendFactory.restoreBackend (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:36:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:260:23)
+Error restoring agent team run with ID aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.
+[2026-09-02T06:53:47.874Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-02T06:53:47.946Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,0 +1,10 @@
+tested_artifact_head=73a2c06eb14e3c5a7d91322aae7f42dbc4de0e0a
+implementation_source=3e38be96596432df8e3f459056d908786b5371bd
+post_execution_workspace_head=cd75bcdbfb97fd1707c5954db43dbbac65844da6
+post-execution changes since tested artifact:
+M	tickets/in-progress/flat-agent-organization-model/architecture-design-revision-record.md
+M	tickets/in-progress/flat-agent-organization-model/architecture-design-self-validation.md
+M	tickets/in-progress/flat-agent-organization-model/architecture-review-revision-record.md
+M	tickets/in-progress/flat-agent-organization-model/design-review-report.md
+M	tickets/in-progress/flat-agent-organization-model/design-spec.md
+production-source changes since tested artifact:

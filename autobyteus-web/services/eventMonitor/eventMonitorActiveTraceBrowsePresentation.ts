@@ -21,19 +21,13 @@ export type EventMonitorActiveTraceBrowsePresentationItem =
   | { kind: 'assistant'; key: string; turnGroupId: string; visuals: EventMonitorBrowseAssistantVisual[] }
   | { kind: 'compaction'; key: string; visualId: string; activity: CompactionActivity };
 
-const attachmentType = (mediaType: string): ContextAttachment['type'] => {
-  if (mediaType === 'image') return 'Image';
-  if (mediaType === 'audio') return 'Audio';
-  if (mediaType === 'video') return 'Video';
-  return 'Unknown';
-};
-
 const toAttachment = (
   attachment: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorUserVisual' }>['attachments'][number],
 ): ContextAttachment => ({
   ...hydrateContextAttachment({
     locator: attachment.locator,
-    type: attachmentType(attachment.mediaType),
+    type: attachment.fileType,
+    displayName: attachment.fileName,
   }),
   id: attachment.attachmentId,
 });

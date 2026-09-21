@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts (2 tests | 2 failed) 8ms
+   × same saved reasoning low survives canonical Team copy (different member model: false) 7ms
+     → Cannot read properties of undefined (reading 'workspace')
+   × same saved reasoning low survives canonical Team copy (different member model: true) 1ms
+     → Cannot read properties of undefined (reading 'workspace')
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts > same saved reasoning low survives canonical Team copy (different member model: false)
+ FAIL  services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts > same saved reasoning low survives canonical Team copy (different member model: true)
+TypeError: Cannot read properties of undefined (reading 'workspace')
+ ❯ rootEffectiveConfig utils/teamRunLaunchHierarchy.ts:64:70
+     62| 
+     63| const rootEffectiveConfig = (config: Readonly<TeamRunConfig>): Readonl…
+     64|   const workspaceMetadata = cloneWorkspaceMetadata(config.rootConfig.w…
+       |                                                                      ^
+     65|   return freezeResolved({
+     66|     runtimeKind: normalizeRuntimeKind(config.rootConfig.runtimeKind),
+ ❯ resolveTeamRunConfiguration utils/teamRunLaunchHierarchy.ts:119:22
+ ❯ Module.projectTeamRunLaunchRecords utils/teamRunLaunchHierarchy.ts:220:16
+ ❯ services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts:22:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  04:54:49
+   Duration  5.53s (transform 3.12s, setup 4.88s, collect 129ms, tests 8ms, environment 134ms, prepare 151ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -17,6 +17,7 @@ class StubLayout {
 }
 
 const stubOwnerResolver = {
+  validateDraftOwnerSync: () => {},
   resolveFinalOwnerSync: (owner: any) =>
     owner.kind === 'team_member_final'
       ? { ...owner, memberRunId: 'worker_00000000000000000000000000000001' }

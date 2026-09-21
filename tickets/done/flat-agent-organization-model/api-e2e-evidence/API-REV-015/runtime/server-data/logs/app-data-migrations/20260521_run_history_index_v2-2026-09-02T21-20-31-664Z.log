@@ -1,0 +1,5 @@
+migrationId=20260521_run_history_index_v2
+displayName=Standalone run history index V2 migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=

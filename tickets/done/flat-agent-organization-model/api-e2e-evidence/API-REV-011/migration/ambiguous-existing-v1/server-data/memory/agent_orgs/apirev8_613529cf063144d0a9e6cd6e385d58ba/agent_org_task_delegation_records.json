@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+  "records": [
+    {
+      "taskId": "task_9df98cdc92da40e4ac557daceedbc99a",
+      "delegatorAgentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "recipientAddress": "/apirev8_team/aorg_e2e_analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626"
+      },
+      "description": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_2ca1fdb0b26a487ca5f0180bc91054ad",
+          "message": "APIREV8-TASK-PAYLOAD-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T21:39:26.018Z"
+        },
+        {
+          "reviewId": "review_0a14b2dbd01a4ab79c18ac6fb93d044a",
+          "reviewedSubmissionId": "submission_2ca1fdb0b26a487ca5f0180bc91054ad",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T21:39:46.996Z"
+        }
+      ],
+      "createdAt": "2026-09-02T21:39:16.429Z"
+    },
+    {
+      "taskId": "task_e8ac5ad7530e4a68abde501aed8d27cf",
+      "delegatorAgentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "recipientAddress": "/apirev8_team/aorg_e2e_analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94"
+      },
+      "description": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_72f71844a03b47e69cedc1048684dfa5",
+          "message": "APIREV10-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-04T14:30:49.033Z"
+        },
+        {
+          "reviewId": "review_9e5dd2ecb8eb4c59955fdde327acd0f9",
+          "reviewedSubmissionId": "submission_72f71844a03b47e69cedc1048684dfa5",
+          "decision": "request_revision",
+          "comment": "Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-04T14:34:56.592Z"
+        },
+        {
+          "submissionId": "submission_a8bd552f0d374c1ab02d461733c3cae5",
+          "message": "APIREV10-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-04T14:34:59.475Z"
+        },
+        {
+          "reviewId": "review_2332b4d510984bc1a6b262e68d50fa3f",
+          "reviewedSubmissionId": "submission_a8bd552f0d374c1ab02d461733c3cae5",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-04T14:35:36.692Z"
+        }
+      ],
+      "createdAt": "2026-09-04T14:30:32.731Z"
+    }
+  ]
+}

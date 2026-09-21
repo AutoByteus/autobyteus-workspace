@@ -1,0 +1,187 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:58:58.697Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+Agent definition cache populated with 1 items.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:58:58.780Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+Agent definition cache populated with 1 items.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > retains exact physical membership, genuine missing negatives, and shared/Team-local controls
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:58:58.843Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > retains exact physical membership, genuine missing negatives, and shared/Team-local controls
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > retains exact physical membership, genuine missing negatives, and shared/Team-local controls
+Agent definition cache populated with 1 items.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:58:58.915Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+Agent definition cache populated with 1 items.
+
+ ❯ tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts (4 tests | 3 failed) 276ms
+     × resolves exact owned content with catalog already loaded=false and keeps it out of lists 94ms
+     × resolves exact owned content with catalog already loaded=true and keeps it out of lists 60ms
+     ✓ retains exact physical membership, genuine missing negatives, and shared/Team-local controls 68ms
+     × reads parent-owned updates and reference removal without caching the exact child into the catalog 53ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+ FAIL  tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+AssertionError: expected null to deeply equal { …(8) }
+
+- Expected: 
+{
+  "description": "Bundled Agent",
+  "id": "agent-org-owned-agent:org:direct",
+  "instructions": "Exact owned instructions",
+  "name": "Exact Direct",
+  "ownerOrgId": "org",
+  "ownerOrgName": "Org",
+  "ownerTeamId": null,
+  "ownershipScope": "AGENT_ORG_OWNED",
+}
+
++ Received: 
+null
+
+ ❯ tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts:96:42
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+AssertionError: expected null to match object { ownerOrgName: 'Org' }
+
+- Expected: 
+{
+  "ownerOrgName": "Org",
+}
+
++ Received: 
+null
+
+ ❯ tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts:113:57
+    111| 
+    112|   it("reads parent-owned updates and reference removal without caching…
+    113|     expect((await read(ownedId)).data?.agentDefinition).toMatchObject(…
+       |                                                         ^
+    114|     let parent = (await orgs.getById("org"))!; parent.name = "Renamed …
+    115|     expect((await read(ownedId)).data?.agentDefinition).toMatchObject(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  07:58:51
+   Duration  6.95s (transform 3.32s, setup 33ms, import 5.71s, tests 276ms, environment 0ms)
+

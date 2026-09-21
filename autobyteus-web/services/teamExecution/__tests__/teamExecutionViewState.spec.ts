@@ -450,6 +450,33 @@ describe('TeamExecutionViewState', () => {
     });
   });
 
+  it('retains exact settled subtree inspection on an active root without restoring live navigation eligibility', () => {
+    const historical = settledHistoricalExecutions();
+    const state = createStateFixture({ executionTree: historical.executionTree, tasks: historical.tasks }).state;
+    for (const id of ['settled-direct-run', 'settled-team-coordinator-run', 'settled-pod-student-run', 'settled-nested-run']) {
+      expect(state.focusAgent(id).disposition).toBe('rejected');
+      expect(state.focusAgentForInspection(id).disposition).toBe('applied');
+      expect(state.getFocusedAgentRunId()).toBe(id);
+      expect(state.getFocusedAgentAccess()).toBe('read_only');
+      expect(state.getFocusedNavigationRow()?.agentRunId).toBe(id);
+      expect(state.listNavigationRows().some(row => row.agentRunId === id)).toBe(false);
+    }
+    const before = state.getFocusedAgentRunId();
+    expect(state.focusAgentForInspection('missing').disposition).toBe('rejected');
+    expect(state.getFocusedAgentRunId()).toBe(before);
+    expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+      root_team_run_id: 'root-team-1', base_change_sequence: 4, execution_tree: historical.executionTree,
+      tasks: historical.tasks, messages: [], agent_statuses: [
+        ['teacher-run', '/Teacher'], ['coordinator-run', '/StudentStudyGroup/Coordinator'], ['student-run', '/StudentStudyGroup/Student'],
+      ].map(([agent_run_id, member_address]) => ({ agent_run_id, member_address, status: AgentStatus.Idle,
+        trigger: null, tool_name: null, error_message: null, error_details: null })),
+    } }).disposition).toBe('applied');
+    expect(state.getFocusedAgentRunId()).toBe(before);
+    expect(state.isRootTeamActive()).toBe(true);
+    state.focusAgent('teacher-run');
+    expect(state.getFocusedAgentAccess()).toBe('live');
+  });
+
   it('rejects sequence gaps and invalid snapshots without partially replacing authoritative state', () => {
     const state = createState();
     const beforeTree = state.getExecutionTree();

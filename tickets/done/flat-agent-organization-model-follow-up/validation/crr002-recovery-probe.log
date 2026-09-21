@@ -1,0 +1,29 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/crr002-recovery-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | tests/crr002-recovery-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/crr002-recovery-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/crr002-recovery-probe.spec.ts > records active-only checkpoint preventing inactive retained-root recovery
+{"checkpointAttempts":5,"websockets":1,"publications":1,"inactiveCallbacks":0,"phase":"reopen_required","status":"idle","reported":["Active AgentOrg 'org-run' was not found."]}
+
+ ✓ tests/crr002-recovery-probe.spec.ts (1 test) 10ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:13:49
+   Duration  5.51s (transform 3.14s, setup 4.84s, collect 125ms, tests 10ms, environment 158ms, prepare 136ms)
+

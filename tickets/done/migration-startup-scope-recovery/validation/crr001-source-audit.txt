@@ -1,0 +1,7 @@
+autobyteus-web/components/server/ServerLoading.vue: 199 nonempty; 13 changed lines; thresholds Pass
+autobyteus-web/components/server/ServerMonitor.vue: 120 nonempty; 8 changed lines; thresholds Pass
+autobyteus-web/electron/server/baseServerManager.ts: 433 nonempty; 160 changed lines; thresholds Pass
+autobyteus-web/electron/server/serverStatusManager.ts: 163 nonempty; 11 changed lines; thresholds Pass
+autobyteus-web/electron/server/windowsServerManager.ts: 156 nonempty; 2 changed lines; thresholds Pass
+autobyteus-web/stores/serverStore.ts: 411 nonempty; 17 changed lines; thresholds Pass
+git diff --check: exit 0

@@ -1,0 +1,74 @@
+[
+  {
+    "level": "error",
+    "message": "Agent WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:04.862Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Team WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:04.895Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Agent WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:08.865Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Error terminating Team 'aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843': ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=f40d2444:59:28)\n    at Object.error (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=f40d2444:186:84)\n    at notifySubscription (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=f40d2444:137:18)\n    at onNotify (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=f40d2444:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=f40d2444:229:5)\n    at Object.error (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=f40d2444:40:34)\n    at notifySubscription (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=f40d2444:137:18)\n    at onNotify (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=f40d2444:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=f40d2444:229:5)\n    at http://127.0.0.1:50391/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/iteration.js?v=f40d2444:11:68",
+    "timestamp": "2026-09-14T14:25:08.925Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Failed to terminate team 'aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843'.",
+    "timestamp": "2026-09-14T14:25:08.925Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Team WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:08.948Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Agent WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:17.603Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Team WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:17.662Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Agent WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:33.521Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Agent WebSocket error: Error: Max reconnection attempts reached\n    at WebSocketClient.scheduleReconnect (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:99:28)\n    at socket.onclose (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:81:14)",
+    "timestamp": "2026-09-14T14:25:33.531Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Team WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+    "timestamp": "2026-09-14T14:25:34.186Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  },
+  {
+    "level": "error",
+    "message": "Team WebSocket error: Error: Max reconnection attempts reached\n    at WebSocketClient.scheduleReconnect (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:99:28)\n    at socket.onclose (http://127.0.0.1:50391/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:81:14)",
+    "timestamp": "2026-09-14T14:25:34.191Z",
+    "url": "http://127.0.0.1:50391/_nuxt/plugins/uiErrorCapture.client.ts"
+  }
+]

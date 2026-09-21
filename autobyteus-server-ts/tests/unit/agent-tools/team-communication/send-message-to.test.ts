@@ -7,7 +7,7 @@ import type { InterAgentMessageDeliveryIntent } from "../../../../src/agent-team
 import { createBoundAutoByteusSendMessageToTool } from "../../../../src/agent-tools/agent-communication/send-message-to.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const parseEnvelope = (value: string) => JSON.parse(value) as {
   accepted: boolean;
@@ -16,14 +16,14 @@ const parseEnvelope = (value: string) => JSON.parse(value) as {
   target_agent_run_id: string | null;
 };
 
-const createMemberTeamContext = (
+const createMemberExecutionContext = (
   deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<{
     accepted: boolean;
     code?: string;
     message?: string;
     agentRunId?: string;
   }>,
-) => testMemberTeamContext({
+) => testMemberExecutionContext({
   rootTeamRunId: "team-run-1",
   memberAddress: "/professor",
   agentRunId: "run-professor",
@@ -55,14 +55,14 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: true,
       agentRunId: "run-research-lead",
     }));
-    const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
+    const memberExecutionContext = createMemberExecutionContext(deliverInterAgentMessage);
     const { dispatcher, globalRouter } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.identity.agentRunId,
+        senderRunId: memberExecutionContext.identity.agentRunId,
         senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext,
+        memberExecutionContext,
       }),
       dispatcher,
     );
@@ -80,23 +80,12 @@ describe("AutoByteus server-owned send_message_to", () => {
       target_agent_run_id: "run-research-lead",
     });
     expect(globalRouter.deliver).not.toHaveBeenCalled();
-    expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
-      rootTeamRunId: "team-run-1",
+    expect(deliverInterAgentMessage).toHaveBeenCalledWith({
       recipientAddress: "/research_team/research_lead",
-      sender: {
-        participant: {
-          kind: "agent",
-          identity: {
-            rootTeamRunId: "team-run-1",
-            memberAddress: "/professor",
-            agentRunId: "run-professor",
-          },
-          displayName: "professor",
-        },
-      },
       content: "Please review this handoff.",
       messageType: "handoff",
-    }));
+      referenceFiles: [],
+    });
   });
 
   it("preserves exact-run operation codes unchanged in the public envelope", async () => {
@@ -138,7 +127,7 @@ describe("AutoByteus server-owned send_message_to", () => {
   });
 
   it("exposes a typed Team placement rejection without provider rewording", async () => {
-    const memberTeamContext = createMemberTeamContext(async () => {
+    const memberExecutionContext = createMemberExecutionContext(async () => {
       throw new CollaborationContractError(
         "COLLABORATION_TARGET_NOT_FOUND",
         "Collaboration target '/missing' was not found.",
@@ -147,10 +136,10 @@ describe("AutoByteus server-owned send_message_to", () => {
     const { dispatcher } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.identity.agentRunId,
+        senderRunId: memberExecutionContext.identity.agentRunId,
         senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext,
+        memberExecutionContext,
       }),
       dispatcher,
     );
@@ -182,7 +171,7 @@ describe("AutoByteus server-owned send_message_to", () => {
       content: "Team-only delivery.",
     }))).toMatchObject({
       accepted: false,
-      code: "TEAM_CONTEXT_REQUIRED",
+      code: "COLLABORATION_CONTEXT_REQUIRED",
       target_agent_run_id: null,
     });
   });
@@ -205,15 +194,15 @@ describe("AutoByteus server-owned send_message_to", () => {
     },
   ])("keeps AutoByteus and MCP $label envelopes byte-for-byte equivalent", async ({ result, isError }) => {
     const deliverInterAgentMessage = vi.fn(async () => result);
-    const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
+    const memberExecutionContext = createMemberExecutionContext(deliverInterAgentMessage);
     const sender = buildAgentRunMessageSenderContext({
-      senderRunId: memberTeamContext.identity.agentRunId,
+      senderRunId: memberExecutionContext.identity.agentRunId,
       senderName: "professor",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberTeamContext,
+      memberExecutionContext,
     });
     const { dispatcher } = createDispatcher();
-    const input = { recipient_address: "./writer", content: "Provider parity." };
+    const input = { recipient_address: "/writer", content: "Provider parity." };
     const nativeTool = createBoundAutoByteusSendMessageToTool(sender, dispatcher);
     const nativeText = await nativeTool.execute({}, input);
     const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;

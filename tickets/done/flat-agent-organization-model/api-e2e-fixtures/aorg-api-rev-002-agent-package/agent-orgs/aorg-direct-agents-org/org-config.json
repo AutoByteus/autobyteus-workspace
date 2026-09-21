@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    {
+      "memberName": "lead",
+      "ref": "aorg-lead",
+      "refType": "agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "verifier",
+      "ref": "aorg-verifier",
+      "refType": "agent",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/lead",
+      "to": "/verifier",
+      "rules": [
+        "When the lead response needs an exact verification marker."
+      ]
+    }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "llmModelIdentifier": "gpt-5.6-sol",
+    "runtimeKind": "codex_app_server",
+    "llmConfig": {
+      "reasoning_effort": "low"
+    }
+  }
+}

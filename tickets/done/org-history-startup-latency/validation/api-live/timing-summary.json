@@ -1,0 +1,14 @@
+[
+  {
+    "operation": "ListWorkspaceRunHistory",
+    "backendMs": 1,
+    "responseToObservedDOMUpperBoundMs": 172,
+    "startupToDOMMs": 2823
+  },
+  {
+    "operation": "ListCollaborationRootHistory",
+    "backendMs": 1,
+    "responseToObservedDOMUpperBoundMs": 171,
+    "startupToDOMMs": 2823
+  }
+]

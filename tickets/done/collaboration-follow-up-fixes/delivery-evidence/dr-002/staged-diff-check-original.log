@@ -1,0 +1,37 @@
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:10: trailing whitespace.
++[61255:61255:0913/113500.221498:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:11: trailing whitespace.
++[61255:61255:0913/113500.221752:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:14: trailing whitespace.
++[61255:61255:0913/113500.225514:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:15: trailing whitespace.
++[61255:61255:0913/113500.226314:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:16: trailing whitespace.
++[61255:61255:0913/113500.239921:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:19: trailing whitespace.
++[61255:61255:0913/113500.240867:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:21: trailing whitespace.
++[61255:61255:0913/113500.262767:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:22: trailing whitespace.
++[61255:61255:0913/113500.266220:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:24: trailing whitespace.
++[61255:61255:0913/113500.273252:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log:26: trailing whitespace.
++[61255:61255:0913/113500.297674:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-desktop-reopen-chip-dom.txt:57: trailing whitespace.
++ 
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-desktop-reopen-chip-dom.txt:57: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/server.log:108: trailing whitespace.
++      
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-backend-sdk-build.log:4: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-frontend-sdk-build.log:4: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-sdk-contracts-build.log:4: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-preservation.log:116: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-readiness.log:95: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/web-preservation.log:291: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/web-regressions.log:157: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/autobyteus-application-backend-sdk.log:4: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/autobyteus-application-frontend-sdk.log:4: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/autobyteus-application-sdk-contracts.log:4: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/completion-web.log:430: new blank line at EOF.
+tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/final-server.log:120: new blank line at EOF.

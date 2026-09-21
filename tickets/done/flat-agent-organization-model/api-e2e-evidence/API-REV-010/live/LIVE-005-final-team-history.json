@@ -1,0 +1,59 @@
+{
+    "data": {
+        "listWorkspaceRunHistory": [
+            {
+                "teamDefinitions": [
+                    {
+                        "runs": [
+                            {
+                                "teamRunId": "apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+                                "isActive": false,
+                                "members": [
+                                    {
+                                        "memberAddress": "/aorg_e2e_lead",
+                                        "agentRunId": "aorg_e2e_lead_0cc5675f75b64305b653fd534cd39f2e",
+                                        "status": "offline"
+                                    },
+                                    {
+                                        "memberAddress": "/aorg_e2e_analyst",
+                                        "agentRunId": "aorg_e2e_analyst_7bb7577677e443c887c937fe42b0347e",
+                                        "status": "offline"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "teamDefinitions": [
+                    {
+                        "runs": [
+                            {
+                                "teamRunId": "aorg_e2e_research_squad_7637f2dddfe4440eb9dff830660336c7",
+                                "isActive": false,
+                                "members": [
+                                    {
+                                        "memberAddress": "/lead",
+                                        "agentRunId": "aorg_e2e_lead_0804828ac9d9408e8e22dde3897f0e83",
+                                        "status": "offline"
+                                    },
+                                    {
+                                        "memberAddress": "/analyst",
+                                        "agentRunId": "aorg_e2e_analyst_7d155c96df4e4567a89a08a1ff31c306",
+                                        "status": "offline"
+                                    },
+                                    {
+                                        "memberAddress": "/verifier",
+                                        "agentRunId": "aorg_e2e_verifier_b2f5e775e39a4a639da646cd06a6514f",
+                                        "status": "offline"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

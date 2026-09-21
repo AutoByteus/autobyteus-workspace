@@ -431,7 +431,7 @@ try {
 
       const statusEvidence = {
         exactAgentLabel: await page.locator(ACCESSIBILITY_ROW).getAttribute('aria-label'),
-        configuredAggregate: await page.locator(PRODUCT_ROW).locator('[data-test="nested-team-aggregate-status-dot"]').getAttribute('data-status'),
+        configuredAggregate: await page.locator(PRODUCT_ROW).locator('[data-test="team-aggregate-status-dot"]').getAttribute('data-status'),
         transientAgentLabel: await page.locator('[data-member-address="/temporary-review/reviewer"]').getAttribute('aria-label'),
       };
       assert(statusEvidence.exactAgentLabel?.includes(', error, /product/accessibility')

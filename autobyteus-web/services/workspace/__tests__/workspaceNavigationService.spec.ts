@@ -46,7 +46,8 @@ vi.mock('~/stores/runHistoryStore', () => ({
 }))
 
 vi.mock('~/stores/agentSelectionStore', () => ({
-  useAgentSelectionStore: () => ({ selectRun: selectRunMock }),
+  useAgentSelectionStore: () => ({
+    beginSelectionIntent: () => ({ isCurrent: () => true }), selectRun: selectRunMock }),
 }))
 
 import {
@@ -112,6 +113,7 @@ describe('workspaceNavigationService', () => {
     })
 
     expect(openAgentRunMock).toHaveBeenCalledWith({
+      selectionIntent: expect.objectContaining({ isCurrent: expect.any(Function) }),
       runId: 'agent-run-1',
       fallbackAgentName: null,
       resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
@@ -127,7 +129,7 @@ describe('workspaceNavigationService', () => {
       agentRunId: 'writer-run-1',
     })
 
-    expect(openTeamMemberRunMock).toHaveBeenCalledWith('team-run-1', 'writer-run-1')
+    expect(openTeamMemberRunMock).toHaveBeenCalledWith('team-run-1', 'writer-run-1', expect.objectContaining({ selectionIntent: expect.any(Object) }))
     expect(openTeamRunMock).not.toHaveBeenCalled()
   })
 })

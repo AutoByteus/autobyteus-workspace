@@ -2,7 +2,6 @@ import type { AgentOperationResult } from "../../agent-execution/domain/agent-op
 
 /** One immutable Team subtree captured after materialization admission closes. */
 export interface FrozenTeamRunTerminationScope {
-  interruptActiveTurns(): Promise<AgentOperationResult>;
-  prepareMemberRuns(): Promise<void>;
+  fenceAgentRunsForRootShutdown(): Promise<AgentOperationResult>;
   finish(): Promise<AgentOperationResult>;
 }

@@ -25,12 +25,18 @@ type TeamConfigFile = {
   defaultLaunchConfig?: {
     runtimeKind?: string;
     llmModelIdentifier?: string;
+    llmConfig?: null | Record<string, unknown>;
   };
 };
 
 const expectedLaunchConfig = {
   runtimeKind: "codex_app_server",
   llmModelIdentifier: "gpt-5.6-luna",
+};
+
+const expectedTeamLaunchConfig = {
+  ...expectedLaunchConfig,
+  llmConfig: null,
 };
 
 const readJson = async <T>(filePath: string): Promise<T> =>
@@ -74,7 +80,7 @@ describe("Brief Studio team package config", () => {
 
     for (const config of [sourceTeamConfig, packagedTeamConfig]) {
       expect(config.coordinatorMemberName).toBe("researcher");
-      expect(config.defaultLaunchConfig).toEqual(expectedLaunchConfig);
+      expect(config.defaultLaunchConfig).toEqual(expectedTeamLaunchConfig);
     }
   });
 

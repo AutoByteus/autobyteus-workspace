@@ -45,9 +45,9 @@
       <p
         v-if="selectedModelUnavailable"
         class="mt-1 text-xs text-amber-600"
-        data-test="historical-model-unavailable"
+        :data-test="historicalModelConfig ? 'historical-model-unavailable' : 'selected-model-unavailable'"
       >
-        {{ historicalValueUnavailableMessage }}
+        {{ selectedModelUnavailableMessage }}
       </p>
       <p v-if="isLoadingModels" role="status" class="mt-1 text-xs text-blue-700">
         {{ t('workspace.runModelConfig.loadingModels') }}
@@ -76,6 +76,7 @@
       :historical-value-unavailable-message="historicalValueUnavailableMessage"
       :historical-model-config-title="historicalModelConfigTitle"
       :validation-errors="mergedValidationErrors"
+      :preserve-invalid-draft="!historicalModelConfig"
       :control-variant="controlVariant"
       @update:config="updateModelConfig"
     />
@@ -91,7 +92,6 @@ import type { ExistingRunModelSelection, ExistingRunModelOptionsState } from '~/
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue'
 import {
-  DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import {
@@ -102,6 +102,7 @@ import {
 import { projectHistoricalModelConfigFields } from '~/utils/historicalModelConfigFields'
 import { validateUiModelConfig, type UiModelConfigValidationIssue } from '~/utils/llmConfigSchema'
 import { useLocalization } from '~/composables/useLocalization'
+import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
 
 const { t } = useLocalization()
 
@@ -141,7 +142,7 @@ const emit = defineEmits<{
   (e: 'update:runtimeKind', value: string): void
   (e: 'update:llmModelIdentifier', value: string): void
   (e: 'update:llmConfig', value: Record<string, unknown> | null): void
-  (e: 'schema-state', value: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
+  (e: 'schema-state', value: RuntimeModelConfigSchemaState): void
 }>()
 
 const disabledComputed = computed(() => props.disabled === true)
@@ -200,7 +201,7 @@ const selectableModelOptions = computed(() => {
   return groups
 })
 const modelOptionsMessage = computed(() => {
-  if (props.originalModelIdentifier === undefined) return null
+  if (props.originalModelIdentifier === undefined || modelSelectionLockedComputed.value) return null
   const state = props.modelOptions
   if (!state || state.status === 'loading') return t('workspace.runModelConfig.loadingCapacity')
   if (state.status === 'unavailable') return t('workspace.runModelConfig.capacityUnavailable')
@@ -211,7 +212,9 @@ const modelOptionsMessage = computed(() => {
 
 watch(
   () => props.runtimeKind,
-  async (runtimeKind, previousRuntimeKind) => {
+  async (runtimeKind, previousRuntimeKind, onCleanup) => {
+    let current = true
+    onCleanup(() => { current = false })
     const normalizedStoredRuntime = normalizeScopedRuntimeKind(runtimeKind, allowBlankRuntime.value)
     if ((props.runtimeKind ?? '') !== normalizedStoredRuntime) {
       if (readOnlyComputed.value || runtimeSelectionLockedComputed.value) {
@@ -232,7 +235,7 @@ watch(
     }
 
     if (
-      validateSelectedModel &&
+      current && validateSelectedModel &&
       props.llmModelIdentifier &&
       !hasModelIdentifier(props.llmModelIdentifier)
     ) {
@@ -246,45 +249,18 @@ watch(
   { immediate: true },
 )
 
-watch(
-  [
-    () => runtimeOptions.value,
-    () => props.runtimeKind,
-    () => runtimeSelectionLockedComputed.value,
-  ],
-  ([, runtimeKind, runtimeLocked]) => {
-    if (runtimeLocked) {
-      return
-    }
-
-    if (readOnlyComputed.value) {
-      return
-    }
-
-    const effectiveRuntime = resolveEffectiveScopedRuntimeKind(runtimeKind)
-    const selectedOption = runtimeOptions.value.find((option) => option.value === effectiveRuntime)
-    if (selectedOption?.enabled !== false) {
-      return
-    }
-
-    const fallbackRuntime = allowBlankRuntime.value ? '' : DEFAULT_AGENT_RUNTIME_KIND
-    if (normalizedStoredRuntimeKind.value !== fallbackRuntime) {
-      emit('update:runtimeKind', fallbackRuntime)
-    }
-    emit('update:llmModelIdentifier', '')
-    emit('update:llmConfig', null)
-  },
-)
-
 const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(props.llmModelIdentifier),
 )
 const selectedModelUnavailable = computed(() => Boolean(
-  (props.historicalModelConfig || props.originalModelIdentifier !== undefined) &&
   props.llmModelIdentifier?.trim() &&
   !isLoadingModels.value &&
+  !modelLoadError.value &&
   !hasModelIdentifier(props.llmModelIdentifier),
 ))
+const selectedModelUnavailableMessage = computed(() => props.historicalModelConfig
+  ? historicalValueUnavailableMessage.value
+  : t('workspace.runModelConfig.selectedModelUnavailable'))
 const modelConfigUnavailable = computed(() => Boolean(
   modelLoadError.value || selectedModelUnavailable.value || historicalResidualsPresent.value,
 ))
@@ -314,17 +290,19 @@ const showNoAdjustableSettings = computed(() => Boolean(
 ))
 
 watch(
-  [isLoadingModels, modelLoadError, selectedModelUnavailable, modelConfigSchema, historicalResidualsPresent, mergedValidationErrors],
+  [isLoadingModels, modelLoadError, selectedRuntimeUnavailableReason, selectedModelUnavailable, modelConfigSchema, historicalResidualsPresent, mergedValidationErrors, () => props.llmModelIdentifier],
   () => {
     if (isLoadingModels.value) {
       emit('schema-state', { status: 'loading', message: null })
-    } else if (modelConfigUnavailable.value) {
+    } else if (modelConfigUnavailable.value || selectedRuntimeUnavailableReason.value) {
       emit('schema-state', {
         status: 'unavailable',
-        message: modelLoadError.value || (historicalResidualsPresent.value
+        message: modelLoadError.value || selectedRuntimeUnavailableReason.value || (historicalResidualsPresent.value
           ? t('workspace.runModelConfig.schemaUnavailable')
-          : historicalValueUnavailableMessage.value),
+          : selectedModelUnavailableMessage.value),
       })
+    } else if (!props.llmModelIdentifier?.trim()) {
+      emit('schema-state', { status: 'invalid', reason: 'model_required', message: t('workspace.runModelConfig.modelRequired') })
     } else if (Object.keys(mergedValidationErrors.value).length) {
       emit('schema-state', {
         status: 'invalid',

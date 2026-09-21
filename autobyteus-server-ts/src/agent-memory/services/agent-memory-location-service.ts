@@ -1,6 +1,7 @@
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
+  createStoredTeamRunExecutionTreeLocationService,
   TeamRunExecutionTreeLocationService,
   type LocatedTeamAgentExecution,
 } from "../../run-history/services/team-run-execution-tree-location-service.js";
@@ -33,7 +34,7 @@ export class AgentMemoryLocationService {
   } = {}) {
     const memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.layout = input.layout ?? new AgentMemoryLayout(memoryDir);
-    this.locations = input.locationService ?? new TeamRunExecutionTreeLocationService({ memoryDir });
+    this.locations = input.locationService ?? createStoredTeamRunExecutionTreeLocationService(memoryDir);
   }
 
   getStandaloneLocation(input: { agentRunId: string; storedMemoryDir?: string | null }): StandaloneAgentMemoryLocation {

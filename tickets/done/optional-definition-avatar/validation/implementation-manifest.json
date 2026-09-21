@@ -1,0 +1,17 @@
+{
+  "head": "21efd0b6a49d1b771ed6a71b80b7e9e5531f09e4",
+  "branch": "codex/optional-definition-avatar",
+  "revision": "IR-001",
+  "files": {
+    "autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts": "032d91c476297b2a7e5542f9ca716ba5c9c8eb7583dcc3e2f3461db8ba836deb",
+    "autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts": "1fe5c1d728e254e059dd971548a2f7177b936e6a783ceb2e283373b779ab7aa9",
+    "autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts": "e56d1d6c267d49416a26372df4d6b6829705b4ac24151a6390ef1a1ca0b59ba2",
+    "autobyteus-server-ts/src/agent-team-definition/providers/agent-team-definition-config.ts": "fe31cfc7d6f0d6b94032efcd96fc8a1803e6e1ee2c96e63d4e18e7d9dc0f68d7",
+    "autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts": "571922488582213ed9c72fa07645fe120f8a99f7b562296ef74c2d4a0d0fb1e7",
+    "autobyteus-server-ts/tests/unit/agent-team-definition/agent-team-definition-config.test.ts": "f6d52524f87b9ddf288b17ea59d5ccbed206102faad83cb8b539adb084d82b0f",
+    "autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts": "dd4162d7e67841cfc0f8e40c76932507f3e648f58836326b7fc15a3c516cbaaa",
+    "autobyteus-server-ts/tests/unit/collaboration-definition-admission/optional-avatar-config.test.ts": "3a9576ca72aead9ca5be96e45ccbcbc13895ca582c24668cb51fffd0a406dbfa",
+    "autobyteus-server-ts/tests/unit/collaboration-definition-admission/optional-avatar-placement.test.ts": "d874688c0f93ab258c6d07c291deba74660de605fe03b04c5285655348fbd47f",
+    "autobyteus-server-ts/tests/unit/collaboration-definition-admission/tolerant-team-package-reading.test.ts": "bf38aa3dbbb7c007169c13bb51b995dd4a56840a217bb53c2be8528cdef79043"
+  }
+}

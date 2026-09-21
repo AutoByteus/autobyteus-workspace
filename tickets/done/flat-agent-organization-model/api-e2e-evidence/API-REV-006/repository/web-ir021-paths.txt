@@ -1,0 +1,17 @@
+components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+components/workspace/config/__tests__/ModelConfigSection.spec.ts
+components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+components/workspace/history/__tests__/AgentOrgRunHistoryPanel.spec.ts
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts
+components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+utils/__tests__/editableAgentOrgRunFormModel.spec.ts
+services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+stores/__tests__/agentOrgRunConfigStore.spec.ts
+services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts

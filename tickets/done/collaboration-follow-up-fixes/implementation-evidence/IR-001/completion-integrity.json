@@ -1,0 +1,584 @@
+{
+  "at": "2026-09-13T11:11:52.188803+00:00",
+  "review_head": "4d88ad1b687e513d7c87d2d91fed96fdd61de7ee",
+  "source_files": 39,
+  "production_files": 24,
+  "test_files": 15,
+  "upstream_references": 29,
+  "all_upstream_hashes_unchanged": true,
+  "no_unexpected_tracked_delta": true,
+  "index_empty_before_source_commit": true,
+  "no_unmerged": true,
+  "temporary_renderer_page_absent": true,
+  "owned_renderer_port_no_listener": true,
+  "runtime_temporary_roots_remaining": [],
+  "removed_owned_prerequisites": [
+    {
+      "directory": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-backend-sdk/dist",
+      "ownership": "initially absent; created by IR-001 prerequisite build",
+      "files": [
+        {
+          "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts",
+          "sha256": "61586112d9bf99dc3678b48447ae6d52ca3d7060455256f6937e03d799d66129"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map",
+          "sha256": "f2a08902b14a5fa637bd9cf6cf85d711c370e8c53a5c66c70f7b4cab4b872058"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js",
+          "sha256": "89e7db31e5f3b9eecfcf0960e9b1c2b2bc5d881aa7416808883b23e278b05b43"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map",
+          "sha256": "1d6543ecd1183fb13de071e8869a80db1c837702feb04e5cb5f1408396bda644"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/index.d.ts",
+          "sha256": "e303e9ec39bdee104fff0e4fdef1a95847e822ecf1fca0af284e03970557d1e6"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/index.d.ts.map",
+          "sha256": "5b045e30b22aaae379e75d71d56900b1475951d4e142804380d5c9df5e56cdcc"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/index.js",
+          "sha256": "01cac3372e789f0885584aa479044478663febdf80bca4a56d12d7bbaff11e3f"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/index.js.map",
+          "sha256": "831156d86d7c50bec4022b737b41fa9c12f724efd79df5f8f0874ff02a74804c"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts",
+          "sha256": "327e013e0d2238c7e8718b71c54c2a2a021359d47964fb462ebf40f2ce8e1d6a"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map",
+          "sha256": "689f483db2761c85cef5599f6a04552b96457c4b6b52895edfa45f9573fb9800"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/launch-profile.js",
+          "sha256": "4e8c95bffe4dc4bdcb267a6c8e3221555af04c0fdead9ca665a0c409bea2baa1"
+        },
+        {
+          "path": "autobyteus-application-backend-sdk/dist/launch-profile.js.map",
+          "sha256": "d463f36cd7b9ba3b5e1f6991687c0f7a1495b71c24f83e4ff3aa57d4db31b20d"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "directory": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-frontend-sdk/dist",
+      "ownership": "initially absent; created by IR-001 prerequisite build",
+      "files": [
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.d.ts",
+          "sha256": "2acba9da803bc9336f8551d12d9f4fd7c44d38acdbc46995ec3d4d680c86d085"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.d.ts.map",
+          "sha256": "c8e089b616a835577a8f573e858e49206a430c2235a29827a43783a308ba359b"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.js",
+          "sha256": "48b4f41b3ca46c195d06ed54a192ec8ce074fd132913af26e366a38b9d533fa1"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.js.map",
+          "sha256": "18d4cd7f4fa6e87a007ff9dc5dac5de8966ad46b7d4dbe3f72d57b1bf9ed17c7"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.d.ts",
+          "sha256": "0880becd8f203ca34a0197cd42efc4d83bdcc359eb69acf7ce8b57e77c80070d"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.d.ts.map",
+          "sha256": "afec7d2de559feb54f96aa6873870240c37ed480843c0677905d729353cb5887"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.js",
+          "sha256": "3263cd4a96b51ceb3678907382207b35a88b02d8056079f7f06aaf6a3255f428"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.js.map",
+          "sha256": "13e5c7c3719bf5ec136aabecd28e173d92b6243b1f2d48213a5c3581cd4e0e31"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.d.ts",
+          "sha256": "d3258dbbaa7e1eacd1543b41b9b27702e1a54b744a00a13c22443face6193114"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.d.ts.map",
+          "sha256": "f164bf7010fb4bc16cee809868690b0ddf9567bcec8d27d3c3a5497b06848404"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.js",
+          "sha256": "abce5d8cd68077c3aa93e4fd42699a7de67ec1ccf502660e813e1ddb6e6002dd"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.js.map",
+          "sha256": "b13c465cad69de76679889e8d9314822d92d00d9868aaf3a3cc42141e6f95009"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.d.ts",
+          "sha256": "3d7bfe6b26523a40ff9d44b8f9c41a8687b2673ea326d8bacb19033b513c429f"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.d.ts.map",
+          "sha256": "88681f2522822d42b685a88bc3496030b6a70fb4e50d94a8b951ef0fbd4f35b0"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.js",
+          "sha256": "c8592929ea34ed64d3c2f5c715b2d4df714f69a618cc1145ba0892d0901bd8da"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.js.map",
+          "sha256": "28113383939a2e4f4a4596f7b8a28a521df9a3fd6641ca1481626e7e3763ecef"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.d.ts",
+          "sha256": "dc147ae733e00b7994c62c882cda557c2a0e5ae31ce92be2f33ab7fb3e64b68c"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.d.ts.map",
+          "sha256": "9c3536ae6c00e5af5f77339d3f6a30a47f3811d3abff2c5170afa2547d80f3e9"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.js",
+          "sha256": "fbd6eb5d51a4b6b3cf2aada5c58d25469a8b1d714bad6ae685ddd6ceabe6e1e0"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.js.map",
+          "sha256": "cec2d09d522d850866c73d2e6eb5fc00158d7c45d2f257dda4ad90a788de7db2"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.d.ts",
+          "sha256": "71184f99602f3c27eb3896cbd29ffd4d7b3710235a29c58dbc8abb7a9d467932"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.d.ts.map",
+          "sha256": "d404846a1d17d455baa67e31f51bb54b879747f1755edf1c7ffe888a73f92289"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.js",
+          "sha256": "41212badb0aa5f2df7b102adf7bce945df2cac37d4573da99f83edb6f8cfca3f"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.js.map",
+          "sha256": "cd57c9f110113df390b00b03c5c4d9532153703800af5d980d345134e70732bc"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.d.ts",
+          "sha256": "6ac556a412dad721105d088a5429b2472798005bcdc1f87dc8c9e8899f45549c"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.d.ts.map",
+          "sha256": "b4c1fd73508bfeac2c718d91832974659bd8c2decfa12e9495c718a2bb6dab90"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.js",
+          "sha256": "7acb05d81eb10a6c9a14d2dc5e4deec7d959a1f93a8248049a54f92ad62e40e3"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.js.map",
+          "sha256": "b124f71d2a1b24637290454f86907ebf0ad651476a553bf41b074fc05316216c"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client.d.ts",
+          "sha256": "b32d1814299ec69f41bd7b29087767398178a8248f2097b29ab9115dc449f16f"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client.d.ts.map",
+          "sha256": "1a281ff4829257ad2efcc3d2d7d6cac55da60b12e0b8e69c15c9b73c7c0f9507"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client.js",
+          "sha256": "9b8186717ae01508db178e0df3fe5385518b69d16ab0fa9496ce9760335fffd7"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-client.js.map",
+          "sha256": "f2ce4599e675161b987864ba74dd3cbcb7353d5947e771d3da0b52f55afb65da"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts",
+          "sha256": "7076fe745cdacfd1728d1a6033dda505640f7a529fb403228972b5a8c34c8636"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts.map",
+          "sha256": "a043bfa7ac1a3baf5abc620a4af589759f4f4eeb52220932434f45e9d8ab2d5d"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js",
+          "sha256": "7e26f50d2cbb7f64a41cd592b65b22132ff3d5cb4db70cd64d5b5fae567ccf11"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js.map",
+          "sha256": "540afe639d850bec610a96f89197e592dfc9e6d06af1d134c6757b23704078fe"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts",
+          "sha256": "4dc5d4c6cc2ef60240ed71bf6d2e20f5a7eda754db50ef49c499304a3f5d6dc3"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts.map",
+          "sha256": "3d0f5caa119921ef1cc7202f34f0abff142eae1ef73b09506aaf6f1728f53ec4"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js",
+          "sha256": "d98c3e77d855420f6ad199ae6ba16606a1c3fd45f1e79d05102de56cd5fec96f"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js.map",
+          "sha256": "606a4cae5b36c4f31d30ccc897c7514e4d6370fa16d5167db649c2d78f5e7bc8"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts",
+          "sha256": "f963c0028440c10c70dda76a359dda76f5593c9a4e32e2fc339c1df74871f7fc"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts.map",
+          "sha256": "062b4d82c00995989330670906bc22a30862a9e56771cbc8868c4bb93efb4c04"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js",
+          "sha256": "bdb7f441aef8cc7041e9a7d033e24cb2338b7945a15dfdc1e40091b122b3a2cd"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js.map",
+          "sha256": "c77cee5f465882b9c05be846ed1c51937947ec9fdebe5c94feb2f20565c46769"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts",
+          "sha256": "45ed712627e4cc5e29e0b56789ad2a9a9a5dc0c2a11b1455ae36757b6e713154"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts.map",
+          "sha256": "615b8efac5a3e599c0d4ad7c2e307cf979f1978318e99dd4a986ef648e891b4d"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js",
+          "sha256": "5518d6ba098bb34f3c05916878cac83e3fa388786ac6d33fc142cfebd85065f2"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js.map",
+          "sha256": "9bb765e3ce323c3908151ed9825d9e185b683679b9690d3b26b1883206e96162"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts",
+          "sha256": "093bb2ea4efa9bf4a0b9ac20aec6795174203cce1925f10f2a9f67da2d9edc8a"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts.map",
+          "sha256": "f31715890ee9048fa985b821a7ba2bd216bc7924ad3006351de04d6c1ea3f680"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js",
+          "sha256": "7c58049c892e507d0a6b2fc5938fec26803388bac35389a3665f697458dfb893"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js.map",
+          "sha256": "8889d38b5701233c5ae3b724229ad528519b730eb6edb436c96c054479d0fcae"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts",
+          "sha256": "d5b75c4a0d775e747eb6e2664b5135fed8b640e5fe9bd5e774d11e5622e2be18"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts.map",
+          "sha256": "15cb895dc623537b8badf503a053274cc9b9790a167d07020b9d2fc465448b72"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js",
+          "sha256": "f71909e6ef31c0c218d6b75c22ae6e552125747307437e0cae80f2e8ea4764d3"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js.map",
+          "sha256": "2e7d46b9f1f0b4bbfa92d2b98065c6318b1f99a6f9fa227e1be679e8b4ca2a52"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts",
+          "sha256": "9ab71f19999171ce61f2b126d78a159a7b7a01061df52780d522e213ffd11f9b"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts.map",
+          "sha256": "562cc1563f138665b392f0f11164b1beaf68e93dd6f2757fc96c6d626217e167"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js",
+          "sha256": "019d9b8a1452d1ba8ba88f69700eceeb8864d1cf68e0aeb8a5d41acb2ea54219"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js.map",
+          "sha256": "b886a0f7c439e76cdd0d0171e0d09e0649a77ea3dc585388a52624acab86361d"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.d.ts",
+          "sha256": "ca23f193eef33e5962938815d545dafee24ce756c0ee2ae0905b2b5357982cc1"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.d.ts.map",
+          "sha256": "f9b56dc1d05b4596efb8368ff3e8fa1247e85b094cf4530507e080f0cbae827a"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.js",
+          "sha256": "90b81120dd4a99afbf935571556f450e1ed5ed971e3f48da0e559efa789beef8"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.js.map",
+          "sha256": "673f88db6010a3bee6892855aa9bdd1e769e04d5d5696dd81928e53345348293"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.d.ts",
+          "sha256": "27c70fa858a3b504c5d280a3731915c5b908a5b649b41b6ef7a032f9d059d1b2"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.d.ts.map",
+          "sha256": "1ab97b8a96570285beb0dc8b99834af0e83eb7f4df135d2bac242408274984d1"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js",
+          "sha256": "b9db020c0a7abb746da585470f5e77777385b6f3cc1dc95f4a2b3ab45b155a4c"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js.map",
+          "sha256": "0495626f769f6ccff5a46301e79d7031db1b88bd222648fe211492d77f36ab3f"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/index.d.ts",
+          "sha256": "d344e7f8f4f289506c1e983b28e92be5bf4ffd0ff41e568a4480a02102b94604"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/index.d.ts.map",
+          "sha256": "d0a7a39a31e9c9b4b50e3fb90d92eceedc49afb109e34581e926a907b7acff1d"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/index.js",
+          "sha256": "c9cf99c69d14f3f3e6a338eb911ba3a44d098423ccd7c0be5c94497d31e8da9d"
+        },
+        {
+          "path": "autobyteus-application-frontend-sdk/dist/index.js.map",
+          "sha256": "e4c40f9929fd5c14f26bbe2c8737fccfcdeda0616e82d293321a408f60e04061"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "directory": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-sdk-contracts/dist",
+      "ownership": "initially absent; created by IR-001 prerequisite build",
+      "files": [
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+          "sha256": "3eade94c01c3ee8a859e403087558c991d5f28271d5820b2a0995f8e242e3cbf"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+          "sha256": "16361848fb226a04b016aa3aa6b5d370458d80f87dc9cb306fa836c834925422"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+          "sha256": "5d6bc94d25b435fcd7139519cdcdccae0bbc9e493910e847411368e10c7a02c1"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+          "sha256": "ac3be91f5599be58359b182baa67260397e5cce6e212ba8b577058e6514c71a1"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+          "sha256": "8c31dac7590ecc69e52142ca79c09c70b741943d03ac3ff9e4d673e7cbe3fb57"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+          "sha256": "6e959615b3bf5cc5ac3487acc874208b422f2144f11bba29a4688ce0f1161d2b"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+          "sha256": "00004fd8954d44028a724d97d70ea2830e8e00baa243f9d01efa755e6af71583"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+          "sha256": "e6b6189c28bedc19021347cc8aaa314148a101fc055b809f55a805bd2defbeaa"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+          "sha256": "d32606dc371d7eb53ceff9ac2fe574339a7a4bed7abf07d1c63828be9f71e9f2"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+          "sha256": "9f84f7a7d16ad70d2da120c6f1c383d0bd19bef84d3358aa377e6f0ff8bf7d96"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+          "sha256": "010591b002515e0dc231a63e3f07f583608c3accf8ca4559be2848fa92abb671"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+          "sha256": "979139c60bfc991b573fa5c957744d0d58d5ab8cd2b18c96c4eebf6752b5e17f"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+          "sha256": "6af1a20dce1e8b621ba36774a212746e3f877de724e5e9f922ddad4c7a5d38cd"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+          "sha256": "abe426d736ecbb988f36dea8318c40e8c1f70c2cab11c2f2cb965da72e2c8ac2"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+          "sha256": "458ee497eece6227aa7a6360d4c950f11c1ee5bab7cb0c1b33cfda5655075e8c"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+          "sha256": "0a08ea3e52a6c9e5f5223847517f8a46fd55dabb2d37b2cbd02e25265bc65d02"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+          "sha256": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+          "sha256": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+          "sha256": "b77ce83d9188a9ce63ca413cf67db85342b9b37e10810909e58a91323b7e9354"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+          "sha256": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+          "sha256": "ec8872c892ae9e809e8909286e4d44623f113f00418dae8da44a5543eeef4885"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+          "sha256": "042a2c0b3b2c6016799f4becf39b41592ad48c09ebf2b77e33852add0cf632e9"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+          "sha256": "b4971792d41a31602603efee84de51e45aebb7c27e74fa9dd5ed4209c56f546f"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+          "sha256": "456b4a6bfbd529c14623429401acfb9d1fee7c06bbeb8dbe87fbd0752a2a0702"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+          "sha256": "92a7953d0c6be93b3197e1c41cc224e093cb4b140df98e9b9242ddb3934e459c"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+          "sha256": "a3ae5904afe2257dfcd9685832cfbba2a7f3c1ddeab183c6d30b929de1f2a61d"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+          "sha256": "a47cf1818019108570002ca3bc589db266e359d208856ecc29864b3096b2fcf7"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+          "sha256": "10f558b4a343441d4254762c0ddb4a537e68eb712d61f7f89724f8b7c2643ff9"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+          "sha256": "5e6093ee59029f72d3dcf7d27ad2b6b9f29ce9146d0062536172672a517f51ba"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+          "sha256": "f81a383fe9aef767e26797009f54c8a5771407f077b80ea98d29c1d8cc5a87c4"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+          "sha256": "a92f9273c2dc5f3f282d445f7b592df907809131e7688bd822c144ce529bdf0d"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+          "sha256": "91ab4024355be9c6207ff70a8a0c1a66c87d6e7d5e4f403e871ef8583c72977f"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+          "sha256": "e298ac67d2003f79af57a1de9aca0055b1f17b44b455054becad99241ce11fa2"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+          "sha256": "147f0744192bf77832d42e46c80798bfdc68f809ff5d9fff8d1ab2021fb04fd6"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js",
+          "sha256": "d9004bf25435c48a7a1eadbd51cc4881b372a707d06f77b75c3b948f23965a6b"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+          "sha256": "b1bcc88bcbeb0d7b1462d81bb83348adc988fa5dfe9f9e41a6af414e64b27f39"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+          "sha256": "8f076699a3e02df1c73d91508d1d421b16f3ec2812e8726f55265dfb253d1e77"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+          "sha256": "1a5a93ce98d7befb9e252dee78b8858265fc83a0889dbc72d51b79bd0e015316"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js",
+          "sha256": "701b64cb0afa3e3d65671dcd5b18f4a1b5a437827a9bc5f26de906a0721cacc6"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+          "sha256": "896a152ed5bec8423fe2c716d9db2d6de08f3f178ba354682d23d93680b04f1d"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/index.d.ts",
+          "sha256": "68fbc66ebfc863ec137b007040bf04523b7ed63e0c4c54d7df3c199c2e6c4c1c"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+          "sha256": "d5c23e88c1640e0789ceda3faedc72688cda0d07a14239e27013d1a0ec52fba3"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/index.js",
+          "sha256": "251aa9169c72bc841eb7d66f80740ea4a2c62e120e3128ee069663ba0babc95c"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/index.js.map",
+          "sha256": "13fd55377993390db563b5a2463d6407dd6dd06f070b78e85ca410bb6345a753"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+          "sha256": "b1c7039ec91211f90b90b05289fec071e3028775c5ccce216b80ca93495a7b6b"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+          "sha256": "27ac8c91a2119c40fa4c307fd7cf4ad2e4b2a018c4cb1d4780dfd75cd0b864bd"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/manifests.js",
+          "sha256": "138353f936d015a9d869c83906d5cb0fba5306ec0eabd66ce80b4608a42a04d3"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/manifests.js.map",
+          "sha256": "6223b1d547c6e71bceb9fac76b28d730caf2f7b91d9e357857b109ae1652152b"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+          "sha256": "006a7d414226aa8670b288ee3536d9045e91dba880bb34c5d4164fc24ee5f406"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+          "sha256": "849ec74f2ed68f338cc635fed6006d5223fd7bb334a8373589e81c24582552cc"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+          "sha256": "65f0e957cf24f61163a466d3715105a8a94e200a4d5d90b2ac8c795ed5776a20"
+        },
+        {
+          "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+          "sha256": "9fc8c3e04902d8849811c4b0f6ff55ff0cae0ee2bb7bfcf4990b173c41a60510"
+        }
+      ],
+      "removed": true
+    }
+  ],
+  "retained_ignored_setup": "node_modules, Nuxt build caches and normal ignored local build outputs; no deployment",
+  "runtime_limits": "No backend/native-provider/Electron/user-running process touched. Old AORG ticket/data read-only."
+}

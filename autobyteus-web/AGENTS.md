@@ -16,7 +16,8 @@ Understanding the system's backbone, how the pieces fit together, and how the ap
 The primary actors and capabilities within the system.
 
 *   **[Agent Management](./docs/agent_management.md)**: How single agents are defined, configured, and managed.
-*   **[Agent Teams](./docs/agent_teams.md)**: Orchestrating multiple agents to work together in workflows.
+*   **[Agent Teams](./docs/agent_teams.md)**: Defining and running reusable flat coordinator-led Teams.
+*   **[Agent Orgs](./docs/agent_orgs.md)**: Composing direct Agents and reusable flat Teams into coordinator-free organizations.
 *   **[Skills](./docs/skills.md)**: Reusable, file-based capabilities (scripts) that agents can learn.
 *   **[Tools & MCP](./docs/tools_and_mcp.md)**: External tools and the Model Context Protocol (MCP) integration for expanding agent capabilities.
 *   **[Prompt Engineering](./docs/prompt_engineering.md)**: Managing the system prompts that define agent personas and behaviors.

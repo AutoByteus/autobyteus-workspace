@@ -1,0 +1,36 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-header-edit-config"]')[22m
+[2m    - locator resolved to <button type="button" data-v-09242f2c="" aria-label="Edit Config" data-tooltip="Edit Config" data-test="workspace-header-edit-config" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 tooltip transition-colors">…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <button type="button" data-v-bf92f279="" class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100">…</button> from <aside role="dialog" tabindex="-1" aria-modal="true" aria-label="Agents & teams" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0">…</aside> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <button type="button" data-v-bf92f279="" class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100">…</button> from <aside role="dialog" tabindex="-1" aria-modal="true" aria-label="Agents & teams" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0">…</aside> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    57 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <button type="button" data-v-bf92f279="" class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100">…</button> from <aside role="dialog" tabindex="-1" aria-modal="true" aria-label="Agents & teams" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0">…</aside> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-004-restored-narrow-config.mjs:52:12 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.2

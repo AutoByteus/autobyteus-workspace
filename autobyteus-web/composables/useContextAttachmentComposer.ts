@@ -61,6 +61,9 @@ const sameDraftOwner = (
     return left.teamDraftId === right.teamDraftId
       && left.memberAddress === right.memberAddress;
   }
+  if (left.kind === 'org_member_draft' && right.kind === 'org_member_draft') {
+    return left.orgRunId === right.orgRunId && left.agentRunId === right.agentRunId;
+  }
   return false;
 };
 

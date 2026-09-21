@@ -1,0 +1,203 @@
+diff --git a/autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue b/autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue
+index 7b1f05163..7050f559b 100644
+--- a/autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue
++++ b/autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue
+@@ -78,9 +78,13 @@ const orgRunId = computed(() => String(route.query.orgRunId || ''))
+ const isHistorical = computed(() => route.query.mode === 'history')
+ const context = computed(() => active.agentOrgContextFor(orgRunId.value))
+ const streamError = computed(() => active.agentOrgErrorFor(orgRunId.value))
+-const recoveryNotice = computed(() => streamError.value
+-  ? t(isHistorical.value ? 'workspace.agentOrg.inspectionUnavailable' : 'workspace.agentOrg.recovery.exhausted')
+-  : null)
++const recoveryNotice = computed(() => {
++  if (!streamError.value) return null
++  // A successful Restore can require recovery before a live snapshot changes the route.
++  // The retained history URL is not evidence that no run was started.
++  const inspectionFailed = isHistorical.value && context.value?.phase !== 'reopen_required'
++  return t(inspectionFailed ? 'workspace.agentOrg.inspectionUnavailable' : 'workspace.agentOrg.recovery.exhausted')
++})
+ const target = computed(() => {
+   const current = active.activeWorkspaceTarget
+   return current && 'root' in current
+diff --git a/autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts b/autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+index 9dac1db0f..fa07fb769 100644
+--- a/autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
++++ b/autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+@@ -1,6 +1,7 @@
+ import { mount } from '@vue/test-utils'
+ import { reactive } from 'vue'
+-import { beforeEach, describe, expect, it, vi } from 'vitest'
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
++import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
+ import AgentOrgWorkspaceView from '../AgentOrgWorkspaceView.vue'
+ 
+ const state = reactive({
+@@ -79,6 +80,7 @@ const mountSubject = () => mount(AgentOrgWorkspaceView, {
+ })
+ 
+ describe('AgentOrgWorkspaceView', () => {
++  afterEach(async () => { await localizationRuntime.setPreference('en') })
+   beforeEach(() => {
+     vi.clearAllMocks()
+     state.context = context()
+@@ -136,12 +138,13 @@ describe('AgentOrgWorkspaceView', () => {
+     expect(state.target).toStrictEqual(mountedTeamTarget)
+   })
+ 
+-  it('keeps the committed shared surface visible while bounded recovery remains transport-owned', () => {
++  it.each(['en', 'zh-CN'] as const)('keeps the committed shared surface visible with %s active-route recovery', async (locale) => {
++    await localizationRuntime.setPreference(locale)
+     state.context = context('reopen_required')
+     state.error = 'Sequence gap'
+     const wrapper = mountSubject()
+     expect(wrapper.find('[data-test="shared-agent-surface"]').exists()).toBe(true)
+-    expect(wrapper.get('[data-test="shared-agent-surface"]').attributes('data-recovery')).toContain('recover automatically')
++    expect(wrapper.get('[data-test="shared-agent-surface"]').attributes('data-recovery')).toBe(localizationRuntime.translate('workspace.agentOrg.recovery.exhausted'))
+     expect(wrapper.text()).not.toContain('Reconnect')
+   })
+ 
+@@ -155,6 +158,19 @@ describe('AgentOrgWorkspaceView', () => {
+     expect(wrapper.find('button').exists()).toBe(false)
+   })
+ 
++  it.each(['en', 'zh-CN'] as const)('retains the %s cold inspection failure notice without implying activation', async (locale) => {
++    await localizationRuntime.setPreference(locale)
++    route.query.mode = 'history'
++    state.context = null
++    state.target = null
++    state.error = 'inspection unavailable'
++    const wrapper = mountSubject()
++    expect(wrapper.get('[role="alert"]').text()).toBe(localizationRuntime.translate('workspace.agentOrg.inspectionUnavailable'))
++    expect(wrapper.text()).not.toContain(localizationRuntime.translate('workspace.agentOrg.recovery.exhausted'))
++    expect(push).not.toHaveBeenCalled()
++    wrapper.unmount()
++  })
++
+   it('starts with the approved nullable-focus prompt instead of inventing a member fallback', () => {
+     state.target = null
+     const wrapper = mountSubject()
+diff --git a/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts b/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+index 469c256cc..255c3d0f8 100644
+--- a/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
++++ b/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+@@ -1,5 +1,8 @@
+ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+ import { mount, flushPromises } from '@vue/test-utils'
++import { reactive } from 'vue'
++import AgentOrgWorkspaceView from '~/components/workspace/org/AgentOrgWorkspaceView.vue'
++import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
+ import { createPinia, setActivePinia } from 'pinia'
+ import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue'
+ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+@@ -7,10 +10,10 @@ import { useActiveContextStore } from '~/stores/activeContextStore'
+ import { taskBearingView } from './taskBearingOrgFixture'
+ 
+ const mocks = vi.hoisted(() => ({
+-  query: vi.fn(), mutate: vi.fn(), historyRefresh: vi.fn(), navigation: vi.fn(),
++  query: vi.fn(), mutate: vi.fn(), routeReplace: vi.fn(), activity: vi.fn(), historyRefresh: vi.fn(), navigation: vi.fn(),
+   route: { query: { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'active' } },
+ }))
+-vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRoute: () => mocks.route }))
++vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRoute: () => reactive(mocks.route), useRouter: () => ({ replace: mocks.routeReplace, push: mocks.navigation }) }))
+ vi.mock('~/stores/windowNodeContextStore', () => ({
+   useWindowNodeContextStore: () => ({ getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org' }) }),
+ }))
+@@ -18,7 +21,7 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAcce
+ vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
+ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
+ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
+-  applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistory: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
++  applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistory: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
+ }) }))
+ vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
+   isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
+@@ -46,6 +49,7 @@ const attachment = (id = 'submitted') => ({
+   id, kind: 'workspace_path' as const, locator: `/workspace/${id}.txt`, displayName: `${id}.txt`, type: 'Text' as const,
+ })
+ let wrapper: ReturnType<typeof mount> | undefined
++let workspace: ReturnType<typeof mount> | undefined
+ let socket: Socket
+ let sequence: number
+ const ack = (state = 'accepted') => {
+@@ -101,6 +105,7 @@ async function open(agentRunId = 'agent-director') {
+ beforeEach(() => {
+   setActivePinia(createPinia())
+   vi.clearAllMocks()
++  mocks.route.query.mode = 'active'
+   Socket.instances = []
+   mocks.mutate.mockReset()
+   vi.stubGlobal('WebSocket', Socket)
+@@ -111,7 +116,10 @@ beforeEach(() => {
+     conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+   } } }))
+ })
+-afterEach(() => {
++afterEach(async () => {
++  workspace?.unmount()
++  workspace = undefined
++  await localizationRuntime.setPreference('en')
+   wrapper?.unmount()
+   wrapper = undefined
+   useAgentOrgContextsStore().disconnect('org-run')
+@@ -365,6 +373,7 @@ const inspectionResult = (active = false) => {
+     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
+ }
+ async function inactive(id = 'agent-director') {
++  mocks.route.query.mode = 'history'
+   mocks.query.mockImplementation(async ({ variables }: any) => variables.agentRunId
+     ? projectionResult(variables) : inspectionResult())
+   const store = useAgentOrgContextsStore()
+@@ -387,6 +396,9 @@ async function readyRestored() {
+ describe('observational Org history, exact deliberate continuation and retained stop', () => {
+   it.each(['agent-director', 'agent-team-worker-configured'])('restores only on deliberate %s Send, preserves real input/identity through readiness and sends once', async (id) => {
+     const { store, active, context } = await inactive(id)
++    workspace = mount(AgentOrgWorkspaceView, { global: { stubs: { Icon: true, AgentEventMonitor: true } } })
++    await flushPromises()
++    expect(workspace.find('[role="alert"]').exists()).toBe(false)
+     expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(0)
+     expect(active.activeWorkspaceTarget?.access).toBe('continuable')
+     expect('interaction' in active.activeWorkspaceTarget!).toBe(false)
+@@ -406,6 +418,8 @@ describe('observational Org history, exact deliberate continuation and retained
+     await expect(store.stopAndInspect('org-run')).rejects.toThrow('pending')
+     expect(other.requirement).toBe('not consumed')
+     release(); await readyRestored()
++    expect(workspace.find('[role="alert"]').exists()).toBe(false)
++    expect(mocks.routeReplace).toHaveBeenCalledWith({ path: '/workspace', query: { ...mocks.route.query, mode: 'active' } })
+     expect(store.contextFor('org-run')!.getAgentContext(id)).toBe(context)
+     expect(active.activeAgentContext).toBe(other)
+     expect(context.requirement).toBe('next while restoring')
+@@ -524,8 +538,16 @@ describe('Org strict candidate and terminal boundaries', () => {
+     expect(mocks.mutate).not.toHaveBeenCalled()
+   })
+ 
+-  it('a successful restore followed by exhausted readiness keeps unknown truth and never sends or fabricates rollback', async () => {
++  it.each(['en', 'zh-CN'] as const)('renders truthful %s recovery on the retained history route after Restore succeeds but readiness exhausts', async (locale) => {
++    await localizationRuntime.setPreference(locale)
+     const { store, active, context } = await inactive()
++    const org = store.contextFor('org-run')!
++    const savedView = JSON.stringify(org.view)
++    workspace = mount(AgentOrgWorkspaceView, { global: { stubs: { Icon: true, AgentEventMonitor: true } } })
++    await flushPromises()
++    expect(workspace.find('[role="alert"]').exists()).toBe(false)
++    expect(mocks.route.query.mode).toBe('history')
++    expect(active.activeWorkspaceTarget?.access).toBe('continuable')
+     vi.useFakeTimers()
+     try {
+       mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
+@@ -540,6 +562,16 @@ describe('Org strict candidate and terminal boundaries', () => {
+       expect(store.errorFor('org-run')).toBe('socket unavailable')
+       expect(store.operations).toEqual({}); expect(Socket.instances).toHaveLength(0)
+       expect(mocks.historyRefresh).not.toHaveBeenCalled()
++      await workspace.vm.$nextTick()
++      expect(workspace.get('[role="alert"]').text()).toBe(localizationRuntime.translate('workspace.agentOrg.recovery.exhausted'))
++      expect(workspace.text()).not.toContain(localizationRuntime.translate('workspace.agentOrg.inspectionUnavailable'))
++      expect(mocks.route.query.mode).toBe('history')
++      expect(mocks.routeReplace).not.toHaveBeenCalled()
++      expect(active.activeAgentContext).toBe(context)
++      expect(org.selectedAddress).toBe('/director')
++      expect(JSON.stringify(org.view)).toBe(savedView) // No invented live snapshot or rollback.
++      expect(mocks.activity).toHaveBeenLastCalledWith('org-run', true)
++      expect(context.conversation.messages.at(-1)).toMatchObject({ segments: [expect.objectContaining({ code: 'LOCAL_SUBMISSION_ERROR' })] })
+     } finally { vi.useRealTimers() }
+   })
+ })

@@ -1,0 +1,124 @@
+{
+  "at": "2026-09-06T13:32:22.483Z",
+  "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+  "senderAddress": "/research-team/lead",
+  "receiverAddress": "/concierge",
+  "marker": "APIREV15-MOUNTED-TO-DIRECT-MSG-001",
+  "refPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt",
+  "beforeCount": 4,
+  "afterCount": 5,
+  "receiverSelectedAt": "2026-09-06T13:32:16.811Z",
+  "sender": {
+    "address": "/research-team/lead",
+    "agentDefinitionId": "aorg-lead",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+    "platformAgentRunId": "01a076e4-298e-79c2-a494-8296d3229566",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+    }
+  },
+  "receiver": {
+    "address": "/concierge",
+    "agentDefinitionId": "aorg-concierge",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3",
+    "platformAgentRunId": "01a076e4-28dc-7c51-93c8-60a42460cdce",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+    }
+  },
+  "record": {
+    "messageId": "collabmsg_fQvlmiLiRqPIioHLanli6mTWoWVioSXB",
+    "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+    "receiverAgentRunId": "aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3",
+    "content": "APIREV15-MOUNTED-TO-DIRECT-MSG-001",
+    "messageType": "agent_message",
+    "referenceFiles": [
+      "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt"
+    ],
+    "createdAt": "2026-09-06T13:32:20.519Z"
+  },
+  "receiverTrace": [
+    {
+      "file": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3/raw_traces_active.jsonl",
+      "trace": {
+        "id": "rt_1788701540551_d44f952c-2f95-4757-872b-db87d05bfe96",
+        "ts": 1788701540.545,
+        "turn_id": "01a076eb-80b5-7be0-9325-caf9f24d8c29",
+        "seq": 1,
+        "trace_type": "user",
+        "content": "You received a message from sender name: lead, sender id: aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42\nmessage:\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt",
+        "source_event": "AgentRun.postUserMessage"
+      }
+    }
+  ],
+  "receiverView": {
+    "rows": [
+      {
+        "text": "Message\nSep 6, 01:32 PM\n\nfrom lead\n\n/research-team/lead\n\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nmounted-to-direct.txt",
+        "aria": null
+      }
+    ],
+    "inbound": [
+      "You received a message from sender name: lead, sender id: aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42\nmessage:\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt"
+    ],
+    "taskMarkers": false,
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3"
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Mixed Org\n(2)\nCall delegate_task exactly once with recipient_address `/support-team` and description \"As the au...\n8m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nsupport team\nD\ndispatcher\nS\nspecialist\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the ne...\n34m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nsupport team\nD\ndispatcher\nS\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nTask: research team\nlead\nanalyst\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nC\nconcierge - 56A3\nRunning\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42\nmessage:\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 01:32 PM\n\nfrom lead\n\n/research-team/lead\n\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nmounted-to-direct.txt\nMessage\nlead\nSep 6, 01:32 PM\n\n/research-team/lead\n\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001",
+    "alerts": [],
+    "overflow": false
+  },
+  "senderView": {
+    "rows": [
+      {
+        "text": "Message\nSep 6, 01:32 PM\n\nto concierge\n\n/concierge\n\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nmounted-to-direct.txt",
+        "aria": null
+      }
+    ],
+    "inbound": [],
+    "taskMarkers": false,
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42"
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Mixed Org\n(2)\nCall delegate_task exactly once with recipient_address `/support-team` and description \"As the au...\n8m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nsupport team\nD\ndispatcher\nS\nspecialist\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the ne...\n34m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nsupport team\nD\ndispatcher\nS\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nTask: research team\nlead\nanalyst\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nL\nlead\nRunning\nYou\nCall delegate_task exactly once with recipient_address `/support-team` and description \"As the auto-approved parent task Team coordinator, remain active for recursive validation. Reply exactly APIREV15-AUTO-PARENT-TASK-TEAM-READY-001 and wait for a later message.\". Use description. After success reply exactly APIREV15-AUTO-PARENT-TASK-TEAM-READY-001-DELEGATED.\nL\nlead\nThinking\ndelegate_task\n\nAPIREV15-AUTO-PARENT-TASK-TEAM-READY-001-DELEGATED\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3` and content \"Call delegate_task exactly once with recipient_address /research-team and description \\\"As the recursively nested research Team coordinator, remain active for status validation. Reply exactly APIREV15-AUTO-NESTED-TASK-TEAM-READY-001 and wait for a later message.\\\". Use description. After success reply exactly APIREV15-AUTO-NESTED-TASK-TEAM-READY-001-DELEGATED.\". Do not set recipient_address. After success reply exactly APIREV15-AUTO-NESTED-INSTRUCTION-SENT-001.\nL\nlead\nThinking\nsend_message_to\n\nAPIREV15-AUTO-NESTED-INSTRUCTION-SENT-001\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_lead_1e7bffcc18554736bd70e77f7761256f` and content \"Call submit_task_result exactly once with message \\\"APIREV15-NESTED-FORMAL-RESULT-001\\\" and reference_files []. After success reply exactly APIREV15-NESTED-SUBMITTED-001.\". Do not set recipient_address. After success reply exactly APIREV15-NESTED-SUBMIT-INSTRUCTION-SENT-001.\nL\nlead\nsend_message_to\n\nAPIREV15-NESTED-SUBMIT-INSTRUCTION-SENT-001\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3` and content \"Call review_task_result exactly once with task_id task_6d172a834d8141cdbfc7fe2ff10bef99, decision accept, comment null, and reference_files []. After success reply exactly APIREV15-NESTED-ACCEPTED-BY-PARENT-001.\". Do not set recipient_address. After success reply exactly APIREV15-NESTED-REVIEW-INSTRUCTION-SENT-001.\nL\nlead\nsend_message_to\n\nAPIREV15-NESTED-REVIEW-INSTRUCTION-SENT-001\n\nYou\nCall send_message_to exactly once with target_agent_run_id `aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3` and content \"Call submit_task_result exactly once with message \\\"APIREV15-PARENT-FORMAL-RESULT-001\\\" and reference_files []. After success reply exactly APIREV15-PARENT-SUBMITTED-001.\". Do not set recipient_address. After success reply exactly APIREV15-PARENT-SUBMIT-INSTRUCTION-SENT-001.\nL\nlead\nsend_message_to\n\nAPIREV15-PARENT-SUBMIT-INSTRUCTION-SENT-001\n\nYou\nTask task_86e53798eb61428286f121a8e3f61cc8 result submitted:\nAPIREV15-PARENT-FORMAL-RESULT-001\nL\nlead\nThinking\n\nResult received for task task_86e53798eb61428286f121a8e3f61cc8.\n\nYou\nCall review_task_result exactly once with task_id task_86e53798eb61428286f121a8e3f61cc8, decision accept, comment null, and reference_files []. After success reply exactly APIREV15-PARENT-ACCEPTED-001.\nL\nlead\nThinking\nreview_task_result\n\nAPIREV15-PARENT-ACCEPTED-001\n\nYou\nCall send_message_to exactly once with recipient_address `/concierge`, content `APIREV15-MOUNTED-TO-DIRECT-MSG-001`, and reference_files [`/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt`]. Do not set target_agent_run_id. After success reply exactly APIREV15-MOUNTED-TO-DIRECT-MSG-001-SENT.\nL\nlead\nsend_message_to\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 01:32 PM\n\nto concierge\n\n/concierge\n\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nmounted-to-direct.txt\nMessage\nconcierge\nSep 6, 01:32 PM\n\n/concierge\n\nAPIREV15-MOUNTED-TO-DIRECT-MSG-001\n\nTasks\n1 task",
+    "alerts": [],
+    "overflow": false
+  },
+  "errors": [],
+  "responses": [],
+  "assertions": {
+    "oneCommitted": true,
+    "exactRuns": true,
+    "canonicalAddresses": true,
+    "exactReference": true,
+    "receiverProviderOnce": true,
+    "receiverStayedFocused": true,
+    "receiverCenterOnce": true,
+    "receiverReceivedRowOnce": true,
+    "senderSentRowOnce": true,
+    "taskInvolvedExcluded": true,
+    "senderSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  }
+}

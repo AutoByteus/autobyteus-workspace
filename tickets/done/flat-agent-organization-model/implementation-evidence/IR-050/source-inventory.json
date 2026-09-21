@@ -1,0 +1,470 @@
+{
+  "entryHead": "b8638838ac28fe6a02c3c85c5e52a215ff88013e",
+  "sourceCheckpoint": "3005c8921781108af7d4bef9938c26c7f6aaf53a",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 223,
+      "sha256": "7022bd9dee3df69c5c03da46082001f06a32dd82da8578093f32d9a98f18c247"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 227,
+      "sha256": "9ea3d1a415c309c7b6643651be6e9d8f61e7c1f819fa66628a417b172767cd00"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 497,
+      "sha256": "1081090cbfb35650611237a8051027647b2ab922717b2ceb4a54e841ce3eda00"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-runtime-tree-target.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 12,
+      "sha256": "26f2535e87245e787251a8f71b3d79d29c699e66c1e3e88085af98c54596cf62"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 99,
+      "sha256": "8dd2e2f67948d86ce9fc528b0cbf526d65e88342de96f3bc21d8efd2bdbe2f53"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 119,
+      "sha256": "4645300e9de3ff140903f58406aae9e756e4076f1e749d1b60f10405f29e1d23"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 169,
+      "sha256": "e1fd4715e393f1698dbb0b8bbec9b3a57d21a693df222c8f63b0268ec62ac37b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 73,
+      "sha256": "af3b9dc86aa738ff22375c64470a87c6b8514f78f93f9cb39707faacc5245a5b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-read-service.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 67,
+      "sha256": "9c09fd79d9b15af16c97551ca2b2496904bce4bb5dafd6cd557d403594b621d9"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 82,
+      "sha256": "6954ed1a8fcc9ea3bd1217786160abdfb4136a8917c492d69b694dfbcb447f76"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-upload-service.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 104,
+      "sha256": "3ca8b0cf2f576280aa29b0bdbc53c44059be40bdfcd0e02cd37a48af413612b5"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 66,
+      "sha256": "812dc0fb40b9b8d33f65328dcf2626117a6ba43a894b84ce86b5fe1198a10e4b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-package-context-file-validation.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 92,
+      "sha256": "0a7ad5fed6dea8ca761e5ac914a3a76cde37e25c7fea51bf93861c24d3c099a6"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 327,
+      "sha256": "1283ef23e2c15a48f0d834f9ebaf66df8343e4d70e8066e6bb40af709a79af94"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/store/atomic-run-package-file-commit-writer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 115,
+      "sha256": "37114625f516b4d4fc867fb2b9e68515e9afb439588bf14c391c0a0044fa68bb"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 127,
+      "sha256": "9c1fd5401557fee37c7a82ffb951bbce613be306dab5ec0b8e822de892820531"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 57,
+      "sha256": "f43167c445b5c5990cbd3474c2c78be610fcd764e4b6c3ca1f0fba898eb5102c"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 157,
+      "sha256": "7f9c7dc19effad97febb1868e4d2783bc59f330f89ca44542dfb343fdf0fd95c"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 260,
+      "sha256": "4fe2c300bdc3fc3c2fb04333746640c2aadee43258f460a52d5b2160228c147a"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/context-files/context-file-local-path-resolver.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 59,
+      "sha256": "74355b4b1b98a56ce466e00f6d05d99386fc90839c08fba5282e18091e33492d"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/atomic-run-package-file-commit-writer.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 25,
+      "sha256": "dce77cd79a8163891e9de42dfd945fdab0f64ccce38233de1b787e07a8ed0ddb"
+    },
+    {
+      "path": "autobyteus-web/components/agentInput/ContextFilePathInputArea.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 441,
+      "sha256": "d0e8f7debd8c1a6037fbb1e963dbea936541c4056cfb206d74fe6a54250e86d4"
+    },
+    {
+      "path": "autobyteus-web/composables/useContextAttachmentComposer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 354,
+      "sha256": "feedade05b8b3713822aebf575590fc9f993bd29755fe9e20356ccd10dffde9e"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 235,
+      "sha256": "7ec192280f978b4a2ec6dfca7bb86192f3f40823d58875841768881b5da12602"
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 242,
+      "sha256": "653148b6c2b2b1e3342dc2c578b2e72406a01930c8afe56b3764f3e6683758fe"
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 287,
+      "sha256": "41f724f09b01022c6c2da1654e4c1aa3ed69ceca690d178f42c5dd9d89caa0f0"
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextFileOwner.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 68,
+      "sha256": "4104946cdad9264dbc59be9c69009f37c7d45ea86cbfffb4459a80529dc237c0"
+    }
+  ],
+  "combinedIR048IR050Files": [
+    {
+      "path": "autobyteus-server-ts/src/agent-org-definition/domain/agent-org-definition.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 82,
+      "sha256": "edc1a3ba328f5f5898bcd71c00629ea53efe2d5f764b326e5fac0b9bfeb40e54"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 144,
+      "sha256": "b0282c4af6d3d85ac0c4cedd0e9f5d59f41258c35091a586bae54467fcc45d4f"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 91,
+      "sha256": "330ca920d594c1ccb182b3d7d265afbf2563c671a54d294aed77ed7e26fce35e"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-definition.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 124,
+      "sha256": "59d0d0a80123669b6988672bb036fc4a6adb4e2be510d70e5478d659a88e2117"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 223,
+      "sha256": "7022bd9dee3df69c5c03da46082001f06a32dd82da8578093f32d9a98f18c247"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/legacy/collaboration-definition-authoring-transition.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 30,
+      "sha256": "2ab2704c16442ad38c1d7eddc480fcbda1d0935deb30c6d9496ac2c77fdea3ca"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/legacy/collaboration-definition-versioned-config.ts",
+      "deleted": true,
+      "kind": "production",
+      "nonEmptyLines": 0,
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 227,
+      "sha256": "9ea3d1a415c309c7b6643651be6e9d8f61e7c1f819fa66628a417b172767cd00"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 497,
+      "sha256": "1081090cbfb35650611237a8051027647b2ab922717b2ceb4a54e841ce3eda00"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-runtime-tree-target.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 12,
+      "sha256": "26f2535e87245e787251a8f71b3d79d29c699e66c1e3e88085af98c54596cf62"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/collaboration-definition-authoring-shape-app-data-migration.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 81,
+      "sha256": "e0fde22705ab4e142a5ea28f7282e2fd532f2eeab58879d1fdf9f49854713ff1"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 99,
+      "sha256": "8dd2e2f67948d86ce9fc528b0cbf526d65e88342de96f3bc21d8efd2bdbe2f53"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 119,
+      "sha256": "4645300e9de3ff140903f58406aae9e756e4076f1e749d1b60f10405f29e1d23"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 169,
+      "sha256": "e1fd4715e393f1698dbb0b8bbec9b3a57d21a693df222c8f63b0268ec62ac37b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 73,
+      "sha256": "af3b9dc86aa738ff22375c64470a87c6b8514f78f93f9cb39707faacc5245a5b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-read-service.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 67,
+      "sha256": "9c09fd79d9b15af16c97551ca2b2496904bce4bb5dafd6cd557d403594b621d9"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 82,
+      "sha256": "6954ed1a8fcc9ea3bd1217786160abdfb4136a8917c492d69b694dfbcb447f76"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-upload-service.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 104,
+      "sha256": "3ca8b0cf2f576280aa29b0bdbc53c44059be40bdfcd0e02cd37a48af413612b5"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 66,
+      "sha256": "812dc0fb40b9b8d33f65328dcf2626117a6ba43a894b84ce86b5fe1198a10e4b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-package-context-file-validation.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 92,
+      "sha256": "0a7ad5fed6dea8ca761e5ac914a3a76cde37e25c7fea51bf93861c24d3c099a6"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 327,
+      "sha256": "1283ef23e2c15a48f0d834f9ebaf66df8343e4d70e8066e6bb40af709a79af94"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/store/atomic-run-package-file-commit-writer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 115,
+      "sha256": "37114625f516b4d4fc867fb2b9e68515e9afb439588bf14c391c0a0044fa68bb"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 127,
+      "sha256": "9c1fd5401557fee37c7a82ffb951bbce613be306dab5ec0b8e822de892820531"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 57,
+      "sha256": "f43167c445b5c5990cbd3474c2c78be610fcd764e4b6c3ca1f0fba898eb5102c"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 157,
+      "sha256": "7f9c7dc19effad97febb1868e4d2783bc59f330f89ca44542dfb343fdf0fd95c"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 360,
+      "sha256": "2a01e776eb1a53a6b40e04db44e8589f47e068159dd6c883e1911a7b640c108a"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 260,
+      "sha256": "4fe2c300bdc3fc3c2fb04333746640c2aadee43258f460a52d5b2160228c147a"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/collaboration-definition-admission/definition-admission-service.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 133,
+      "sha256": "ba29514e644ee8e9994e28f7167166acf69bf36d1b42be83fe9d208b438e99ad"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/collaboration-definition-admission/definition-authoring.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 94,
+      "sha256": "5d04d10281d7c840283937ca5afbdb35ef436416938e1d44f5758097bc34f8ae"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/collaboration-definition-admission/org-local-roundtrip.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 64,
+      "sha256": "689403189e492f45be6e4074bde90dd4003c2566bc3f9458d64eb59e51a2df57"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/context-files/context-file-local-path-resolver.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 59,
+      "sha256": "74355b4b1b98a56ce466e00f6d05d99386fc90839c08fba5282e18091e33492d"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/atomic-run-package-file-commit-writer.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 25,
+      "sha256": "dce77cd79a8163891e9de42dfd945fdab0f64ccce38233de1b787e07a8ed0ddb"
+    },
+    {
+      "path": "autobyteus-web/components/agentInput/ContextFilePathInputArea.vue",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 441,
+      "sha256": "d0e8f7debd8c1a6037fbb1e963dbea936541c4056cfb206d74fe6a54250e86d4"
+    },
+    {
+      "path": "autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 348,
+      "sha256": "623d4583bcd122ff3e7821087c8db23974876a4594bf437178121564f6117077"
+    },
+    {
+      "path": "autobyteus-web/composables/useContextAttachmentComposer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 354,
+      "sha256": "feedade05b8b3713822aebf575590fc9f993bd29755fe9e20356ccd10dffde9e"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 235,
+      "sha256": "7ec192280f978b4a2ec6dfca7bb86192f3f40823d58875841768881b5da12602"
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 242,
+      "sha256": "653148b6c2b2b1e3342dc2c578b2e72406a01930c8afe56b3764f3e6683758fe"
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 287,
+      "sha256": "41f724f09b01022c6c2da1654e4c1aa3ed69ceca690d178f42c5dd9d89caa0f0"
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextFileOwner.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 68,
+      "sha256": "4104946cdad9264dbc59be9c69009f37c7d45ea86cbfffb4459a80529dc237c0"
+    }
+  ]
+}

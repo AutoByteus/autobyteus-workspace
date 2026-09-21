@@ -1,0 +1,33 @@
+{
+  "identity": {
+    "orgRunId": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+    "address": "/apirev8_team/aorg_e2e_analyst",
+    "agentRunId": "aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+    "disabledCount": 6,
+    "enabled": [
+      {
+        "tag": "BUTTON",
+        "test": "agent-org-config-back-to-events",
+        "text": ""
+      }
+    ]
+  },
+  "assertions": {
+    "drawerWasOpen": true,
+    "escapeClosedDrawer": true,
+    "exactMountedIdentity": true,
+    "formLocked": true,
+    "backPreservedRootAndFocus": false,
+    "narrowNoHorizontalOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-004-config-after-drawer.mjs:46
+if (Object.values(assertions).some((value) => value !== true)) throw new Error(`assertion failure: ${JSON.stringify(assertions)}`);
+                                                                     ^
+
+Error: assertion failure: {"drawerWasOpen":true,"escapeClosedDrawer":true,"exactMountedIdentity":true,"formLocked":true,"backPreservedRootAndFocus":false,"narrowNoHorizontalOverflow":true,"noBrowserErrors":true}
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-004-config-after-drawer.mjs:46:70
+
+Node.js v22.23.2

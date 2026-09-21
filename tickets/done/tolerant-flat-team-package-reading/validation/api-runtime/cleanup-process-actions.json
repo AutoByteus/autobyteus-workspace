@@ -1,0 +1,34 @@
+[
+  {
+    "pid": 96133,
+    "result": "already exited"
+  },
+  {
+    "pid": 95830,
+    "result": "already exited"
+  },
+  {
+    "pid": 86304,
+    "result": "SIGTERM exact owned command"
+  },
+  {
+    "pid": 86303,
+    "result": "SIGTERM exact owned command"
+  },
+  {
+    "pid": 86302,
+    "result": "SIGTERM exact owned command"
+  },
+  {
+    "pid": 86293,
+    "result": "SIGTERM exact owned command"
+  },
+  {
+    "pid": 86292,
+    "result": "SIGTERM exact owned command"
+  },
+  {
+    "pid": 85989,
+    "result": "SIGTERM exact owned command"
+  }
+]

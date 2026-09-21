@@ -12,10 +12,12 @@ export type LocalizationMigrationScope = {
     | 'M-010'
     | 'M-011'
     | 'M-012'
-    | 'M-013';
+    | 'M-013'
+    | 'M-014';
   status: 'closed';
   description: string;
   include: string[];
+  strictVueLiterals?: boolean;
 };
 
 export const localizationMigrationScopes: LocalizationMigrationScope[] = [
@@ -96,5 +98,21 @@ export const localizationMigrationScopes: LocalizationMigrationScope[] = [
     status: 'closed',
     description: 'stores, composables, and services that emit user-facing product feedback',
     include: ['stores/', 'composables/', 'services/'],
+  },
+  {
+    scopeId: 'M-014',
+    status: 'closed',
+    description: 'Agent Org management, handoff authoring, launch, history, and return navigation UI',
+    include: [
+      'pages/agent-orgs.vue',
+      'components/agentOrgs/',
+      'components/collaboration/handoffs/HandoffManager.vue',
+      'components/agentTeams/AgentTeamDefinitionForm.vue',
+      'components/workspace/config/AgentOrgRunConfigPanel.vue',
+      'components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue',
+      'components/workspace/org/AgentOrgWorkspaceView.vue',
+      'components/agentTeams/AgentTeamDetail.vue',
+    ],
+    strictVueLiterals: true,
   },
 ];

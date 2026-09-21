@@ -1,0 +1,37 @@
+{
+  "at": "2026-09-13T12:20:39.466675+00:00",
+  "revision": "API-REV-001",
+  "round": 1,
+  "priorResult": "N/A",
+  "priorConfidence": "N/A",
+  "result": "Pass",
+  "confidence": 95.0,
+  "postRepositoryConfidence": 80.7,
+  "cases": {
+    "Pass": 11,
+    "Fail": 0,
+    "Blocked": 0,
+    "NotTested": 0
+  },
+  "repository": {
+    "files": 30,
+    "tests": 223,
+    "server": [
+      11,
+      56
+    ],
+    "web": [
+      19,
+      167
+    ]
+  },
+  "broaderValidation": "Required \u2014 completed real browser/server/provider/lifecycle",
+  "durableAdded": [],
+  "durableUpdated": [],
+  "durableRemoved": [],
+  "originalNavigationCause": "UNASSIGNED; no historical-fix attribution",
+  "native": "Real AutoByteus/deepseek-v4-flash text journey, actual clicked final200/original bytes, one input, normal reopen",
+  "userToolDecision": "No redundant open_tab testing",
+  "recipient": "/software_engineering_team/code_reviewer",
+  "stage": "Completed validation; handoff pending tool confirmation"
+}

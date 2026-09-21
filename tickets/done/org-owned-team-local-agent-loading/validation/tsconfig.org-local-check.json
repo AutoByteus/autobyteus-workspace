@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": { "rootDir": ".", "noEmit": true },
+  "include": ["tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts", "tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts"],
+  "exclude": ["dist", "node_modules"]
+}

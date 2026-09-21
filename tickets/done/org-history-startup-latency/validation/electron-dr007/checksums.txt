@@ -1,0 +1,2 @@
+68986628d74c10ae82e6d8b8bba5b2301fcf8508f2d76077e8b7ee4a95a3606b  /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg
+f96e17de0d5fae5a55f84bda85081586fcedd6d63179ccb3282a454324728d73  /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip

@@ -1,0 +1,161 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/.env
+[dotenv@17.3.1] injecting env (8) from tests/.tmp/aorg-api-rev001/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50244
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50244
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "aorg-api-rev001.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/db/aorg-api-rev001.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:11187) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-14T10:32:52.459Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-14T10:32:52.614Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-14T10:32:52.615Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1789381972625,"pid":11187,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:55334"}
+{"level":30,"time":1789381972659,"pid":11187,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:50244"}
+[2026-09-14T10:32:52.659Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50244
+[2026-09-14T10:32:52.661Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50244
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session c54e7f20-0047-4447-af74-fb6e21f2daae for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=c54e7f20-0047-4447-af74-fb6e21f2daae, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session c7d7a25e-af7c-41d3-a814-37adc9050e2e for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=c7d7a25e-af7c-41d3-a814-37adc9050e2e, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Published codex_app_server agent run 'aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1'.
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session 657edd8f-baa7-463c-a6e0-c32f6eedbc9f for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=657edd8f-baa7-463c-a6e0-c32f6eedbc9f, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session e2e8af24-199f-4076-9507-8a106f2a67da for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=e2e8af24-199f-4076-9507-8a106f2a67da, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+[CodexAppServerClient] stderr: [2m2026-09-14T10:33:35.601840Z[0m [31mERROR[0m [2mcodex_models_manager::manager[0m[2m:[0m failed to refresh available models: timeout waiting for child process to exit
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session a6b344a8-134b-426b-941a-baacd07b71dc for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=a6b344a8-134b-426b-941a-baacd07b71dc, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session c99b8dae-33bd-414f-bf0c-d483c815d080 for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=c99b8dae-33bd-414f-bf0c-d483c815d080, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session f2f8f1e8-d59b-477b-83ca-32f31180700e for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=f2f8f1e8-d59b-477b-83ca-32f31180700e, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Closed agent session c54e7f20-0047-4447-af74-fb6e21f2daae
+Closed agent session 657edd8f-baa7-463c-a6e0-c32f6eedbc9f
+Closed agent session e2e8af24-199f-4076-9507-8a106f2a67da
+Closed agent session c7d7a25e-af7c-41d3-a814-37adc9050e2e
+Closed agent session a6b344a8-134b-426b-941a-baacd07b71dc
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session f1415d28-c6b7-447c-9eaf-d64d58e29f4c for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=f1415d28-c6b7-447c-9eaf-d64d58e29f4c, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created terminal session fe521072-aad7-44a4-aa03-712ecd3fccf4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: fe521072-aad7-44a4-aa03-712ecd3fccf4
+Terminal websocket attached for cwd /Users/normy
+[2026-09-14T10:37:35.751Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session c99b8dae-33bd-414f-bf0c-d483c815d080
+Closed agent session f1415d28-c6b7-447c-9eaf-d64d58e29f4c
+Closed agent session f2f8f1e8-d59b-477b-83ca-32f31180700e
+Closed PTY session fe521072-aad7-44a4-aa03-712ecd3fccf4
+Terminal WebSocket disconnected: fe521072-aad7-44a4-aa03-712ecd3fccf4
+[2026-09-14T10:37:35.986Z] [INFO] [server.runtime] Server closed cleanly.

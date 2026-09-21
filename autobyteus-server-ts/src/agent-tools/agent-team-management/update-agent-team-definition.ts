@@ -1,6 +1,6 @@
 import { tool, ParameterSchema, ParameterDefinition, ParameterType, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { AgentTeamDefinitionUpdate, TeamMember, type TeamMemberRefScope } from "../../agent-team-definition/domain/models.js";
+import { AgentTeamDefinitionUpdate, TeamMember, type TeamMemberRefScope } from "../../agent-team-definition/domain/agent-team-definition.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
 const DESCRIPTION =
@@ -12,6 +12,14 @@ argumentSchema.addParameter(
     name: "definition_id",
     type: ParameterType.STRING,
     description: "The ID of the agent team definition to update.",
+    required: true,
+  }),
+);
+argumentSchema.addParameter(
+  new ParameterDefinition({
+    name: "expected_revision",
+    type: ParameterType.STRING,
+    description: "The revision returned when the Team definition draft was loaded.",
     required: true,
   }),
 );
@@ -51,7 +59,7 @@ argumentSchema.addParameter(
   new ParameterDefinition({
     name: "nodes",
     type: ParameterType.STRING,
-    description: "A new JSON string representing the list of team members (member_name, ref, ref_type, ref_scope).",
+    description: "A new JSON string representing the list of team members (member_name, ref, ref_scope).",
     required: false,
   }),
 );
@@ -81,26 +89,6 @@ type AgentContextLike = {
   agentId?: string;
 };
 
-const toRefType = (value: unknown): "agent" | "agent_team" | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  if (value === "AGENT") {
-    return "agent";
-  }
-  if (value === "AGENT_TEAM") {
-    return "agent_team";
-  }
-  const normalized = value.trim().toLowerCase();
-  if (normalized === "agent") {
-    return "agent";
-  }
-  if (normalized === "agent_team" || normalized === "agentteam") {
-    return "agent_team";
-  }
-  return null;
-};
-
 const toRefScope = (value: unknown): TeamMemberRefScope | null => {
   if (typeof value !== "string") {
     return null;
@@ -127,16 +115,10 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
   return parsed.map((node) => {
     const memberName = node.member_name as string | undefined;
     const ref = node.ref as string | undefined;
-    const refTypeRaw = node.ref_type as string | undefined;
     const refScopeRaw = node.ref_scope as string | undefined;
 
-    if (!memberName || !ref || !refTypeRaw) {
-      throw new Error("Each node must include member_name, ref, and ref_type.");
-    }
-
-    const refType = toRefType(refTypeRaw);
-    if (!refType) {
-      throw new Error("ref_type must be 'agent' or 'agent_team'.");
+    if (!memberName || !ref) {
+      throw new Error("Each node must include member_name and ref.");
     }
     const refScope = toRefScope(refScopeRaw);
     if (!refScope) {
@@ -146,7 +128,6 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
     return new TeamMember({
       memberName,
       ref,
-      refType,
       refScope,
     });
   });
@@ -155,6 +136,7 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
 export async function updateAgentTeamDefinition(
   context: AgentContextLike,
   definition_id: string,
+  expected_revision: string,
   name?: string | null,
   description?: string | null,
   instructions?: string | null,
@@ -191,6 +173,7 @@ export async function updateAgentTeamDefinition(
       nodes: teamMembers,
       coordinatorMemberName: coordinator_member_name ?? null,
       avatarUrl: avatar_url ?? null,
+      expectedRevision: expected_revision,
     });
 
     const service = AgentTeamDefinitionService.getInstance();
@@ -203,7 +186,6 @@ export async function updateAgentTeamDefinition(
     if (
       error instanceof SyntaxError ||
       message.includes("member_name") ||
-      message.includes("ref_type") ||
       message.includes("ref_scope")
     ) {
       logger.error(

@@ -1,0 +1,132 @@
+{
+  "recordedAt": "2026-09-12T03:20:26.340358+00:00",
+  "limits": "Read-only sample of named exposure roots. Raw-trace media arrays only; not exhaustive task/message/reference inventory or deployment proof. Candidate shape still requires exact source validator. No migration executed.",
+  "roots": [
+    {
+      "appDataRoot": "/home/autobyteus/data",
+      "physicalRoot": "/home/autobyteus/data",
+      "exists": true,
+      "memoryRoot": "/home/autobyteus/data/memory",
+      "readOnly": true,
+      "databaseWalBytes": 0,
+      "familyRecord": {
+        "migrationId": "20260901_agent_org_flat_team_families_v1",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "completedAt": 1788257556246,
+        "summary": "Scanned 1; migrated 0; skipped 0; failed 0."
+      },
+      "databaseReadHashUnchanged": true,
+      "treeCounts": {
+        "team": 53,
+        "oneLevelCandidate": 23,
+        "org": 0
+      },
+      "structuredOldMediaLocatorCount": 166,
+      "nestedRecordOldMediaLocatorCount": 97,
+      "examples": [
+        {
+          "file": "/home/autobyteus/data/memory/agent_teams/software_development_department_03636d7482c04940987839d4fb0868a6/requirements_engineer_3bce6dff03fa4f379b8a458ec801ff6e/raw_traces_active.jsonl",
+          "line": 2,
+          "field": "media.images[0]",
+          "locator": "/rest/team-runs/software_development_department_03636d7482c04940987839d4fb0868a6/members/%2Frequirements_engineer/context-files/ctx_5e5231e89f96__image.png",
+          "enclosingNestedRoot": "software_development_department_03636d7482c04940987839d4fb0868a6"
+        },
+        {
+          "file": "/home/autobyteus/data/memory/agent_teams/software_development_department_03636d7482c04940987839d4fb0868a6/requirements_engineer_3bce6dff03fa4f379b8a458ec801ff6e/raw_traces_active.jsonl",
+          "line": 2,
+          "field": "media.images[1]",
+          "locator": "/rest/team-runs/software_development_department_03636d7482c04940987839d4fb0868a6/members/%2Frequirements_engineer/context-files/ctx_09ce9b073f2e__image.png",
+          "enclosingNestedRoot": "software_development_department_03636d7482c04940987839d4fb0868a6"
+        }
+      ],
+      "oldOrgDraftFiles": 0,
+      "draftExamples": []
+    },
+    {
+      "appDataRoot": "/root/.autobyteus/server-data",
+      "physicalRoot": "/root/.autobyteus/server-data",
+      "exists": true,
+      "memoryRoot": "/root/.autobyteus/server-data/memory",
+      "readOnly": true,
+      "databaseWalBytes": 0,
+      "familyRecord": {
+        "migrationId": "20260901_agent_org_flat_team_families_v1",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "completedAt": 1788386893354,
+        "summary": "Scanned 4; migrated 2; skipped 2; failed 0."
+      },
+      "databaseReadHashUnchanged": true,
+      "treeCounts": {
+        "team": 6,
+        "oneLevelCandidate": 0,
+        "org": 4
+      },
+      "structuredOldMediaLocatorCount": 0,
+      "nestedRecordOldMediaLocatorCount": 0,
+      "examples": [],
+      "oldOrgDraftFiles": 0,
+      "draftExamples": []
+    },
+    {
+      "appDataRoot": "/home/vncuser/.autobyteus/server-data",
+      "physicalRoot": "/home/vncuser/.autobyteus/server-data",
+      "exists": false,
+      "memoryRoot": "/home/vncuser/.autobyteus/server-data/memory",
+      "readOnly": true
+    },
+    {
+      "appDataRoot": "/tmp/autobyteus-dr008-user-test-20260911/server-data",
+      "physicalRoot": "/tmp/autobyteus-dr008-user-test-20260911/server-data",
+      "exists": true,
+      "memoryRoot": "/tmp/autobyteus-dr008-user-test-20260911/server-data/memory",
+      "readOnly": true,
+      "databaseWalBytes": 0,
+      "familyRecord": {
+        "migrationId": "20260901_agent_org_flat_team_families_v1",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "completedAt": 1789125304306,
+        "summary": "Scanned 1; migrated 0; skipped 0; failed 0."
+      },
+      "databaseReadHashUnchanged": true,
+      "treeCounts": {
+        "team": 0,
+        "oneLevelCandidate": 0,
+        "org": 0
+      },
+      "structuredOldMediaLocatorCount": 0,
+      "nestedRecordOldMediaLocatorCount": 0,
+      "examples": [],
+      "oldOrgDraftFiles": 0,
+      "draftExamples": []
+    },
+    {
+      "appDataRoot": "/tmp/autobyteus-dr009-user-test-20260911/server-data",
+      "physicalRoot": "/tmp/autobyteus-dr009-user-test-20260911/server-data",
+      "exists": true,
+      "memoryRoot": "/tmp/autobyteus-dr009-user-test-20260911/server-data/memory",
+      "readOnly": true,
+      "databaseWalBytes": 0,
+      "familyRecord": {
+        "migrationId": "20260901_agent_org_flat_team_families_v1",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "completedAt": 1789148883931,
+        "summary": "Scanned 1; migrated 0; skipped 0; failed 0."
+      },
+      "databaseReadHashUnchanged": true,
+      "treeCounts": {
+        "team": 1,
+        "oneLevelCandidate": 0,
+        "org": 2
+      },
+      "structuredOldMediaLocatorCount": 0,
+      "nestedRecordOldMediaLocatorCount": 0,
+      "examples": [],
+      "oldOrgDraftFiles": 0,
+      "draftExamples": []
+    }
+  ]
+}

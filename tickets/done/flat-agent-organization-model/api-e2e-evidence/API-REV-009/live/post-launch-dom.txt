@@ -1,0 +1,35 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+AGENT ORGS
+AORG E2E Mixed Org
+(1)
+New - AORG E2E Mixed Org
+now
+C
+concierge
+research team
+support team
+workspace-team
+No task history in this workspace.
+workspace
+Settings
+Choose an Agent or Team
+
+Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No workspaces available. Add a workspace to see files.
+No file selected
+
+Select a file from the explorer to view or edit its content.

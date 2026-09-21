@@ -9,6 +9,8 @@
       v-for="tab in tabs"
       :key="tab.name"
       :name="tab.name"
+      :aria-label="tab.ariaLabel"
+      :title="tab.ariaLabel"
       :data-tab-name="tab.name"
       :selected="selectedTab === tab.name"
       @focus="handleTabFocus(tab.name)"
@@ -28,6 +30,7 @@ defineOptions({ inheritAttrs: false });
 interface TabInfo {
   name: string;
   label?: string;
+  ariaLabel?: string;
 }
 
 const props = defineProps<{

@@ -1,0 +1,8 @@
+{
+  "before": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d&mode=active",
+  "console": [],
+  "requests": [],
+  "pageErrors": [],
+  "after": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d&mode=active",
+  "bodyTail": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nTEAMS\nAE\nAORG E2E Research Squad\n(1)\nNew - AORG E2E Research Squad\n3m\nL\nlead\n3m\nA\nanalyst\n3m\nV\nverifier\n3m\nAGENT ORGS\nAORG E2E Mixed Org\n(1)\nNew - AORG E2E Mixed Org\n17m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nsupport team\nworkspace-team\nNo task history in this workspace.\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n18h\nA\naorg_e2e_lead\n18h\nA\naorg_e2e_analyst\n18h\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nSettings\nC\nconcierge - E6EB\nIdle\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 3, 2026, 3:47:18 PM · 6306 characters\nAVAILABLE"
+}

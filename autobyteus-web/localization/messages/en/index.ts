@@ -1,8 +1,10 @@
 import agentInputMessages from './agentInput.generated';
+import agentOrgMessages from './agentOrgs';
 import agentTeamGeneratedMessages from './agentTeams.generated';
 import agentTeamMessages from './agentTeams';
 import agentGeneratedMessages from './agents.generated';
 import agentMessages from './agents';
+import handoffMessages from './handoffs';
 import generatedApplicationMessages from './applications.generated';
 import applicationMessages from './applications';
 import commonMessages from './common.generated';
@@ -27,10 +29,12 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const enMessages: TranslationCatalog = {
   ...agentInputMessages,
+  ...agentOrgMessages,
   ...agentTeamGeneratedMessages,
   ...agentTeamMessages,
   ...agentGeneratedMessages,
   ...agentMessages,
+  ...handoffMessages,
   ...generatedApplicationMessages,
   ...applicationMessages,
   ...commonMessages,

@@ -1,4 +1,5 @@
 import type { JsonValue } from '@autobyteus/team-stream-contracts';
+import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts';
 import type { ServerMessage } from './protocol';
 import type { TeamAgentStreamMessage } from '~/services/teamExecution/teamExecutionViewModels';
 
@@ -38,6 +39,55 @@ const fileStatus = (value: string): 'streaming' | 'pending' | 'available' | 'fai
 const fileSourceTool = (value: string): 'write_file' | 'edit_file' | 'generated_output' => {
   if (value === 'write_file' || value === 'edit_file' || value === 'generated_output') return value;
   throw new Error(`Unsupported Team Agent file source '${value}'.`);
+};
+
+export const toAgentPresentationProjectionMessage = (
+  message: AgentPresentationMessage,
+  agentRunId: string,
+): ServerMessage => {
+  const runId = agentRunId.trim();
+  if (!runId) throw new Error('Agent presentation projection requires the exact AgentRun ID.');
+  switch (message.type) {
+    case 'SYSTEM_INSTRUCTIONS_SUPPLIED': return { type: message.type, payload: { ...message.payload } };
+    case 'TURN_STARTED': return { type: message.type, payload: { ...message.payload } };
+    case 'TURN_COMPLETED': return { type: message.type, payload: { ...message.payload } };
+    case 'TURN_INTERRUPTED': return { type: message.type, payload: { ...message.payload } };
+    case 'SEGMENT_START': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, segment_type: segmentType(message.payload.segment_type), metadata: message.payload.metadata } };
+    case 'SEGMENT_CONTENT': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, segment_type: segmentType(message.payload.segment_type), delta: message.payload.delta } };
+    case 'SEGMENT_END': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, metadata: message.payload.metadata, interrupted: message.payload.interrupted, reason: message.payload.reason, failed: message.payload.failed, error: message.payload.error } };
+    case 'AGENT_STATUS': return { type: message.type, payload: { ...message.payload } };
+    case 'COMPACTION_STATUS': return { type: message.type, payload: { ...message.payload, phase: compactionPhase(message.payload.phase) } };
+    case 'TOKEN_USAGE_UPDATED': return {
+      type: message.type,
+      payload: {
+        ...message.payload,
+        run_id: runId,
+        run_summary_after_event: message.payload.run_summary_after_event
+          ? { ...message.payload.run_summary_after_event, root_team_run_id: null }
+          : null,
+      },
+    };
+    case 'ASSISTANT_COMPLETE': return { type: message.type, payload: { ...message.payload, usage: jsonObject(message.payload.usage) } };
+    case 'TOOL_APPROVAL_REQUESTED': return { type: message.type, payload: { ...message.payload, arguments: requiredJsonObject(message.payload.arguments, 'Tool approval arguments') } };
+    case 'TOOL_APPROVED': return { type: message.type, payload: { ...message.payload } };
+    case 'TOOL_DENIED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
+    case 'TOOL_EXECUTION_STARTED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
+    case 'TOOL_EXECUTION_SUCCEEDED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments), result: message.payload.result ?? undefined } };
+    case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
+    case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
+    case 'TOOL_LOG': return { type: message.type, payload: { ...message.payload } };
+    case 'TODO_LIST_UPDATE': return { type: message.type, payload: { todos: message.payload.todos.map((todo) => ({ ...todo })) } };
+    case 'SYSTEM_TASK_NOTIFICATION': return { type: message.type, payload: { sender_id: message.payload.sender.kind === 'system' ? 'system' : message.payload.sender.identity.member_address, content: message.payload.content } };
+    case 'ARTIFACT_PERSISTED': return { type: message.type, payload: { id: message.payload.artifact_id, runId, path: message.payload.path, type: artifactType(message.payload.artifact_type), status: message.payload.status, description: message.payload.description, revisionId: message.payload.revision_id, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
+    case 'FILE_CHANGE': return { type: message.type, payload: { id: message.payload.file_change_id, runId, path: message.payload.path, type: artifactType(message.payload.file_type), status: fileStatus(message.payload.status), sourceTool: fileSourceTool(message.payload.source_tool), sourceInvocationId: message.payload.source_invocation_id, content: message.payload.content, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
+    case 'MEMBER_INPUT_MESSAGE': return { type: message.type, payload: { ...message.payload, recipient_agent_run_id: runId } };
+    case 'EXTERNAL_USER_MESSAGE': return { type: message.type, payload: { ...message.payload } };
+    case 'ERROR': {
+      if (message.payload.error_scope === null) return { type: message.type, payload: { ...message.payload, error_scope: null, error_effect: null, turn_id: null } };
+      if (message.payload.error_scope === 'turn') return { type: message.type, payload: { ...message.payload, error_scope: 'turn', error_effect: message.payload.error_effect, turn_id: message.payload.turn_id } };
+      return { type: message.type, payload: { ...message.payload, error_scope: 'runtime', error_effect: 'terminal', turn_id: null } };
+    }
+  }
 };
 
 export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, agentRunId: string): ServerMessage => {

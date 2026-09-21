@@ -1,0 +1,19 @@
+API-REV-003 cleanup verification
+timestamp=2026-09-01T22:52:15Z
+owned backend SIGTERM: pid 50263; log: backend-restart.log
+{"level":40,"time":1788302831114,"pid":50263,"hostname":"0d2d48492ef2","reqId":"req-10","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.4566249996423721,"msg":"http request completed"}
+[2026-09-01T22:50:38.822Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-01T22:50:39.046Z] [INFO] [server.runtime] Server closed cleanly.
+
+owned process matches (expected none):
+listener matches (expected header only):
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+
+browser tab 5: closed=true (AutoByteus close_tab result)
+shared AUTOBYTEUS_AGENT_PACKAGE_ROOTS:
+11:AUTOBYTEUS_AGENT_PACKAGE_ROOTS=/home/autobyteus/workspace/autobyteus-private-agents,/home/autobyteus/workspace/autobyteus-agents
+shared registry fixture refs (expected none):
+
+retained roots: generic history showed all roots inactive before shutdown; see graphql-history-after-route-release.json
+isolated data retained as evidence: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data
+all run-owned server/web/SDK/application build and test-temp directories removed

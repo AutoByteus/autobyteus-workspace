@@ -1,0 +1,14 @@
+{
+  "assertions": {
+    "sidecarIncrementedOnce": true,
+    "exactRuns": true,
+    "exactReference": true,
+    "taskDelivery": true,
+    "configuredSenderNoRow": true,
+    "configuredSenderNoInbound": true,
+    "senderStayedSelected": true,
+    "noOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

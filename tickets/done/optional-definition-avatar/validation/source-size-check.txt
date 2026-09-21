@@ -1,0 +1,5 @@
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts: 150 nonempty lines; delta +7/-0; under 500 nonempty and 220 changed lines
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts: 91 nonempty lines; delta +3/-3; under 500 nonempty and 220 changed lines
+autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts: 142 nonempty lines; delta +2/-1; under 500 nonempty and 220 changed lines
+autobyteus-server-ts/src/agent-team-definition/providers/agent-team-definition-config.ts: 177 nonempty lines; delta +1/-0; under 500 nonempty and 220 changed lines
+autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts: 170 nonempty lines; delta +2/-2; under 500 nonempty and 220 changed lines

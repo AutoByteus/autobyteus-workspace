@@ -1,0 +1,13 @@
+2026-09-06T13:39:26Z
+LISTEN 0      511        127.0.0.1:8596       0.0.0.0:*    users:(("node",pid=91128,fd=31))  
+AUTOBYTEUS_DATA_DIR=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data
+AUTOBYTEUS_INTERNAL_SERVER_BASE_URL=http://127.0.0.1:8596
+AUTOBYTEUS_MEMORY_DIR=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8596
+AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default
+DATABASE_URL=file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/db/production.db
+graphql_http=200
+{"data":{"__typename":"Query"}}Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/db/production.db"
+No pending migrations to apply.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default
+[2026-09-06T13:39:00.564Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8596

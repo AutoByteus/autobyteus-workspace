@@ -1,0 +1,12 @@
+[
+  {
+    "teamRunId": "aorg_e2e_research_squad_3ba09981d7344c2ea15a577d2d1604d3",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/temp_workspace",
+    "summary": "Evidence-only correlated same-task revision probe. Delegate exactly one fresh task to /analyst wi...",
+    "createdAt": "2026-09-01T21:00:39.642Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

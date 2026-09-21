@@ -1,0 +1,53 @@
+{
+  "at": "2026-09-13T11:48:53.049Z",
+  "id": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+  "director": {
+    "address": "/director",
+    "agentDefinitionId": "followup-assistant",
+    "role": null,
+    "description": null,
+    "agentRunId": "followup_assistant_216e424e97ee45b9b0ed416beb8f8652",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+    }
+  },
+  "receiver": {
+    "address": "/receiver",
+    "agentDefinitionId": "followup-assistant",
+    "role": null,
+    "description": null,
+    "agentRunId": "followup_assistant_addd51e26f024892b80673b6d6c74d68",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+    }
+  },
+  "coord": {
+    "address": "/research-team/coordinator",
+    "agentDefinitionId": "followup-assistant",
+    "role": null,
+    "description": null,
+    "agentRunId": "followup_assistant_3adf5e0e66f848ce9cec314516090bec",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+    }
+  },
+  "prompt": "Use send_message_to exactly twice, sequentially. First recipient_address /receiver, content \"Reply exactly COLLAB-API01-ORG-RECEIVER-READY. No tools or communication.\" Then recipient_address /research-team, content \"Reply exactly COLLAB-API01-ORG-TEAM-INGRESS-READY. No tools or communication.\" After both calls succeed, reply exactly COLLAB-API01-ORG-DIRECTOR-READY. Do not delegate, or contact any other member."
+}

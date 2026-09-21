@@ -71,6 +71,29 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   ]);
 });
 
+test('pack validates the real Brief Studio Team package through every current definition root', async () => {
+  const briefSource = path.resolve(packageRoot, '../applications/brief-studio');
+  const target = path.join(await createTempDirectory('brief-studio-pack'), 'brief-studio');
+  await fs.cp(briefSource, target, {
+    recursive: true,
+    filter: (source) => {
+      const topLevelName = path.relative(briefSource, source).split(path.sep)[0];
+      return topLevelName !== 'dist' && topLevelName !== 'node_modules';
+    },
+  });
+
+  const result = await packApplicationProject({ projectRoot: target });
+
+  assert.equal(result.validation.valid, true);
+  assert.equal(
+    await fileExists(path.join(
+      result.applicationRoot,
+      'agent-teams/brief-studio-team/team-config.json',
+    )),
+    true,
+  );
+});
+
 test('standalone pack requires complete Team-scope defaults in addition to Agent leaves', async () => {
   const target = path.join(await createTempDirectory('team-scope-defaults'), 'sample-app');
   await materializeApplicationTemplate({
@@ -125,6 +148,7 @@ test('standalone pack requires complete Team-scope defaults in addition to Agent
     defaultLaunchConfig: {
       runtimeKind: 'autobyteus',
       llmModelIdentifier: 'gpt-test',
+      llmConfig: null,
     },
   }, null, 2)}\n`, 'utf8');
   const teamConfigPath = path.join(teamRoot, 'team-config.json');
@@ -133,9 +157,11 @@ test('standalone pack requires complete Team-scope defaults in addition to Agent
     members: [{
       memberName: 'lead',
       ref: 'lead',
-      refType: 'agent',
       refScope: 'team_local',
     }],
+    handoffs: [],
+    avatarUrl: null,
+    defaultLaunchConfig: null,
   };
   await fs.writeFile(teamConfigPath, `${JSON.stringify(teamConfig, null, 2)}\n`, 'utf8');
 
@@ -149,6 +175,7 @@ test('standalone pack requires complete Team-scope defaults in addition to Agent
     defaultLaunchConfig: {
       runtimeKind: 'autobyteus',
       llmModelIdentifier: 'gpt-test',
+      llmConfig: null,
     },
   }, null, 2)}\n`, 'utf8');
   const result = await packApplicationProject({ projectRoot: target });

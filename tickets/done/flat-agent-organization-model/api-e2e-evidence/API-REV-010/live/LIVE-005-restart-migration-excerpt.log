@@ -1,0 +1,4 @@
+28:24 migrations found in prisma/migrations
+31:No pending migrations to apply.
+32:Database migrations completed successfully.
+96:[2026-09-04T14:41:55.155Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8589

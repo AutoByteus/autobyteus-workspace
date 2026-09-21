@@ -1,0 +1,46 @@
+[
+  {
+    "label": "standalone-team-inactive-history",
+    "url": "http://127.0.0.1:3592/workspace",
+    "hasOld": true,
+    "hasResumed": false,
+    "current": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "A\naorg_e2e_lead\n3d"
+      }
+    ],
+    "selected": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "A\naorg_e2e_lead\n3d"
+      },
+      {
+        "test": null,
+        "text": "Team"
+      }
+    ]
+  },
+  {
+    "label": "APIREV13-TEAM-RESUMED-001",
+    "url": "http://127.0.0.1:3592/workspace",
+    "hasOld": true,
+    "hasResumed": true,
+    "current": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "A\naorg_e2e_lead\nnow"
+      }
+    ],
+    "selected": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "A\naorg_e2e_lead\nnow"
+      },
+      {
+        "test": null,
+        "text": "Team"
+      }
+    ]
+  }
+]

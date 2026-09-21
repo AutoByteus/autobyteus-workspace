@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_3ac76dc4cfc94602898e5a405def77e3",
+  "records": [
+    {
+      "taskId": "task_fb9ec03545a1417d9c0e330c92205525",
+      "delegatorAgentRunId": "aorg_e2e_lead_ff6e706d50f04ae59a2c51e69e846019",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_ee3167a7537f43bfa0a09eac6b21199f"
+      },
+      "description": "Prepare a concise result whose first line is exactly AORG-TEAM-TASK-INITIAL-003 and whose second line is exactly Initial result. Then use submit_task_result to submit it. Do not review your own result and do not create any other task.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_b2880c5bfcd84b65a90cb87c895c19d1",
+          "message": "AORG-TEAM-TASK-INITIAL-003\nInitial result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:29:28.549Z"
+        },
+        {
+          "reviewId": "review_e0eadcaceeba413a94376dd7b1da4e46",
+          "reviewedSubmissionId": "submission_b2880c5bfcd84b65a90cb87c895c19d1",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:29:36.301Z"
+        }
+      ],
+      "createdAt": "2026-09-01T22:29:19.379Z"
+    },
+    {
+      "taskId": "task_128c82416bd54b49ba7ab14099ec60ee",
+      "delegatorAgentRunId": "aorg_e2e_lead_ff6e706d50f04ae59a2c51e69e846019",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_c6b678fba4814f7e9d13ee3c56fb7ed3"
+      },
+      "description": "First submit_task_result with first line AORG-TEAM-TASK-INITIAL-C-003 and second line Initial C. When the delegator requests revision, use the same task and submit_task_result again with first line AORG-TEAM-TASK-REVISED-C-003 and second line Revised C. Never review your own result and never create another task.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_23234561bd98494589a7017c02b83b8e",
+          "message": "AORG-TEAM-TASK-INITIAL-C-003\nInitial C.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:30:16.874Z"
+        },
+        {
+          "reviewId": "review_4f3c12309d9441f4ad28a9e0eee3c08e",
+          "reviewedSubmissionId": "submission_23234561bd98494589a7017c02b83b8e",
+          "decision": "request_revision",
+          "comment": "Submit the required revised C result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:30:20.022Z"
+        },
+        {
+          "submissionId": "submission_a5e2d6f1308942a0b0bc7e52d3ab56a9",
+          "message": "AORG-TEAM-TASK-REVISED-C-003\nRevised C.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:30:28.113Z"
+        },
+        {
+          "reviewId": "review_26d01282aef140b5b61f4c7f980b8503",
+          "reviewedSubmissionId": "submission_a5e2d6f1308942a0b0bc7e52d3ab56a9",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T22:30:30.689Z"
+        }
+      ],
+      "createdAt": "2026-09-01T22:30:08.267Z"
+    }
+  ]
+}

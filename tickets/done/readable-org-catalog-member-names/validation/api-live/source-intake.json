@@ -1,0 +1,11 @@
+{
+  "autobyteus-web/components/agentOrgs/AgentOrgCatalogMemberChips.vue": true,
+  "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue": true,
+  "autobyteus-web/components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts": true,
+  "autobyteus-web/components/agentOrgs/__tests__/AgentOrgExperience.spec.ts": true,
+  "autobyteus-web/docs/agent_orgs.md": true,
+  "autobyteus-web/localization/messages/en/agentOrgs.ts": true,
+  "autobyteus-web/localization/messages/zh-CN/agentOrgs.ts": true,
+  "autobyteus-web/services/agentOrgDefinition/__tests__/agentOrgDefinitionReferences.spec.ts": true,
+  "autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts": true
+}

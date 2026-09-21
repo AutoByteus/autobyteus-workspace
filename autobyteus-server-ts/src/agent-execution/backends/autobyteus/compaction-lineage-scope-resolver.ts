@@ -1,11 +1,5 @@
 import type { CompactionLineageScope } from "autobyteus-ts/memory/lineage/compaction-lineage-scope.js";
-
-type MemberTeamIdentity = {
-  identity: {
-    rootTeamRunId: string;
-    agentRunId: string;
-  };
-};
+import type { MemberExecutionContext } from "../../../agent-collaboration/execution/domain/member-execution-context.js";
 
 const requireText = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -15,12 +9,12 @@ const requireText = (value: string, fieldName: string): string => {
 
 export const resolveCompactionLineageScope = (
   runId: string,
-  memberTeamContext: MemberTeamIdentity | null | undefined,
-): CompactionLineageScope => memberTeamContext
+  memberExecutionContext: MemberExecutionContext | null | undefined,
+): CompactionLineageScope => memberExecutionContext?.identity.root.rootSubjectKind === "agent_team"
   ? {
       targetKind: "team_member",
-      runId: requireText(memberTeamContext.identity.rootTeamRunId, "rootTeamRunId"),
-      memberId: requireText(memberTeamContext.identity.agentRunId, "agentRunId"),
+      runId: requireText(memberExecutionContext.identity.root.rootRunId, "rootRunId"),
+      memberId: requireText(memberExecutionContext.identity.agentRunId, "agentRunId"),
     }
   : {
       targetKind: "agent_run",

@@ -1,0 +1,349 @@
+{
+  "entryHead": "7fde1faf10dffd9a01d3607e8d366f836f5d6e1b",
+  "sourceCheckpoint": "1cf011588db0d1f707519f0facce41c791951ed0",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 54,
+      "sha256": "c47468ba9665ea6cc242edeea5f16e5f0286b534aafab585320fd00c854b67e9"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/domain/memory-recording-models.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 90,
+      "sha256": "018cb467df4742bbc584d9f19d0bd0c4bd28b7af5419bb5af05e6d098cfcd137"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/domain/models.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 125,
+      "sha256": "2a87745b7a45cddf9c161f595ee80d7707d21be82a965ac046c70c7fd9efaed7"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 112,
+      "sha256": "c7aaebde54f51fac814ad55d09e17124a072e22ed17694ab910d15a6c043a9a4"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 237,
+      "sha256": "6250459e609c659940bc3c4f6308324a72c96d9ef972913a98ef6deabea3850c"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-payload.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 57,
+      "sha256": "898246667b57dcc0f37c10bfc65bc6e201db545a661e68ac3fa78d397a6b597d"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/store/external-runtime-memory-writer.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 113,
+      "sha256": "8b0c1527bdbbf6511831aa150f820ef1a90e6f5e37f7030e0841656932dbc871"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/converters/memory-view-converter.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 71,
+      "sha256": "12a03608af99da3193e233b7001db07981943da4e3a24978383faa648699f771"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/event-monitor-active-trace-page.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 115,
+      "sha256": "477497fafbaba54850a8dac5d56a5a2c3ff4e311305bda4fb32a62755fd756ef"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/memory-view.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 164,
+      "sha256": "616d66621cdada292e2bfbaf21a25ebdb85d487f65e728455ea3146e529b53ce"
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 107,
+      "sha256": "25b7b9729293f18cd3042cbac62ebef450ff0f6660315f97edd922af41e749bd"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/event-monitor-active-trace-page-projection.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 138,
+      "sha256": "ec9667d0c5fb11c978d0b284760354743a213be8669828b0fdf6240a798dd600"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/event-monitor-active-trace-page-types.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 78,
+      "sha256": "61dec2f6006f6b753ec25ac9770c5e896f35d7e10551ccd459feefbe44b75d26"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-identity.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 80,
+      "sha256": "7076aa6cde19e0fd0e349c7b36562193a837bd45d77836f9c8ba220325723ce5"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 90,
+      "sha256": "a8b10b746b0e4d99ce7717f71ad5ea8a6f9fbe4ee708b974945f9c193c6af8f6"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 252,
+      "sha256": "c33870fe73756c3cf0e4bcd97278471157d58c6e2f7207d6c635eb765a9ab1cd"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/run-projection-types.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 116,
+      "sha256": "65322a5732e420c35aeca22c980d63db256429f71219c415075d8190433edd57"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 44,
+      "sha256": "1f892168364ada8bc82d09c86012a26705d8a10326840b643d7099b5220f3cab"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 230,
+      "sha256": "056fe0f3d1341e27c8312c0d333907440d6ba43258f1c9a579bd89a90efa08ee"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 796,
+      "sha256": "e2d1e5945ab705f8020478bab8995fc7bc0cbc747867442d3ec83a054ef1fd7a"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/accepted-attachment-message.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 63,
+      "sha256": "8d7cb0a3e2c9a3c2a0ea226e674d8794829f30d5417c9b272888313cb7718723"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-memory/user-attachment-history.integration.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 193,
+      "sha256": "f1e7dc01f66414b2667c2818041d8fb7131f4f781156aecfc7546994b19fbabe"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 200,
+      "sha256": "aa3e332d0a5d2b14242d29a4f5bff24ea80f10b3c8b95755b4cdb257deaa7668"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 100,
+      "sha256": "e61f8aa798945de613e9ee1eb4f8c411bf28aea4f718e8a86c053594b2c23b17"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 364,
+      "sha256": "6019d18413f013a106869f51eb5b49f97b74311baf3ad5f1f42f450ab2ab82a3"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/projection/user-file-attachment-projection.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 58,
+      "sha256": "7314019cbe7f5ab8e101abdc447a7e8a1a21ecbf85827cfb7ad0a08708ee6f5a"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 43,
+      "sha256": "6cf70baf61fbcacd50133e04a760bb24eaa44d027f9a6c2c9735ce89a16cc2a3"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/message/agent-input-user-message.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 90,
+      "sha256": "cd1869666bc1f4f96c2c1a880891bddd61bdf12b930b4200e85b8db36022fc97"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/message/context-file-reference.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 37,
+      "sha256": "b383619d0676d7d33300c64e14156a133cd44805ee40b57cbfcfc7428eb8a6aa"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/message/index.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 26,
+      "sha256": "880434f2db58a07cd293c0faaeadb458a9d4f561ced1284abe0c222d73360a4c"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 490,
+      "sha256": "298a8dd677e1e0f3137259537821d7c00bafbeced29f53e896008673488df792"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/models/raw-trace-attachments.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 47,
+      "sha256": "8d86aebf683f28222d54cb67f8c2d7cad1a5e0b28bace291298f70d6f5a5d5c4"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/models/raw-trace-item.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 106,
+      "sha256": "b8e79d1730d30c91bc0bfc053dae6030dfced4623ac7fe12a94474b645c87d22"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/raw-trace-ingestion.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 148,
+      "sha256": "caffd578635912698751ada809dfb3a5cee9acb7f358d691eb47e80e1f3cb3b6"
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/gemini-read-media-file-m4a-live.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 153,
+      "sha256": "0ccd96987fba687188daf0c7e72ac6a4fd478e2b6d63b5884c4c65f8eeee0b7a"
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/memory-llm-flow.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 50,
+      "sha256": "147434314fbf857b5620c5180407bb1196290a288dc2e14b55699f458effd0c7"
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/memory-tool-call-flow.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 107,
+      "sha256": "baf6759110447039f89f008b8c1dad764c9fcf11dd20b7a558730540e5f40531"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 79,
+      "sha256": "5515b487a0385b31320d92f6e6bba53b7b23bc53725431005cb46344e8d71848"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 691,
+      "sha256": "7baf9c2d3f7b8b1c9cee6d6aff90c97af1fb1d48a387b9a28bc3abbf42629c49"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/user-file-attachments.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 114,
+      "sha256": "8674b023cbda1137d9212d0a89d0e8ba164c607d2a5ee4727a8a7dd318e5e086"
+    },
+    {
+      "path": "autobyteus-web/components/conversation/__tests__/UserMessageHistoryFiles.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 58,
+      "sha256": "5a43de6a73a34e6a70ee015a40e0e45a45993025974f30c1b03b1eef79226ff1"
+    },
+    {
+      "path": "autobyteus-web/generated/graphql.ts",
+      "deleted": false,
+      "kind": "generated",
+      "nonEmptyLines": 9219,
+      "sha256": "dfd52fa9954b9aa84d16497ff824d4d7f9450655c4981ae9e407f4ac78ed3b52"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/memoryViewQueries.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 131,
+      "sha256": "4890af70bcd33eb634c17a38fe9fb3b3789af69c751d67e1f8f11feede6d1ea6"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runHistoryQueries.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 342,
+      "sha256": "94b210cb382214e6e13cbbc2b4102cd87c075e16d22fa8fb50b3cb92c92f6aa1"
+    },
+    {
+      "path": "autobyteus-web/services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 137,
+      "sha256": "9c4d04cd8ea2d9da60d82aacd112969cb992144177e25c73c04ad479e7f2dea9"
+    },
+    {
+      "path": "autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 130,
+      "sha256": "9596225cfb2746e8e1e4fd6421b74390ed5e193b3b5fb979819a3110988fb4da"
+    },
+    {
+      "path": "autobyteus-web/services/runHydration/runProjectionConversation.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 309,
+      "sha256": "3ba20e17a9cdd62fcfaa387c47e0c418e972109c74912af6e3465d280cb78478"
+    },
+    {
+      "path": "autobyteus-web/types/memory.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 146,
+      "sha256": "78ed736c3a8bbe397d31734dc8eb83b3203dffa53dd2f4d2af050ea9fc0dcf2b"
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 288,
+      "sha256": "7f8b89162937c4f8327cb6053d77cc119eb21f6eec77fb34baa9c6ad2d7f9c6c"
+    }
+  ]
+}

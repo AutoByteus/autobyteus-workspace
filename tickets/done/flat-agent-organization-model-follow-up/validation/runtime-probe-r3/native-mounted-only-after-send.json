@@ -1,0 +1,24 @@
+{
+  "pid": 96474,
+  "at": "2026-09-14T10:17:42.810Z",
+  "active": [
+    {
+      "runId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81"
+      }
+    }
+  ],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81",
+      "startedAt": "2026-09-14T10:17:33.086Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81"
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+AD-REV-001 additional read-only original first inter-Agent input trace
+Pin: 5645b49d6f51faa60bd3545bc8e3f0e7e3f96793
+No original executable run or current source edit.
+
+=== autobyteus-server-ts/src/services/team-communication/team-communication-service.ts
+blob f62b3850142a22baf8c1e0e3ebbef7d83474bf75; sha256 e6b200486b54aea1e55fb31dedf5881a3db8dee227521777f54d190d555d1d05
+   46:   async deliver(input: {
+   47:     intent: InterAgentMessageDeliveryIntent;
+   48:     receiverIdentity: TeamMemberExecutionIdentity;
+   49:     receiverDisplayName: string;
+   50:   }): Promise<AgentOperationResult> {
+   51:     const { intent, receiverIdentity } = input;
+   52:     const senderIdentity = intent.sender.participant.identity;
+   53:     if (!this.accepting || intent.rootTeamRunId !== this.options.rootTeamRunId) {
+   54:       return { accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: `Root TeamRun '${this.options.rootTeamRunId}' is not accepting messages.` };
+   55:     }
+   56:     if (!this.options.isCurrentAgent(senderIdentity) || !this.options.isCurrentAgent(receiverIdentity)) {
+   57:       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "Sender and receiver must be exact live executions in the same root TeamRun." };
+   58:     }
+   59:     if (senderIdentity.agentRunId === receiverIdentity.agentRunId) {
+   60:       return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An AgentRun cannot send an ordinary Team message to itself." };
+   61:     }
+   62:     const createdAt = new Date().toISOString();
+   63:     const message: TeamCommunicationMessageV1 = Object.freeze({
+   64:       messageId: messageId({
+   65:         rootTeamRunId: this.options.rootTeamRunId,
+   66:         senderAgentRunId: senderIdentity.agentRunId,
+   67:         receiverAgentRunId: receiverIdentity.agentRunId,
+   68:         content: intent.content,
+   69:         createdAt,
+   70:       }),
+   71:       senderAgentRunId: senderIdentity.agentRunId,
+   72:       receiverAgentRunId: receiverIdentity.agentRunId,
+   73:       content: intent.content,
+   74:       messageType: intent.messageType?.trim() || "agent_message",
+   75:       referenceFiles: Object.freeze([...(intent.referenceFiles ?? [])]),
+   76:       createdAt,
+   77:     });
+   78:     const request: ResolvedInterAgentMessageDeliveryRequest = Object.freeze({
+   79:       ...intent,
+   80:       recipient: buildDeliveryEndpointForParticipant(Object.freeze({
+   81:         kind: "agent",
+   82:         identity: receiverIdentity,
+   83:         displayName: input.receiverDisplayName,
+   84:       })),
+   85:       senderIdentity,
+   86:       receiverIdentity,
+   87:       parentCommunicationMessageId: message.messageId,
+   88:     });
+   89:     const receiverRun = await this.options.requireContainingTeamRun(receiverIdentity.agentRunId);
+   90:     const inputMessage = buildInterAgentDeliveryInputMessage(request);
+   91:     const reservationResult = await receiverRun.reserveDirectAgentInput(receiverIdentity.agentRunId, inputMessage);
+   92:     if (!reservationResult.reserved) return { accepted: false, code: reservationResult.code, message: reservationResult.message };
+   93:     const plan = createTeamCommunicationMessageAppendPlan({
+   94:       rootTeamRunId: this.options.rootTeamRunId,
+   95:       message,
+   96:       inputMessage,
+   97:       reservation: reservationResult.reservation,
+   98:       isAccepting: () => this.accepting,
+   99:       getCurrent: () => this.current,
+  100:       replaceCurrent: (messages) => {
+  101:         this.current = messages;
+  102:         this.options.replaceSnapshot(messages);
+  103:       },
+  104:       publish: (event) => this.options.publish(event),
+  105:     });
+  106:     let result: TeamMessageCommitResult;
+  107:     try {
+  108:       result = await this.options.commit(plan);
+  109:     } catch (error) {
+  110:       if (error instanceof TeamRunPersistenceFailStoppedError) plan.disposeAfterRootFailStop();
+  111:       throw error;
+  112:     }
+  113:     if (result.outcome === "finalization_indeterminate") {
+  114:       plan.disposeAfterRootFailStop();
+  115:     }
+  116:     return this.mapCommitResult(result, receiverIdentity, input.receiverDisplayName);
+
+=== autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+blob d6707e7375da317a8993170a76713840dee52c3d; sha256 288242159bbde21d27097ac914bdd45ca6f12973183466016719bd736c426d88
+  446:   private isCurrentAgent(identity: TeamMemberExecutionIdentity): boolean {
+  447:     if (identity.rootTeamRunId !== this.teamRunId) return false;
+  448:     const execution = this.index.getAgent(identity.agentRunId);
+  449:     return !!execution && execution.address === identity.memberAddress && this.index.isLiveAgent(identity.agentRunId);
+  450:   }
+  451:
+  452:   private async requireTeamRun(teamRunId: string): Promise<TeamRun> {
+  453:     const indexed = this.index.requireTeam(teamRunId);
+  454:     const active = this.teamRunResolver.getActive(teamRunId);
+  455:     if (active) return active;
+  456:     if (indexed.executionKind !== "configured") {
+  457:       throw new Error(`Task TeamRun '${teamRunId}' is not active.`);
+  458:     }
+  459:     return this.teamRunResolver.requireConfigured(teamRunId);
+  460:   }
+
+=== autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+blob cb7af6ffbd3777628e6da3840b6600ea3fa4999c; sha256 53aad9d3222a0339d8936909cf7032397216eae504b5b5cca71f31242c2f46e5
+   95:   isActive(): boolean { return this.lifecycle === "active" || this.lifecycle === "quiescing"; }
+   96:   isTerminated(): boolean { return this.lifecycle === "terminated"; }
+   97:
+   98:   getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[] {
+   99:     if (!this.isActive()) return [];
+  100:     const handles = new Map(this.configured.listHandles().map((handle) => [handle.context.address, handle]));
+  101:     const configured = this.context.runtimeContext.memberContexts.flatMap((member) => {
+  102:       const handle = handles.get(member.address);
+  103:       if (handle) return handle.getLeafAgentStatusSnapshots();
+  104:       if (member.kind === "agent") return [this.offline(member.address, member.agentRunId)];
+  105:       return this.offlineConfiguredTeam(member.address);
+  106:     });
+  107:     return [
+  108:       ...configured,
+  109:       ...this.taskAgents.listHandles().flatMap((handle) => handle.getLeafAgentStatusSnapshots()),
+  110:       ...this.taskTeams.listTeamRuns().flatMap((run) => run.getLeafAgentStatusSnapshots()),
+  133:   reserveDirectAgentInput(
+  134:     agentRunId: string,
+  135:     message: AgentInputUserMessage,
+  136:     options: AgentRunInputOptions = {},
+  137:   ): Promise<AgentRunInputReservationResult> {
+  138:     this.assertActive();
+  139:     const task = this.taskAgents.get(agentRunId);
+  140:     if (task) return task.reserveInput(message, options);
+  141:     const handle = this.getConfiguredAgent(agentRunId);
+  142:     if (!handle) return Promise.resolve({
+  143:       reserved: false,
+  144:       code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+  145:       message: `AgentRun '${agentRunId}' is not a direct execution of TeamRun '${this.context.teamRunId}'.`,
+  146:     });
+  147:     return handle.reserveInput(message, options);
+  148:   }
+  149:
+  150:   async deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult> {
+  151:     this.assertActive();
+  152:     const task = this.taskAgents.get(agentRunId);
+  153:     if (task) return task.postMessage(message);
+  154:     const handle = this.getConfiguredAgent(agentRunId);
+  155:     return handle
+  156:       ? handle.postMessage(message)
+  157:       : { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not direct to TeamRun '${this.context.teamRunId}'.` };
+  394:   private getConfiguredAgent(agentRunId: string): MixedAgentMemberHandle | null {
+  395:     const member = this.context.runtimeContext.memberContexts.find((candidate) =>
+  396:       candidate.kind === "agent" && candidate.agentRunId === agentRunId,
+  397:     );
+  398:     if (!member || member.kind !== "agent") return null;
+  399:     const handle = this.configured.getOrCreate(member);
+  400:     return handle instanceof MixedAgentMemberHandle ? handle : null;
+
+=== autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+blob 4050a3cda7d8be7b3a0993b520d2bb1a8943dbf5; sha256 698b6fd93a6a6a5da7861f09882a0e8a3a9b1b0ebca5480ccd55522bacc19123
+   58: export class MixedAgentMemberHandle {
+   59:   readonly context: MixedAgentMemberContext;
+   60:   private agentRun: AgentRun | null = null;
+   61:   private readinessAttempt: Promise<AgentRun> | null = null;
+   62:   private unsubscribe: (() => void) | null = null;
+   63:   private readonly overlay: MemberCommandStatusOverlayStore;
+   64:
+   65:   constructor(private readonly options: {
+   66:     teamContext: TeamRunContext<MixedTeamRunContext>;
+   67:     context: MixedAgentMemberContext;
+   68:     config: TeamRunAgentNode;
+   69:     activationMode: MixedConfiguredMemberActivationMode;
+   70:     agentRunManager?: AgentRunManager;
+   71:     memoryLocationService?: AgentMemoryLocationService;
+   72:     activityInspector?: AgentConversationActivityInspector;
+   73:     memberTeamContextBuilder?: MemberTeamContextBuilder;
+   74:     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+   75:     taskRootResolver: MemberTaskRootResolver;
+   76:     publish: MixedTeamEventPublish;
+   77:     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
+   78:     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
+   79:     resolveIdentityByAgentRunId?: (agentRunId: string) => TeamMemberExecutionIdentity | null;
+   80:   }) {
+   81:     this.context = options.context;
+   82:     this.overlay = new MemberCommandStatusOverlayStore({ publishEvent: options.publish });
+   83:   }
+   84:
+   85:   isActive(): boolean { return this.agentRun?.isActive() ?? false; }
+   86:   hasOpenExecutionWork(): boolean { return ["initializing", "running", "error"].includes(this.statusSnapshot().details.status); }
+   87:   getLeafAgentStatusSnapshots() { return [this.statusSnapshot()]; }
+   88:   getOrCreateAgentRun(): Promise<AgentRun> { return this.ensureReady(); }
+   89:
+   90:   async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
+   91:     return (await this.ensureReady()).reserveUserMessage(message, options);
+   92:   }
+   93:
+   94:   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+   95:     this.publishCommandStatus("initializing");
+   96:     try {
+   97:       const run = await this.ensureReady();
+   98:       const result = await run.postUserMessage(message);
+  221:   private ensureReady(): Promise<AgentRun> {
+  222:     if (this.agentRun?.isActive()) return Promise.resolve(this.agentRun);
+  223:     if (this.readinessAttempt) return this.readinessAttempt;
+  224:     let retrySafe = false;
+  225:     const attempt = this.initializeReady(() => { retrySafe = true; });
+  226:     this.readinessAttempt = attempt;
+  227:     void attempt.then(() => {
+  228:       if (this.readinessAttempt === attempt) this.readinessAttempt = null;
+  229:     }, () => {
+  230:       if (retrySafe && this.readinessAttempt === attempt) this.readinessAttempt = null;
+  231:     });
+  232:     return attempt;
+  233:   }
+  234:
+  235:   private async initializeReady(markRetrySafe: () => void): Promise<AgentRun> {
+  236:     this.unsubscribe?.();
+  237:     this.unsubscribe = null;
+  238:     let candidate: AgentRunActivationCandidate | null = null;
+  239:     try {
+  240:       const config = await this.buildAgentRunConfig();
+  241:       const plan = this.resolveActivationPlan(config);
+  242:       candidate = await this.prepareCandidate(plan, config);
+  243:       const binding = this.createExternalBinding(candidate);
+  244:       if (binding) {
+  245:         await this.options.acceptPlatformBinding(binding);
+  246:         this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
+  247:       }
+  248:       const run = candidate.commitPublication();
+  249:       this.bindEvents(run);
+  250:       this.agentRun = run;
+  251:       return run;
+
+=== autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+blob c3389a27c8796fd6ccdbb93841e18ddb4fca9243; sha256 ad154b453d1398c3f0fe6825eae1bad72ec85ab2057420a75c1b0143f63e41a8
+   67:   private ensureReady(): Promise<TeamRun> {
+   68:     if (this.childRun?.isActive()) return Promise.resolve(this.childRun);
+   69:     if (this.materializationAttempt) return this.materializationAttempt;
+   70:     let retrySafe = false;
+   71:     const attempt = Promise.resolve().then(() => this.materializeOnce(() => { retrySafe = true; }));
+   72:     this.materializationAttempt = attempt;
+   73:     void attempt.then(() => {
+   74:       if (this.materializationAttempt === attempt) this.materializationAttempt = null;
+   75:     }, () => {
+   76:       if (retrySafe && this.materializationAttempt === attempt) this.materializationAttempt = null;
+   77:     });
+   78:     return attempt;
+   79:   }
+   80:
+   81:   private async materializeOnce(markRetrySafe: () => void): Promise<TeamRun> {
+   82:     let childRun: TeamRun;
+   83:     try {
+   84:       childRun = await this.options.subTeamRunFactory.materializeConfiguredChild({
+   85:         parentContext: this.options.parentContext,
+   86:         teamNode: this.options.config,
+   87:         configuredMemberActivationMode: this.options.parentContext.runtimeContext.configuredMemberActivationMode,
+   88:       });
+   89:     } catch (error) {
+   90:       markRetrySafe();
+   91:       throw error;
+   92:     }
+   93:     if (childRun.teamRunId !== this.context.teamRunId || !childRun.isActive()) {
+   94:       throw new Error(`Configured TeamRun '${this.context.teamRunId}' did not materialize exactly.`);
+   95:     }
+   96:     const childRuntimeContext = childRun.getRuntimeContext() as MixedTeamRunContext;
+   97:     this.childRun = childRun;
+   98:     this.context.childRuntimeContext = childRuntimeContext;
+   99:     return childRun;

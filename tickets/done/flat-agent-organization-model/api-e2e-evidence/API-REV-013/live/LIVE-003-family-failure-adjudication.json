@@ -1,0 +1,55 @@
+{
+  "classification": "Pass after API/E2E selector correction",
+  "staleAssertions": {
+    "orgFailureObserved": true,
+    "workspaceFailureObserved": true,
+    "orgRetainedTeamFamily": true,
+    "orgRetainedOrgFamily": false,
+    "orgRecovered": true,
+    "workspaceRetainedTeamFamily": true,
+    "workspaceRetainedOrgFamily": false,
+    "workspaceRecovered": true,
+    "singleUnifiedHistoryPanel": false
+  },
+  "correction": "Current unified tree Org run row is identified by summary rather than Org-definition text, and the panel contains nested semantic sections; exact visible family labels/content, not raw section count, are the approved observable boundary.",
+  "assertions": {
+    "orgFailureIntercepted": true,
+    "orgFailureVisibleAndBothFamiliesRetained": true,
+    "orgRecoveredWithoutReload": true,
+    "workspaceFailureIntercepted": true,
+    "workspaceFailureVisibleAndBothFamiliesRetained": true,
+    "workspaceRecoveredWithoutReload": true,
+    "oneUnifiedHistorySurface": true
+  },
+  "events": [
+    {
+      "label": "baseline",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "red": []
+    },
+    {
+      "label": "org-failed-retained",
+      "historyText": "Workspaces\nResponse not successful: Received status code 500\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "red": [
+        "Response not successful: Received status code 500"
+      ]
+    },
+    {
+      "label": "org-recovered",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "red": []
+    },
+    {
+      "label": "workspace-failed-retained",
+      "historyText": "Workspaces\nResponse not successful: Received status code 500\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "red": [
+        "Response not successful: Received status code 500"
+      ]
+    },
+    {
+      "label": "workspace-recovered",
+      "historyText": "Workspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default",
+      "red": []
+    }
+  ]
+}

@@ -1,0 +1,707 @@
+diff --cc autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+index 6be849f0a,7ae408166..000000000
+--- a/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+@@@ -1,25 -1,69 +1,69 @@@
+  import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ -import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+ -import type { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
+ -import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../../agent-execution/input/agent-run-input-contract.js";
+ -import type { PrepareTaskAgentInput } from "../../../domain/task-agent-execution.js";
+ -import type { PreparedTaskExecution } from "../../../domain/prepared-task-execution.js";
+ -import type { PreparedTaskSettlement } from "../../../domain/prepared-task-settlement.js";
+ -import type { TeamRunContext } from "../../../domain/team-run-context.js";
+ -import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
+ -import { MixedAgentMemberContext, type MixedTeamRunContext } from "../mixed-team-run-context.js";
+ -import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
+ -import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
+ -import type { TeamAgentPlatformBinding } from "../../../domain/team-agent-platform-binding.js";
+ -import type { AgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
+ -import type { AgentConversationActivityInspector } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
+ -import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
+ -import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
+ -import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
+ +import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+ +import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
+ +import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
+ +import type { PrepareTaskAgentInput } from "../../domain/task-agent-execution.js";
+ +import type { PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
+ +import type { PreparedTaskSettlement } from "../../domain/prepared-task-settlement.js";
+ +import type { TeamRunContext } from "../../domain/team-run-context.js";
+ +import { FlatAgentExecutionContext, type FlatTeamExecutionContext } from "../flat-team-execution-context.js";
+ +import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
+ +import type { RootedAgentMemoryLocator } from "../../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+ +import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
+ +import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
+ +import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
+  
+  type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
++ type TaskAgentDurabilityEventGateState = "prepared" | "releasing" | "live" | "aborted";
++ type TaskAgentDurabilityEvent = Parameters<MixedTeamEventPublish>[0];
++ 
++ /** Keeps task-Agent events private until the durable activation is externally visible. */
++ export class TaskAgentDurabilityEventGate {
++   private state: TaskAgentDurabilityEventGateState = "prepared";
++   private readonly retainedEvents: TaskAgentDurabilityEvent[] = [];
++ 
++   constructor(private readonly forward: MixedTeamEventPublish) {}
++ 
++   readonly publish = (event: TaskAgentDurabilityEvent): void => {
++     if (this.state === "aborted") return;
++     if (this.state === "live") {
++       this.forward(event);
++       return;
++     }
++     this.retainedEvents.push(event);
++   };
++ 
++   releaseToLive(): boolean {
++     if (this.state !== "prepared") return this.state === "live";
++     this.state = "releasing";
++     while (this.state === "releasing") {
++       const event = this.retainedEvents.shift();
++       if (!event) {
++         this.state = "live";
++         return true;
++       }
++       this.forward(event);
++     }
++     return false;
++   }
++ 
++   abort(): void {
++     if (this.state === "aborted") return;
++     this.state = "aborted";
++     this.retainedEvents.length = 0;
++   }
++ }
+  
+  /** Direct task-Agent mechanics for one TeamRun; task policy remains root-owned. */
+ -export class MixedTaskAgentExecutionRegistry {
+ -  private readonly active = new Map<string, MixedAgentMemberHandle>();
+ +export class TaskAgentExecutionRegistry {
+ +  private readonly active = new Map<string, FlatTeamAgentExecutionHandle>();
+    private readonly reserved = new Set<string>();
+++<<<<<<< HEAD:autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+ +  private readonly preparedHandles = new Map<string, FlatTeamAgentExecutionHandle>();
+++=======
++   private readonly preparedHandles = new Map<string, MixedAgentMemberHandle>();
++   private readonly eventGates = new Map<string, TaskAgentDurabilityEventGate>();
+++>>>>>>> origin/personal:autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+    private readonly settling = new Set<string>();
+    private materializationOpen = true;
+  
+@@@ -47,9 -95,10 +91,14 @@@
+        throw new Error(`Task AgentRun '${runId}' is already active or reserved.`);
+      }
+      this.reserved.add(runId);
+++<<<<<<< HEAD:autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+ +    const handle = new FlatTeamAgentExecutionHandle({
+++=======
++     const eventGate = new TaskAgentDurabilityEventGate(this.options.publish);
++     const handle = new MixedAgentMemberHandle({
+++>>>>>>> origin/personal:autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+        teamContext: this.options.teamContext,
+ -      context: new MixedAgentMemberContext({
+ +      context: new FlatAgentExecutionContext({
+          address: input.address,
+          agentRunId: runId,
+          runtimeKind: input.sourceNode.runtimeKind,
+@@@ -58,19 -107,26 +107,29 @@@
+        config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
+        activationMode: "fresh",
+        agentRunManager: this.options.agentRunManager,
+ -      memoryLocationService: this.options.memoryLocationService,
+ +      memoryLocator: this.options.memoryLocator,
+        activityInspector: this.options.activityInspector,
+ -      memberTeamContextBuilder: this.options.memberTeamContextBuilder,
+        workspaceManager: this.options.workspaceManager,
+++<<<<<<< HEAD:autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+ +      callbacks: this.options.callbacks,
+++=======
++       taskRootResolver: this.options.taskRootResolver,
++       publish: eventGate.publish,
++       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
++       acceptPlatformBinding: this.options.acceptPlatformBinding,
+++>>>>>>> origin/personal:autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+      });
+      this.preparedHandles.set(runId, handle);
++     this.eventGates.set(runId, eventGate);
+      let state: PreparedState = "preparing";
+ -    let activation!: Awaited<ReturnType<MixedAgentMemberHandle["prepareForTaskActivation"]>>;
+ +    let activation!: Awaited<ReturnType<FlatTeamAgentExecutionHandle["prepareConfiguredActivation"]>>;
+      try {
+ -      activation = await handle.prepareForTaskActivation();
+ +      activation = await handle.prepareConfiguredActivation();
+      } catch (error) {
++       eventGate.abort();
+        this.reserved.delete(runId);
+        this.preparedHandles.delete(runId);
++       this.eventGates.delete(runId);
+        handle.dispose();
+        throw error;
+      }
+@@@ -93,6 -149,8 +152,11 @@@
+            releaseWork: () => {
+              if (released) return;
+              released = true;
+++<<<<<<< HEAD:autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+++=======
++             if (!eventGate.releaseToLive()) return;
++             this.eventGates.delete(runId);
+++>>>>>>> origin/personal:autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+              queueMicrotask(() => { void handle.postMessage(input.message); });
+            },
+          });
+@@@ -100,8 -158,10 +164,13 @@@
+        abort: async () => {
+          if (state === "committed" || state === "aborted") return;
+          state = "aborted";
++         eventGate.abort();
+          this.reserved.delete(runId);
+          this.preparedHandles.delete(runId);
+++<<<<<<< HEAD:autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+++=======
++         this.eventGates.delete(runId);
+++>>>>>>> origin/personal:autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+          try { await activation.abort(); } finally { handle.dispose(); }
+        },
+      };
+diff --cc autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+index c071de831,dfe432a51..000000000
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+@@@ -2,16 -2,23 +2,28 @@@ import { describe, expect, it, vi } fro
+  import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+  import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+  import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+++<<<<<<< HEAD:autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ +import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+ +import { TaskAgentExecutionRegistry } from "../../../src/agent-team-execution/local/registries/task-agent-execution-registry.js";
+ +import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
+++=======
++ import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
++ import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
++ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
++ import {
++   MixedTaskAgentExecutionRegistry,
++   TaskAgentDurabilityEventGate,
++ } from "../../../src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.js";
++ import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+  import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
++ import type { TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+  import {
+ -  createChildTeamRunPhysicalScope,
+ -  createRootTeamRunPhysicalScope,
+ -} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
+ +  createRootExecutionPhysicalScope,
+ +  createTeamRootExecutionIdentity,
+ +} from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+  import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+  import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ -import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
+  import {
+    testAgentNode,
+    testAgentTeamNode,
+@@@ -19,7 -26,48 +31,52 @@@
+    testTeamRunConfig,
+  } from "../../fixtures/current-team-run-fixtures.js";
+  
+++<<<<<<< HEAD:autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ +describe("TaskAgentExecutionRegistry task-agent memory", () => {
+++=======
++ const opaqueTeamEvent = (marker: string): TeamRunEvent => ({ marker } as unknown as TeamRunEvent);
++ 
++ describe("TaskAgentDurabilityEventGate", () => {
++   it("drains prepared and synchronous reentrant events in FIFO order before forwarding live events", () => {
++     const first = opaqueTeamEvent("first");
++     const second = opaqueTeamEvent("second");
++     const reentrant = opaqueTeamEvent("reentrant");
++     const live = opaqueTeamEvent("live");
++     const forwarded: TeamRunEvent[] = [];
++     let gate!: TaskAgentDurabilityEventGate;
++     gate = new TaskAgentDurabilityEventGate((event) => {
++       forwarded.push(event);
++       if (event === first) gate.publish(reentrant);
++     });
++ 
++     gate.publish(first);
++     gate.publish(second);
++     expect(forwarded).toEqual([]);
++ 
++     expect(gate.releaseToLive()).toBe(true);
++     expect(forwarded).toEqual([first, second, reentrant]);
++ 
++     gate.publish(live);
++     expect(forwarded).toEqual([first, second, reentrant, live]);
++     expect(gate.releaseToLive()).toBe(true);
++     expect(forwarded).toEqual([first, second, reentrant, live]);
++   });
++ 
++   it("drops retained and future events when aborted and never releases", () => {
++     const forward = vi.fn();
++     const gate = new TaskAgentDurabilityEventGate(forward);
++ 
++     gate.publish(opaqueTeamEvent("retained"));
++     gate.abort();
++     gate.publish(opaqueTeamEvent("after-abort"));
++ 
++     expect(gate.releaseToLive()).toBe(false);
++     expect(forward).not.toHaveBeenCalled();
++   });
++ });
++ 
++ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+    it("keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit", async () => {
+      const workerNode = testAgentNode("/review/worker", {
+        agentRunId: "worker-template-run",
+@@@ -89,29 -141,33 +150,46 @@@
+          abort: async () => ({ kind: "aborted" as const }),
+        };
+      });
+ -    const memoryLocationService = new AgentMemoryLocationService({
+ -      memoryDir: appConfigProvider.config.getMemoryDir(),
+ -      locationService: createStoredTeamRunExecutionTreeLocationService(
+ -        appConfigProvider.config.getMemoryDir(),
+ -      ),
+ -    });
+ -    const getTeamAgentRunLocation = vi.spyOn(
+ -      memoryLocationService,
+ -      "getTeamAgentRunLocation",
+ -    );
+ +    const memoryRoot = appConfigProvider.config.getMemoryDir();
+ +    const getRootedLocation = vi.fn((scope: typeof physicalScope, agentRunId: string) => ({
+ +      scope,
+ +      agentRunId,
+ +      memoryDir: new AgentMemoryLayout(memoryRoot).getRootedAgentRunDirPath(scope, agentRunId),
+ +    }));
+      const taskAgentRunId = "worker_00000000000000000000000000000001";
+++<<<<<<< HEAD:autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ +    const registry = new TaskAgentExecutionRegistry({
+++=======
++     const publish = vi.fn((_event: TeamRunEvent) => undefined);
++     const registry = new MixedTaskAgentExecutionRegistry({
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+        teamContext,
+        agentRunManager: { prepareNewAgentRun } as never,
+ -      memoryLocationService,
+ +      memoryLocator: {
+ +        getLocation: getRootedLocation,
+ +      } as never,
+        activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
+++<<<<<<< HEAD:autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ +      callbacks: {
+ +        buildMemberExecutionContext: vi.fn(async () => testMemberExecutionContext({
+++=======
++       memberTeamContextBuilder: {
++         build: vi.fn(async ({ agentNode }: { agentNode: { agentRunId: string } }) => testMemberTeamContext({
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+            rootTeamRunId: config.rootTeam.teamRunId,
+            memberAddress: workerNode.address,
+-           agentRunId: taskAgentRunId,
++           agentRunId: agentNode.agentRunId,
+          })),
+++<<<<<<< HEAD:autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ +        publishAgentEvent: vi.fn(),
+ +        acceptPlatformBinding: vi.fn(async () => undefined),
+ +      },
+++=======
++       } as never,
++       publish,
++       deliverInterAgentMessage: vi.fn(),
++       acceptPlatformBinding: vi.fn(async () => undefined),
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+      });
+      const message = new AgentInputUserMessage("start task", SenderType.USER);
+  
+@@@ -150,8 -249,37 +268,34 @@@
+          }),
+        }),
+      );
+ -    expect(getTeamAgentRunLocation).toHaveBeenCalledWith({
+ -      ...physicalScope,
+ -      agentRunId: taskAgentRunId,
+ -    });
+ +    expect(getRootedLocation).toHaveBeenCalledWith(physicalScope, taskAgentRunId);
+      expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).not.toBe("/tmp/template-member-memory-dir");
++ 
++     const disposedTaskAgentRunId = "worker_00000000000000000000000000000002";
++     const disposedMessage = new AgentInputUserMessage("must not start", SenderType.USER);
++     const disposedPrepared = await registry.prepare({
++       taskId: "task_0002",
++       address: workerNode.address,
++       agentRunId: disposedTaskAgentRunId,
++       sourceNode: workerNode,
++       message: disposedMessage,
++     });
++     disposedPrepared.sealForCommit();
++     const disposedCommitted = disposedPrepared.commitAfterDurability();
++     expect(eventListeners).toHaveLength(2);
++     const publishedBeforeDisposedRelease = publish.mock.calls.length;
++     eventListeners[1]?.({
++       eventType: AgentRunEventType.TURN_STARTED,
++       runId: disposedTaskAgentRunId,
++       payload: { turn_id: "turn-disposed" },
++       statusHint: "ACTIVE",
++     } satisfies AgentRunEvent);
++     expect(publish).toHaveBeenCalledTimes(publishedBeforeDisposedRelease);
++ 
+      registry.dispose();
++     disposedCommitted.releaseWork();
++     await Promise.resolve();
++     expect(postedMessages).toEqual([message]);
++     expect(publish).toHaveBeenCalledTimes(publishedBeforeDisposedRelease);
+    });
+  });
+diff --cc autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+index 640a54e8e,9438d621e..000000000
+--- a/autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
++++ b/autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+@@@ -1,59 -1,187 +1,224 @@@
+  <template>
+++<<<<<<< HEAD
+ +  <TeamWorkspaceSurface
+ +    v-if="target"
+ +    :target="target"
+ +    :show-header-actions="true"
+ +    :recovery-notice="streamRecoveryNotice"
+ +    @new-team="createNewTeamRun"
+ +    @edit-config="openSelectedTeamConfig"
+ +  />
+ +  <div v-else class="flex h-full items-center justify-center bg-gray-50 p-8 text-center text-gray-500">
+ +    <div>
+ +      <h3 class="text-lg font-medium text-gray-900">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.no_active_team_runs') }}</h3>
+ +      <p class="mx-auto mt-2 max-w-md">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.this_team_profile_has_no_running') }}</p>
+++=======
++   <div class="flex flex-col h-full bg-white">
++     <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-gray-200 flex-shrink-0 sm:px-4">
++       <div class="flex items-center space-x-3 min-w-0 flex-1">
++         <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center">
++           <img
++             v-if="showHeaderAvatarImage"
++             :src="headerAvatarUrl"
++             :alt="`${headerTitle || 'Team member'} avatar`"
++             class="h-full w-full object-cover"
++             @error="headerAvatarLoadError = true"
++           />
++           <span v-else class="text-[0.625rem] font-semibold tracking-wide text-slate-600">
++             {{ headerAvatarInitials }}
++           </span>
++         </div>
++         <div v-if="activeTeamContext" class="min-w-0 flex-1">
++           <div class="flex min-w-0 items-center gap-2">
++             <h4 class="truncate text-base font-medium text-gray-800" :title="headerTitle">
++               {{ headerTitle }}
++             </h4>
++             <span
++               v-if="focusedTask"
++               class="shrink-0 rounded-full bg-indigo-100 px-2 py-0.5 text-[0.6875rem] font-semibold text-indigo-700"
++             >{{ $t('workspace.task_monitor.task') }}</span>
++             <AgentStatusDisplay v-if="headerStatus" :status="headerStatus" variant="compact" />
++           </div>
++           <p
++             v-if="focusedTask"
++             class="truncate text-xs text-slate-500"
++             :title="focusedTask.description"
++           >{{ focusedTask.description }}</p>
++           <p
++             v-if="focusedTaskStatus"
++             class="text-xs font-medium text-slate-600"
++             data-test="team-workspace-task-status"
++           >{{ focusedTaskStatus }}</p>
++         </div>
++       </div>
++ 
++       <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
++         <WorkspaceHeaderActions
++           @new-agent="createNewTeamRun"
++           @edit-config="openSelectedTeamConfig"
++         />
++       </div>
++     </div>
++ 
++     <div
++       v-if="streamRecoveryNotice"
++       role="alert"
++       class="mx-3 mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-900 sm:mx-4"
++     >
++       {{ $t('workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required') }}
++     </div>
++ 
++     <div v-if="activeTeamContext" class="flex min-h-0 flex-grow flex-col">
++       <div class="min-h-0 flex-grow">
++         <AgentTeamEventMonitor>
++           <template #composerContext>
++             <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
++           </template>
++         </AgentTeamEventMonitor>
++       </div>
++     </div>
++ 
++     <div v-else class="flex-grow flex items-center justify-center p-8 text-center text-gray-500 bg-gray-50">
++       <div>
++         <h3 class="text-lg font-medium text-gray-900">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.no_active_team_runs') }}</h3>
++         <p class="mt-2 max-w-md mx-auto">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.this_team_profile_has_no_running') }}</p>
++       </div>
+++>>>>>>> origin/personal
+      </div>
+    </div>
+  </template>
+  
+  <script setup lang="ts">
+++<<<<<<< HEAD
+ +import { computed, onMounted } from 'vue'
+ +import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
+ +import { useActiveContextStore } from '~/stores/activeContextStore'
+ +import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+ +import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+ +import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
+ +import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
+ +import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+ +import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
+ +import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+ +import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults'
+ +
+ +const active = useActiveContextStore()
+ +const definitions = useAgentDefinitionStore()
+ +const teamRunConfig = useTeamRunConfigStore()
+ +const teamRuns = useAgentTeamRunStore()
+ +const agentRunConfig = useAgentRunConfigStore()
+ +const selection = useAgentSelectionStore()
+ +const center = useWorkspaceCenterViewStore()
+ +const teamContexts = useAgentTeamContextsStore()
+ +const target = computed(() => active.activeWorkspaceTarget?.kind === 'standalone_team_member'
+ +  ? active.activeWorkspaceTarget
+ +  : null)
+ +const streamRecoveryNotice = computed(() => target.value
+ +  && teamRuns.getTeamStreamRecoveryNotice(target.value.team.rootRunId)
+ +  ? 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.'
+ +  : null)
+++=======
++ import { computed, onMounted, ref, watch } from 'vue';
++ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
++ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
++ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
++ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
++ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
++ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
++ import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
++ import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
++ import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
++ import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
++ import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue';
++ import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
++ import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
++ import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
++ import { useLocalization } from '~/composables/useLocalization';
++ 
++ const teamContextsStore = useAgentTeamContextsStore();
++ const agentDefinitionStore = useAgentDefinitionStore();
++ const teamRunConfigStore = useTeamRunConfigStore();
++ const agentTeamRunStore = useAgentTeamRunStore();
++ const agentRunConfigStore = useAgentRunConfigStore();
++ const selectionStore = useAgentSelectionStore();
++ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
++ const headerAvatarLoadError = ref(false);
++ const { t } = useLocalization();
++ const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
++ const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
++ 
++ const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
++ const streamRecoveryNotice = computed(() => {
++   const rootTeamRunId = activeTeamContext.value?.view.getRootTeamRunId();
++   return rootTeamRunId ? agentTeamRunStore.getTeamStreamRecoveryNotice(rootTeamRunId) : null;
++ });
++ const focusedMemberContext = computed(() => activeTeamContext.value?.view.getFocusedAgentContext() ?? null);
++ const focusedMemberAddress = computed(() => activeTeamContext.value?.view.getFocusedMemberAddress() ?? '');
++ const headerStatus = computed(() => focusedMemberContext.value?.state.currentStatus ?? null);
++ const focusedNavigationRow = computed(() => activeTeamContext.value?.view.getFocusedNavigationRow() ?? null);
++ const focusedTask = computed(() => focusedNavigationRow.value?.task ?? null);
++ const focusedTaskStatus = computed(() => focusedTask.value && headerStatus.value
++   ? t('workspace.task_monitor.combined_status', {
++     lifecycle: t(`workspace.task_monitor.lifecycle.${focusedTask.value.displayStatus}`),
++     execution: t(`workspace.task_monitor.execution.${headerStatus.value}`),
++   })
++   : '');
++ 
++ const headerTitle = computed(() => {
++   const team = activeTeamContext.value;
++   if (!team) {
++     return '';
++   }
++ 
++   if (!focusedMemberAddress.value) {
++     return team.view.getTeamDefinitionName() || 'Team';
++   }
++   return getMemberDisplayName(focusedMemberAddress.value, focusedMemberContext.value)
++     || team.view.getTeamDefinitionName()
++     || 'Team';
++ });
++ 
++ const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTarget | null>(() => {
++   const team = activeTeamContext.value;
++   const member = focusedMemberContext.value;
++   if (!team || !member) {
++     return null;
++   }
++   return {
++     kind: 'team-member',
++     teamRunId: team.view.getRootTeamRunId(),
++     agentRunId: member.state.runId,
++     isHelperRun:
++       member.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
++       member.config.agentDefinitionName === 'Retrospective Skill Improver',
++   };
++ });
++ 
++ const headerAvatarUrl = computed(() => {
++   if (!activeTeamContext.value || !focusedMemberAddress.value || !focusedMemberContext.value) {
++     return '';
++   }
++   return getMemberAvatarUrl(focusedMemberAddress.value, focusedMemberContext.value);
++ });
++ 
++ const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
++ const headerAvatarInitials = computed(() => getMemberInitials(headerTitle.value));
++ 
++ watch(headerAvatarUrl, () => {
++   headerAvatarLoadError.value = false;
++ });
+++>>>>>>> origin/personal
+  
+  const createNewTeamRun = () => {
+ -  if (!activeTeamContext.value) return;
+ -  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.view.getConfigurationView()));
+ -  agentRunConfigStore.clearConfig();
+ -  selectionStore.clearSelection();
+ -};
+ -
+ -const openSelectedTeamConfig = () => {
+ -  if (!activeTeamContext.value) {
+ -    return;
+ -  }
+ -  workspaceCenterViewStore.showConfig();
+ -};
+ +  const source = teamContexts.activeTeamContext
+ +  if (!source) return
+ +  teamRunConfig.setConfig(buildEditableTeamRunSeed(source.view.getConfigurationView()))
+ +  agentRunConfig.clearConfig()
+ +  selection.clearSelection()
+ +}
+ +const openSelectedTeamConfig = () => { if (target.value) center.showConfig() }
+  
+  onMounted(async () => {
+ -  if (agentDefinitionStore.agentDefinitions.length === 0) {
+ -    await agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined);
+ -  }
+ -});
+ -
+ +  if (!definitions.agentDefinitions.length) await definitions.fetchAllAgentDefinitions().catch(() => undefined)
+ +})
+  </script>
+diff --cc autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+index c0b67f059,5f3ac15d0..000000000
+--- a/autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
++++ b/autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+@@@ -2,8 -2,7 +2,12 @@@ import { beforeEach, describe, expect, 
+  import { mount } from '@vue/test-utils';
+  import TeamWorkspaceView from '../TeamWorkspaceView.vue';
+  import { AgentStatus } from '~/types/agent/AgentStatus';
+++<<<<<<< HEAD
+ +import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
+ +import { createPinia, setActivePinia } from 'pinia';
+++=======
++ import { buildTestTeamContext, testAgentNode, testSubTeamNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+++>>>>>>> origin/personal
+  
+  const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigStoreMock,
+    agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock, agentTeamRunStoreMock } = vi.hoisted(() => {
+diff --cc autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+index f9fdc2ffc,9ea0248a4..000000000
+--- a/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
++++ b/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+@@@ -686,12 -651,12 +703,12 @@@ describe('agentTeamRunStore current roo
+        attachments: [],
+      })
+      const draft = configStore.selectedDraft!
+ -    const hydrated = nestedHydratedTeam()
+ +    const hydrated = flatHydratedTeam()
+      mockMutate.mockResolvedValue({
+ -      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+ +      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+        errors: [],
+      })
+-     mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: hydrated })
++     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+  
+      const result = await useAgentTeamRunStore().launchDraft(draft)
+  
+@@@ -752,9 -726,9 +769,13 @@@
+        return workspaceId
+      })
+      mockMutate.mockResolvedValue({
+ -      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } }, errors: [],
+ +      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } }, errors: [],
+      })
+++<<<<<<< HEAD
+ +    mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: flatHydratedTeam() })
+++=======
++     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(nestedHydratedTeam()))
+++>>>>>>> origin/personal
+  
+      await useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
+  
+@@@ -850,11 -841,11 +871,11 @@@
+    })
+  
+    it('admits one exact draft before allocation and blocks edits, selection changes, and duplicate allocation until success', async () => {
+ -    const { configStore, draft } = configureSelectedNestedLaunchDraft()
+ -    const hydrated = nestedHydratedTeam()
+ +    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+ +    const hydrated = flatHydratedTeam()
+      let resolveAllocation!: (value: unknown) => void
+      mockMutate.mockReturnValue(new Promise((resolve) => { resolveAllocation = resolve }))
+-     mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: hydrated })
++     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+      const runStore = useAgentTeamRunStore()
+  
+      const launch = runStore.launchDraft(draft)
+@@@ -902,12 -893,12 +923,16 @@@
+      expect(retryDraft.config.rootConfig.autoExecuteTools).toBe(false)
+  
+      mockMutate.mockResolvedValueOnce({
+ -      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+ +      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+        errors: [],
+      })
+++<<<<<<< HEAD
+ +    mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: flatHydratedTeam() })
+++=======
++     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(nestedHydratedTeam()))
+++>>>>>>> origin/personal
+      await expect(useAgentTeamRunStore().launchDraft(retryDraft)).resolves.toMatchObject({
+ -      rootTeamRunId: 'team-nested-live',
+ +      rootTeamRunId: 'team-flat-live',
+      })
+      expect(mockMutate).toHaveBeenCalledTimes(2)
+      expect(configStore.selectedDraft).toBeNull()
+@@@ -915,13 -906,13 +940,13 @@@
+    })
+  
+    it('first-send launch uses the admitted selected draft and sends once to the exact promoted execution', async () => {
+ -    const { configStore, draft } = configureSelectedNestedLaunchDraft()
+ -    const hydrated = nestedHydratedTeam()
+ +    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+ +    const hydrated = flatHydratedTeam()
+      mockMutate.mockResolvedValue({
+ -      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+ +      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+        errors: [],
+      })
+-     mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: hydrated })
++     mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+      teamContextsStoreMock.addTeamContext.mockImplementation((team: AgentTeamContext) => setActiveTeam(team))
+  
+      await useAgentTeamRunStore().sendMessageToFocusedMember('FIRST_SEND_EXACT', [])

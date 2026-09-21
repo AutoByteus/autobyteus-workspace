@@ -1,0 +1,22 @@
+{
+  "at": "2026-09-02T16:04:55.442Z",
+  "url": "http://127.0.0.1:8487/graphql",
+  "operationName": "CreateAgentOrgRun",
+  "variables": {
+    "input": {
+      "agentOrgDefinitionId": "aorg-mixed-org",
+      "rootConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry"
+      },
+      "teamOverrides": [],
+      "agentOverrides": []
+    }
+  }
+}

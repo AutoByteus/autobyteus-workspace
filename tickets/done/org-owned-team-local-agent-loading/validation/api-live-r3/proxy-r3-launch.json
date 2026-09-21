@@ -1,0 +1,20 @@
+{
+  "pid": 74838,
+  "cmd": [
+    "node",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/tickets/in-progress/org-owned-team-local-agent-loading/validation/api-live-r3/proxy.mjs",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local"
+  ],
+  "environment_keys": [
+    "PATH",
+    "TMPDIR",
+    "LANG",
+    "LC_ALL",
+    "SHELL",
+    "USER",
+    "LOGNAME",
+    "HOME",
+    "OLLAMA_HOSTS",
+    "LMSTUDIO_HOSTS"
+  ]
+}

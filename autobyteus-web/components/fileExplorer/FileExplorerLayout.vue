@@ -5,7 +5,7 @@
       :class="treePaneClasses"
       :style="treePaneStyle"
     >
-      <FileExplorer :active="props.active" />
+      <FileExplorer :active="props.active" :workspace-id="props.workspaceId" />
     </div>
 
     <!-- Drag Handle -->
@@ -21,7 +21,7 @@
 
     <!-- File Content Viewer -->
     <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
-      <FileExplorerTabs :active="props.active" />
+      <FileExplorerTabs :active="props.active" :workspace-id="props.workspaceId" />
     </div>
   </div>
 </template>
@@ -34,6 +34,7 @@ import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue';
 const props = withDefaults(defineProps<{
   active?: boolean
   layout?: 'split' | 'stacked'
+  workspaceId?: string
 }>(), {
   active: true,
   layout: 'split',

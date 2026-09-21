@@ -2,15 +2,19 @@ import { defineStore } from 'pinia';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
+  AgentOrgRunHistoryItem,
+  RunHistoryFamilyErrors,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
   TeamMemberInspectionAttempt,
   TeamRunResumeConfigPayload,
+  WorkspaceHistoryWorkspaceNode,
 } from '~/stores/runHistoryTypes';
 import {
   findAgentNameByRunId as findAgentNameFromHistory,
   formatRunHistoryRelativeTime,
 } from '~/stores/runHistoryReadModel';
+import type { WorkspaceSelectionIntent, WorkspaceSelectionOutcome } from './agentSelectionStore';
 import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
 import {
   type RunTreeRow,
@@ -19,6 +23,7 @@ import {
 import {
   ensureRunHistoryWorkspaceByRootPath,
   fetchRunHistoryTree,
+  refreshAgentOrgHistoryForStore,
   openHistoricalRun,
   resolveRunHistoryWorkspaceMetadataByRootPath,
   type RunHistorySelectionMode,
@@ -56,6 +61,9 @@ import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
     workspaceGroups: [] as RunHistoryWorkspaceGroup[],
+    agentOrgHistory: [] as AgentOrgRunHistoryItem[],
+    historyFamilyErrors: { workspace: null, agentOrg: null } as RunHistoryFamilyErrors,
+    agentOrgRequestGeneration: 0,
     workspaceHistoryLoadingById: {} as Record<string, boolean>,
     workspaceHistoryErrorById: {} as Record<string, string | null>,
     agentAvatarByDefinitionId: {} as Record<string, string>,
@@ -108,16 +116,23 @@ export const useRunHistoryStore = defineStore('runHistory', {
       this.refreshRunNavigationTopology('history-fetch');
     },
 
-    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode } = {}): Promise<void> {
-      await openHistoricalRun(this, runId, options);
-      this.refreshRunNavigationTopology('standalone-open');
+    async refreshAgentOrgHistory(): Promise<void> {
+      await refreshAgentOrgHistoryForStore(this);
+      this.refreshRunNavigationTopology('agent-org-history-refresh');
+    },
+
+    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {}): Promise<WorkspaceSelectionOutcome> {
+      const result = await openHistoricalRun(this, runId, options);
+      if (result.disposition === 'committed') this.refreshRunNavigationTopology('standalone-open');
+      return result;
     },
 
     async createDraftRun(options: {
       workspaceRootPath: string;
       agentDefinitionId: string;
-    }): Promise<void> {
-      await createDraftRunForHistoryStore(this, options);
+      selectionIntent?: WorkspaceSelectionIntent;
+    }): Promise<WorkspaceSelectionOutcome> {
+      return createDraftRunForHistoryStore(this, options);
     },
 
     async createWorkspace(rootPath: string): Promise<string> {
@@ -224,6 +239,14 @@ export const useRunHistoryStore = defineStore('runHistory', {
         })),
       }));
       this.refreshRunNavigationTopology('run-reconcile');
+    },
+
+    applyAgentOrgActivity(orgRunId: string, isActive: boolean): void {
+      this.agentOrgRequestGeneration += 1;
+      this.agentOrgHistory = this.agentOrgHistory.map((run) => run.rootRunId === orgRunId ? { ...run, isActive } : run);
+      // Publish the confirmed fact to already-rendered rows before refresh I/O.
+      this.refreshRunNavigationTopology('agent-org-activity');
+      void this.refreshAgentOrgHistory();
     },
 
     markTeamAsActive(teamRunId: string): void {
@@ -352,6 +375,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
         executionTree: teamRunExecutionTreeDtoSchema.parse(raw.executionTree),
         modelConfigEditability: raw.modelConfigEditability,
       };
+      if (payload.teamRunId !== teamRunId || payload.executionTree.root_team.team_run_id !== teamRunId) {
+        throw new Error(`Team execution tree root identity mismatch for '${teamRunId}'.`);
+      }
       this.teamResumeConfigByTeamRunId[teamRunId] = payload;
       return payload;
     },
@@ -406,7 +432,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       this.refreshRunNavigationTopology('workspace-prune');
     },
 
-    getTreeNodes(): RunTreeWorkspaceNode[] {
+    getTreeNodes(): WorkspaceHistoryWorkspaceNode[] {
       if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-tree-read');
       return this.navigationProjection?.workspaceNodes ?? [];
     },
@@ -425,6 +451,11 @@ export const useRunHistoryStore = defineStore('runHistory', {
     getTeamNavigationAncestry(teamRunId: string): RunHistoryTeamNavigationAncestry | null {
       if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-team-ancestry-read');
       return this.navigationProjection?.teamAncestryById[teamRunId] ?? null;
+    },
+
+    getAgentOrgNavigationAncestry(rootRunId: string) {
+      if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-agent-org-ancestry-read');
+      return this.navigationProjection?.agentOrgAncestryById[rootRunId] ?? null;
     },
 
     getTeamMemberNavigationAncestorRowKeys(
@@ -458,7 +489,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     async inspectTeamMember(
       teamRunId: string,
       agentRunId: string,
-      options: { selectionMode?: RunHistorySelectionMode } = {},
+      options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
     ): Promise<TeamMemberInspectionResult> {
       return inspectTeamMemberForStore(this, teamRunId, agentRunId, options);
     },
@@ -473,16 +504,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
     async openTeamMemberRun(
       teamRunId: string,
       agentRunId: string,
-      options: { selectionMode?: RunHistorySelectionMode } = {},
-    ): Promise<void> {
-      await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
-      this.refreshRunNavigationTopology('team-open');
+      options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
+    ): Promise<WorkspaceSelectionOutcome> {
+      const result = await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
+      if (result.disposition === 'committed') this.refreshRunNavigationTopology('team-open');
+      return result;
     },
 
     async selectTreeRun(
       row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberFocusTarget,
-    ): Promise<void> {
-      await selectTreeRunFromHistory(this, row);
+      options: { selectionIntent?: WorkspaceSelectionIntent } = {},
+    ): Promise<WorkspaceSelectionOutcome> {
+      return selectTreeRunFromHistory(this, row, options);
     },
 
     formatRelativeTime(isoTime: string): string {

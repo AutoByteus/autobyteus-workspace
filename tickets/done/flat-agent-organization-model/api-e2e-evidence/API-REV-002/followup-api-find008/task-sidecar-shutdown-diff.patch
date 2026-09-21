@@ -1,0 +1,23 @@
+--- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/task-sidecar-after-rerun.json	2026-09-01 21:04:12.354851009 +0000
++++ /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/task-sidecar-after-graceful-shutdown.json	2026-09-01 21:09:11.244225041 +0000
+@@ -11,7 +11,7 @@
+       },
+       "description": "Return exactly AORG-FIND008-DRAFT-001 on the first line and one short sentence on the second line, then formally call submit_task_result. If a revision is requested, change the first line to AORG-FIND008-REVISED-001 and formally resubmit the same task.",
+       "referenceFiles": [],
+-      "status": "awaiting_review",
++      "status": "interrupted",
+       "updates": [
+         {
+           "submissionId": "submission_be1b77ab6cb947b5bb91a44be4bdf91b",
+@@ -32,6 +32,11 @@
+           "message": "AORG-FIND008-REVISED-001\nThe requested deterministic revision marker is complete.",
+           "referenceFiles": [],
+           "createdAt": "2026-09-01T21:03:13.856Z"
++        },
++        {
++          "interruptionId": "task_3110f35c97b54ee3b3ae8fddb0f6103e_interruption_restart",
++          "reason": "Interrupted because live task recovery is not supported after TeamRun reopen.",
++          "createdAt": "2026-09-01T21:07:01.847Z"
+         }
+       ],
+       "createdAt": "2026-09-01T21:01:56.668Z"

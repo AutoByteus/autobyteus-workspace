@@ -1,0 +1,36 @@
+{
+  "signaledOnlyOwned": [
+    {
+      "mode": "frontend",
+      "pids": [
+        39521,
+        39524,
+        39525,
+        39214
+      ],
+      "commandMatchedWorktree": true
+    },
+    {
+      "mode": "proxy",
+      "pids": [
+        38907
+      ],
+      "commandMatchedWorktree": true
+    },
+    {
+      "mode": "backend",
+      "pids": [
+        40161
+      ],
+      "commandMatchedWorktree": true
+    }
+  ],
+  "tab": "owned51083 closed",
+  "data": "retained ignored private .local only; imported credential DB NOT attached",
+  "sdk": "Removed only two generated untracked SDK dist trees absent at intake",
+  "ports": {
+    "51081": "closed",
+    "51082": "closed",
+    "51083": "closed"
+  }
+}

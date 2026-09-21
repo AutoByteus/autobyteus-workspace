@@ -70,8 +70,10 @@ describe("TokenUsageDisplayFieldCapturer", () => {
           terminatedAt: null,
         })),
       } as never,
-      executionTreeLocation: {
+      executionLocation: {
         findAgent: vi.fn(async () => ({
+          rootSubjectKind: "agent_team",
+          rootRunId: "team-run",
           rootTeamRunId: "team-run",
           memberAddress: "/designer",
           tree: {

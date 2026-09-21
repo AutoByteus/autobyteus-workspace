@@ -1,6 +1,6 @@
 import { tool, ParameterSchema, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
+import { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
 const DESCRIPTION = "Lists all available agent team definitions for discovery.";
@@ -26,7 +26,6 @@ const serializeDefinition = (definition: AgentTeamDefinition): Record<string, un
   nodes: definition.nodes.map((node) => ({
     member_name: node.memberName,
     ref: node.ref,
-    ref_type: node.refType,
     ref_scope: node.refScope ?? null,
   })),
   coordinator_member_name: definition.coordinatorMemberName,

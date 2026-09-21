@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_3ba09981d7344c2ea15a577d2d1604d3",
+  "messages": [
+    {
+      "messageId": "collabmsg_BozGJrR7Bc3ubX6tCm7ab866ykxizC81",
+      "senderAgentRunId": "aorg_e2e_analyst_bda68d61c1b44d208a13d73245299375",
+      "receiverAgentRunId": "aorg_e2e_verifier_34a67ed69e814102bdfff156fde0d6a1",
+      "content": "AORG-FIND008-DRAFT-001 was completed and formally submitted; please independently check the two-line result.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T21:02:22.932Z"
+    },
+    {
+      "messageId": "collabmsg_CcdNjPsTLBVgZUA5rOwO-FaU_LXo4bc0",
+      "senderAgentRunId": "aorg_e2e_analyst_bda68d61c1b44d208a13d73245299375",
+      "receiverAgentRunId": "aorg_e2e_verifier_34a67ed69e814102bdfff156fde0d6a1",
+      "content": "AORG-FIND008-REVISED-001 was completed and formally resubmitted on the same task; please independently check the revised two-line result.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T21:03:23.112Z"
+    }
+  ]
+}

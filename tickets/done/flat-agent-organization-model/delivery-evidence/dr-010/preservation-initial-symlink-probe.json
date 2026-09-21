@@ -1,0 +1,21 @@
+{
+  "at": "2026-09-13T03:46:47.170177+00:00",
+  "baselineEntries": 35330,
+  "otherOwnerRegularChecked": 35321,
+  "permittedDeliveryCanonicalChanges": 9,
+  "missingOrChanged": [],
+  "previouslyTrackedTicketPaths": 4419,
+  "trackedUpstreamChanges": [
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/pnpm",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/pnpx",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/yarn",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/yarnpkg",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/pnpm",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/pnpx",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/yarn",
+    "tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/yarnpkg"
+  ],
+  "scope": "SHA256/symlink target; rename resolved. No live data inventory or mtime-equality claim.",
+  "restrictedBackup": "/home/autobyteus/workspace/.codex/delivery-archives/AORG-FLAT-TEAM-001-DR010-20260913T033904Z",
+  "result": "Fail"
+}

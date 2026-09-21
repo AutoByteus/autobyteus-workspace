@@ -110,6 +110,7 @@ export interface MemoryTraceEvent {
   toolResult?: unknown | null;
   toolError?: string | null;
   media?: Record<string, string[]> | null;
+  fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }> | null;
   turnId: string | null;
   seq: number | null;
   ts: number;

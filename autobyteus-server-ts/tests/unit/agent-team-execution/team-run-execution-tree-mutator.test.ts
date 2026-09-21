@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createTeamMemberExecutionIdentity } from "../../../src/agent-team-execution/domain/team-member-execution-identity.js";
-import { addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
+import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  addTaskExecutionToTree,
+  adoptAgentPlatformBindingInTree,
+  replaceAgentPlatformBindingWithoutConversationInTree,
+} from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-team-execution/task-delegation/task-execution-tree-projection.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
@@ -13,8 +17,8 @@ import {
 const rootTeamRunId = "root-binding-run";
 
 const binding = (memberAddress: string, agentRunId: string, platformAgentRunId: string) => ({
-  execution: createTeamMemberExecutionIdentity({
-    rootTeamRunId,
+  execution: createCollaborationMemberExecutionIdentity({
+    root: createTeamRootExecutionIdentity(rootTeamRunId),
     memberAddress,
     agentRunId,
   }),
@@ -29,20 +33,15 @@ const baseTree = () => testExecutionTree({
       agentRunId: "run-coordinator",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     }),
-    testAgentTeamNode({
-      address: "/nested",
-      coordinatorAddress: "/nested/reviewer",
-      teamRunId: "nested-team-run",
-      children: [testAgentNode("/nested/reviewer", {
-        agentRunId: "run-reviewer",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      })],
+    testAgentNode("/reviewer", {
+      agentRunId: "run-reviewer",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
   ],
 });
 
 describe("adoptAgentPlatformBindingInTree", () => {
-  it("adopts exact configured root and nested identities without mutating the prior tree", () => {
+  it("adopts exact direct configured identities without mutating the prior tree", () => {
     const original = baseTree();
     const rootMutation = adoptAgentPlatformBindingInTree({
       tree: original,
@@ -50,18 +49,16 @@ describe("adoptAgentPlatformBindingInTree", () => {
     });
     const nestedMutation = adoptAgentPlatformBindingInTree({
       tree: rootMutation.tree,
-      binding: binding("/nested/reviewer", "run-reviewer", "22222222-2222-4222-8222-222222222222"),
+      binding: binding("/reviewer", "run-reviewer", "22222222-2222-4222-8222-222222222222"),
     });
 
     expect(rootMutation.outcome).toBe("adopted");
     expect(original.rootTeam.members[0]).toMatchObject({ platformAgentRunId: null });
     expect(nestedMutation.tree.rootTeam.members[0]).toMatchObject({ platformAgentRunId: "thread-1" });
     expect(nestedMutation.tree.rootTeam.members[1]).toMatchObject({
-      members: [expect.objectContaining({
-        address: address("/nested/reviewer"),
-        agentRunId: "run-reviewer",
-        platformAgentRunId: "22222222-2222-4222-8222-222222222222",
-      })],
+      address: address("/reviewer"),
+      agentRunId: "run-reviewer",
+      platformAgentRunId: "22222222-2222-4222-8222-222222222222",
     });
   });
 
@@ -80,10 +77,10 @@ describe("adoptAgentPlatformBindingInTree", () => {
       ownerTeamRunId: rootTeamRunId,
       execution: projectTaskTeamExecution({
         node: testAgentTeamNode({
-          address: "/nested",
-          coordinatorAddress: "/nested/reviewer",
+          address: "/task-team",
+          coordinatorAddress: "/task-team/reviewer",
           teamRunId: "task-team-run",
-          children: [testAgentNode("/nested/reviewer", {
+          children: [testAgentNode("/task-team/reviewer", {
             agentRunId: "task-team-lead-run",
             runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           })],
@@ -98,7 +95,7 @@ describe("adoptAgentPlatformBindingInTree", () => {
     }).tree;
     tree = adoptAgentPlatformBindingInTree({
       tree,
-      binding: binding("/nested/reviewer", "task-team-lead-run", "thread-task-team"),
+      binding: binding("/task-team/reviewer", "task-team-lead-run", "thread-task-team"),
     }).tree;
 
     expect(tree.rootTeam.taskExecutions[0]).toMatchObject({ platformAgentRunId: "thread-task" });
@@ -128,8 +125,8 @@ describe("adoptAgentPlatformBindingInTree", () => {
       tree,
       binding: {
         ...binding("/coordinator", "run-coordinator", "thread-1"),
-        execution: createTeamMemberExecutionIdentity({
-          rootTeamRunId: "other-root",
+        execution: createCollaborationMemberExecutionIdentity({
+          root: createTeamRootExecutionIdentity("other-root"),
           memberAddress: "/coordinator",
           agentRunId: "run-coordinator",
         }),
@@ -148,5 +145,30 @@ describe("adoptAgentPlatformBindingInTree", () => {
       tree: adopted,
       binding: binding("/coordinator", "run-coordinator", "thread-2"),
     })).toThrow("already has a different provider binding");
+  });
+
+  it("replaces only the exact expected no-conversation provider binding", () => {
+    const prior = adoptAgentPlatformBindingInTree({
+      tree: baseTree(),
+      binding: binding("/coordinator", "run-coordinator", "thread-old"),
+    }).tree;
+    const replacementBinding = binding("/coordinator", "run-coordinator", "thread-new");
+
+    const replaced = replaceAgentPlatformBindingWithoutConversationInTree({
+      tree: prior,
+      replacement: {
+        binding: replacementBinding,
+        expectedPreviousPlatformAgentRunId: "thread-old",
+      },
+    });
+
+    expect(replaced.rootTeam.members[0]).toMatchObject({ platformAgentRunId: "thread-new" });
+    expect(() => replaceAgentPlatformBindingWithoutConversationInTree({
+      tree: prior,
+      replacement: {
+        binding: replacementBinding,
+        expectedPreviousPlatformAgentRunId: "thread-other",
+      },
+    })).toThrow("does not match the persisted provider binding");
   });
 });

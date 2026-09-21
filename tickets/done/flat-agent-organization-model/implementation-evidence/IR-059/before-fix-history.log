@@ -1,0 +1,157 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentOrgHistoryApollo.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgHistoryApollo.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > later independent active truth is not masked by a stopped overlay
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > later independent active truth is not masked by a stopped overlay
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ stores/__tests__/agentOrgHistoryApollo.spec.ts (35 tests | 34 failed) 36133ms
+   × old full history > new 'full' 'inactive' oldFirst=true 1087ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'network' oldFirst=true 1057ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'graphql' oldFirst=true 1059ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'malformed' oldFirst=true 1067ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'inactive' oldFirst=false 1063ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'network' oldFirst=false 1063ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'graphql' oldFirst=false 1064ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'full' 'malformed' oldFirst=false 1060ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'inactive' oldFirst=true 1058ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'network' oldFirst=true 1058ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'graphql' oldFirst=true 1061ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'malformed' oldFirst=true 1062ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'inactive' oldFirst=false 1062ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'network' oldFirst=false 1058ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'graphql' oldFirst=false 1058ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old full history > new 'focused' 'malformed' oldFirst=false 1057ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'inactive' oldFirst=true 1055ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'network' oldFirst=true 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'graphql' oldFirst=true 1057ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'malformed' oldFirst=true 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'inactive' oldFirst=false 1057ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'network' oldFirst=false 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'graphql' oldFirst=false 1057ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'full' 'malformed' oldFirst=false 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'inactive' oldFirst=true 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'network' oldFirst=true 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'graphql' oldFirst=true 1055ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'malformed' oldFirst=true 1059ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'inactive' oldFirst=false 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'network' oldFirst=false 1055ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'graphql' oldFirst=false 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × old focused history > new 'focused' 'malformed' oldFirst=false 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × obsolete full error cannot clear a newer success/error 1056ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   × obsolete focused error cannot clear a newer success/error 1062ms
+     → expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+   ✓ later independent active truth is not masked by a stopped overlay 120ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 34 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'inactive' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'network' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'graphql' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'malformed' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'inactive' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'network' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'graphql' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'malformed' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'inactive' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'network' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'graphql' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'malformed' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'inactive' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'network' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'graphql' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'focused' 'malformed' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'inactive' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'network' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'graphql' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'malformed' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'inactive' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'network' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'graphql' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'full' 'malformed' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'inactive' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'network' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'graphql' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'malformed' oldFirst=true
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'inactive' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'network' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'graphql' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > old focused history > new 'focused' 'malformed' oldFirst=false
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > obsolete full error cannot clear a newer success/error
+ FAIL  stores/__tests__/agentOrgHistoryApollo.spec.ts > obsolete focused error cannot clear a newer success/error
+AssertionError: expected [ { operation: { …(6) }, …(4) } ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ stores/__tests__/agentOrgHistoryApollo.spec.ts:17:91
+     15| const workspace = { workspaceRootPath: '/workspace', workspaceName: 'I…
+     16| function releaseWorkspace() { transport.pending(WORKSPACE).forEach(r =…
+     17| async function count(n: number) { await vi.waitFor(() => expect(transp…
+       |                                                                                           ^
+     18| beforeEach(() => {
+     19|   setActivePinia(createPinia()); transport = new ControlledOrgApollo()…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/34]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  34 failed | 1 passed (35)
+   Start at  23:52:02
+   Duration  48.54s (transform 6.68s, setup 11.03s, collect 232ms, tests 36.13s, environment 443ms, prepare 319ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

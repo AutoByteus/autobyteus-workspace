@@ -1,0 +1,9 @@
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-006-standalone-team-task.mjs:7
+const poll=async(fn,timeout=180000)=>{const s=Date.now();while(Date.now()-s<timeout){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,500))}throw new Error('poll timeout')};
+                                                                                                                                                                    ^
+
+Error: poll timeout
+    at poll (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-006-standalone-team-task.mjs:7:165)
+    at async file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-006-standalone-team-task.mjs:16:16
+
+Node.js v22.23.2

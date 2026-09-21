@@ -1,0 +1,75 @@
+{
+  "marker": "APIREV14-CONFIGURED-TO-TASK-MSG-001",
+  "taskId": "task_b22e3bd3d6b3407786479dae3e64344a",
+  "taskRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+  "lead": {
+    "address": "/research-team/lead",
+    "agentDefinitionId": "aorg-lead",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+    "platformAgentRunId": "01a0767d-a3a3-7701-b4c3-3700f1f63ed6",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default"
+    }
+  },
+  "refPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt",
+  "beforeCount": 3,
+  "afterCount": 4,
+  "exact": [
+    {
+      "messageId": "collabmsg_Bz1BJUWJD9b4J7P24ZoaBrA4Drj-QFBo",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+      "content": "APIREV14-CONFIGURED-TO-TASK-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:52:37.861Z"
+    }
+  ],
+  "taskInbound": [
+    {
+      "id": "rt_1788695557878_af9771d3-7558-4705-abf0-1711d497f4cd",
+      "ts": 1788695557.877,
+      "turn_id": "01a07690-36eb-7181-8eff-bfdc47757ac0",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "You received a message from sender name: lead, sender id: aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096\nmessage:\nAPIREV14-CONFIGURED-TO-TASK-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt",
+      "source_event": "AgentRun.postUserMessage"
+    }
+  ],
+  "configuredView": {
+    "url": "http://127.0.0.1:3594/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574&mode=active",
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096"
+    ],
+    "messagesHeader": "Messages\n2 Messages",
+    "markerRows": [],
+    "inboundConfigured": [],
+    "scroll": {
+      "width": 1502,
+      "client": 1502
+    }
+  },
+  "assertions": {
+    "sidecarIncrementedOnce": true,
+    "exactRuns": true,
+    "exactReference": true,
+    "taskDelivery": true,
+    "configuredSenderNoRow": true,
+    "configuredSenderNoInbound": true,
+    "senderStayedSelected": true,
+    "noOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

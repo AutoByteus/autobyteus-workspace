@@ -1,0 +1,37 @@
+{
+  "content": "APIREV13 accepted message with intentionally failed derived index",
+  "ack": {
+    "at": "2026-09-06T02:02:26.405Z",
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_e2e_direct_agents_org_b662db01156e43d7b279ea3a35c7e158",
+      "command_id": "api-rev-013-failure",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "aorg_e2e_lead_f3aa0430b1da47fbaaa6af2b44849bda",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    }
+  },
+  "socketReadyStateAfterFailure": 1,
+  "prematureClose": null,
+  "healthAfterFailure": {
+    "reachable": true,
+    "status": 200
+  },
+  "eventTypes": [
+    "CONNECTED",
+    "ROOT_EXECUTION_VIEW_SNAPSHOT",
+    "ROOT_LIFECYCLE",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "AGENT_COMMAND_ACK",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT"
+  ]
+}

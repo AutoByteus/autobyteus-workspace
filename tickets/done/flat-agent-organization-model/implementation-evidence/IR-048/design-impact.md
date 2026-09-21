@@ -1,0 +1,29 @@
+# IR048-DI-001 — Exact Org attachment owner cannot survive same-address task retention
+
+## Result and requested boundary
+**Design Impact — Architecture decision required.** Source checkpoint `6d77b3c8b2d3deeddd5c3392dc2ce69bc63b7982`; the context-file server owner/resolver/location code is unchanged from entry HEAD93aafae8f13a239b382a5f3f246f10b661f90733. This is a separate discovered contract limitation, not a reversal of CRR072's correct attribution of the missing frontend draft-owner integration.
+
+Approved RER033/AD024/ARCH021 authoring work and CRR072/API-FIND031 upload correction were combined at the user's request. The upload clarification explicitly requires draft AND sent/retained opening, exact member/root ownership and no activation on preparation/open. RER028/AD019 and retained cumulative task behavior permit a fresh task Agent or task Team at the same source address while keeping exact AgentRun identities. DS035–037 preserve stopped-root inspection/continuation.
+
+## Concrete source/real-owner observation
+1. The actual shared file input now resolves the Org target and uploads using existing `org_member_draft` {orgDraftId,memberAddress}. Existing `org_member_final` carries only {orgRunId,memberAddress}. The frontend does not lose the selected AgentRun; that field cannot be represented in this backend owner/locator contract.
+2. `ContextFileOwnerResolver.resolveFinalOwner` and its sync twin call `locations.findAgent` with Org root/address but no AgentRun ID. Both finalization and final-file GET use this resolver (`src/api/rest/context-files.ts`). Final locators likewise encode root/address/filename only.
+3. `AgentOrgExecutionTreeLocationService.findInTree` matches every retained indexed execution, returning a location only when exactly one match exists. This is correct strict ambiguity rejection. A configured Agent and its settled fresh task have the same address but different AgentRun IDs. Mounted configured/task-Team leaves have the same issue. Retained tasks are not removed from the canonical execution tree.
+4. `org-owner-correlation-observation.test.ts` was executed temporarily at `autobyteus-server-ts/tests/unit/context-files/`; it uses the **actual current strict tree validator, filesystem tree store, AgentOrg location service, and final-owner resolver**. No mocked owner/location or runtime is used. Both direct and mounted controls resolve before task retention. After writing a valid current tree with settled same-address task executions, exact-ID location reads still succeed, but both asynchronous finalization resolution and synchronous file-read resolution reject the address-only owner. No runtime manager is supplied, so there is no activation.
+5. The observation's single test PASSES by asserting the currently broken operation is rejected; it is NOT a product-pass test. Its console records the two exact controls. It is retained as evidence, not installed as a durable test that would enshrine the defect.
+
+## Why this cannot be silently completed as the original frontend Local Fix
+- The final owner/parser/locator needs a reviewed way to preserve exact execution identity for prepared, finalized, sent and retained files. Adding an AgentRun field/route or changing existing locator resolution is an API/ownership/persisted-reference decision.
+- Choosing the configured match, the first match or the live match would violate exact retained identity and silently misroute task files. Removing task history, faking standalone ownership, restoring on read or broadening ambiguity parsing is not authorized.
+- The current pure frontend upload omission is fixed locally; **the combined request is not complete**. No new ownership/API/parser/storage/migration behavior was implemented to bypass this finding.
+
+## Evidence scope and limits
+- `owner-correlation-observation.log`: one actual-owner test, two direct/mounted cases, control-before and ambiguity-after, exact-ID read control. This is deterministic local source-bound evidence, **not** a new real provider/browser incident or a reclassification of unknown historical stalls.
+- `render/evidence.json`:16 actual Chromium shared-surface observations at1440x900/390x844, four Sends, actual chooser and popup/image content checks. GraphQL/HTTP/WebSocket external I/O is intentionally bounded. Those mocks accept the existing address-only final owner; consequently renderer success DOES NOT establish real finalization/opening when the tree has repeated addresses. This limitation supersedes any broader reading of the synthetic renderer's pass flag.
+- `web-cohort.log`:87files/717tests. Actual file-input/Pinia/Org/composer/upload-store tests cover the client boundary with bounded upload/finalize I/O; no end-to-end owner claim.
+- `server-cohort.log`:31files/184tests including authoring, strict migration, context-file controls, lifecycle and task regressions; original resolver fixtures did not compose retained same-address task membership.
+
+## Required Architecture resolution
+Specify exact Org attachment ownership and locators through upload/finalization/send/read/delete/retained inspection, including configured and task direct/mounted Agents, repeated same-address tasks, root/focus switches and existing saved references. Decide any necessary API/persistence transition explicitly. Preserve observational history, no activation on upload/open, original root/FIFO/task/continuation policies, no retry/replay/cache/owner duplication. Do not conflate the user-approved first-run *definition-authoring* migration premise with attachment-locator deployment evidence.
+
+After the reviewed decision returns, Implementation must reconcile the checkpoint, replace this expected-failure observation with durable intended-success/strict-negative tests, finish the combined package, then use fresh cumulative source review and full renewed API/E2E. No partial source/API/Delivery advancement is requested.

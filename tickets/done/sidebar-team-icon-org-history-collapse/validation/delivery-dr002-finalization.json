@@ -1,0 +1,26 @@
+{
+  "ticket": "SIDEBAR-ORG-20260916-001",
+  "delivery_revision": "DR-002",
+  "timestamp_utc": "2026-09-16T04:39:09.386203+00:00",
+  "accepted_user_instruction": "Yes, you can finalize to the base branch. Yeah Make sure that after you finalize to the base branch then You should actually do cleanup right follow finalization practice",
+  "package_commit": "6ed3e38b29c6376ac4b8877bc98c8ae4435a5906",
+  "pushed_ticket_branch": "origin/codex/sidebar-team-icon-org-history-collapse",
+  "pushed_target": "origin/requirements/flat-agent-organization-model",
+  "remote_both_verified_commit": "6ed3e38b29c6376ac4b8877bc98c8ae4435a5906",
+  "integration": "fast-forward from 75a42f18b3cf8555bef2496b03679c41575ad915",
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/sidebar-team-icon-org-history-collapse",
+  "implementation_hash_matches": 34,
+  "worktree_removed": "/Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse",
+  "local_ticket_branch_deleted": true,
+  "worktree_prune": "completed",
+  "remote_ticket_branch": "retained; deletion not required",
+  "private_backup": "/Users/normy/autobyteus_org/delivery-retained/SIDEBAR-ORG-20260916-001-DR002",
+  "backup_verified_entries": 1163,
+  "base_unrelated_untracked_preserved": [
+    "autobyteus-application-backend-sdk/dist/",
+    "autobyteus-application-sdk-contracts/dist/",
+    "tickets/in-progress/org-history-resume-offline-analysis/"
+  ],
+  "release_deploy_rebuild": "Not required; not performed",
+  "completion_receipt_commit": "This receipt-only base commit; use git log for exact revision. Does not change tested source."
+}

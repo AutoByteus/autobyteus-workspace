@@ -1,0 +1,8 @@
+{
+  "fixture_pid": 10630,
+  "nuxt_pid": 10938,
+  "stopped": true,
+  "ports_50882_50883_closed": true,
+  "browser": "Fresh Playwright browser closed in finally",
+  "user_processes_touched": false
+}

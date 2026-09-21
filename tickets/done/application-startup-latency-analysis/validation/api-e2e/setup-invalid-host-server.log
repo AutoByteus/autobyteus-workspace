@@ -1,0 +1,11 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/.env
+[dotenv@17.3.1] injecting env (0) from ../.local/api-startup-profile/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' value '127.0.0.1' is invalid. It must be a full, absolute URL including the scheme (e.g., 'http://localhost:8000' or 'http://host.docker.internal:8001').
+Failed to initialize AppConfig: AppConfigError: CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' value '127.0.0.1' is invalid. It must be a full, absolute URL including the scheme (e.g., 'http://localhost:8000' or 'http://host.docker.internal:8001').
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_CONFIG_INITIALIZATION_FAILED","summary":"Failed to initialize AppConfig: AppConfigError: CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' value '127.0.0.1' is invalid. It must be a full, absolute URL including the scheme (e.g., 'http://localhost:8000' or 'http://host.docker.internal:8001').","logPath":null}

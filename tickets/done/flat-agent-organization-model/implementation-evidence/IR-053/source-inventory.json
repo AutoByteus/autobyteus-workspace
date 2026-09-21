@@ -1,0 +1,34 @@
+{
+  "entryHead": "e99c429317f7e2c14ad6cb4f305413c005c624d4",
+  "sourceCheckpoint": "dcc0419dd2dea54ea1ee4d0dca27b48521e68745",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/src/agent-definition/providers/cached-agent-definition-provider.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 102,
+      "sha256": "df5fa85204ae6c6d74ff409300610788ce6a711cea25da062f6a5b6f3b19782f"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 17,
+      "sha256": "c9adddbfd7bb28a3c20ea5839f052c1402eb76642ff4e04b360e5bc85f9a293a"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-definition/cached-agent-definition-provider.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 132,
+      "sha256": "431081dc622fe58f1fb53308ccfb4dd36a501bbffffb1d0c380eeacf099dba17"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 115,
+      "sha256": "1830edafe93ac94159364f670dacce8f378d71ca37985367cb89ef6cf5760dc7"
+    }
+  ]
+}

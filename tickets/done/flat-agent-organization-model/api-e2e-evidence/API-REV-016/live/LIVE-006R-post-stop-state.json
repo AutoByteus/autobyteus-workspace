@@ -1,0 +1,164 @@
+{
+  "task_delegation_records.json": {
+    "sha256": "cfad23a71dcc3c95bea8f22b015433fa288d6f0d7a3f97cabef712c29e7387c1",
+    "size": 1932,
+    "content": {
+      "schemaVersion": 1,
+      "rootTeamRunId": "aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a",
+      "records": [
+        {
+          "taskId": "task_ce348550defc476aaefea3ade67ad46d",
+          "delegatorAgentRunId": "aorg_e2e_lead_40ab463de3a341a18ba9756664500250",
+          "recipientAddress": "/analyst",
+          "taskExecution": {
+            "agentRunId": "aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"
+          },
+          "description": "Return exactly API16-INITIAL-SUBMISSION as the result by calling submit_task_result exactly once. Do not call review_task_result, send_message_to, get_handoff_rules, or create another task.",
+          "referenceFiles": [],
+          "status": "accepted",
+          "updates": [
+            {
+              "submissionId": "submission_04d36f333d8c49f2b11456f73bf20e99",
+              "message": "API16-INITIAL-SUBMISSION",
+              "referenceFiles": [],
+              "createdAt": "2026-09-06T14:29:45.511Z"
+            },
+            {
+              "reviewId": "review_1ee2a2c5c2d94a83a0893fe919a14e68",
+              "reviewedSubmissionId": "submission_04d36f333d8c49f2b11456f73bf20e99",
+              "decision": "request_revision",
+              "comment": "Resubmit exactly API16-REVISED-SUBMISSION using submit_task_result on this same task.",
+              "referenceFiles": [],
+              "createdAt": "2026-09-06T14:31:56.433Z"
+            },
+            {
+              "submissionId": "submission_33acde48528b4a579d0d244a2edd6f94",
+              "message": "API16-REVISED-SUBMISSION",
+              "referenceFiles": [],
+              "createdAt": "2026-09-06T14:31:59.874Z"
+            },
+            {
+              "reviewId": "review_e93d3f1fbdd248beb2b53a8b1c112481",
+              "reviewedSubmissionId": "submission_33acde48528b4a579d0d244a2edd6f94",
+              "decision": "accept",
+              "comment": "API16-ACCEPTED",
+              "referenceFiles": [],
+              "createdAt": "2026-09-06T14:33:19.853Z"
+            }
+          ],
+          "createdAt": "2026-09-06T14:29:30.481Z"
+        }
+      ]
+    }
+  },
+  "team_run_execution_tree.json": {
+    "sha256": "80121f65742c54388793074268ee47091cdd589e2a39da8fc2c6b3d51012e11d",
+    "size": 3943,
+    "content": {
+      "schemaVersion": 2,
+      "createdAt": "2026-09-06T14:28:11.093Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/analyst",
+          "rules": [
+            "When a request needs bounded analysis.",
+            "After the lead identifies the exact validation question."
+          ]
+        },
+        {
+          "from": "/analyst",
+          "to": "/verifier",
+          "rules": [
+            "When a completed analysis needs an independent check."
+          ]
+        }
+      ],
+      "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "aorg-research-squad",
+        "teamDefinitionName": "AORG E2E Research Squad",
+        "teamRunId": "aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-lead",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_lead_40ab463de3a341a18ba9756664500250",
+            "platformAgentRunId": "01a0771e-a1ae-7173-ad0c-5da5f7f94bd1",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default"
+            }
+          },
+          {
+            "address": "/analyst",
+            "agentDefinitionId": "aorg-analyst",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726",
+            "platformAgentRunId": "01a0771e-a263-7ba2-81da-89725df089ae",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default"
+            }
+          },
+          {
+            "address": "/verifier",
+            "agentDefinitionId": "aorg-verifier",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26",
+            "platformAgentRunId": "01a0771e-a2cb-7e53-ab22-e47360779c6a",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default"
+            }
+          }
+        ],
+        "taskExecutions": [
+          {
+            "address": "/analyst",
+            "agentRunId": "aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df",
+            "platformAgentRunId": "01a0771f-d70a-72e0-9479-ac16caea1bd3",
+            "startedAt": "2026-09-06T14:29:30.481Z",
+            "settledAt": "2026-09-06T14:33:19.857Z"
+          }
+        ]
+      }
+    }
+  },
+  "capturedAt": "2026-09-06T14:35:00.830375+00:00"
+}

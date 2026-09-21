@@ -1,0 +1,187 @@
+{
+  "url": "http://127.0.0.1:3596/workspace/",
+  "title": "",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nNo agent or team run selected\n\nChoose an agent or team, or open run history to continue.\n\nChoose an agent or team\nOpen runs/history\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n~ $  ",
+  "buttons": [
+    {
+      "text": "Agents",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Collapse left panel",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Agent Teams",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Agent Orgs",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Skills",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Memory",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Nodes",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Add workspace",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Temp Workspace",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "workspace",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Remove from Workspaces",
+      "test": null,
+      "aria": "Remove from Workspaces"
+    },
+    {
+      "text": "workspace-team",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Remove from Workspaces",
+      "test": null,
+      "aria": "Remove from Workspaces"
+    },
+    {
+      "text": "workspace",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Settings",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Choose an agent or team",
+      "title": "",
+      "test": "workspace-empty-state-choose",
+      "aria": null
+    },
+    {
+      "text": "Open runs/history",
+      "title": "",
+      "test": "workspace-empty-state-runs",
+      "aria": null
+    },
+    {
+      "text": "Files",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Terminal",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Activity",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Token",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "Artifacts",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "VNC Viewer",
+      "title": "",
+      "test": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Toggle Sidebar",
+      "test": "right-side-panel-toggle",
+      "aria": null
+    }
+  ],
+  "links": [],
+  "local": {
+    "autobyteus.app-left-panel.primary-nav-height": "260",
+    "autobyteus.node_registry.v1": "{\"version\":2,\"nodes\":[{\"id\":\"embedded-local\",\"name\":\"Embedded Node\",\"baseUrl\":\"http://127.0.0.1:8596\",\"nodeType\":\"embedded\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":true,\"createdAt\":\"2026-09-06T12:49:17.261Z\",\"updatedAt\":\"2026-09-06T12:56:47.235Z\"}]}",
+    "autobyteus.localization.preference-mode": "system"
+  }
+}

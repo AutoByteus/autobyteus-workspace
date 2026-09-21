@@ -1,0 +1,8 @@
+=== port/process after failure and later success ===
+2026-09-06T02:03:06Z
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      511        127.0.0.1:8697      0.0.0.0:*    users:(("node",pid=13561,fd=31))
+=== expected contained failure count ===
+1
+=== unhandled/fatal scan ===
+=== failed writer temp files ===

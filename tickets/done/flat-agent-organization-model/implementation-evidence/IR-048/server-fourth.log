@@ -1,0 +1,176 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/collaboration-definition-admission/org-local-roundtrip.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/collaboration-definition-admission/org-local-roundtrip.test.ts (1 test | 1 failed) 45ms
+   × maps unchanged GraphQL enums to strict org_local packages and resolves bundled Agent/Team through the real owned index/providers 45ms
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:13944) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > keeps prior validators migration-only and default registry order explicit
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /tmp/authoring-migration-b40sNA
+
+stdout | tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ❯ tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts (23 tests | 1 failed) 784ms
+   ✓ removes only the key across both families and unreferenced owned Teams, with current zero-write and runtime/external preservation 77ms
+   ✓ does not hide physical children behind an invalid parent and bounds failure diagnostics 39ms
+   ✓ recovers ordinary-authoring canonical journals before classifying both root and owned-child definitions 21ms
+   ✓ keeps linked sources read-only and reports a present unreadable inventory instead of empty success 8ms
+   ✓ fails not_renamed and resumes through an ordinary rerun without replaying successful files 15ms
+   ✓ fails indeterminate and resumes through an ordinary rerun without replaying successful files 10ms
+   ✓ fails reread_mismatch and resumes through an ordinary rerun without replaying successful files 14ms
+   ✓ fails after_commit and resumes through an ordinary rerun without replaying successful files 12ms
+   ✓ uses real file/registry/runner ordering for completed family without an authoring prerequisite 70ms
+   ✓ uses real file/registry/runner ordering for pending family without an authoring prerequisite 53ms
+   ✓ uses real file/registry/runner ordering for failed-runtime family without an authoring prerequisite 69ms
+   ✓ uses real file/registry/runner ordering for stale-running family without an authoring prerequisite 51ms
+   ✓ keeps prior validators migration-only and default registry order explicit 4ms
+   ✓ commits exactly the final authoring candidate for version-only without normalizing other JSON 15ms
+   ✓ commits exactly the final authoring candidate for scope-only without normalizing other JSON 12ms
+   ✓ commits exactly the final authoring candidate for both without normalizing other JSON 11ms
+   ✓ commits exactly the final authoring candidate for current without normalizing other JSON 16ms
+   ✓ rejects non-authorized Org scope "unknown" without writes 10ms
+   ✓ rejects non-authorized Org scope "team_local" without writes 10ms
+   ✓ rejects non-authorized Org scope "AGENT_ORG_OWNED" without writes 6ms
+   ✓ rejects non-authorized Org scope " org_local" without writes 7ms
+   ✓ rejects non-authorized Org scope null without writes 6ms
+   × runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs 246ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts > runs the complete production registry on a fresh pre-ticket data root, directly producing final authored configs
+AssertionError: [{"migrationId":"20260727_custom_provider_v1_secret_migration","displayName":"Custom provider credential migration","description":"Removes inline legacy custom-provider credentials before readable identity reset.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.167Z","completedAt":"2026-09-12T02:36:01.173Z","summary":"Scanned 0; migrated 0; skipped 1; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260727_custom_provider_v1_secret_migration-2026-09-12T02-36-01-172Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260706_remove_global_skill_discovery_mode","displayName":"Remove global skill discovery mode migration","description":"Rewrites persisted GLOBAL_DISCOVERY skill access values to configured-only behavior.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.175Z","completedAt":"2026-09-12T02:36:01.178Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260706_remove_global_skill_discovery_mode-2026-09-12T02-36-01-178Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260517_team_run_metadata_member_tree","displayName":"Team run metadata member tree migration","description":"Converts safe historical flat TeamRun metadata to the recursive memberTree prerequisite.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.180Z","completedAt":"2026-09-12T02:36:01.184Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260517_team_run_metadata_member_tree-2026-09-12T02-36-01-183Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260814_team_run_execution_tree_v1","displayName":"TeamRun execution-tree V1 migration","description":"Promotes released TeamRun/task/message/token state directly to the exact V1 rooted execution model.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.186Z","completedAt":"2026-09-12T02:36:01.207Z","summary":"Scanned 2; migrated 0; skipped 2; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260814_team_run_execution_tree_v1-2026-09-12T02-36-01-206Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260823_repair_team_agent_memory_layout","displayName":"Repair Team Agent memory layout","description":"Moves affected nested AgentRun memory directories into their canonical TeamRun physical scopes.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.209Z","completedAt":"2026-09-12T02:36:01.213Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260823_repair_team_agent_memory_layout-2026-09-12T02-36-01-213Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260824_team_run_execution_tree_v2","displayName":"Upgrade TeamRun execution trees to V2","description":"Materializes a complete effective launch default on every configured TeamRun.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.216Z","completedAt":"2026-09-12T02:36:01.218Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260824_team_run_execution_tree_v2-2026-09-12T02-36-01-218Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260901_agent_org_flat_team_families_v1","displayName":"Cut over flat Team and AgentOrg definition/run families","description":"Converts server-owned released definitions and one-level organization-like Team runs while preserving native flat Team runs byte-for-byte.","requiredOnStartup":true,"status":"FAILED","attempts":1,"startedAt":"2026-09-12T02:36:01.221Z","completedAt":"2026-09-12T02:36:01.259Z","summary":"Scanned 3; migrated 1; skipped 0; failed 1.","errorMessage":"1 flat-Team/AgentOrg family item(s) require correction and restart.","logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260901_agent_org_flat_team_families_v1-2026-09-12T02-36-01-259Z.log","recoveryAction":"RESTART_TO_RETRY","canRetry":false},{"migrationId":"20260911_collaboration_definition_authoring_shape","displayName":"Update Team and Org definition authoring shape","description":"Converts owned current-family definitions to unversioned Team and org_local Org authoring.","requiredOnStartup":true,"status":"FAILED","attempts":1,"startedAt":"2026-09-12T02:36:01.263Z","completedAt":"2026-09-12T02:36:01.270Z","summary":"Scanned 2; migrated 0; skipped 1; failed 1.","errorMessage":"1 owned definition item(s) require correction and restart.","logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260911_collaboration_definition_authoring_shape-2026-09-12T02-36-01-270Z.log","recoveryAction":"RESTART_TO_RETRY","canRetry":false},{"migrationId":"20260731_remove_external_runtime_working_context_snapshots","displayName":"Remove external runtime WorkingContext snapshots","description":"Removes duplicate Codex and Claude WorkingContext snapshots from exact metadata-classified local run locations.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.273Z","completedAt":"2026-09-12T02:36:01.278Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260731_remove_external_runtime_working_context_snapshots-2026-09-12T02-36-01-277Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260617_raw_trace_rotation_layout","displayName":"Raw trace rotation layout migration","description":"Migrates raw trace archive subdirectories to direct raw_traces_<index>.jsonl rotation files.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.281Z","completedAt":"2026-09-12T02:36:01.283Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260617_raw_trace_rotation_layout-2026-09-12T02-36-01-283Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260707_raw_trace_active_file_name","displayName":"Raw trace active file name migration","description":"Renames active raw trace files from raw_traces.jsonl to raw_traces_active.jsonl.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.286Z","completedAt":"2026-09-12T02:36:01.288Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260707_raw_trace_active_file_name-2026-09-12T02-36-01-288Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260731_migrate_native_working_context_snapshots_v5","displayName":"Migrate native WorkingContext snapshots to strict v5","description":"Converts exact native pre-lineage snapshots to strict v5 while preserving raw evidence and current-lineage locations.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.290Z","completedAt":"2026-09-12T02:36:01.293Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260731_migrate_native_working_context_snapshots_v5-2026-09-12T02-36-01-293Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260905_agent_org_history_first_message_summary_v1","displayName":"AgentOrg first-message history summaries","description":"Conservatively derives missing AgentOrg history summaries from strict configured-member provenance.","requiredOnStartup":true,"status":"NOT_RUN","attempts":0,"startedAt":null,"completedAt":null,"summary":null,"errorMessage":"{\"code\":\"APP_DATA_MIGRATION_PREREQUISITE_INCOMPLETE\",\"migrationId\":\"20260905_agent_org_history_first_message_summary_v1\",\"prerequisites\":[{\"migrationId\":\"20260901_agent_org_flat_team_families_v1\",\"status\":\"FAILED\"}]}","logPath":null,"recoveryAction":"RESTART_TO_RETRY","canRetry":false},{"migrationId":"20260701_team_communication_projection_addresses","displayName":"Team communication execution-address migration","description":"Converts communication projections to exact TeamExecutionAddress sender and receiver identities.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.296Z","completedAt":"2026-09-12T02:36:01.300Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260701_team_communication_projection_addresses-2026-09-12T02-36-01-300Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260730_token_usage_custom_provider_model_value_backfill","displayName":"Token usage custom-provider model value backfill","description":"Normalizes bounded batches of validated legacy custom-provider model values.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.302Z","completedAt":"2026-09-12T02:36:01.312Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260730_token_usage_custom_provider_model_value_backfill-2026-09-12T02-36-01-312Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260730_token_usage_provider_name_snapshot_backfill","displayName":"Token usage provider-name snapshot backfill","description":"Recovers exact provider display names in bounded legacy candidate batches.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.316Z","completedAt":"2026-09-12T02:36:01.328Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260730_token_usage_provider_name_snapshot_backfill-2026-09-12T02-36-01-328Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260819_token_usage_run_records_v1","displayName":"Token usage one-row run records V1","description":"Consolidates the released token event ledger into one current record per canonical run.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.332Z","completedAt":"2026-09-12T02:36:01.342Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260819_token_usage_run_records_v1-2026-09-12T02-36-01-342Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260623_remove_self_evolution_run_metadata","displayName":"Remove self-evolution run metadata migration","description":"Removes obsolete selfEvolutionEffective fields from standalone run metadata and recursive team member metadata.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.344Z","completedAt":"2026-09-12T02:36:01.348Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260623_remove_self_evolution_run_metadata-2026-09-12T02-36-01-348Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260521_team_run_history_index_v2","displayName":"Team run history index V2 migration","description":"Migrates and repairs team_run_history_index.json into a strict V2 catalog row array.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.350Z","completedAt":"2026-09-12T02:36:01.356Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260521_team_run_history_index_v2-2026-09-12T02-36-01-356Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260521_run_history_index_v2","displayName":"Standalone run history index V2 migration","description":"Migrates and repairs standalone agent run_history_index.json into a strict V2 catalog row array.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.362Z","completedAt":"2026-09-12T02:36:01.369Z","summary":"Scanned 0; migrated 0; skipped 0; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260521_run_history_index_v2-2026-09-12T02-36-01-369Z.log","recoveryAction":"NONE","canRetry":false},{"migrationId":"20260803_custom_provider_readable_identity","displayName":"Custom provider readable identity reset","description":"Maps active UUID selectors, resets legacy providers, and removes old keys.","requiredOnStartup":true,"status":"SUCCEEDED","attempts":1,"startedAt":"2026-09-12T02:36:01.373Z","completedAt":"2026-09-12T02:36:01.377Z","summary":"Scanned 1; migrated 0; skipped 1; failed 0.","errorMessage":null,"logPath":"/tmp/authoring-migration-b40sNA/production-logs/20260803_custom_provider_readable_identity-2026-09-12T02-36-01-377Z.log","recoveryAction":"NONE","canRetry":false}]: expected { …(13) } to match object { status: 'SUCCEEDED' }
+(12 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+  }
+
+ ❯ tests/unit/app-data-migrations/collaboration-definition-authoring-shape.test.ts:230:140
+    228|   const results = await runner.runPending();
+    229|   expect(results.map((result) => result.migrationId)).toEqual(registry…
+    230|   for (const id of [PREREQUISITE, FAMILY, AUTHORING]) expect(results.f…
+       |                                                                                                                                            ^
+    231|   expect(await read(flat)).toEqual(team());
+    232|   const targetDir = path.join(env.orgs, "mixed"), target = await read(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/collaboration-definition-admission/org-local-roundtrip.test.ts > maps unchanged GraphQL enums to strict org_local packages and resolves bundled Agent/Team through the real owned index/providers
+TypeError: this.appConfig.getAgentMdPath is not a function
+ ❯ FileAgentDefinitionProvider.create src/agent-definition/providers/file-agent-definition-provider.ts:244:39
+    242|       domainObj.instructions,
+    243|     );
+    244|     await writeRawFile(this.appConfig.getAgentMdPath(agentId), mdConte…
+       |                                       ^
+    245| 
+    246|     await writeJsonFile(
+ ❯ tests/unit/collaboration-definition-admission/org-local-roundtrip.test.ts:42:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 22 passed (24)
+   Start at  02:35:51
+   Duration  9.66s (transform 4.06s, setup 33ms, import 7.78s, tests 830ms, environment 0ms)
+

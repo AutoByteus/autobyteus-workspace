@@ -1,0 +1,248 @@
+
+> autobyteus@1.4.63 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/agentOrgs/__tests__/AgentOrgExperience.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts services/rootExecution/__tests__/rootExecutionViewState.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts stores/__tests__/activeContextStore.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts (4 tests) 115ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ services/rootExecution/__tests__/rootExecutionViewState.spec.ts (10 tests) 14ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ stores/__tests__/activeContextStore.spec.ts (6 tests) 34ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (5 tests) 140ms
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (3 tests) 34ms
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders exact focused Agent identity, status, avatar, and composer target from the current view
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders a different exact focused AgentRun without coordinator substitution
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders persistent actionable guidance while the selected Team stream requires recovery
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (5 tests) 125ms
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > opens selected Team configuration from the header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects task-Agent details without changing the exact focused send target
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentUserInputTextArea data-test="workflow-composer" > 
+  at <Anonymous team= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  teamRunId: 'classroom-root-run',
+  teamAddress: '/',
+  teamDefinitionName: 'Nested Classroom Test Team',
+  coordinatorAddress: '/Teacher',
+  focusedMemberAddress: '/Teacher',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedAgentContext: AgentContext {
+    config: {
+      agentDefinitionId: '-Teacher-definition',
+      agentDefinitionName: 'Teacher',
+      llmModelIdentifier: 'test-model',
+      runtimeKind: 'autobyteus',
+      workspaceId: null,
+      workspaceMetadata: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'NONE',
+      llmConfig: null,
+      isLocked: true
+    },
+    state: AgentRunState {
+      runId: 'teacher-persistent-run',
+      currentStatus: 'idle',
+      conversation: [Object],
+      agent_tool_invocation_counts: Map(0) {},
+      compactionStatus: null,
+      eventMonitorPresentationRevision: 0,
+      hasEarlierActiveTraceEvents: false
+    },
+    requirement: '',
+    contextFilePaths: [],
+    submissionPending: false
+  },
+  listMembers: [Function: listMembers],
+  senderNameByAgentRunId: [Function: senderNameByAgentRunId],
+  listCommunicationMessages: [Function: listCommunicationMessages],
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  communicationReferenceContentPath: [Function: communicationReferenceContentPath],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > seeds an editable new Team configuration without sharing nested LLM config state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > keeps configured Team placement non-focusable while retaining its exact Agent child focus
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (7 tests) 113ms
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects a task-Team summary without making its placement a send target
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentUserInputTextArea data-test="workflow-composer" > 
+  at <Anonymous team= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  teamRunId: 'classroom-root-run',
+  teamAddress: '/',
+  teamDefinitionName: 'Nested Classroom Test Team',
+  coordinatorAddress: '/Teacher',
+  focusedMemberAddress: '/Teacher',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedAgentContext: AgentContext {
+    config: {
+      agentDefinitionId: '-Teacher-definition',
+      agentDefinitionName: 'Teacher',
+      llmModelIdentifier: 'test-model',
+      runtimeKind: 'autobyteus',
+      workspaceId: null,
+      workspaceMetadata: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'NONE',
+      llmConfig: null,
+      isLocked: true
+    },
+    state: AgentRunState {
+      runId: 'teacher-persistent-run',
+      currentStatus: 'idle',
+      conversation: [Object],
+      agent_tool_invocation_counts: Map(0) {},
+      compactionStatus: null,
+      eventMonitorPresentationRevision: 0,
+      hasEarlierActiveTraceEvents: false
+    },
+    requirement: '',
+    contextFilePaths: [],
+    submissionPending: false
+  },
+  listMembers: [Function: listMembers],
+  senderNameByAgentRunId: [Function: senderNameByAgentRunId],
+  listCommunicationMessages: [Function: listCommunicationMessages],
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  communicationReferenceContentPath: [Function: communicationReferenceContentPath],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 114ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (9 tests) 944ms
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (1 test) 3ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (1 test) 7ms
+
+ Test Files  11 passed (11)
+      Tests  53 passed (53)
+   Start at  16:30:39
+   Duration  20.50s (transform 7.29s, setup 114.50s, collect 7.71s, tests 1.64s, environment 22.08s, prepare 7.44s)
+

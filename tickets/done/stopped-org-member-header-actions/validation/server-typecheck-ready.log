@@ -1,0 +1,2 @@
+src/agent-org-execution/services/agent-org-run-manager.ts(213,79): error TS2339: Property 'selection' does not exist on type 'Readonly<{ kind: "valid"; selection: Readonly<{ llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null; }>; }> | Readonly<{ kind: "schema_unavailable" | "model_unavailable"; }>'.
+  Property 'selection' does not exist on type 'Readonly<{ kind: "schema_unavailable" | "model_unavailable"; }>'.

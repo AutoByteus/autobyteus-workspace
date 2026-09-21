@@ -1,0 +1,359 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > preserves cross-view owner, archived/active line bytes and flat tree bytes, then strictly reads final bytes after the root move
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+AppConfig instance created.
+
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts (11 tests) 661ms
+ ✓ tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts (1 test) 1738ms
+     ✓ keeps removed run-specific layout symbols out of source and tests  1737ms
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: orgRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'org/unknown'.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'wrong-root/configured-direct'.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > preserves existing per-file partial-batch continuation without a new retry or journal
+Failed to finalize context files: Error: controlled move failure
+
+ ✓ tests/integration/api/rest/agent-org-context-files.integration.test.ts (3 tests) 221ms
+stdout | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records forwarded commands and normalized events without a stream subscriber
+Memory file missing: /tmp/agent-run-memory-recorder-0t73fL/working_context_snapshot.json
+Memory file missing: /tmp/agent-run-memory-recorder-0t73fL/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/agent-run-memory-recorder.test.ts > AgentRunMemoryRecorder > records canonical route-backed send_message_to tool traces with MCP content result shape
+Memory file missing: /tmp/agent-run-memory-recorder-sjMgzO/working_context_snapshot.json
+Memory file missing: /tmp/agent-run-memory-recorder-sjMgzO/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/agent-run-memory-recorder.test.ts (5 tests) 75ms
+stdout | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool
+Memory file missing: /tmp/runtime-memory-accumulator-ecawpT/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn
+Memory file missing: /tmp/runtime-memory-accumulator-excVFp/working_context_snapshot.json
+Memory file missing: /tmp/runtime-memory-accumulator-excVFp/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+Memory file missing: /tmp/runtime-memory-accumulator-sGEAvk/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+Memory file missing: /tmp/runtime-memory-accumulator-iQfSf9/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+Memory file missing: /tmp/runtime-memory-accumulator-qwp3xr/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+Memory file missing: /tmp/runtime-memory-accumulator-zxnAuw/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+Memory file missing: /tmp/runtime-memory-accumulator-xnjONC/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+Memory file missing: /tmp/runtime-memory-accumulator-n3MTfT/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+Memory file missing: /tmp/runtime-memory-accumulator-ueLvNU/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates
+Memory file missing: /tmp/runtime-memory-accumulator-56hZka/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion
+Memory file missing: /tmp/runtime-memory-accumulator-aAAbIN/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output
+Memory file missing: /tmp/runtime-memory-accumulator-JaNCDb/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity
+Memory file missing: /tmp/runtime-memory-accumulator-u7j1ld/working_context_snapshot.json
+Memory file missing: /tmp/runtime-memory-accumulator-u7j1ld/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present
+Memory file missing: /tmp/runtime-memory-accumulator-f9dBYc/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids
+Memory file missing: /tmp/runtime-memory-accumulator-Q2jNvm/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity
+Memory file missing: /tmp/runtime-memory-accumulator-ZfzMMt/working_context_snapshot.json
+Memory file missing: /tmp/runtime-memory-accumulator-ZfzMMt/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning
+Memory file missing: /tmp/runtime-memory-accumulator-l4SWdb/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives
+Memory file missing: /tmp/runtime-memory-accumulator-BPldwc/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records
+Memory file missing: /tmp/runtime-memory-accumulator-SBwgD8/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists
+Memory file missing: /tmp/runtime-memory-accumulator-gqpd18/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests) 35ms
+ ❯ tests/unit/agent-memory/team-memory-explorer-service.test.ts (2 tests | 2 failed) 40ms
+     × groups stored V1 roots by Team definition and exact configured Agent address 28ms
+     × lists and filters current run/member targets without route/path compatibility identity 12ms
+ ✓ tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts (3 tests) 34ms
+stdout | tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts (8 tests) 19ms
+ ✓ tests/unit/agent-memory/agent-memory-explorer-service.test.ts (3 tests) 19ms
+ ✓ tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts (10 tests) 22ms
+ ✓ tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts (8 tests) 15ms
+ ✓ tests/unit/agent-memory/agent-memory-location-service.test.ts (3 tests) 24ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts (7 tests) 13ms
+stdout | tests/unit/agent-memory/external-runtime-memory-writer.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes exact normalized raw fields without creating a WorkingContext snapshot
+Memory file missing: /tmp/external-runtime-memory-writer-EEm6Jq/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts (3 tests) 13ms
+stdout | tests/unit/run-history/projection/user-file-attachment-projection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/run-history/projection/user-file-attachment-projection.test.ts (12 tests) 9ms
+ ✓ tests/unit/agent-memory/agent-memory-layout.test.ts (4 tests) 8ms
+stdout | tests/unit/agent-memory/agent-memory-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > applies raw trace limits
+Memory file missing: /tmp/agent-memory-service-XpPx9l/agents/agent-456/working_context_snapshot.json
+Memory file missing: /tmp/agent-memory-service-XpPx9l/agents/agent-456/episodic.jsonl
+Memory file missing: /tmp/agent-memory-service-XpPx9l/agents/agent-456/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > reads archive segments plus active traces as the complete corpus
+Memory file missing: /tmp/agent-memory-service-IPr0xb/agents/agent-archive/working_context_snapshot.json
+Memory file missing: /tmp/agent-memory-service-IPr0xb/agents/agent-archive/episodic.jsonl
+Memory file missing: /tmp/agent-memory-service-IPr0xb/agents/agent-archive/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > lists raw trace files active first and reads only the selected segment filename
+Memory file missing: /tmp/agent-memory-service-qJX9Ak/agents/agent-segments/working_context_snapshot.json
+Memory file missing: /tmp/agent-memory-service-qJX9Ak/agents/agent-segments/episodic.jsonl
+Memory file missing: /tmp/agent-memory-service-qJX9Ak/agents/agent-segments/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > falls back to the default raw trace file for invalid selected filenames
+Memory file missing: /tmp/agent-memory-service-RAChDR/agents/agent-invalid-file/working_context_snapshot.json
+Memory file missing: /tmp/agent-memory-service-RAChDR/agents/agent-invalid-file/episodic.jsonl
+Memory file missing: /tmp/agent-memory-service-RAChDR/agents/agent-invalid-file/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > does not create a missing run directory for includeArchive raw-trace reads
+Memory file missing: /tmp/agent-memory-service-QKCbDw/agents/missing-run/working_context_snapshot.json
+Memory file missing: /tmp/agent-memory-service-QKCbDw/agents/missing-run/episodic.jsonl
+Memory file missing: /tmp/agent-memory-service-QKCbDw/agents/missing-run/semantic.jsonl
+
+ ✓ tests/unit/agent-memory/agent-memory-service.test.ts (7 tests) 10ms
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns null for missing or invalid JSON
+Memory file missing: /tmp/memory-store-w1uufq/missing.json
+Failed to decode JSON file /tmp/memory-store-w1uufq/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > reads JSONL and skips malformed lines
+Skipping malformed JSONL line in /tmp/memory-store-cEVMzN/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns empty array for missing JSONL
+Memory file missing: /tmp/memory-store-uhZuXC/missing.jsonl
+
+ ✓ tests/unit/agent-memory/memory-file-store.test.ts (8 tests) 8ms
+ ✓ tests/unit/context-files/context-file-local-path-resolver.test.ts (2 tests) 6ms
+ ✓ tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts (7 tests) 6ms
+ ✓ tests/unit/run-history/projection/active-trace-event-page-policy.test.ts (2 tests) 4ms
+ ✓ tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts (2 tests) 4ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts (4 tests) 4ms
+ ✓ tests/unit/context-files/context-file-owner-resolver.test.ts (3 tests) 4ms
+ ✓ tests/unit/context-files/context-file-path-environment.test.ts (8 tests) 4ms
+ ✓ tests/unit/context-files/context-file-owner-types.test.ts (3 tests) 3ms
+stdout | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts > raw trace record normalizer outcome presence > isolates malformed run rows and preserves strict run/turn scope
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/unit/agent-memory/raw-trace-record-normalizer.test.ts (5 tests) 3ms
+ ✓ tests/unit/run-history/projection/recent-run-projection-policy.test.ts (2 tests) 3ms
+ ✓ tests/unit/context-files/context-file-layout.test.ts (1 test) 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService current V1 tree > groups stored V1 roots by Team definition and exact configured Agent address
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "memberMemoryCount": 1,
+-     "memory": ObjectContaining {
+-       "hasRawTraces": true,
+-       "hasSemantic": true,
+-     },
+-     "teamDefinitionId": "classroom-team",
+-     "teamDefinitionName": "Classroom Team",
+-     "teamRunCount": 2,
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-memory/team-memory-explorer-service.test.ts:57:26
+     55|   it("groups stored V1 roots by Team definition and exact configured A…
+     56|     const page = await new TeamMemoryExplorerService(memoryDir).listAg…
+     57|     expect(page.entries).toEqual([expect.objectContaining({
+       |                          ^
+     58|       teamDefinitionId: "classroom-team",
+     59|       teamDefinitionName: "Classroom Team",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService current V1 tree > lists and filters current run/member targets without route/path compatibility identity
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "memberTargets": [
+-       ObjectContaining {
+-         "agentRunId": "teacher-run-2",
+-         "displayName": "Teacher",
+-         "memberAddress": "/Teacher",
+-       },
+-     ],
+-     "summary": "second lesson",
+-     "teamRunId": "classroom-run-2",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-memory/team-memory-explorer-service.test.ts:69:26
+     67|     const service = new TeamMemoryExplorerService(memoryDir);
+     68|     const page = await service.listAgentTeamRunsWithMemory("classroom-…
+     69|     expect(page.entries).toEqual([expect.objectContaining({
+       |                          ^
+     70|       teamRunId: "classroom-run-2",
+     71|       summary: "second lesson",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 28 passed (29)
+      Tests  2 failed | 156 passed (158)
+   Start at  15:52:55
+   Duration  20.87s (transform 3.94s, setup 154ms, import 12.88s, tests 3.00s, environment 2ms)
+

@@ -1,0 +1,21 @@
+diff_check_exit=0
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-command-queue.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifecycle-engine.ts
+ M autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/root-team-run-materialization-gate.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-lifecycle-adapter.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+ M autobyteus-server-ts/src/server-runtime.ts
+?? autobyteus-application-backend-sdk/dist
+?? autobyteus-application-devkit/dist
+?? autobyteus-application-frontend-sdk/dist
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/node_modules
+?? autobyteus-server-ts/src/api-e2e-probe/
+?? autobyteus-ts/dist
+?? node_modules
+895665929213ddf7c276c9a89af19b975935f128
+cfb535545c0f2099b1f8c1bd19fa177fa8dd53601d6a6e58fcbe18443587e288  /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/instrumentation.patch

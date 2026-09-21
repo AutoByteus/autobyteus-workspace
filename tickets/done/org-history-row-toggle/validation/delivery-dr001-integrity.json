@@ -1,0 +1,36 @@
+{
+  "ticket": "ORG-HISTORY-ROW-TOGGLE-20260920-001",
+  "deliveryRevision": "DR-001",
+  "checkedAt": "2026-09-20",
+  "ticketHead": "aef459e8474550439e9e34bbbce98b04a3d9b754",
+  "fetchedTarget": "aef459e8474550439e9e34bbbce98b04a3d9b754",
+  "aheadBehind": {
+    "ahead": 0,
+    "behind": 0
+  },
+  "integrationMethod": "already-current",
+  "manifestPath": "tickets/done/org-history-row-toggle/validation/ir001-source-manifest.json",
+  "entryCount": 2,
+  "exactCount": 2,
+  "allExact": true,
+  "checks": [
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "expectedCandidateSha256": "3dcc8100c40c72ad2a6e028b9131298cd9be9f6f3473517d5f0ebb12593f7004",
+      "actualSha256": "3dcc8100c40c72ad2a6e028b9131298cd9be9f6f3473517d5f0ebb12593f7004",
+      "state": "present",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts",
+      "expectedCandidateSha256": "dabb228edf4776d30abf273199e603e63a074e5b8b990e109266fd73eaf8fe44",
+      "actualSha256": "dabb228edf4776d30abf273199e603e63a074e5b8b990e109266fd73eaf8fe44",
+      "state": "present",
+      "matches": true
+    }
+  ],
+  "executableRerun": {
+    "performed": false,
+    "rationale": "No base commit was integrated and the API-REV-001-validated candidate bytes were unchanged."
+  }
+}

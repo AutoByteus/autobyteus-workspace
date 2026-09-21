@@ -1,8 +1,6 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
   ConfiguredAgentExecutionNode,
-  ConfiguredExecutionNode,
-  ConfiguredTeamExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskAgentExecution,
   TaskExecution,
@@ -14,10 +12,10 @@ import type {
 } from "../domain/team-run-execution-tree.js";
 import type { TaskExecutionReference } from "../task-delegation/task-delegation-record-v1.js";
 import {
-  createChildTeamRunPhysicalScope,
-  createRootTeamRunPhysicalScope,
-  type TeamRunPhysicalScope,
-} from "../domain/team-run-physical-scope.js";
+  createRootExecutionPhysicalScope,
+  createTeamRootExecutionIdentity,
+  type RootExecutionPhysicalScope,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 export type AgentExecutionKind = "configured" | "task" | "task_team_member";
 export type TeamExecutionKind = "configured" | "task" | "task_team_member";
@@ -37,7 +35,6 @@ export type IndexedTeamExecution = Readonly<{
   executionKind: TeamExecutionKind;
   source:
     | RootConfiguredTeamExecutionNode
-    | ConfiguredTeamExecutionNode
     | TaskTeamExecution
     | TaskTeamNestedTeamExecution;
 }>;
@@ -62,8 +59,7 @@ export type IndexedTaskExecution =
 export class TeamExecutionIndex {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
-  private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredExecutionNode>();
-  private readonly configuredTeamRunIdByAddress = new Map<AgentTeamAddress, string>();
+  private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();
   private readonly taskExecutionsByRunId = new Map<string, IndexedTaskExecution>();
   private readonly directAgentRunIdsByTeamRunId = new Map<string, string[]>();
   private readonly directTeamRunIdsByTeamRunId = new Map<string, string[]>();
@@ -77,8 +73,7 @@ export class TeamExecutionIndex {
       executionKind: "configured",
       source: tree.rootTeam,
     });
-    this.configuredTeamRunIdByAddress.set(rootAddress, tree.rootTeam.teamRunId);
-    this.visitConfiguredTeam(tree.rootTeam, rootAddress, tree.rootTeam.teamRunId);
+    this.visitConfiguredRoot(tree.rootTeam);
   }
 
   get rootTeamRunId(): string {
@@ -105,12 +100,8 @@ export class TeamExecutionIndex {
     return team;
   }
 
-  getConfiguredPlacement(address: AgentTeamAddress | string): ConfiguredExecutionNode | null {
+  getConfiguredPlacement(address: AgentTeamAddress | string): ConfiguredAgentExecutionNode | null {
     return this.configuredByAddress.get(address as AgentTeamAddress) ?? null;
-  }
-
-  getConfiguredTeamRunId(address: AgentTeamAddress | string): string | null {
-    return this.configuredTeamRunIdByAddress.get(address as AgentTeamAddress) ?? null;
   }
 
   getTaskExecution(reference: TaskExecutionReference): IndexedTaskExecution | null {
@@ -150,13 +141,12 @@ export class TeamExecutionIndex {
     return this.listTeamAncestorsDeepestFirst(this.requireAgent(agentRunId).containingTeamRunId);
   }
 
-  getTeamRunPhysicalScope(teamRunId: string): TeamRunPhysicalScope {
+  getTeamRunPhysicalScope(teamRunId: string): RootExecutionPhysicalScope {
     const chain = [...this.listTeamAncestorsDeepestFirst(teamRunId)].reverse();
-    let scope = createRootTeamRunPhysicalScope(this.rootTeamRunId);
-    for (const team of chain.slice(1)) {
-      scope = createChildTeamRunPhysicalScope(scope, team.teamRunId);
-    }
-    return scope;
+    return createRootExecutionPhysicalScope({
+      root: createTeamRootExecutionIdentity(this.rootTeamRunId),
+      ancestorTeamRunIds: chain.slice(1).map((team) => team.teamRunId),
+    });
   }
 
   isLiveAgent(agentRunId: string): boolean {
@@ -172,48 +162,18 @@ export class TeamExecutionIndex {
       !("settledAt" in team.source) || team.source.settledAt === null);
   }
 
-  /** Exact configured TeamRun chain from root to the target persistent placement. */
-  getConfiguredTeamRunChain(targetTeamRunId: string): readonly string[] {
-    const target = this.requireTeam(targetTeamRunId);
-    if (target.executionKind !== "configured") {
-      throw new Error(`TeamRun '${targetTeamRunId}' is not a configured Team execution.`);
-    }
-    const chain = [...this.listTeamAncestorsDeepestFirst(targetTeamRunId)].reverse();
-    if (chain.some((team) => team.executionKind !== "configured")) {
-      throw new Error(`Configured TeamRun '${targetTeamRunId}' has non-configured ancestry.`);
-    }
-    return Object.freeze(chain.map((team) => team.teamRunId));
-  }
-
-  private visitConfiguredTeam(
-    team: RootConfiguredTeamExecutionNode | ConfiguredTeamExecutionNode,
-    teamAddress: AgentTeamAddress,
-    teamRunId: string,
-  ): void {
+  private visitConfiguredRoot(team: RootConfiguredTeamExecutionNode): void {
     for (const member of team.members) {
       this.configuredByAddress.set(member.address, member);
-      if ("agentRunId" in member) {
-        this.addAgent({
-          agentRunId: member.agentRunId,
-          address: member.address,
-          containingTeamRunId: teamRunId,
-          executionKind: "configured",
-          source: member,
-        });
-      } else {
-        this.configuredTeamRunIdByAddress.set(member.address, member.teamRunId);
-        this.addTeam({
-          teamRunId: member.teamRunId,
-          address: member.address,
-          parentTeamRunId: teamRunId,
-          executionKind: "configured",
-          source: member,
-        });
-        this.visitConfiguredTeam(member, member.address, member.teamRunId);
-      }
+      this.addAgent({
+        agentRunId: member.agentRunId,
+        address: member.address,
+        containingTeamRunId: team.teamRunId,
+        executionKind: "configured",
+        source: member,
+      });
     }
-    void teamAddress;
-    team.taskExecutions.forEach((task) => this.visitTaskExecution(task, teamRunId));
+    team.taskExecutions.forEach((task) => this.visitTaskExecution(task, team.teamRunId));
   }
 
   private visitTaskExecution(task: TaskExecution, ownerTeamRunId: string): void {

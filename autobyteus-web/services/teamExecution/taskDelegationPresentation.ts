@@ -1,21 +1,10 @@
 import type { TaskDelegationRecordDto } from '@autobyteus/team-stream-contracts';
 
-export type TaskDelegationDisplayStatus =
-  | 'in_progress'
-  | 'awaiting_review'
-  | 'revision_requested'
-  | 'accepted'
-  | 'interrupted';
-
-export interface TeamExecutionTaskPresentation {
-  readonly taskId: string;
-  readonly description: string;
-  readonly displayStatus: TaskDelegationDisplayStatus;
-}
+import type { DelegatedTaskDisplayStatus, CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation';
 
 const deriveDisplayStatus = (
   task: TaskDelegationRecordDto,
-): TaskDelegationDisplayStatus => {
+): DelegatedTaskDisplayStatus => {
   if (task.status !== 'active') return task.status;
   const latestUpdate = task.updates.at(-1);
   return latestUpdate?.kind === 'review' && latestUpdate.decision === 'request_revision'
@@ -25,7 +14,7 @@ const deriveDisplayStatus = (
 
 export const deriveTaskDelegationPresentation = (
   task: TaskDelegationRecordDto,
-): TeamExecutionTaskPresentation => Object.freeze({
+): CollaborationTaskHeadingPresentation => Object.freeze({
   taskId: task.task_id,
   description: task.description.trim().replace(/\s+/g, ' '),
   displayStatus: deriveDisplayStatus(task),

@@ -1,0 +1,46 @@
+{
+  "caseId": "LIVE-004",
+  "result": "Pass",
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.6-sol",
+  "autoExecuteTools": true,
+  "workspace": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace",
+  "standaloneTeam": {
+    "definitionId": "apirev7-team",
+    "runId": "apirev7_team_d98179477a974a8eb15d53b24d4652d5",
+    "coordinatorAddress": "/aorg_e2e_lead",
+    "agentRunId": "aorg_e2e_lead_95fd646f356a4926b4e59a181191332d",
+    "firstPromptLazyAdmission": true,
+    "marker": "APIREV7-TEAM-LIVE-001"
+  },
+  "agentOrg": {
+    "definitionId": "apirev7",
+    "runId": "apirev7_5bfe50658a4144928ed4046deb4e2c41",
+    "direct": {
+      "address": "/aorg_e2e_concierge",
+      "agentRunId": "aorg_e2e_concierge_b224638c5b3a4b438036692742b9fa3b",
+      "marker": "APIREV7-ORG-DIRECT-LIVE-001"
+    },
+    "mountedTeam": {
+      "address": "/apirev7_team",
+      "teamRunId": "apirev7_team_da5e54a154a6478099e559ee0d295ec3",
+      "coordinatorAddress": "/apirev7_team/aorg_e2e_lead",
+      "agentRunId": "aorg_e2e_lead_e75954da730244339fe2a12a718d6868",
+      "marker": "APIREV7-ORG-TEAM-LIVE-001"
+    }
+  },
+  "taskLifecycle": {
+    "taskId": "task_e4f14dc7d7ce47cdb27509b9fcf0f318",
+    "delegatorAgentRunId": "aorg_e2e_lead_e75954da730244339fe2a12a718d6868",
+    "recipientAddress": "/apirev7_team/aorg_e2e_analyst",
+    "taskAgentRunId": "aorg_e2e_analyst_716b5f0d28af4faeab9c91287054c210",
+    "submission": "APIREV7-TASK-PAYLOAD-001",
+    "status": "accepted",
+    "finalMarker": "APIREV7-TASK-ACCEPTED-001",
+    "durableBeforeRestart": true
+  },
+  "notes": [
+    "Normal Org configuration required both root and mounted-Team workspace selections.",
+    "The Team-only GraphQL task projection correctly rejected the Org root ID; Org task durability was verified from the production AgentOrg sidecar and browser live task panel."
+  ]
+}

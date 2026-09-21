@@ -1,0 +1,63 @@
+{
+  "at": "2026-09-13T03:47:15.021623+00:00",
+  "baselineEntries": 35330,
+  "otherOwnerRegularChecked": 35321,
+  "permittedDeliveryCanonicalChanges": 9,
+  "missingOrChanged": [],
+  "previouslyTrackedTicketPaths": 4419,
+  "trackedUpstreamChanges": [],
+  "scope": "SHA256/symlink target; rename resolved. No live data inventory or mtime-equality claim.",
+  "restrictedBackup": "/home/autobyteus/workspace/.codex/delivery-archives/AORG-FLAT-TEAM-001-DR010-20260913T033904Z",
+  "result": "Pass",
+  "symlinkTargetChecks": [
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/pnpm",
+      "mode": "120000",
+      "targetSha256": "727c9959bb509ccbb8337b9b62c74923527e1f15912be68ae456873738ec5cd4",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/pnpx",
+      "mode": "120000",
+      "targetSha256": "a9f1c4b1cc84e57e40a93000946b140f2d73769e0261aeb40109217fac7d627e",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/yarn",
+      "mode": "120000",
+      "targetSha256": "9388de035533c31aa81d8095b1f9bff467a710d4d6b7175871dcf2eed23b0592",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-005/tool-bin/yarnpkg",
+      "mode": "120000",
+      "targetSha256": "70f77d668bef84c1d7988fd485ad894757c9bbc0a780d069202d8a7f27491dec",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/pnpm",
+      "mode": "120000",
+      "targetSha256": "dbfe69cbdb3d1b3cfb975a0d948a6a265ffe9976a795cfa7b8442baf7ab5d144",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/pnpx",
+      "mode": "120000",
+      "targetSha256": "025562f74d28a9ea1fa73451ed13e6c04be0b7855bdfe3842d84d8564e90d71e",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/yarn",
+      "mode": "120000",
+      "targetSha256": "8e2e0ea836172ac7f569fa844226edfe2960be941f759bad13d5e16dae658ff0",
+      "sameTarget": true
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-006/repository/bin/yarnpkg",
+      "mode": "120000",
+      "targetSha256": "d701f995d39c6c9276647515ab2a7bfb4dc07277ae95eb2e670dcc925a9d1298",
+      "sameTarget": true
+    }
+  ],
+  "diagnosticCorrection": "Initial regular-file byte comparison dereferenced eight tracked tool-bin symlinks. Git mode120000 and exact link-target bytes are now checked; all eight unchanged. Initial diagnostic retained, no artifact repair or mutation."
+}

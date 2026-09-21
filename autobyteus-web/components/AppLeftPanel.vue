@@ -79,7 +79,7 @@
         tabindex="-1"
         class="min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
       >
-        <div class="h-full overflow-y-auto">
+        <div class="h-full">
           <WorkspaceAgentRunsTreePanel
             @run-selected="onRunningRunSelected"
             @run-created="onRunningRunCreated"
@@ -106,6 +106,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { computed, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
@@ -149,20 +150,25 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
 };
 
 const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
+  useAgentSelectionStore().beginSelectionIntent();
   await pushRoute(resolvePrimaryRoute(key));
 };
 
 const navigateToSettings = async (): Promise<void> => {
+  useAgentSelectionStore().beginSelectionIntent();
   await pushRoute('/settings');
 };
 
+const isPlainWorkspaceRoute = (): boolean =>
+  route.path === '/workspace' && Object.keys(route.query).length === 0;
+
 const onRunningRunSelected = async (): Promise<void> => {
-  if (route.path === '/workspace') return;
+  if (isPlainWorkspaceRoute()) return;
   await pushRoute('/workspace');
 };
 
 const onRunningRunCreated = async (): Promise<void> => {
-  if (route.path === '/workspace') return;
+  if (isPlainWorkspaceRoute()) return;
   await pushRoute('/workspace');
 };
 

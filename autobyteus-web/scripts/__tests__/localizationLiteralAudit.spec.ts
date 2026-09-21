@@ -141,4 +141,76 @@ function install() {
       ]),
     );
   });
+
+  it('strictly audits Agent Org template text, interpolation, bound attributes, and script feedback', () => {
+    const appRoot = createFixtureDir({
+      'components/agentOrgs/AgentOrgExperience.vue': `
+<template>
+  <section>
+    <input placeholder="Search organizations by name">
+    <p>No organizations matched “{{ search.trim() }}”</p>
+    <button>{{ reloading ? 'Reloading…' : 'Reload' }}</button>
+    <button :aria-label="added ? \`\${name} added\` : \`Add \${name}\`">{{ name }}</button>
+  </section>
+</template>
+<script setup lang="ts">
+const catalogSections = computed(() => [{ title: 'Featured organizations' }]);
+const endpoint = { group: 'Team Agents' };
+const saveError = ref('');
+const save = () => {
+  saveError.value = 'Enter an Agent Org name before saving.';
+  throw new Error('Agent Org save failed.');
+};
+</script>
+`,
+    });
+
+    const findings = auditLocalizationLiterals({
+      appRoot,
+      scopes: [{ scopeId: 'M-014', include: ['components/agentOrgs/'], strictVueLiterals: true }],
+    });
+
+    expect(findings.map((finding) => finding.finding)).toEqual(expect.arrayContaining([
+      'Search organizations by name',
+      'No organizations matched “”',
+      'Reloading…',
+      'Reload',
+      '{{expr}} added',
+      'Add {{expr}}',
+      'Featured organizations',
+      'Team Agents',
+      'Enter an Agent Org name before saving.',
+      'Agent Org save failed.',
+    ]));
+  });
+
+  it('accepts localized Agent Org template and script presentation', () => {
+    const appRoot = createFixtureDir({
+      'components/agentOrgs/LocalizedAgentOrg.vue': `
+<template>
+  <section>
+    <input :placeholder="t('agentOrgs.searchPlaceholder')">
+    <p>{{ t('agentOrgs.emptyFiltered', { query: search.trim() }) }}</p>
+    <button :aria-label="t('agentOrgs.addMember', { name })">{{ t('agentOrgs.add') }}</button>
+  </section>
+</template>
+<script setup lang="ts">
+const catalogSections = computed(() => [{ title: t('agentOrgs.featured') }]);
+const endpoint = { group: t('handoffs.manager.groups.teamAgents') };
+const saveError = ref('');
+const save = () => {
+  saveError.value = t('agentOrgs.nameRequired');
+  throw new Error(t('agentOrgs.saveFailed'));
+};
+</script>
+`,
+    });
+
+    const findings = auditLocalizationLiterals({
+      appRoot,
+      scopes: [{ scopeId: 'M-014', include: ['components/agentOrgs/'], strictVueLiterals: true }],
+    });
+
+    expect(findings).toEqual([]);
+  });
 });

@@ -1,0 +1,21 @@
+Scope: all 14 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1718
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1718, reused 1716, downloaded 0, added 50
+Progress: resolved 1718, reused 1716, downloaded 0, added 417
+Progress: resolved 1718, reused 1716, downloaded 0, added 620
+Progress: resolved 1718, reused 1716, downloaded 0, added 786
+Progress: resolved 1718, reused 1716, downloaded 0, added 999
+Progress: resolved 1718, reused 1716, downloaded 0, added 1520
+Progress: resolved 1718, reused 1716, downloaded 0, added 1718, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Done in 9.9s using pnpm v10.28.2

@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-09-13T12:38:09.616187+00:00",
+  "base_sha": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+  "refresh_after_user_acceptance": true,
+  "fetch_result": "Success; unchanged",
+  "merge_result": "Already up to date.",
+  "new_base_commits": 0,
+  "new_code_or_test": false,
+  "additional_product_rerun": false,
+  "rationale": "Same reviewed source/test and base; documentation/archive-only finalization. No material new behavior requiring renewed verification.",
+  "delivery_backup": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR002-20260913T123527Z",
+  "target_worktree_other_owner_untracked_files": 434,
+  "target_worktree_other_owner_policy": "Preserve exact paths/bytes; excluded from staging and merge scope."
+}

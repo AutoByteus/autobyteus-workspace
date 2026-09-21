@@ -1,0 +1,115 @@
+{
+  "orgRunId": "aorg_e2e_direct_agents_org_019d00073dc84279b48c45b7b29b8c39",
+  "lead": "aorg_e2e_lead_ca41bf51534345f4bd8efbb67a54c393",
+  "row": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_run_id": "aorg_e2e_direct_agents_org_019d00073dc84279b48c45b7b29b8c39",
+    "is_active": true,
+    "summary": "",
+    "org": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-06T01:32:20.931Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "aorg-direct-agents-org",
+        "orgDefinitionName": "AORG E2E Direct Agents Org",
+        "orgRunId": "aorg_e2e_direct_agents_org_019d00073dc84279b48c45b7b29b8c39",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/workspace-default"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-lead",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_lead_ca41bf51534345f4bd8efbb67a54c393",
+            "platformAgentRunId": "01a07458-5548-7641-a114-97444bc99f96",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/workspace-default"
+            }
+          },
+          {
+            "address": "/verifier",
+            "agentDefinitionId": "aorg-verifier",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_verifier_38b451fc51204419b137119299c5f756",
+            "platformAgentRunId": "01a07458-5602-7803-ab08-0b1960fc0148",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/workspace-default"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    }
+  },
+  "content": "APIREV12 intact summary write keeps this server available",
+  "ack": {
+    "at": "2026-09-06T01:32:21.529Z",
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_e2e_direct_agents_org_019d00073dc84279b48c45b7b29b8c39",
+      "command_id": "api-rev-012-control",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "aorg_e2e_lead_ca41bf51534345f4bd8efbb67a54c393",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    }
+  },
+  "persistedSummary": "APIREV12 intact summary write keeps this server available",
+  "healthAfterMessage": {
+    "reachable": true,
+    "status": 200
+  },
+  "eventTypes": [
+    "CONNECTED",
+    "ROOT_EXECUTION_VIEW_SNAPSHOT",
+    "ROOT_LIFECYCLE",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "AGENT_COMMAND_ACK",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT",
+    "ROOT_EXECUTION_EVENT"
+  ]
+}

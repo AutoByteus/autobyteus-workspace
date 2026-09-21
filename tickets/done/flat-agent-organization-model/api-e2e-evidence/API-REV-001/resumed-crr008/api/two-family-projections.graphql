@@ -1,0 +1,4 @@
+query TwoFamily($teamRunId:String!,$teamAgentRunId:String!,$orgRunId:String!,$memberAddress:String!,$orgAgentRunId:String!){
+  getTeamMemberRunProjection(teamRunId:$teamRunId,agentRunId:$teamAgentRunId){agentRunId summary lastActivityAt conversation activities hasEarlierActiveTraceEvents}
+  getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$memberAddress,agentRunId:$orgAgentRunId){agentRunId memberAddress summary lastActivityAt conversation activities hasEarlierActiveTraceEvents}
+}

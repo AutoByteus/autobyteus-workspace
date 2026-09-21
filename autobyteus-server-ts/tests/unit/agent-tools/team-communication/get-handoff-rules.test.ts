@@ -4,10 +4,10 @@ import { GetHandoffRulesService } from "../../../../src/agent-communication/serv
 import { createBoundAutoByteusGetHandoffRulesTool } from "../../../../src/agent-tools/agent-communication/get-handoff-rules.js";
 import { GetHandoffRulesMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/get-handoff-rules-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const buildContext = (handoffs: Array<{ from: string; to: string; rules: string[] }>) =>
-  testMemberTeamContext({
+  testMemberExecutionContext({
     rootTeamRunId: "root-run",
     memberAddress: "/research_team/research_lead",
     agentRunId: "run-research-lead",
@@ -57,21 +57,21 @@ describe("get_handoff_rules", () => {
       senderRunId: "run-research-lead",
       senderName: "research_lead",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberTeamContext: buildContext([]),
+      memberExecutionContext: buildContext([]),
     }) } as never)).toBe(true);
   });
 
   it("keeps the actual MCP provider envelope equal to the native service result", async () => {
     const service = new GetHandoffRulesService();
-    const memberTeamContext = buildContext([]);
+    const memberExecutionContext = buildContext([]);
     const sender = buildAgentRunMessageSenderContext({
-      senderRunId: memberTeamContext.identity.agentRunId,
+      senderRunId: memberExecutionContext.identity.agentRunId,
       senderName: "research_lead",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberTeamContext,
+      memberExecutionContext,
     });
     const adapter = new GetHandoffRulesMcpAdapterProvider(service).getAdapters()[0]!;
-    const expectedResult = service.getRules(memberTeamContext.collaboration);
+    const expectedResult = service.getRules(memberExecutionContext.collaboration);
     const expectedText = JSON.stringify(expectedResult);
 
     const projected = await adapter.execute({

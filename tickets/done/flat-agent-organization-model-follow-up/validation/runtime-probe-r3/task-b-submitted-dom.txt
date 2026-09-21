@@ -1,0 +1,116 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - button "Active team run Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - img "Active team run"
+    - generic: Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: now
+  - tree "Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools. organization tree":
+    - treeitem "Agent, lead, level 1, running, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [expanded] [level=1]:
+      - button "Collapse worker" [expanded]:
+      - generic: W
+      - generic: worker
+      - generic: now
+    - treeitem "Temporary task agent, Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files., level 2, Awaiting review · Running, /worker" [level=2] [selected]:
+      - generic: "Task: Immediately submit exactly TASK05-R3-B once using sub…"
+      - generic: Awaiting review · Running
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: now
+  - generic: Orgs
+  - button "AORG Validation Org (2)":
+    - generic: AORG Validation Org
+    - generic: (2)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: W
+  - heading "worker · e54022" [level=4]
+  - generic: Task
+  - 'generic "Agent Status: Running"':
+    - generic: Running
+  - paragraph: Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.
+  - paragraph: Awaiting review · Running
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: "Task delegator address: /lead Task delegator AgentRun ID: aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf Description: Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files."
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - button "submit_task_result · TASK05-R3-B":
+    - generic: submit_task_result
+    - generic "TASK05-R3-B": · TASK05-R3-B
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Stop generation":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team" [selected]: Team
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages":
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - button "Tasks 1 task" [expanded]:
+    - generic: Tasks
+    - generic: 1 task
+  - complementary:
+    - article:
+      - button "Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.. Awaiting review. lead → worker. Updated 12:09" [pressed]:
+        - generic: Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.
+        - text: Awaiting review
+        - generic: Updated 12:09
+        - generic: lead → worker
+      - button "Result submitted · Result 1. worker → lead. 12:09. TASK05-R3-B":
+        - generic: Result submitted · Result 1
+        - paragraph: worker → lead
+        - time: 12:09
+        - paragraph: TASK05-R3-B
+  - separator
+  - main:
+    - heading "Task assigned" [level=3]
+    - text: Awaiting review
+    - button "lead"
+    - generic: →
+    - button "worker"
+    - button "Participant details":
+    - time: 14. Sept., 12:09
+    - paragraph: Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.

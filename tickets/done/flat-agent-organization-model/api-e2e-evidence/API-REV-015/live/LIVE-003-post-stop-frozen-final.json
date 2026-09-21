@@ -1,0 +1,871 @@
+{
+  "at": "2026-09-06T13:22:19.697Z",
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "tree": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-06T12:58:20.528Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/concierge",
+        "to": "/research-team",
+        "rules": [
+          "When the direct request requires structured research.",
+          "After the concierge records the exact requested marker."
+        ]
+      },
+      {
+        "from": "/research-team/lead",
+        "to": "/support-team",
+        "rules": [
+          "When the research result needs a separate support verification."
+        ]
+      },
+      {
+        "from": "/research-team/lead",
+        "to": "/research-team/analyst",
+        "rules": [
+          "When a request needs bounded analysis.",
+          "After the lead identifies the exact validation question."
+        ]
+      },
+      {
+        "from": "/research-team/analyst",
+        "to": "/research-team/verifier",
+        "rules": [
+          "When a completed analysis needs an independent check."
+        ]
+      },
+      {
+        "from": "/support-team/dispatcher",
+        "to": "/support-team/specialist",
+        "rules": [
+          "When a support answer needs explicit verification."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "aorg-mixed-org",
+      "orgDefinitionName": "AORG E2E Mixed Org",
+      "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": false,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+      },
+      "members": [
+        {
+          "address": "/concierge",
+          "agentDefinitionId": "aorg-concierge",
+          "role": null,
+          "description": null,
+          "agentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+          "platformAgentRunId": "01a076cc-60b5-7081-bee9-024aaf6115fd",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+          }
+        },
+        {
+          "address": "/research-team",
+          "teamDefinitionId": "aorg-research-squad",
+          "role": null,
+          "description": null,
+          "teamRunId": "aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538",
+          "coordinatorAddress": "/research-team/lead",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+          },
+          "members": [
+            {
+              "address": "/research-team/lead",
+              "agentDefinitionId": "aorg-lead",
+              "role": null,
+              "description": null,
+              "agentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+              "platformAgentRunId": "01a076cc-6151-7fe2-b86f-69d8be204416",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+              }
+            },
+            {
+              "address": "/research-team/analyst",
+              "agentDefinitionId": "aorg-analyst",
+              "role": null,
+              "description": null,
+              "agentRunId": "aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+              "platformAgentRunId": "01a076cc-61a6-7482-9628-4f0e7b762679",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+              }
+            },
+            {
+              "address": "/research-team/verifier",
+              "agentDefinitionId": "aorg-verifier",
+              "role": null,
+              "description": null,
+              "agentRunId": "aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+              "platformAgentRunId": "01a076cc-620b-7bf2-a455-22fd7b8ceeba",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+              }
+            }
+          ],
+          "taskExecutions": [
+            {
+              "address": "/support-team",
+              "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+              "members": [
+                {
+                  "address": "/support-team/dispatcher",
+                  "agentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+                  "platformAgentRunId": "01a076d2-3107-7343-b83f-f737cd6000f8"
+                },
+                {
+                  "address": "/support-team/specialist",
+                  "agentRunId": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+                  "platformAgentRunId": null
+                }
+              ],
+              "taskExecutions": [],
+              "startedAt": "2026-09-06T13:04:41.683Z",
+              "settledAt": "2026-09-06T13:18:40.008Z"
+            }
+          ]
+        },
+        {
+          "address": "/support-team",
+          "teamDefinitionId": "aorg-support-pair",
+          "role": null,
+          "description": null,
+          "teamRunId": "aorg_e2e_support_pair_47d1a021a8cf49a5bddf778ae95d4db6",
+          "coordinatorAddress": "/support-team/dispatcher",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+          },
+          "members": [
+            {
+              "address": "/support-team/dispatcher",
+              "agentDefinitionId": "aorg-lead",
+              "role": null,
+              "description": null,
+              "agentRunId": "aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+              "platformAgentRunId": "01a076cc-625c-7582-95b2-865624db068a",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+              }
+            },
+            {
+              "address": "/support-team/specialist",
+              "agentDefinitionId": "aorg-verifier",
+              "role": null,
+              "description": null,
+              "agentRunId": "aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+              "platformAgentRunId": "01a076cc-62b7-76c0-a78d-0722edc43eb4",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+              }
+            }
+          ],
+          "taskExecutions": []
+        }
+      ],
+      "taskExecutions": [
+        {
+          "address": "/research-team",
+          "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+          "members": [
+            {
+              "address": "/research-team/lead",
+              "agentRunId": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+              "platformAgentRunId": "01a076d7-09ee-7b82-ba71-7b9c9e1c3e63"
+            },
+            {
+              "address": "/research-team/analyst",
+              "agentRunId": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+              "platformAgentRunId": "01a076d7-0a47-7ed0-a249-7bb5227df011"
+            },
+            {
+              "address": "/research-team/verifier",
+              "agentRunId": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+              "platformAgentRunId": "01a076d7-0abb-7183-ab52-877d93e85567"
+            }
+          ],
+          "taskExecutions": [],
+          "startedAt": "2026-09-06T13:09:59.374Z",
+          "settledAt": "2026-09-06T13:18:40.015Z"
+        },
+        {
+          "address": "/research-team",
+          "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171",
+          "members": [
+            {
+              "address": "/research-team/lead",
+              "agentRunId": "aorg_e2e_lead_40fa603e7a044ab181ba6df6ef64bf30",
+              "platformAgentRunId": "01a076d8-540b-7521-997a-5edf02fe3f27"
+            },
+            {
+              "address": "/research-team/analyst",
+              "agentRunId": "aorg_e2e_analyst_dd1e3fc958fc4ceaa14d928db020566c",
+              "platformAgentRunId": "01a076d8-547a-7583-a95a-52e466576a5d"
+            },
+            {
+              "address": "/research-team/verifier",
+              "agentRunId": "aorg_e2e_verifier_d7bbcb79947c4f299374b9ed4ee9ffb1",
+              "platformAgentRunId": "01a076d8-54f4-74b0-8c06-87e408d53d12"
+            }
+          ],
+          "taskExecutions": [],
+          "startedAt": "2026-09-06T13:11:23.884Z",
+          "settledAt": "2026-09-06T13:18:40.023Z"
+        }
+      ]
+    }
+  },
+  "tasks": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+    "records": [
+      {
+        "taskId": "task_3d122cc68edc47d6884c21bfcc816369",
+        "delegatorAgentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+        "recipientAddress": "/support-team",
+        "taskExecution": {
+          "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2"
+        },
+        "description": "As the new task Team coordinator, remain active for this status validation. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-MOUNTED-TASK-TEAM-READY-001 and wait.",
+        "referenceFiles": [],
+        "status": "interrupted",
+        "updates": [
+          {
+            "interruptionId": "interrupt_9ee81871255b483a93a13e45fe29e3c8",
+            "reason": "AgentOrg root is terminating.",
+            "createdAt": "2026-09-06T13:18:40.006Z"
+          }
+        ],
+        "createdAt": "2026-09-06T13:04:41.683Z"
+      },
+      {
+        "taskId": "task_949b4aa38fb545f7b5692a8a084ae7b7",
+        "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+        "recipientAddress": "/research-team",
+        "taskExecution": {
+          "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+        },
+        "description": "As the root-hosted research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-ROOT-TASK-TEAM-READY-001 and wait.",
+        "referenceFiles": [],
+        "status": "interrupted",
+        "updates": [
+          {
+            "interruptionId": "interrupt_c0b1761928094abda9f771354d9bb1fa",
+            "reason": "AgentOrg root is terminating.",
+            "createdAt": "2026-09-06T13:18:40.013Z"
+          }
+        ],
+        "createdAt": "2026-09-06T13:09:59.374Z"
+      },
+      {
+        "taskId": "task_0035bd13c1f44dc895a5c070139f8e6d",
+        "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+        "recipientAddress": "/research-team",
+        "taskExecution": {
+          "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171"
+        },
+        "description": "As the recursively nested research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-NESTED-TASK-TEAM-READY-001 and wait.",
+        "referenceFiles": [],
+        "status": "interrupted",
+        "updates": [
+          {
+            "interruptionId": "interrupt_9fff9a636cc14e4f90eee501f9bba39b",
+            "reason": "AgentOrg root is terminating.",
+            "createdAt": "2026-09-06T13:18:40.019Z"
+          }
+        ],
+        "createdAt": "2026-09-06T13:11:23.884Z"
+      }
+    ]
+  },
+  "taskTeams": [
+    {
+      "address": "/research-team",
+      "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+      "members": [
+        {
+          "address": "/research-team/lead",
+          "agentRunId": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+          "platformAgentRunId": "01a076d7-09ee-7b82-ba71-7b9c9e1c3e63"
+        },
+        {
+          "address": "/research-team/analyst",
+          "agentRunId": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+          "platformAgentRunId": "01a076d7-0a47-7ed0-a249-7bb5227df011"
+        },
+        {
+          "address": "/research-team/verifier",
+          "agentRunId": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+          "platformAgentRunId": "01a076d7-0abb-7183-ab52-877d93e85567"
+        }
+      ],
+      "taskExecutions": [],
+      "startedAt": "2026-09-06T13:09:59.374Z",
+      "settledAt": "2026-09-06T13:18:40.015Z"
+    },
+    {
+      "address": "/research-team",
+      "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171",
+      "members": [
+        {
+          "address": "/research-team/lead",
+          "agentRunId": "aorg_e2e_lead_40fa603e7a044ab181ba6df6ef64bf30",
+          "platformAgentRunId": "01a076d8-540b-7521-997a-5edf02fe3f27"
+        },
+        {
+          "address": "/research-team/analyst",
+          "agentRunId": "aorg_e2e_analyst_dd1e3fc958fc4ceaa14d928db020566c",
+          "platformAgentRunId": "01a076d8-547a-7583-a95a-52e466576a5d"
+        },
+        {
+          "address": "/research-team/verifier",
+          "agentRunId": "aorg_e2e_verifier_d7bbcb79947c4f299374b9ed4ee9ffb1",
+          "platformAgentRunId": "01a076d8-54f4-74b0-8c06-87e408d53d12"
+        }
+      ],
+      "taskExecutions": [],
+      "startedAt": "2026-09-06T13:11:23.884Z",
+      "settledAt": "2026-09-06T13:18:40.023Z"
+    },
+    {
+      "address": "/support-team",
+      "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+      "members": [
+        {
+          "address": "/support-team/dispatcher",
+          "agentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+          "platformAgentRunId": "01a076d2-3107-7343-b83f-f737cd6000f8"
+        },
+        {
+          "address": "/support-team/specialist",
+          "agentRunId": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+          "platformAgentRunId": null
+        }
+      ],
+      "taskExecutions": [],
+      "startedAt": "2026-09-06T13:04:41.683Z",
+      "settledAt": "2026-09-06T13:18:40.008Z"
+    }
+  ],
+  "config": {
+    "url": "http://127.0.0.1:3596/workspace/?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&mode=configuration",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nLoading task history...\nTemp Workspace\nworkspace\nworkspace-team\nSettings\nLoading Agent Org…\nRun Agent Org\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n ",
+    "buttons": [
+      {
+        "a": null,
+        "title": "",
+        "text": "Agents"
+      },
+      {
+        "a": null,
+        "title": "Collapse left panel",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Agent Teams"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Agent Orgs"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Skills"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Memory"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Nodes"
+      },
+      {
+        "a": null,
+        "title": "Add workspace",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Temp Workspace"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace"
+      },
+      {
+        "a": "Remove from Workspaces",
+        "title": "Remove from Workspaces",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-team"
+      },
+      {
+        "a": "Remove from Workspaces",
+        "title": "Remove from Workspaces",
+        "text": ""
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Settings"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Run Agent Org"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Files"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Terminal"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Activity"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Token"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Artifacts"
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "VNC Viewer"
+      },
+      {
+        "a": null,
+        "title": "Toggle Sidebar",
+        "text": ""
+      }
+    ]
+  },
+  "history": {
+    "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=active",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Mixed Org\n(1)\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the ne...\n23m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nsupport team\nD\ndispatcher\nS\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nTask: research team\nlead\nanalyst\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nD\ndispatcher\nIdle\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n0 tasks\n\nNo delegated tasks yet\n\nDelegated work appears here from saved task records.",
+    "buttons": [
+      {
+        "a": null,
+        "title": "",
+        "text": "Agents",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "Collapse left panel",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Agent Teams",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Agent Orgs",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Skills",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Memory",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Nodes",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "Add workspace",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Temp Workspace",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "AORG E2E Mixed Org\n(1)",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Call delegate_task exactly once with recipient_address `/support-team` and description `As the ne...",
+        "disabled": false
+      },
+      {
+        "a": "Stop Agent Org",
+        "title": "Stop Agent Org",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": "concierge, idle",
+        "title": "",
+        "text": "C\nconcierge",
+        "disabled": false
+      },
+      {
+        "a": "research team. Team status: Idle",
+        "title": "",
+        "text": "research team",
+        "disabled": false
+      },
+      {
+        "a": "lead, idle",
+        "title": "",
+        "text": "L\nlead",
+        "disabled": false
+      },
+      {
+        "a": "analyst, idle",
+        "title": "",
+        "text": "A\nanalyst",
+        "disabled": false
+      },
+      {
+        "a": "verifier, idle",
+        "title": "",
+        "text": "V\nverifier",
+        "disabled": false
+      },
+      {
+        "a": "support team. Team status: Idle",
+        "title": "",
+        "text": "support team",
+        "disabled": false
+      },
+      {
+        "a": "dispatcher, idle",
+        "title": "",
+        "text": "D\ndispatcher",
+        "disabled": false
+      },
+      {
+        "a": "specialist, idle",
+        "title": "",
+        "text": "S\nspecialist",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace",
+        "disabled": false
+      },
+      {
+        "a": "Remove from Workspaces",
+        "title": "Remove from Workspaces",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-team",
+        "disabled": false
+      },
+      {
+        "a": "Remove from Workspaces",
+        "title": "Remove from Workspaces",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "workspace-default",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Settings",
+        "disabled": false
+      },
+      {
+        "a": "Edit Config",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": "New Agent",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": "Upload files",
+        "title": "Upload files",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "Send message",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Files",
+        "disabled": false
+      },
+      {
+        "a": "Agent Org",
+        "title": "Agent Org",
+        "text": "Org",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Terminal",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Activity",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Token",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Artifacts",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "VNC Viewer",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "Toggle Sidebar",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Messages\n0 Messages",
+        "disabled": false
+      },
+      {
+        "a": null,
+        "title": "",
+        "text": "Tasks\n0 tasks",
+        "disabled": false
+      }
+    ],
+    "taskTeams": [
+      "agent-org-task-team-row-aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+      "agent-org-task-team-row-aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+      "agent-org-task-team-row-aorg_research_squad_a0abc2df913443e88d00d073614a2171"
+    ],
+    "teamDots": [
+      {
+        "status": "idle",
+        "label": "Team status: Idle"
+      },
+      {
+        "status": "idle",
+        "label": "Team status: Idle"
+      }
+    ],
+    "agentRows": [
+      {
+        "status": "idle",
+        "aria": "concierge, idle"
+      },
+      {
+        "status": "idle",
+        "aria": "lead, idle"
+      },
+      {
+        "status": "idle",
+        "aria": "analyst, idle"
+      },
+      {
+        "status": "idle",
+        "aria": "verifier, idle"
+      },
+      {
+        "status": "idle",
+        "aria": "dispatcher, idle"
+      },
+      {
+        "status": "idle",
+        "aria": "specialist, idle"
+      }
+    ],
+    "alerts": [],
+    "overflow": false
+  },
+  "errors": [],
+  "responses": [
+    {
+      "status": 404,
+      "url": "http://127.0.0.1:8596/health"
+    }
+  ],
+  "assertions": {
+    "configurationExact": true,
+    "threeInterrupted": true,
+    "threeSettledTaskTeams": true,
+    "historyExact": false,
+    "terminalCopy": false,
+    "frozenTasksVisible": true,
+    "configuredTeamsOffline": false,
+    "configuredAgentsOffline": false,
+    "noActiveControls": false,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": false
+  }
+}

@@ -1,0 +1,45 @@
+timestamp=2026-09-02T15:38:50Z
+head=c969b480a2aaabf7ae68cd2b576110f2de513ad6
+branch=requirements/flat-agent-organization-model
+--- status ---
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+--- fixture hash ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+fixture_files=18
+--- ports ---
+port_8467=CLOSED
+port_3467=CLOSED
+port_8487=CLOSED
+port_3487=CLOSED
+--- owned runtime search ---
+38586 /bin/bash -c python3 - <<'PY' from pathlib import Path p=Path('/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/test-case-ledger.md') s=p.read_text(); row='| 1 | REPO-001 | 2026-09-02T15:40:00Z | Started | Exact artifact, 18-file fixture, isolated owned resources/tabs | Began current package preflight. | N/A | `repository/preflight.log`; `repository/preflight-tabs.json` | Complete preflight. |\n' s=s.replace('\n## Re-entry and reconciliation', '\n'+row+'\n## Re-entry and reconciliation'); p.write_text(s) PY WT=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model T=$WT/tickets/in-progress/flat-agent-organization-model E=$T/api-e2e-evidence/API-REV-006 F=$T/api-e2e-fixtures/aorg-api-rev-002-agent-package {  echo timestamp=$(date -u +%FT%TZ)  echo head=$(git -C "$WT" rev-parse HEAD)  echo branch=$(git -C "$WT" branch --show-current)  echo '--- status ---'; git -C "$WT" status --short  echo '--- fixture hash ---'; (cd "$F" && sha256sum -c PACKAGE.sha256); echo fixture_files=$(find "$F" -type f ! -name PACKAGE.sha256 | wc -l)  echo '--- ports ---'; for p in 8467 3467 8487 3487; do if ss -ltnp "( sport = :$p )" | grep -q LISTEN; then echo port_$p=LISTEN; ss -ltnp "( sport = :$p )"; else echo port_$p=CLOSED; fi; done  echo '--- owned runtime search ---'; pgrep -af 'flat-agent-organization-model.*(dist/app.js|serve|http.server|nuxt)' || true  echo '--- exact reviewed source commit ---'; git -C "$WT" merge-base --is-ancestor ee6b793599d57cffed1ee0c900abbc07b552ac6b HEAD && echo IR021_SOURCE_PRESENT } > "$E/repository/preflight.log" 2>&1 cat "$E/repository/preflight.log"
+--- exact reviewed source commit ---
+IR021_SOURCE_PRESENT

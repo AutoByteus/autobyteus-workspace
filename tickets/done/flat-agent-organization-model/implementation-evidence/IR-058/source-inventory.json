@@ -1,0 +1,27 @@
+{
+  "entryHead": "071a0b6a81ffb51a6539a1fc1d4fa14af5e1c782",
+  "sourceCheckpoint": "bbdea002ee59da87cc7174bfc2924888c0bb38f7",
+  "files": [
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 475,
+      "sha256": "f02019cda81ba28dd2019c359a8aeea284cb28329980c63ffc28a0e3d94ba085"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 2434,
+      "sha256": "77c78d4084d964138f205b0fadc7afa2e1a928ad63d8f78e670c2c2ce2562dfc"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 206,
+      "sha256": "8386f6e8b95e7589cb61485ad085417169e4b2d79447f9f7fe3146843145c79b"
+    }
+  ]
+}

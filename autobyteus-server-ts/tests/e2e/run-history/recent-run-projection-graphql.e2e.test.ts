@@ -16,6 +16,9 @@ import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
@@ -62,7 +65,7 @@ const ACTIVE_TRACE_PAGE_FIELDS = `
       __typename
       ... on EventMonitorUserVisual {
         kind visualId eventId kindOrdinal text
-        attachments { attachmentId mediaType locator }
+        attachments { attachmentId fileType fileName locator }
       }
       ... on EventMonitorAssistantTextVisual { kind visualId eventId kindOrdinal content }
       ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
@@ -229,6 +232,12 @@ const trackRawTraceReads = () => {
   return { paths, restore: () => spy.mockRestore() };
 };
 
+// History queries use production managers/registry; activating providers is outside
+// this read-only suite and must fail rather than silently supplying fake history.
+const unavailableExecution = (): never => { throw new Error("Projection test must not activate execution."); };
+const unusedExecutionBoundary = <T extends object>(): T =>
+  new Proxy(Object.create(null) as T, { get: unavailableExecution });
+
 describe("recent run projection GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
@@ -236,6 +245,8 @@ describe("recent run projection GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let ownedAgentRunManager: AgentRunManager | null = null;
+  let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
   beforeAll(async () => {
     testDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-gql-"));
@@ -247,6 +258,27 @@ describe("recent run projection GraphQL e2e", () => {
     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-workspace-"));
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     memoryDir = appConfigProvider.config.getMemoryDir();
+    // This file runs in its own Vitest worker. Never borrow or replace another
+    // process instance: initialize explicitly and release only these instances.
+    ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
+      autoByteusBackendFactory: unusedExecutionBoundary(),
+      codexBackendFactory: unusedExecutionBoundary(),
+      claudeBackendFactory: unusedExecutionBoundary(),
+      activationRegistry: new AgentRunActivationRegistry(unusedExecutionBoundary()),
+      memoryRecorder: unusedExecutionBoundary(),
+      providerInputNormalizer: { normalizeForProvider: unavailableExecution },
+      agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
+    });
+    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+      memoryDir,
+      flatTeamExecutionFactory: unusedExecutionBoundary(),
+      memberExecutionContextBuilder: unusedExecutionBoundary(),
+      taskExecutionIdentity: {
+        agentRuns: { allocateForAgentDefinition: unavailableExecution },
+        taskTeams: { create: unavailableExecution },
+      },
+      modelSelectionValidator: { validate: unavailableExecution },
+    });
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
 
@@ -263,6 +295,8 @@ describe("recent run projection GraphQL e2e", () => {
 
   afterAll(async () => {
     closeStudioServices?.();
+    if (ownedAgentTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);
+    if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
     await fs.rm(workspaceRootPath, { recursive: true, force: true });
     await fs.rm(testDataDir, { recursive: true, force: true });
   });
@@ -836,7 +870,7 @@ describe("recent run projection GraphQL e2e", () => {
     ]);
     expect(withHugeResult.events[0]?.visuals[0]).toMatchObject({
       kind: "user",
-      attachments: [{ mediaType: "image", locator: "workspace://images/user.png" }],
+      attachments: [{ fileType: "image", locator: "workspace://images/user.png" }],
     });
     expect(withHugeResult.events.at(-1)?.visuals[0]).toMatchObject({
       kind: "tool_card",

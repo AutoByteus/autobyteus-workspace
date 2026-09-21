@@ -1,0 +1,394 @@
+
+> autobyteus@1.4.67 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/__tests__/AppLeftPanel_v2.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts layouts/__tests__/default.spec.ts components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts components/__tests__/AppLeftPanel.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel_v2.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/__tests__/AppLeftPanel_v2.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel_v2.spec.ts (5 tests) 74ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders placeholder when nothing selected
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Team Form when Team Template set
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Agent for an active empty New workspace while retaining the canonical Temp config
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit an Agent workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > uses context avatar URL in header when available
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > does not render the token usage header chip
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > does not render the removed conversation copy control
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > falls back to definition avatar URL in header when context avatar is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > opens selected run config from header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > passes the selected run to the composer skill-improvement CTA
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > marks the Retrospective Skill Improver helper run for CTA hiding
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts > AgentWorkspaceView > seeds a new agent config from the selected run without sharing nested llmConfig
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <AgentWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts (8 tests) 74ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > hands two active New Team workspace commands to the draft owner and launches the exact current draft once
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root runtime' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root model' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root reasoning and fast controls' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root auto-execute' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'explicit nested Team override' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'exact nested Agent override' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders exact focused Agent identity, status, avatar, and composer target from the current view
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders a different exact focused AgentRun without coordinator substitution
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders focused task lifecycle and execution status over an authoritative empty projection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run when workspace is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > renders persistent actionable guidance while the selected Team stream requires recovery
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'root Team' workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > opens selected Team configuration from the header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'nested Team' workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (6 tests) 72ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'root Team'
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > seeds an editable new Team configuration without sharing nested LLM config state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView current aggregate > keeps configured Team placement non-focusable while retaining its exact Agent child focus
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (8 tests) 148ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'nested Team'
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > returns to event view from selection-mode config header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > routes selected existing runs through the specialized stopped-run editor
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (30 tests) 370ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests) 203ms
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts (10 tests) 394ms
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (27 tests) 275ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps active Team history and Delete hidden when exact Stop fails
+Failed to terminate team 'team-active'.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (56 tests) 1041ms
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (7 tests) 34ms
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (4 tests) 6ms
+ ✓ layouts/__tests__/default.spec.ts (8 tests) 13ms
+stdout | components/__tests__/AppLeftPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel.spec.ts (4 tests) 11ms
+ ✓ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts (1 test) 17ms
+
+ Test Files  14 passed (14)
+      Tests  177 passed (177)
+   Start at  14:07:33
+   Duration  34.10s (transform 15.21s, setup 193.59s, collect 20.04s, tests 2.73s, environment 36.28s, prepare 13.08s)
+

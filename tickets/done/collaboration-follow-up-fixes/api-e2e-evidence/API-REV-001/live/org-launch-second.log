@@ -1,0 +1,14 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.fill: Error: strict mode violation: getByPlaceholder('/absolute/path/to/workspace', { exact: true }) resolved to 2 elements:
+    1) <input value="" type="text" placeholder="/absolute/path/to/workspace" class="block w-full rounded-md border px-3 py-2.5 text-sm text-gray-900 transition-colors focus:outline-none disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"/> aka getByRole('textbox', { name: '/absolute/path/to/workspace' })
+    2) <input value="" type="text" placeholder="/absolute/path/to/workspace" class="block w-full rounded-md border px-3 py-2.5 text-sm text-gray-900 transition-colors focus:outline-none disabled:bg-gray-100 disabled:text-gray-500 border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"/> aka locator('[data-test="team-scope-config-editor"]').getByPlaceholder('/absolute/path/to/workspace')
+
+Call log:
+[2m  - waiting for getByPlaceholder('/absolute/path/to/workspace', { exact: true })[22m
+
+    at /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch.mjs:2:782
+
+Node.js v22.23.2

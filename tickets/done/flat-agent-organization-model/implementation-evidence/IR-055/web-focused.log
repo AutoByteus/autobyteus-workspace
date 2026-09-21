@@ -1,0 +1,119 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/UserMessageHistoryFiles.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts (5 tests) 5ms
+ ❯ components/conversation/__tests__/UserMessageHistoryFiles.spec.ts (4 tests | 3 failed) 25ms
+   × cold and paged user file associations use shared UserMessage Open > initial/cold displays a file-only label and opens its saved owner, not a selected peer 17ms
+     → expected "spy" to be called once with arguments: [ …(3) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_t__notes.txt",
++   "http://localhost:8000/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_t__notes.txt",
+    "_blank",
+    "noopener,noreferrer",
+  ]
+
+
+Number of calls: 1
+
+   × cold and paged user file associations use shared UserMessage Open > active-trace page displays a file-only label and opens its saved owner, not a selected peer 3ms
+     → expected "spy" to be called once with arguments: [ …(3) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_t__notes.txt",
++   "http://localhost:8000/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_t__notes.txt",
+    "_blank",
+    "noopener,noreferrer",
+  ]
+
+
+Number of calls: 1
+
+   ✓ cold and paged user file associations use shared UserMessage Open > does not merge distinct file identities/types/names; witnesses change for each attachment fact 2ms
+   × cold and paged user file associations use shared UserMessage Open > preserves media thumbnails, nullable-name/unknown type, and old rows without inventing association 2ms
+     → expected 'Text' to be 'Unknown' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/conversation/__tests__/UserMessageHistoryFiles.spec.ts > cold and paged user file associations use shared UserMessage Open > initial/cold displays a file-only label and opens its saved owner, not a selected peer
+ FAIL  components/conversation/__tests__/UserMessageHistoryFiles.spec.ts > cold and paged user file associations use shared UserMessage Open > active-trace page displays a file-only label and opens its saved owner, not a selected peer
+AssertionError: expected "spy" to be called once with arguments: [ …(3) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_t__notes.txt",
++   "http://localhost:8000/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/ctx_t__notes.txt",
+    "_blank",
+    "noopener,noreferrer",
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/conversation/__tests__/UserMessageHistoryFiles.spec.ts:35:25
+     33|     expect(message.contextFilePaths![0]).toMatchObject({ locator: uri,…
+     34|     await wrapper.get('button.message-attachment-chip').trigger('click…
+     35|     expect(window.open).toHaveBeenCalledExactlyOnceWith(uri, '_blank',…
+       |                         ^
+     36|     wrapper.unmount();
+     37|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  components/conversation/__tests__/UserMessageHistoryFiles.spec.ts > cold and paged user file associations use shared UserMessage Open > preserves media thumbnails, nullable-name/unknown type, and old rows without inventing association
+AssertionError: expected 'Text' to be 'Unknown' // Object.is equality
+
+Expected: "Unknown"
+Received: "Text"
+
+ ❯ components/conversation/__tests__/UserMessageHistoryFiles.spec.ts:59:47
+     57|     expect(media.contextFilePaths).toHaveLength(1);
+     58|     expect(media.contextFilePaths![0].type).toBe('Image');
+     59|     expect(unknown.contextFilePaths![0].type).toBe('Unknown');
+       |                                               ^
+     60|     expect(old.contextFilePaths).toEqual([]);
+     61|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  3 failed | 6 passed (9)
+   Start at  15:52:11
+   Duration  8.93s (transform 4.82s, setup 15.25s, collect 60ms, tests 30ms, environment 1.17s, prepare 652ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

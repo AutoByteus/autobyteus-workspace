@@ -1,0 +1,86 @@
+{
+  "wrongAddress": {
+    "status": 200,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 75
+            }
+          ],
+          "path": [
+            "getAgentOrgMemberRunProjection"
+          ]
+        }
+      ]
+    }
+  },
+  "wrongRun": {
+    "status": 200,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 75
+            }
+          ],
+          "path": [
+            "getAgentOrgMemberRunProjection"
+          ]
+        }
+      ]
+    }
+  },
+  "wrongRoot": {
+    "status": 200,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 240
+            }
+          ],
+          "path": [
+            "getAgentOrgExecutionCheckpoint"
+          ]
+        }
+      ]
+    }
+  },
+  "valid": {
+    "getAgentOrgMemberRunProjection": {
+      "agentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "memberAddress": "/research-team/lead",
+      "summary": "Call delegate_task exactly once with recipient_address `/support-team` and description \"As the au...",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "getAgentOrgExecutionCheckpoint": {
+      "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+      "changeSequence": 870,
+      "hasOpenExecutionWork": false
+    }
+  },
+  "validWsType": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+  "statusCount": 6,
+  "assertions": {
+    "wrongAddressRejected": true,
+    "wrongRunRejected": true,
+    "wrongRootRejected": true,
+    "wrongWebSocketFailClosed": false,
+    "validProjectionAfter": true,
+    "validCheckpoint": true,
+    "validStreamAfter": true
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "package": "ACTIVITY-RETAIN-20260914-001",
+  "delivery_revision": "DR-001",
+  "route": "Small / Low / Direct",
+  "head": "42c265da14b5e1bb88f6bb065cfb46f66a3fe7a5",
+  "source_commit": "fdd023a07",
+  "base": "c208f33dcc3a8a56563a2f132f3de65862e68cab",
+  "integration": "Already current; fresh target fetch; base ancestor; 2 ahead / 0 behind; no checkpoint or merge needed",
+  "runtime_rerun": false,
+  "no_rerun_rationale": "No base commits integrated; candidate source/tests unchanged from API-tested HEAD; only delivery documentation edits follow.",
+  "candidate_fingerprints": [
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "sha256": "84f729dcde9efde291b816624d30dca4399e8117888d4197d6d65a7f03b77237"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts",
+      "sha256": "7921f2795c6f554b3680b8d25b92e2bf63da57f3d128c2ae36a4748120d84c66"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/retainedOrgActivityTermination.spec.ts",
+      "sha256": "cd8d48eb2c939d8e6fc536041e97f578b047b0713dd75a880f8c9d4015c5ce18"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts",
+      "sha256": "567136c5908492a26a3a4996dd9e445e9ae971fd973530a0a1ab55f81cb77c12"
+    }
+  ]
+}

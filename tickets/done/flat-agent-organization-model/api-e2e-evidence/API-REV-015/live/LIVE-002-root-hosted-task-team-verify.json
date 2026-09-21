@@ -1,0 +1,983 @@
+{
+  "at": "2026-09-06T13:10:45.063Z",
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+  "snap": {
+    "messages": [
+      {
+        "type": "CONNECTED",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+          "session_id": "ef9c2075-c7d2-4417-930b-a4d13dd07146"
+        }
+      },
+      {
+        "type": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+          "schema_version": 1,
+          "root_org": {
+            "base_change_sequence": 198,
+            "is_active": true,
+            "execution_tree": {
+              "schemaVersion": 1,
+              "subjectKind": "agent_org",
+              "createdAt": "2026-09-06T12:58:20.528Z",
+              "archivedAt": null,
+              "applicationBinding": null,
+              "handoffs": [
+                {
+                  "from": "/concierge",
+                  "to": "/research-team",
+                  "rules": [
+                    "When the direct request requires structured research.",
+                    "After the concierge records the exact requested marker."
+                  ]
+                },
+                {
+                  "from": "/research-team/lead",
+                  "to": "/support-team",
+                  "rules": [
+                    "When the research result needs a separate support verification."
+                  ]
+                },
+                {
+                  "from": "/research-team/lead",
+                  "to": "/research-team/analyst",
+                  "rules": [
+                    "When a request needs bounded analysis.",
+                    "After the lead identifies the exact validation question."
+                  ]
+                },
+                {
+                  "from": "/research-team/analyst",
+                  "to": "/research-team/verifier",
+                  "rules": [
+                    "When a completed analysis needs an independent check."
+                  ]
+                },
+                {
+                  "from": "/support-team/dispatcher",
+                  "to": "/support-team/specialist",
+                  "rules": [
+                    "When a support answer needs explicit verification."
+                  ]
+                }
+              ],
+              "rootOrg": {
+                "address": "/",
+                "orgDefinitionId": "aorg-mixed-org",
+                "orgDefinitionName": "AORG E2E Mixed Org",
+                "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-5.6-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                },
+                "members": [
+                  {
+                    "address": "/concierge",
+                    "agentDefinitionId": "aorg-concierge",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+                    "platformAgentRunId": "01a076cc-60b5-7081-bee9-024aaf6115fd",
+                    "launchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-5.6-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                    }
+                  },
+                  {
+                    "address": "/research-team",
+                    "teamDefinitionId": "aorg-research-squad",
+                    "role": null,
+                    "description": null,
+                    "teamRunId": "aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538",
+                    "coordinatorAddress": "/research-team/lead",
+                    "defaultLaunchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-5.6-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                    },
+                    "members": [
+                      {
+                        "address": "/research-team/lead",
+                        "agentDefinitionId": "aorg-lead",
+                        "role": null,
+                        "description": null,
+                        "agentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+                        "platformAgentRunId": "01a076cc-6151-7fe2-b86f-69d8be204416",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-5.6-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": false,
+                          "skillAccessMode": "PRELOADED_ONLY",
+                          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                        }
+                      },
+                      {
+                        "address": "/research-team/analyst",
+                        "agentDefinitionId": "aorg-analyst",
+                        "role": null,
+                        "description": null,
+                        "agentRunId": "aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+                        "platformAgentRunId": "01a076cc-61a6-7482-9628-4f0e7b762679",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-5.6-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": false,
+                          "skillAccessMode": "PRELOADED_ONLY",
+                          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                        }
+                      },
+                      {
+                        "address": "/research-team/verifier",
+                        "agentDefinitionId": "aorg-verifier",
+                        "role": null,
+                        "description": null,
+                        "agentRunId": "aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+                        "platformAgentRunId": "01a076cc-620b-7bf2-a455-22fd7b8ceeba",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-5.6-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": false,
+                          "skillAccessMode": "PRELOADED_ONLY",
+                          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                        }
+                      }
+                    ],
+                    "taskExecutions": [
+                      {
+                        "address": "/support-team",
+                        "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+                        "members": [
+                          {
+                            "address": "/support-team/dispatcher",
+                            "agentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+                            "platformAgentRunId": "01a076d2-3107-7343-b83f-f737cd6000f8"
+                          },
+                          {
+                            "address": "/support-team/specialist",
+                            "agentRunId": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+                            "platformAgentRunId": null
+                          }
+                        ],
+                        "taskExecutions": [],
+                        "startedAt": "2026-09-06T13:04:41.683Z",
+                        "settledAt": null
+                      }
+                    ]
+                  },
+                  {
+                    "address": "/support-team",
+                    "teamDefinitionId": "aorg-support-pair",
+                    "role": null,
+                    "description": null,
+                    "teamRunId": "aorg_e2e_support_pair_47d1a021a8cf49a5bddf778ae95d4db6",
+                    "coordinatorAddress": "/support-team/dispatcher",
+                    "defaultLaunchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-5.6-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                    },
+                    "members": [
+                      {
+                        "address": "/support-team/dispatcher",
+                        "agentDefinitionId": "aorg-lead",
+                        "role": null,
+                        "description": null,
+                        "agentRunId": "aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+                        "platformAgentRunId": "01a076cc-625c-7582-95b2-865624db068a",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-5.6-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": false,
+                          "skillAccessMode": "PRELOADED_ONLY",
+                          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                        }
+                      },
+                      {
+                        "address": "/support-team/specialist",
+                        "agentDefinitionId": "aorg-verifier",
+                        "role": null,
+                        "description": null,
+                        "agentRunId": "aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+                        "platformAgentRunId": "01a076cc-62b7-76c0-a78d-0722edc43eb4",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-5.6-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": false,
+                          "skillAccessMode": "PRELOADED_ONLY",
+                          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                        }
+                      }
+                    ],
+                    "taskExecutions": []
+                  }
+                ],
+                "taskExecutions": [
+                  {
+                    "address": "/research-team",
+                    "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+                    "members": [
+                      {
+                        "address": "/research-team/lead",
+                        "agentRunId": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+                        "platformAgentRunId": "01a076d7-09ee-7b82-ba71-7b9c9e1c3e63"
+                      },
+                      {
+                        "address": "/research-team/analyst",
+                        "agentRunId": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+                        "platformAgentRunId": "01a076d7-0a47-7ed0-a249-7bb5227df011"
+                      },
+                      {
+                        "address": "/research-team/verifier",
+                        "agentRunId": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+                        "platformAgentRunId": "01a076d7-0abb-7183-ab52-877d93e85567"
+                      }
+                    ],
+                    "taskExecutions": [],
+                    "startedAt": "2026-09-06T13:09:59.374Z",
+                    "settledAt": null
+                  }
+                ]
+              }
+            },
+            "task_records": {
+              "schemaVersion": 1,
+              "subjectKind": "agent_org",
+              "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+              "records": [
+                {
+                  "taskId": "task_3d122cc68edc47d6884c21bfcc816369",
+                  "delegatorAgentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+                  "recipientAddress": "/support-team",
+                  "taskExecution": {
+                    "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2"
+                  },
+                  "description": "As the new task Team coordinator, remain active for this status validation. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-MOUNTED-TASK-TEAM-READY-001 and wait.",
+                  "referenceFiles": [],
+                  "status": "active",
+                  "updates": [],
+                  "createdAt": "2026-09-06T13:04:41.683Z"
+                },
+                {
+                  "taskId": "task_949b4aa38fb545f7b5692a8a084ae7b7",
+                  "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+                  "recipientAddress": "/research-team",
+                  "taskExecution": {
+                    "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+                  },
+                  "description": "As the root-hosted research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-ROOT-TASK-TEAM-READY-001 and wait.",
+                  "referenceFiles": [],
+                  "status": "active",
+                  "updates": [],
+                  "createdAt": "2026-09-06T13:09:59.374Z"
+                }
+              ]
+            },
+            "communication_messages": {
+              "schemaVersion": 1,
+              "subjectKind": "agent_org",
+              "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+              "messages": []
+            },
+            "agent_statuses": [
+              {
+                "member_address": "/concierge",
+                "agent_run_id": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/research-team/lead",
+                "agent_run_id": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/research-team/analyst",
+                "agent_run_id": "aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/research-team/verifier",
+                "agent_run_id": "aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/support-team/dispatcher",
+                "agent_run_id": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/support-team/specialist",
+                "agent_run_id": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+                "status": "offline",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/support-team/dispatcher",
+                "agent_run_id": "aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/support-team/specialist",
+                "agent_run_id": "aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/research-team/lead",
+                "agent_run_id": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/research-team/analyst",
+                "agent_run_id": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              },
+              {
+                "member_address": "/research-team/verifier",
+                "agent_run_id": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "ROOT_LIFECYCLE",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+          "is_active": true
+        }
+      }
+    ],
+    "terminal": {
+      "type": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+        "schema_version": 1,
+        "root_org": {
+          "base_change_sequence": 198,
+          "is_active": true,
+          "execution_tree": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "createdAt": "2026-09-06T12:58:20.528Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [
+              {
+                "from": "/concierge",
+                "to": "/research-team",
+                "rules": [
+                  "When the direct request requires structured research.",
+                  "After the concierge records the exact requested marker."
+                ]
+              },
+              {
+                "from": "/research-team/lead",
+                "to": "/support-team",
+                "rules": [
+                  "When the research result needs a separate support verification."
+                ]
+              },
+              {
+                "from": "/research-team/lead",
+                "to": "/research-team/analyst",
+                "rules": [
+                  "When a request needs bounded analysis.",
+                  "After the lead identifies the exact validation question."
+                ]
+              },
+              {
+                "from": "/research-team/analyst",
+                "to": "/research-team/verifier",
+                "rules": [
+                  "When a completed analysis needs an independent check."
+                ]
+              },
+              {
+                "from": "/support-team/dispatcher",
+                "to": "/support-team/specialist",
+                "rules": [
+                  "When a support answer needs explicit verification."
+                ]
+              }
+            ],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "aorg-mixed-org",
+              "orgDefinitionName": "AORG E2E Mixed Org",
+              "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+              },
+              "members": [
+                {
+                  "address": "/concierge",
+                  "agentDefinitionId": "aorg-concierge",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+                  "platformAgentRunId": "01a076cc-60b5-7081-bee9-024aaf6115fd",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": false,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                  }
+                },
+                {
+                  "address": "/research-team",
+                  "teamDefinitionId": "aorg-research-squad",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538",
+                  "coordinatorAddress": "/research-team/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": false,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                  },
+                  "members": [
+                    {
+                      "address": "/research-team/lead",
+                      "agentDefinitionId": "aorg-lead",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+                      "platformAgentRunId": "01a076cc-6151-7fe2-b86f-69d8be204416",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-5.6-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": false,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                      }
+                    },
+                    {
+                      "address": "/research-team/analyst",
+                      "agentDefinitionId": "aorg-analyst",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+                      "platformAgentRunId": "01a076cc-61a6-7482-9628-4f0e7b762679",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-5.6-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": false,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                      }
+                    },
+                    {
+                      "address": "/research-team/verifier",
+                      "agentDefinitionId": "aorg-verifier",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+                      "platformAgentRunId": "01a076cc-620b-7bf2-a455-22fd7b8ceeba",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-5.6-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": false,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                      }
+                    }
+                  ],
+                  "taskExecutions": [
+                    {
+                      "address": "/support-team",
+                      "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+                      "members": [
+                        {
+                          "address": "/support-team/dispatcher",
+                          "agentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+                          "platformAgentRunId": "01a076d2-3107-7343-b83f-f737cd6000f8"
+                        },
+                        {
+                          "address": "/support-team/specialist",
+                          "agentRunId": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+                          "platformAgentRunId": null
+                        }
+                      ],
+                      "taskExecutions": [],
+                      "startedAt": "2026-09-06T13:04:41.683Z",
+                      "settledAt": null
+                    }
+                  ]
+                },
+                {
+                  "address": "/support-team",
+                  "teamDefinitionId": "aorg-support-pair",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "aorg_e2e_support_pair_47d1a021a8cf49a5bddf778ae95d4db6",
+                  "coordinatorAddress": "/support-team/dispatcher",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": false,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                  },
+                  "members": [
+                    {
+                      "address": "/support-team/dispatcher",
+                      "agentDefinitionId": "aorg-lead",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+                      "platformAgentRunId": "01a076cc-625c-7582-95b2-865624db068a",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-5.6-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": false,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                      }
+                    },
+                    {
+                      "address": "/support-team/specialist",
+                      "agentDefinitionId": "aorg-verifier",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+                      "platformAgentRunId": "01a076cc-62b7-76c0-a78d-0722edc43eb4",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-5.6-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": false,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                }
+              ],
+              "taskExecutions": [
+                {
+                  "address": "/research-team",
+                  "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+                  "members": [
+                    {
+                      "address": "/research-team/lead",
+                      "agentRunId": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+                      "platformAgentRunId": "01a076d7-09ee-7b82-ba71-7b9c9e1c3e63"
+                    },
+                    {
+                      "address": "/research-team/analyst",
+                      "agentRunId": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+                      "platformAgentRunId": "01a076d7-0a47-7ed0-a249-7bb5227df011"
+                    },
+                    {
+                      "address": "/research-team/verifier",
+                      "agentRunId": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+                      "platformAgentRunId": "01a076d7-0abb-7183-ab52-877d93e85567"
+                    }
+                  ],
+                  "taskExecutions": [],
+                  "startedAt": "2026-09-06T13:09:59.374Z",
+                  "settledAt": null
+                }
+              ]
+            }
+          },
+          "task_records": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+            "records": [
+              {
+                "taskId": "task_3d122cc68edc47d6884c21bfcc816369",
+                "delegatorAgentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+                "recipientAddress": "/support-team",
+                "taskExecution": {
+                  "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2"
+                },
+                "description": "As the new task Team coordinator, remain active for this status validation. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-MOUNTED-TASK-TEAM-READY-001 and wait.",
+                "referenceFiles": [],
+                "status": "active",
+                "updates": [],
+                "createdAt": "2026-09-06T13:04:41.683Z"
+              },
+              {
+                "taskId": "task_949b4aa38fb545f7b5692a8a084ae7b7",
+                "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+                "recipientAddress": "/research-team",
+                "taskExecution": {
+                  "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+                },
+                "description": "As the root-hosted research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-ROOT-TASK-TEAM-READY-001 and wait.",
+                "referenceFiles": [],
+                "status": "active",
+                "updates": [],
+                "createdAt": "2026-09-06T13:09:59.374Z"
+              }
+            ]
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+            "messages": []
+          },
+          "agent_statuses": [
+            {
+              "member_address": "/concierge",
+              "agent_run_id": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/research-team/lead",
+              "agent_run_id": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/research-team/analyst",
+              "agent_run_id": "aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/research-team/verifier",
+              "agent_run_id": "aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/support-team/dispatcher",
+              "agent_run_id": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/support-team/specialist",
+              "agent_run_id": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/support-team/dispatcher",
+              "agent_run_id": "aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/support-team/specialist",
+              "agent_run_id": "aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/research-team/lead",
+              "agent_run_id": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/research-team/analyst",
+              "agent_run_id": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/research-team/verifier",
+              "agent_run_id": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  "statuses": [
+    {
+      "member_address": "/concierge",
+      "agent_run_id": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/research-team/lead",
+      "agent_run_id": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/research-team/analyst",
+      "agent_run_id": "aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/research-team/verifier",
+      "agent_run_id": "aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/support-team/dispatcher",
+      "agent_run_id": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/support-team/specialist",
+      "agent_run_id": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/support-team/dispatcher",
+      "agent_run_id": "aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/support-team/specialist",
+      "agent_run_id": "aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/research-team/lead",
+      "agent_run_id": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/research-team/analyst",
+      "agent_run_id": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/research-team/verifier",
+      "agent_run_id": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    }
+  ],
+  "pairs": [
+    "/concierge|aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+    "/research-team/lead|aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+    "/research-team/analyst|aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41",
+    "/research-team/verifier|aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5",
+    "/support-team/dispatcher|aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+    "/support-team/specialist|aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+    "/support-team/dispatcher|aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede",
+    "/support-team/specialist|aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab",
+    "/research-team/lead|aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+    "/research-team/analyst|aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+    "/research-team/verifier|aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23"
+  ],
+  "view": {
+    "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=active",
+    "taskTeams": [
+      "agent-org-task-team-row-aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+      "agent-org-task-team-row-aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+    ],
+    "alerts": [],
+    "overflow": false
+  },
+  "assertions": {
+    "snapshotAvailable": true,
+    "exactRoot": true,
+    "statusCountEleven": true,
+    "uniquePairs": true,
+    "uniqueRunIds": true,
+    "rootTaskTeamSnapshot": true,
+    "rootTaskTeamTree": true,
+    "noNotice": true,
+    "noOverflow": true
+  }
+}

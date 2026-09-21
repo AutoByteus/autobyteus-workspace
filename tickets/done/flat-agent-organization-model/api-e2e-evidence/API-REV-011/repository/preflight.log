@@ -1,0 +1,61 @@
+timestamp=2026-09-05T20:29:14Z
+head=54716ad0ffd4c4be7aab389a84d3d7e41f72ecb5
+source=0d7b6e7e7bc1050a43d3681eb83b09a342537ef7
+source_is_ancestor=true
+instructions:
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/README.md
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/README.md
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/AGENTS.md
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/README.md
+/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/AGENTS.md
+ports:
+8590/3590 free
+fixture layout:
+d agent-orgs
+d agent-orgs/aorg-direct-agents-org
+d agent-orgs/aorg-mixed-org
+d agents
+d agents/aorg-analyst
+d agents/aorg-concierge
+d agents/aorg-lead
+d agents/aorg-verifier
+d agent-teams
+d agent-teams/aorg-research-squad
+d agent-teams/aorg-support-pair
+f PACKAGE.sha256
+f README.md
+f TEST-MANIFEST.md
+fixture hashes:
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+dirty state:
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_orgs.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+ M tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+ M tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+ M tickets/in-progress/flat-agent-organization-model/release-notes.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-004/
+diff check:

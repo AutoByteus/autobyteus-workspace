@@ -1,14 +1,11 @@
 import type {
   ConfiguredAgentExecutionNode,
-  ConfiguredExecutionNode,
-  ConfiguredTeamExecutionNode,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
 import type {
   AgentLaunchConfiguration,
   TeamRunAgentNode,
   TeamRunAgentTeamNode,
-  TeamRunNode,
 } from "../domain/team-run-config.js";
 import { TeamRunConfig } from "../domain/team-run-config.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
@@ -34,20 +31,6 @@ const toAgent = (node: TeamRunAgentNode): ConfiguredAgentExecutionNode => ({
   launchConfiguration: launchConfiguration(node),
 });
 
-const toTeam = (node: TeamRunAgentTeamNode): ConfiguredTeamExecutionNode => ({
-  address: node.address,
-  teamDefinitionId: node.teamDefinitionId,
-  role: node.role ?? null,
-  description: node.description ?? null,
-  teamRunId: node.teamRunId,
-  coordinatorAddress: node.coordinatorAddress,
-  defaultLaunchConfiguration: launchConfiguration(node.defaultLaunchConfiguration),
-  members: node.children.map(toMember),
-  taskExecutions: [],
-});
-
-const toMember = (node: TeamRunNode): ConfiguredExecutionNode =>
-  node.kind === "agent" ? toAgent(node) : toTeam(node);
 
 export const buildInitialTeamRunExecutionTree = (input: {
   config: TeamRunConfig;
@@ -66,7 +49,10 @@ export const buildInitialTeamRunExecutionTree = (input: {
     teamRunId: input.config.rootTeam.teamRunId,
     coordinatorAddress: input.config.rootTeam.coordinatorAddress,
     defaultLaunchConfiguration: launchConfiguration(input.config.rootTeam.defaultLaunchConfiguration),
-    members: input.config.rootTeam.children.map(toMember),
+    members: input.config.rootTeam.children.map((member) => {
+      if (member.kind !== "agent") throw new Error(`Team V2 cannot contain configured Team '${member.address}'.`);
+      return toAgent(member);
+    }),
     taskExecutions: [],
   },
 }, input.config.rootTeam.teamRunId);
@@ -82,20 +68,6 @@ const fromConfiguredAgent = (node: ConfiguredAgentExecutionNode): TeamRunAgentNo
   ...launchConfiguration(node.launchConfiguration),
 });
 
-const fromConfiguredTeam = (node: ConfiguredTeamExecutionNode): TeamRunAgentTeamNode => ({
-  kind: "agent_team",
-  address: node.address,
-  teamDefinitionId: node.teamDefinitionId,
-  teamRunId: node.teamRunId,
-  coordinatorAddress: node.coordinatorAddress,
-  role: node.role,
-  description: node.description,
-  defaultLaunchConfiguration: launchConfiguration(node.defaultLaunchConfiguration),
-  children: node.members.map(fromConfiguredMember),
-});
-
-const fromConfiguredMember = (node: ConfiguredExecutionNode): TeamRunNode =>
-  "agentRunId" in node ? fromConfiguredAgent(node) : fromConfiguredTeam(node);
 
 /** Reconstructs only configured launch facts; task executions remain tree-owned. */
 export const buildTeamRunConfigFromExecutionTree = (
@@ -109,7 +81,7 @@ export const buildTeamRunConfigFromExecutionTree = (
     teamRunId: tree.rootTeam.teamRunId,
     coordinatorAddress: tree.rootTeam.coordinatorAddress,
     defaultLaunchConfiguration: launchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
-    children: tree.rootTeam.members.map(fromConfiguredMember),
+    children: tree.rootTeam.members.map(fromConfiguredAgent),
   },
   handoffs: tree.handoffs,
   applicationBinding: tree.applicationBinding,

@@ -6,7 +6,7 @@ import type { ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-li
 import { ProviderCompactionBoundaryRecorder } from "./provider-compaction-boundary-recorder.js";
 import {
   asString,
-  extractForwardedMessageMedia,
+  extractForwardedMessageAttachments,
   extractContentDelta,
   extractTimestamp,
   extractTurnId,
@@ -50,7 +50,7 @@ export class RuntimeMemoryEventAccumulator {
   recordForwardedUserMessage(payload: AgentRunUserMessageForwardedPayload): void {
     const turnId = asString(payload.result.turnId);
     if (!turnId) return;
-    const media = extractForwardedMessageMedia(payload.message);
+    const { media, fileAttachments } = extractForwardedMessageAttachments(payload.message);
     this.input.writer.appendRawTrace({
       traceType: "user",
       turnId,
@@ -58,6 +58,7 @@ export class RuntimeMemoryEventAccumulator {
       sourceEvent: "AgentRun.postUserMessage",
       ts: payload.forwardedAt.getTime() / 1000,
       media,
+      fileAttachments,
     });
   }
 

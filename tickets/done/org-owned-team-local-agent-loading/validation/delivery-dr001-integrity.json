@@ -1,0 +1,186 @@
+{
+  "checked_at_utc": "2026-09-16T08:39:55.203288+00:00",
+  "head": "65fc02a99d0a9608ba4da195cf108dc8aef255e7",
+  "base": "65fc02a99d0a9608ba4da195cf108dc8aef255e7",
+  "integration": "fetch then merge --ff-only: Already up to date",
+  "matched": 35,
+  "total": 35,
+  "removed_reader_absent": "autobyteus-web/services/agentOrgDefinition/agentOrgAuthoringReferences.ts",
+  "checks": [
+    {
+      "path": "autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts",
+      "expected": "9d839c603ead6154b648863bd1c882ad8912cc538d5054f37e0f77fd1c40e003",
+      "actual": "9d839c603ead6154b648863bd1c882ad8912cc538d5054f37e0f77fd1c40e003"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts",
+      "expected": "bef4af541b054501f30f7ccf7846bd8e524eed9594f4277e3e3029ab64e3fbbd",
+      "actual": "bef4af541b054501f30f7ccf7846bd8e524eed9594f4277e3e3029ab64e3fbbd"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts",
+      "expected": "a82752732845affc624d56d52bc93f59e2c0e6100ecabdd944a4926f81e6bb80",
+      "actual": "a82752732845affc624d56d52bc93f59e2c0e6100ecabdd944a4926f81e6bb80"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts",
+      "expected": "a7724c9176e0e79f8548daad8a482e3b383033ec5381419b7e241017add98dec",
+      "actual": "a7724c9176e0e79f8548daad8a482e3b383033ec5381419b7e241017add98dec"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts",
+      "expected": "f8c48d4c3934783c0b1eaa765608cf4a9bb1e350d78dde6546fb76c650617e00",
+      "actual": "f8c48d4c3934783c0b1eaa765608cf4a9bb1e350d78dde6546fb76c650617e00"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts",
+      "expected": "740a82ecbda9325ce63b96e01a0c266be5887a6777ca4bbf52b608a40d0e9542",
+      "actual": "740a82ecbda9325ce63b96e01a0c266be5887a6777ca4bbf52b608a40d0e9542"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts",
+      "expected": "4e1e947127502bf8efe5550e8bf059926e9d1a36f5eba3d2dcafd375cf5b89df",
+      "actual": "4e1e947127502bf8efe5550e8bf059926e9d1a36f5eba3d2dcafd375cf5b89df"
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue",
+      "expected": "79709d71120693f77c134cfda5755bde59e57f5ef2120f515c0dde674bd60142",
+      "actual": "79709d71120693f77c134cfda5755bde59e57f5ef2120f515c0dde674bd60142"
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgAuthoringActions.spec.ts",
+      "expected": "ae302b3acc56abb5db6f210950381dac4240c499d26683e821667ac7f71c9bcb",
+      "actual": "ae302b3acc56abb5db6f210950381dac4240c499d26683e821667ac7f71c9bcb"
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgExperience.spec.ts",
+      "expected": "2df5ca4d7fd30972dc0a8f462a02efb35cc4df2be8d4d31041b6d04154ad18f4",
+      "actual": "2df5ca4d7fd30972dc0a8f462a02efb35cc4df2be8d4d31041b6d04154ad18f4"
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgExperienceApolloEdit.spec.ts",
+      "expected": "692c4a8565747391e0a2803921898444d1f56ac291b0006265d4e946a792f546",
+      "actual": "692c4a8565747391e0a2803921898444d1f56ac291b0006265d4e946a792f546"
+    },
+    {
+      "path": "autobyteus-web/components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts",
+      "expected": "22696ed49e9ee8423ca64433d21473c2e9af709561d43594b4cd229bdd8b6e47",
+      "actual": "22696ed49e9ee8423ca64433d21473c2e9af709561d43594b4cd229bdd8b6e47"
+    },
+    {
+      "path": "autobyteus-web/components/agentTeams/AgentTeamDetail.vue",
+      "expected": "8ad9cf7460dd4028e3d14480f7cb7899d3b38f5af04c007fc5fbb7eedd041564",
+      "actual": "8ad9cf7460dd4028e3d14480f7cb7899d3b38f5af04c007fc5fbb7eedd041564"
+    },
+    {
+      "path": "autobyteus-web/components/agentTeams/AgentTeamEdit.vue",
+      "expected": "f1302c856a0d5fb56726e7db4d9a38869213439eb6dc0390b64feee5dac3e628",
+      "actual": "f1302c856a0d5fb56726e7db4d9a38869213439eb6dc0390b64feee5dac3e628"
+    },
+    {
+      "path": "autobyteus-web/components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts",
+      "expected": "11fc9620cadb7e02374cb77efcb968aae7954cd2fcb01b1242e80d9dfab16692",
+      "actual": "11fc9620cadb7e02374cb77efcb968aae7954cd2fcb01b1242e80d9dfab16692"
+    },
+    {
+      "path": "autobyteus-web/components/agentTeams/__tests__/AgentTeamDetail.spec.ts",
+      "expected": "acbb342d18700fbf36688037de58c4dc7555ded35b9261ca963eaf2a638e69a2",
+      "actual": "acbb342d18700fbf36688037de58c4dc7555ded35b9261ca963eaf2a638e69a2"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "expected": "ae1bdf852e020a4f453502bc95770f2b239062a2258cdcee716b8be956839176",
+      "actual": "ae1bdf852e020a4f453502bc95770f2b239062a2258cdcee716b8be956839176"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/RunConfigPanel.vue",
+      "expected": "647014076c3e41e0d9315e9a81de0ffde0dbe9169678a0225f8ce9fd1de23fff",
+      "actual": "647014076c3e41e0d9315e9a81de0ffde0dbe9169678a0225f8ce9fd1de23fff"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+      "expected": "1963860571d1dd67c00779395716d080825eb55a4bb5c029d1ad587b77188f36",
+      "actual": "1963860571d1dd67c00779395716d080825eb55a4bb5c029d1ad587b77188f36"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts",
+      "expected": "a67c3edd33ad370ceb2a5ced1a152af82b40211c052ab6ded723090dde61568f",
+      "actual": "a67c3edd33ad370ceb2a5ced1a152af82b40211c052ab6ded723090dde61568f"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts",
+      "expected": "703d6da9410395869b783ce61355696baf517bb2fca99954981e990109aa9c9a",
+      "actual": "703d6da9410395869b783ce61355696baf517bb2fca99954981e990109aa9c9a"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/running/RunningAgentsPanel.vue",
+      "expected": "755bfe8e12da3cc3e0e9e7a375dfc85de736ae6264029533b7bc4bb2c8108f71",
+      "actual": "755bfe8e12da3cc3e0e9e7a375dfc85de736ae6264029533b7bc4bb2c8108f71"
+    },
+    {
+      "path": "autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts",
+      "expected": "bbcdb881dffd834cbc319c30d66f95fff61a635ecc83e81abb70c2c6f5881735",
+      "actual": "bbcdb881dffd834cbc319c30d66f95fff61a635ecc83e81abb70c2c6f5881735"
+    },
+    {
+      "path": "autobyteus-web/composables/mobile/useMobileRunSetupController.ts",
+      "expected": "811b0a0e9182354fa824595ecd6036e67f3fa07752734a7cecc9b40a31de580a",
+      "actual": "811b0a0e9182354fa824595ecd6036e67f3fa07752734a7cecc9b40a31de580a"
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "expected": "3ebbfe2dda2e35783ae1b0431f2423312005220897be2a15f4624256e5972d44",
+      "actual": "3ebbfe2dda2e35783ae1b0431f2423312005220897be2a15f4624256e5972d44"
+    },
+    {
+      "path": "autobyteus-web/docs/agent_teams.md",
+      "expected": "c1e0d6421c9c5aa853989d884b9d18e9ed22ad664a91af029a9db0181a471224",
+      "actual": "c1e0d6421c9c5aa853989d884b9d18e9ed22ad664a91af029a9db0181a471224"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "expected": "270f9f380537d7fe0f2b655ce792dcd6f79039b2edbce012e51d1b7e430fa0f8",
+      "actual": "270f9f380537d7fe0f2b655ce792dcd6f79039b2edbce012e51d1b7e430fa0f8"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "expected": "88acf7ca325223ea2a3d14e954c681e0cecf673368768200ede4002f55ecb513",
+      "actual": "88acf7ca325223ea2a3d14e954c681e0cecf673368768200ede4002f55ecb513"
+    },
+    {
+      "path": "autobyteus-web/pages/__tests__/org-definition-navigation.spec.ts",
+      "expected": "9e18e0fc0d57153cad329944ffef40e7468cf2faf1fec9f81d57de9f57f1192d",
+      "actual": "9e18e0fc0d57153cad329944ffef40e7468cf2faf1fec9f81d57de9f57f1192d"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts",
+      "expected": "b7740e668adf251742db13febf2b8ced96a060c3f18dde9eb7832e23b5cd640e",
+      "actual": "b7740e668adf251742db13febf2b8ced96a060c3f18dde9eb7832e23b5cd640e"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentTeamDefinitionStore.spec.ts",
+      "expected": "2efe6e82cb9e7faf7087e411131c40e85c6275c9e99a316d529efe3f6822d256",
+      "actual": "2efe6e82cb9e7faf7087e411131c40e85c6275c9e99a316d529efe3f6822d256"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts",
+      "expected": "34dc44ac723a09d0333e26f5dff865dccaa95c416f9c3ad1db5f487376d71a25",
+      "actual": "34dc44ac723a09d0333e26f5dff865dccaa95c416f9c3ad1db5f487376d71a25"
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamDefinitionStore.ts",
+      "expected": "b3df69a75417f57088469552d7e2a7d7b6868786dc9760af22f9dd98404b1f25",
+      "actual": "b3df69a75417f57088469552d7e2a7d7b6868786dc9760af22f9dd98404b1f25"
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "expected": "336088acc32539be909e1298a0134c57c28bfdd0c968a8d2a9ec22ad26fc8f83",
+      "actual": "336088acc32539be909e1298a0134c57c28bfdd0c968a8d2a9ec22ad26fc8f83"
+    },
+    {
+      "path": "autobyteus-web/stores/teamRunConfigStore.ts",
+      "expected": "95a126c0715f6ddf973f4f167fb242f0fc240073ac6508c9505561e7f505a445",
+      "actual": "95a126c0715f6ddf973f4f167fb242f0fc240073ac6508c9505561e7f505a445"
+    }
+  ]
+}

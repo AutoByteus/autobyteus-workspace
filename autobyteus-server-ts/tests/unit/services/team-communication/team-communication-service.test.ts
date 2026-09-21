@@ -1,19 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
-import type { TeamMemberExecutionIdentity } from "../../../../src/agent-team-execution/domain/team-member-execution-identity.js";
+import type { CollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import type { PreparedTeamMessageAppend } from "../../../../src/agent-team-execution/services/team-run-persistence-contract.js";
 import { TeamCommunicationService } from "../../../../src/services/team-communication/team-communication-service.js";
 
 const rootTeamRunId = "root-team-run";
-const senderIdentity: TeamMemberExecutionIdentity = Object.freeze({
-  rootTeamRunId,
+const root = Object.freeze({ rootSubjectKind: "agent_team" as const, rootRunId: rootTeamRunId });
+const senderIdentity: CollaborationMemberExecutionIdentity = Object.freeze({
+  root,
   memberAddress: "/sender",
   agentRunId: "sender-run",
 });
-const receiverIdentity: TeamMemberExecutionIdentity = Object.freeze({
-  rootTeamRunId,
+const receiverIdentity: CollaborationMemberExecutionIdentity = Object.freeze({
+  root,
   memberAddress: "/squad/receiver",
   agentRunId: "receiver-run",
 });
@@ -25,7 +26,7 @@ const sender = buildDeliveryEndpointForParticipant(Object.freeze({
 }));
 
 const buildHarness = (input: {
-  currentAgent?: (identity: TeamMemberExecutionIdentity) => boolean;
+  currentAgent?: (identity: CollaborationMemberExecutionIdentity) => boolean;
   commit?: (plan: PreparedTeamMessageAppend) => Promise<
     | { outcome: "committed" }
     | { outcome: "conflict"; code: "TEAM_MESSAGE_COMMIT_CONFLICT"; message: string }

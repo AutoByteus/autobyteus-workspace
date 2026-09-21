@@ -1,0 +1,64 @@
+{
+  "sourceCheckpoint": "6e2d7997444383d5585225d9febbc1ee54247714",
+  "entryHead": "fcd220b23bd377da2f488b51363787cc1065081a",
+  "protectedRegularFileCount": 31060,
+  "changedProtected": [],
+  "sourceFiles": 7,
+  "cumulativeFiles": 814,
+  "badSource": [],
+  "badCumulative": [],
+  "referenceCount": 2256,
+  "missingReferences": [],
+  "unrelatedNewRegularFiles": [],
+  "staged": [],
+  "unmerged": [],
+  "authority": [
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/requirements-doc.md",
+      "matchRER033": true
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/investigation-notes.md",
+      "matchRER033": true
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/requirements-revision-record.md",
+      "matchRER033": true
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/agent-org-contract.md",
+      "matchRER033": true
+    }
+  ],
+  "pendingWorkingVsCommitted": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 829,
+      "sha256": "63dcedbdf550619e41156e1b0923c7b8128ef24986460da0bcdba0f5c524f911",
+      "committedSha256": "e2d1e5945ab705f8020478bab8995fc7bc0cbc747867442d3ec83a054ef1fd7a",
+      "workingTreeDiffersFromSourceCheckpoint": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 88,
+      "sha256": "617332f6b5d7770e8e23a609e95c2ade9bd2bfb6226a575b913647dcf3d5f3d2",
+      "committedSha256": "638a7900b722cbdf4dfa410862e8d7462b83c0cd83cce24f8e2ace8dbdd1ecb8",
+      "workingTreeDiffersFromSourceCheckpoint": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 701,
+      "sha256": "a25f958cfdee1c1f58120a2d7fc595d04378f8421268c1c8a22a2fa5cfaabef2",
+      "committedSha256": "ee7222a870126975dbbac9d5c31419de485048328f992d8d4aef2613c3d2c72b",
+      "workingTreeDiffersFromSourceCheckpoint": true
+    }
+  ],
+  "scope": "Regular content hashes and current source/reference inventory only, not a new API/runtime/POSIX/symlink metadata audit.",
+  "passed": true
+}

@@ -1,5 +1,5 @@
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
@@ -23,20 +23,32 @@ export interface OpenRunWithCoordinatorInput {
   resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
+  selectionIntent?: WorkspaceSelectionIntent;
   selectionMode?: RunOpenSelectionMode;
 }
 
 export interface OpenRunWithCoordinatorResult {
+  disposition: 'committed';
   runId: string;
   resumeConfig: RunResumeConfigPayload;
 }
 
-export const openAgentRun = async (
-  input: OpenRunWithCoordinatorInput,
-): Promise<OpenRunWithCoordinatorResult> => {
+export function openAgentRun(input: OpenRunWithCoordinatorInput & { selectRun: false }): Promise<OpenRunWithCoordinatorResult>;
+export function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<OpenRunWithCoordinatorResult | SupersededSelection>;
+export async function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<OpenRunWithCoordinatorResult | SupersededSelection> {
+  const intent = input.selectRun === false ? undefined
+    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const agentContextsStore = useAgentContextsStore();
   const expectedContext = agentContextsStore.getRun(input.runId) ?? null;
-  const candidate = await loadRunContextHydrationCandidate(input);
+  let candidate: Awaited<ReturnType<typeof loadRunContextHydrationCandidate>>;
+  try {
+    candidate = await loadRunContextHydrationCandidate(input);
+  } catch (error) {
+    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+    throw error;
+  }
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const { resumeConfig, config, conversation, activities, fileChanges } = candidate;
 
   const currentContext = agentContextsStore.getRun(input.runId) ?? null;
@@ -102,7 +114,8 @@ export const openAgentRun = async (
   }
 
   return {
+    disposition: 'committed',
     runId: input.runId,
     resumeConfig,
   };
-};
+}

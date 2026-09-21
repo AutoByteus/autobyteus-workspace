@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "records": [
+    {
+      "taskId": "task_3d122cc68edc47d6884c21bfcc816369",
+      "delegatorAgentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+      "recipientAddress": "/support-team",
+      "taskExecution": {
+        "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2"
+      },
+      "description": "As the new task Team coordinator, remain active for this status validation. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-MOUNTED-TASK-TEAM-READY-001 and wait.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_9ee81871255b483a93a13e45fe29e3c8",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-06T13:18:40.006Z"
+        }
+      ],
+      "createdAt": "2026-09-06T13:04:41.683Z"
+    },
+    {
+      "taskId": "task_949b4aa38fb545f7b5692a8a084ae7b7",
+      "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+      "recipientAddress": "/research-team",
+      "taskExecution": {
+        "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+      },
+      "description": "As the root-hosted research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-ROOT-TASK-TEAM-READY-001 and wait.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_c0b1761928094abda9f771354d9bb1fa",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-06T13:18:40.013Z"
+        }
+      ],
+      "createdAt": "2026-09-06T13:09:59.374Z"
+    },
+    {
+      "taskId": "task_0035bd13c1f44dc895a5c070139f8e6d",
+      "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+      "recipientAddress": "/research-team",
+      "taskExecution": {
+        "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171"
+      },
+      "description": "As the recursively nested research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-NESTED-TASK-TEAM-READY-001 and wait.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_9fff9a636cc14e4f90eee501f9bba39b",
+          "reason": "AgentOrg root is terminating.",
+          "createdAt": "2026-09-06T13:18:40.019Z"
+        }
+      ],
+      "createdAt": "2026-09-06T13:11:23.884Z"
+    }
+  ]
+}

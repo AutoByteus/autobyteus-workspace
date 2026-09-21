@@ -1,0 +1,1 @@
+Accept exactly the revised result for task task_ce348550defc476aaefea3ade67ad46d by calling review_task_result exactly once with the accept decision and comment="API16-ACCEPTED". Do not create, revise, or review any other task and do not send any ordinary inter-agent message.

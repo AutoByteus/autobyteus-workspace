@@ -1,0 +1,71 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+FA
+Followup Assistant
+(1)
+**[Context]** File: ../server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt Original text attachment for COLLAB-FOLLOWUP-001. Token: orchard-cobalt-47 **[Message]** Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools. Reference files: - /tmp/collab-api01-yyjdm4jz/server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt
+4m
+TEAMS
+FF
+Followup Flat Team
+(1)
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-R...
+21m
+C
+coordinator
+21m
+L
+lead
+21m
+R
+reviewer
+21m
+ORGS
+Followup Organization
+(1)
+Settings
+C
+coordinator
+Offline
+You
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone." After the tool succeeds, reply exactly COLLAB-API01-TEAM-COORDINATOR-READY. Do not delegate any tasks or contact /reviewer.
+C
+coordinator
+Thinking
+send_message_to
+
+COLLAB-API01-TEAM-COORDINATOR-READY
+
+Context Files (0)
+(drag, paste, or upload)
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+1 Messages
+Message
+Sep 13, 11:44 AM
+
+to lead
+
+Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone.
+
+Message
+lead
+Sep 13, 11:44 AM
+
+Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone.
+
+Tasks
+0 tasks

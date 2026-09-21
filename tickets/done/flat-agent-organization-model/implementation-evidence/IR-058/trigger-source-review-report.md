@@ -1,0 +1,97 @@
+# Code Review Report — CRR-087
+
+## Latest Authoritative Result / Review Round Meta
+
+**Fail — API/E2E Failure-Origin Review; Implementation Local Fix.** CR-FIND045 confirms missing navigation publication after authoritative Stop while the history read is pending. API-FIND038 / DS037 / VAL058. This is not a fresh full source audit, successful proportional test-code review, API acceptance or Delivery approval.
+
+- Ticket **AORG-FLAT-TEAM-001**, round87, 2026-09-12. Trigger: complete API-REV036 failure package. Prior CRR086 cumulative source Pass is archived at `code-review-evidence/CRR-087/prior-source-review-report.md`; it does not override this later supported failure. CRR001 initial baseline and all revision history remain intact.
+- Authority unchanged: **RER033@f84c5299f10898f49acff6a0e481d1cd61c769a9 / AD026@88ee8db1f871156749f473efda8913cc3b291c64 / ARCH023 Pass@7fde1faf10dffd9a01d3607e8d366f836f5d6e1b / AAV003**, cumulative IR001–057. **Large / High / Confirmed / Reviewed**, inherited focused Medium/High. No new Requirement Gap, Design Impact or Product gate.
+- Reviewed/current source **fbd268f543471ebf754837d6deec19127b172eb4**; artifact/current HEAD **071a0b6a81ffb51a6539a1fc1d4fa14af5e1c782**. No API36 production or durable test delta and no post-review source drift at the affected boundary.
+- Current executable authority: **API-REV036 Fail, 78.6% confidence**, cumulative acceptance incomplete. Source score CRR086 **9.51/10** is historical, not this review's score. No full scorecard repeated or new numerical score assigned; only affected activity-publication/runtime-fidelity and API-readiness conclusions are reopened.
+- Current direct low-risk route / Delivery re-entry: **N/A — not applicable**. Historical delivery and cutover limitations remain in force.
+
+## Review Scope / Upstream Behavior And Production-Path Basis
+
+Focused review of the approved Stop lifecycle, primary API36 diagnostic and original limitations, normal UI Stop caller, existing context/command/history/navigation owners, actual root-row consumer and existing generation test. Approved requirements/design/supplements/revisions, IR001–057, prior code-review chain, API36 investigation/execution/ledger/revisions/evidence and historical Delivery/Product references travel cumulatively; unchanged artifacts are not claimed newly audited or executed.
+
+**Behavior basis: Confirmed.** REQ031 / AC026 / SCN015 require a truthful unified Workspaces/history surface. DS037 (`design-spec.md:1350–1388`) specifically requires confirmed Stop to retain the exact conversation/selection Offline, clear live controls, publish the authoritative row activity through the existing single history owner before normal refresh, and reject obsolete refresh generations without invented statuses or a second activity cache. BEH005/014 and VAL056/058 remain applicable. No behavior ID is invented from the diagnostic.
+
+### Candidate Finding And Mechanism Gate — CR-CAND251
+
+| Gate | Independent basis / evidence |
+| --- | --- |
+| Actor and coherent goal | User stops their currently active Org once and continues viewing the same member conversation with truthful inactive controls. |
+| Supported entry / initiating event | Normal Workspaces exact-root **Stop**. A genuine normal history read is pending; DS037 explicitly governs authoritative activity publication before follow-up I/O. This is not a contradictory Send/Restore/Stop workflow. |
+| Scenario validity / reachability | **Supported Explicit Edge Scenario / Reachable.** Ordinary Stop plus the explicitly supported delayed/read-failure publication boundary. Controlled transport delay exposes that boundary; exposed controls alone or the helper's ability to delay a promise are not the authority. |
+| Forward path | `WorkspaceAgentOrgHistoryCollection` → existing typed subject action → `agentOrgContextsStore.stopAndInspect` → existing terminate adapter → successful mutation → `markHistorical` → `runHistoryStore.applyAgentOrgActivity(false)` → existing history/navigation projection → actual visible root row. |
+| Lifecycle and consequence | Exact root already active and rendered; Stop success is confirmed, context is historical/Offline and backend inactive. Replacement history row is inactive, but cached navigation retains the old active row until I/O finishes. Root still advertises Running and exposes an enabled Stop. |
+| Independent evidence | REQ031/AC026 and approved DS037; source boundaries below; fully captured successful Stop, three inactive pending observations, genuine response delivery, settled control, row HTML and both inspected desktop PNGs. |
+| Disposition | **Promote → CR-FIND045 (Medium), Implementation Local Fix.** Existing owner should publish the authoritative fact to its existing read model before awaiting refresh. No new cache, epoch, protocol or optimistic status is required. |
+
+**Excluded allegation:** Post-consumption obsolete-response resurrection is **not established**. The original immediate-after-release assertion sampled too early; the distinct direct-Org control cleared after350ms, and the complete primary after-delivery observation is also inactive with no Stop. Existing generation guards remain source-visible. Do not promote a second finding, attribute a broken generation guard, prescribe more concurrency machinery, or reconstruct missing delivery state from interrupted attempts. This excluded consequence is not a material premise of CR-FIND045, so the confirmed pending-publication finding can be routed independently.
+
+## Findings / Failure Origin
+
+### CR-FIND045 — Publish confirmed Org activity to the visible navigation before refresh I/O
+
+**Medium · Implementation defect + earlier source-review gap · Open.** Related API-FIND038 / DS037 / VAL058; candidate CR-CAND251.
+
+**Primary location:** `autobyteus-web/stores/runHistoryStore.ts:241–245` (`applyAgentOrgActivity`), with its refresh ordering at118–120 and cached consumer at428–429.
+
+1. `useWorkspaceHistorySubjectActions.ts:35–43` uses the normal Stop action and preserves the same selected root's route. `agentOrgContextsStore.ts:238–248` awaits successful termination before `markHistorical`; `markHistorical` at62–67 marks the same context inactive and applies the history activity. `agentOrgRunStore.ts:37–50` clears its terminating flag after the actual mutation response. The backend and center correctly become inactive; neither is the defect.
+2. `applyAgentOrgActivity` increments the existing request generation and replaces the matching `agentOrgHistory` row with `{ ...run, isActive }`, then only starts `refreshAgentOrgHistory()`. It does not update the already-existing navigation projection at this point.
+3. `refreshAgentOrgHistory()` publishes navigation **after** awaiting `refreshAgentOrgHistoryForStore`. The latter awaits readiness/network I/O (`runHistoryLoadActions.ts:162–186`) and retains explicit generation checks. `getTreeNodes()` returns the cached projection, rebuilding only if none exists. Replacing the history row does not mutate the older row retained by that cached tree: `runTreeProjection.ts:363–403` projects Org rows into groups by retaining each item.
+4. `runHistoryNavigationStoreActions.ts:25–40` already owns synchronous projection construction from `agentOrgHistory`. `useWorkspaceHistoryTreeState.ts:58` consumes `getTreeNodes`; the actual panel/section forwards those groups to `WorkspaceAgentOrgHistoryCollection.vue:20–43`, whose badge and Stop visibility read **that row's `run.isActive`**, not the corrected history slice/context. Its disabled binding only tracks termination-in-progress. Thus the completed mutation leaves an enabled stale Stop and green badge during the pending refresh.
+
+**Original current execution proof:** `api-e2e-evidence/API-REV-036/live/VAL058-history-activity-confirm.json`, its helper and `repository/val058-history-activity-confirm.json/.log`.
+
+- Exact root `aorg_e2e_mixed_org_29b222399a3344bb9bd14d045165a4d1`; member `/research-team/lead`; exact AgentRun `aorg_e2e_lead_1f090c13ecaf4bb0ba9df91f8ccab3eb`.
+- Genuine active `ListCollaborationRootHistory` response held **21:00:22.949Z**. Actual `TerminateAgentOrgRun` successful response captured **21:00:23.026Z** for that same root.
+- **21:00:24.060Z, 21:00:25.105Z, 21:00:26.154Z:** independent backend activity=false, same root/member history URL and unchanged center conversation Offline; root row HTML has green `aria-label="Running"` and one Stop button without a disabled attribute. CSS `disabled:` utility classes are not treated as a disabled attribute.
+- Genuine response delivered unchanged **21:00:26.294Z**. At **21:00:28.047Z**, backend still inactive, same conversation/route, grey Stopped badge and zero Stop buttons. No Send, no Restore, exactly one Stop and no page errors in this primary diagnostic.
+- Reviewer directly inspected both `.../live/screenshots/VAL058-history-activity-confirm-pending-1502.png` and `...-after-1502.png`. Desktop pending state is proven; narrow pending state is **not executed**. Command exit0 positively reproduces the defect, not acceptance Pass. No backend reactivation, duplicate Stop, task mutation, data loss or new persisted-state defect is attributed.
+
+**Earlier review gap:** DS037's authoritative-before-refresh invariant was source-detectable. The named activity action replaces a row while the already-mounted UI reads a separate cached projection; adjacent Agent/Team activity methods demonstrate that the established owner already publishes topology synchronously. Earlier review should have traced the activity action to the actual root-row read model, rather than accepting the history-slice check as rendered-state proof. `runHistoryStore.spec.ts:787–799` waits for failed/new and resolved/old I/O and checks only `agentOrgHistory`; it does not verify the cached row or rendered tree during the pending phase. This is an existing cumulative implementation omission, **not a demonstrated regression introduced by IR057's recovery-notice selector**. No introducing commit is assigned without evidence.
+
+**Required bounded outcome / regression evidence:** Repair activity publication in the existing history/navigation ownership boundary so confirmed Stop changes the visible exact root's activity before normal refresh I/O. Preserve existing generation rejection, no optimistic inactivity on failed Stop, active controls for genuinely active roots, stable summary/identity/selection/conversation, and the normal refresh/error behavior. Add durable coverage with a pre-existing real navigation projection and actual root-row composition while follow-up I/O is still pending; include released-old/rejected-follow-up checks and proportionate direct/mounted active/failed-Stop controls. Do not satisfy this with a slice-only assertion, source grep, fabricated runtime status, hidden Stop-only workaround, additional cache/flag/epoch, or changes to shutdown/persistence/restore ownership.
+
+## Prior Finding Reconciliation / Evidence Limits
+
+| Prior item | Current disposition |
+| --- | --- |
+| CR-FIND044 / API-FIND037 | **Execution-resolved at renewed API36 scopes.** Actual normal inactive Workspaces → deliberate continuation → fully captured successful Restore → controlled readiness rejection → truthful retained-route recovery, en/zh at1502/390; cold no-activation/no-write controls, exact draft/error/read_only/no prepared Send/no rollback. `live/API-FIND037-current-renewal.json` and `VAL057-renewal-resume2-mutation-responses.json` retain actual new Restore responses. Original API35 missing response stays missing, never reconstructed. |
+| CR-FIND043 / API-FIND036; CR-FIND042 / API-FIND035 | Current API36 external Accepted task-Agent `/research-team/analyst` and normal-Stop Interrupted task-Team `/support-team/dispatcher` scopes renewed: chooser/text+image/oneSend/reply/settlement/cold1502/390, same row/URI/owner/type/raw filename/friendly label/Open bytes. Original API33 missing associations never reconstructed. Full native/owner/type/lifetime matrix still incomplete. |
+| CR-FIND041/status,040/owned Save,039/full return | Current API36 recorded normal authoring, owned Save/full return, retained status scopes preserved. Not a new all-surface approval by this reviewer. |
+| AAV002/003 | Complete supported package roundtrip only; original Org-only assertion remains unadjudicated, not a defect, negative Pass or hold. Human-label authority unchanged. |
+| Successful proportional test review | Still **required after eventual cumulative API Pass** for all three carried durable API changes. This failure-origin entry neither performs nor grants it; separate canonical test-review report remains untouched. |
+
+API36's twelve original nonzero command receipts remain independently classified in `final/failed-command-disposition.json`: two readiness harness assertions, interrupted repeat-task final DOM, filesystem atomic-read diagnostic, activation correlator phase omission, missing-binding cleanup and mtime checks, and five VAL058 timing/viewport/cleanup attempts. The immediate-after-release sample is not settled proof; one direct control cleared after350ms, another pending attempt timed out15sec before a cleanup race. Missing held/delivery/transient evidence is not reconstructed. Distinct accepted tasks are not replayed. Prior unknown stalls and API20 first-guard-delay/native/outer limits remain recorded, not silently converted to Pass.
+
+**Separate environment disposition:** API36 independently reproduced worktree atomic-read anomalies with the current writer and plain fs, while `/tmp`/tmpfs controls passed. It gracefully stopped its own server and used the same dataDir alias on unique POSIX backing, preserving bytes/nsmtime/URI/owner/schema at relocation and keeping the original snapshot immutable. Final120 copied files preserved bytes/modes with120 worktree mtime quantizations disclosed; verified PAX archive preserves exact executed bytes/nsmtime/modes before backing removal. This was not a migration, repair, backfill or accepted-work replay. CR-FIND045 is observed on that POSIX-backed run with correct inactive backend; no causal link to the filesystem issue or new storage machinery is inferred.
+
+## Residual Risks / Cumulative Acceptance Boundary
+
+- API36 **41 groups:35Pass /4NotTested(partials) /1Fail /1N/A**. Confidence scores `[50,95,90,90,85,50,90]`, mean78.6%, are not a case pass rate. **32 selected repository commands Pass,433 distinct main files2637 tests** (server188/1065 + web185/1247 + core60/325). Focused35, setup9+2 and Electron9files39tests are overlapping/scoped;241 receipts include12 original nonzero results and are nonadditive.
+- Nine required task roles36 accepted updates plus original accepted repeat supplement4 = **10 distinct tasks40 current actual provider/MCP/FIFO/physical/memory correlations**,18 accepted system inputs. Original repeat later DOM lost during filesystem diagnostic; new third Team task supplies full repeat UI without accepted replay. Models, owned authoring/full return, actual recovery success/exhaustion, first pure main restart2Teams4Orgs Restore/messages/locales, full held continuation/final-read controls,8 auxiliary and2 bounded missing-binding/unreadable direct-Org Restore negatives retain exact scopes.
+- External **Codex provider-native compact fixture** after shutdown and ordinary restarted continuation is **not** an autobyteus-native worker or user-triggered compaction UI. Prepared native helpers/media-policy corrections were not executed; no native app credential was provisioned. Electron unit tests/SDK availability are not native execution.
+- Still incomplete: full provider/owner negative combinations, second main restart/full final UI, actual native worker/model/Stop, actual older-page browser/UserMessage/Open, complete attachment owner/type/lifetime/archive/export matrix and final inactive sent Open. Typed page queries are API proof, not UI pagination. After repair, **fresh cumulative source review then FULL renewed current-artifact API/E2E**, not delta-only acceptance.
+- Preserve CRR059/067/IR041/API27/29/DR007/009 and all historical limitations. **IR049 Architecture-owned actual completed-family/old-locator installation decision is required before cutover, not a coding hold.** No reset, replay, new migration ID, rollout or unapproved transition. No fullvue-tsc/alltestsTS/native shell/AppImage/Delivery/user/release readiness claim.
+
+### Pending API-Owned Durable Changes — Preserved, Not Reviewed Successfully
+
+| Path | Delta | Current SHA256 |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts` | +34 | `63dcedbdf550619e41156e1b0923c7b8128ef24986460da0bcdba0f5c524f911` |
+| `autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts` | +16/−1 | `617332f6b5d7770e8e23a609e95c2ade9bd2bfb6226a575b913647dcf3d5f3d2` |
+| `autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs` | +13/−2 | `a25f958cfdee1c1f58120a2d7fc595d04378f8421268c1c8a22a2fa5cfaabef2` |
+
+## Reviewer Validation / Classification And Routing
+
+- Read-only source/evidence review, including original helper/receipts and both desktop PNGs; **no new executable test/build/browser/server/provider run**. Independent provenance checks:14 focused current/source witnesses (including all9 API failure source hashes),810 cumulative IR057 inventory entries,3192 API36 evidence entries and4 API canonical hashes all match. Hash verification is not semantic re-execution of every artifact.
+- API36 cleanup/integrity receipts preserve58,911 regular files/11symlinks/19fixture files,810 current and974 upstream authority hashes; all own servers/renderer/observers/collector/logpoints/tabs/ports/build outputs/devkit temporary children/control roots were cleaned within recorded ownership, four preexisting browser targets and preexisting dist retained. These are API-owned receipts, not newly performed reviewer cleanup.
+- **Classification: Local Fix — Implementation-owned.** Approved design already supplies the correct single-owner publication contract; architecture/requirements change is unnecessary. Earlier review gap acknowledged above. No unresolved material premise blocks this narrow attribution. No source/test implementation, staging, commit, live-root/auth/DR009 or release action by reviewer.
+- **Recommended owner:** Implementation Engineer under the most-specific fresh failure-origin handoff rule. One cumulative result/package to one exact returned recipient. No API/Delivery advancement or second notification for this failure. Dynamic routing and final preservation receipt follow.
+
+
+- Fresh dynamic rule selected: **“When API/E2E failure-origin review confirms that the owning problem is an implementation defect.”** → **/software_engineering_team/implementation_engineer**, single most-specific recipient. No parallel API/Architecture/Delivery notification.
+- Final Reviewer preservation: **30,249 regular dirty/untracked baseline files;30,247 unchanged**, only the two Reviewer canonical records changed.14 focused source witnesses,810 cumulative inventory entries,3192 API36 evidence and4 API canonical hashes match. Exact HEAD and all3 pending unstaged API test hashes preserved; no missing/unexpected/staged/unmerged paths. Only Reviewer records/evidence written; no source/test/build/prerequisite/browser/server/provider/live-root/auth/DR009 change. Complete cumulative absolute reference index accompanies handoff.

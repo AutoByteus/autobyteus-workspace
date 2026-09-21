@@ -1,5 +1,7 @@
 import "reflect-metadata";
 import { describe, expect, it, vi } from 'vitest';
+import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
+import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
 import { AgentTeamRunManager } from '../../../src/agent-team-execution/services/agent-team-run-manager.js';
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
@@ -27,8 +29,9 @@ const harness = (physicalOutcome = 'committed', readback = 'ok') => {
   });
   const catalog = { listLlmModels: vi.fn(async () => ['small','equal','large'].map(model_identifier => ({ model_identifier } as any))) };
   const capacity = { resolveMany: vi.fn(async () => Object.fromEntries([['small',128000],['equal',128000],['large',272000]].map(([id,tokens])=>[id,{ kind: 'known' as const, tokens: Number(tokens), source: 'provider' }]))) };
-  const mixedTeamRunBackendFactory = {} as any;
-  const manager = new AgentTeamRunManager({ memoryDir: '/tmp/model-save-unit-no-disk', mixedTeamRunBackendFactory,
+  const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
+  const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any);
+  const manager = new AgentTeamRunManager({ memoryDir: '/tmp/model-save-unit-no-disk', flatTeamExecutionFactory, memberExecutionContextBuilder,
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
   return { manager, read, write, capacity, saved: () => saved };

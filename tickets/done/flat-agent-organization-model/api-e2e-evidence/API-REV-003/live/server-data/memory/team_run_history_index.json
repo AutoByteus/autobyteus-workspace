@@ -1,0 +1,22 @@
+[
+  {
+    "teamRunId": "aorg_e2e_research_squad_3ac76dc4cfc94602898e5a405def77e3",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace",
+    "summary": "Use delegate_task to assign one fresh task to /analyst. The complete task description must be: \"P...",
+    "createdAt": "2026-09-01T22:28:48.184Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-01T22:31:15.809Z"
+  },
+  {
+    "teamRunId": "aorg_e2e_research_squad_a931d9fec3634d919eeb9c7f499b0067",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace",
+    "summary": "Return exactly AORG-TEAM-FIRST-003 on the first line and exactly Team first prompt admitted. on t...",
+    "createdAt": "2026-09-01T22:22:23.799Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-01T22:28:04.172Z"
+  }
+]

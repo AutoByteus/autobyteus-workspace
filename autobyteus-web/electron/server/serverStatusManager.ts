@@ -23,6 +23,12 @@ export class ServerStatusManager extends EventEmitter {
     super()
     this.manager = serverManager
     
+    this.manager.on('startup-delayed', (message: string) => {
+      if (this.currentStatus === ServerStatus.STARTING || this.currentStatus === ServerStatus.RESTARTING) {
+        this.emitStatusChange(this.currentStatus, message)
+      }
+    })
+
     // Set up event handlers for server status changes
     this.manager.on('ready', () => {
       logger.info('ServerStatusManager: Server is ready')
@@ -108,6 +114,11 @@ export class ServerStatusManager extends EventEmitter {
       
       const urls = this.manager.getServerUrls()
       const response = await axios.get(urls.health, { timeout: 5000 })
+      // A diagnostic request from a previous running child must not revive a
+      // stopped, failed, or restarting startup while its response was in flight.
+      if (!this.manager.isRunning() || this.currentStatus !== ServerStatus.RUNNING) {
+        return { status: 'starting', message: 'Server is not running or still starting' }
+      }
       
       if (response.status === 200) {
         this.healthCheckStatus = 'Healthy'

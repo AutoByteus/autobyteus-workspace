@@ -6,7 +6,7 @@ import type { TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
 import type { PrepareTaskAgentInput } from "../domain/task-agent-execution.js";
 import type { PrepareTaskTeamInput } from "../domain/task-team-execution.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
-import type { PreparedLocalExecutionTermination } from "../domain/prepared-local-execution-termination.js";
+import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import type { PreparedTaskSettlement } from "../domain/prepared-task-settlement.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
@@ -21,7 +21,6 @@ export interface TeamRunBackend {
   isTerminated(): boolean;
   getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
-  getOrCreateConfiguredChildTeam(teamRunId: string): Promise<import("../domain/team-run.js").TeamRun>;
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
@@ -32,6 +31,7 @@ export interface TeamRunBackend {
     binding: { agentRunId: string } | { teamRunId: string },
   ): Promise<PreparedTaskSettlement | null>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;
+  tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null>;
   freezeForRootTermination(): FrozenTeamRunTerminationScope;
   terminate(): Promise<AgentOperationResult>;
 }

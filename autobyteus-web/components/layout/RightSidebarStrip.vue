@@ -14,8 +14,8 @@
         @click="selectTab(tab.name, $event)"
         class="p-2 rounded-md hover:bg-gray-100 transition-colors relative group"
         :class="{ 'text-blue-600 bg-blue-50': activeTab === tab.name }"
-        :title="tab.label"
-        :aria-label="tab.label"
+        :title="tab.ariaLabel || tab.label"
+        :aria-label="tab.ariaLabel || tab.label"
       >
         <Icon :icon="getIcon(tab.name)" class="w-5 h-5" :class="activeTab === tab.name ? 'text-gray-900' : 'text-gray-500'" />
 

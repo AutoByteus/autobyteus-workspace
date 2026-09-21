@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+  "messages": [
+    {
+      "messageId": "collabmsg_yV1OozjVumuC-TmDpsfTtp-FdGGOlBXE",
+      "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "receiverAgentRunId": "aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3",
+      "content": "Call delegate_task exactly once with recipient_address /research-team and description \"As the recursively nested research Team coordinator, remain active for status validation. Reply exactly APIREV15-AUTO-NESTED-TASK-TEAM-READY-001 and wait for a later message.\". Use description. After success reply exactly APIREV15-AUTO-NESTED-TASK-TEAM-READY-001-DELEGATED.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-06T13:26:42.927Z"
+    },
+    {
+      "messageId": "collabmsg_kPjT8v0m-Tipku5L4jHT96CF6GUT4N95",
+      "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "receiverAgentRunId": "aorg_e2e_lead_1e7bffcc18554736bd70e77f7761256f",
+      "content": "Call submit_task_result exactly once with message \"APIREV15-NESTED-FORMAL-RESULT-001\" and reference_files []. After success reply exactly APIREV15-NESTED-SUBMITTED-001.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-06T13:28:14.984Z"
+    },
+    {
+      "messageId": "collabmsg_bLrikhv8ZXUxRBg_aBDu13MmAZVvJJqi",
+      "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "receiverAgentRunId": "aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3",
+      "content": "Call review_task_result exactly once with task_id task_6d172a834d8141cdbfc7fe2ff10bef99, decision accept, comment null, and reference_files []. After success reply exactly APIREV15-NESTED-ACCEPTED-BY-PARENT-001.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-06T13:28:28.596Z"
+    },
+    {
+      "messageId": "collabmsg_W8wLUJ_Fhj5YLZwrG6e6hK60M418b_ba",
+      "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "receiverAgentRunId": "aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3",
+      "content": "Call submit_task_result exactly once with message \"APIREV15-PARENT-FORMAL-RESULT-001\" and reference_files []. After success reply exactly APIREV15-PARENT-SUBMITTED-001.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-06T13:28:38.500Z"
+    },
+    {
+      "messageId": "collabmsg_fQvlmiLiRqPIioHLanli6mTWoWVioSXB",
+      "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "receiverAgentRunId": "aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3",
+      "content": "APIREV15-MOUNTED-TO-DIRECT-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-direct.txt"
+      ],
+      "createdAt": "2026-09-06T13:32:20.519Z"
+    },
+    {
+      "messageId": "collabmsg_zwCfTW-7_6B3Wl3a51nhqnT4yiDdsJpC",
+      "senderAgentRunId": "aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42",
+      "receiverAgentRunId": "aorg_e2e_verifier_436e7bc35c2645cbaa1f8723a2492611",
+      "content": "APIREV15-MOUNTED-TO-MOUNTED-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/mounted-to-mounted.txt"
+      ],
+      "createdAt": "2026-09-06T13:32:43.099Z"
+    },
+    {
+      "messageId": "collabmsg_gf4An2j6xr4JwmBIrnSjrxqW_aAsd8pW",
+      "senderAgentRunId": "aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3",
+      "receiverAgentRunId": "aorg_e2e_analyst_8134ba2057a0494cbce0f564cb3b5068",
+      "content": "APIREV15-DIRECT-TO-MOUNTED-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/direct-to-mounted.txt"
+      ],
+      "createdAt": "2026-09-06T13:33:09.764Z"
+    }
+  ]
+}

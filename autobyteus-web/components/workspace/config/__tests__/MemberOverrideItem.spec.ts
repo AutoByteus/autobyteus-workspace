@@ -48,7 +48,7 @@ const provider = (runtime: string, models: ReturnType<typeof model>[]) => [{
 const codexSchema = {
   type: 'object',
   properties: {
-    temperature: { type: 'number', title: 'Temperature' },
+    temperature: { type: 'number', title: 'Temperature', minimum: 0, maximum: 2 },
     reasoning_effort: {
       type: 'string', title: 'Reasoning Effort',
       enum: ['low', 'medium', 'high', 'xhigh'], default: 'medium',
@@ -210,6 +210,73 @@ describe('MemberOverrideItem', () => {
     ])
   })
 
+  it('reports the exact Agent non-ready before awaiting a runtime catalog and commits afterward', async () => {
+    const wrapper = mountItem(editableNode())
+    await ready()
+    let resolveCatalog!: () => void
+    llmStore.fetchProvidersWithModels.mockImplementationOnce(() => new Promise((resolve) => {
+      resolveCatalog = () => resolve(runtimeProviders.claude_agent_sdk)
+    }))
+
+    void wrapper.get('#override-runtime--reviewer').setValue('claude_agent_sdk')
+    await nextTick()
+
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([
+      '/reviewer', { status: 'loading', message: null },
+    ])
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+
+    resolveCatalog()
+    await ready()
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      '/reviewer', { runtimeKind: 'claude_agent_sdk' },
+    ])
+  })
+
+  it('reports an unavailable exact Agent and does not commit when runtime catalog loading fails', async () => {
+    const wrapper = mountItem(editableNode())
+    await ready()
+    llmStore.fetchProvidersWithModels.mockRejectedValueOnce(new Error('Claude catalog is offline.'))
+
+    void wrapper.get('#override-runtime--reviewer').setValue('claude_agent_sdk')
+    await ready()
+
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([
+      '/reviewer', { status: 'unavailable', message: 'Claude catalog is offline.' },
+    ])
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+    expect(wrapper.get('[data-test="agent-runtime-catalog-error"]').text())
+      .toContain('Claude catalog is offline.')
+
+    await wrapper.get('[data-test="agent-runtime-catalog-error"] button').trigger('click')
+    await ready()
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      '/reviewer', { runtimeKind: 'claude_agent_sdk' },
+    ])
+  })
+
+  it('returns from a failed uncommitted runtime choice to the committed default and becomes ready', async () => {
+    const wrapper = mountItem(editableNode())
+    await ready()
+    llmStore.fetchProvidersWithModels.mockRejectedValueOnce(new Error('Claude catalog is offline.'))
+
+    void wrapper.get('#override-runtime--reviewer').setValue('claude_agent_sdk')
+    await ready()
+    expect(wrapper.emitted('schema-state')?.at(-1)?.[1]).toEqual({
+      status: 'unavailable', message: 'Claude catalog is offline.',
+    })
+    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value)
+      .toBe('claude_agent_sdk')
+
+    await wrapper.get('#override-runtime--reviewer').setValue('')
+    await ready()
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([
+      '/reviewer', { status: 'ready', message: null },
+    ])
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+    expect(wrapper.find('[data-test="agent-runtime-catalog-error"]').exists()).toBe(false)
+  })
+
   it('returns to a null override when explicit runtime/model/config all return to inherited values', async () => {
     const wrapper = mountItem(editableNode({
       override: {
@@ -244,6 +311,41 @@ describe('MemberOverrideItem', () => {
     expect(toggle.attributes('aria-expanded')).toBe('true')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
       '/reviewer', { llmModelIdentifier: 'gpt-5.3-codex' },
+    ])
+  })
+
+  it('keeps an editable Agent field error visible and emits invalid-to-ready schema state', async () => {
+    const invalidNode = editableNode({
+      baseline: {
+        runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', llmConfig: { temperature: -1 },
+      },
+      effective: {
+        runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', llmConfig: { temperature: -1 },
+      },
+    })
+    const wrapper = mountItem(invalidNode)
+    await ready()
+
+    expect(wrapper.get('#config--reviewer-temperature').attributes('aria-invalid')).toBe('true')
+    expect(wrapper.text()).toContain('Value must be at least 0.')
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([
+      '/reviewer', { status: 'invalid', message: 'Value must be at least 0.' },
+    ])
+
+    await wrapper.setProps({
+      node: editableNode({
+        baseline: {
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', llmConfig: { temperature: 0.5 },
+        },
+        effective: {
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', llmConfig: { temperature: 0.5 },
+        },
+      }),
+    })
+    await ready()
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false)
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([
+      '/reviewer', { status: 'ready', message: null },
     ])
   })
 

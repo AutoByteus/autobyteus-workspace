@@ -40,14 +40,14 @@ export const atomicWriteJsonFile = async (
     () => writeJson(resolvedPath, payload),
     () => writeJson(resolvedPath, payload),
   );
-  pathQueues.set(
-    resolvedPath,
-    next.finally(() => {
-      if (pathQueues.get(resolvedPath) === next) {
-        pathQueues.delete(resolvedPath);
-      }
-    }),
-  );
+  let settlementTail: Promise<void>;
+  const releaseIfCurrent = (): void => {
+    if (pathQueues.get(resolvedPath) === settlementTail) {
+      pathQueues.delete(resolvedPath);
+    }
+  };
+  settlementTail = next.then(releaseIfCurrent, releaseIfCurrent);
+  pathQueues.set(resolvedPath, settlementTail);
   return next;
 };
 

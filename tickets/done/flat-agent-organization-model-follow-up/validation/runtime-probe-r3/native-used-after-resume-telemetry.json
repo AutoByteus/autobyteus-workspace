@@ -1,0 +1,54 @@
+{
+  "pid": 96474,
+  "at": "2026-09-14T10:18:22.131Z",
+  "active": [
+    {
+      "runId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81"
+      }
+    },
+    {
+      "runId": "aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0"
+      }
+    },
+    {
+      "runId": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5"
+      }
+    }
+  ],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81",
+      "startedAt": "2026-09-14T10:17:33.086Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81"
+    },
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0",
+      "startedAt": "2026-09-14T10:17:48.171Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0"
+    },
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+      "startedAt": "2026-09-14T10:18:09.120Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5"
+    }
+  ]
+}

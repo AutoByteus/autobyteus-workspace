@@ -1,0 +1,197 @@
+{
+  "at": "2026-09-06T02:23:53.015Z",
+  "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nStopped Agent Org\n\nSelect a member from the historical run in the sidebar to continue from its saved state.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n0 Events\nNo activity history yet.",
+  "teamRunText": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+  "teamActivity": "false",
+  "memberAria": [
+    "Agent, aorg_e2e_lead, level 1, offline, /aorg_e2e_lead",
+    "Agent, aorg_e2e_analyst, level 1, offline, /aorg_e2e_analyst"
+  ],
+  "buttons": [
+    {
+      "aria": null,
+      "title": null,
+      "text": "Agents"
+    },
+    {
+      "aria": null,
+      "title": "Collapse left panel",
+      "text": ""
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Agent Teams"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Agent Orgs"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Skills"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Memory"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Nodes"
+    },
+    {
+      "aria": null,
+      "title": "Add workspace",
+      "text": ""
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Temp Workspace"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "workspace"
+    },
+    {
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "text": ""
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "A本\nAPIREV8 本地化 Team β\n(1)"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco..."
+    },
+    {
+      "aria": null,
+      "title": "Archive team history",
+      "text": ""
+    },
+    {
+      "aria": "Delete team history permanently",
+      "title": "Delete team history permanently",
+      "text": ""
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "APIREV8 组织 Ω\n(1)"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+    },
+    {
+      "aria": "aorg e2e concierge, offline",
+      "title": null,
+      "text": "AE\naorg e2e concierge"
+    },
+    {
+      "aria": "apirev8 team. Team status: Offline",
+      "title": null,
+      "text": "apirev8 team"
+    },
+    {
+      "aria": "aorg e2e lead, offline",
+      "title": null,
+      "text": "AE\naorg e2e lead"
+    },
+    {
+      "aria": "aorg e2e analyst, offline",
+      "title": null,
+      "text": "AE\naorg e2e analyst"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "workspace-team"
+    },
+    {
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "text": ""
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "workspace"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "workspace-default"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "workspace-default"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Settings"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Files"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Terminal"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Activity"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Token"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "Artifacts"
+    },
+    {
+      "aria": null,
+      "title": null,
+      "text": "VNC Viewer"
+    },
+    {
+      "aria": null,
+      "title": "Toggle Sidebar",
+      "text": ""
+    },
+    {
+      "aria": null,
+      "title": "Maximize view",
+      "text": ""
+    }
+  ],
+  "errors": [],
+  "assertions": {
+    "exactHistoricalRoute": true,
+    "exactTerminalCopy": true,
+    "rootSummaryRetained": true,
+    "standaloneTeamInactive": true,
+    "noOrgStopOrReconnect": true,
+    "noBrowserErrors": true
+  }
+}

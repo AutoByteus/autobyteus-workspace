@@ -1,0 +1,93 @@
+[
+  {
+    "label": "post-stop-terminal",
+    "at": "2026-09-04T14:52:46.756Z",
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&mode=configuration",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default\nSettings\nAgent Org\nAPIREV8 组织 Ω\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nSelect a model\n\nUsed across the organization unless a placement is customized.\n\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (3)\n\nModel configuration for /aorg_e2e_concierge is not ready: The selected model is unavailable for the current runtime.\n\nRun Agent Org\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo workspaces available. Add a workspace to see files.\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+    "current": [],
+    "selected": [
+      {
+        "test": null,
+        "text": "Existing"
+      },
+      {
+        "test": null,
+        "text": "Existing"
+      },
+      {
+        "test": null,
+        "text": "Files"
+      }
+    ],
+    "stopControls": 0
+  },
+  {
+    "label": "inactive-org-root",
+    "at": "2026-09-04T14:52:46.825Z",
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default\nSettings\nStopped Agent Org\n\nSelect a member from the historical run in the sidebar to continue from its saved state.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo workspaces available. Add a workspace to see files.\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+    "current": [
+      {
+        "test": null,
+        "text": "New - APIREV8 组织 Ω"
+      }
+    ],
+    "selected": [
+      {
+        "test": null,
+        "text": "New - APIREV8 组织 Ω"
+      },
+      {
+        "test": null,
+        "text": "Files"
+      }
+    ],
+    "stopControls": 0
+  },
+  {
+    "label": "standalone-team-from-inactive-org",
+    "at": "2026-09-04T14:52:46.882Z",
+    "url": "http://127.0.0.1:3589/workspace",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default\nSettings\nA\naorg_e2e_analyst\nIdle\nYou\nReturn exactly APIREV10-TEAM-ACTIVE-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_analyst\n\nAPIREV10-TEAM-ACTIVE-001\nTeam active and request acknowledged.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+    "current": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "A\naorg_e2e_analyst\n1d"
+      }
+    ],
+    "selected": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "A\naorg_e2e_analyst\n1d"
+      },
+      {
+        "test": null,
+        "text": "Team"
+      }
+    ],
+    "stopControls": 0
+  },
+  {
+    "label": "inactive-org-return",
+    "at": "2026-09-04T14:52:46.907Z",
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace-default\nSettings\nStopped Agent Org\n\nSelect a member from the historical run in the sidebar to continue from its saved state.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo workspaces available. Add a workspace to see files.\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+    "current": [
+      {
+        "test": null,
+        "text": "New - APIREV8 组织 Ω"
+      }
+    ],
+    "selected": [
+      {
+        "test": null,
+        "text": "New - APIREV8 组织 Ω"
+      },
+      {
+        "test": null,
+        "text": "Files"
+      }
+    ],
+    "stopControls": 0
+  }
+]

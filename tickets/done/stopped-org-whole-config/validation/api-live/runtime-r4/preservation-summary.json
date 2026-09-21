@@ -1,0 +1,126 @@
+{
+  "result": "PASS",
+  "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+  "preservedIds": {
+    "orgRunId": "whole_config_org_7df74f5b3e994420874f10209b45750d",
+    "directAgentRunId": "whole_config_agent_a80f248291e94764b5d1695f7f152dcc",
+    "teamRunId": "whole_config_team_585f9e2f01ba434384a6fb6322367104",
+    "mountedAgentRunId": "whole_config_agent_7079055c1b63430cbd7ba72db26b6db7"
+  },
+  "initialSaveChangesOnly": [
+    {
+      "path": "$.rootOrg.defaultLaunchConfiguration.llmConfig.reasoning_effort",
+      "before": "low",
+      "after": "medium"
+    },
+    {
+      "path": "$.rootOrg.members[0].launchConfiguration.llmConfig.reasoning_effort",
+      "before": "low",
+      "after": "high"
+    },
+    {
+      "path": "$.rootOrg.members[1].defaultLaunchConfiguration.llmConfig.reasoning_effort",
+      "before": "low",
+      "after": "high"
+    },
+    {
+      "path": "$.rootOrg.members[1].members[0].launchConfiguration.llmConfig.reasoning_effort",
+      "before": "low",
+      "after": "xhigh"
+    }
+  ],
+  "postSaveToFinalChanges": [],
+  "handoffsPreserved": true,
+  "taskExecutionsPreserved": true,
+  "applicationBindingPreserved": true,
+  "lockedFieldsPreserved": true,
+  "visibleBrowserEvidence": {
+    "directConversation": [
+      "DIRECT-BASELINE",
+      "DIRECT-AFTER-SAVE",
+      "ACTIVE-GUARD"
+    ],
+    "mountedConversation": [
+      "MOUNTED-BASELINE",
+      "MOUNTED-AFTER-SAVE"
+    ],
+    "directActivityEvents": 2,
+    "mountedActivityEvents": 2,
+    "taskCount": 0,
+    "contextFileCount": 0,
+    "finalRootStatus": "Stopped",
+    "finalDirectStatus": "Offline",
+    "finalMountedStatus": "Offline"
+  },
+  "providerRequests": [
+    {
+      "at": "2026-09-17T22:45:46.162Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    {
+      "at": "2026-09-17T22:46:01.405Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    {
+      "at": "2026-09-17T23:13:29.910Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    {
+      "at": "2026-09-17T23:13:48.536Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "xhigh"
+      }
+    },
+    {
+      "at": "2026-09-17T23:16:27.095Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    {
+      "at": "2026-09-17T23:18:24.080Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    {
+      "at": "2026-09-17T23:20:47.632Z",
+      "origin": "https://api.openai.com",
+      "path": "/v1/responses",
+      "model": "gpt-5.4-mini",
+      "reasoning": {
+        "effort": "low"
+      }
+    }
+  ],
+  "providerRequestCount": 7,
+  "notes": [
+    "The two final provider requests are adjacent standalone Agent and Team controls at reasoning_effort=low.",
+    "Inspection and Save added no provider requests; only ordinary Send did.",
+    "Synthetic fixture intentionally contains no tasks or attachments; durable owner suites cover task-bearing and attachment-object retention."
+  ]
+}

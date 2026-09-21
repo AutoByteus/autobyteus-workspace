@@ -1,0 +1,14 @@
+713fbfd534a4ae1937ee148046c4c7ff776c1e5439bee9c1568fd1877c5c652f  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/README.md
+4ded109f41c33e6b33e1b25adf85460a8a1745e0f929822bf46b8b3c583207ae  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/TEST-MANIFEST.md
+d612f1af68c88422d45cad86cf1064cff28e31b43de817d3abb447c8cccc627d  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-orgs/aorg-direct-agents-org/org-config.json
+79107d076e24e9248f0ad2ebbb7414e5335da5041eeb79de447316e7ef2088ae  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-orgs/aorg-direct-agents-org/org.md
+31710da7b6b72870dc7e49e760f7bf0b2478da7a5159a6ff10d6c75dc665daed  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-orgs/aorg-mixed-org/org-config.json
+2a7f2344bc87b4c8f51be970edccae0d8b1e1b89af72e0a6137df8041cb51883  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-orgs/aorg-mixed-org/org.md
+8c03ff062545515a05650905fe103e4b4c0ad075530e61766b5d4aae172780b6  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-teams/aorg-research-squad/team-config.json
+d7f82722121207d39a5034d9b236909fe344dfe5b38174f9202edfd5fde85279  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-teams/aorg-research-squad/team.md
+ea1714c0cb8ff6fa76657de1d3b129f46b8f0cf748fd501124a349463ccca189  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-teams/aorg-support-pair/team-config.json
+f07a73a44412d9129bcf7731d9f1f9cef326e7e462129d4ed1b811ac779b2264  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agent-teams/aorg-support-pair/team.md
+1c6d3fe1fe170530dbd863b7b359be77d08c6309b52e00b1b56a4b627884ff28  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agents/aorg-analyst/agent.md
+d62b35d9d405e3ec35573bce7c488a964a3d16359c9d467e9e4805305a4754f9  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agents/aorg-concierge/agent.md
+164e4fc0408f6ef437cb49796b2e55c2873aa739e770170bd46c7d45e338ecba  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agents/aorg-lead/agent.md
+1e0c82086726f804565fce7f152e1e78d3dfe5b5221202d183b0e2beff122163  tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package/agents/aorg-verifier/agent.md

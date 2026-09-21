@@ -10,6 +10,7 @@ describe('nodeEndpoints', () => {
     expect(endpoints.rest).toBe('http://localhost:29695/rest');
     expect(endpoints.agentWs).toBe('ws://localhost:29695/ws/agent');
     expect(endpoints.teamWs).toBe('ws://localhost:29695/ws/agent-team');
+    expect(endpoints.orgWs).toBe('ws://localhost:29695/ws/agent-org');
     expect(endpoints.terminalWs).toBe('ws://localhost:29695/ws/terminal');
     expect(endpoints.fileExplorerWs).toBe('ws://localhost:29695/ws/file-explorer');
     expect(endpoints.health).toBe('http://localhost:29695/rest/health');
@@ -22,6 +23,7 @@ describe('nodeEndpoints', () => {
     expect(endpoints.graphqlWs).toBe('wss://node.example.com/graphql');
     expect(endpoints.agentWs).toBe('wss://node.example.com/ws/agent');
     expect(endpoints.teamWs).toBe('wss://node.example.com/ws/agent-team');
+    expect(endpoints.orgWs).toBe('wss://node.example.com/ws/agent-org');
   });
 
   it('normalizes trailing slash and known api suffixes', () => {

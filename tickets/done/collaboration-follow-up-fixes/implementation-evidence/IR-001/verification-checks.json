@@ -1,0 +1,59 @@
+[
+  {
+    "name": "verification-web",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "test:nuxt",
+      "stores/__tests__/workspaceSelectionComposition.spec.ts",
+      "stores/__tests__/agentSelectionStore.spec.ts",
+      "stores/__tests__/runHistorySelectionActions.spec.ts",
+      "stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts",
+      "services/workspace/__tests__/workspaceNavigationService.spec.ts",
+      "services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts",
+      "services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+      "services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts",
+      "services/runSubmission/__tests__/localUserSubmission.spec.ts",
+      "components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+      "components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts"
+    ],
+    "started": "2026-09-13T11:10:13.540011+00:00",
+    "finished": "2026-09-13T11:10:54.494491+00:00",
+    "exit": 0
+  },
+  {
+    "name": "verification-web-typecheck",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "--package=typescript@5.9.3",
+      "--package=vue-tsc@3.1.8",
+      "dlx",
+      "vue-tsc",
+      "--noEmit"
+    ],
+    "started": "2026-09-13T11:10:54.495607+00:00",
+    "finished": "2026-09-13T11:11:34.491514+00:00",
+    "exit": 2
+  },
+  {
+    "name": "verification-whitespace",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "started": "2026-09-13T11:11:34.492094+00:00",
+    "finished": "2026-09-13T11:11:34.562523+00:00",
+    "exit": 0
+  }
+]

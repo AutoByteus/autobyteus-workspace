@@ -3,6 +3,7 @@ import type { AgentInputUserMessage } from '../message/agent-input-user-message.
 import type { AgentContext } from '../context/agent-context.js';
 import type { UserMessageReceivedEvent } from '../events/agent-events.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
+import { partitionRawTraceAttachments } from '../../memory/models/raw-trace-attachments.js';
 import { SenderType } from '../sender-type.js';
 
 export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcessor {
@@ -13,7 +14,7 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
   async process(
     message: AgentInputUserMessage,
     context: AgentContext,
-    _triggeringEvent: UserMessageReceivedEvent
+    triggeringEvent: UserMessageReceivedEvent
   ): Promise<AgentInputUserMessage> {
     const memoryManager = context.state.memoryManager;
     if (!memoryManager) {
@@ -37,7 +38,10 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     }
 
     const llmUserMessage = buildLLMUserMessage(message);
-    memoryManager.ingestUserMessage(llmUserMessage, turnId, 'LLMUserMessageReadyEvent');
+    const original = triggeringEvent.agentInputUserMessage;
+    const fileAttachments = original.recordingFileAttachments
+      ?? partitionRawTraceAttachments(original.contextFiles ?? []).fileAttachments;
+    memoryManager.ingestUserMessage(llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments);
     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
     return message;
   }

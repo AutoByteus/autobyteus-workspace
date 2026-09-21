@@ -1,0 +1,92 @@
+{
+  "at": "2026-09-06T13:33:42.187Z",
+  "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+  "tree": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-06T13:33:41.214Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/lead",
+        "to": "/verifier",
+        "rules": [
+          "When the lead response needs an exact verification marker."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "aorg-direct-agents-org",
+      "orgDefinitionName": "AORG E2E Direct Agents Org",
+      "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+      },
+      "members": [
+        {
+          "address": "/lead",
+          "agentDefinitionId": "aorg-lead",
+          "role": null,
+          "description": null,
+          "agentRunId": "aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+          "platformAgentRunId": "01a076ec-bbed-7dd2-9fac-05f5fd08f94a",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+          }
+        },
+        {
+          "address": "/verifier",
+          "agentDefinitionId": "aorg-verifier",
+          "role": null,
+          "description": null,
+          "agentRunId": "aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+          "platformAgentRunId": "01a076ec-bc4d-74b2-ae0e-cd8e8aaf4c37",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+          }
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "view": {
+    "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30&mode=active",
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Direct Agents Org\n(1)\nNew - AORG E2E Direct Agents Org\nnow\nL\nlead\nV\nverifier\nAORG E2E Mixed Org\n(2)\nCall delegate_task exactly once with recipient_address `/support-team` and description \"As the au...\n9m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nsupport team\nD\ndispatcher\nS\nspecialist\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the ne...\n35m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nTask: support team\ndispatcher\nspecialist\nsupport team\nD\ndispatcher\nS\nspecialist\nTask: research team\nlead\nanalyst\nverifier\nTask: research team\nlead\nanalyst\nverifier\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nChoose an Agent or Team\n\nSelect a member from the active Agent Org in the sidebar. Teams focus their coordinator first.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer",
+    "alerts": [],
+    "overflow": false
+  },
+  "errors": [],
+  "responses": [],
+  "assertions": {
+    "exactDefinition": true,
+    "twoDirect": true,
+    "auto": true,
+    "activeUnfocused": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  }
+}

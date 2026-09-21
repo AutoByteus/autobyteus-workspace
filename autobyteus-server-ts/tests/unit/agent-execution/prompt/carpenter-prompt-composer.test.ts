@@ -5,7 +5,7 @@ import {
   composeSharedCarpenterPrompt,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
-import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>[0]> = {}) =>
   new AgentDefinition({
@@ -16,7 +16,7 @@ const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>
   });
 
 const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare results.") =>
-  testMemberTeamContext({
+  testMemberExecutionContext({
     teamRunId: "team-run",
     rootTeamRunId: "team-run",
     teamDefinitionId: "team-def",
@@ -32,7 +32,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition({ role: "Ignored role" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
-      memberTeamContext: null,
+      memberExecutionContext: null,
     });
 
     expect(prompt.indexOf("## Agent Identity")).toBeLessThan(prompt.indexOf("## Working Environment"));
@@ -73,7 +73,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
-      memberTeamContext: teamContext(),
+      memberExecutionContext: teamContext(),
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
@@ -102,7 +102,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition({ description: " ", instructions: "\n" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
-      memberTeamContext: teamContext("  "),
+      memberExecutionContext: teamContext("  "),
     });
     expect(prompt).not.toContain("- Description:");
     expect(prompt).not.toContain("### Responsibilities and Boundaries");
@@ -132,7 +132,7 @@ describe("composeSharedCarpenterPrompt", () => {
   it("renders shared identity and collaboration without native workspace or file-operation guidance", () => {
     const prompt = composeSharedCarpenterPrompt({
       agentDefinition: definition(),
-      memberTeamContext: teamContext(),
+      memberExecutionContext: teamContext(),
     });
 
     expect(prompt).toContain("## Agent Identity");

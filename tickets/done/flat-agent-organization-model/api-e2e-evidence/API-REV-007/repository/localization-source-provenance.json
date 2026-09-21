@@ -1,0 +1,22 @@
+{
+  "artifact": "5bfc54c11ef82e4fec217c84dc66887965cf98ac",
+  "source": "5300fd7ac3c6061dfd6e88feb69edd9931ef326e",
+  "producers": {
+    "components/agentTeams/AgentTeamDefinitionForm.vue": {
+      "uses_shared_key": true,
+      "raw_team_agents_literal": false
+    },
+    "components/agentTeams/AgentTeamDetail.vue": {
+      "uses_shared_key": true,
+      "raw_team_agents_literal": false
+    }
+  },
+  "catalog": {
+    "en": "Team Agents",
+    "zh-CN": "团队智能体"
+  },
+  "audit_scope": {
+    "M014_has_team_form": true,
+    "group_property_inspected": true
+  }
+}

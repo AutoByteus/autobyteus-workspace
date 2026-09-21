@@ -1,0 +1,3 @@
+The following is a diff from the previous accessibility tree for Window: "127.0.0.1:51083/workspace?roo…fig-lab&mode=configuration 🔊" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~					142 Titel (selected, settable, boolean) Value: on, Description: 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&mode=configuration – Arbeitsspeichernutzung – 342 MB
+The focused UI element is 20 HTML-Inhalte 127.0.0.1:51083/workspace?rootSubjectKind=agent_org&definitionId=config-lab&mode=configuration

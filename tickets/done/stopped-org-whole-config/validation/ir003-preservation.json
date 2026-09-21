@@ -1,0 +1,77 @@
+{
+  "ticket": "ORG-STOPPED-WHOLE-CONFIG-20260917-001",
+  "comparison": "IR-002 to IR-003",
+  "preserved_entry_count": 45,
+  "changed_entry_count": 2,
+  "changed_entries": [
+    {
+      "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "ir002": {
+        "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+        "state": "modified",
+        "sha256": "870dac2b37d416951bd627bfaa08a135850490dcee99736d6c6802e703155ee9"
+      },
+      "ir003": {
+        "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+        "state": "modified",
+        "sha256": "42ecbcd62707d0eb4baa01a279c511dea4dc34734c9aa780ab8b435b1b0d686c"
+      }
+    },
+    {
+      "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts",
+      "ir002": null,
+      "ir003": {
+        "path": "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts",
+        "state": "added",
+        "sha256": "fb670d55bfd37937c4c990f6e8228d1db9004162664004d5075b59947c61409a"
+      }
+    }
+  ],
+  "preserved_paths": [
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts",
+    "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-model-config.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-model-config-mutator.ts",
+    "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+    "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+    "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-model-config.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-model-config.test.ts",
+    "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-member-model-config.test.ts",
+    "autobyteus-server-ts/tests/unit/api/graphql/types/agent-org-run-model-config.test.ts",
+    "autobyteus-web/components/workspace/config/AgentOrgDirectAgentOverrideRow.vue",
+    "autobyteus-web/components/workspace/config/AgentOrgRunConfigForm.vue",
+    "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+    "autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts",
+    "autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue",
+    "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+    "autobyteus-web/components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts",
+    "autobyteus-web/components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts",
+    "autobyteus-web/composables/useAgentOrgMemberModelConfig.ts",
+    "autobyteus-web/docs/agent_execution_architecture.md",
+    "autobyteus-web/docs/agent_orgs.md",
+    "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+    "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+    "autobyteus-web/localization/messages/en/workspace.ts",
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+    "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgRunModelConfigAdoption.spec.ts",
+    "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+    "autobyteus-web/services/runConfigEditing/__tests__/existingAgentOrgModelConfigDraft.spec.ts",
+    "autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts",
+    "autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts",
+    "autobyteus-web/services/runConfigEditing/agentOrgRunModelConfigClient.ts",
+    "autobyteus-web/services/runConfigEditing/existingAgentOrgModelConfigDraft.ts",
+    "autobyteus-web/services/runConfigEditing/existingAgentOrgRunFormModel.ts",
+    "autobyteus-web/services/runConfigEditing/existingHierarchicalModelConfigDraft.ts",
+    "autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts",
+    "autobyteus-web/services/runConfigEditing/existingRunModelOptionsClient.ts",
+    "autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts",
+    "autobyteus-web/stores/__tests__/existingRunModelConfigStore.spec.ts",
+    "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "autobyteus-web/stores/existingRunModelConfigResultActions.ts",
+    "autobyteus-web/stores/existingRunModelConfigStore.ts",
+    "autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts"
+  ]
+}

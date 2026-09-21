@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import type { TeamRunExecutionTreeFileV1 } from "./team-run-execution-tree-v1-types.js";
 import {
-  getTeamRunFileCommitWriter,
-  type TeamRunFileCommitWriter,
-  type TeamRunFileWriteResult,
-} from "../../../run-history/store/team-run-file-commit-writer.js";
+  getAtomicRunPackageFileCommitWriter,
+  type AtomicRunPackageFileCommitWriter,
+  type RunPackageFileWriteResult,
+} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
 import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
 
@@ -14,7 +14,7 @@ const isMissingFile = (error: unknown): boolean =>
 
 export class TeamRunExecutionTreeV1Store {
   constructor(
-    private readonly writer: TeamRunFileCommitWriter = getTeamRunFileCommitWriter(),
+    private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
   ) {}
 
   async read(
@@ -35,7 +35,7 @@ export class TeamRunExecutionTreeV1Store {
   async write(
     teamMemoryDir: string,
     tree: TeamRunExecutionTreeFileV1,
-  ): Promise<TeamRunFileWriteResult> {
+  ): Promise<RunPackageFileWriteResult> {
     const normalized = validateTeamRunExecutionTreePayload(
       tree,
       tree.rootTeam.teamRunId,

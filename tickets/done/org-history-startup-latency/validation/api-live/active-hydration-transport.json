@@ -1,0 +1,674 @@
+[
+  {
+    "at": 1789624900133,
+    "id": 427,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624900134,
+    "id": 428,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624900135,
+    "id": 427,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2840,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":null,\"status\":\"idle\",\"isActive\":true,\"shouldConnectStream\":true,\"statusSource\":\"ACTIVE_RUNTIME\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":null,\"isActive\":true,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"idle\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {
+      "hold": [
+        "GetTeamRunResumeConfig",
+        "GetTeamMemberRunProjection"
+      ]
+    }
+  },
+  {
+    "at": 1789624900135,
+    "id": 427,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624900135,
+    "id": 428,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2611,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":true,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {
+      "hold": [
+        "GetTeamRunResumeConfig",
+        "GetTeamMemberRunProjection"
+      ]
+    }
+  },
+  {
+    "at": 1789624900136,
+    "id": 428,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624900680,
+    "id": 439,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetTeamRunResumeConfig",
+    "variables": {
+      "teamRunId": "latency_team_4f1a16bafe21480693e19f653b5f5e7e"
+    }
+  },
+  {
+    "at": 1789624900684,
+    "id": 439,
+    "type": "backend_ready",
+    "op": "GetTeamRunResumeConfig",
+    "status": 200,
+    "bytes": 1490,
+    "control": {
+      "hold": [
+        "GetTeamRunResumeConfig",
+        "GetTeamMemberRunProjection"
+      ]
+    }
+  },
+  {
+    "at": 1789624900981,
+    "id": 441,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624900988,
+    "id": 441,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2611,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":true,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {
+      "hold": [
+        "GetTeamRunResumeConfig",
+        "GetTeamMemberRunProjection"
+      ]
+    }
+  },
+  {
+    "at": 1789624900988,
+    "id": 441,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624901218,
+    "id": 445,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624901220,
+    "id": 445,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2611,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":true,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {
+      "hold": [
+        "GetTeamRunResumeConfig",
+        "GetTeamMemberRunProjection"
+      ]
+    }
+  },
+  {
+    "at": 1789624901221,
+    "id": 445,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624907109,
+    "id": 439,
+    "type": "released",
+    "op": "GetTeamRunResumeConfig",
+    "status": 200
+  },
+  {
+    "at": 1789624907145,
+    "id": 451,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetTeamMemberRunProjection",
+    "variables": {
+      "teamRunId": "latency_team_4f1a16bafe21480693e19f653b5f5e7e",
+      "agentRunId": "latency_agent_70d4b85db2204d6bb81a9c974f7ef61d"
+    }
+  },
+  {
+    "at": 1789624907147,
+    "id": 451,
+    "type": "backend_ready",
+    "op": "GetTeamMemberRunProjection",
+    "status": 200,
+    "bytes": 9080,
+    "control": {}
+  },
+  {
+    "at": 1789624907147,
+    "id": 451,
+    "type": "released",
+    "op": "GetTeamMemberRunProjection",
+    "status": 200
+  },
+  {
+    "at": 1789624907231,
+    "id": 452,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetTeamMemberRunProjection",
+    "variables": {
+      "teamRunId": "latency_team_4f1a16bafe21480693e19f653b5f5e7e",
+      "agentRunId": "latency_agent_70d4b85db2204d6bb81a9c974f7ef61d"
+    }
+  },
+  {
+    "at": 1789624907234,
+    "id": 452,
+    "type": "backend_ready",
+    "op": "GetTeamMemberRunProjection",
+    "status": 200,
+    "bytes": 9080,
+    "control": {}
+  },
+  {
+    "at": 1789624907234,
+    "id": 452,
+    "type": "released",
+    "op": "GetTeamMemberRunProjection",
+    "status": 200
+  },
+  {
+    "at": 1789624907243,
+    "id": 453,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "GetTeamMemberRunProjection",
+    "variables": {
+      "teamRunId": "latency_team_4f1a16bafe21480693e19f653b5f5e7e",
+      "agentRunId": "latency_agent_70d4b85db2204d6bb81a9c974f7ef61d"
+    }
+  },
+  {
+    "at": 1789624907245,
+    "id": 453,
+    "type": "backend_ready",
+    "op": "GetTeamMemberRunProjection",
+    "status": 200,
+    "bytes": 9080,
+    "control": {}
+  },
+  {
+    "at": 1789624907245,
+    "id": 453,
+    "type": "released",
+    "op": "GetTeamMemberRunProjection",
+    "status": 200
+  },
+  {
+    "at": 1789624912225,
+    "id": 459,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624912225,
+    "id": 460,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624912227,
+    "id": 459,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2840,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":null,\"status\":\"idle\",\"isActive\":true,\"shouldConnectStream\":true,\"statusSource\":\"ACTIVE_RUNTIME\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":null,\"isActive\":true,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"idle\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624912227,
+    "id": 459,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624912228,
+    "id": 460,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2611,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":true,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624912228,
+    "id": 460,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624913995,
+    "id": 463,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624913996,
+    "id": 464,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624913996,
+    "id": 463,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2866,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":null,\"status\":\"idle\",\"isActive\":true,\"shouldConnectStream\":true,\"statusSource\":\"ACTIVE_RUNTIME\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624913996,
+    "id": 463,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624913997,
+    "id": 464,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2611,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":true,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624913997,
+    "id": 464,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624917234,
+    "id": 468,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624917234,
+    "id": 469,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624917235,
+    "id": 468,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2866,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":null,\"status\":\"idle\",\"isActive\":true,\"shouldConnectStream\":true,\"statusSource\":\"ACTIVE_RUNTIME\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624917236,
+    "id": 468,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624917236,
+    "id": 469,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2611,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":true,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624917236,
+    "id": 469,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624917316,
+    "id": 473,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624917318,
+    "id": 473,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624917318,
+    "id": 473,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624917380,
+    "id": 477,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624917382,
+    "id": 477,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624917382,
+    "id": 477,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624922226,
+    "id": 482,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624922229,
+    "id": 483,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624922235,
+    "id": 482,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2866,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":null,\"status\":\"idle\",\"isActive\":true,\"shouldConnectStream\":true,\"statusSource\":\"ACTIVE_RUNTIME\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624922235,
+    "id": 482,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624922237,
+    "id": 483,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624922237,
+    "id": 483,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624926061,
+    "id": 487,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624926061,
+    "id": 488,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624926062,
+    "id": 487,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2898,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:02:05.986Z\",\"status\":\"offline\",\"isActive\":false,\"shouldConnectStream\":false,\"statusSource\":\"TERMINATED_METADATA\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624926062,
+    "id": 487,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624926063,
+    "id": 488,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624926063,
+    "id": 488,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624927222,
+    "id": 490,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624927225,
+    "id": 491,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624927226,
+    "id": 490,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2898,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:02:05.986Z\",\"status\":\"offline\",\"isActive\":false,\"shouldConnectStream\":false,\"statusSource\":\"TERMINATED_METADATA\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624927226,
+    "id": 490,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624927227,
+    "id": 491,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624927228,
+    "id": 491,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624932241,
+    "id": 494,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListWorkspaceRunHistory",
+    "variables": {
+      "limitPerAgent": 6
+    }
+  },
+  {
+    "at": 1789624932244,
+    "id": 494,
+    "type": "backend_ready",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200,
+    "bytes": 2898,
+    "body": "{\"data\":{\"listWorkspaceRunHistory\":[{\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"workspaceName\":\"temp_workspace\",\"agentDefinitions\":[{\"agentDefinitionId\":\"latency-agent\",\"agentName\":\"Latency Agent\",\"runs\":[{\"runId\":\"latency_agent_e4aaf11d1af34fd19cafce5af4d649c2\",\"summary\":\"Reply exactly LATENCY-AGENT-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:55:42.290Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:02:05.986Z\",\"status\":\"offline\",\"isActive\":false,\"shouldConnectStream\":false,\"statusSource\":\"TERMINATED_METADATA\",\"__typename\":\"RunHistoryItemObject\"}],\"__typename\":\"RunHistoryAgentGroupObject\"}],\"teamDefinitions\":[{\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"runs\":[{\"teamRunId\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"teamDefinitionId\":\"latency-team\",\"teamDefinitionName\":\"Latency Team\",\"coordinatorAddress\":\"/lead\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"summary\":\"Reply exactly LATENCY-TEAM-917. Do not call tools.\",\"createdAt\":\"2026-09-17T05:56:01.073Z\",\"archivedAt\":null,\"terminatedAt\":\"2026-09-17T06:01:53.928Z\",\"isActive\":false,\"rootTeam\":{\"address\":\"/\",\"team_definition_id\":\"latency-team\",\"team_definition_name\":\"Latency Team\",\"team_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\",\"coordinator_address\":\"/lead\",\"default_launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/lead\",\"agent_definition_id\":\"latency-agent\",\"role\":null,\"description\":null,\"agent_run_id\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"platform_agent_run_id\":null,\"launch_configuration\":{\"runtime_kind\":\"autobyteus\",\"llm_model_identifier\":\"gpt-5.4-mini\",\"llm_config\":null,\"auto_execute_tools\":false,\"skill_access_mode\":\"PRELOADED_ONLY\",\"workspace_root_path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"task_executions\":[]},\"members\":[{\"memberAddress\":\"/lead\",\"displayName\":\"lead\",\"agentRunId\":\"latency_agent_70d4b85db2204d6bb81a9c974f7ef61d\",\"status\":\"offline\",\"runtimeKind\":\"autobyteus\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\",\"__typename\":\"WorkspaceHistoryTeamRunMemberObject\"}],\"__typename\":\"WorkspaceHistoryTeamRunItemObject\"}],\"__typename\":\"WorkspaceHistoryTeamDefinitionObject\"}],\"__typename\":\"WorkspaceRunHistoryGroupObject\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624932244,
+    "id": 494,
+    "type": "released",
+    "op": "ListWorkspaceRunHistory",
+    "status": 200
+  },
+  {
+    "at": 1789624932245,
+    "id": 495,
+    "type": "request",
+    "method": "POST",
+    "url": "/graphql",
+    "op": "ListCollaborationRootHistory",
+    "variables": {}
+  },
+  {
+    "at": 1789624932247,
+    "id": 495,
+    "type": "backend_ready",
+    "op": "ListCollaborationRootHistory",
+    "status": 200,
+    "bytes": 2612,
+    "body": "{\"data\":{\"listCollaborationRootHistory\":[{\"__typename\":\"AgentOrgRootHistoryObject\",\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"created_at\":\"2026-09-17T05:56:54.254Z\",\"archived_at\":null,\"is_active\":false,\"summary\":\"Reply exactly LATENCY-ORG-917. Do not call tools.\",\"org\":{\"schemaVersion\":1,\"subjectKind\":\"agent_org\",\"createdAt\":\"2026-09-17T05:56:54.254Z\",\"archivedAt\":null,\"applicationBinding\":null,\"handoffs\":[],\"rootOrg\":{\"address\":\"/\",\"orgDefinitionId\":\"latency-org\",\"orgDefinitionName\":\"Latency Org\",\"orgRunId\":\"latency_org_95ea2fedc93c43e58595e556a66643bf\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/guide\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_6fe64ab4f7524226b550158b338ec219\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}},{\"address\":\"/squad\",\"teamDefinitionId\":\"latency-team\",\"role\":null,\"description\":null,\"teamRunId\":\"latency_team_d68c773c64644318a70527b24c7ef33c\",\"coordinatorAddress\":\"/squad/lead\",\"defaultLaunchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"},\"members\":[{\"address\":\"/squad/lead\",\"agentDefinitionId\":\"latency-agent\",\"role\":null,\"description\":null,\"agentRunId\":\"latency_agent_b0c22d1b3b5f4befa32459d07dc52d83\",\"platformAgentRunId\":null,\"launchConfiguration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"gpt-5.4-mini\",\"llmConfig\":null,\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/org-history-startup-latency/.local/api-history-latency/data/temp_workspace\"}}],\"taskExecutions\":[]}],\"taskExecutions\":[]}}},{\"__typename\":\"AgentTeamRootHistoryObject\",\"root_subject_kind\":\"agent_team\",\"root_run_id\":\"latency_team_4f1a16bafe21480693e19f653b5f5e7e\"}]}}",
+    "control": {}
+  },
+  {
+    "at": 1789624932247,
+    "id": 495,
+    "type": "released",
+    "op": "ListCollaborationRootHistory",
+    "status": 200
+  }
+]

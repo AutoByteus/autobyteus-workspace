@@ -1,0 +1,22 @@
+[
+  {
+    "orgRunId": "aorg_e2e_direct_agents_org_2cb705ae6bb14a2c8281a0964260ea3a",
+    "orgDefinitionId": "aorg-direct-agents-org",
+    "orgDefinitionName": "AORG E2E Direct Agents Org",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data/temp_workspace",
+    "summary": "",
+    "createdAt": "2026-09-01T16:55:32.644Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-09-01T16:56:24.809Z"
+  },
+  {
+    "orgRunId": "aorg_e2e_mixed_org_12d450d507c447fda317be92ff257bcd",
+    "orgDefinitionId": "aorg-mixed-org",
+    "orgDefinitionName": "AORG E2E Mixed Org",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-001/resumed-crr008/live/server-data/temp_workspace",
+    "summary": "",
+    "createdAt": "2026-09-01T16:46:28.244Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

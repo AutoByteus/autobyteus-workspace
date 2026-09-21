@@ -1,0 +1,39 @@
+{
+  "pid": 96133,
+  "at": "2026-09-15T03:40:26.616Z",
+  "active": [
+    {
+      "runId": "api-migrated-direct",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "api-migrated-direct"
+      }
+    },
+    {
+      "runId": "api-migrated-worker",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "api-migrated-worker"
+      }
+    }
+  ],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "api-migrated-direct",
+      "startedAt": "2026-09-15T03:39:19.320Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "api-migrated-direct"
+    },
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "api-migrated-worker",
+      "startedAt": "2026-09-15T03:40:14.212Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "api-migrated-worker"
+    }
+  ]
+}

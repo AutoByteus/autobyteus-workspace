@@ -1,0 +1,268 @@
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-attachment.log:24: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-attachment.log:46: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-runtime.log:131: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-runtime.log:237: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-selection.log:47: trailing whitespace.
++- Expected: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-selection.log:50: trailing whitespace.
+++ Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-build.log:195: trailing whitespace.
++ WARN 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web.log:430: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:37: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:52: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:307: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:315: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:320: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:325: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:418: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:439: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:444: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:447: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:452: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:455: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:461: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:472: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:493: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:502: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:514: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:537: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:548: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:556: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:569: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:572: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:580: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:597: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:615: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:631: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:642: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:648: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:669: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:696: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:712: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:743: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:758: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:777: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:809: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:839: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:845: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:857: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:876: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:929: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:949: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:955: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1001: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1007: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1029: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1033: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1049: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1115: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1162: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1255: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1264: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1270: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1274: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1283: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1303: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1322: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1356: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1379: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1394: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1423: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1428: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1434: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1438: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1448: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1451: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1455: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1678: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1697: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1717: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1725: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1736: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1741: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1776: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1794: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1814: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1819: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1831: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1841: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1858: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1884: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1886: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1892: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:1969: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2042: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2069: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2078: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2088: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2113: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2122: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2147: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff:2161: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-server.log:120: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-build.log:195: trailing whitespace.
++ WARN 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web.log:414: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/prerequisites.log:16: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-final-chip.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-pending-team.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-publication.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-retained.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-direct.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-mounted.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-final-chip.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-pending-team.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-publication.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-retained.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-direct.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-mounted.html:7115: trailing whitespace.
++  bottom: -30px; 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/server.log:10: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/server.log:25: trailing whitespace.
++ 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/runtime-final-focused.log:95: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-first.log:104: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-third.log:149: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-cohort-second.log:120: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-cohort.log:148: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-first.log:111: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-focused.log:99: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-second.log:173: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-web.log:431: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-cohort.log:414: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-focused-first.log:58: new blank line at EOF.
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-first.log:127: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-first.log:144: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-first.log:161: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-first.log:224: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:83: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:105: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:166: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:198: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:216: trailing whitespace.
++    2246| 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:220: trailing whitespace.
++    2249| 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:227: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:248: trailing whitespace.
++    114| 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:259: trailing whitespace.
++Received: 
+tickets/in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log:278: trailing whitespace.
++    130| 

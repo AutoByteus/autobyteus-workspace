@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_ba9fbaa0b98c4f35abd82c3f98dd8a38",
+  "records": [
+    {
+      "taskId": "task_e508153307224fce92b3ee00ab9710b6",
+      "delegatorAgentRunId": "aorg_e2e_lead_cd6c2471f8fd4cfdb40825a221a80b3c",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_bd659b2ddf114805b2323f01d0b0c51c"
+      },
+      "description": "Produce AORG-CONFOUND-ANALYST-DRAFT-001 on the first line and one short validation sentence. Then formally call submit_task_result with that output; do not stop at ordinary assistant text. If revision feedback arrives, change the first line to AORG-CONFOUND-ANALYST-REVISED-001 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [
+        {
+          "submissionId": "submission_6e314cc19a4a4f2a95f3a2384b294fa5",
+          "message": "AORG-CONFOUND-ANALYST-DRAFT-001\nValidation confirms the requested draft marker and concise format.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:43:32.223Z"
+        },
+        {
+          "reviewId": "review_cdf0ca7a70ac4c7e811f21d37714a937",
+          "reviewedSubmissionId": "submission_6e314cc19a4a4f2a95f3a2384b294fa5",
+          "decision": "request_revision",
+          "comment": "Change the first line to AORG-CONFOUND-ANALYST-REVISED-001 and formally resubmit the same task.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:44:40.616Z"
+        }
+      ],
+      "createdAt": "2026-09-01T21:41:22.393Z"
+    },
+    {
+      "taskId": "task_8d274669092640df8253687c8fc96e6b",
+      "delegatorAgentRunId": "aorg_e2e_lead_cd6c2471f8fd4cfdb40825a221a80b3c",
+      "recipientAddress": "/verifier",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_verifier_98ade7b2cdaa4b9aa79ec4b1a001f377"
+      },
+      "description": "Return AORG-CONFOUND-VERIFIER-ACCEPT-001 on the first line and one short validation sentence, then formally call submit_task_result. After submission arrives, formally call review_task_result with decision accept. Do not request revision. Do not remove or reinterpret any sentence.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_2a38fcb59cc24641906e75baccb3fa4c",
+          "message": "AORG-CONFOUND-VERIFIER-ACCEPT-001\nThe supplied condition is verified exactly as instructed.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:46:39.249Z"
+        },
+        {
+          "reviewId": "review_975f1fa8e5b1421086f5ac4227a1d370",
+          "reviewedSubmissionId": "submission_2a38fcb59cc24641906e75baccb3fa4c",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:46:58.481Z"
+        }
+      ],
+      "createdAt": "2026-09-01T21:46:18.640Z"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "tabId": "11",
+  "browserSurface": "AutoByteus open_tab production renderer",
+  "package": {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package",
+    "operation": "Settings > Agent Packages > Remove environment-listed entry > Import Package",
+    "observed": "Agent package imported; Shared Agents 4; Teams 2"
+  },
+  "locale": {
+    "supportedPath": "Settings > Language",
+    "zhCN": {"preference": "zh-CN", "resolved": "Simplified Chinese"},
+    "en": {"preference": "en", "resolved": "English"}
+  },
+  "team": {
+    "id": "apirev8-team",
+    "name": "APIREV8 本地化 Team β",
+    "addresses": ["/aorg_e2e_lead", "/aorg_e2e_analyst"],
+    "when": "When 需求包含 β, keep 用户 prose exact.",
+    "zhCNOptgroups": ["团队智能体", "团队智能体"],
+    "enOptgroups": ["Team Agents", "Team Agents"]
+  },
+  "org": {
+    "id": "apirev8",
+    "name": "APIREV8 组织 Ω",
+    "members": ["/aorg_e2e_concierge", "/apirev8_team"],
+    "when": "When escalation Ω requires 团队 intake, preserve this exact prose.",
+    "zhCNOptgroups": ["直接智能体", "团队 · APIREV8 本地化 Team β", "直接智能体", "团队", "团队 · APIREV8 本地化 Team β"],
+    "enOptgroups": ["Direct Agents", "Team · APIREV8 本地化 Team β", "Direct Agents", "Teams", "Team · APIREV8 本地化 Team β"]
+  },
+  "responsive": {
+    "desktop": {"viewport": "1510x801", "bodyHorizontalOverflow": false, "visibleUnlabeledButtons": 0},
+    "narrow": {"viewport": "390x844", "bodyHorizontalOverflow": false, "visibleUnlabeledButtons": 0}
+  },
+  "graphql": {
+    "team": "live/api/LIVE-001-team-definition-response.json",
+    "org": "live/api/LIVE-001-org-definition-response.json",
+    "exactAuthoredDataPreserved": true
+  }
+}

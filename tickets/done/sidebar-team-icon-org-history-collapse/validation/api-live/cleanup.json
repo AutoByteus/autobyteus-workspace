@@ -1,0 +1,35 @@
+[
+  {
+    "mode": "frontend",
+    "pid": 54918,
+    "cmd": "node /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web/node_modules/nuxt/bin/nuxt.mjs dev /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web --host 127.0.0.1 --port 50583",
+    "sent": "SIGTERM"
+  },
+  {
+    "mode": "proxy",
+    "pid": 54855,
+    "cmd": "node /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/tickets/in-progress/sidebar-team-icon-org-history-collapse/validation/api-live/proxy.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/.local/api-sidebar",
+    "sent": "SIGTERM"
+  },
+  {
+    "mode": "backend",
+    "pid": 65526,
+    "cmd": "node /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-server-ts/dist/app.js --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/.local/api-sidebar/data --host 127.0.0.1 --port 50581",
+    "sent": "SIGTERM"
+  },
+  {
+    "mode": "owned-external-llm",
+    "pid": 65217,
+    "cmd": "node tickets/in-progress/sidebar-team-icon-org-history-collapse/validation/api-live/owned-ollama.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/.local/api-sidebar",
+    "sent": "SIGTERM"
+  },
+  {
+    "removed_owned_generated": "autobyteus-application-backend-sdk/dist"
+  },
+  {
+    "removed_owned_generated": "autobyteus-application-sdk-contracts/dist"
+  },
+  {
+    "removed_owned_generated": ".nuxt"
+  }
+]

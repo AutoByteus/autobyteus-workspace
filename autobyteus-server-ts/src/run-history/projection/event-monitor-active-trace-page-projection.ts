@@ -1,3 +1,5 @@
+import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
+import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { Buffer } from "node:buffer";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import type { EventMonitorReplayEvent, HistoricalReplayToolEvent } from "./historical-replay-event-types.js";
@@ -73,15 +75,20 @@ const appendMediaVisuals = (
   }
 };
 
-const userAttachments = (eventId: string, media: RawTraceMedia | null): EventMonitorActiveTraceAttachment[] => {
+const userAttachments = (eventId: string, media: RawTraceMedia | null, files: readonly ContextFileReference[] = []): EventMonitorActiveTraceAttachment[] => {
   const attachments: EventMonitorActiveTraceAttachment[] = [];
   for (const [mediaType, urls] of normalizedMedia(media)) {
     urls.forEach((locator, ordinal) => attachments.push({
       attachmentId: `${visualId(eventId, "user", 0)}:attachment:${mediaType}:${ordinal}`,
-      mediaType,
+      fileType: mediaType as ContextFileType,
+      fileName: null,
       locator,
     }));
   }
+  files.forEach((file, ordinal) => attachments.push({
+    attachmentId: `${visualId(eventId, "user", 0)}:attachment:file:${ordinal}`,
+    fileType: file.fileType, fileName: file.fileName, locator: file.uri,
+  }));
   return attachments;
 };
 
@@ -93,7 +100,7 @@ export const buildEventMonitorActiveTracePageEvent = (
     if (event.role === "user") {
       visuals.push({
         kind: "user", visualId: visualId(event.eventId, "user", 0), eventId: event.eventId,
-        kindOrdinal: 0, text: event.content ?? "", attachments: userAttachments(event.eventId, event.media),
+        kindOrdinal: 0, text: event.content ?? "", attachments: userAttachments(event.eventId, event.media, event.fileAttachments),
       });
     } else {
       if (event.content) visuals.push({

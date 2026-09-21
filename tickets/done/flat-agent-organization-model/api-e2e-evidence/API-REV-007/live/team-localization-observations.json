@@ -1,0 +1,27 @@
+{
+  "createdId": "apirev7-team",
+  "name": "APIREV7 本地化 Team α",
+  "zhCnGroups": [
+    "团队智能体",
+    "团队智能体"
+  ],
+  "enGroups": [
+    "Team Agents",
+    "Team Agents"
+  ],
+  "from": "/aorg_e2e_lead",
+  "to": "/aorg_e2e_analyst",
+  "when": "When 需求包含 α, keep 用户 prose exact.",
+  "desktop": {
+    "innerWidth": 1510,
+    "scrollWidth": 1510,
+    "unlabeledButtons": 0
+  },
+  "narrow": {
+    "innerWidth": 390,
+    "scrollWidth": 390,
+    "bodyWidth": 390,
+    "unlabeledButtons": 0
+  },
+  "localeRoundTripPreserved": true
+}

@@ -1,0 +1,54 @@
+{
+  "errors": null,
+  "roots": [
+    {
+      "type": "AgentOrgRootHistoryObject",
+      "kind": "agent_org",
+      "id": "aorg_e2e_mixed_org_579564e6effa42eca8a910cb5f18fdea",
+      "active": false,
+      "summary": ""
+    },
+    {
+      "type": "AgentTeamRootHistoryObject",
+      "kind": "agent_team",
+      "id": "aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9",
+      "active": false,
+      "summary": "Return exactly AORG4-TEAM-FIRST-001 on the first line and a five-word acknowledgement on the seco..."
+    }
+  ],
+  "workspaces": [
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace",
+      "name": "temp_workspace",
+      "teams": [
+        {
+          "definition": "aorg-research-squad",
+          "runs": [
+            {
+              "id": "aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9",
+              "active": false,
+              "summary": "Return exactly AORG4-TEAM-FIRST-001 on the first line and a five-word acknowledgement on the seco...",
+              "members": [
+                {
+                  "address": "/lead",
+                  "id": "aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e",
+                  "status": "offline"
+                },
+                {
+                  "address": "/analyst",
+                  "id": "aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c",
+                  "status": "offline"
+                },
+                {
+                  "address": "/verifier",
+                  "id": "aorg_e2e_verifier_f6610214b68640648c7fd674dd8587dd",
+                  "status": "offline"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import type { CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation';
 import type {
   ConfiguredMemberExecutionDto,
   ConfiguredTeamExecutionDto,
@@ -17,7 +18,6 @@ import type {
 } from './teamExecutionViewModels';
 import {
   deriveTaskDelegationPresentation,
-  type TeamExecutionTaskPresentation,
 } from './taskDelegationPresentation';
 
 export const agentRowKey = (agentRunId: string): string => `agent:${agentRunId}`;
@@ -208,7 +208,7 @@ export const projectNavigationRows = (input: {
     agentRunId: string;
     depth: number;
     parentKey: string | null;
-    task?: TeamExecutionTaskPresentation | null;
+    task?: CollaborationTaskHeadingPresentation | null;
     coordinatorAddress?: AgentTeamAddress | null;
   }): void => {
     const label = inputAgent.task ? taskLabel(inputAgent.task.description) : memberAddressBasename(inputAgent.address);
@@ -240,7 +240,7 @@ export const projectNavigationRows = (input: {
     depth: number,
     parentKey: string,
     coordinatorAddress: AgentTeamAddress,
-    owningTask: TeamExecutionTaskPresentation,
+    owningTask: CollaborationTaskHeadingPresentation,
   ): void => {
     for (const member of members) {
       if (member.kind === 'task_team_agent') {

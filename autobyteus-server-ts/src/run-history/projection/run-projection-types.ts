@@ -1,3 +1,4 @@
+import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
@@ -36,6 +37,7 @@ export interface RunProjectionConversationEntry {
   toolResult?: unknown | null;
   toolError?: string | null;
   media?: Record<string, string[]> | null;
+  fileAttachments?: readonly ContextFileReference[];
   ts?: number | null;
 }
 

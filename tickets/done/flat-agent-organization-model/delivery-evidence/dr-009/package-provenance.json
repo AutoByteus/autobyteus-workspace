@@ -1,0 +1,15 @@
+{
+  "at": "2026-09-11T17:47:52.718945+00:00",
+  "version": "1.4.69",
+  "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.69.AppImage",
+  "bytes": 524089483,
+  "sha256": "086dba3c98c8ba2b3ad8acec8955e1e6f6d2a28da8140df3a72cc519adffd262",
+  "source": "4ffcdf733ff597a0d2ae94587eb91ec47f749501",
+  "reviewedArtifact": "6da826f8c246c197a70cceb69e19e33fdbdfdf69",
+  "checkpointIntegratedHead": "0cf14f6f5371804fbadd2f34ac37fde250cbfd55",
+  "base": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+  "requirements": "RER-032",
+  "command": "PATH=/tmp/aorg-dr009-bin:$PATH pnpm -C autobyteus-web build:electron:linux:arm64",
+  "exitCode": 0,
+  "published": false
+}

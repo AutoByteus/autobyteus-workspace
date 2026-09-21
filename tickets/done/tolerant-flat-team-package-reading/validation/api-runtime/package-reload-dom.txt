@@ -1,0 +1,49 @@
+- navigation:
+  - list:
+    - button "Back to workspace":
+      - generic: Back to Workspace
+    - button "API Keys":
+      - generic: API Keys
+    - button "Token Statistics":
+      - generic: Token Statistics
+    - button "Messaging":
+      - generic: Messaging
+    - button "Display":
+      - generic: Display
+    - button "Language":
+      - generic: Language
+    - button "Local Tools":
+      - generic: Local Tools
+    - button "MCP Servers":
+      - generic: MCP Servers
+    - button "Application Packages":
+      - generic: Application Packages
+    - button "Agent Packages":
+      - generic: Agent Packages
+    - button "Server Settings":
+      - generic: Server Settings
+    - button "Extensions":
+      - generic: Extensions
+    - button "Updates":
+      - generic: Updates
+- separator "Resize Settings menu"
+- heading "Agent Packages" [level=2]
+- paragraph: Link a local package path or paste a public GitHub repository URL. GitHub packages are installed into app-managed storage, while local paths remain in place.
+- generic: Agent package reloaded.
+- list:
+  - generic "Built-in Storage"
+  - generic: "Built-in | Shared Agents: 3 | Team-local Agents: 0 | Teams: 5 | Applications: 0"
+  - generic "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001"
+  - generic: Built-in package is platform managed.
+  - generic: Default
+  - generic "autobyteus-agents"
+  - generic: "Local Path | Shared Agents: 8 | Team-local Agents: 54 | Teams: 14 | Applications: 0"
+  - generic "/Users/normy/autobyteus_org/autobyteus-agents"
+  - generic: Local folder — reload after external changes.
+  - generic: Local Path
+  - button "Reload"
+  - button "Remove"
+- generic: Package Path Or GitHub URL
+- textbox "Package Path Or GitHub URL":
+  - /placeholder: /absolute/path/to/agent-package or https://github.com/owner/repo
+- button "Import Package" [disabled]

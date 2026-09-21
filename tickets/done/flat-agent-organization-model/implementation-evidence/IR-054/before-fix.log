@@ -1,0 +1,335 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runHistoryRetainedTeamStatus.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | stores/__tests__/runHistoryRetainedTeamStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryRetainedTeamStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts (5 tests | 5 failed) 54ms
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=false 19ms
+     → expected 'initializing' to be 'offline' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=false 17ms
+     → expected undefined to be 'first' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=true 5ms
+     → expected 'initializing' to be 'offline' // Object.is equality
+   × history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=true 9ms
+     → [
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "code": "invalid_value",
+          "values": [
+            "task_agent"
+          ],
+          "path": [
+            "kind"
+          ],
+          "message": "Invalid input: expected \"task_agent\""
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "agent_run_id"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "platform_agent_run_id"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "team_run_id",
+            "members",
+            "task_executions"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"team_run_id\", \"members\", \"task_executions\""
+        }
+      ],
+      [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "invalid_value",
+                "values": [
+                  "task_team_agent"
+                ],
+                "path": [
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"task_team_agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agent_run_id"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platform_agent_run_id"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "team_run_id",
+                  "members",
+                  "task_executions"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"team_run_id\", \"members\", \"task_executions\""
+              }
+            ],
+            [
+              {
+                "code": "invalid_value",
+                "values": [
+                  "task_team_member"
+                ],
+                "path": [
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"task_team_member\""
+              }
+            ]
+          ],
+          "path": [
+            "members",
+            1
+          ],
+          "message": "Invalid input"
+        }
+      ]
+    ],
+    "path": [
+      "payload",
+      "execution_tree",
+      "root_team",
+      "task_executions",
+      3
+    ],
+    "message": "Invalid input"
+  }
+]
+   × history and strict Team stream status reconciliation > preserves a retained terminal error and does not admit an incomplete live snapshot 3ms
+     → expected 'initializing' to be 'error' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=false
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=false, recursive=true
+AssertionError: expected 'initializing' to be 'offline' // Object.is equality
+
+Expected: "offline"
+Received: "initializing"
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:64:92
+     62|       if (alreadyReady) h.ready();
+     63|       await h.reconcile();
+     64|       for (const id of h.retiredIds) expect(view.getAgentContext(id)!.…
+       |                                                                                            ^
+     65|       for (const status of h.snapshot.payload.agent_statuses) expect(v…
+     66|         .toBe(alreadyReady ? status.status : AgentStatus.Initializing);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=false
+AssertionError: expected undefined to be 'first' // Object.is equality
+
+- Expected: 
+"first"
+
++ Received: 
+undefined
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:77:58
+     75|         const inspected = await inspectMountedTeamMember({ teamRunId: …
+     76|         expect(inspected.disposition).toBe('committed');
+     77|         expect(active.activeTarget?.context.state.runId).toBe(id);
+       |                                                          ^
+     78|         expect(active.activeTarget?.access).toBe('read_only'); expect(…
+     79|         expect(view.getAgentContext(id)!.state.currentStatus).toBe(Age…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves retired execution status with ready=true, recursive=true
+ZodError: [
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "code": "invalid_value",
+          "values": [
+            "task_agent"
+          ],
+          "path": [
+            "kind"
+          ],
+          "message": "Invalid input: expected \"task_agent\""
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "agent_run_id"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "platform_agent_run_id"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "team_run_id",
+            "members",
+            "task_executions"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"team_run_id\", \"members\", \"task_executions\""
+        }
+      ],
+      [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "invalid_value",
+                "values": [
+                  "task_team_agent"
+                ],
+                "path": [
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"task_team_agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agent_run_id"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platform_agent_run_id"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "team_run_id",
+                  "members",
+                  "task_executions"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"team_run_id\", \"members\", \"task_executions\""
+              }
+            ],
+            [
+              {
+                "code": "invalid_value",
+                "values": [
+                  "task_team_member"
+                ],
+                "path": [
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"task_team_member\""
+              }
+            ]
+          ],
+          "path": [
+            "members",
+            1
+          ],
+          "message": "Invalid input"
+        }
+      ]
+    ],
+    "path": [
+      "payload",
+      "execution_tree",
+      "root_team",
+      "task_executions",
+      3
+    ],
+    "message": "Invalid input"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:46:74
+     44|   vi.spyOn(runStore, 'isTeamStreamReopenRequired').mockImplementation(…
+     45|   const connect = vi.spyOn(runStore, 'connectToTeamStream').mockImplem…
+     46|   const emit = (frame: unknown) => { const wire = JSON.stringify(frame…
+       |                                                                          ^
+     47|   const ready = () => { emit({ type: 'CONNECTED', payload: { session_i…
+     48|   const reconcile = () => reconcileDiscoveredActiveRuns({ workspaceGro…
+ ❯ Object.ready stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:47:114
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:62:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  stores/__tests__/runHistoryRetainedTeamStatus.spec.ts > history and strict Team stream status reconciliation > preserves a retained terminal error and does not admit an incomplete live snapshot
+AssertionError: expected 'initializing' to be 'error' // Object.is equality
+
+Expected: "error"
+Received: "initializing"
+
+ ❯ stores/__tests__/runHistoryRetainedTeamStatus.spec.ts:94:92
+     92|   it('preserves a retained terminal error and does not admit an incomp…
+     93|     const h = harness(); h.team.view.getAgentContext('first')!.state.c…
+     94|     await h.reconcile(); expect(h.team.view.getAgentContext('first')!.…
+       |                                                                                            ^
+     95|     h.emit({ type: 'CONNECTED', payload: { session_id: 'fixture', root…
+     96|     h.emit({ ...h.snapshot, payload: { ...h.snapshot.payload, agent_st…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  13:26:44
+   Duration  14.30s (transform 7.34s, setup 11.55s, collect 267ms, tests 54ms, environment 1.22s, prepare 652ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

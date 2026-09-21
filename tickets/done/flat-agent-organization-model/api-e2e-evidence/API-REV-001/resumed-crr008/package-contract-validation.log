@@ -1,0 +1,119 @@
+{
+  "root": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-001-agent-package",
+  "agents": [
+    "aorg-analyst",
+    "aorg-concierge",
+    "aorg-lead",
+    "aorg-verifier"
+  ],
+  "teams": {
+    "aorg-research-squad": {
+      "members": [
+        "lead",
+        "analyst",
+        "verifier"
+      ],
+      "coordinator": "lead",
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/analyst",
+          "rules": [
+            "When a request needs bounded analysis.",
+            "After the lead identifies the exact validation question."
+          ]
+        },
+        {
+          "from": "/analyst",
+          "to": "/verifier",
+          "rules": [
+            "When a completed analysis needs an independent check."
+          ]
+        }
+      ]
+    },
+    "aorg-support-pair": {
+      "members": [
+        "dispatcher",
+        "specialist"
+      ],
+      "coordinator": "dispatcher",
+      "handoffs": [
+        {
+          "from": "/dispatcher",
+          "to": "/specialist",
+          "rules": [
+            "When a support answer needs explicit verification."
+          ]
+        }
+      ]
+    }
+  },
+  "orgs": {
+    "aorg-direct-agents-org": {
+      "members": [
+        {
+          "memberName": "lead",
+          "ref": "aorg-lead",
+          "refType": "agent",
+          "refScope": "shared"
+        },
+        {
+          "memberName": "verifier",
+          "ref": "aorg-verifier",
+          "refType": "agent",
+          "refScope": "shared"
+        }
+      ],
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ]
+    },
+    "aorg-mixed-org": {
+      "members": [
+        {
+          "memberName": "concierge",
+          "ref": "aorg-concierge",
+          "refType": "agent",
+          "refScope": "shared"
+        },
+        {
+          "memberName": "research-team",
+          "ref": "aorg-research-squad",
+          "refType": "agent_team",
+          "refScope": "shared"
+        },
+        {
+          "memberName": "support-team",
+          "ref": "aorg-support-pair",
+          "refType": "agent_team",
+          "refScope": "shared"
+        }
+      ],
+      "handoffs": [
+        {
+          "from": "/concierge",
+          "to": "/research-team",
+          "rules": [
+            "When the direct request requires structured research.",
+            "After the concierge records the exact requested marker."
+          ]
+        },
+        {
+          "from": "/research-team/lead",
+          "to": "/support-team",
+          "rules": [
+            "When the research result needs a separate support verification."
+          ]
+        }
+      ]
+    }
+  }
+}
+PACKAGE_CONTRACT_PASS

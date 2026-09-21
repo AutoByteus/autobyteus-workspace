@@ -1,0 +1,13 @@
+captured_at_utc=2026-09-02T17:16:18Z
+command=git fetch origin personal
+From https://github.com/AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+ticket_branch=requirements/flat-agent-organization-model
+head=c969b480a2aaabf7ae68cd2b576110f2de513ad6
+origin_personal=5fb16658e7bd2aefd750f99eb596a17382e161ac
+merge_base=5fb16658e7bd2aefd750f99eb596a17382e161ac
+origin_personal_left_ticket_right=0	88
+base_is_ancestor=yes
+integration_method=already_current
+new_base_commits_integrated=no
+post_integration_rerun=not_required_because_remote_base_is_ancestor_and_no_new_base_commits_exist

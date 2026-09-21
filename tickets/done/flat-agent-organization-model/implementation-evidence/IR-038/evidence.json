@@ -1,0 +1,41 @@
+{
+  "states": [
+    {
+      "name": "director-tasks-desktop",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nIn progress\nUpdated 12:00 AM\ndirector → team\ndirector · rector\nworker · r-task\nTask assigned\nIn progress\n\ndirector → worker\n\nSep 1, 12:00 AM\n\nVerify the release notes and share the retained report.",
+      "overflow": false
+    },
+    {
+      "name": "director-messages-desktop",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nMessage\nSep 1, 12:02 AM\n\nfrom lead\n\n/team/lead\n\nTask · k-lead\n\nThe task Team has completed the review. The exact report is retained.\n\nMessage\nlead\nSep 1, 12:02 AM\n\n/team/lead\n\nThe task Team has completed the review. The exact report is retained.\n\nTasks\n2 tasks",
+      "overflow": false
+    },
+    {
+      "name": "task-team-desktop",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nL\nlead · k-lead\nTask\nIdle\n\nReview the implementation and return a concise result.\n\nIn progress · Idle\n\nContext Files (0)\n(drag, paste, or upload)\nNo activity recorded for this task yet.\nMessages\n1 Messages\nTasks\n1 task\nReview the implementation and return a concise result.\nIn progress\nUpdated 12:00 AM\ndirector → team\ndirector · rector\nlead · k-lead\nworker · worker\nTask assigned\nIn progress\n\ndirector → team\n\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "settled-task-desktop",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nW\nworker · r-task\nTask\nOffline\n\nVerify the release notes and share the retained report.\n\nAccepted · Offline\n\nMessages\n0 Messages\nTasks\n1 task\nVerify the release notes and share the retained report.\nAccepted\nUpdated 12:04 AM\ndirector → worker\nResult submitted · Result 1\n\nworker → director\n\n12:03 AM\n\nVerified: all requested details are retained.\n\nResult 1 accepted\n\ndirector → worker\n\n12:04 AM\n\nAccepted\n\ndirector · rector\nworker · r-task\nTask assigned\nAccepted\n\ndirector → worker\n\nSep 1, 12:00 AM\n\nVerify the release notes and share the retained report.",
+      "overflow": false
+    },
+    {
+      "name": "settled-task-narrow",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nW\nworker · r-task\nTask\nOffline\n\nVerify the release notes and share the retained report.\n\nAccepted · Offline",
+      "overflow": false
+    },
+    {
+      "name": "tasks-panel-narrow",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nMessages\n0 Messages\nTasks\n1 task\nVerify the release notes and share the retained report.\nAccepted\nUpdated 12:04 AM\ndirector → worker\nResult submitted · Result 1\n\nworker → director\n\n12:03 AM\n\nVerified: all requested details are retained.\n\nResult 1 accepted\n\ndirector → worker\n\n12:04 AM\n\nAccepted\n\ndirector · rector\nworker · r-task\nTask assigned\nAccepted\n\ndirector → worker\n\nSep 1, 12:00 AM\n\nVerify the release notes and share the retained report.",
+      "overflow": false
+    },
+    {
+      "name": "collapsed-tasks-narrow",
+      "body": "Agent Org · task presentation\nDirector\nTask Agent\nTask Team\nAccept & settle\nConversation / collaboration\nMessages\n1 Messages\nTasks\n2 tasks",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "limits": "Implementation render fixture with actual context/index, shared surfaces and local transitions. No live provider/server signoff."
+}

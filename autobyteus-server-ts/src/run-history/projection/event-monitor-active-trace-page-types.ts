@@ -1,3 +1,5 @@
+import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
+
 export type EventMonitorToolCardKind = "tool_call" | "write_file" | "edit_file" | "terminal_command";
 export type EventMonitorToolStatusKey =
   | "running" | "success" | "error" | "approved" | "awaiting-approval" | "denied" | "default";
@@ -5,7 +7,8 @@ export type EventMonitorMediaType = "image" | "audio" | "video";
 
 export interface EventMonitorActiveTraceAttachment {
   attachmentId: string;
-  mediaType: EventMonitorMediaType;
+  fileType: ContextFileType;
+  fileName: string | null;
   locator: string;
 }
 

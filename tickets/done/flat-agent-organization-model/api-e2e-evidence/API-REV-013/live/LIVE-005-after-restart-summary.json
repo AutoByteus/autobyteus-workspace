@@ -1,0 +1,57 @@
+{
+  "assertions": {
+    "orgInactive": true,
+    "teamInactive": true,
+    "orgSummaryRetained": true,
+    "teamSummaryRetained": true,
+    "allDurableHashesStableAcrossRestart": true,
+    "taskAccepted": true,
+    "taskSameId": true,
+    "taskFourUpdates": true
+  },
+  "org": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_run_id": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+    "is_active": false,
+    "summary": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+  },
+  "team": {
+    "__typename": "AgentTeamRootHistoryObject",
+    "root_run_id": "apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+    "is_active": false,
+    "summary": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco..."
+  },
+  "hashesBefore": [
+    [
+      "b166045f73a252f0360e7f994282cb0a1b15fc0bc7790ccd5ee350c24dbbbdcc",
+      "agent_org_run_history_index.json"
+    ],
+    [
+      "9b1ffe72eee2241e10e1c8e0874436bad5f2884ccb9faba446f7627bac09d172",
+      "team_run_history_index.json"
+    ],
+    [
+      "0eaf58be3de65d25905727138d3e80442c7d6aaaba1a5c7884666fd4533bee53",
+      "agent_org_task_delegation_records.json"
+    ]
+  ],
+  "hashesAfter": [
+    [
+      "b166045f73a252f0360e7f994282cb0a1b15fc0bc7790ccd5ee350c24dbbbdcc",
+      "agent_org_run_history_index.json"
+    ],
+    [
+      "9b1ffe72eee2241e10e1c8e0874436bad5f2884ccb9faba446f7627bac09d172",
+      "team_run_history_index.json"
+    ],
+    [
+      "0eaf58be3de65d25905727138d3e80442c7d6aaaba1a5c7884666fd4533bee53",
+      "agent_org_task_delegation_records.json"
+    ]
+  ],
+  "task": {
+    "taskId": "task_520783d1cf8b44bf92db55a96fb87738",
+    "status": "accepted",
+    "updateCount": 4
+  }
+}

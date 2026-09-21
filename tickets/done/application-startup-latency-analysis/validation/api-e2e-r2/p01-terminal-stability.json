@@ -1,0 +1,132 @@
+{
+  "profileCategories": {
+    "definitions": {
+      "unchanged": true,
+      "afterFirst": {
+        "fileCount": 22,
+        "bytes": 27975,
+        "aggregateSha256": "1b966005eb9297d28e2215202937c32ffee67498a720d053fae1e09a0476cb68"
+      },
+      "afterStable": {
+        "fileCount": 22,
+        "bytes": 27975,
+        "aggregateSha256": "1b966005eb9297d28e2215202937c32ffee67498a720d053fae1e09a0476cb68"
+      }
+    },
+    "raw_traces": {
+      "unchanged": true,
+      "afterFirst": {
+        "fileCount": 6577,
+        "bytes": 6622505377,
+        "aggregateSha256": "8d687fcc30b7709bd92da973e566b213f6dce7dc9ff6ac80377087edc1f69f84"
+      },
+      "afterStable": {
+        "fileCount": 6577,
+        "bytes": 6622505377,
+        "aggregateSha256": "8d687fcc30b7709bd92da973e566b213f6dce7dc9ff6ac80377087edc1f69f84"
+      }
+    },
+    "context_files": {
+      "unchanged": true,
+      "afterFirst": {
+        "fileCount": 1107,
+        "bytes": 547486511,
+        "aggregateSha256": "482d00ae72b19fea6edd379624b18a86ad9cd11767154c881ca3faf86547e551"
+      },
+      "afterStable": {
+        "fileCount": 1107,
+        "bytes": 547486511,
+        "aggregateSha256": "482d00ae72b19fea6edd379624b18a86ad9cd11767154c881ca3faf86547e551"
+      }
+    },
+    "history_and_runtime": {
+      "unchanged": true,
+      "afterFirst": {
+        "fileCount": 5618,
+        "bytes": 294209275,
+        "aggregateSha256": "2d41ba7aaa9a0ded7690cc8ac119fcf0fd57148f78cbf605d405b1e5d5bb8181"
+      },
+      "afterStable": {
+        "fileCount": 5618,
+        "bytes": 294209275,
+        "aggregateSha256": "2d41ba7aaa9a0ded7690cc8ac119fcf0fd57148f78cbf605d405b1e5d5bb8181"
+      }
+    },
+    "database": {
+      "unchanged": true,
+      "afterFirst": {
+        "fileCount": 1,
+        "bytes": 875474944,
+        "aggregateSha256": "8fd6fe15ebc26ce0a8cc86ff0e68e61c9bdbe1f499e66e46c8b444179409421c"
+      },
+      "afterStable": {
+        "fileCount": 1,
+        "bytes": 875474944,
+        "aggregateSha256": "8fd6fe15ebc26ce0a8cc86ff0e68e61c9bdbe1f499e66e46c8b444179409421c"
+      }
+    },
+    "configuration": {
+      "unchanged": true,
+      "afterFirst": {
+        "fileCount": 1,
+        "bytes": 3635,
+        "aggregateSha256": "f831b4fb51fa56e46fc29b8b619ab7696674bef136adc06b1a763c3e356ef374"
+      },
+      "afterStable": {
+        "fileCount": 1,
+        "bytes": 3635,
+        "aggregateSha256": "f831b4fb51fa56e46fc29b8b619ab7696674bef136adc06b1a763c3e356ef374"
+      }
+    }
+  },
+  "allProfileCategoriesUnchanged": true,
+  "ledgerRowsExactStable": true,
+  "firstLedger": [
+    {
+      "migration_id": "20260901_agent_org_flat_team_families_v1",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 28,
+      "started_at": 1789781199683,
+      "completed_at": 1789781199905,
+      "summary": "Scanned 526; migrated 0; skipped 518; failed 8.",
+      "error_message": "8 legacy Team source item(s) were not migrated because the required execution tree is missing; source directories remain unchanged.",
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-09-19T01-26-39-904Z.log",
+      "updated_at": "2026-09-19 01:26:39"
+    },
+    {
+      "migration_id": "20260905_agent_org_history_first_message_summary_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789781199907,
+      "completed_at": 1789781200415,
+      "summary": "Scanned 17; migrated 0; skipped 17; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/logs/app-data-migrations/20260905_agent_org_history_first_message_summary_v1-2026-09-19T01-26-40-415Z.log",
+      "updated_at": "2026-09-19 01:26:40"
+    }
+  ],
+  "stableLedger": [
+    {
+      "migration_id": "20260901_agent_org_flat_team_families_v1",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 28,
+      "started_at": 1789781199683,
+      "completed_at": 1789781199905,
+      "summary": "Scanned 526; migrated 0; skipped 518; failed 8.",
+      "error_message": "8 legacy Team source item(s) were not migrated because the required execution tree is missing; source directories remain unchanged.",
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-09-19T01-26-39-904Z.log",
+      "updated_at": "2026-09-19 01:26:39"
+    },
+    {
+      "migration_id": "20260905_agent_org_history_first_message_summary_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789781199907,
+      "completed_at": 1789781200415,
+      "summary": "Scanned 17; migrated 0; skipped 17; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/logs/app-data-migrations/20260905_agent_org_history_first_message_summary_v1-2026-09-19T01-26-40-415Z.log",
+      "updated_at": "2026-09-19 01:26:40"
+    }
+  ]
+}

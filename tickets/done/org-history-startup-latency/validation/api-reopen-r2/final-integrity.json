@@ -1,0 +1,31 @@
+{
+  "manifestEntries": 4,
+  "allMatch": true,
+  "checks": [
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts",
+      "expected": "7c8f2d29f4c6e9a6b2559dd68bbfda6e9552ba89d6d84eea34eec1a538bf6058",
+      "actual": "7c8f2d29f4c6e9a6b2559dd68bbfda6e9552ba89d6d84eea34eec1a538bf6058",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts",
+      "expected": "64262bea049a76af3ae4a1ea209c51efc37249dcbfe2fcbc933865bbcca3452a",
+      "actual": "64262bea049a76af3ae4a1ea209c51efc37249dcbfe2fcbc933865bbcca3452a",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "expected": "dd63192625b0af560d37682d876e10f32f8b8fa8559c658720b92841e4952dc0",
+      "actual": "dd63192625b0af560d37682d876e10f32f8b8fa8559c658720b92841e4952dc0",
+      "match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+      "expected": "8eda15b1c74d63f71e60aaba14ec5d3b7ee92915bc2bc489ac784a1ca04d12cf",
+      "actual": "8eda15b1c74d63f71e60aaba14ec5d3b7ee92915bc2bc489ac784a1ca04d12cf",
+      "match": true
+    }
+  ],
+  "gitDiffCheck": "pass"
+}

@@ -10,6 +10,8 @@ import { AgentTeamRunResolver } from './types/agent-team-run.js';
 import { WorkspaceResolver } from './types/workspace.js';
 import { AgentDefinitionResolver } from './types/agent-definition.js';
 import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
+import { AgentOrgDefinitionResolver } from './types/agent-org-definition.js';
+import { AgentOrgRunResolver } from './types/agent-org-run.js';
 import { TokenUsageStatisticsResolver } from './types/token-usage-stats.js';
 import { TokenUsageAnalyticsResolver } from './types/token-usage-analytics.js';
 import { AgentCustomizationOptionsResolver } from './types/agent-customization-options.js';
@@ -34,6 +36,8 @@ import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
+import { DefinitionAdmissionResolver } from './types/definition-admission.js';
+import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -49,6 +53,8 @@ export async function buildGraphqlSchema() {
       WorkspaceResolver,
       AgentDefinitionResolver,
       AgentTeamDefinitionResolver,
+      AgentOrgDefinitionResolver,
+      AgentOrgRunResolver,
       TokenUsageStatisticsResolver,
       TokenUsageAnalyticsResolver,
       AgentCustomizationOptionsResolver,
@@ -72,6 +78,8 @@ export async function buildGraphqlSchema() {
       AppDataMigrationResolver,
       SkillImprovementResolver,
       SecretStorageResolver,
+      DefinitionAdmissionResolver,
+      CollaborationRootHistoryResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

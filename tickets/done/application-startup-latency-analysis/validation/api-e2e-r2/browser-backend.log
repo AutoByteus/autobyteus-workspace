@@ -1,0 +1,249 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/.env
+[dotenv@17.3.1] injecting env (0) from ../.local/api-startup-profile-r2/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51481
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51481
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:95514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-19T01:30:53.072Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 54 items.
+Populating agent definition cache for the first time...
+[2026-09-19T01:30:53.540Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-19T01:30:53.548Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 54 items.
+{"level":30,"time":1789781453560,"pid":95514,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:61456"}
+{"level":30,"time":1789781453589,"pid":95514,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:51481"}
+[2026-09-19T01:30:53.589Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51481
+[2026-09-19T01:30:53.590Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51481
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 6 items.
+Found 6 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 6 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[09/19/26 03:30:54] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'speak'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'remote_health_check'
+Successfully registered tool definition: 'remote_list_audio_models'
+Successfully registered tool definition: 'remote_list_image_models'
+Successfully registered tool definition: 'remote_list_video_models'
+Successfully registered tool definition: 'remote_generate_image'
+Successfully registered tool definition: 'remote_generate_video'
+Successfully registered tool definition: 'remote_find_target_coordinates'
+Successfully registered tool definition: 'remote_edit_image'
+Successfully registered tool definition: 'remote_generate_speech'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'ssh_health_check'
+Successfully registered tool definition: 'ssh_open_session'
+Successfully registered tool definition: 'ssh_session_exec'
+Successfully registered tool definition: 'ssh_close_session'
+Processing request of type ListToolsRequest
+Successfully registered tool definition: 'aliyun_ssh_health_check'
+Successfully registered tool definition: 'aliyun_ssh_open_session'
+Successfully registered tool definition: 'aliyun_ssh_session_exec'
+Successfully registered tool definition: 'aliyun_ssh_close_session'
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+Successfully registered tool definition: 'download_audio'
+Successfully registered tool definition: 'download_video'
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Created metadata-only FileSystemWorkspace at /Users/normy/2026-07-18-hackathon.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_company_operation.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_private_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-com-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-investor-applications.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-m1-qwen38-27b.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-manga-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-marketing-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-private-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-skills.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-social-media.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-tutorial-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/browser_docker.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/model-eval-analysis.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/repository_prisma.
+Created metadata-only FileSystemWorkspace at /Users/normy/church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/2026-05-25-roma-fuqi-church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/bible_children_manga_book.
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_job_search.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_projects/german_online_practice.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/department_head_e4063bf956e64332a2eb264227aca43a/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/product_design_prototyping_team_793d135375ab492bae9aad167d9e19e0/prototype_bootstrapper_ec76565855464d7d905337c8d9cc2d19/raw_traces_active.jsonl
+Created metadata-only FileSystemWorkspace at /Users/normy/2026-07-18-hackathon.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_company_operation.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_private_mcps.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-com-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-investor-applications.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-m1-qwen38-27b.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-manga-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-marketing-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-private-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-skills.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-social-media.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-tutorial-videos.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/browser_docker.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/model-eval-analysis.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/repository_prisma.
+Created metadata-only FileSystemWorkspace at /Users/normy/church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/2026-05-25-roma-fuqi-church.
+Created metadata-only FileSystemWorkspace at /Users/normy/church/bible_children_manga_book.
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_job_search.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy_projects/german_online_practice.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_a1dff1c50ccc4922bb2c596ffe39279b/student_two_4eef6194ab7447debfc928034b27c2e7/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_838ba70cbe474257863a2f117b51ef7f/student_two_85805d311a91463abc39f52c8a746262/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_a5e1c30af93c480786d3f5fe4b9cb090/student_two_59666492210349929e2f4d6b2540700b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_c55fb66303ca4f0b99e176758a798c67/student_two_4e1934fb1bab4bcf8112e538013cb215/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_b9e65ddcefa74a0d80b0dc3cdda408e2/student_two_d2b4467f6b22428683a8ec899387c54e/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_d0d0475c7f554ec19dd1c944ba9281ab/student_two_e78943f703374f8dbdded04d55cd1e6d/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_95cc9322fe1e4328930bf3fbaadc1dfc/student_two_e0063cfdd93144dc8f39c7b2ab4416e7/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_cafa29fb7b2342f2afb4501eff022853/student_two_b5be659923e54025a6e807794642f5dd/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_ccfeafdd1e884e939ad104385f24edd4/student_two_cd16175689cc4ea09460142a35723eea/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_f3f89e8b0b6d43069442e08c3dc3220e/student_two_f7669154d99548cd85de72426d3f0343/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile-r2/memory/agent_orgs/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4/team_local_team_nested_classroom_test_student_st_07a940ecfbb44a56a3fa67275ae5ef8b/student_two_4e0719ce501a4b6d863ccdcc56681805/raw_traces_active.jsonl

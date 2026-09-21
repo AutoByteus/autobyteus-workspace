@@ -1,0 +1,91 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+ORGS
+Followup Organization
+(1)
+Use send_message_to exactly twice, sequentially. First recipient_address /receiver, content "Repl...
+7m
+D
+director
+R
+receiver
+research team
+C
+coordinator
+L
+lead
+R
+reviewer
+Task: research team · c60c28
+coordinator · 3a9d7e
+lead · a68902
+reviewer · 23060c
+Settings
+L
+lead
+Idle
+You
+Call delegate_task exactly once with recipient_address /research-team and description "Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow." After successful delegation reply exactly COLLAB-API01-TASK-CREATED. Do not send an additional message to the target.
+L
+lead
+Thinking
+delegate_task
+L
+lead
+
+COLLAB-API01-TASK-CREATED
+
+You
+Call send_message_to exactly once with target_agent_run_id followup_assistant_8f603b5a6a7048ad8d98c85e713a9d7e and content "Call get_handoff_rules once, then reply exactly COLLAB-API01-PULSE-DESKTOP. Do not submit a result, send messages, or delegate. End the turn.". Do not use recipient_address. After successful send reply exactly COLLAB-API01-PULSE-DESKTOP-SENT. No other work.
+L
+lead
+Thinking
+send_message_to
+
+COLLAB-API01-PULSE-DESKTOP-SENT
+
+You
+Call send_message_to exactly once with target_agent_run_id followup_assistant_8f603b5a6a7048ad8d98c85e713a9d7e and content "Call get_handoff_rules once, then reply exactly COLLAB-API01-PULSE-NARROW. Do not submit a result, send messages, or delegate. End the turn.". Do not use recipient_address. After successful send reply exactly COLLAB-API01-PULSE-NARROW-SENT. No other work.
+L
+lead
+Thinking
+send_message_to
+
+COLLAB-API01-PULSE-NARROW-SENT
+
+Context Files (0)
+(drag, paste, or upload)
+Files
+Org
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+2 Messages
+Tasks
+1 task
+Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow.
+In progress
+Updated 11:51 AM
+lead → research-team
+Task assigned
+In progress
+lead
+→
+research-team
+Sep 13, 11:51 AM
+
+Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow.

@@ -1,0 +1,44 @@
+{
+  "at": "2026-09-06T00:07:22.964Z",
+  "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_c8d5f67fe2ff4e2bb5078d38f4208f40&mode=active",
+  "rootText": "Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. Th...",
+  "perfNav": [
+    {
+      "name": "http://127.0.0.1:3590/workspace/",
+      "type": "navigate",
+      "redirectCount": 0
+    }
+  ],
+  "taskRows": [
+    {
+      "test": "agent-org-task-agent-row-aorg_e2e_analyst_76d083849b6e40258bbbc88cb985e7f7",
+      "text": "Task: analyst"
+    }
+  ],
+  "markers": {
+    "first": 3,
+    "second": 2,
+    "delegated": 2,
+    "submitted": 5
+  },
+  "selected": [
+    {
+      "test": null,
+      "text": "Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. Th...",
+      "current": "true",
+      "selected": "true"
+    },
+    {
+      "test": "agent-org-agent-row-aorg_e2e_lead_992acea3a34c427494ae932041c7341a",
+      "text": "Llead",
+      "current": null,
+      "selected": "true"
+    },
+    {
+      "test": null,
+      "text": "Team",
+      "current": null,
+      "selected": "true"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 export type ShellPrimaryNavKey =
   | 'agents'
   | 'agentTeams'
+  | 'agentOrgs'
   | 'applications'
   | 'skills'
   | 'memory'
@@ -22,6 +23,7 @@ export const SHELL_NODES_NETWORK_ICON = 'autobyteus:nodes-network';
 const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
   { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
   { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
+  { key: 'agentOrgs', labelKey: 'shell.navigation.agentOrgs', icon: 'heroicons:building-office-2' },
   { key: 'applications', labelKey: 'shell.navigation.applications', icon: 'heroicons:squares-2x2' },
   { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
   { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
@@ -34,6 +36,8 @@ export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocation
       return { path: '/agents', query: { view: 'list' } };
     case 'agentTeams':
       return { path: '/agent-teams', query: { view: 'team-list' } };
+    case 'agentOrgs':
+      return { path: '/agent-orgs', query: { view: 'org-list' } };
     case 'applications':
       return '/applications';
     case 'skills':
@@ -51,6 +55,8 @@ export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, path: string)
       return path.startsWith('/agents');
     case 'agentTeams':
       return path.startsWith('/agent-teams');
+    case 'agentOrgs':
+      return path.startsWith('/agent-orgs');
     case 'applications':
       return path.startsWith('/applications');
     case 'skills':

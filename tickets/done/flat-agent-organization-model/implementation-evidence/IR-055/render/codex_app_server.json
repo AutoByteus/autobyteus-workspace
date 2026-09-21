@@ -1,0 +1,1536 @@
+[
+  {
+    "target": "direct",
+    "runtimeKind": "codex_app_server",
+    "projection": {
+      "runId": "direct",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "fileAttachments": [
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3e2a9a3e3d12__notes.txt",
+              "fileType": "text",
+              "fileName": "accepted-notes.txt"
+            },
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_ecc42359e54f__report.pdf",
+              "fileType": "pdf",
+              "fileName": "accepted-report.pdf"
+            }
+          ],
+          "content": "review files",
+          "media": {
+            "images": [
+              "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2b3b1178167f__diagram.png"
+            ]
+          },
+          "ts": 1789228596.154
+        }
+      ],
+      "activities": [],
+      "summary": "review files",
+      "lastActivityAt": "2026-09-12T15:56:36.154Z",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "page": {
+      "events": [
+        {
+          "eventId": "raw:v1:53:rt_1789228596155_eff4d327-6ffe-4d7e-b06a-6930cd2b9638",
+          "turnGroupId": "turn:v1:15:attachment-turn",
+          "occurredAtMs": 1789228596154,
+          "visuals": [
+            {
+              "__typename": "EventMonitorUserVisual",
+              "kind": "user",
+              "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYxNTVfZWZmNGQzMjctNmZmZS00ZDdlLWIwNmEtNjkzMGNkMmI5NjM4:user:0",
+              "eventId": "raw:v1:53:rt_1789228596155_eff4d327-6ffe-4d7e-b06a-6930cd2b9638",
+              "kindOrdinal": 0,
+              "text": "review files",
+              "attachments": [
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYxNTVfZWZmNGQzMjctNmZmZS00ZDdlLWIwNmEtNjkzMGNkMmI5NjM4:user:0:attachment:image:0",
+                  "fileType": "image",
+                  "fileName": null,
+                  "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2b3b1178167f__diagram.png"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYxNTVfZWZmNGQzMjctNmZmZS00ZDdlLWIwNmEtNjkzMGNkMmI5NjM4:user:0:attachment:file:0",
+                  "fileType": "text",
+                  "fileName": "accepted-notes.txt",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3e2a9a3e3d12__notes.txt"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYxNTVfZWZmNGQzMjctNmZmZS00ZDdlLWIwNmEtNjkzMGNkMmI5NjM4:user:0:attachment:file:1",
+                  "fileType": "pdf",
+                  "fileName": "accepted-report.pdf",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_ecc42359e54f__report.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "storedFilename": "ctx_3e2a9a3e3d12__notes.txt",
+        "displayName": "notes.txt",
+        "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3e2a9a3e3d12__notes.txt",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            100,
+            105,
+            114,
+            101,
+            99,
+            116,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            110,
+            111,
+            116,
+            101,
+            115,
+            46,
+            116,
+            120,
+            116
+          ]
+        },
+        "fileType": "text",
+        "name": "notes.txt"
+      },
+      {
+        "storedFilename": "ctx_2b3b1178167f__diagram.png",
+        "displayName": "diagram.png",
+        "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2b3b1178167f__diagram.png",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            4,
+            0,
+            0,
+            0,
+            181,
+            28,
+            12,
+            2,
+            0,
+            0,
+            0,
+            11,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            252,
+            255,
+            31,
+            0,
+            3,
+            3,
+            2,
+            0,
+            239,
+            154,
+            80,
+            100,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ]
+        },
+        "fileType": "image",
+        "name": "diagram.png"
+      },
+      {
+        "storedFilename": "ctx_ecc42359e54f__report.pdf",
+        "displayName": "report.pdf",
+        "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_ecc42359e54f__report.pdf",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            100,
+            105,
+            114,
+            101,
+            99,
+            116,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            114,
+            101,
+            112,
+            111,
+            114,
+            116,
+            46,
+            112,
+            100,
+            102
+          ]
+        },
+        "fileType": "pdf",
+        "name": "report.pdf"
+      }
+    ]
+  },
+  {
+    "target": "repeat",
+    "runtimeKind": "codex_app_server",
+    "projection": {
+      "runId": "repeat",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "fileAttachments": [
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a6505b8c941__notes.txt",
+              "fileType": "text",
+              "fileName": "accepted-notes.txt"
+            },
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_b7e89c4db1e2__report.pdf",
+              "fileType": "pdf",
+              "fileName": "accepted-report.pdf"
+            }
+          ],
+          "content": "review files",
+          "media": {
+            "images": [
+              "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_0532b75285f8__diagram.png"
+            ]
+          },
+          "ts": 1789228596.238
+        }
+      ],
+      "activities": [],
+      "summary": "review files",
+      "lastActivityAt": "2026-09-12T15:56:36.238Z",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "page": {
+      "events": [
+        {
+          "eventId": "raw:v1:53:rt_1789228596238_14dcfc72-6781-4ac8-959f-e779a61a8128",
+          "turnGroupId": "turn:v1:15:attachment-turn",
+          "occurredAtMs": 1789228596238,
+          "visuals": [
+            {
+              "__typename": "EventMonitorUserVisual",
+              "kind": "user",
+              "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYyMzhfMTRkY2ZjNzItNjc4MS00YWM4LTk1OWYtZTc3OWE2MWE4MTI4:user:0",
+              "eventId": "raw:v1:53:rt_1789228596238_14dcfc72-6781-4ac8-959f-e779a61a8128",
+              "kindOrdinal": 0,
+              "text": "review files",
+              "attachments": [
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYyMzhfMTRkY2ZjNzItNjc4MS00YWM4LTk1OWYtZTc3OWE2MWE4MTI4:user:0:attachment:image:0",
+                  "fileType": "image",
+                  "fileName": null,
+                  "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_0532b75285f8__diagram.png"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYyMzhfMTRkY2ZjNzItNjc4MS00YWM4LTk1OWYtZTc3OWE2MWE4MTI4:user:0:attachment:file:0",
+                  "fileType": "text",
+                  "fileName": "accepted-notes.txt",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a6505b8c941__notes.txt"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYyMzhfMTRkY2ZjNzItNjc4MS00YWM4LTk1OWYtZTc3OWE2MWE4MTI4:user:0:attachment:file:1",
+                  "fileType": "pdf",
+                  "fileName": "accepted-report.pdf",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_b7e89c4db1e2__report.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "storedFilename": "ctx_9a6505b8c941__notes.txt",
+        "displayName": "notes.txt",
+        "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a6505b8c941__notes.txt",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            114,
+            101,
+            112,
+            101,
+            97,
+            116,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            110,
+            111,
+            116,
+            101,
+            115,
+            46,
+            116,
+            120,
+            116
+          ]
+        },
+        "fileType": "text",
+        "name": "notes.txt"
+      },
+      {
+        "storedFilename": "ctx_0532b75285f8__diagram.png",
+        "displayName": "diagram.png",
+        "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_0532b75285f8__diagram.png",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            4,
+            0,
+            0,
+            0,
+            181,
+            28,
+            12,
+            2,
+            0,
+            0,
+            0,
+            11,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            252,
+            255,
+            31,
+            0,
+            3,
+            3,
+            2,
+            0,
+            239,
+            154,
+            80,
+            100,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ]
+        },
+        "fileType": "image",
+        "name": "diagram.png"
+      },
+      {
+        "storedFilename": "ctx_b7e89c4db1e2__report.pdf",
+        "displayName": "report.pdf",
+        "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_b7e89c4db1e2__report.pdf",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            114,
+            101,
+            112,
+            101,
+            97,
+            116,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            114,
+            101,
+            112,
+            111,
+            114,
+            116,
+            46,
+            112,
+            100,
+            102
+          ]
+        },
+        "fileType": "pdf",
+        "name": "report.pdf"
+      }
+    ]
+  },
+  {
+    "target": "lead",
+    "runtimeKind": "codex_app_server",
+    "projection": {
+      "runId": "lead",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "fileAttachments": [
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_e49c9394f3c8__notes.txt",
+              "fileType": "text",
+              "fileName": "accepted-notes.txt"
+            },
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_fdd11b7be52a__report.pdf",
+              "fileType": "pdf",
+              "fileName": "accepted-report.pdf"
+            }
+          ],
+          "content": "review files",
+          "media": {
+            "images": [
+              "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c7b05bb45e0a__diagram.png"
+            ]
+          },
+          "ts": 1789228596.335
+        }
+      ],
+      "activities": [],
+      "summary": "review files",
+      "lastActivityAt": "2026-09-12T15:56:36.335Z",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "page": {
+      "events": [
+        {
+          "eventId": "raw:v1:53:rt_1789228596335_aeec044c-933e-46ca-a04d-f50114fa23c9",
+          "turnGroupId": "turn:v1:15:attachment-turn",
+          "occurredAtMs": 1789228596335,
+          "visuals": [
+            {
+              "__typename": "EventMonitorUserVisual",
+              "kind": "user",
+              "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYzMzVfYWVlYzA0NGMtOTMzZS00NmNhLWEwNGQtZjUwMTE0ZmEyM2M5:user:0",
+              "eventId": "raw:v1:53:rt_1789228596335_aeec044c-933e-46ca-a04d-f50114fa23c9",
+              "kindOrdinal": 0,
+              "text": "review files",
+              "attachments": [
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYzMzVfYWVlYzA0NGMtOTMzZS00NmNhLWEwNGQtZjUwMTE0ZmEyM2M5:user:0:attachment:image:0",
+                  "fileType": "image",
+                  "fileName": null,
+                  "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c7b05bb45e0a__diagram.png"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYzMzVfYWVlYzA0NGMtOTMzZS00NmNhLWEwNGQtZjUwMTE0ZmEyM2M5:user:0:attachment:file:0",
+                  "fileType": "text",
+                  "fileName": "accepted-notes.txt",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_e49c9394f3c8__notes.txt"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTYzMzVfYWVlYzA0NGMtOTMzZS00NmNhLWEwNGQtZjUwMTE0ZmEyM2M5:user:0:attachment:file:1",
+                  "fileType": "pdf",
+                  "fileName": "accepted-report.pdf",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_fdd11b7be52a__report.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "storedFilename": "ctx_e49c9394f3c8__notes.txt",
+        "displayName": "notes.txt",
+        "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_e49c9394f3c8__notes.txt",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            108,
+            101,
+            97,
+            100,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            110,
+            111,
+            116,
+            101,
+            115,
+            46,
+            116,
+            120,
+            116
+          ]
+        },
+        "fileType": "text",
+        "name": "notes.txt"
+      },
+      {
+        "storedFilename": "ctx_c7b05bb45e0a__diagram.png",
+        "displayName": "diagram.png",
+        "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c7b05bb45e0a__diagram.png",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            4,
+            0,
+            0,
+            0,
+            181,
+            28,
+            12,
+            2,
+            0,
+            0,
+            0,
+            11,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            252,
+            255,
+            31,
+            0,
+            3,
+            3,
+            2,
+            0,
+            239,
+            154,
+            80,
+            100,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ]
+        },
+        "fileType": "image",
+        "name": "diagram.png"
+      },
+      {
+        "storedFilename": "ctx_fdd11b7be52a__report.pdf",
+        "displayName": "report.pdf",
+        "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_fdd11b7be52a__report.pdf",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            108,
+            101,
+            97,
+            100,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            114,
+            101,
+            112,
+            111,
+            114,
+            116,
+            46,
+            112,
+            100,
+            102
+          ]
+        },
+        "fileType": "pdf",
+        "name": "report.pdf"
+      }
+    ]
+  },
+  {
+    "target": "task-lead",
+    "runtimeKind": "codex_app_server",
+    "projection": {
+      "runId": "task-lead",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "fileAttachments": [
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_1c519f628969__notes.txt",
+              "fileType": "text",
+              "fileName": "accepted-notes.txt"
+            },
+            {
+              "uri": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_af88261d3ee8__report.pdf",
+              "fileType": "pdf",
+              "fileName": "accepted-report.pdf"
+            }
+          ],
+          "content": "review files",
+          "media": {
+            "images": [
+              "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_1e8d1205071d__diagram.png"
+            ]
+          },
+          "ts": 1789228596.429
+        }
+      ],
+      "activities": [],
+      "summary": "review files",
+      "lastActivityAt": "2026-09-12T15:56:36.429Z",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "page": {
+      "events": [
+        {
+          "eventId": "raw:v1:53:rt_1789228596429_999a4ecc-3562-470f-8f18-eae32d5c572e",
+          "turnGroupId": "turn:v1:15:attachment-turn",
+          "occurredAtMs": 1789228596429,
+          "visuals": [
+            {
+              "__typename": "EventMonitorUserVisual",
+              "kind": "user",
+              "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY0MjlfOTk5YTRlY2MtMzU2Mi00NzBmLThmMTgtZWFlMzJkNWM1NzJl:user:0",
+              "eventId": "raw:v1:53:rt_1789228596429_999a4ecc-3562-470f-8f18-eae32d5c572e",
+              "kindOrdinal": 0,
+              "text": "review files",
+              "attachments": [
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY0MjlfOTk5YTRlY2MtMzU2Mi00NzBmLThmMTgtZWFlMzJkNWM1NzJl:user:0:attachment:image:0",
+                  "fileType": "image",
+                  "fileName": null,
+                  "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_1e8d1205071d__diagram.png"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY0MjlfOTk5YTRlY2MtMzU2Mi00NzBmLThmMTgtZWFlMzJkNWM1NzJl:user:0:attachment:file:0",
+                  "fileType": "text",
+                  "fileName": "accepted-notes.txt",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_1c519f628969__notes.txt"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY0MjlfOTk5YTRlY2MtMzU2Mi00NzBmLThmMTgtZWFlMzJkNWM1NzJl:user:0:attachment:file:1",
+                  "fileType": "pdf",
+                  "fileName": "accepted-report.pdf",
+                  "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_af88261d3ee8__report.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "storedFilename": "ctx_1c519f628969__notes.txt",
+        "displayName": "notes.txt",
+        "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_1c519f628969__notes.txt",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            116,
+            97,
+            115,
+            107,
+            45,
+            108,
+            101,
+            97,
+            100,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            110,
+            111,
+            116,
+            101,
+            115,
+            46,
+            116,
+            120,
+            116
+          ]
+        },
+        "fileType": "text",
+        "name": "notes.txt"
+      },
+      {
+        "storedFilename": "ctx_1e8d1205071d__diagram.png",
+        "displayName": "diagram.png",
+        "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_1e8d1205071d__diagram.png",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            4,
+            0,
+            0,
+            0,
+            181,
+            28,
+            12,
+            2,
+            0,
+            0,
+            0,
+            11,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            252,
+            255,
+            31,
+            0,
+            3,
+            3,
+            2,
+            0,
+            239,
+            154,
+            80,
+            100,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ]
+        },
+        "fileType": "image",
+        "name": "diagram.png"
+      },
+      {
+        "storedFilename": "ctx_af88261d3ee8__report.pdf",
+        "displayName": "report.pdf",
+        "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_af88261d3ee8__report.pdf",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            116,
+            97,
+            115,
+            107,
+            45,
+            108,
+            101,
+            97,
+            100,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            114,
+            101,
+            112,
+            111,
+            114,
+            116,
+            46,
+            112,
+            100,
+            102
+          ]
+        },
+        "fileType": "pdf",
+        "name": "report.pdf"
+      }
+    ]
+  },
+  {
+    "target": "standalone",
+    "runtimeKind": "codex_app_server",
+    "projection": {
+      "runId": "standalone",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "fileAttachments": [
+            {
+              "uri": "/rest/runs/standalone/context-files/ctx_e4282bcc2901__notes.txt",
+              "fileType": "text",
+              "fileName": "accepted-notes.txt"
+            },
+            {
+              "uri": "/rest/runs/standalone/context-files/ctx_3974d8bd5aed__report.pdf",
+              "fileType": "pdf",
+              "fileName": "accepted-report.pdf"
+            }
+          ],
+          "content": "review files",
+          "media": {
+            "images": [
+              "/rest/runs/standalone/context-files/ctx_3d91d4f94a72__diagram.png"
+            ]
+          },
+          "ts": 1789228596.512
+        }
+      ],
+      "activities": [],
+      "summary": "review files",
+      "lastActivityAt": "2026-09-12T15:56:36.512Z",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "page": {
+      "events": [
+        {
+          "eventId": "raw:v1:53:rt_1789228596512_4fd7174b-d1a6-41dc-9812-68e12a9f3499",
+          "turnGroupId": "turn:v1:15:attachment-turn",
+          "occurredAtMs": 1789228596512,
+          "visuals": [
+            {
+              "__typename": "EventMonitorUserVisual",
+              "kind": "user",
+              "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1MTJfNGZkNzE3NGItZDFhNi00MWRjLTk4MTItNjhlMTJhOWYzNDk5:user:0",
+              "eventId": "raw:v1:53:rt_1789228596512_4fd7174b-d1a6-41dc-9812-68e12a9f3499",
+              "kindOrdinal": 0,
+              "text": "review files",
+              "attachments": [
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1MTJfNGZkNzE3NGItZDFhNi00MWRjLTk4MTItNjhlMTJhOWYzNDk5:user:0:attachment:image:0",
+                  "fileType": "image",
+                  "fileName": null,
+                  "locator": "/rest/runs/standalone/context-files/ctx_3d91d4f94a72__diagram.png"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1MTJfNGZkNzE3NGItZDFhNi00MWRjLTk4MTItNjhlMTJhOWYzNDk5:user:0:attachment:file:0",
+                  "fileType": "text",
+                  "fileName": "accepted-notes.txt",
+                  "locator": "/rest/runs/standalone/context-files/ctx_e4282bcc2901__notes.txt"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1MTJfNGZkNzE3NGItZDFhNi00MWRjLTk4MTItNjhlMTJhOWYzNDk5:user:0:attachment:file:1",
+                  "fileType": "pdf",
+                  "fileName": "accepted-report.pdf",
+                  "locator": "/rest/runs/standalone/context-files/ctx_3974d8bd5aed__report.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "storedFilename": "ctx_e4282bcc2901__notes.txt",
+        "displayName": "notes.txt",
+        "locator": "/rest/runs/standalone/context-files/ctx_e4282bcc2901__notes.txt",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            115,
+            116,
+            97,
+            110,
+            100,
+            97,
+            108,
+            111,
+            110,
+            101,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            110,
+            111,
+            116,
+            101,
+            115,
+            46,
+            116,
+            120,
+            116
+          ]
+        },
+        "fileType": "text",
+        "name": "notes.txt"
+      },
+      {
+        "storedFilename": "ctx_3d91d4f94a72__diagram.png",
+        "displayName": "diagram.png",
+        "locator": "/rest/runs/standalone/context-files/ctx_3d91d4f94a72__diagram.png",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            4,
+            0,
+            0,
+            0,
+            181,
+            28,
+            12,
+            2,
+            0,
+            0,
+            0,
+            11,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            252,
+            255,
+            31,
+            0,
+            3,
+            3,
+            2,
+            0,
+            239,
+            154,
+            80,
+            100,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ]
+        },
+        "fileType": "image",
+        "name": "diagram.png"
+      },
+      {
+        "storedFilename": "ctx_3974d8bd5aed__report.pdf",
+        "displayName": "report.pdf",
+        "locator": "/rest/runs/standalone/context-files/ctx_3974d8bd5aed__report.pdf",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            115,
+            116,
+            97,
+            110,
+            100,
+            97,
+            108,
+            111,
+            110,
+            101,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            114,
+            101,
+            112,
+            111,
+            114,
+            116,
+            46,
+            112,
+            100,
+            102
+          ]
+        },
+        "fileType": "pdf",
+        "name": "report.pdf"
+      }
+    ]
+  },
+  {
+    "target": "standalone-lead",
+    "runtimeKind": "codex_app_server",
+    "projection": {
+      "runId": "standalone-lead",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "fileAttachments": [
+            {
+              "uri": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_33339489075d__notes.txt",
+              "fileType": "text",
+              "fileName": "accepted-notes.txt"
+            },
+            {
+              "uri": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_08cfa1ab163a__report.pdf",
+              "fileType": "pdf",
+              "fileName": "accepted-report.pdf"
+            }
+          ],
+          "content": "review files",
+          "media": {
+            "images": [
+              "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_412824953e21__diagram.png"
+            ]
+          },
+          "ts": 1789228596.594
+        }
+      ],
+      "activities": [],
+      "summary": "review files",
+      "lastActivityAt": "2026-09-12T15:56:36.594Z",
+      "hasEarlierActiveTraceEvents": false
+    },
+    "page": {
+      "events": [
+        {
+          "eventId": "raw:v1:53:rt_1789228596594_513cc7cc-c60c-4222-8805-234486f2292b",
+          "turnGroupId": "turn:v1:15:attachment-turn",
+          "occurredAtMs": 1789228596594,
+          "visuals": [
+            {
+              "__typename": "EventMonitorUserVisual",
+              "kind": "user",
+              "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1OTRfNTEzY2M3Y2MtYzYwYy00MjIyLTg4MDUtMjM0NDg2ZjIyOTJi:user:0",
+              "eventId": "raw:v1:53:rt_1789228596594_513cc7cc-c60c-4222-8805-234486f2292b",
+              "kindOrdinal": 0,
+              "text": "review files",
+              "attachments": [
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1OTRfNTEzY2M3Y2MtYzYwYy00MjIyLTg4MDUtMjM0NDg2ZjIyOTJi:user:0:attachment:image:0",
+                  "fileType": "image",
+                  "fileName": null,
+                  "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_412824953e21__diagram.png"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1OTRfNTEzY2M3Y2MtYzYwYy00MjIyLTg4MDUtMjM0NDg2ZjIyOTJi:user:0:attachment:file:0",
+                  "fileType": "text",
+                  "fileName": "accepted-notes.txt",
+                  "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_33339489075d__notes.txt"
+                },
+                {
+                  "attachmentId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1OTY1OTRfNTEzY2M3Y2MtYzYwYy00MjIyLTg4MDUtMjM0NDg2ZjIyOTJi:user:0:attachment:file:1",
+                  "fileType": "pdf",
+                  "fileName": "accepted-report.pdf",
+                  "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_08cfa1ab163a__report.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "storedFilename": "ctx_33339489075d__notes.txt",
+        "displayName": "notes.txt",
+        "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_33339489075d__notes.txt",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            115,
+            116,
+            97,
+            110,
+            100,
+            97,
+            108,
+            111,
+            110,
+            101,
+            45,
+            108,
+            101,
+            97,
+            100,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            110,
+            111,
+            116,
+            101,
+            115,
+            46,
+            116,
+            120,
+            116
+          ]
+        },
+        "fileType": "text",
+        "name": "notes.txt"
+      },
+      {
+        "storedFilename": "ctx_412824953e21__diagram.png",
+        "displayName": "diagram.png",
+        "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_412824953e21__diagram.png",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            4,
+            0,
+            0,
+            0,
+            181,
+            28,
+            12,
+            2,
+            0,
+            0,
+            0,
+            11,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            252,
+            255,
+            31,
+            0,
+            3,
+            3,
+            2,
+            0,
+            239,
+            154,
+            80,
+            100,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ]
+        },
+        "fileType": "image",
+        "name": "diagram.png"
+      },
+      {
+        "storedFilename": "ctx_08cfa1ab163a__report.pdf",
+        "displayName": "report.pdf",
+        "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_08cfa1ab163a__report.pdf",
+        "phase": "final",
+        "bytes": {
+          "type": "Buffer",
+          "data": [
+            115,
+            116,
+            97,
+            110,
+            100,
+            97,
+            108,
+            111,
+            110,
+            101,
+            45,
+            108,
+            101,
+            97,
+            100,
+            58,
+            99,
+            111,
+            100,
+            101,
+            120,
+            95,
+            97,
+            112,
+            112,
+            95,
+            115,
+            101,
+            114,
+            118,
+            101,
+            114,
+            58,
+            114,
+            101,
+            112,
+            111,
+            114,
+            116,
+            46,
+            112,
+            100,
+            102
+          ]
+        },
+        "fileType": "pdf",
+        "name": "report.pdf"
+      }
+    ]
+  }
+]

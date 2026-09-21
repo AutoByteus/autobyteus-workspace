@@ -1,0 +1,293 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams" [active]:
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - textbox "Search teams by name"
+  - button "Reload":
+    - text: Reload
+  - button "Create Team"
+  - generic: AW
+  - heading "Article Writing Team" [level=3]
+  - paragraph: A two-specialist article team for investigation-led understanding, style-aware drafting, critical review, and revision until publication-ready quality.
+  - generic: writing-and-editing
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "article_writer":
+    - generic: A
+    - generic: article_writer
+  - generic "article_reviewer":
+    - generic: A
+    - generic: article_reviewer
+  - paragraph: Coordinator
+  - paragraph: article_writer
+  - paragraph: Members
+  - paragraph: "2"
+  - generic: CS
+  - heading "Classroom Simulation Team" [level=3]
+  - paragraph: A teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.
+  - generic: education-simulation
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "professor":
+    - generic: P
+    - generic: professor
+  - generic "student":
+    - generic: S
+    - generic: student
+  - paragraph: Coordinator
+  - paragraph: professor
+  - paragraph: Members
+  - paragraph: "2"
+  - generic: ED
+  - heading "Evidence-Driven Delivery Team" [level=3]
+  - paragraph: A canonical example of incremental investigation, planning, micro-task execution, validation, and result-based iteration.
+  - generic: example
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "investigator":
+    - generic: I
+    - generic: investigator
+  - generic "planner":
+    - generic: P
+    - generic: planner
+  - generic "implementer":
+    - generic: I
+    - generic: implementer
+  - generic "validator":
+    - generic: V
+    - generic: validator
+  - paragraph: Coordinator
+  - paragraph: planner
+  - paragraph: Members
+  - paragraph: "4"
+  - generic: KC
+  - heading "Kids Coloring Story Team" [level=3]
+  - paragraph: A child-friendly creative production team for multi-page A4 printable coloring stories, coloring bookmarks, activity sheets, and short line-art picture sequences.
+  - generic: creative-media
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "story_activity_designer":
+    - generic: S
+    - generic: story_activity_designer
+  - generic "coloring_page_illustrator":
+    - generic: C
+    - generic: coloring_page_illustrator
+  - generic "child_experience_reviewer":
+    - generic: C
+    - generic: child_experience_reviewer
+  - generic "printable_pack_producer":
+    - generic: P
+    - generic: printable_pack_producer
+  - paragraph: Coordinator
+  - paragraph: story_activity_designer
+  - paragraph: Members
+  - paragraph: "4"
+  - generic: KP
+  - heading "Kids Picture Story Team" [level=3]
+  - paragraph: A child-friendly creative production team for illustrated picture books with approved text composed into each text-bearing page image.
+  - generic: creative-media
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "story_picture_book_author":
+    - generic: S
+    - generic: story_picture_book_author
+  - generic "picture_book_illustrator":
+    - generic: P
+    - generic: picture_book_illustrator
+  - generic "picture_book_reviewer":
+    - generic: P
+    - generic: picture_book_reviewer
+  - generic "book_production_editor":
+    - generic: B
+    - generic: book_production_editor
+  - paragraph: Coordinator
+  - paragraph: story_picture_book_author
+  - paragraph: Members
+  - paragraph: "4"
+  - generic: MV
+  - heading "Manga Video Studio Team" [level=3]
+  - paragraph: A story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.
+  - generic: creative-media
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "manga_showrunner":
+    - generic: M
+    - generic: manga_showrunner
+  - generic "storyboard_director":
+    - generic: S
+    - generic: storyboard_director
+  - generic "manga_illustrator":
+    - generic: M
+    - generic: manga_illustrator
+  - generic "voice_video_producer":
+    - generic: V
+    - generic: voice_video_producer
+  - paragraph: Coordinator
+  - paragraph: manga_showrunner
+  - paragraph: Members
+  - paragraph: "4"
+  - generic: NP
+  - heading "Narrated Presentation Video Team" [level=3]
+  - paragraph: A slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.
+  - generic: creative-media
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "presentation_director":
+    - generic: P
+    - generic: presentation_director
+  - generic "narration_script_reviewer":
+    - generic: "N"
+    - generic: narration_script_reviewer
+  - generic "slide_video_producer":
+    - generic: S
+    - generic: slide_video_producer
+  - paragraph: Coordinator
+  - paragraph: presentation_director
+  - paragraph: Members
+  - paragraph: "3"
+  - generic: PD
+  - heading "Product Design & Prototyping Team" [level=3]
+  - paragraph: An independent product-design team that explores abstract requirements visually, evolves product experiences, and delivers implementation-oriented experience specifications.
+  - generic: product-development
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "product_prototyper":
+    - generic: P
+    - generic: product_prototyper
+  - generic "prototype_bootstrapper":
+    - generic: P
+    - generic: prototype_bootstrapper
+  - paragraph: Coordinator
+  - paragraph: product_prototyper
+  - paragraph: Members
+  - paragraph: "2"
+  - generic: RT
+  - heading "Research To Deck Team" [level=3]
+  - paragraph: A three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.
+  - generic: content-and-presentations
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "deep_researcher":
+    - generic: D
+    - generic: deep_researcher
+  - generic "infographic_powerpoint_designer":
+    - generic: I
+    - generic: infographic_powerpoint_designer
+  - generic "deck_reviewer":
+    - generic: D
+    - generic: deck_reviewer
+  - paragraph: Coordinator
+  - paragraph: deep_researcher
+  - paragraph: Members
+  - paragraph: "3"
+  - generic: SE
+  - heading "Software Engineering Team" [level=3]
+  - paragraph: A Solution Designer-led team that investigates requests, engineers approved requirements, produces proportionate architecture designs, then implements, reviews, validates and delivers the solution.
+  - generic: software-engineering
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "solution_designer":
+    - generic: S
+    - generic: solution_designer
+  - generic "architecture_reviewer":
+    - generic: A
+    - generic: architecture_reviewer
+  - generic "implementation_engineer":
+    - generic: I
+    - generic: implementation_engineer
+  - generic "code_reviewer":
+    - generic: C
+    - generic: code_reviewer
+  - generic: +2 more
+  - paragraph: Coordinator
+  - paragraph: solution_designer
+  - paragraph: Members
+  - paragraph: "6"
+  - generic: SP
+  - heading "Software Product Promo Video Team" [level=3]
+  - paragraph: A product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services.
+  - generic: creative-media
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "promo_director":
+    - generic: P
+    - generic: promo_director
+  - generic "visual_director":
+    - generic: V
+    - generic: visual_director
+  - generic "visual_reviewer":
+    - generic: V
+    - generic: visual_reviewer
+  - generic "promo_video_producer":
+    - generic: P
+    - generic: promo_video_producer
+  - paragraph: Coordinator
+  - paragraph: promo_director
+  - paragraph: Members
+  - paragraph: "4"
+  - generic: ST
+  - heading "STORM Team" [level=3]
+  - paragraph: A Stanford STORM-inspired knowledge curation team for researching a topic, mining perspectives, asking retrieval-grounded questions, synthesizing an outline, and writing a cited article.
+  - generic: research-writing
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "topic_research_coordinator":
+    - generic: T
+    - generic: topic_research_coordinator
+  - generic "perspective_miner":
+    - generic: P
+    - generic: perspective_miner
+  - generic "expert_interviewer":
+    - generic: E
+    - generic: expert_interviewer
+  - generic "outline_architect":
+    - generic: O
+    - generic: outline_architect
+  - generic: +2 more
+  - paragraph: Coordinator
+  - paragraph: topic_research_coordinator
+  - paragraph: Members
+  - paragraph: "6"

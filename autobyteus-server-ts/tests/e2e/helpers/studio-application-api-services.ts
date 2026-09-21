@@ -39,6 +39,22 @@ export const configureE2eStudioApplicationApiServices = (
   return configureStudioApplicationApiServices({
     agentDefinitionService,
     agentTeamDefinitionService,
+    agentOrgDefinitionService: overrides.agentOrgDefinitionService
+      ?? unavailableService<StudioApplicationApiServices["agentOrgDefinitionService"]>(
+        "agentOrgDefinitionService",
+      ),
+    agentOrgRunService: overrides.agentOrgRunService
+      ?? unavailableService<StudioApplicationApiServices["agentOrgRunService"]>(
+        "agentOrgRunService",
+      ),
+    definitionAdmissionService: overrides.definitionAdmissionService
+      ?? unavailableService<StudioApplicationApiServices["definitionAdmissionService"]>(
+        "definitionAdmissionService",
+      ),
+    collaborationRootHistoryService: overrides.collaborationRootHistoryService
+      ?? unavailableService<StudioApplicationApiServices["collaborationRootHistoryService"]>(
+        "collaborationRootHistoryService",
+      ),
     agentRunService: overrides.agentRunService
       ?? unavailableService<StudioApplicationApiServices["agentRunService"]>("agentRunService"),
     teamRunService: overrides.teamRunService

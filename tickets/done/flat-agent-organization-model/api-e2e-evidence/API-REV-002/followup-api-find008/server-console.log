@@ -1,0 +1,7 @@
+Platform detection: Windows=false
+App root directory: /tmp/aorg-api-find008-correlated-probe/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data
+AppConfig instance created.
+ERROR: Configuration file not found: Error: Configuration file not found: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/.env
+Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/.env
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_CONFIG_INITIALIZATION_FAILED","summary":"Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008/live-data/.env","logPath":null}

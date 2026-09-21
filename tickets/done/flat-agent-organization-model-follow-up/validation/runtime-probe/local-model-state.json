@@ -1,0 +1,77 @@
+[
+  {
+    "id": "qwen/qwen3.8-27b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "google/gemma-4-31b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "qwen/qwen3.6-35b-a3b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "qwen/qwen3.6-27b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "unsloth/gemma-4-26b-a4b-it",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "google/gemma-4-26b-a4b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "qwen3.6-27b-mtplx-optimized-speed",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "qwen3.6-27b-ud-mlx",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "qwen3.6-27b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+    "state": "not-loaded",
+    "type": "llm"
+  },
+  {
+    "id": "qwen3.5-27b",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+    "state": "not-loaded",
+    "type": "llm"
+  },
+  {
+    "id": "unsloth/gemma-4-31b-it",
+    "state": "not-loaded",
+    "type": "vlm"
+  },
+  {
+    "id": "text-embedding-nomic-embed-text-v1.5",
+    "state": "not-loaded",
+    "type": "embeddings"
+  },
+  {
+    "id": "deepseek-ocr",
+    "state": "not-loaded",
+    "type": "vlm"
+  }
+]

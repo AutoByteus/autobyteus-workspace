@@ -1,0 +1,24 @@
+{
+  "pid": 11187,
+  "at": "2026-09-14T10:37:35.648Z",
+  "active": [
+    {
+      "runId": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+      "active": true,
+      "status": {
+        "status": "idle",
+        "agent_id": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1"
+      }
+    }
+  ],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+      "startedAt": "2026-09-14T10:33:30.537Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09f7a-a6f5-7f02-beaa-4c5f818105eb"
+    }
+  ]
+}

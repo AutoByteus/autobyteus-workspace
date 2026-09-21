@@ -2,15 +2,22 @@
 
 ## Scope
 
-`src/run-history` owns persisted execution history, resume metadata, workspace history listing, and read-model projection for standalone agent runs and team runs.
+`src/run-history` owns persisted execution history, resume metadata, workspace
+history listing, and read-model projection for standalone Agent runs, Team runs,
+and AgentOrg roots.
 
 ## Responsibilities
 
 - Persist standalone agent run resume metadata and the V2 standalone history catalog index.
 - Persist the current V2 TeamRun state package and the V2 team history catalog
   index.
+- Persist the current AgentOrg V1 package family and AgentOrg history catalog
+  index without converting either root family into a generic on-disk schema.
 - Keep standalone index mutation behind `AgentRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `run_history_index.json` directly.
 - Keep team index mutation behind `TeamRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `team_run_history_index.json` directly.
+- Keep AgentOrg index mutation behind `AgentOrgRunHistoryCatalogService` and
+  `AgentOrgRunHistorySummaryWriter`; runtime and migration share the strict
+  first-non-empty writer rather than implementing title policy separately.
 - Keep legacy/partial standalone and team index repair explicit and bounded to startup app-data migrations, plus the standalone manual migration script; normal history listing must not perform metadata-directory repair scans.
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
@@ -57,6 +64,36 @@ Team operations:
 - `archiveStoredTeamRun`
 - `deleteStoredTeamRun`
 
+Collaboration-root operations:
+
+- `listCollaborationRootHistory`, which returns explicit `agent_team` or
+  `agent_org` roots through family-specific strict loaders.
+
+## Collaboration Root Package Readiness
+
+Team and AgentOrg history packages share one process-local strict readiness
+generation. Normal server startup explicitly rebuilds that generation before
+the HTTP server listens. Family history readers and the AgentOrg history
+catalog then call the shared `awaitReady()` contract: they reuse the current or
+in-flight generation, or lazily start one strict generation when startup has
+not established it. A first AgentOrg history read must not force a second full
+Team-and-AgentOrg package scan after startup readiness has already completed.
+
+The shared generation is structural: it enforces exact Team/AgentOrg family
+placement, required and retired package manifests, execution trees, task
+sidecars, and communication sidecars. It does not enumerate or read member
+`raw_traces_active.jsonl`, rotated `raw_traces_*.jsonl`, or context-file bytes.
+Whole-history attachment-locator conversion and validation belongs to the
+one-time migration; exact file availability is checked when that file is
+requested.
+
+Readiness failure rejects the history operation; it is not converted into a
+successful empty result and cannot publish unvalidated index rows. After
+readiness succeeds, the AgentOrg catalog retains its existing serialized
+index/tree projection and derived-index write. Readiness state is reconstructed
+in memory for each process and changes no history package or index format, so
+no persisted-data migration is required.
+
 ## Stopped Run Model Configuration
 
 Studio exposes one revision-free edit contract for persisted standalone Agent
@@ -88,11 +125,10 @@ General lifecycle owners:
   per-run transition lane with restore/activation and commits the validated
   pair to `run_metadata.json` through `AgentRunHistoryCatalogService`.
 - `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root
-  transition lane with Team restore. Each patch names an exact configured Team
-  or Agent address, can change only that scope's model/settings pair, and commits
-  the resulting current V2 execution tree once every intended patch validates
-  against the original saved tree. Task nodes and fixed launch identity are not
-  mutation targets.
+  transition lane with Team restore. Each patch names the root Team `/` or one exact direct Agent address, can
+  change only that scope's `llmModelIdentifier`/`llmConfig` pair, and commits the
+  resulting current V2 execution tree. Task nodes and fixed launch identity are
+  not mutation targets.
 
 `RunModelSelectionService` resolves the selected model in the fixed runtime's
 current catalog. For replacement, both the freshly saved model and target need
@@ -229,8 +265,8 @@ It also exposes:
 - `isActive`: the manager-owned binary fact for the root TeamRun;
 - `members`: flat configured-Agent status snapshots derived from the V2 tree and
   current runtime state; and
-- `rootTeam`: the recursive V2 execution-tree projection used for nested display
-  and reopen.
+- `rootTeam`: the flat V2 execution-tree projection used for direct-Agent and
+  task-execution display and reopen.
 
 `TeamRunHistoryService` starts from admitted catalog rows, reads the matching V2
 execution tree, and skips rows whose tree is missing or invalid. It does not read
@@ -245,6 +281,43 @@ status snapshots from the active manager at list time. If a Team has no active
 runtime, `isActive` is false and its Agents default to `offline`; no five-state
 root status is calculated or persisted. Catalog rows do not persist
 `lastKnownStatus`, `lastActivityAt`, or `deleteLifecycle`.
+
+AgentOrg history is a separate current package family. The unified
+`listCollaborationRootHistory` query returns an explicit `root_subject_kind`
+(`agent_team` or `agent_org`) plus the family projection. AgentOrg rows start at
+`memory/agent_org_run_history_index.json`; `AgentOrgRunHistoryCatalogService`
+and `AgentOrgRunPackageCatalog` require the matching V1 execution tree and both
+V1 sidecars. The coordinator-free `rootOrg` contains direct Org Agents and
+direct mounted Teams with their direct Agents. Family-specific loaders remain
+authoritative; the unified list does not convert either persisted root into a
+generic on-disk schema.
+
+AgentOrg summaries follow the established Team first-message rule. Only a
+successfully accepted external `SEND_MESSAGE` with non-empty compacted content
+to an exact configured direct or mounted-Team Agent qualifies. The shared
+compactor collapses whitespace, trims, and caps the title at 100 characters
+(97 plus `...` when truncated). The first non-empty summary wins; later,
+task-scoped, inter-Agent, task/system, approval/interrupt, rejected, and failed
+inputs cannot replace it. Before any qualifying input, an empty summary remains
+valid and clients display `New - <AgentOrg name>`.
+
+The AgentOrg catalog serializes normal-runtime attempts and supplies a strict
+row snapshot to `AgentOrgRunHistorySummaryWriter`. A successful first write is
+atomically replaced and strictly reread before the catalog adopts it. The
+shared `atomicWriteJsonFile` returns the original operation to its caller while
+storing a distinct handled settlement tail for per-path ordering and cleanup.
+Consequently, a caller can observe one deterministic write failure without an
+unhandled-rejection escape, later queued same-path writes remain ordered, and
+the failed write does not poison the process or queue.
+
+Startup migration `20260905_agent_org_history_first_message_summary_v1`
+preserves existing non-empty values and considers configured-member complete
+trace corpora only for empty rows. Root communication/task sidecars can
+disqualify internal provenance but never qualify it. The migration writes only
+one uniquely earliest qualifying external user trace; absent or ambiguous
+evidence retains the valid empty fallback with `SUCCEEDED_WITH_WARNINGS`, while
+required structure or selected-value persistence/reread failures are
+`FAILED`. Normal list/read paths never scan traces to repair summaries.
 
 Prepared-new run identities are explicit metadata facts, not inferred from a
 missing `platformAgentRunId` and not represented by a persisted
@@ -265,8 +338,10 @@ Memory root:
 
 - `memory/run_history_index.json`
 - `memory/team_run_history_index.json`
+- `memory/agent_org_run_history_index.json`
 - `memory/agents/<runId>/...`
 - `memory/agent_teams/<teamRunId>/...`
+- `memory/agent_orgs/<orgRunId>/...`
 
 Standalone agent persisted files:
 
@@ -290,16 +365,39 @@ Team persisted files:
   `terminatedAt`
 - current V2 execution tree:
   `memory/agent_teams/<rootTeamRunId>/team_run_execution_tree.json`, containing
-  `schemaVersion: 2`, creation/archive facts, application binding, handoffs, and
-  the complete recursive configured/task execution tree. The root and every
-  configured Team carry a complete `defaultLaunchConfiguration`; every
-  configured Agent carries a complete `launchConfiguration`.
-- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<agentRunId>/...`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<agentRunId>/...`, with deeper child TeamRun IDs appended in physical `ancestorTeamRunIds` order. Every supported runtime can persist `raw_traces_active.jsonl`; only native AutoByteus continuation owns new `working_context_snapshot.json` writes.
+  `schemaVersion: 2`, creation/archive facts, application binding, handoffs, one
+  flat configured root with direct Agents, and task execution snapshots. The
+  root carries a complete `defaultLaunchConfiguration`; every direct configured
+  Agent carries a complete `launchConfiguration`.
+- member runtime memory artifacts: direct members use
+  `memory/agent_teams/<rootTeamRunId>/<agentRunId>/...`; Agents in delegated task
+  Teams use the same root followed by concrete task-TeamRun IDs in physical
+  `ancestorTeamRunIds` order and then the AgentRun ID. Every supported runtime
+  can persist `raw_traces_active.jsonl`; only native AutoByteus continuation
+  owns new `working_context_snapshot.json` writes.
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical Team/Agent directory, for example `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
 - versioned team communication projection:
   `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
 - versioned task delegation records projection:
   `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`
+
+AgentOrg persisted files:
+
+- V1 Org catalog index: `memory/agent_org_run_history_index.json`, with rows
+  containing `orgRunId`, definition identity, workspace, summary,
+  creation/archive facts, and termination fact
+- current V1 execution tree:
+  `memory/agent_orgs/<orgRunId>/agent_org_run_execution_tree.json`, containing
+  `schemaVersion: 1`, `subjectKind: "agent_org"`, a coordinator-free `rootOrg`,
+  direct Org Agents, direct mounted Teams with their direct Agents, handoffs,
+  effective launch configurations, concrete identities, application binding,
+  and task snapshots
+- versioned communication projection:
+  `memory/agent_orgs/<orgRunId>/agent_org_communication_messages.json`
+- versioned task projection:
+  `memory/agent_orgs/<orgRunId>/agent_org_task_delegation_records.json`
+- rooted member runtime artifacts below `memory/agent_orgs/<orgRunId>/...`,
+  resolved by root identity and concrete configured/task ancestry
 
 Important identity/storage rules:
 
@@ -311,20 +409,25 @@ Important identity/storage rules:
   through `src/agent-memory/store/agent-memory-layout.ts` and already-persisted
   `memoryDir` values; team/member storage paths resolve through the shared
   `AgentMemoryLocationService`.
-- `TeamRunHistoryCatalogService` is the normal semantic owner for team catalog
+- `TeamRunHistoryCatalogService` is the normal semantic owner for Team catalog
   mutations: create/restore, first/explicit summary update,
   archive/unarchive, terminate, delete/cancel, and catalog flush
-- ordinary message activity and live status transitions must not rewrite
-  `memory/run_history_index.json` or `memory/team_run_history_index.json`
+- `AgentOrgRunHistoryCatalogService` is the normal semantic owner for AgentOrg
+  catalog mutations; `AgentOrgRunPackageCatalog` admits only complete current
+  V1 packages
+- ordinary message activity and live status transitions must not rewrite any
+  standalone, Team, or AgentOrg history index
 - normal standalone history listing reads the V2 index/in-memory catalog; it
   does not scan every `memory/agents/*/run_metadata.json` to repair missing rows
 - normal Team history listing starts from admitted index rows and reads each
   row's exact V2 `team_run_execution_tree.json`; it does not read predecessor
   `team_run_metadata.json`, reconstruct topology from flat members, or admit an
   incomplete package
-- `TeamRunPackageCatalog` performs bounded startup admission of complete V2
-  execution-tree/task/communication packages and excludes predecessor,
-  incomplete, malformed, or unsupported roots from runtime/history
+- normal AgentOrg history listing starts from the AgentOrg index and reads each
+  exact V1 execution tree and sidecar set; it never falls back to a Team package
+- `TeamRunPackageCatalog` and `AgentOrgRunPackageCatalog` perform bounded family-
+  specific admission and exclude predecessor, incomplete, malformed, or
+  unsupported roots from runtime/history
 - `TeamRunMetadataMemberTreeMigration` and
   `TeamRunHistoryIndexV2AppDataMigration` remain legacy migration boundaries;
   current runtime code does not depend on schema-v3 Team metadata
@@ -336,6 +439,23 @@ Important identity/storage rules:
   it preserves the existing execution facts, adds `/` at the root, maps runtime
   labels, and materializes every Team default from its unique direct coordinator
   launch snapshot before current readers operate
+- `20260901_agent_org_flat_team_families_v1` is the required startup-only
+  fixed-depth family cutover. Current flat Team V2 packages remain native with
+  zero writes; supported former multi-Team packages become AgentOrg V1 packages
+  and index rows. Preflight, atomic replacement/rename, reread validation, and
+  deterministic restart Retry precede target-only admission. Two exact
+  root-local outcomes remain failed item details, contribute to `failedCount`,
+  and produce terminal `SUCCEEDED_WITH_WARNINGS` only when no fatal outcome is
+  present: a missing required legacy `team_run_execution_tree.json` before a
+  candidate plan exists (the source is unchanged), and a repository-typed
+  malformed/conflicting legacy token-attribution-data rejection (the root SQL
+  transaction rolls back and the affected Org remains locally guarded). The
+  shared runner skips that terminal warning on later startups. Root/family/tree
+  structural faults, SQL/query/update faults, changed preconditions, strict
+  reread or dependency failures, and every other sidecar, locator, writer,
+  commit, index, cleanup, postcondition or unknown failure remain `FAILED` and
+  retryable; global token discovery and any other fatal outcome dominate
+  warnings.
 - required startup app-data migration
   `20260706_remove_global_skill_discovery_mode` rewrites persisted
   `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
@@ -367,16 +487,24 @@ Important identity/storage rules:
 - standalone runs persist an explicit `memoryDir` in agent metadata
 - new concrete agent runtime ids are allocated by `AgentRunIdentityAllocator` before backend creation and use `<agent_definition_name_slug>_<uuid-without-dashes>`; the slug is readability-only and the entire id is treated as opaque
 - standalone, team-member, and task-agent `AgentRun` ids use the same allocator-backed identity policy; new production paths do not derive ids from runtime kind, route key, team run id, or task id
-- new team runs use `<team_definition_name_slug>_<uuid-without-dashes>` generated by `TeamRunService`; each nested AgentTeam node stores its own opaque `teamRunId`
+- new Team runs use `<team_definition_name_slug>_<uuid-without-dashes>` generated
+  by `TeamRunService`; a standalone configured Team has one opaque root
+  `teamRunId`, while delegated task Teams receive separate task-scoped run IDs
+- new AgentOrg runs receive one opaque `orgRunId`; each direct mounted Team has
+  its own concrete `teamRunId` inside the Org V1 tree
 - historical persisted run ids remain stored literally under their existing memory directories and are not rewritten or validated against the new generated shape
 - Team member logical identity is one canonical rooted `memberAddress`; bare
   names, paths, and route keys are not current runtime/history selectors
-- team-member memory identity is root-hierarchical: direct members use
-  `rootTeamRunId + agentRunId`, nested members use `rootTeamRunId +
-  ancestorTeamRunIds + agentRunId`, and task Agents use that same physical Team
-  scope plus their generated `taskAgentRunId`
-- `AgentMemoryLocationService` and `TeamRunExecutionTreeLocationService` are the
-  shared read/write/projection owners for `rootTeamRunId`, physical
+- Team-member memory identity is root-hierarchical: direct configured members
+  use `rootTeamRunId + agentRunId`; task-Team members add concrete task TeamRun
+  IDs to `ancestorTeamRunIds`; task Agents use the same physical scope plus
+  their generated `taskAgentRunId`
+- AgentOrg member memory uses the AgentOrg root identity and the concrete
+  mounted-Team/task ancestry stored in the V1 package; logical addresses remain
+  distinct from physical storage ancestry
+- `AgentMemoryLocationService`, `TeamRunExecutionTreeLocationService`, and
+  `AgentOrgExecutionTreeLocationService` are the family-aware
+  read/write/projection owners for `rootTeamRunId`, physical
   `ancestorTeamRunIds`, logical `memberAddress`, concrete Agent/task identity,
   exact task execution address, and resolved `memoryDir`
 - persisted execution/history coordinates are not the Agent collaboration tool
@@ -400,18 +528,18 @@ Important identity/storage rules:
   provider binding. Native Team Agents keep it null and restore from local
   AgentRun identity plus native memory state.
 
-The V2 execution tree is the restore and projection topology authority. It
-stores a root Team at address `/`, recursively nested configured Team/Agent
-nodes, complete launch/default configurations, concrete TeamRun/AgentRun IDs,
-application binding, handoffs, and task execution snapshots. Flat configured-
-Agent lists are derived for history/status projection only and are not an
-alternative restore contract.
+The Team V2 execution tree is the standalone Team restore and projection
+authority. It stores one root Team at `/`, direct configured Agents, complete
+launch/default configurations, concrete identities, application binding,
+handoffs, and task snapshots. Direct-Agent lists are projections, not an
+alternative restore contract. Task-Team IDs remain in the root package for
+exact task addressing and physical ancestry but are not configured Team members
+or independent workspace-history rows.
 
-Nested child TeamRuns are not independent workspace-history rows. Their
-`teamRunId` remains in the parent V2 tree for restore, exact execution addressing,
-and physical ancestry, while default history lists the root TeamRun and its
-recursive `rootTeam` projection. Restore uses the stored handoff snapshot and
-never recompiles current definition files.
+The AgentOrg V1 execution tree is the separate AgentOrg restore and projection
+authority. It stores `rootOrg`, direct Org Agents, direct mounted Teams and their
+direct Agents, exact identities/configuration, handoffs, and tasks. Restore in
+both families uses stored snapshots and never recompiles current definitions.
 
 ## Projection Model
 
@@ -637,42 +765,76 @@ snapshot behavior is unchanged; Codex and Claude have no current snapshot
 write/reconstruction path, and their old metadata-classified duplicates are a
 startup-cleanup concern rather than a retention window.
 
-## Team Restore / Projection Contract
+## Retained Non-Media Context-File Associations
 
-For Team runs:
+The existing user raw trace stores optional immutable `file_attachments`
+(URI, type and recorded name), distinct from media fields. Accepted original
+external/native input is recorded before provider working-context transformations.
+Initial, cold and typed earlier-active-page projections retain these associations
+and exact owner identity, including file-only messages and complete archived
+segments. UI hydration uses recognized-upload friendly naming without changing
+raw facts or custom filenames. Reads do not fabricate associations missing from
+historical traces or replay a migration to backfill them.
 
-1. The exact V2 `team_run_execution_tree.json` is the source of truth for
-   configured Team/Agent topology, canonical addresses, concrete run identity,
-   provider binding, task execution snapshots, and complete launch/default
-   configuration.
+Org attachments resolve stored root plus exact AgentRun ownership and physical
+file membership, not the currently selected logical address. Root package
+readiness admits current structural authorities without scanning saved
+attachment references or historical traces. Only the existing initial family
+migration may transform and validate proven prior locators. Normal history,
+projection and Open do not perform repairs, runtime activation or legacy route
+fallback; an exact attachment request resolves its current owner, safe stored
+filename/path, and file existence, returning a request-scoped error if the bytes
+are unavailable. Final Team attachment access returns `400` for a malformed
+member address or unsafe stored filename and `404` for a shaped but absent or
+mis-correlated exact member/file. Unexpected access failures remain server
+errors rather than being hidden as client outcomes. See
+[AgentOrg](agent_orgs.md#exact-context-files-and-saved-references)
+for cutover inventory and saved-locator preservation constraints.
+
+## Collaboration Root Restore / Projection Contract
+
+For standalone Team runs:
+
+1. The exact V2 `team_run_execution_tree.json` is the source of truth for the
+   flat configured Agent topology, coordinator address, root/member identities,
+   provider bindings, tasks, and complete launch/default configuration.
 2. `getTeamRunResumeConfig(teamRunId)` returns `{ teamRunId, isActive,
    executionTree }`; GraphQL projects that V2 tree without rebuilding it from
    current definitions or history-index rows.
-3. Canonical `memberAddress` selects a logical configured placement, while
+3. Canonical `memberAddress` selects one direct configured Agent placement;
    `agentRunId` identifies its opaque persisted AgentRun/storage subtree.
-4. `platformAgentRunId` identifies only the exact external Codex thread or Claude
-   session. It is never a local AgentRun ID or a native AutoByteus restoration
-   signal; native nodes keep it null.
-5. Nested configured Team nodes retain their child `teamRunId`, coordinator
-   address, complete default, and members. Child TeamRun IDs form the physical
-   `ancestorTeamRunIds` chain for nested memory while logical routing remains
-   address-based.
-6. The stored effective `handoffs` array is the collaboration-guidance source;
-   restore must not recompile handoffs from the current definition graph.
-7. `TeamRunStatePackageLoader` reads the execution tree together with task and
-   communication records. Restart repair interrupts nonterminal delegated tasks
-   and aligns their execution snapshots; it does not recreate in-flight work.
-8. Team-member projection resolves the exact Agent from the V2 tree, resolves
-   the root-hierarchical memory directory, and delegates to
-   `AgentRunViewProjectionService` for the same local replay bundle used by
-   standalone runs. Codex and Claude do not preload, merge, or fall back to
-   provider-native display history.
+4. Task Agents and task Teams retain exact task execution identities beneath
+   the flat root. They do not become configured membership.
+5. The stored effective `handoffs` array is the collaboration-guidance source;
+   restore does not recompile handoffs from the current definition.
+6. `TeamRunStatePackageLoader` reads the execution tree with task and
+   communication records. Restart repair interrupts nonterminal tasks; it does
+   not recreate in-flight work.
 
-Predecessor schema-v3 metadata and exact V1 packages are migration inputs only.
-If required startup conversion cannot produce and validate a complete V2
-package, the root remains excluded and restore fails clearly instead of guessing
-identity or path ownership.
+For AgentOrg runs:
 
-Team termination updates catalog activity only after backend termination
-succeeds. The frontend then marks the Team inactive and refreshes history; a
-failed termination leaves local runtime and active/inactive cache untouched.
+1. The exact V1 `agent_org_run_execution_tree.json` is the source of truth for
+   the coordinator-free Org root, direct Org Agents, direct mounted Teams and
+   their direct Agents, exact configuration/identity, handoffs, and tasks.
+2. `AgentOrgStatePackageLoader` reads that tree with
+   `agent_org_task_delegation_records.json` and
+   `agent_org_communication_messages.json`; a Team package is never a fallback.
+3. Restore rematerializes the stored Org scope and provider identities. Team
+   focus resolves to that mounted Team's stored direct coordinator; the Org has
+   no coordinator or first-member fallback.
+4. `listCollaborationRootHistory` exposes explicit Team/Org root kinds while
+   family loaders and indexes retain on-disk authority.
+
+For both families, `platformAgentRunId` identifies only the exact external
+Codex thread or Claude session. Native nodes keep it null and restore from local
+AgentRun identity plus native memory. Member projection resolves the exact
+configured/task Agent and rooted memory location, then delegates to
+`AgentRunViewProjectionService` for the same local replay bundle used by
+standalone runs. Codex and Claude do not merge provider-native display history.
+
+Predecessor metadata, exact Team V1 packages, and the formerly released fixed-
+depth multi-Team shape are migration inputs only. If required startup conversion
+cannot validate a complete current Team V2 or AgentOrg V1 package, that root is
+excluded and restore fails clearly instead of guessing identity or ownership.
+Termination updates catalog activity only after backend termination succeeds; a
+failed termination preserves the active local state.

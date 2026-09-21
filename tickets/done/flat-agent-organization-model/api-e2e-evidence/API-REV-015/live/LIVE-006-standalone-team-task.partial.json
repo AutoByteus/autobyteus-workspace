@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "label": "analyst-live-message",
+      "at": "2026-09-06T13:46:36.559Z",
+      "url": "http://127.0.0.1:3596/workspace",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nTEAMS\nAE\nAORG E2E Research Squad\n(1)\nCall send_message_to exactly once with recipient_address `/analyst`, content `APIREV15-TEAM-DIREC...\n1m\nL\nlead\n1m\nA\nanalyst\n1m\nV\nverifier\n1m\nAGENT ORGS\nAORG E2E Direct Agents Org\n(1)\nCall send_message_to exactly once with recipient_address `/verifier`, content `APIREV15-DIRECT-TO...\n10m\nL\nlead\nV\nverifier\nAORG E2E Mixed Org\n(2)\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nA\nanalyst\nRunning\nYou\nYou received a message from sender name: lead, sender id: aorg_e2e_lead_d050d7b8e66e47c68ef5df65fa6ff818\nmessage:\nAPIREV15-TEAM-DIRECT-MSG-001\n\nReference files:\n- /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default/refs/team-control.txt\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nSep 6, 01:46 PM\n\nfrom lead\n\n/lead\n\nAPIREV15-TEAM-DIRECT-MSG-001\n\nteam-control.txt\nMessage\nlead\nSep 6, 01:46 PM\n\n/lead\n\nAPIREV15-TEAM-DIRECT-MSG-001\n\nTasks\n0 tasks",
+      "selected": [
+        {
+          "test": "workspace-team-member-aorg_e2e_research_squad_2bca3e83e531484ca08af4446c716dfd-/analyst",
+          "text": "A analyst 1m"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "alerts": [],
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "responses": []
+}

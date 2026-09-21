@@ -12,8 +12,9 @@ import { CodexThreadEventName } from "../../../../../../src/agent-execution/back
 import { createCodexThreadStartupGate } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-startup-gate.js";
 import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { testMemberTaskRootResolver } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
+import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -22,7 +23,7 @@ const createRunContext = (input: {
   reasoningEffort?: string | null;
   serviceTier?: string | null;
   dynamicToolHandlers?: Record<string, any>;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
 }) =>
   new AgentRunContext({
     runId: input.runId,
@@ -34,7 +35,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
       skillAccessMode: SkillAccessMode.NONE,
-      memberTeamContext: input.memberTeamContext ?? null,
+      memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {
@@ -61,7 +62,7 @@ const createThread = (
     reasoningEffort?: string | null;
     serviceTier?: string | null;
     dynamicToolHandlers?: Record<string, any>;
-    memberTeamContext?: MemberTeamContext | null;
+    memberExecutionContext?: MemberExecutionContext | null;
   } = {},
 ) => {
   const client = {
@@ -82,7 +83,7 @@ const createThread = (
       reasoningEffort: input.reasoningEffort,
       serviceTier: input.serviceTier ?? null,
       dynamicToolHandlers: input.dynamicToolHandlers,
-      memberTeamContext: input.memberTeamContext ?? null,
+      memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     client: client as never,
     startup: createCodexThreadStartupGate(),
@@ -91,15 +92,15 @@ const createThread = (
   return { thread, client };
 };
 
-const createMemberTeamContext = () =>
-  new MemberTeamContext({
+const createMemberExecutionContext = () =>
+  new MemberExecutionContext({
     identity: {
-      rootTeamRunId: "team-1",
+      root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/ping",
       agentRunId: "ping-run-1",
     },
-    collaboration: { outgoingHandoffs: [] },
-    taskRootResolver: testMemberTaskRootResolver(),
+    collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
+    tasks: testMemberTaskCommandCapability("team-1"),
   });
 
 const createSpeakApprovalParams = () => ({
@@ -157,7 +158,7 @@ describe("CodexThread MCP tool approval bridge", () => {
 
   it("auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled", () => {
     const { thread, client } = createThread(true, {
-      memberTeamContext: createMemberTeamContext(),
+      memberExecutionContext: createMemberExecutionContext(),
     });
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
     thread.subscribeAppServerMessages((message) => {
@@ -338,7 +339,7 @@ describe("CodexThread Codex approval surfaces", () => {
       dynamicToolHandlers: {
         custom_team_dynamic: handler,
       },
-      memberTeamContext: createMemberTeamContext(),
+      memberExecutionContext: createMemberExecutionContext(),
     });
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
     thread.subscribeAppServerMessages((message) => {
@@ -636,7 +637,7 @@ describe("CodexThread Codex approval surfaces", () => {
 
   it("grants permission requests automatically for team members in auto mode", () => {
     const { thread, client } = createThread(true, {
-      memberTeamContext: createMemberTeamContext(),
+      memberExecutionContext: createMemberExecutionContext(),
     });
     const requestedWorktreePath =
       "/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression";

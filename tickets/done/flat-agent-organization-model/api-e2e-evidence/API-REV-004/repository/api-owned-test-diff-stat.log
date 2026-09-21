@@ -1,0 +1,6 @@
+ .../agent-team-run-manager.integration.test.ts     |  2 +
+ ...nversation-target-websocket.integration.test.ts |  2 +-
+ .../team-run-service.integration.test.ts           | 94 ++++++++--------------
+ ...brief-studio-agent-tool-mcp.integration.test.ts | 12 ++-
+ .../brief-studio-team-config.integration.test.ts   |  8 +-
+ 5 files changed, 54 insertions(+), 64 deletions(-)

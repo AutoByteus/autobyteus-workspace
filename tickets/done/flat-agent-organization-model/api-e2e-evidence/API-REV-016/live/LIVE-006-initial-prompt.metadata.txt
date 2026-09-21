@@ -1,0 +1,8 @@
+recorded_at=2026-09-06T14:28:46.049497+00:00
+team_definition=AORG E2E Research Squad
+team_run_id=aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+coordinator=/lead
+assignee=/analyst
+runtime=codex_app_server
+model=OpenAI / GPT-5.6-Sol
+auto_approve=true

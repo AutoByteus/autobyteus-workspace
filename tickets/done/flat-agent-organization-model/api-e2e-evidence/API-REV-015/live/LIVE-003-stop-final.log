@@ -1,0 +1,73 @@
+{
+  "restoredStatusCount": 6,
+  "settledTeams": [
+    {
+      "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+      "settledAt": "2026-09-06T13:18:40.015Z"
+    },
+    {
+      "teamRunId": "aorg_research_squad_a0abc2df913443e88d00d073614a2171",
+      "settledAt": "2026-09-06T13:18:40.023Z"
+    },
+    {
+      "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+      "settledAt": "2026-09-06T13:18:40.008Z"
+    }
+  ],
+  "configRoute": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&mode=configuration",
+  "historyRoute": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=history",
+  "taskRows": 3,
+  "teamDots": [
+    {
+      "status": "offline",
+      "label": "Team status: Offline"
+    },
+    {
+      "status": "offline",
+      "label": "Team status: Offline"
+    }
+  ],
+  "agentRows": [
+    {
+      "status": "offline",
+      "aria": "concierge, offline"
+    },
+    {
+      "status": "offline",
+      "aria": "lead, offline"
+    },
+    {
+      "status": "offline",
+      "aria": "analyst, offline"
+    },
+    {
+      "status": "offline",
+      "aria": "verifier, offline"
+    },
+    {
+      "status": "offline",
+      "aria": "dispatcher, offline"
+    },
+    {
+      "status": "offline",
+      "aria": "specialist, offline"
+    }
+  ],
+  "assertions": {
+    "restoredSnapshotComplete": true,
+    "settledTaskStatusesExcluded": true,
+    "settledLineagePreservedBeforeRestop": true,
+    "configurationAfterStop": true,
+    "interruptedStillDurable": true,
+    "historyExact": true,
+    "terminalCopy": true,
+    "frozenTaskLineageVisible": true,
+    "visibleStatusesOffline": true,
+    "noActiveControls": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noUnexpectedErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

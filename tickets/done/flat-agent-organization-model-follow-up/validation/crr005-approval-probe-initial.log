@@ -1,0 +1,57 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/crr005-approval-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | tests/crr005-approval-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/crr005-approval-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | tests/crr005-approval-probe.spec.ts > diagnostic: approval arriving before first task hydration
+Rejected invalid Team WebSocket message: TypeError: (0 , __vite_ssr_import_4__.useRunHistoryStore)(...).applyRunNavigationEffect is not a function
+    at dispatchAgentStreamMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts:223:26)
+    at TeamStreamingService.applyEffects (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:392:9)
+    at TeamStreamingService.dispatchMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:356:10)
+    at handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:257:16)
+    at emit (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/tests/crr005-approval-probe.spec.ts:22:58)
+    at approval (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/tests/crr005-approval-probe.spec.ts:31:22)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/tests/crr005-approval-probe.spec.ts:35:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:863:59
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+
+stdout | tests/crr005-approval-probe.spec.ts > diagnostic: approval arriving before first task hydration
+{"order":"before","conversationStatus":"parsed","activityStatus":"parsed","approvalTarget":null,"sameContext":true,"streamReady":true}
+
+stdout | tests/crr005-approval-probe.spec.ts > diagnostic: approval arriving after first task hydration
+{"order":"after","conversationStatus":"awaiting-approval","activityStatus":"awaiting-approval","approvalTarget":null,"sameContext":true,"streamReady":true}
+
+stderr | tests/crr005-approval-probe.spec.ts > diagnostic: approval arriving after first task hydration
+Rejected invalid Team WebSocket message: TypeError: (0 , __vite_ssr_import_4__.useRunHistoryStore)(...).applyRunNavigationEffect is not a function
+    at dispatchAgentStreamMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts:223:26)
+    at TeamStreamingService.applyEffects (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:392:9)
+    at TeamStreamingService.dispatchMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:356:10)
+    at handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:257:16)
+    at emit (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/tests/crr005-approval-probe.spec.ts:22:58)
+    at approval (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/tests/crr005-approval-probe.spec.ts:31:22)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web/tests/crr005-approval-probe.spec.ts:41:23
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ tests/crr005-approval-probe.spec.ts (2 tests) 19ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  11:21:24
+   Duration  6.05s (transform 2.99s, setup 5.15s, collect 156ms, tests 19ms, environment 285ms, prepare 178ms)
+

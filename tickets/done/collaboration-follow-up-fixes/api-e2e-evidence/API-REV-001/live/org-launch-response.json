@@ -1,0 +1,32 @@
+{
+  "request": {
+    "operationName": "CreateAgentOrgRun",
+    "variables": {
+      "input": {
+        "agentOrgDefinitionId": "followup-organization",
+        "rootConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+        },
+        "teamOverrides": [],
+        "agentOverrides": []
+      }
+    },
+    "query": "mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {\n  createAgentOrgRun(input: $input) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+  },
+  "response": {
+    "data": {
+      "createAgentOrgRun": {
+        "success": true,
+        "message": "Agent organization run created successfully.",
+        "agentOrgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "__typename": "AgentOrgRunMutationResult"
+      }
+    }
+  },
+  "status": 200
+}

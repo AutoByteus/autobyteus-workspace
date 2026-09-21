@@ -1,0 +1,15 @@
+API-FIND-008 settlement boundary assertions
+PASS verifier acceptance durable write at 21:46:58.484Z
+PASS settlement entry carries settledAt
+PASS settlement preparation observes exact live verifier turn
+PASS no verifier preparation/termination/MCP-deactivation/teardown completion
+PASS analyst revised call reached exact MCP ingress
+PASS analyst submit admitted as entry 10 behind active settlement head 7
+PASS analyst queue entry 10 never started
+PASS analyst revised persistence never began
+PASS analyst durable sidecar unchanged/no revised submission
+PASS shutdown entered agent_team_runs
+PASS shutdown never completed agent_team_runs
+PASS no AggregateError/server error emitted before forced cleanup
+PASS package immutable
+RESULT: PASS (evidence consistency only; API-REV-002 remains Fail)

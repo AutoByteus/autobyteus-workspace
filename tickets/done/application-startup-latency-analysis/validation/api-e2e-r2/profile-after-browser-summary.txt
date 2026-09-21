@@ -1,0 +1,32 @@
+{
+  "definitions": {
+    "fileCount": 22,
+    "bytes": 27975,
+    "aggregateSha256": "1b966005eb9297d28e2215202937c32ffee67498a720d053fae1e09a0476cb68"
+  },
+  "raw_traces": {
+    "fileCount": 6577,
+    "bytes": 6622505377,
+    "aggregateSha256": "8d687fcc30b7709bd92da973e566b213f6dce7dc9ff6ac80377087edc1f69f84"
+  },
+  "context_files": {
+    "fileCount": 1107,
+    "bytes": 547486511,
+    "aggregateSha256": "482d00ae72b19fea6edd379624b18a86ad9cd11767154c881ca3faf86547e551"
+  },
+  "history_and_runtime": {
+    "fileCount": 5618,
+    "bytes": 294209275,
+    "aggregateSha256": "2d41ba7aaa9a0ded7690cc8ac119fcf0fd57148f78cbf605d405b1e5d5bb8181"
+  },
+  "database": {
+    "fileCount": 1,
+    "bytes": 875474944,
+    "aggregateSha256": "8fd6fe15ebc26ce0a8cc86ff0e68e61c9bdbe1f499e66e46c8b444179409421c"
+  },
+  "configuration": {
+    "fileCount": 1,
+    "bytes": 3635,
+    "aggregateSha256": "f831b4fb51fa56e46fc29b8b619ab7696674bef136adc06b1a763c3e356ef374"
+  }
+}

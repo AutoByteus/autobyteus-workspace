@@ -1,0 +1,1 @@
+AUTOBYTEUS_AGENT_PACKAGE_ROOTS=/home/autobyteus/workspace/autobyteus-private-agents,/home/autobyteus/workspace/autobyteus-agents,/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package

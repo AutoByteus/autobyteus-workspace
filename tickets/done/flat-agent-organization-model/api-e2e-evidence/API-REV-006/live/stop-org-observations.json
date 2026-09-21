@@ -1,0 +1,50 @@
+{
+  "caseId": "LIVE-012",
+  "result": "Pass",
+  "browser": {
+    "url": "/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&mode=configuration",
+    "center": "Agent Org configuration",
+    "stableStatuses": [
+      "concierge offline",
+      "research team Offline",
+      "support team Offline"
+    ],
+    "stopControlCount": 0,
+    "reconnectControlCount": 0,
+    "restoreControlCount": 0,
+    "alert": null
+  },
+  "api": {
+    "orgCheckpoint": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Active AgentOrg 'aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9' was not found.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 34
+            }
+          ],
+          "path": [
+            "getAgentOrgExecutionCheckpoint"
+          ]
+        }
+      ]
+    },
+    "orgHistoryIsActive": false,
+    "orgTerminatedAt": null,
+    "standaloneTeamIsActive": true,
+    "standaloneTeamStatus": [
+      "idle",
+      "idle",
+      "idle"
+    ]
+  },
+  "rootIsolation": true,
+  "evidence": [
+    "live/screenshots/LIVE-012-stop-org-terminal-presentation.png",
+    "live/api/LIVE-012-post-stop-org-checkpoint-response.json",
+    "live/api/LIVE-012-post-stop-history-response.json"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": 20,
+  "migration_id": "20260905_agent_org_history_first_message_summary_v1",
+  "display_name": "AgentOrg first-message history summaries",
+  "status": "FAILED",
+  "attempts": 1,
+  "started_at": 1788652051138,
+  "completed_at": 1788652051155,
+  "summary": "Scanned 0; migrated 0; skipped 0; failed 1.",
+  "error_message": "1 AgentOrg history summary item(s) require correction and restart.",
+  "log_path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/migration/invalid-current-v1/server-data/logs/app-data-migrations/20260905_agent_org_history_first_message_summary_v1-2026-09-05T23-47-31-154Z.log",
+  "created_at": "2026-09-05 23:47:31",
+  "updated_at": "2026-09-05 23:47:31"
+}

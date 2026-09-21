@@ -1,0 +1,119 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs Sidebar Broken Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: Sidebar Broken Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Broken Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Broken Team
+  - button "Terminate team":
+  - generic: now
+  - tree "New - Sidebar Broken Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: now
+  - button "Active team runs Sidebar Empty Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: Sidebar Empty Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Empty Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Empty Team
+  - button "Terminate team":
+  - generic: now
+  - tree "New - Sidebar Empty Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: now
+  - button "Active team runs Sidebar Image Team avatar Sidebar Image Team (1)" [expanded]:
+    - img "Active team runs"
+    - img "Sidebar Image Team avatar"
+    - generic: Sidebar Image Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Image Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Image Team
+  - button "Terminate team":
+  - generic: now
+  - tree "New - Sidebar Image Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: now
+  - generic: Orgs
+  - button "Sidebar Broken Org (1)" [expanded]:
+    - generic: Sidebar Broken Org
+    - generic: (1)
+  - button "Collapse Sidebar Broken Org descendants" [expanded] [active]:
+  - treeitem "Running New - Sidebar Broken Org" [selected]:
+    - generic "Running"
+    - generic: New - Sidebar Broken Org
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Sidebar Broken Org execution hierarchy":
+    - treeitem "direct, offline, /direct, sidebar_shared_agent_9f0a293d00594d7f9b6e79c1ecd2acd2" [level=1]:
+      - generic: D
+      - generic: direct
+    - 'treeitem "team. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+  - button "Sidebar Image Org Sidebar Image Org (1)" [expanded]:
+    - img "Sidebar Image Org"
+    - generic: Sidebar Image Org
+    - generic: (1)
+  - button "Expand Sidebar Image Org descendants":
+  - treeitem "Stopped New - Sidebar Image Org":
+    - generic "Stopped"
+    - generic: New - Sidebar Image Org
+  - generic: 6m
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Choose an Agent or Team" [level=2]
+  - paragraph: Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.
+  - tablist "Workspace tools":
+    - tab "Files" [selected]: Files
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - textbox "Search..."
+  - button "Maximize view":
+  - heading "No file selected" [level=3]
+  - paragraph: Select a file from the explorer to view or edit its content.

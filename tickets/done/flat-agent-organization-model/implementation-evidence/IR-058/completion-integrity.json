@@ -1,0 +1,27 @@
+{
+  "entryHead": "071a0b6a81ffb51a6539a1fc1d4fa14af5e1c782",
+  "sourceCheckpoint": "bbdea002ee59da87cc7174bfc2924888c0bb38f7",
+  "baselineRegularFiles": 30258,
+  "unchanged": 30258,
+  "baselineManifestSha256": "26e022fbfee8d8a36d26a1cab2f6a65dfb204a18485cfd78413c6af5cd134e1f",
+  "changedOrMissing": [],
+  "unexpectedUntrackedOutsideEvidence": [],
+  "unexpectedModifiedOutsideOwnedDocs": [],
+  "pendingApiTests": {
+    "autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts": "63dcedbdf550619e41156e1b0923c7b8128ef24986460da0bcdba0f5c524f911",
+    "autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts": "617332f6b5d7770e8e23a609e95c2ade9bd2bfb6226a575b913647dcf3d5f3d2",
+    "autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs": "a25f958cfdee1c1f58120a2d7fc595d04378f8421268c1c8a22a2fa5cfaabef2"
+  },
+  "pendingApiUnstagedNumstat": "34\t0\tautobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts\n16\t1\tautobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts\n13\t2\tautobyteus-web/tests/e2e/existing-run-model-config-probe.mjs\n",
+  "SDKPrerequisitesRemoved": [
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-frontend-sdk/dist"
+  ],
+  "preexistingCoreServerDistPreserved": true,
+  "rendererRouteRemoved": true,
+  "rendererProcessesAbsent": true,
+  "dr009ProcessStillPresent": true,
+  "noLiveDataAuthMigrationActions": true,
+  "stagedUnmergedPaths": []
+}

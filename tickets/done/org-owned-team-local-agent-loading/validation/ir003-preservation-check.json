@@ -1,0 +1,21 @@
+{
+  "ir001BackendHashesUnchanged": true,
+  "ir002FileHashComparison": {
+    "autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts": true,
+    "autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts": true,
+    "autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts": true,
+    "autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts": true,
+    "autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts": true,
+    "autobyteus-server-ts/tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts": true,
+    "autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts": true,
+    "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue": false,
+    "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue": false,
+    "autobyteus-web/components/agentTeams/AgentTeamDetail.vue": false,
+    "autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts": false,
+    "autobyteus-web/localization/messages/en/workspace.ts": true,
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts": true,
+    "autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts": true,
+    "autobyteus-web/components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts": false
+  },
+  "note": "Changed IR-002 frontend entries are the approved catalog callback/getter names and added invariant assertions. Original15 matched at intake; history/manifests retained."
+}

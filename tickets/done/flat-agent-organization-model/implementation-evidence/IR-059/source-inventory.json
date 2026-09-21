@@ -1,0 +1,55 @@
+{
+  "entryHead": "fcd220b23bd377da2f488b51363787cc1065081a",
+  "sourceCheckpoint": "6e2d7997444383d5585225d9febbc1ee54247714",
+  "files": [
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 200,
+      "sha256": "3c2da3257d5458e5448c6cc79a43d657148e1b62c2214bc8fbc01383fcfa7cd8"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 49,
+      "sha256": "50c590ef0c1d61abc088d5fc78593f6d22e02411d6e525102d26a9c0519db8dd"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 113,
+      "sha256": "f3b7b45d17f4fa3906f09981512fdfe17279036e4955510ff190fe62cfd3a4a1"
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentOrgInspectionApollo.spec.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 201,
+      "sha256": "f87f207018c3d70f943cb9007e385591abc2b7f06cf16bf0ead9932a6ceb39dd"
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 239,
+      "sha256": "1733cbfac2ccef9ea8cda5b49b8feaba976e37779c9566e58182744f6998c038"
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "deleted": false,
+      "kind": "production",
+      "nonEmptyLines": 386,
+      "sha256": "f7d0758dbdeef12b5533aec3eb944b68e441ffd3084b96a299dd931084cdda70"
+    },
+    {
+      "path": "autobyteus-web/test-support/agentOrgApolloFixture.ts",
+      "deleted": false,
+      "kind": "test",
+      "nonEmptyLines": 61,
+      "sha256": "f510545962e7ac2aa3d8bdde34f9fb9cdd4dcd896f92827f76c09d57526ec315"
+    }
+  ]
+}

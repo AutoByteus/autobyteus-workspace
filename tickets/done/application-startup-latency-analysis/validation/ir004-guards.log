@@ -1,0 +1,51 @@
+IR-004 guard checks
+--- git diff --check ---
+PASS git diff --check
+--- IR-004 production delta from preserved IR-003 candidate ---
+29	5	/tmp/ir004-agent-org-token-attribution-repository.pre.ts => autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts
+10	3	/tmp/ir004-agent-org-token-attribution-transition.pre.ts => autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.ts
+20	8	/tmp/ir004-agent-org-flat-team-families-v1-app-data-migration.pre.ts => autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts
+--- effective non-empty changed production lines ---
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts 91
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.ts 47
+autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts 236
+--- exact approved typed rejection sites ---
+typedRejectionSites=4
+28:    throw new AgentOrgTokenAttributionDataRejection(`Token identity for '${row.run_id}' is not valid JSON.`);
+33:    throw new AgentOrgTokenAttributionDataRejection(`Malformed token identity for '${row.run_id}'.`);
+60:          throw new AgentOrgTokenAttributionDataRejection(`Unexpected token claimant '${row.run_id}' for Org '${orgRunId}'.`);
+76:          throw new AgentOrgTokenAttributionDataRejection(`Conflicting token attribution for Agent '${row.run_id}' in Org '${orgRunId}'.`);
+--- cause-typed transition / explicit result maps ---
+43:        (error instanceof AgentOrgTokenAttributionDataRejection ? warnings : failures).set(id, String(error));
+46:    return { warnings, failures, changed };
+--- preserved production owners ---
+PASS shared runner source unchanged
+PASS AgentOrg token readiness guard unchanged
+PASS no schema/migration definition delta
+--- manifest / preservation proof ---
+PASS manifest candidate hashes exact 20
+PASS protected IR-001/IR-002/IR-003 entries exact 10
+retained prior evidence 30
+--- generated worktree outputs ---
+PASS shared generated dist removed
+--- cumulative diff stat ---
+ autobyteus-server-ts/docs/modules/agent_orgs.md    |  35 ++-
+ autobyteus-server-ts/docs/modules/run_history.md   |  37 ++-
+ autobyteus-server-ts/src/api/rest/context-files.ts |  37 ++-
+ ...org-flat-team-families-v1-app-data-migration.ts |  45 +++-
+ .../agent-org-history-candidate-plan.ts            |  23 +-
+ .../agent-org-token-attribution-repository.ts      |  34 ++-
+ .../agent-org-token-attribution-transition.ts      |  13 +-
+ .../services/context-file-owner-resolver.ts        |  12 +-
+ .../root-package-context-file-validation.ts        |  94 --------
+ .../services/root-run-package-readiness-index.ts   |  19 --
+ .../agent-org-context-files.integration.test.ts    |  20 ++
+ .../api/rest/context-files.integration.test.ts     |  84 ++++++-
+ ...ent-org-context-file-locator-transition.test.ts |   8 +-
+ ...lat-team-families-v1-app-data-migration.test.ts | 255 +++++++++++++++++++--
+ .../agent-org-token-attribution-transition.test.ts |  18 +-
+ .../app-data-migration-runner.test.ts              |  55 +++++
+ .../context-file-owner-resolver.test.ts            |  29 ++-
+ .../root-run-package-readiness-index.test.ts       |  20 ++
+ 18 files changed, 656 insertions(+), 182 deletions(-)
+GUARD_EXIT_CODE=0

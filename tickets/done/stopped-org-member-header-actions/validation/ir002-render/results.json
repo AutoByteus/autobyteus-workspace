@@ -1,0 +1,10 @@
+{
+  "kind": "Implementation synthetic transport/catalog renderer only; not API acceptance",
+  "seedDirect": true,
+  "edit": true,
+  "narrow": true,
+  "neutralMissing": true,
+  "blockedMissing": true,
+  "sourceFailure": true,
+  "errors": []
+}

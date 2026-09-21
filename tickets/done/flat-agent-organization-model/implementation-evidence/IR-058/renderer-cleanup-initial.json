@@ -1,0 +1,36 @@
+{
+  "ownedProcesses": [
+    {
+      "pid": 95024,
+      "parent": 1,
+      "command": "node /usr/bin/corepack pnpm -C autobyteus-web dev --host 127.0.0.1 --port 43158 "
+    },
+    {
+      "pid": 95052,
+      "parent": 95024,
+      "command": "sh -c nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 43158 "
+    },
+    {
+      "pid": 95053,
+      "parent": 95052,
+      "command": "node /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 0.0.0.0 --host 127.0.0.1 --port 43158 "
+    },
+    {
+      "pid": 95124,
+      "parent": 95053,
+      "command": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@esbuild+linux-arm64@0.27.3/node_modules/@esbuild/linux-arm64/bin/esbuild --service=0.27.3 --ping "
+    },
+    {
+      "pid": 95283,
+      "parent": 95053,
+      "command": "/usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 43158 "
+    },
+    {
+      "pid": 95284,
+      "parent": 95053,
+      "command": "/usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 43158 "
+    }
+  ],
+  "remaining": [],
+  "browserClosedByFinally": true
+}

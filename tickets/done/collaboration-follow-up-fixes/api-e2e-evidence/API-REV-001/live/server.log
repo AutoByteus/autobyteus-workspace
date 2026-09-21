@@ -1,0 +1,406 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts
+App data directory: /tmp/collab-api01-yyjdm4jz/server-data
+AppConfig instance created.
+Config file path: /tmp/collab-api01-yyjdm4jz/server-data/.env
+Loading environment from: /tmp/collab-api01-yyjdm4jz/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/collab-api01-yyjdm4jz/server-data/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8611
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8611
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/collab-api01-yyjdm4jz/server-data
+DB DIRECTORY: /tmp/collab-api01-yyjdm4jz/server-data/db
+LOGS DIRECTORY: /tmp/collab-api01-yyjdm4jz/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/collab-api01-yyjdm4jz/server-data/download
+MEMORY DIRECTORY: /tmp/collab-api01-yyjdm4jz/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/collab-api01-yyjdm4jz/server-data/db/production.db"
+
+SQLite database production.db created at file:/tmp/collab-api01-yyjdm4jz/server-data/db/production.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:61253) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-13T11:35:08.051Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:bible-study-group:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:clara-ocean-friends:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:classroom-simulation-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:evidence-driven-delivery-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:job-search-application-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:marketing-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:movie-maker:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:presentation-chemie:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:product-design-prototyping-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:socratic-math-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-engineering-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:storm-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:video-tutorial-creation-team:DEFINITION_CONTRACT_INVALID:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-13T11:35:08.388Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl, defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: defaultLaunchConfig.
+[2026-09-13T11:35:08.446Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1789299308474,"pid":61253,"hostname":"9541bf8133c9","msg":"Server listening at http://127.0.0.1:36207"}
+{"level":30,"time":1789299308518,"pid":61253,"hostname":"9541bf8133c9","msg":"Server listening at http://127.0.0.1:8611"}
+[2026-09-13T11:35:08.518Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8611
+[2026-09-13T11:35:08.521Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8611
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1789299335174,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1","method":"GET","url":"/health","statusCode":404,"elapsedMs":2.671665996313095,"msg":"http request completed"}
+{"level":40,"time":1789299335434,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.9214999973773956,"msg":"http request completed"}
+{"level":40,"time":1789299335688,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.43162500858306885,"msg":"http request completed"}
+{"level":40,"time":1789299335944,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5835829973220825,"msg":"http request completed"}
+{"level":40,"time":1789299336213,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5447499752044678,"msg":"http request completed"}
+{"level":40,"time":1789299336472,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-6","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3009580075740814,"msg":"http request completed"}
+{"level":40,"time":1789299336732,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-7","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.2425409853458405,"msg":"http request completed"}
+{"level":40,"time":1789299336990,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-8","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3765420019626617,"msg":"http request completed"}
+{"level":40,"time":1789299337245,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-9","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6575839817523956,"msg":"http request completed"}
+{"level":40,"time":1789299337504,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.37812501192092896,"msg":"http request completed"}
+{"level":40,"time":1789299337764,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7182919979095459,"msg":"http request completed"}
+{"level":40,"time":1789299338018,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.42537498474121094,"msg":"http request completed"}
+{"level":40,"time":1789299338279,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-d","method":"GET","url":"/health","statusCode":404,"elapsedMs":2.3347920179367065,"msg":"http request completed"}
+{"level":40,"time":1789299338541,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-e","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.921915978193283,"msg":"http request completed"}
+{"level":40,"time":1789299338800,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2937079966068268,"msg":"http request completed"}
+{"level":40,"time":1789299339056,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5239999890327454,"msg":"http request completed"}
+{"level":40,"time":1789299339311,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2907080054283142,"msg":"http request completed"}
+{"level":40,"time":1789299339581,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.25620901584625244,"msg":"http request completed"}
+{"level":40,"time":1789299339849,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.7410419881343842,"msg":"http request completed"}
+{"level":40,"time":1789299340106,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.34129101037979126,"msg":"http request completed"}
+{"level":40,"time":1789299340362,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3690830171108246,"msg":"http request completed"}
+{"level":40,"time":1789299340619,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.353208988904953,"msg":"http request completed"}
+{"level":40,"time":1789299340896,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-n","method":"GET","url":"/health","statusCode":404,"elapsedMs":17.958457976579666,"msg":"http request completed"}
+{"level":40,"time":1789299341156,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3478749990463257,"msg":"http request completed"}
+{"level":40,"time":1789299341414,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-p","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.097374975681305,"msg":"http request completed"}
+{"level":40,"time":1789299341672,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.54933300614357,"msg":"http request completed"}
+{"level":40,"time":1789299341929,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4362500011920929,"msg":"http request completed"}
+{"level":40,"time":1789299342189,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.43849998712539673,"msg":"http request completed"}
+{"level":40,"time":1789299342445,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33308300375938416,"msg":"http request completed"}
+{"level":40,"time":1789299342701,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-u","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4227920174598694,"msg":"http request completed"}
+{"level":40,"time":1789299342955,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.36045899987220764,"msg":"http request completed"}
+{"level":40,"time":1789299343210,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.290041983127594,"msg":"http request completed"}
+{"level":40,"time":1789299343470,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.9638749957084656,"msg":"http request completed"}
+{"level":40,"time":1789299343730,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-y","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.592166006565094,"msg":"http request completed"}
+{"level":40,"time":1789299343991,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-z","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.457166999578476,"msg":"http request completed"}
+{"level":40,"time":1789299344249,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-10","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.7084160149097443,"msg":"http request completed"}
+{"level":40,"time":1789299344510,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-11","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.26179197430610657,"msg":"http request completed"}
+{"level":40,"time":1789299344764,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-12","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.46766701340675354,"msg":"http request completed"}
+{"level":40,"time":1789299345020,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-13","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31029200553894043,"msg":"http request completed"}
+{"level":40,"time":1789299345280,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-14","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3731659948825836,"msg":"http request completed"}
+{"level":40,"time":1789299345536,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-15","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.302166998386383,"msg":"http request completed"}
+{"level":40,"time":1789299345794,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-16","method":"GET","url":"/health","statusCode":404,"elapsedMs":4.349749982357025,"msg":"http request completed"}
+{"level":40,"time":1789299346052,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-17","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3240419924259186,"msg":"http request completed"}
+{"level":40,"time":1789299346307,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-18","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2930830121040344,"msg":"http request completed"}
+{"level":40,"time":1789299346561,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-19","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.632874995470047,"msg":"http request completed"}
+{"level":40,"time":1789299346824,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4317910075187683,"msg":"http request completed"}
+{"level":40,"time":1789299347079,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.44279199838638306,"msg":"http request completed"}
+{"level":40,"time":1789299347333,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3297500014305115,"msg":"http request completed"}
+{"level":40,"time":1789299347589,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.24662500619888306,"msg":"http request completed"}
+{"level":40,"time":1789299347843,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2413329780101776,"msg":"http request completed"}
+{"level":40,"time":1789299348099,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4902909994125366,"msg":"http request completed"}
+{"level":40,"time":1789299348353,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.290459007024765,"msg":"http request completed"}
+{"level":40,"time":1789299348608,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2763339877128601,"msg":"http request completed"}
+{"level":40,"time":1789299348867,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32999998331069946,"msg":"http request completed"}
+{"level":40,"time":1789299349122,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2608329951763153,"msg":"http request completed"}
+{"level":40,"time":1789299349378,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2542499899864197,"msg":"http request completed"}
+{"level":40,"time":1789299349634,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3122920095920563,"msg":"http request completed"}
+{"level":40,"time":1789299349890,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1m","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.3121249973773956,"msg":"http request completed"}
+{"level":40,"time":1789299350147,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4718329906463623,"msg":"http request completed"}
+{"level":40,"time":1789299350414,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.41575002670288086,"msg":"http request completed"}
+{"level":40,"time":1789299350670,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8605000078678131,"msg":"http request completed"}
+{"level":40,"time":1789299350931,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5130000114440918,"msg":"http request completed"}
+{"level":40,"time":1789299351191,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3934580087661743,"msg":"http request completed"}
+{"level":40,"time":1789299351448,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8440420031547546,"msg":"http request completed"}
+{"level":40,"time":1789299351704,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4046670198440552,"msg":"http request completed"}
+{"level":40,"time":1789299351961,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1u","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.45670899748802185,"msg":"http request completed"}
+{"level":40,"time":1789299352214,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2898329794406891,"msg":"http request completed"}
+{"level":40,"time":1789299352469,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30841702222824097,"msg":"http request completed"}
+{"level":40,"time":1789299352726,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30283400416374207,"msg":"http request completed"}
+{"level":40,"time":1789299352982,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1y","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.514165997505188,"msg":"http request completed"}
+{"level":40,"time":1789299353236,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-1z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31108298897743225,"msg":"http request completed"}
+{"level":40,"time":1789299353492,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-20","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.35541701316833496,"msg":"http request completed"}
+{"level":40,"time":1789299353751,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-21","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.34720900654792786,"msg":"http request completed"}
+{"level":40,"time":1789299354012,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-22","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.804207980632782,"msg":"http request completed"}
+{"level":40,"time":1789299354267,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-23","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31462499499320984,"msg":"http request completed"}
+{"level":40,"time":1789299354523,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-24","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2616249918937683,"msg":"http request completed"}
+{"level":40,"time":1789299354778,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-25","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.40024998784065247,"msg":"http request completed"}
+In-memory cache: Added new agent definition with ID followup-assistant.
+Agent Definition created successfully with ID: followup-assistant
+[2026-09-13T11:35:54.824Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID followup-flat-team.
+Agent Team Definition created successfully with ID: followup-flat-team
+{"level":40,"time":1789299355035,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-29","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3474999964237213,"msg":"http request completed"}
+{"level":40,"time":1789299355305,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8253749907016754,"msg":"http request completed"}
+{"level":40,"time":1789299355562,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.37208300828933716,"msg":"http request completed"}
+{"level":40,"time":1789299355819,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3423750102519989,"msg":"http request completed"}
+{"level":40,"time":1789299356078,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5394169986248016,"msg":"http request completed"}
+{"level":40,"time":1789299356336,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6298750042915344,"msg":"http request completed"}
+{"level":40,"time":1789299356594,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2f","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.519124984741211,"msg":"http request completed"}
+{"level":40,"time":1789299356849,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5290830135345459,"msg":"http request completed"}
+{"level":40,"time":1789299357107,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3297080099582672,"msg":"http request completed"}
+{"level":40,"time":1789299357362,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5690829753875732,"msg":"http request completed"}
+{"level":40,"time":1789299357619,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2j","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6027089953422546,"msg":"http request completed"}
+{"level":40,"time":1789299357878,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32100000977516174,"msg":"http request completed"}
+{"level":40,"time":1789299358141,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6484580039978027,"msg":"http request completed"}
+{"level":40,"time":1789299358398,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5147079825401306,"msg":"http request completed"}
+{"level":40,"time":1789299358667,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3446660041809082,"msg":"http request completed"}
+{"level":40,"time":1789299358920,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.374750018119812,"msg":"http request completed"}
+{"level":40,"time":1789299359175,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.319832980632782,"msg":"http request completed"}
+{"level":40,"time":1789299359431,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7912499904632568,"msg":"http request completed"}
+{"level":40,"time":1789299359684,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.503667026758194,"msg":"http request completed"}
+{"level":40,"time":1789299359943,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2s","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.7402500212192535,"msg":"http request completed"}
+{"level":40,"time":1789299360201,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2t","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.288791000843048,"msg":"http request completed"}
+{"level":40,"time":1789299360458,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2u","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7042919993400574,"msg":"http request completed"}
+{"level":40,"time":1789299360717,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2v","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.2617500126361847,"msg":"http request completed"}
+{"level":40,"time":1789299360980,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5490419864654541,"msg":"http request completed"}
+{"level":40,"time":1789299361237,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7434999942779541,"msg":"http request completed"}
+{"level":40,"time":1789299361494,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2y","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.29041600227355957,"msg":"http request completed"}
+{"level":40,"time":1789299361751,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-2z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.28791600465774536,"msg":"http request completed"}
+{"level":40,"time":1789299362005,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-30","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32820799946784973,"msg":"http request completed"}
+{"level":40,"time":1789299362261,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-31","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.29829201102256775,"msg":"http request completed"}
+{"level":40,"time":1789299362514,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-32","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5559580028057098,"msg":"http request completed"}
+{"level":40,"time":1789299362773,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-33","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3255840241909027,"msg":"http request completed"}
+{"level":40,"time":1789299363028,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-34","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3233329951763153,"msg":"http request completed"}
+{"level":40,"time":1789299363283,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-35","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.29520800709724426,"msg":"http request completed"}
+{"level":40,"time":1789299363541,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-36","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.382082998752594,"msg":"http request completed"}
+{"level":40,"time":1789299363798,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-37","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7599169909954071,"msg":"http request completed"}
+{"level":40,"time":1789299364054,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-38","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.28837502002716064,"msg":"http request completed"}
+{"level":40,"time":1789299364311,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-39","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.43154099583625793,"msg":"http request completed"}
+{"level":40,"time":1789299364571,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3516250252723694,"msg":"http request completed"}
+{"level":40,"time":1789299364826,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2998329997062683,"msg":"http request completed"}
+{"level":40,"time":1789299365082,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33387500047683716,"msg":"http request completed"}
+{"level":40,"time":1789299365349,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3240000009536743,"msg":"http request completed"}
+{"level":40,"time":1789299365613,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3e","method":"GET","url":"/health","statusCode":404,"elapsedMs":3.844666987657547,"msg":"http request completed"}
+{"level":40,"time":1789299365871,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3f","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.0369589924812317,"msg":"http request completed"}
+{"level":40,"time":1789299366126,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32841700315475464,"msg":"http request completed"}
+{"level":40,"time":1789299366388,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3h","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6792080104351044,"msg":"http request completed"}
+{"level":40,"time":1789299366648,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.26487499475479126,"msg":"http request completed"}
+{"level":40,"time":1789299366910,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3j","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.47325000166893,"msg":"http request completed"}
+{"level":40,"time":1789299367181,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.43083301186561584,"msg":"http request completed"}
+{"level":40,"time":1789299367446,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.334166020154953,"msg":"http request completed"}
+{"level":40,"time":1789299367706,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5094999969005585,"msg":"http request completed"}
+{"level":40,"time":1789299367967,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3100000023841858,"msg":"http request completed"}
+{"level":40,"time":1789299368221,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3083750009536743,"msg":"http request completed"}
+{"level":40,"time":1789299368486,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7531670033931732,"msg":"http request completed"}
+{"level":40,"time":1789299368745,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6254999935626984,"msg":"http request completed"}
+{"level":40,"time":1789299369000,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.29479101300239563,"msg":"http request completed"}
+{"level":40,"time":1789299369255,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2828330099582672,"msg":"http request completed"}
+{"level":40,"time":1789299369514,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3266669809818268,"msg":"http request completed"}
+{"level":40,"time":1789299369770,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3u","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4269160032272339,"msg":"http request completed"}
+{"level":40,"time":1789299370025,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5681659877300262,"msg":"http request completed"}
+{"level":40,"time":1789299370281,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.9430000185966492,"msg":"http request completed"}
+{"level":40,"time":1789299370538,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8735830187797546,"msg":"http request completed"}
+{"level":40,"time":1789299370795,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3y","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6223750114440918,"msg":"http request completed"}
+{"level":40,"time":1789299371052,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-3z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.538457989692688,"msg":"http request completed"}
+{"level":40,"time":1789299371306,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-40","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7174579799175262,"msg":"http request completed"}
+{"level":40,"time":1789299371560,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-41","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3080829977989197,"msg":"http request completed"}
+{"level":40,"time":1789299371814,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-42","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2847919762134552,"msg":"http request completed"}
+{"level":40,"time":1789299372096,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-43","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3706669807434082,"msg":"http request completed"}
+{"level":40,"time":1789299372353,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-44","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8773750066757202,"msg":"http request completed"}
+{"level":40,"time":1789299372607,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-45","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32054099440574646,"msg":"http request completed"}
+{"level":40,"time":1789299372862,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-46","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6866250038146973,"msg":"http request completed"}
+{"level":40,"time":1789299373121,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-47","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.36558300256729126,"msg":"http request completed"}
+{"level":40,"time":1789299373377,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-48","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2742080092430115,"msg":"http request completed"}
+{"level":40,"time":1789299373631,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-49","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4727500081062317,"msg":"http request completed"}
+{"level":40,"time":1789299373888,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.723374992609024,"msg":"http request completed"}
+{"level":40,"time":1789299374145,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4759170114994049,"msg":"http request completed"}
+{"level":40,"time":1789299374401,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4c","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.9734579920768738,"msg":"http request completed"}
+{"level":40,"time":1789299374682,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5573749840259552,"msg":"http request completed"}
+{"level":40,"time":1789299374937,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.34458401799201965,"msg":"http request completed"}
+{"level":40,"time":1789299375191,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5079590082168579,"msg":"http request completed"}
+{"level":40,"time":1789299375448,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4g","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.0457080006599426,"msg":"http request completed"}
+{"level":40,"time":1789299375719,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4h","method":"GET","url":"/health","statusCode":404,"elapsedMs":3.935250014066696,"msg":"http request completed"}
+{"level":40,"time":1789299375981,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33362501859664917,"msg":"http request completed"}
+{"level":40,"time":1789299376236,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31095799803733826,"msg":"http request completed"}
+{"level":40,"time":1789299376490,"pid":61253,"hostname":"9541bf8133c9","reqId":"req-4k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.29966700077056885,"msg":"http request completed"}
+[2026-09-13T11:37:27.403Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-13T11:37:27.462Z] [INFO] [server.runtime] Server closed cleanly.

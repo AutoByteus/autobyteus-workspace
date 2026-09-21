@@ -31,25 +31,8 @@ export class TeamRunResolver {
   async requireConfigured(teamRunId: string): Promise<TeamRun> {
     const existing = this.getActive(teamRunId);
     if (existing) return existing;
-    const index = this.options.getIndex();
-    const chain = index.getConfiguredTeamRunChain(teamRunId);
-    const root = this.getActive(chain[0]!);
-    if (!root) throw new Error(`Root TeamRun '${chain[0]}' is not active.`);
-    let current: TeamRun = root;
-    for (const childTeamRunId of chain.slice(1)) {
-      const registered = this.getActive(childTeamRunId);
-      if (registered) {
-        current = registered;
-        continue;
-      }
-      const child: TeamRun = await current.getOrCreateConfiguredChildTeam(childTeamRunId);
-      if (child.teamRunId !== childTeamRunId || !child.isActive()) {
-        throw new Error(`Configured TeamRun '${childTeamRunId}' did not materialize exactly.`);
-      }
-      this.registerManaged(child);
-      current = child;
-    }
-    return current;
+    this.options.getIndex().requireTeam(teamRunId);
+    throw new Error(`Configured TeamRun '${teamRunId}' is not the active flat root TeamRun.`);
   }
 
   reserveTaskSubtree(teamRuns: readonly TeamRun[]): TeamRunRegistrationReservation {

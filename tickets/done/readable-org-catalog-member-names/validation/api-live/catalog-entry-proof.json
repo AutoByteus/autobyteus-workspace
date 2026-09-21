@@ -1,0 +1,42 @@
+{
+  "referenceRequests": [
+    {
+      "id": 32,
+      "op": "GetAgentOrgReferencedTeam",
+      "ref": "agent-org-owned-team:names-alpha:squad"
+    },
+    {
+      "id": 33,
+      "op": "GetAgentOrgReferencedAgent",
+      "ref": "agent-org-owned-agent:names-alpha:guide"
+    },
+    {
+      "id": 34,
+      "op": "GetAgentOrgReferencedTeam",
+      "ref": "shared-team"
+    },
+    {
+      "id": 35,
+      "op": "GetAgentOrgReferencedAgent",
+      "ref": "shared-agent"
+    },
+    {
+      "id": 36,
+      "op": "GetAgentOrgReferencedTeam",
+      "ref": "agent-org-owned-team:names-beta:squad"
+    },
+    {
+      "id": 37,
+      "op": "GetAgentOrgReferencedAgent",
+      "ref": "agent-org-owned-agent:names-beta:guide"
+    }
+  ],
+  "childQueries": 0,
+  "mutations": 0,
+  "authoredUnchanged": true,
+  "historyIndexes": {
+    "agent_org_run_history_index.json": [],
+    "run_history_index.json": [],
+    "team_run_history_index.json": []
+  }
+}

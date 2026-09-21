@@ -1,0 +1,149 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "AV AORG Validation Agent (1)":
+    - generic: AV
+    - generic: AORG Validation Agent
+    - generic: (1)
+  - button "New run with this agent":
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - button "Active team run Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll..." [expanded]:
+    - img "Active team run"
+    - generic: Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll...
+  - button "Terminate team":
+  - generic: 9m
+  - tree "Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll... organization tree":
+    - treeitem "Agent, lead, level 1, running, /lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: 9m
+    - treeitem "Agent, worker, level 1, idle, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 9m
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: 9m
+  - generic: Orgs
+  - button "AORG Validation Org (1)":
+    - generic: AORG Validation Org
+    - generic: (1)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Running"':
+    - generic: Running
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Use read_file exactly once to read the attached activity-note.txt. Reply with its first line followed by TEAM-LEAD-ONE. Do not use any other tool or read other files.
+  - paragraph: Context files
+  - list:
+    - button "Open activity-note.txt": activity-note.txt
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "lovable.read_file · context_files/ctx_03af6323e849__activity-note.txt":
+    - generic: lovable.read_file
+    - generic "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/memory/agent_teams/aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843/aorg_validation_agent_8738bf014c4c4574bd07a4d948135562/context_files/ctx_03af6323e849__activity-note.txt": · context_files/ctx_03af6323e849__activity-note.txt
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph:
+    - text: "Unable to read the file:"
+    - code: read_file
+    - text: is unavailable.
+  - generic: You
+  - generic: Call the available send_message_to tool exactly once with recipient_address /worker and content "Reply TEAM-WORKER-ONE only; do not use tools." Then reply TEAM-LEAD-ONE. Do not call read_file or other tools.
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "send_message_to":
+    - generic: send_message_to
+  - paragraph: TEAM-LEAD-ONE
+  - generic: You
+  - generic: Call send_message_to exactly once with recipient_address /worker and content "Reply TEAM-WORKER-TWO only; do not use tools." Then reply TEAM-LEAD-TWO. Do not use other tools.
+  - generic: L
+  - generic: lead
+  - button "send_message_to":
+    - generic: send_message_to
+  - paragraph: TEAM-LEAD-TWO
+  - generic: You
+  - generic: Call send_message_to once with recipient_address /worker and content "STALE-APPROVAL-MUST-NOT-DELIVER-731". Do not use other tools.
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - generic: send_message_to
+  - button "Deny"
+  - button "Approve"
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Stop generation":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team"
+    - tab "Terminal"
+    - tab "Activity" [selected]: Activity
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 5 Events
+  - article:
+    - button "System instructions. AutoByteus-supplied · Codex baseInstructions. Available. Captured 14.09.2026, 16:11:41. 6195 characters.":
+      - generic: System instructions
+      - generic: AutoByteus-supplied · Codex baseInstructions
+      - generic: Captured 14.09.2026, 16:11:41 · 6195 characters
+      - generic: Available
+  - generic: lovable.read_file
+  - generic: "#exec-d"
+  - generic: Failed
+  - generic: Arguments
+  - generic: Error
+  - generic: send_message_to
+  - generic: "#exec-0"
+  - generic: Success
+  - generic: Arguments
+  - generic: Result
+  - generic: send_message_to
+  - generic: "#exec-4"
+  - generic: Success
+  - generic: Arguments
+  - generic: Result
+  - generic: send_message_to
+  - generic: "#exec-d"
+  - generic: Review
+  - generic: Arguments

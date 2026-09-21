@@ -1,0 +1,11 @@
+{
+  "at": "2026-09-13T11:53:17.380Z",
+  "mode": "narrow",
+  "initial": {
+    "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active&memberAddress=/research-team/lead",
+    "sender": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+    "task": "followup_assistant_8f603b5a6a7048ad8d98c85e713a9d7e"
+  },
+  "instruction": "Call send_message_to exactly once with target_agent_run_id followup_assistant_8f603b5a6a7048ad8d98c85e713a9d7e and content \"Call get_handoff_rules once, then reply exactly COLLAB-API01-PULSE-NARROW. Do not submit a result, send messages, or delegate. End the turn.\". Do not use recipient_address. After successful send reply exactly COLLAB-API01-PULSE-NARROW-SENT. No other work.",
+  "draft": "Unsent draft retained during COLLAB-API01-PULSE-NARROW"
+}

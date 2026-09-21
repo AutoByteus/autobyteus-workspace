@@ -1,0 +1,26 @@
+{
+  "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+  "members": [
+    {
+      "address": "/lead",
+      "agentRunId": "aorg_e2e_lead_93381295647446bfb032c112c75acab9",
+      "auto": true
+    },
+    {
+      "address": "/verifier",
+      "agentRunId": "aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041",
+      "auto": true
+    }
+  ],
+  "assertions": {
+    "exactDefinition": true,
+    "twoDirect": true,
+    "auto": true,
+    "activeUnfocused": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

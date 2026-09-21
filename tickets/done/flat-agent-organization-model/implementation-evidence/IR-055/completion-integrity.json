@@ -1,0 +1,54 @@
+{
+  "entryHead": "7fde1faf10dffd9a01d3607e8d366f836f5d6e1b",
+  "sourceCheckpoint": "1cf011588db0d1f707519f0facce41c791951ed0",
+  "baselineRegularFiles": 22579,
+  "baselineManifestSha256": "4ec8d6ecbfa840cfc325336ca736fe40e68c9ce6fa2b51615c3f6fae2dee7f8f",
+  "unchanged": 22579,
+  "changedOrMissing": [],
+  "unexpectedUntrackedOutsideEvidence": [],
+  "priorSourcePreservation": {
+    "050": {
+      "checked": 27,
+      "changedCurrentOwnedPaths": [
+        "autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts",
+        "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+        "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts"
+      ],
+      "retainedLaterApprovedRevisions": [],
+      "unexpectedChangedPaths": []
+    },
+    "051": {
+      "checked": 8,
+      "changedCurrentOwnedPaths": [],
+      "retainedLaterApprovedRevisions": [],
+      "unexpectedChangedPaths": []
+    },
+    "052": {
+      "checked": 3,
+      "changedCurrentOwnedPaths": [],
+      "retainedLaterApprovedRevisions": [],
+      "unexpectedChangedPaths": []
+    },
+    "053": {
+      "checked": 4,
+      "changedCurrentOwnedPaths": [],
+      "retainedLaterApprovedRevisions": [],
+      "unexpectedChangedPaths": []
+    },
+    "054": {
+      "checked": 4,
+      "changedCurrentOwnedPaths": [],
+      "retainedLaterApprovedRevisions": [],
+      "unexpectedChangedPaths": []
+    }
+  },
+  "SDKPrerequisitesRemoved": [
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-frontend-sdk/dist"
+  ],
+  "rendererRouteRemoved": true,
+  "dr009ProcessStillPresent": true,
+  "pendingApiProbeSha256": "a25f958cfdee1c1f58120a2d7fc595d04378f8421268c1c8a22a2fa5cfaabef2",
+  "noLiveDataMutation": true
+}

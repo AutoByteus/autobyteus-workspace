@@ -23,7 +23,7 @@ export const resolveTeamBindingCurrentOutputIdentity = (
 ): ChannelTeamOutputTargetIdentity => {
   if (!binding.targetMemberAddress) return { entryAgentRunId: run.getCoordinatorAgentRunId() };
   const placement = run.resolveRecipient(assertAgentTeamAddress(binding.targetMemberAddress));
-  const address = placement.kind === "agent" ? placement.address : placement.coordinatorAddress;
+  const address = placement.address;
   const execution = run.getExecutionTreeSnapshot().rootTeam;
   return { entryAgentRunId: findConfiguredAgentRunId(execution.members, address) };
 };
@@ -31,14 +31,4 @@ export const resolveTeamBindingCurrentOutputIdentity = (
 const findConfiguredAgentRunId = (
   members: import("../../agent-team-execution/domain/team-run-execution-tree.js").RootConfiguredTeamExecutionNode["members"],
   address: string,
-): string | null => {
-  for (const member of members) {
-    if ("agentRunId" in member) {
-      if (member.address === address) return member.agentRunId;
-    } else {
-      const nested = findConfiguredAgentRunId(member.members, address);
-      if (nested) return nested;
-    }
-  }
-  return null;
-};
+): string | null => members.find((member) => member.address === address)?.agentRunId ?? null;

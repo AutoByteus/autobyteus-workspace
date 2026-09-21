@@ -1,0 +1,21 @@
+import playwright from '../../../../../../autobyteus-web/node_modules/playwright-core/index.js';
+import fs from 'node:fs/promises';
+const { chromium } = playwright;
+const out = new URL('./history-team-switch-probe.json', import.meta.url);
+const browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
+const page = browser.contexts().flatMap((context) => context.pages()).find((candidate) => candidate.url().includes('127.0.0.1:3589'));
+if (!page) throw new Error('renderer missing');
+const evidence = { before: page.url(), console: [], requests: [], pageErrors: [] };
+page.on('console', (message) => evidence.console.push({ type: message.type(), text: message.text() }));
+page.on('pageerror', (error) => evidence.pageErrors.push(String(error?.stack ?? error)));
+page.on('request', (request) => {
+  if (request.url().includes('/graphql')) evidence.requests.push({ method: request.method(), postData: request.postData() });
+});
+const selector = '[data-test^="workspace-team-member-aorg_e2e_research_squad_7637"][data-member-address="/analyst"]';
+await page.locator(selector).click();
+await page.waitForTimeout(2_000);
+evidence.after = page.url();
+evidence.bodyTail = (await page.locator('body').innerText()).slice(-2_000);
+await fs.writeFile(out, JSON.stringify(evidence, null, 2));
+console.log(JSON.stringify(evidence, null, 2));
+await browser.close();

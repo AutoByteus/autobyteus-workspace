@@ -1,0 +1,6 @@
+migrationId=20260901_agent_org_flat_team_families_v1
+displayName=Cut over flat Team and AgentOrg definition/run families
+statusSummary={"scannedCount":2,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"SKIPPED_FLAT_TEAM_RUN_ZERO_WRITE","status":"SKIPPED","message":"Count: 1. Examples: agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/team_run_execution_tree.json."}

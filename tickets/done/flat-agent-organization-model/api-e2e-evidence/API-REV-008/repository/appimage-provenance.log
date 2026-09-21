@@ -1,0 +1,4 @@
+path=autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.66.AppImage bytes=523945963
+ea72201dee5b4c802141d0c1b05a5bf55e43acefd4b56bd167047df3eaf21133  autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.66.AppImage
+expected_bytes=523945963
+expected_sha256=ea72201dee5b4c802141d0c1b05a5bf55e43acefd4b56bd167047df3eaf21133

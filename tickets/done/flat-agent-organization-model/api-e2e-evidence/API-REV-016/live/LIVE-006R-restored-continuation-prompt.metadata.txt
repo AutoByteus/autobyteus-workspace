@@ -1,0 +1,4 @@
+recorded_at=2026-09-06T14:38:42.812220+00:00
+root_team_run_id=aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+selected_member=/lead
+pre_restore_status=Offline

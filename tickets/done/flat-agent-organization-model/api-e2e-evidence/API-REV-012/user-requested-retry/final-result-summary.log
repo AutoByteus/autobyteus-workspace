@@ -1,0 +1,7 @@
+control_ack=accepted
+control_summary=APIREV12 intact summary write keeps this server available
+control_http=200
+failure_ack=accepted
+failure_socket_close=1006
+failure_http_reachable=false
+index_restored_equal=true

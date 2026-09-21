@@ -62,9 +62,16 @@ export class ContextFileFinalizationService {
     finalOwner: ContextFileFinalOwnerDescriptor;
     attachments: FinalizeContextFileDescriptor[];
   }): Promise<FinalizedContextFile[]> {
+    if (input.draftOwner.kind === "org_member_draft" || input.finalOwner.kind === "org_member_final") {
+      if (input.draftOwner.kind !== "org_member_draft" || input.finalOwner.kind !== "org_member_final"
+        || input.draftOwner.orgRunId !== input.finalOwner.orgRunId
+        || input.draftOwner.agentRunId !== input.finalOwner.agentRunId) {
+        throw new Error("Org draft and final context-file owners must identify the same execution.");
+      }
+    }
+    await this.ownerResolver.validateDraftOwner(input.draftOwner);
     await this.cleanupService.cleanupExpiredDrafts();
     const resolvedFinalOwner = await this.ownerResolver.resolveFinalOwner(input.finalOwner);
-    await this.layout.ensureFinalOwnerDir(resolvedFinalOwner);
 
     const finalizedFiles: FinalizedContextFile[] = [];
     const uniqueAttachments = Array.from(
@@ -81,6 +88,8 @@ export class ContextFileFinalizationService {
         return deduped;
       }, new Map()).values(),
     );
+
+    await this.layout.ensureFinalOwnerDir(resolvedFinalOwner);
 
     for (const attachment of uniqueAttachments) {
       const { storedFilename, displayName } = attachment;

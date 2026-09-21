@@ -1,0 +1,12 @@
+{
+  "incoming_file_count": 413,
+  "incoming_changed": [],
+  "source_test_count": 39,
+  "source_test_changed": [],
+  "cumulative_lookup_count": 465,
+  "missing_lookup": [],
+  "old_archived_ticket_git_delta": "",
+  "backup_directory": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR001-20260913T122658Z",
+  "backup_archive_sha256": "8d22c4e41c078a6f89b40c308ca952ed978d766026bd82ae2e176bae6021ce6e",
+  "scope": "Read-only hashes and Git scope; no new behavioral tests"
+}

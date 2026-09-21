@@ -2,12 +2,12 @@ import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
-import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
 import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/agent-communication/send-message-to.js";
 import { ensureAutoByteusGetHandoffRulesToolRegistered } from "../../../agent-tools/agent-communication/get-handoff-rules.js";
 import { buildAgentRunMessageSenderContext } from "../../../agent-communication/domain/agent-run-message-sender.js";
-import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
+import { resolveAutoByteusExecutionToolNames } from "./autobyteus-collaboration-tool-exposure.js";
 import {
   createAutoByteusSendMessageToToolForSender,
   isSendMessageToToolName,
@@ -40,14 +40,14 @@ export const resolveAutoByteusAgentTools = (input: {
   senderRunId?: string | null;
   senderName?: string | null;
   runtimeKind?: string | null;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
   logger?: ToolResolutionLogger | null;
 }): AutoByteusAgentToolResolution => {
-  const { agentDefinition, memberTeamContext = null } = input;
+  const { agentDefinition, memberExecutionContext = null } = input;
   const logger = input.logger ?? defaultLogger;
-  const resolvedToolNames = resolveAutoByteusStandaloneToolNames({
+  const resolvedToolNames = resolveAutoByteusExecutionToolNames({
     toolNames: input.runtimeToolExposure.requestedToolNames,
-    memberTeamContext,
+    memberExecutionContext,
   });
   const tools: BaseTool[] = [];
   const actualToolNames: string[] = [];
@@ -67,7 +67,7 @@ export const resolveAutoByteusAgentTools = (input: {
             senderRunId: input.senderRunId,
             senderName: input.senderName ?? agentDefinition.name,
             runtimeKind: input.runtimeKind ?? null,
-            memberTeamContext,
+            memberExecutionContext,
           });
         tools.push(isSendMessageToToolName(name)
           ? createAutoByteusSendMessageToToolForSender(sender)
@@ -82,7 +82,7 @@ export const resolveAutoByteusAgentTools = (input: {
     }
 
     if (isTaskDelegationToolName(name)) {
-      if (!memberTeamContext) {
+      if (!memberExecutionContext) {
         logger.warn(
           `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a Team-member context. Skipping.`,
         );
@@ -94,8 +94,8 @@ export const resolveAutoByteusAgentTools = (input: {
       try {
         tools.push(defaultToolRegistry.createTool(name, new ToolConfig({
           taskDelegation: Object.freeze({
-            identity: memberTeamContext.identity,
-            rootResolver: memberTeamContext.taskRootResolver,
+            identity: memberExecutionContext.identity,
+            commands: memberExecutionContext.tasks,
           }),
         })));
         actualToolNames.push(name);

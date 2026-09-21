@@ -1,10 +1,10 @@
 import {
-  cloneTeamMemberExecutionIdentity,
-  type TeamMemberExecutionIdentity,
-} from "./team-member-execution-identity.js";
+  cloneCollaborationMemberExecutionIdentity,
+  type CollaborationMemberExecutionIdentity,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 export type TeamAgentPlatformBinding = Readonly<{
-  execution: TeamMemberExecutionIdentity;
+  execution: CollaborationMemberExecutionIdentity;
   platformAgentRunId: string;
 }>;
 
@@ -28,18 +28,14 @@ export class TeamAgentPlatformBindingError extends Error {
   readonly indeterminate: boolean;
 }
 
-export interface TeamAgentPlatformBindingAcceptor {
-  accept(binding: TeamAgentPlatformBinding): Promise<void>;
-}
-
 export const createTeamAgentPlatformBinding = (input: {
-  execution: TeamMemberExecutionIdentity;
+  execution: CollaborationMemberExecutionIdentity;
   platformAgentRunId: string;
 }): TeamAgentPlatformBinding => {
   const platformAgentRunId = input.platformAgentRunId.trim();
   if (!platformAgentRunId) throw new Error("platformAgentRunId is required.");
   return Object.freeze({
-    execution: cloneTeamMemberExecutionIdentity(input.execution),
+    execution: cloneCollaborationMemberExecutionIdentity(input.execution),
     platformAgentRunId,
   });
 };

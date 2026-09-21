@@ -1,0 +1,54 @@
+Browser tab: 1211480558, Title: "127.0.0.1:50683/agent-orgs?view=org-list", URL: "http://127.0.0.1:50683/agent-orgs?view=org-list".
+0 AXWebArea 127.0.0.1:50683/agent-orgs?view=org-list
+	1 container app
+		2 container
+			3 container Agents & teams
+				4 container Primary navigation
+					5 content list
+						6 container
+							7 button Agents
+							8 button Collapse left panel
+								9 image
+						10 button Agent Teams
+						11 button Agent Orgs
+						12 button Skills
+						13 button Memory
+						14 button Nodes
+				15 container
+					16 heading Workspaces, Value: 3
+						17 text Workspaces
+					18 button Add workspace
+					19 button (collapsed) Temp Workspace, Secondary Actions: Expand
+				20 button Settings
+			21 container
+				22 heading Agent Orgs, Value: 1
+					23 text Agent Orgs
+				24 text Search Agent Orgs
+				25 text field (settable) Search Agent Orgs
+				26 button Reload
+				27 button Create Agent Org
+			28 container
+				29 heading Featured organizations, Value: 2
+					30 text Featured organizations
+				31 text RA
+				32 heading Readfix Alpha, Value: 3
+					33 text Readfix Alpha
+				34 text Synthetic ownership validation.
+				35 button Run
+				36 button View Details
+				37 container Agent agent-org-owned-agent:readfix-alpha:guide
+					38 text agent-org-owned-agent:readfix-alpha:guide
+				39 container Team agent-org-owned-team:readfix-alpha:squad
+					40 text agent-org-owned-team:readfix-alpha:squad
+				41 text RS
+				42 heading Readfix Shared Control, Value: 3
+					43 text Readfix Shared Control
+				44 text Synthetic ownership validation.
+				45 button Run
+				46 button View Details
+				47 container Agent agent-org-owned-agent:readfix-shared-control:guide
+					48 text agent-org-owned-agent:readfix-shared-control:guide
+				49 container Team Readfix Shared Squad
+					50 text Readfix Shared Squad
+
+The focused UI element is 11 button Agent Orgs

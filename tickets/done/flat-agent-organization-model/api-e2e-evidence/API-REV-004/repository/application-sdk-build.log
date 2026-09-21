@@ -1,0 +1,10 @@
+Scope: 4 of 14 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-frontend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+autobyteus-application-frontend-sdk build: Done
+autobyteus-application-devkit build$ tsc -p tsconfig.build.json
+autobyteus-application-devkit build: Done
+exit_status=0

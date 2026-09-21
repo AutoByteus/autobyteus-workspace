@@ -1,6 +1,7 @@
 import { AgentDefinition } from "../domain/models.js";
 import { AgentDefinitionPersistenceProvider } from "./agent-definition-persistence-provider.js";
 import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+import { isAgentOrgOwnedAgentDefinitionId } from "../../agent-org-definition/utils/agent-org-owned-definition-id.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -54,7 +55,9 @@ export class CachedAgentDefinitionProvider {
   }
 
   async getById(objId: string): Promise<AgentDefinition | null> {
-    if (parseTeamLocalDefinitionId(objId)?.subject === "agent") {
+    // The catalog cache is not an inventory of parent-owned definitions.
+    // Read those exact identities without publishing them into the catalog.
+    if (parseTeamLocalDefinitionId(objId)?.subject === "agent" || isAgentOrgOwnedAgentDefinitionId(objId)) {
       return this.persistenceProvider.getById(objId);
     }
 

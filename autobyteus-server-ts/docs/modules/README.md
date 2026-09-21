@@ -16,6 +16,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Packages | [agent_packages.md](./agent_packages.md) |
 | Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
+| Agent Organization | [agent_orgs.md](./agent_orgs.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
 | Agent Tools MCP Server | [agent_tools_mcp_server.md](./agent_tools_mcp_server.md) |

@@ -1,0 +1,18 @@
+{
+  "oldRoot": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+  "rootAuto": true,
+  "assertions": {
+    "newRoot": true,
+    "autoRoot": true,
+    "allConfiguredAuto": false,
+    "unfocused": true,
+    "sixAgents": false,
+    "twoTeamDots": false,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

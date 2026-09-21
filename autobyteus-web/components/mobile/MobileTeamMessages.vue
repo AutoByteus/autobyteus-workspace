@@ -60,10 +60,8 @@ import { Icon } from '@iconify/vue';
 import MobileTeamReferenceViewer from '~/components/mobile/MobileTeamReferenceViewer.vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import type {
-  TeamCommunicationPerspectiveMessage,
-  TeamCommunicationReferenceFile,
-} from '~/stores/teamCommunicationTypes';
+import type { CollaborationMessagePerspectiveRow } from '~/types/workspace/collaborationMessagesContextView';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import type { MobileWorkContext } from '~/types/mobileWork';
 import {
   referenceFileIcon,
@@ -78,8 +76,8 @@ const props = defineProps<{
 const selectionStore = useAgentSelectionStore();
 const teamContextsStore = useAgentTeamContextsStore();
 const selectedReferenceContext = ref<{
-  message: TeamCommunicationPerspectiveMessage;
-  reference: TeamCommunicationReferenceFile;
+  message: CollaborationMessagePerspectiveRow;
+  reference: TeamReferenceFile;
 } | null>(null);
 const referenceRefreshSignal = ref(0);
 
@@ -99,8 +97,8 @@ const messages = computed(() => {
 });
 
 function openReference(
-  message: TeamCommunicationPerspectiveMessage,
-  reference: TeamCommunicationReferenceFile,
+  message: CollaborationMessagePerspectiveRow,
+  reference: TeamReferenceFile,
 ): void {
   if (
     selectedReferenceContext.value?.message.messageId === message.messageId
@@ -111,12 +109,12 @@ function openReference(
   selectedReferenceContext.value = { message, reference };
 }
 
-function messageLabel(message: TeamCommunicationPerspectiveMessage): string {
+function messageLabel(message: CollaborationMessagePerspectiveRow): string {
   const raw = (message.messageType || 'message').replace(/[_-]+/g, ' ');
   return raw.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function counterpart(message: TeamCommunicationPerspectiveMessage): string {
+function counterpart(message: CollaborationMessagePerspectiveRow): string {
   const name = message.counterpartLabel || 'teammate';
   return message.direction === 'sent' ? `To ${name}` : `From ${name}`;
 }

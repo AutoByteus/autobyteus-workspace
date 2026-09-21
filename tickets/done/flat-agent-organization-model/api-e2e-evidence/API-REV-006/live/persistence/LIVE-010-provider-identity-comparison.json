@@ -1,0 +1,38 @@
+{
+  "/analyst": {
+    "before": {
+      "agentRunId": "aorg_e2e_analyst_311e08b5d76249ea945d3ec3a44edb19",
+      "platformAgentRunId": "01a062e7-ea61-76f2-b8d4-c90579f26fa6"
+    },
+    "after": {
+      "agentRunId": "aorg_e2e_analyst_311e08b5d76249ea945d3ec3a44edb19",
+      "platformAgentRunId": "01a06300-b31e-7471-8cd2-92912aeb97b0"
+    },
+    "logicalSame": true,
+    "providerSame": false
+  },
+  "/lead": {
+    "before": {
+      "agentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+      "platformAgentRunId": "01a062e7-e9a6-7ad1-8615-705ec1fbe0b0"
+    },
+    "after": {
+      "agentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+      "platformAgentRunId": "01a062e7-e9a6-7ad1-8615-705ec1fbe0b0"
+    },
+    "logicalSame": true,
+    "providerSame": true
+  },
+  "/verifier": {
+    "before": {
+      "agentRunId": "aorg_e2e_verifier_d4ba043897fb4cbf911cb3bbe842502d",
+      "platformAgentRunId": "01a062e7-eace-7353-8f30-9b0de277aef8"
+    },
+    "after": {
+      "agentRunId": "aorg_e2e_verifier_d4ba043897fb4cbf911cb3bbe842502d",
+      "platformAgentRunId": "01a06300-b420-7551-b156-de2827b5bbff"
+    },
+    "logicalSame": true,
+    "providerSame": false
+  }
+}

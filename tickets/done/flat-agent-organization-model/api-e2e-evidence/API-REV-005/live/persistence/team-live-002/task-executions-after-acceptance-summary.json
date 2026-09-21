@@ -1,0 +1,11 @@
+{
+  "taskExecutions": [
+    {
+      "address": "/analyst",
+      "agentRunId": "aorg_e2e_analyst_875c5eba2b4442a5b161af199d41943a",
+      "platformAgentRunId": "01a0616c-a9db-7222-a58b-95ebb500c8e2",
+      "startedAt": "2026-09-02T09:21:46.441Z",
+      "settledAt": "2026-09-02T09:27:27.484Z"
+    }
+  ]
+}

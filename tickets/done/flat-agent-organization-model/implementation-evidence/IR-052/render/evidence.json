@@ -1,0 +1,178 @@
+{
+  "observations": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "navigation": [
+        {
+          "path": "/agent-orgs",
+          "query": {
+            "view": "org-detail",
+            "id": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agent-teams",
+          "query": {
+            "view": "team-detail",
+            "id": "agent-org-owned-team:local-owned-org:local-team",
+            "returnToOrg": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agents",
+          "query": {
+            "view": "detail",
+            "id": "shared-worker",
+            "returnToTeam": "agent-org-owned-team:local-owned-org:local-team",
+            "returnToOrg": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agent-teams",
+          "query": {
+            "view": "team-detail",
+            "id": "agent-org-owned-team:local-owned-org:local-team",
+            "returnToOrg": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agent-orgs",
+          "query": {
+            "view": "org-detail",
+            "id": "local-owned-org"
+          }
+        }
+      ],
+      "calls": [
+        {
+          "field": "agentOrgDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentTeamDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "navigation": [
+        {
+          "path": "/agent-orgs",
+          "query": {
+            "view": "org-detail",
+            "id": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agent-teams",
+          "query": {
+            "view": "team-detail",
+            "id": "agent-org-owned-team:local-owned-org:local-team",
+            "returnToOrg": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agents",
+          "query": {
+            "view": "detail",
+            "id": "shared-worker",
+            "returnToTeam": "agent-org-owned-team:local-owned-org:local-team",
+            "returnToOrg": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agent-teams",
+          "query": {
+            "view": "team-detail",
+            "id": "agent-org-owned-team:local-owned-org:local-team",
+            "returnToOrg": "local-owned-org"
+          }
+        },
+        {
+          "path": "/agent-orgs",
+          "query": {
+            "view": "org-detail",
+            "id": "local-owned-org"
+          }
+        }
+      ],
+      "calls": [
+        {
+          "field": "agentOrgDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentTeamDefinitions",
+          "variables": {}
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        },
+        {
+          "field": "agentTeamDefinition",
+          "variables": {
+            "id": "agent-org-owned-team:local-owned-org:local-team"
+          }
+        }
+      ],
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

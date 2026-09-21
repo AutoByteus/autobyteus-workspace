@@ -99,12 +99,7 @@ const teamMemberTreeUsesWorkspace = (
 const teamMemberUsesWorkspace = (
   member: ConfiguredExecutionNode,
   workspaceRootPath: string,
-): boolean => {
-  if ("teamRunId" in member) {
-    return teamMemberTreeUsesWorkspace(member.members, workspaceRootPath);
-  }
-  return agentMemberUsesWorkspace(member, workspaceRootPath);
-};
+): boolean => agentMemberUsesWorkspace(member, workspaceRootPath);
 
 const agentMemberUsesWorkspace = (
   member: ConfiguredAgentExecutionNode,

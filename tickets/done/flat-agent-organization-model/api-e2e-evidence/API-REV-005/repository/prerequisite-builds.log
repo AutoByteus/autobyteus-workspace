@@ -1,0 +1,45 @@
+--- shared/sdk/devkit builds ---
+Scope: 8 of 14 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-agent-presentation-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-agent-presentation-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-frontend-sdk build$ tsc -p tsconfig.build.json
+...byteus-collaboration-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+autobyteus-application-frontend-sdk build: Done
+...byteus-collaboration-stream-contracts build: Done
+autobyteus-team-stream-contracts build: Done
+autobyteus-application-devkit build$ tsc -p tsconfig.build.json
+autobyteus-application-devkit build: Done
+--- brief studio pack ---
+
+> @autobyteus-example/brief-studio-authoring@ build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:20209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T08:53:25.373Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T08:53:25.373Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T08:53:25.375Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio/dist/importable-package
+Generated application root at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio/dist/importable-package/applications/brief-studio
+
+> @autobyteus-example/brief-studio-authoring@ validate /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:20254) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T08:53:28.536Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T08:53:28.536Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T08:53:28.538Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio/dist/importable-package

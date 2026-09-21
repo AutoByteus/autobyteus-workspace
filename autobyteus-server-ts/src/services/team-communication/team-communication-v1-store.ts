@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
-  getTeamRunFileCommitWriter,
-  type TeamRunFileCommitWriter,
-  type TeamRunFileWriteResult,
-} from "../../run-history/store/team-run-file-commit-writer.js";
+  getAtomicRunPackageFileCommitWriter,
+  type AtomicRunPackageFileCommitWriter,
+  type RunPackageFileWriteResult,
+} from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { validateTeamCommunicationMessagesV1Payload } from "./team-communication-v1-schema.js";
 import type { TeamCommunicationMessagesFileV1 } from "./team-communication-v1-types.js";
 
@@ -19,7 +19,7 @@ const isMissingFile = (error: unknown): boolean =>
 
 export class TeamCommunicationV1Store {
   constructor(
-    private readonly writer: TeamRunFileCommitWriter = getTeamRunFileCommitWriter(),
+    private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
   ) {}
 
   async read(
@@ -40,7 +40,7 @@ export class TeamCommunicationV1Store {
   async write(
     teamMemoryDir: string,
     messages: TeamCommunicationMessagesFileV1,
-  ): Promise<TeamRunFileWriteResult> {
+  ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     const normalized = validateTeamCommunicationMessagesV1Payload(
       messages,
       messages.rootTeamRunId,

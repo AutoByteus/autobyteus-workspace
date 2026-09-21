@@ -1,0 +1,110 @@
+{
+  "pendingInvocation": "exec-ddcf8577-282b-4f7c-bf43-f2f634f4f167",
+  "approveCommands": [],
+  "terminationRequests": [],
+  "telemetry": {
+    "pid": 73109,
+    "at": "2026-09-14T14:19:56.910Z",
+    "active": [
+      {
+        "runId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+        "active": true,
+        "status": {
+          "status": "idle",
+          "agent_id": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345"
+        }
+      }
+    ],
+    "pending": [],
+    "events": [
+      {
+        "method": "prepareNewAgentRun",
+        "runId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+        "startedAt": "2026-09-14T14:11:40.944Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "01a0a042-6575-7e10-bece-e63ecd22aaff"
+      },
+      {
+        "method": "prepareNewAgentRun",
+        "runId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+        "startedAt": "2026-09-14T14:13:12.188Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "01a0a043-c989-7340-9480-db1b186e9881"
+      },
+      {
+        "method": "prepareNewAgentRun",
+        "runId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+        "startedAt": "2026-09-14T14:14:28.539Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345"
+      },
+      {
+        "method": "prepareRestoreAgentRunFromPlatformState",
+        "runId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+        "startedAt": "2026-09-14T14:15:10.698Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "01a0a042-6575-7e10-bece-e63ecd22aaff"
+      },
+      {
+        "method": "prepareRestoreAgentRun",
+        "runId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+        "startedAt": "2026-09-14T14:15:10.698Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "01a0a042-6575-7e10-bece-e63ecd22aaff"
+      },
+      {
+        "method": "prepareRestoreAgentRunFromPlatformState",
+        "runId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+        "startedAt": "2026-09-14T14:15:43.341Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "01a0a043-c989-7340-9480-db1b186e9881"
+      },
+      {
+        "method": "prepareRestoreAgentRun",
+        "runId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+        "startedAt": "2026-09-14T14:15:43.341Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "01a0a043-c989-7340-9480-db1b186e9881"
+      },
+      {
+        "method": "prepareRestoreAgentRun",
+        "runId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345",
+        "startedAt": "2026-09-14T14:17:53.873Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "aorg_validation_agent_654965c8027a4874b8f6b7b0cf322345"
+      },
+      {
+        "method": "prepareNewAgentRun",
+        "runId": "aorg_validation_agent_1129a188d95c45c1a3713f8ff6fb1416",
+        "startedAt": "2026-09-14T14:18:00.804Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "aorg_validation_agent_1129a188d95c45c1a3713f8ff6fb1416"
+      }
+    ]
+  },
+  "terminationRequestCountQualification": "fetch observer did not observe Apollo GraphQL requests; empty list is not zero/exact-one command evidence. Actual frontend double-click and zero Team runtime/read-only records corroborate lifecycle; exact duplicate-command suppression covered by durable test.",
+  "acceptedMessagesAfterStaleClick": {
+    "schemaVersion": 1,
+    "rootTeamRunId": "aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843",
+    "messages": [
+      {
+        "messageId": "collabmsg_GwN3k5hXlSgxnroEfkovhexM72abb5b0",
+        "senderAgentRunId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+        "receiverAgentRunId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+        "content": "Reply TEAM-WORKER-ONE only; do not use tools.",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-09-14T14:13:12.188Z"
+      },
+      {
+        "messageId": "collabmsg__m3fmivTUuD9ZmV4X1G6iuQjyg6YsNKq",
+        "senderAgentRunId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+        "receiverAgentRunId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+        "content": "Reply TEAM-WORKER-TWO only; do not use tools.",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-09-14T14:15:43.340Z"
+      }
+    ]
+  }
+}

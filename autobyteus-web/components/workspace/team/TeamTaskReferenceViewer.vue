@@ -13,8 +13,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import TeamReferenceFileViewer from './TeamReferenceFileViewer.vue';
 
 const props = defineProps<{
-  teamRunId: string;
-  taskId: string;
+  contentPath: string;
   reference: TeamReferenceFile;
   refreshSignal?: number;
 }>();
@@ -22,6 +21,6 @@ const props = defineProps<{
 const windowNodeContextStore = useWindowNodeContextStore();
 const contentUrl = computed(() => {
   const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
-  return `${restBaseUrl}/team-runs/${encodeURIComponent(props.teamRunId)}/task-delegations/${encodeURIComponent(props.taskId)}/references/${encodeURIComponent(props.reference.referenceId)}/content`;
+  return `${restBaseUrl}/${props.contentPath.replace(/^\/+/, '')}`;
 });
 </script>

@@ -3,6 +3,7 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
+import { useActiveContextStore } from '~/stores/activeContextStore';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
@@ -39,6 +40,7 @@ export function useEventMonitorFilePreview() {
   const mobileWorkStore = useMobileWorkStore();
   const windowNodeContextStore = useWindowNodeContextStore();
   const workspaceStore = useWorkspaceStore();
+  const activeContextStore = useActiveContextStore();
   const { t } = useLocalization();
 
   const unavailable = (key: string): EventMonitorFilePreviewResult => ({
@@ -87,8 +89,11 @@ export function useEventMonitorFilePreview() {
         return await openMobilePath(action);
       }
 
-      const activeMetadata = workspaceStore.activeWorkspaceMetadata;
-      const activeWorkspace = workspaceStore.activeWorkspace;
+      const workspaceTarget = activeContextStore.activeWorkspaceTarget;
+      const activeMetadata = workspaceTarget
+        ? workspaceTarget.context.config.workspaceMetadata
+        : workspaceStore.activeWorkspaceMetadata;
+      const activeWorkspace = workspaceTarget ? null : workspaceStore.activeWorkspace;
       const workspaceId = activeMetadata?.workspaceId || activeWorkspace?.workspaceId || '';
       if (!workspaceId) {
         return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');

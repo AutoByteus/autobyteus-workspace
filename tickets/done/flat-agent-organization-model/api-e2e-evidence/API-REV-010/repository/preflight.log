@@ -1,0 +1,629 @@
+timestamp=2026-09-04T14:06:08Z
+pwd=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model
+head=100e2c82cb948e1cbef4026ab6f74ab815285a34
+head_parent=4d378df9cba56bd1b9ebf20d9b055f964398f642
+source_expected=4d378df9cba56bd1b9ebf20d9b055f964398f642
+source_ancestor=PASS
+--- applicable instructions ---
+../agent-team-universal-task-delegation/autobyteus-server-ts/AGENTS.md
+../agent-team-universal-task-delegation/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/AGENTS.md
+../agent-team-universal-task-delegation/autobyteus-web/resources/server/AGENTS.md
+../agent-team-universal-task-delegation/autobyteus-web/AGENTS.md
+../fruit-shopping-nuxt-ssr/autobyteus-server-ts/AGENTS.md
+../fruit-shopping-nuxt-ssr/autobyteus-web/AGENTS.md
+../initial-prototype-baseline/autobyteus-server-ts/AGENTS.md
+../initial-prototype-baseline/autobyteus-web/AGENTS.md
+../mcp-circular-result-investigation/autobyteus-server-ts/AGENTS.md
+../mcp-circular-result-investigation/autobyteus-web/AGENTS.md
+../flat-agent-organization-model/autobyteus-server-ts/AGENTS.md
+../flat-agent-organization-model/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/AGENTS.md
+../flat-agent-organization-model/autobyteus-web/resources/server/AGENTS.md
+../flat-agent-organization-model/autobyteus-web/AGENTS.md
+../codex-ultrafast-mode-frontend/autobyteus-server-ts/AGENTS.md
+../codex-ultrafast-mode-frontend/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/AGENTS.md
+../codex-ultrafast-mode-frontend/autobyteus-web/resources/server/AGENTS.md
+../codex-ultrafast-mode-frontend/autobyteus-web/AGENTS.md
+../agent-team-project-task-navigation/autobyteus-server-ts/AGENTS.md
+../agent-team-project-task-navigation/autobyteus-web/AGENTS.md
+../agent-run-history-performance/autobyteus-server-ts/AGENTS.md
+../agent-run-history-performance/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/AGENTS.md
+../agent-run-history-performance/autobyteus-web/resources/server/AGENTS.md
+../agent-run-history-performance/autobyteus-web/AGENTS.md
+../server-settings-8001-investigation/autobyteus-server-ts/AGENTS.md
+../server-settings-8001-investigation/autobyteus-web/AGENTS.md
+../browser-tab-crash-memory-investigation/autobyteus-server-ts/AGENTS.md
+../browser-tab-crash-memory-investigation/autobyteus-web/AGENTS.md
+../mcp-tool-exposure-docker/autobyteus-server-ts/AGENTS.md
+../mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-unpacked/resources/server/AGENTS.md
+../mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/AGENTS.md
+../mcp-tool-exposure-docker/autobyteus-web/resources/server/AGENTS.md
+../mcp-tool-exposure-docker/autobyteus-web/AGENTS.md
+--- README.md
+# autobyteus-workspace
+
+Monorepo workspace for the AutoByteus TypeScript platform.
+
+## Workspace projects
+
+- `autobyteus-web`
+- `autobyteus-server-ts`
+- `autobyteus-ts`
+- `autobyteus-message-gateway`
+- `autobyteus-android` native wrapper for the existing `/mobile` shell
+- `autobyteus-ios` native wrapper for the existing `/mobile` shell
+- `autobyteus-application-sdk-contracts`
+- `autobyteus-application-frontend-sdk`
+- `autobyteus-application-backend-sdk`
+- `autobyteus-application-devkit`
+- `applications/*` sample application source projects
+
+## Collaboration model
+
+AutoByteus separates reusable Teams from multi-Team organizations:
+
+- an **AgentTeam** is flat, contains Agent members only, and has one direct
+  Agent coordinator;
+- an **AgentOrg** is coordinator-free and can contain direct Agents plus
+  reusable flat Teams; and
+- task delegation may create task-scoped Team executions without creating
+  persistent Team-within-Team configuration.
+
+AgentOrg launch configures the complete Org first, then the user selects an exact
+Agent or Team before messaging. Team targets enter through that Team's
+coordinator. Definitions use target-only Team V2 and AgentOrg V1 contracts;
+unsupported nested or legacy definitions fail admission rather than being
+silently flattened.
+
+Architecture and UI details:
+
+- [Server AgentTeam definitions](autobyteus-server-ts/docs/modules/agent_team_definition.md)
+- [Server AgentOrg model](autobyteus-server-ts/docs/modules/agent_orgs.md)
+- [Frontend Agent Teams](autobyteus-web/docs/agent_teams.md)
+- [Frontend Agent Orgs](autobyteus-web/docs/agent_orgs.md)
+
+## Setup
+
+```bash
+git clone https://github.com/AutoByteus/autobyteus-workspace.git
+cd autobyteus-workspace
+pnpm install
+```
+
+## Custom application development
+
+New external custom applications should start with the reusable
+`@autobyteus/application-devkit` CLI and the canonical source/output layout:
+
+- editable source under `src/frontend`, `src/backend`, optional `src/agents`,
+  and optional `src/agent-teams`;
+- generated importable packages under `dist/importable-package/applications/<app-id>/`;
+- runtime package folders named `ui/` and `backend/` only inside the generated
+  package root expected by AutoByteus import.
+
+Full guide:
+- [`docs/custom-application-development.md`](docs/custom-application-development.md)
+
+## Phone Access / Remote Access
+
+AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes support stable private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs; Tailscale Serve HTTPS remains the recommended setup for Android, iOS, and travel use.
+
+For remote-node Phone Access, create or open the current AutoByteus node in its own desktop window, then create the QR with a phone-facing private-network `/mobile` URL that the phone can reach and that maps to that same node. HTTPS is preferred; trusted private HTTP requires explicit cleartext acknowledgement, and public HTTP or local-only hosts are rejected. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/iOS/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md), [`docs/android_mobile_access.md`](docs/android_mobile_access.md), and [`docs/ios_mobile_access.md`](docs/ios_mobile_access.md).
+
+User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
+
+## Memory Sync / Memory Hub
+
+AutoByteus servers can synchronize persisted agent and agent-team memory into a
+hub node without changing the local runtime memory layout. Configure the current
+node from **Nodes -> Memory Sync**:
+
+- enable **Memory Hub** on the receiving node and confirm the advertised hub URL
+  that sources can reach;
+- copy the backend-generated `mhub_...` source token when it is created or
+  regenerated, because plaintext tokens are shown only once;
+- open each Docker, Kubernetes, or remote source node in its own node-bound
+  window, set a stable `sourceNodeId`, paste the hub URL/token, and run
+  **Test connection** before **Sync now** or background sync.
+
+On a source node, **Test connection** reports its result inline beside the
+source action controls. If the token input is blank after source settings have
+been saved, the test uses the fully persisted source configuration, including
+the saved redacted token. If a token is pasted into the draft field, the test
+uses the draft hub URL, source id, and token together. **Sync now** shows a
+disabled `Syncing…` state while work is in flight, and the Source card reports
+`Current job` plus `Last sync` so a latest error is visible even when an older
+success timestamp still exists.
+
+The hub keeps local runtime memory in `memory/agents` and `memory/agent_teams`
+unchanged. Imported source corpora are stored separately under
+`memory/imports/<sourceNodeId>/` and appear in the Memory page source selector as
+read-only imported memory. Imported memory is for browsing and future analysis;
+it is not local runnable state and does not enable restore/continue/delete
+actions.
+
+For Docker sources on the same host, the hub URL may need a Docker-reachable
+address such as `http://host.docker.internal:<port>` rather than desktop
+loopback. For Kubernetes or remote deployments, use a Service, Ingress, VPN,
+tailnet, or other trusted private route that reaches the hub. Details:
+[`autobyteus-server-ts/docs/features/memory_sync.md`](autobyteus-server-ts/docs/features/memory_sync.md)
+and [`autobyteus-web/docs/memory.md`](autobyteus-web/docs/memory.md).
+
+## Run The Published Server Docker
+
+If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, prefers friendly sequential host ports for indexed Docker nodes when they are available, falls back to non-conflicting random ports when needed, and prints the Backend URL to add in **Nodes -> Manage Nodes -> Add Remote Node**.
+
+Install the local launcher once:
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+```
+
+The installer writes the launcher entry and its adjacent support modules into
+the local install directory, so installed `autobyteus-docker` commands do not
+need a repository checkout. On macOS/Linux it prints the installed executable
+path, a direct-path command that works immediately, current-shell
+`export PATH=...` guidance, and persistent shell-profile setup/update status.
+When automatic profile update is skipped, unavailable, or blocked by an
+existing different managed block, it also prints copy/paste persistent setup
+commands for the detected profile. A child installer process cannot update the
+already-running parent shell, so use the direct path, run the printed export in
+the current shell, or open a new terminal after a successful persistent profile
+update.
+
+Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
+
+```bash
+autobyteus-docker new-container
+```
+
+Repeated `new-container` calls create `autobyteus-server-0`, then
+`autobyteus-server-1`, then `autobyteus-server-2`, and so on. Fresh indexed
+nodes prefer friendly sequential ports when those ports are free: server-0 uses
+Backend/VNC/noVNC/debug ports `8001`/`5908`/`6080`/`9228`, server-1 uses
+`8002`/`5909`/`6081`/`9229`, server-2 uses
+`8003`/`5910`/`6082`/`9230`, and later nodes continue the same offsets. If a
+preferred port is unavailable, that service uses a safe random fallback port.
+Existing nodes keep their saved ports during normal inspect/start paths unless
+those ports become unavailable and the launcher must recreate with fresh ports.
+
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then open
+that Docker node window only over a trusted LAN, VPN, tailnet, or equivalent
+private-network path. Desktop/Electron access to that node follows the trusted
+private-network product model; do not expose the full backend directly to the
+public internet. Paired phones receive only separate `mra_...` mobile credentials,
+and those credentials do not authorize owner-management routes. Current server
+Docker images package the `/mobile` web shell so the QR target is served by the
+container itself.
+
+For managed containers, the public launcher keeps private Docker named volumes
+outside the container writable layer:
+`<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`
+stays mounted at `/root`, `<node>-chromium-profile` stays mounted at
+`/home/vncuser/.config/chromium` for private Chromium browser profile state,
+and `<node>-workspace` stays mounted at `/app/autobyteus-server-ts/workspace`.
+It also creates a host-visible shared workspace root outside the source tree:
+
+- macOS / Linux default: `$HOME/.autobyteus/docker-server/shared-workspace`
+- Windows default: `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace`
+- Override: `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`
+
+Inside each managed container, user files land in simple stable paths:
+`/home/autobyteus/workspace` is backed by that node's host folder, and
+`/home/autobyteus/shared` is backed by one shared host folder visible to every
+managed Docker node. The launcher sets
+--- autobyteus-server-ts/README.md
+# AutoByteus Server (Node.js / TypeScript)
+
+Fastify-based server with GraphQL, REST, and WebSocket endpoints. This is the Node.js/TypeScript port of the original FastAPI server.
+
+## Prerequisites
+
+- Node.js 18+ (20+ recommended)
+- pnpm
+
+### Android Support Profile
+
+Official Android runtime profile for this server:
+
+- Termux installed
+- Termux:API app installed (for hardware control via `termux-*` commands)
+- Node.js installed inside Termux
+- direct-shell backend for terminal tools (no `node-pty` requirement on Android)
+
+Quick setup in Termux:
+
+```bash
+pnpm android:bootstrap
+```
+
+## Install
+
+From the monorepo root:
+
+```bash
+pnpm install
+```
+
+Android (Termux) profile:
+
+```bash
+pnpm install --no-optional --filter ./autobyteus-ts... --filter ./autobyteus-server-ts... --filter ./autobyteus-message-gateway...
+pnpm verify:android-profile
+```
+
+Or use the bootstrap automation from workspace root:
+
+```bash
+pnpm android:bootstrap
+pnpm android:bootstrap:check
+```
+
+## Environment setup
+
+Create `.env` in `autobyteus-server-ts` (or use `--data-dir` to point to a folder containing a `.env`).
+
+Minimal example:
+
+```env
+APP_ENV=production
+AUTOBYTEUS_SERVER_HOST=http://localhost:8000
+DB_TYPE=sqlite
+LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
+DISABLE_HTTP_REQUEST_LOGS=true
+```
+
+Notes:
+- `AUTOBYTEUS_SERVER_HOST` is required (used for URL generation).
+- Provider and search credentials must be saved through the applicable product Settings surface (**API Key Management** for model/media providers and **Web Search** configuration for search providers). Plaintext `.env` entries and ambient aliases are not runtime credential providers. For a one-time transition from an owner-private assignment file, use the sole importer command `pnpm secrets:import -- --source /absolute/path --database-url file:/absolute/path/to/application.db --dry-run` from the workspace root, review the value-free target and plan, and rerun without `--dry-run`. `--database-url` is required and is the importer's only target authority; it is never inferred from `.env`, `.env.test`, the source file, the working directory, or parent `DATABASE_URL`. See the Secret Management doc for URL validation, confirmation, preview, and overwrite rules.
+- Encrypted secret tables live in the same SQLite application database selected by canonical `DATABASE_URL`; the 32-byte root key is the database sibling `<database-path>.secret.key`. Treat the database and key as one backup/restore/reset pair. There is no second Store database or backend configuration hook. See `docs/modules/secret_management.md`.
+- Claude Agent SDK authentication keeps the existing `CLAUDE_AGENT_SDK_AUTH_MODE=auto|cli|api-key` selector and defaults to `cli`. Only explicit `api-key` resolves the Anthropic vault credential and replaces `ANTHROPIC_API_KEY` immediately before launch; `auto`/`cli`, external Codex, and inherited child environments retain their established continuity behavior and are not process-isolation evidence.
+- Optional `AUTOBYTEUS_MCP_GATEWAY_TOKEN` protects the general `/mcp/gateway` Streamable HTTP MCP endpoint. When unset, that endpoint is restricted to local loopback requests only.
+- SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
+- `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.
+- Persistence is subsystem-owned. Token usage is stored in SQL, while file-backed subsystems such as agent definitions, team definitions, and MCP config keep using their native file storage.
+- Fastify request/response access logs are disabled by default to reduce noise. Set `DISABLE_HTTP_REQUEST_LOGS=false` to enable them again.
+- Prisma SQL query logs are disabled by default to reduce noise. Set `PRISMA_LOG_QUERIES=1` only when you explicitly need raw SQL visibility for troubleshooting.
+- The app will create `db/`, `logs/`, `download/`, `media/`, `skills/`, `temp_workspace/` as needed under the app data dir.
+
+## Build and run
+
+From the `autobyteus-server-ts` directory:
+
+```bash
+pnpm build
+node dist/app.js --host 0.0.0.0 --port 8000
+```
+
+From the monorepo root:
+
+```bash
+pnpm -C autobyteus-server-ts build
+node autobyteus-server-ts/dist/app.js --host 0.0.0.0 --port 8000
+```
+
+Notes:
+- `pnpm -C autobyteus-server-ts build` also builds the `autobyteus-ts` workspace package.
+- `pnpm -C autobyteus-server-ts build` also runs `prisma generate --schema ./prisma/schema.prisma` before TypeScript compile.
+- `repository_prisma@1.0.9` is consumed as a normal npm dependency (no local
+  sibling clone required). Server composition initializes it for the canonical
+  application database after schema migrations; token and secret runtime model
+  repositories use its context-aware `BaseRepository` and transaction boundary.
+
+Optional custom data directory:
+
+```bash
+node autobyteus-server-ts/dist/app.js --data-dir /path/to/data --host 0.0.0.0 --port 8000
+```
+
+Android run helpers (from workspace root):
+
+```bash
+pnpm android:server:start      # foreground
+pnpm android:server:start:bg   # background (nohup + pid file)
+pnpm android:server:status
+pnpm android:server:stop
+```
+
+Recommended dev startup with log file (from monorepo root):
+
+```bash
+mkdir -p autobyteus-server-ts/logs
+TS=$(date +%Y%m%d-%H%M%S)
+LOG_FILE="autobyteus-server-ts/logs/backend-dev-${TS}.log"
+PID_FILE="autobyteus-server-ts/logs/backend-dev-${TS}.pid"
+nohup node autobyteus-server-ts/dist/app.js --host 0.0.0.0 --port 8000 > "$LOG_FILE" 2>&1 &
+echo $! > "$PID_FILE"
+echo "PID: $(cat "$PID_FILE")"
+echo "Log: $LOG_FILE"
+```
+
+## Production data migrations
+
+Prisma database-schema migrations are executed on startup via:
+
+```bash
+pnpm -C autobyteus-server-ts exec prisma migrate deploy
+```
+
+You can also run it manually.
+
+After Prisma and encrypted-vault initialization, registered app-data migrations
+run before normal provider consumers. These migrations can transform database
+rows as well as filesystem/application-data formats; Prisma schema deployment
+alone does not cover those data-shape transitions. This includes the one-time
+transition of the supported version-1
+`<app-data-dir>/llm/custom-llm-providers.json` file: a complete valid set is
+migrated atomically into encrypted vault entries plus secret-free v2 metadata.
+An invalid or colliding v1 set is deleted and requires reconfiguration through
+**Settings -> API Key Management -> New Provider**. If the v1 file cannot be
+deleted safely, the server and built-in Settings still start, but custom
+provider creation remains unavailable until the filesystem issue is fixed and
+the server restarts. There is no manual v1 command, backup/quarantine copy,
+runtime v1 reader, partial migration, or automatic `.env` import.
+
+Required startup migration `20260823_repair_team_agent_memory_layout` repairs
+the released nested-Team writer regression. For each AgentRun admitted by a
+validated migration-owned V1 intermediate execution tree, it moves an affected flat nested-member
+directory as one same-filesystem directory into the canonical
+`root TeamRun -> ancestor TeamRun ids -> AgentRun` location. Current runtime
+readers and writers remain canonical-only; direct-root and already-canonical
+members are not relocated. An item-level move failure records `FAILED` without
+blocking unrelated application startup and remains available through the
+existing **Settings -> Server Migrations -> Retry** action. A real canonical
+target beside a preserved flat source records `SUCCEEDED_WITH_WARNINGS`; a
+missing or invalid canonical target is never treated as a warning. See the
+Memory Sync documentation for the approved v1 physical-retention consequence.
+
+Required startup migration `20260824_team_run_execution_tree_v2` then upgrades
+each exact V1 Team execution tree to the current V2 contract. It preserves
+concrete IDs, configured/task topology, handoffs, application binding,
+timestamps, and Agent launch snapshots; adds the canonical root address `/`;
+maps legacy runtime labels; and materializes a complete
+`defaultLaunchConfiguration` on the root and every configured nested Team from
+that Team's unique direct coordinator snapshot. Exact V2 files are skipped
+idempotently. Runtime, history, GraphQL, and stream readers are V2-only and
+admit only complete execution-tree/task/communication packages.
+
+### Production migration practice
+
+- Follow the canonical
+  [`Production Data-Migration Conventions`](docs/design/production_data_migration_conventions.md)
+  for reachability, forward-only runtime ownership, final-current-state failure
+  classification, cleanup residue, and proportionate recovery decisions.
+- Define each migration as a deterministic transformation from explicitly
+--- autobyteus-web/README.md
+# AutoByteus Web Frontend
+
+A modern web application built with Nuxt.js, featuring both web and electron builds.
+
+## CI Build (Tag Trigger)
+
+Desktop CI build setup instructions are documented in:
+
+- `docs/github-actions-tag-build.md`
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- pnpm (via Corepack)
+- Git
+
+## Environment Setup
+
+Create a `.env` file in the root directory with the following variables when the frontend should talk to a separately running backend. In local development, Nuxt's Vite proxy uses `BACKEND_NODE_BASE_URL` for `/graphql` and `/rest`, and the WebSocket endpoints default from the same backend base URL.
+
+```env
+# Backend node base URL used by the local dev proxy
+BACKEND_NODE_BASE_URL=http://localhost:8000
+
+# Optional explicit production endpoint overrides
+BACKEND_GRAPHQL_BASE_URL=http://localhost:8000/graphql
+BACKEND_REST_BASE_URL=http://localhost:8000/rest
+BACKEND_GRAPHQL_WS_ENDPOINT=ws://localhost:8000/graphql
+BACKEND_AGENT_WS_ENDPOINT=ws://localhost:8000/ws/agent
+BACKEND_TEAM_WS_ENDPOINT=ws://localhost:8000/ws/agent-team
+BACKEND_TRANSCRIPTION_WS_ENDPOINT=ws://localhost:8000/ws/transcribe
+BACKEND_TERMINAL_WS_ENDPOINT=ws://localhost:8000/ws/terminal
+BACKEND_FILE_EXPLORER_WS_ENDPOINT=ws://localhost:8000/ws/file-explorer
+
+# Feature Flags (Optional)
+ENABLE_APPLICATIONS=false
+```
+
+> **Note for Electron App**: A normal Electron launch configures these endpoints
+> to the bundled loopback server at `http://127.0.0.1:29695`. An explicit
+> packaged E2E launch uses the selected non-default loopback port instead; the
+> main process supplies that active endpoint to the renderer. See
+> [Packaged Electron E2E Launches](#packaged-electron-e2e-launches).
+
+### Messaging Setup
+
+The default messaging flow is now server-managed. `autobyteus-web` no longer needs
+`MESSAGE_GATEWAY_BASE_URL` or `MESSAGE_GATEWAY_ADMIN_TOKEN` in `.env.local` for the
+standard setup path.
+
+When a user enables messaging from `Settings -> Messaging`, the selected node's
+server:
+
+1. resolves the compatible `autobyteus-message-gateway` artifact for that server version
+2. downloads it on demand if it is not already installed
+3. verifies and extracts it into server-owned storage
+4. starts it as a managed child process
+5. reports lifecycle state, version, and diagnostics back to the frontend
+
+## Managed Messaging Setup (Discord, Telegram)
+
+For a user-facing managed setup guide, including the recommended Telegram polling flow, see:
+
+- `docs/messaging.md`
+
+1. Start the target AutoByteus node.
+   - For Electron, this is the bundled local server.
+   - For a remote deployment, use the node you want the window to control.
+
+2. Start the frontend:
+
+```bash
+pnpm dev
+```
+
+3. Open `Settings -> Messaging`.
+
+4. In `Managed Messaging Gateway`:
+   - click `Install and Start Gateway` or `Start Gateway`
+   - wait for the lifecycle state to move through `INSTALLING` and `STARTING`
+   - confirm the card reports `RUNNING`
+
+5. Enter provider configuration in the provider card directly below the provider selector and save it.
+   - Discord requires bot token plus account id.
+   - Telegram requires bot token plus a stable account label such as `telegram-main`.
+   - Managed Telegram is polling-only in the product flow.
+
+6. Use `Channel Binding Setup` to bind provider accounts or discovered peers to AutoByteus targets.
+   - Discord and Telegram peer discovery are available through the managed server boundary.
+   - Bound team channels deliver eligible coordinator or entry-node outputs while the linked run remains active, including follow-up outputs triggered by internal team handoffs.
+
+7. If troubleshooting is needed, use the managed gateway diagnostics shown in the UI.
+   - The port, bind address, active version, and lifecycle message are read-only diagnostics.
+   - Users should not need to enter raw gateway connection details in the normal flow.
+
+## Telegram Setup Summary
+
+For most users, Telegram setup should stay close to a fully in-app flow:
+
+1. Create a bot in BotFather and copy the bot token.
+2. Open `Settings -> Messaging`.
+3. Start the managed gateway from the top runtime card.
+4. Select `Telegram Bot`.
+5. Paste the bot token and enter a stable account label.
+6. Save configuration, send a real Telegram message to the bot, then use `Refresh Peers`.
+7. Create a channel binding by selecting the target agent or team definition and launch preset.
+8. Team bindings deliver eligible coordinator or entry-node outputs back to Telegram while the linked run remains active.
+9. Run setup verification.
+
+The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, runtime preset selection, and verification are handled from the app.
+
+## Localization
+
+AutoByteus Web now ships with a client-side localization foundation for product UI copy.
+
+- Supported locales: `English (en)` and `Simplified Chinese (zh-CN)`
+- User preference modes: `System`, `English`, `简体中文`
+- Settings location: `Settings -> Language`
+- System resolution source:
+  - browser mode uses the browser locale list
+  - Electron uses `app.getLocale()` through the preload bridge
+- Unsupported system locales fall back to English
+- Product UI waits behind a neutral bootstrap gate until localization initialization finishes; if bootstrap fails, the app still releases in English instead of staying stuck on the boot surface
+
+For runtime details and contributor workflow, see:
+
+- `docs/localization.md`
+
+## Delivery Reliability
+
+The managed runtime summary now shows delivery reliability information from the gateway:
+
+- queue heartbeat timestamps
+- inbound dead-letter count
+- inbound unbound count
+- outbound dead-letter count
+
+Under the hood, the gateway persists inbound and outbound queues, retries transient failures, and surfaces lock-loss as a critical runtime state.
+
+## Unsupported Or Non-Default Messaging Flows
+
+- WhatsApp Business and WeCom App are excluded from the current default managed
+  messaging setup because these provider flows are not currently available in
+  the managed distribution.
+- WeChat is excluded from the managed messaging capability described above.
+- The old direct gateway URL/token setup flow is no longer the default product path.
+- Personal-session messaging flows are not part of this managed setup.
+
+## Server Modes
+
+AutoByteus supports two server operation modes: internal and external.
+
+### Internal Server
+
+The internal server is a bundled backend server that runs within the Electron application. This mode is:
+
+- **Default for desktop applications** (Electron builds)
+- Completely self-contained with no additional setup required
+- Automatically started and managed by the application
+
+#### Default Production Data Storage Location
+
+An ordinary internal-server launch stores server data in the following locations:
+
+- **Windows**: `C:\Users\<username>\.autobyteus\server-data`
+- **macOS**: `~/.autobyteus/server-data`
+- **Linux**: `~/.autobyteus/server-data`
+
+These directories contain:
+
+- `db/`: Database files
+- `logs/`: Server log files
+- `download/`: Downloaded content
+
+Electron/Chromium also keeps its normal product-named `userData` and session
+state in the operating system's application-data location. An explicit E2E
+launch does not use any of these production paths: its backend, AutoByteus,
+Electron, Chromium, registry, local-storage, and session state are descendants
+of the caller-selected isolated root documented below.
+
+--- status ---
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_orgs.md
+ M autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+ M tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+ M tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+ M tickets/in-progress/flat-agent-organization-model/release-notes.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-010/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/dr-003/
+--- diff check ---
+--- ports ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+--- package manifest ---
+PACKAGE.sha256
+README.md
+TEST-MANIFEST.md
+agent-orgs/aorg-direct-agents-org/org-config.json
+agent-orgs/aorg-direct-agents-org/org.md
+agent-orgs/aorg-mixed-org/org-config.json
+agent-orgs/aorg-mixed-org/org.md
+agent-teams/aorg-research-squad/team-config.json
+agent-teams/aorg-research-squad/team.md
+agent-teams/aorg-support-pair/team-config.json
+agent-teams/aorg-support-pair/team.md
+agents/aorg-analyst/agent-config.json
+agents/aorg-analyst/agent.md
+agents/aorg-concierge/agent-config.json
+agents/aorg-concierge/agent.md
+agents/aorg-lead/agent-config.json
+agents/aorg-lead/agent.md
+agents/aorg-verifier/agent-config.json
+agents/aorg-verifier/agent.md
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: 'tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package/manifest.json'

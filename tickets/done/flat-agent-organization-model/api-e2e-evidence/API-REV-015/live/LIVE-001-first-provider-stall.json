@@ -1,0 +1,283 @@
+{
+  "at": "2026-09-06T13:04:28.782Z",
+  "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=active",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nAGENT ORGS\nAORG E2E Mixed Org\n(1)\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the ne...\n2m\nC\nconcierge\nresearch team\nL\nlead\nA\nanalyst\nV\nverifier\nsupport team\nworkspace\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nworkspace-default\nworkspace-default\nSettings\nL\nlead\nRunning\nYou\nCall delegate_task exactly once with recipient_address `/support-team` and description `As the new task Team coordinator, remain active for this status validation. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-MOUNTED-TASK-TEAM-READY-001 and wait.`. Use the field name description. Do not send an ordinary message. After the successful tool result, reply exactly APIREV15-MOUNTED-TASK-TEAM-DELEGATED-001.\nL\nlead\nThinking\ndelegate_task\nDeny\nApprove\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+  "buttons": [
+    {
+      "text": "Agents",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Collapse left panel",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Agent Teams",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Agent Orgs",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Skills",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Memory",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Nodes",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Add workspace",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Temp Workspace",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "AORG E2E Mixed Org(1)",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Call delegate_task exactly once with recipient_address `/support-team` and description `As the ne...",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Stop Agent Org",
+      "aria": "Stop Agent Org",
+      "disabled": false
+    },
+    {
+      "text": "Cconcierge",
+      "title": "",
+      "aria": "concierge, idle",
+      "disabled": false
+    },
+    {
+      "text": "research team",
+      "title": "",
+      "aria": "research team. Team status: Running",
+      "disabled": false
+    },
+    {
+      "text": "Llead",
+      "title": "",
+      "aria": "lead, running",
+      "disabled": false
+    },
+    {
+      "text": "Aanalyst",
+      "title": "",
+      "aria": "analyst, idle",
+      "disabled": false
+    },
+    {
+      "text": "Vverifier",
+      "title": "",
+      "aria": "verifier, idle",
+      "disabled": false
+    },
+    {
+      "text": "support team",
+      "title": "",
+      "aria": "support team. Team status: Idle",
+      "disabled": false
+    },
+    {
+      "text": "workspace",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Remove from Workspaces",
+      "aria": "Remove from Workspaces",
+      "disabled": false
+    },
+    {
+      "text": "workspace-team",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Remove from Workspaces",
+      "aria": "Remove from Workspaces",
+      "disabled": false
+    },
+    {
+      "text": "workspace",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "workspace-default",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Settings",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "",
+      "aria": "Edit Config",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "",
+      "aria": "New Agent",
+      "disabled": false
+    },
+    {
+      "text": "Thinking",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Deny",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Approve",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Upload files",
+      "aria": "Upload files",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Stop generation",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Files",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Org",
+      "title": "Agent Org",
+      "aria": "Agent Org",
+      "disabled": false
+    },
+    {
+      "text": "Terminal",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Activity",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Token",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Artifacts",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "VNC Viewer",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "title": "Toggle Sidebar",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Messages0 Messages",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    },
+    {
+      "text": "Tasks0 tasks",
+      "title": "",
+      "aria": null,
+      "disabled": false
+    }
+  ],
+  "taskSidecar": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+    "records": []
+  }
+}

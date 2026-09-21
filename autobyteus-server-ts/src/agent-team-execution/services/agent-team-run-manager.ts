@@ -5,16 +5,14 @@ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-exec
 import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
-import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
-import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
+import { FlatTeamExecutionFactory } from "../local/flat-team-execution-factory.js";
+import { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
-import { TeamRun } from "../domain/team-run.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
-import { TeamRunEventPublisher, type RootEventListener } from "./team-run-event-publisher.js";
+import type { RootEventListener } from "./team-run-event-publisher.js";
 import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
-import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
@@ -30,9 +28,13 @@ import {
   type TeamRunModelConfigPatch,
 } from "./team-run-model-config-mutator.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
-import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
+import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  ActiveCollaborationRootDirectory,
+  getActiveCollaborationRootDirectory,
+} from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
+import { materializeTeamRoot } from "./team-root-materializer.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -42,11 +44,13 @@ const required = (value: string, field: string): string => {
 
 export type AgentTeamRunManagerOptions = Readonly<{
   memoryDir: string;
-  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+  flatTeamExecutionFactory: FlatTeamExecutionFactory;
+  memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore?: TeamRunExecutionTreeStore;
   taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
+  activeRootDirectory?: ActiveCollaborationRootDirectory;
   modelSelectionValidator: RunModelSelectionValidator;
 }>;
 
@@ -54,16 +58,19 @@ export type AgentTeamRunManagerOptions = Readonly<{
 export class AgentTeamRunManager {
   private static instance: AgentTeamRunManager | null = null;
   private readonly memoryLayout: AgentMemoryLayout;
-  private readonly factory: MixedTeamRunBackendFactory;
+  private readonly factory: FlatTeamExecutionFactory;
+  private readonly memberExecutionContextBuilder: MemberExecutionContextBuilder;
   private readonly executionTreeStore: TeamRunExecutionTreeStore;
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
+  private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
+  private rootAdmissionOpen = true;
 
   static getInstance(): AgentTeamRunManager {
     if (!AgentTeamRunManager.instance) {
@@ -85,8 +92,11 @@ export class AgentTeamRunManager {
   }
 
   constructor(options: AgentTeamRunManagerOptions) {
-    if (!options?.mixedTeamRunBackendFactory) {
-      throw new Error("mixedTeamRunBackendFactory is required.");
+    if (!options?.flatTeamExecutionFactory) {
+      throw new Error("flatTeamExecutionFactory is required.");
+    }
+    if (!options.memberExecutionContextBuilder) {
+      throw new Error("memberExecutionContextBuilder is required.");
     }
     if (!options.taskExecutionIdentity ||
         typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
@@ -100,18 +110,21 @@ export class AgentTeamRunManager {
     const memoryDir = required(options.memoryDir, "memoryDir");
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
-    this.factory = options.mixedTeamRunBackendFactory;
+    this.factory = options.flatTeamExecutionFactory;
+    this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
     this.modelSelectionValidator = options.modelSelectionValidator;
+    this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
   }
 
   async createTeamRun(input: {
     config: TeamRunConfig;
     teamDefinitionName: string;
   }): Promise<RootTeamRun> {
+    this.assertRootAdmissionOpen();
     const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
@@ -130,24 +143,25 @@ export class AgentTeamRunManager {
         messages: Object.freeze([]),
       });
       const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
-      await this.requireCommitted(this.executionTreeStore.write(teamMemoryDir, tree), "execution tree");
-      await this.requireCommitted(this.taskRecordsStore.write(teamMemoryDir, tasks), "task records");
-      await this.requireCommitted(this.communicationStore.write(teamMemoryDir, messages), "communication messages");
-      this.packageCatalog.admit(rootTeamRunId);
-      const root = await this.materializeRoot({
+      const root = await materializeTeamRoot({
         config: input.config,
         tree,
         tasks,
         messages,
         teamMemoryDir,
         mode: "fresh",
+        persistInitialPackage: true,
+        ...this.materializationDependencies(),
+        onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
       });
+      this.packageCatalog.admit(rootTeamRunId);
       this.register(root);
       return root;
     });
   }
 
   async restoreTeamRun(rootTeamRunIdInput: string): Promise<RootTeamRun> {
+    this.assertRootAdmissionOpen();
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
@@ -162,17 +176,28 @@ export class AgentTeamRunManager {
       }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
       if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
       const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
-      const root = await this.materializeRoot({
+      const root = await materializeTeamRoot({
         config,
         tree: loaded.state.executionTree,
         tasks: loaded.state.taskRecords,
         messages: loaded.state.communicationMessages,
         teamMemoryDir,
         mode: "restore",
+        persistInitialPackage: false,
+        ...this.materializationDependencies(),
+        onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
       });
       this.register(root);
       return root;
     });
+  }
+
+  closeRootAdmission(): void { this.rootAdmissionOpen = false; }
+
+  private assertRootAdmissionOpen(): void {
+    if (!this.rootAdmissionOpen) {
+      throw new Error("AgentTeam root admission is closed for process shutdown.");
+    }
   }
 
   getActiveTeamRun(rootTeamRunIdInput: string): RootTeamRun | null {
@@ -361,71 +386,15 @@ export class AgentTeamRunManager {
     }
   }
 
-  private async materializeRoot(input: {
-    config: TeamRunConfig;
-    tree: import("../domain/team-run-execution-tree.js").TeamRunExecutionTreeSnapshot;
-    tasks: TaskDelegationRecordsSnapshot;
-    messages: TeamCommunicationMessagesSnapshot;
-    teamMemoryDir: string;
-    mode: MixedConfiguredMemberActivationMode;
-  }): Promise<RootTeamRun> {
-    const publisher = new TeamRunEventPublisher<TeamRunEvent>();
-    let root: RootTeamRun | null = null;
-    const taskRootResolver: MemberTaskRootResolver = Object.freeze({
-      resolveActiveRoot: async () => {
-        if (!root) {
-          throw new TaskDelegationError(
-            "TEAM_ROOT_NOT_BOUND",
-            "RootTeamRun construction is incomplete.",
-          );
-        }
-        if (!root.isActive()) {
-          throw new TaskDelegationError(
-            "TEAM_RUN_NOT_ACTIVE",
-            `RootTeamRun '${root.teamRunId}' is not active.`,
-          );
-        }
-        return root;
-      },
-    });
-    const callbacks = {
-      taskRootResolver,
-      publish: (event: TeamRunEvent) => publisher.publish(event),
-      deliverInterAgentMessage: (intent: import("../domain/inter-agent-message-delivery.js").InterAgentMessageDeliveryIntent) => {
-        if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });
-        return root.deliverInterAgentMessage(intent);
-      },
-      acceptPlatformBinding: (binding: import("../domain/team-agent-platform-binding.js").TeamAgentPlatformBinding) => {
-        if (!root) return Promise.reject(new Error("RootTeamRun construction is incomplete."));
-        return root.adoptAgentPlatformBinding(binding);
-      },
-    };
-    const backend = input.mode === "fresh"
-      ? await this.factory.createBackend(input.config, input.tree.rootTeam.teamRunId, callbacks)
-      : await this.factory.restoreBackend(input.config, input.tree.rootTeam.teamRunId, callbacks);
-    const rootRun = new TeamRun(backend.getTeamRunContext(), backend);
-    const persistence = new TeamRunPersistenceCoordinator({
-      rootTeamRunId: input.tree.rootTeam.teamRunId,
-      teamMemoryDir: input.teamMemoryDir,
+  private materializationDependencies() {
+    return {
+      factory: this.factory,
+      memberExecutionContextBuilder: this.memberExecutionContextBuilder,
+      taskExecutionIdentity: this.taskExecutionIdentity,
       executionTreeStore: this.executionTreeStore,
       taskRecordsStore: this.taskRecordsStore,
       communicationStore: this.communicationStore,
-      enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
-    });
-    root = new RootTeamRun({
-      rootRun,
-      config: input.config,
-      tree: input.tree,
-      tasks: input.tasks,
-      messages: input.messages,
-      persistence,
-      publisher,
-      taskExecutionIdentity: this.taskExecutionIdentity,
-      onTerminated: () => {
-        if (root) this.unregister(input.tree.rootTeam.teamRunId, root);
-      },
-    });
-    return root;
+    } as const;
   }
 
   private modelConfigUpdateResult(
@@ -455,13 +424,23 @@ export class AgentTeamRunManager {
     if (!root.isActive() || this.managedRoots.has(root.teamRunId)) {
       throw new Error(`Cannot register RootTeamRun '${root.teamRunId}'.`);
     }
-    this.managedRoots.set(root.teamRunId, root);
+    const identity = createTeamRootExecutionIdentity(root.teamRunId);
+    const reservation = this.activeRootDirectory.reserve(identity, root);
+    try {
+      this.managedRoots.set(root.teamRunId, root);
+      reservation.commit();
+    } catch (error) {
+      this.managedRoots.delete(root.teamRunId);
+      reservation.release();
+      throw error;
+    }
     this.notify({ teamRunId: root.teamRunId, isActive: true });
   }
 
   private unregister(rootTeamRunId: string, expected: RootTeamRun): boolean {
     if (this.managedRoots.get(rootTeamRunId) !== expected) return false;
     this.managedRoots.delete(rootTeamRunId);
+    this.activeRootDirectory.unregister(createTeamRootExecutionIdentity(rootTeamRunId), expected);
     this.notify({ teamRunId: rootTeamRunId, isActive: false });
     return true;
   }
@@ -491,14 +470,6 @@ export class AgentTeamRunManager {
     return this.memoryLayout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   }
 
-  private async requireCommitted(
-    write: Promise<import("../../run-history/store/team-run-file-commit-writer.js").TeamRunFileWriteResult>,
-    label: string,
-  ): Promise<void> {
-    const result = await write;
-    if (result.outcome === "committed") return;
-    throw new Error(`Initial TeamRun ${label} did not commit (${result.outcome}).`);
-  }
 }
 
 export const getAgentTeamRunManager = (): AgentTeamRunManager => AgentTeamRunManager.getInstance();

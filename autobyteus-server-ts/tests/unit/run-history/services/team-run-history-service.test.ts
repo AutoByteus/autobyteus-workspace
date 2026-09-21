@@ -26,6 +26,7 @@ const row = {
 const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = {}) => {
   const catalog = {
     listCatalogRows: vi.fn(async () => [row]),
+    getCatalogRow: vi.fn(async (teamRunId: string) => teamRunId === row.teamRunId ? row : null),
     archiveTeamRun: vi.fn(async () => ({ success: true, message: "archived" })),
     deleteTeamRun: vi.fn(async () => ({ success: true, message: "deleted" })),
   };
@@ -84,6 +85,7 @@ describe("TeamRunHistoryService current execution tree", () => {
       teamRunId: "team-1",
       isActive: true,
       executionTree: tree,
+      modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
     });
     await expect(harness({ storedTree: null }).service.getTeamRunResumeConfig("missing"))
       .rejects.toThrow("execution tree not found");

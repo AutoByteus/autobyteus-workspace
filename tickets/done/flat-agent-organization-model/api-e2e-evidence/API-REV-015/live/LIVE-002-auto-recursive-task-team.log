@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="agent-org-agent-row-aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42"]')[22m
+
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-002-auto-recursive-task-team.mjs:2:676 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.2

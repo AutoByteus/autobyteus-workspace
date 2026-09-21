@@ -1,0 +1,16 @@
+timestamp=2026-09-06T11:22:23Z
+registry_before_import:
+[]
+reference_files:
+cross-team.txt APIREV14-REF-CROSS-TEAM-001
+task-exclusion.txt APIREV14-REF-TASK-EXCLUSION-001
+direct-mounted.txt APIREV14-REF-DIRECT-MOUNTED-001
+team-control.txt APIREV14-REF-TEAM-CONTROL-001
+direct-direct.txt APIREV14-REF-DIRECT-DIRECT-001
+mounted-direct.txt APIREV14-REF-MOUNTED-DIRECT-001
+db/key metadata:
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db 344064 644
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db.secret.key 32 600
+source_data_hashes:
+75f6144d2c6c1f19928faf2d7fc8486bdbc25757879bb683ac48470fcf34c644  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/server-data/db/production.db
+75f6144d2c6c1f19928faf2d7fc8486bdbc25757879bb683ac48470fcf34c644  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/server-data/db/production.db

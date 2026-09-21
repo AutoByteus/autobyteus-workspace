@@ -1,0 +1,33 @@
+2026-09-03T16:11:01Z
+server_signal=SIGTERM
+server_result=
+[2026-09-03T16:10:25.172Z] [INFO] [server.runtime] Server closed cleanly.
+ports:
+8589=CLOSED
+3589=CLOSED
+fixture_hash:
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+head:
+05fdb29945856a59afee98f870b1bca33f3c7213
+source_ancestor:
+yes
+diff_check:
+pass
+pass

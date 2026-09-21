@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import enShellMessages from '../en/shell';
 import enWorkspaceMessages from '../en/workspace';
 import zhCnWorkspaceMessages from '../zh-CN/workspace';
 
@@ -47,4 +48,14 @@ describe('Team task lifecycle catalogs', () => {
       expect(zhCnWorkspaceMessages).not.toHaveProperty(key);
     }
   });
+});
+
+it('localizes compact identity disclosure and changes only the Org history collection label', () => {
+  expect(enWorkspaceMessages['workspace.agentOrg.history.collectionLabel']).toBe('Orgs');
+  expect(enShellMessages['shell.navigation.agentOrgs']).toBe('Agent Orgs');
+  expect(zhCnWorkspaceMessages['workspace.agentOrg.history.collectionLabel']).toBe('组织');
+  for (const key of ['details', 'address', 'agentRun', 'task', 'hostRun', 'executionRun', 'teamRun']) {
+    expect(enWorkspaceMessages[`workspace.collaboration.identity.${key}`]).toBeTruthy();
+    expect(zhCnWorkspaceMessages[`workspace.collaboration.identity.${key}`]).toBeTruthy();
+  }
 });

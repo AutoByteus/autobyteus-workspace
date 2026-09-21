@@ -1,0 +1,16 @@
+137 nonempty autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
+322 nonempty autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+57 nonempty autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
+125 nonempty autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+411 nonempty autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+286 nonempty autobyteus-web/stores/activeContextStore.ts
+160	0	autobyteus-web/components/workspace/collaboration/__tests__/RetainedTeamTaskNavigation.spec.ts
+22	1	autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+2	3	autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
+2	0	autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+17	0	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+2	2	autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
+1	1	autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+27	0	autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+29	11	autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+24	20	autobyteus-web/stores/activeContextStore.ts

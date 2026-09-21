@@ -1,0 +1,46 @@
+{
+  "assertions": {
+    "preconditionExhaustedNotice": true,
+    "preconditionOnlyTwoTasks": true,
+    "noticeCleared": false,
+    "threeTasksProjected": false,
+    "taskTeamProjected": false,
+    "configuredStatusesRecovered": false,
+    "noNetworkFailures": true,
+    "noErrors": true
+  },
+  "network": [],
+  "errors": [],
+  "ws": [
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": 2,
+      "sent": 0,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": 2,
+      "sent": 0,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": 2,
+      "sent": 0,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": 2,
+      "sent": 0,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8594/ws/agent-org/aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+      "received": 2,
+      "sent": 0,
+      "errors": []
+    }
+  ]
+}

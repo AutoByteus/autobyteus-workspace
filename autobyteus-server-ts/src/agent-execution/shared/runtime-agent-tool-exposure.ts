@@ -7,7 +7,7 @@ import {
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
-import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 
 export const AUTOMATIC_TEAM_TOOL_NAMES = [
   GET_HANDOFF_RULES_TOOL_NAME,
@@ -30,19 +30,19 @@ export type RuntimeAgentToolExposure = {
 
 export const resolveRuntimeAgentToolExposure = (agentDefinition: {
   toolNames?: string[] | null;
-} | null, memberTeamContext?: MemberTeamContext | null): RuntimeAgentToolExposure =>
-  buildRuntimeAgentToolExposure(agentDefinition?.toolNames ?? null, memberTeamContext);
+} | null, memberExecutionContext?: MemberExecutionContext | null): RuntimeAgentToolExposure =>
+  buildRuntimeAgentToolExposure(agentDefinition?.toolNames ?? null, memberExecutionContext);
 
 export const buildRuntimeAgentToolExposure = (
   toolNames: Iterable<unknown> | null | undefined,
-  memberTeamContext?: MemberTeamContext | null,
+  memberExecutionContext?: MemberExecutionContext | null,
 ): RuntimeAgentToolExposure => {
   const normalizedConfiguredNames = Array.from(toolNames ?? [])
     .map((value) => asTrimmedToolName(value))
     .filter((value): value is string => Boolean(value));
   const requestedToolNames = Array.from(new Set([
     ...normalizedConfiguredNames,
-    ...(memberTeamContext ? AUTOMATIC_TEAM_TOOL_NAMES : []),
+    ...(memberExecutionContext ? AUTOMATIC_TEAM_TOOL_NAMES : []),
   ]));
   const requestedToolNameSet = new Set(requestedToolNames);
 

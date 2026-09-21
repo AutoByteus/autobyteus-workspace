@@ -1,0 +1,3 @@
+One changed production action/composable, 87 effective nonempty lines, +10/-1 diff.
+No >500 file or >220-line production delta. One new colocated regression suite, outside production source-size cap.
+No additional state/queue/poll/retry/lifecycle/read/cache authority.

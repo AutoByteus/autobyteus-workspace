@@ -1,0 +1,16 @@
+{
+  "outName": "LIVE-002-cross-team",
+  "assertions": {
+    "sidecarIncrementedOnce": true,
+    "exactRunIds": true,
+    "exactReference": true,
+    "senderRemainedSelected": true,
+    "senderOnePerspectiveRow": true,
+    "senderNoInboundEvent": true,
+    "receiverOnePerspectiveRow": true,
+    "receiverExactlyOneInbound": true,
+    "desktopNoOverflow": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

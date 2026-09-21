@@ -1,0 +1,743 @@
+{
+  "scope": "Implementation-only actual AgentOrgWorkspaceView/AgentWorkspaceSurface/AgentEventMonitor/composer and stores. Synthetic stopped view, controlled Apollo Restore success and unavailable WebSocket. Not real runtime or API acceptance.",
+  "observations": [
+    {
+      "width": 1502,
+      "locale": "en",
+      "scenario": "restored",
+      "notice": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/director",
+              "agentRunId": "agent-director"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-lead-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-team-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-task"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-task-lead"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-task-worker"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "mutation",
+            "name": "RestoreAgentOrgRun",
+            "variables": {
+              "agentOrgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          }
+        ],
+        "phase": "reopen_required",
+        "lastKnownActive": false,
+        "selection": {
+          "kind": "agent_execution",
+          "agentRunId": "agent-director"
+        },
+        "address": "/director",
+        "exactContextRetained": true,
+        "snapshotUnchanged": true,
+        "error": "Controlled restored stream readiness unavailable",
+        "access": "read_only",
+        "draft": "IR057 retained unsent draft",
+        "pending": false,
+        "messages": [
+          {
+            "type": "user",
+            "text": "IR057 retained unsent draft",
+            "timestamp": "2026-09-12T19:31:31.665Z",
+            "contextFilePaths": [],
+            "messageId": "bc0f5273-63a3-465f-bdec-e04d68693243",
+            "dedupeKey": "member_input:org-run:agent-director:bc0f5273-63a3-465f-bdec-e04d68693243"
+          },
+          {
+            "type": "ai",
+            "text": "Error Occurred",
+            "timestamp": "2026-09-12T19:31:46.678Z",
+            "isComplete": true,
+            "segments": [
+              {
+                "type": "error",
+                "code": "LOCAL_SUBMISSION_ERROR",
+                "message": "Controlled restored stream readiness unavailable",
+                "details": "Error: Controlled restored stream readiness unavailable"
+              }
+            ]
+          }
+        ],
+        "mode": "history",
+        "recoveryText": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+        "coldText": "Saved Agent Org data is unavailable. No run was started."
+      }
+    },
+    {
+      "width": 1502,
+      "locale": "en",
+      "scenario": "cold",
+      "notice": "Saved Agent Org data is unavailable. No run was started.",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          }
+        ],
+        "exactContextRetained": false,
+        "snapshotUnchanged": false,
+        "error": "Controlled saved inspection unavailable",
+        "mode": "history",
+        "recoveryText": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+        "coldText": "Saved Agent Org data is unavailable. No run was started."
+      }
+    },
+    {
+      "width": 1502,
+      "locale": "zh-CN",
+      "scenario": "restored",
+      "notice": "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/director",
+              "agentRunId": "agent-director"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-lead-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-team-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-task"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-task-lead"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-task-worker"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "mutation",
+            "name": "RestoreAgentOrgRun",
+            "variables": {
+              "agentOrgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          }
+        ],
+        "phase": "reopen_required",
+        "lastKnownActive": false,
+        "selection": {
+          "kind": "agent_execution",
+          "agentRunId": "agent-director"
+        },
+        "address": "/director",
+        "exactContextRetained": true,
+        "snapshotUnchanged": true,
+        "error": "Controlled restored stream readiness unavailable",
+        "access": "read_only",
+        "draft": "IR057 retained unsent draft",
+        "pending": false,
+        "messages": [
+          {
+            "type": "user",
+            "text": "IR057 retained unsent draft",
+            "timestamp": "2026-09-12T19:31:50.143Z",
+            "contextFilePaths": [],
+            "messageId": "398ad88d-6f36-479b-abf1-43c9317688b0",
+            "dedupeKey": "member_input:org-run:agent-director:398ad88d-6f36-479b-abf1-43c9317688b0"
+          },
+          {
+            "type": "ai",
+            "text": "Error Occurred",
+            "timestamp": "2026-09-12T19:32:05.162Z",
+            "isComplete": true,
+            "segments": [
+              {
+                "type": "error",
+                "code": "LOCAL_SUBMISSION_ERROR",
+                "message": "Controlled restored stream readiness unavailable",
+                "details": "Error: Controlled restored stream readiness unavailable"
+              }
+            ]
+          }
+        ],
+        "mode": "history",
+        "recoveryText": "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
+        "coldText": "无法读取已保存的智能体组织数据。未启动任何运行。"
+      }
+    },
+    {
+      "width": 1502,
+      "locale": "zh-CN",
+      "scenario": "cold",
+      "notice": "无法读取已保存的智能体组织数据。未启动任何运行。",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          }
+        ],
+        "exactContextRetained": false,
+        "snapshotUnchanged": false,
+        "error": "Controlled saved inspection unavailable",
+        "mode": "history",
+        "recoveryText": "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
+        "coldText": "无法读取已保存的智能体组织数据。未启动任何运行。"
+      }
+    },
+    {
+      "width": 390,
+      "locale": "en",
+      "scenario": "restored",
+      "notice": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/director",
+              "agentRunId": "agent-director"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-lead-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-team-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-task"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-task-lead"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-task-worker"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "mutation",
+            "name": "RestoreAgentOrgRun",
+            "variables": {
+              "agentOrgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          }
+        ],
+        "phase": "reopen_required",
+        "lastKnownActive": false,
+        "selection": {
+          "kind": "agent_execution",
+          "agentRunId": "agent-director"
+        },
+        "address": "/director",
+        "exactContextRetained": true,
+        "snapshotUnchanged": true,
+        "error": "Controlled restored stream readiness unavailable",
+        "access": "read_only",
+        "draft": "IR057 retained unsent draft",
+        "pending": false,
+        "messages": [
+          {
+            "type": "user",
+            "text": "IR057 retained unsent draft",
+            "timestamp": "2026-09-12T19:32:08.452Z",
+            "contextFilePaths": [],
+            "messageId": "dfc48388-1bf3-4afa-bb56-abbd3a4290e7",
+            "dedupeKey": "member_input:org-run:agent-director:dfc48388-1bf3-4afa-bb56-abbd3a4290e7"
+          },
+          {
+            "type": "ai",
+            "text": "Error Occurred",
+            "timestamp": "2026-09-12T19:32:23.490Z",
+            "isComplete": true,
+            "segments": [
+              {
+                "type": "error",
+                "code": "LOCAL_SUBMISSION_ERROR",
+                "message": "Controlled restored stream readiness unavailable",
+                "details": "Error: Controlled restored stream readiness unavailable"
+              }
+            ]
+          }
+        ],
+        "mode": "history",
+        "recoveryText": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+        "coldText": "Saved Agent Org data is unavailable. No run was started."
+      }
+    },
+    {
+      "width": 390,
+      "locale": "en",
+      "scenario": "cold",
+      "notice": "Saved Agent Org data is unavailable. No run was started.",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          }
+        ],
+        "exactContextRetained": false,
+        "snapshotUnchanged": false,
+        "error": "Controlled saved inspection unavailable",
+        "mode": "history",
+        "recoveryText": "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
+        "coldText": "Saved Agent Org data is unavailable. No run was started."
+      }
+    },
+    {
+      "width": 390,
+      "locale": "zh-CN",
+      "scenario": "restored",
+      "notice": "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/director",
+              "agentRunId": "agent-director"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-lead-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-team-worker-configured"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/worker",
+              "agentRunId": "agent-worker-task"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/lead",
+              "agentRunId": "agent-task-lead"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "GetAgentOrgMemberRunProjection",
+            "variables": {
+              "orgRunId": "org-run",
+              "memberAddress": "/team/worker",
+              "agentRunId": "agent-task-worker"
+            }
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "mutation",
+            "name": "RestoreAgentOrgRun",
+            "variables": {
+              "agentOrgRunId": "org-run"
+            }
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "query",
+            "name": "ListCollaborationRootHistory"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          },
+          {
+            "kind": "socket-failure",
+            "url": "ws://localhost:8000/ws/agent-org/org-run"
+          }
+        ],
+        "phase": "reopen_required",
+        "lastKnownActive": false,
+        "selection": {
+          "kind": "agent_execution",
+          "agentRunId": "agent-director"
+        },
+        "address": "/director",
+        "exactContextRetained": true,
+        "snapshotUnchanged": true,
+        "error": "Controlled restored stream readiness unavailable",
+        "access": "read_only",
+        "draft": "IR057 retained unsent draft",
+        "pending": false,
+        "messages": [
+          {
+            "type": "user",
+            "text": "IR057 retained unsent draft",
+            "timestamp": "2026-09-12T19:32:26.733Z",
+            "contextFilePaths": [],
+            "messageId": "7c8314a2-9651-4db0-811f-91e443dbf55b",
+            "dedupeKey": "member_input:org-run:agent-director:7c8314a2-9651-4db0-811f-91e443dbf55b"
+          },
+          {
+            "type": "ai",
+            "text": "Error Occurred",
+            "timestamp": "2026-09-12T19:32:41.755Z",
+            "isComplete": true,
+            "segments": [
+              {
+                "type": "error",
+                "code": "LOCAL_SUBMISSION_ERROR",
+                "message": "Controlled restored stream readiness unavailable",
+                "details": "Error: Controlled restored stream readiness unavailable"
+              }
+            ]
+          }
+        ],
+        "mode": "history",
+        "recoveryText": "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
+        "coldText": "无法读取已保存的智能体组织数据。未启动任何运行。"
+      }
+    },
+    {
+      "width": 390,
+      "locale": "zh-CN",
+      "scenario": "cold",
+      "notice": "无法读取已保存的智能体组织数据。未启动任何运行。",
+      "overflow": false,
+      "state": {
+        "calls": [
+          {
+            "kind": "query",
+            "name": "GetAgentOrgRunInspection",
+            "variables": {
+              "orgRunId": "org-run"
+            }
+          }
+        ],
+        "exactContextRetained": false,
+        "snapshotUnchanged": false,
+        "error": "Controlled saved inspection unavailable",
+        "mode": "history",
+        "recoveryText": "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
+        "coldText": "无法读取已保存的智能体组织数据。未启动任何运行。"
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

@@ -1,0 +1,322 @@
+{
+  "result": "Pass",
+  "selectedFiles": [
+    {
+      "path": "tickets/done/flat-agent-organization-model/.gitattributes",
+      "bytes": 156,
+      "sha256": "46ae5033e2a086ef9ee2fcaa29c8ca15561ca98bd1149e1b3032a0078f4d71ef"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/.gitignore",
+      "bytes": 236,
+      "sha256": "aabc816c5572da56dd0e68941e13c05f146b6e8852a906ac29a7f19beeb7b2fa"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/case-reconciliation.md",
+      "bytes": 43642,
+      "sha256": "0369abbc7dd98e0ddf1024001707fd9a391300b97ec083e2b78f1e6c58392085"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/final/cleanup-integrity.json",
+      "bytes": 485,
+      "sha256": "9b9313eb410bab73ef909a1a12d26059ba8590874b601a6354a6e0d0a404db6c"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/final/completion-integrity.json",
+      "bytes": 3632,
+      "sha256": "b2c7045c4c2410d09800747bc302c8ff998aa8e843acdce76d91281019aba3a1"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/final/confidence.json",
+      "bytes": 3159,
+      "sha256": "35feda9c1661a885d97fd3a55882b3b0414de1a4986776719f8009ecd043ea69"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/final/final-validation.json",
+      "bytes": 858,
+      "sha256": "626104cb6029d264a65ab69f2c537e9cfdc270e0bcbccf410a4b2b341171b024"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/API-FIND-040-summary.json",
+      "bytes": 1410,
+      "sha256": "89449f1396a6434ef42055a2f9d4fe44fb1ee04567d6c9fc1011b433290f8170"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-mounted-confirm-result.json",
+      "bytes": 60274,
+      "sha256": "9bd400edfeee5790018a9fb51770e3fc59c3910038af8e0b2c3043bafbb6fda8"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-mounted-result.json",
+      "bytes": 58418,
+      "sha256": "3ba7900f7ab22765ad7c3566d43bda27630b83bab670810cec3797365b75beb6"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/USER-pre-message-status-source-comparison.json",
+      "bytes": 6223,
+      "sha256": "eceb2e579ad7db92fd6ab84c9faadf8d2039c8e4469e8969900d3119142fc4b0"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/USER-two-known-issues-accepted.json",
+      "bytes": 1110,
+      "sha256": "f56038f6878ba629ebdbccdcdd31e83baaf8b08accd13c3ceb0a0c46225cd86b"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/PACKAGE.sha256",
+      "bytes": 1823,
+      "sha256": "af7ec8e6c6b71dceae62392478371cac4ed496252e3a7c9e255a95b1f655b329"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/README.md",
+      "bytes": 912,
+      "sha256": "652c466ef125830a16212df34575c4f448cfbfd675c332f7836b4fa791b9ee80"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/TEST-MANIFEST.md",
+      "bytes": 7316,
+      "sha256": "dbc8017b8ad205ee13b9978a4a38ea1700f7568fa944c50d77372382a682c3d1"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-orgs/aorg-direct-agents-org/org-config.json",
+      "bytes": 635,
+      "sha256": "3edb1fbd60c5b5c555b8dd62fbe7bc7e36cfedfecbffc0f6272511ad2b433551"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-orgs/aorg-direct-agents-org/org.md",
+      "bytes": 196,
+      "sha256": "79107d076e24e9248f0ad2ebbb7414e5335da5041eeb79de447316e7ef2088ae"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-orgs/aorg-mixed-org/org-config.json",
+      "bytes": 1090,
+      "sha256": "cfdd5e3be3c352b485298ec90abb9afd63cdec0e8cefd0d08878d8ee95349fa1"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-orgs/aorg-mixed-org/org.md",
+      "bytes": 328,
+      "sha256": "2a7f2344bc87b4c8f51be970edccae0d8b1e1b89af72e0a6137df8041cb51883"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-teams/aorg-research-squad/team-config.json",
+      "bytes": 961,
+      "sha256": "451e994d1e8f9bf2edba9cfbfba7b6871a9c85c04a5c116c41f1640c2db59f45"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-teams/aorg-research-squad/team.md",
+      "bytes": 290,
+      "sha256": "d7f82722121207d39a5034d9b236909fe344dfe5b38174f9202edfd5fde85279"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-teams/aorg-support-pair/team-config.json",
+      "bytes": 632,
+      "sha256": "a93efb09f5721f19d5df8439a72a41899649c0a7bcc48bb5f9f9230ed221a6dc"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agent-teams/aorg-support-pair/team.md",
+      "bytes": 217,
+      "sha256": "f07a73a44412d9129bcf7731d9f1f9cef326e7e462129d4ed1b811ac779b2264"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-analyst/agent-config.json",
+      "bytes": 76,
+      "sha256": "d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-analyst/agent.md",
+      "bytes": 742,
+      "sha256": "ba2bcad92fd0a208015c71a03f72d182c82205b2c13948eadcc40c98d2d67ea5"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-concierge/agent-config.json",
+      "bytes": 76,
+      "sha256": "d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-concierge/agent.md",
+      "bytes": 745,
+      "sha256": "b17acc385388d746c8415dfa650b8de4bfac34aa3833f513d8d098c9990fc1bb"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-lead/agent-config.json",
+      "bytes": 76,
+      "sha256": "d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-lead/agent.md",
+      "bytes": 825,
+      "sha256": "3855ed0304157df143baa219a48f3521defb49d1cbf358630263b0e31b5fec49"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-verifier/agent-config.json",
+      "bytes": 76,
+      "sha256": "d361ac34e7608d9843e7da5d55c1c9bcab0f5d76316d0d46bd8feb632571f727"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-025-agent-package/agents/aorg-verifier/agent.md",
+      "bytes": 750,
+      "sha256": "dc08448fc20a3ee14df8ee2c04367e231d86b53207f12d3d0ee09ec2c8fe1fbb"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-091/deferred-issues.md",
+      "bytes": 1367,
+      "sha256": "786b7b7c883fc7c9071459ffdd26bcd3f568bc6a3e9dad42f1f4835f1f7000d8"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-091/prior-api-execution-report.md",
+      "bytes": 14741,
+      "sha256": "a511db7e0ffdc6ae908b05ebafb99533066f2c88651ebbd48213c19abb1428e7"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-091/prior-source-review-report.md",
+      "bytes": 36575,
+      "sha256": "baa66677e17dfb436ddd5bbc47ac9fe4f72989d7fa4f5c42461e2581fd805d20"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-091/user-acceptance.json",
+      "bytes": 2336,
+      "sha256": "7298451dbf5eb19b2c510b8435add6acf8ee5c16deba87393513ffadeb55971d"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/diagnostic-disposition.json",
+      "bytes": 502,
+      "sha256": "6b02956d3330c14cf6d2ece1dd727e26b830b6ffa2f693388b4e5f7f9acee043"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/durable-test-hashes.json",
+      "bytes": 450,
+      "sha256": "c5e56ff3c9f3dda250680a23256fba106eeecaf43a48a1f8be2992647da30c66"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/durable-test.diff",
+      "bytes": 11586,
+      "sha256": "ed7c82748487afb5e27f3b6bea152ce229aa4cb789414131180203a8a958b29c"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/execution-evidence.json",
+      "bytes": 15711,
+      "sha256": "ecab30bf492d668449e0b681e4fba73baf7d8c8ce2c9c89d4da57f50b3ebc435"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/handoff-reference-files.txt",
+      "bytes": 1327353,
+      "sha256": "fa53f27f4a5af3932b342b99ab5361770d50cab4349b51919a563bf1b96635b0"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/integrity.json",
+      "bytes": 1144,
+      "sha256": "3097678c2645a68b7a224b029f9abe72685d5401b358b8c7fd4a3ae113df7594"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/code-review-evidence/CRR-092/package-verification.json",
+      "bytes": 340,
+      "sha256": "8e2a5b3975cc975350c3186b20d163aae0c756c95798f841a6d2c72597bddda3"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-007/integration-recovery.md",
+      "bytes": 6248,
+      "sha256": "463bd5e2ecdd3016c9ecab5a6b38c320be5ff90c5b165abb5695e537ddbac2ce"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-007/upstream-evidence-limits.md",
+      "bytes": 1388,
+      "sha256": "1b719bbab4719cbc2eef0846937c2cfe51035ff527490594ef57c53afedf1cd6"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-009/native-smoke.json",
+      "bytes": 1526,
+      "sha256": "44270925ba3a89ba8869c8b1f024bc0c9b76abf317bc56e0bb7119646fdd3e2b"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-009/package-provenance.json",
+      "bytes": 753,
+      "sha256": "ef93b2a2e2858f0d335109d9c244e3b4f8f723a6fe453b30528de3414f4831f3"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-009/upstream-evidence-limits.md",
+      "bytes": 3341,
+      "sha256": "a5c0424bb283857eeefb061ad034f1237c73e412d6c95eb67c8d819b47f86b45"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/aorg-dr010-checkpoint.log",
+      "bytes": 181,
+      "sha256": "6ec6c36fdb49651643fbda522c6fc5495ad75ade3b4f97caa4a0c871b0b7d6f7"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/aorg-dr010-integration.log",
+      "bytes": 20,
+      "sha256": "e5d6c99aec87ec07a2d1b5c1222d8b690d0a61c3548a55c795fff56db9450d0d"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/aorg-dr010-publication-audit.json",
+      "bytes": 17688,
+      "sha256": "ffe054242d14596af130928da260105194c619c9a4c3998fe5c9e6dc130347d3"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/checkpoint-paths.json",
+      "bytes": 1525,
+      "sha256": "b24ef5e9699151c98d49d4008f1d0d80aabb04d1acbc40202690ddb2c82b1807"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/cumulative-reference-files.txt",
+      "bytes": 1283211,
+      "sha256": "ff4304dd2f3059a9fbd8d2c5eec4f6999de772373c55ed5f57f4b9050f4916f1"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/docs-validation.json",
+      "bytes": 1827,
+      "sha256": "139027946fbcd71540c6cae33c9b2ece1349a094a509e02a5762acd58d9769ac"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/entry-preservation.json",
+      "bytes": 375,
+      "sha256": "da0a02c27d49a26fb0c380e0073fcb228b6de0c9d8e6b6249650ac6fb858e27b"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/finalization-check-dispositions.md",
+      "bytes": 1120,
+      "sha256": "37afcdd85142bda240ade30cb33ed436eb5d31daa17c847fd8fd207b299c6ec3"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/preservation-initial-symlink-probe.json",
+      "bytes": 1325,
+      "sha256": "c0b16d1e22a167eb72cb87e7abdeec33293813d4636cb223cb1934d505ba22db"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/preservation-result.json",
+      "bytes": 2848,
+      "sha256": "f2116c7e68b124c13f20a54211813925e424d3a55a4d57632cb8905a0842762f"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/publication-history-audit.json",
+      "bytes": 5230,
+      "sha256": "7df5f0a51440601e201e13c19ae538635c3bb2973578f1d7cd30a96aed019921"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/reference-resolution.json",
+      "bytes": 683,
+      "sha256": "3e1ad4eb483772d65d10302d03bb4f5a21d148bc6b2174a7744611961f12f110"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/upstream-evidence-limits.md",
+      "bytes": 1624,
+      "sha256": "bb053604be263e1e468f920df4514ec68c0b538a74003c73b3c01e85d1445c8c"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/user-finalization-authority.json",
+      "bytes": 953,
+      "sha256": "2b4ebf1abc1b45d93b82497fe55c0f336504f9d49ab09905f01cf378197c4d05"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/evidence-index.md",
+      "bytes": 1804,
+      "sha256": "578434292605d83ad417ec7c25f3704a293757d01996c2194a80ad6568b25cbc"
+    },
+    {
+      "path": "tickets/done/flat-agent-organization-model/known-issues.md",
+      "bytes": 1880,
+      "sha256": "d83f765e66bd56e5b04fd36e1c893159d342296ba280643f0477af172cf3b1f4"
+    }
+  ],
+  "credentialPatternFindings": [],
+  "excludes": "No newly staged raw runtime DB, .env, encryption key, archive, browser websocket/trace dump or blanket evidence-directory add. Previously tracked history retained; separate outgoing-history audit passed."
+}

@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.69 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> nuxt build
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+●  Nitro preset: static
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ℹ Building client...
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+ℹ ✓ 794 modules transformed.
+
+ ERROR  ✗ Build failed in 6.32s
+
+│
+■  Nuxt build error: Error: [commonjs--resolver] Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+ ELIFECYCLE  Command failed with exit code 1.

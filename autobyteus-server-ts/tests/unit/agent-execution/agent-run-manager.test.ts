@@ -495,6 +495,23 @@ describe("AgentRunManager published-run termination", () => {
     return { ...fixture, backend, run: candidate.commitPublication() };
   };
 
+  it("allows only one non-waiting quiescence preparation attempt per exact run", async () => {
+    const { manager, run } = await publish({ runId: "run-quiescent-attempt" });
+    let resolve!: (value: null) => void;
+    const pending = new Promise<null>((settle) => { resolve = settle; });
+    const tryPrepare = vi.spyOn(run, "tryPrepareTerminationIfQuiescent")
+      .mockReturnValue(pending);
+
+    const first = manager.tryPrepareAgentRunTerminationIfQuiescent(run);
+    await expect(manager.tryPrepareAgentRunTerminationIfQuiescent(run)).resolves.toBeNull();
+    expect(tryPrepare).toHaveBeenCalledOnce();
+
+    resolve(null);
+    await expect(first).resolves.toBeNull();
+    await expect(manager.tryPrepareAgentRunTerminationIfQuiescent(run)).resolves.toBeNull();
+    expect(tryPrepare).toHaveBeenCalledTimes(2);
+  });
+
   it("cancels through the exact run without releasing it and permits a fresh preparation", async () => {
     const recording = createRecordingAgentToolMcpRunSessionDeactivator();
     const { manager, run, backend } = await publish({

@@ -1,0 +1,469 @@
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T20:09:23.425Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-02T20:09:23.638Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T20:09:23.639Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1788379763648,"pid":15793,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:35123"}
+{"level":30,"time":1788379763691,"pid":15793,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8587"}
+[2026-09-02T20:09:23.692Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8587
+[2026-09-02T20:09:23.695Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8587
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788379765153,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1","method":"GET","url":"/health","statusCode":404,"elapsedMs":3.430166006088257,"msg":"http request completed"}
+{"level":40,"time":1788379766171,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-2","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6519170105457306,"msg":"http request completed"}
+{"level":40,"time":1788379767179,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-3","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5684589892625809,"msg":"http request completed"}
+{"level":40,"time":1788379768194,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-4","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.42912499606609344,"msg":"http request completed"}
+{"level":40,"time":1788379769202,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5246669948101044,"msg":"http request completed"}
+{"level":40,"time":1788379770221,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-6","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31424999237060547,"msg":"http request completed"}
+{"level":40,"time":1788379771232,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-7","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5375829935073853,"msg":"http request completed"}
+{"level":40,"time":1788379772246,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-8","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8509999960660934,"msg":"http request completed"}
+{"level":40,"time":1788379773267,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-9","method":"GET","url":"/health","statusCode":404,"elapsedMs":2.9491669982671738,"msg":"http request completed"}
+{"level":40,"time":1788379774273,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6779170036315918,"msg":"http request completed"}
+{"level":40,"time":1788379775289,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4917920082807541,"msg":"http request completed"}
+{"level":40,"time":1788379776311,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5702080130577087,"msg":"http request completed"}
+{"level":40,"time":1788379777319,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32145899534225464,"msg":"http request completed"}
+{"level":40,"time":1788379778337,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.49483300745487213,"msg":"http request completed"}
+{"level":40,"time":1788379779355,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31583400070667267,"msg":"http request completed"}
+{"level":40,"time":1788379780364,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3008340001106262,"msg":"http request completed"}
+{"level":40,"time":1788379781381,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.290582999587059,"msg":"http request completed"}
+{"level":40,"time":1788379782388,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2845420092344284,"msg":"http request completed"}
+{"level":40,"time":1788379783398,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.28504200279712677,"msg":"http request completed"}
+{"level":40,"time":1788379784409,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5432080030441284,"msg":"http request completed"}
+{"level":40,"time":1788379785427,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3137910068035126,"msg":"http request completed"}
+{"level":40,"time":1788379786443,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3147909939289093,"msg":"http request completed"}
+{"level":40,"time":1788379787454,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.39454200863838196,"msg":"http request completed"}
+{"level":40,"time":1788379788462,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4895839989185333,"msg":"http request completed"}
+{"level":40,"time":1788379789480,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2715829908847809,"msg":"http request completed"}
+{"level":40,"time":1788379790490,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3502499908208847,"msg":"http request completed"}
+{"level":40,"time":1788379791503,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3005409985780716,"msg":"http request completed"}
+{"level":40,"time":1788379792520,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3565420061349869,"msg":"http request completed"}
+{"level":40,"time":1788379793531,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.34062498807907104,"msg":"http request completed"}
+{"level":40,"time":1788379794545,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-u","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4650839865207672,"msg":"http request completed"}
+{"level":40,"time":1788379795574,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33583399653434753,"msg":"http request completed"}
+{"level":40,"time":1788379796586,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31075000762939453,"msg":"http request completed"}
+{"level":40,"time":1788379797596,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.453792005777359,"msg":"http request completed"}
+{"level":40,"time":1788379798609,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-y","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7416249960660934,"msg":"http request completed"}
+{"level":40,"time":1788379799616,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3092079907655716,"msg":"http request completed"}
+{"level":40,"time":1788379800628,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-10","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.325874999165535,"msg":"http request completed"}
+{"level":40,"time":1788379801639,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-11","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33241601288318634,"msg":"http request completed"}
+{"level":40,"time":1788379802649,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-12","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4963330030441284,"msg":"http request completed"}
+{"level":40,"time":1788379803657,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-13","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.36124999821186066,"msg":"http request completed"}
+{"level":40,"time":1788379804675,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-14","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32987500727176666,"msg":"http request completed"}
+{"level":40,"time":1788379805683,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-15","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3007909953594208,"msg":"http request completed"}
+{"level":40,"time":1788379806697,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-16","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2952499985694885,"msg":"http request completed"}
+{"level":40,"time":1788379807712,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-17","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2824999988079071,"msg":"http request completed"}
+{"level":40,"time":1788379808720,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-18","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4613330066204071,"msg":"http request completed"}
+{"level":40,"time":1788379809727,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-19","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33408398926258087,"msg":"http request completed"}
+{"level":40,"time":1788379810746,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.27458301186561584,"msg":"http request completed"}
+{"level":40,"time":1788379811756,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3098749965429306,"msg":"http request completed"}
+{"level":40,"time":1788379812764,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4374160021543503,"msg":"http request completed"}
+{"level":40,"time":1788379813774,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32691600918769836,"msg":"http request completed"}
+{"level":40,"time":1788379814786,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.37537500262260437,"msg":"http request completed"}
+{"level":40,"time":1788379815810,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30058299005031586,"msg":"http request completed"}
+{"level":40,"time":1788379816821,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30250000953674316,"msg":"http request completed"}
+{"level":40,"time":1788379817827,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5699589997529984,"msg":"http request completed"}
+{"level":40,"time":1788379818840,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30991700291633606,"msg":"http request completed"}
+{"level":40,"time":1788379819862,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31529100239276886,"msg":"http request completed"}
+{"level":40,"time":1788379820871,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3320409953594208,"msg":"http request completed"}
+{"level":40,"time":1788379821883,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.391292005777359,"msg":"http request completed"}
+{"level":40,"time":1788379822902,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3333750069141388,"msg":"http request completed"}
+{"level":40,"time":1788379823921,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2817080020904541,"msg":"http request completed"}
+{"level":40,"time":1788379824934,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3181670010089874,"msg":"http request completed"}
+{"level":40,"time":1788379839197,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.452333003282547,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-02T20:11:35.540Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T20:11:35.546Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+{"level":40,"time":1788379979898,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-2i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.37929099798202515,"msg":"http request completed"}
+Discovering LM Studio models from host: http://192.168.2.158:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://192.168.2.158:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-09-02T20:14:19.396Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID apirev7-team.
+Agent Team Definition created successfully with ID: apirev7-team
+[2026-09-02T20:16:43.020Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID apirev7-team.
+Agent Team Definition with ID apirev7-team updated successfully.
+{"level":40,"time":1788380247741,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-3b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4005829989910126,"msg":"http request completed"}
+{"level":40,"time":1788380353466,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-3x","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.145916998386383,"msg":"http request completed"}
+Created terminal session 88534801-e5b1-4a26-b2e5-aa4970d9f5ed using backend PtySession for target /root
+Terminal WebSocket connected: 88534801-e5b1-4a26-b2e5-aa4970d9f5ed
+Terminal websocket attached for cwd /root
+Closed PTY session 88534801-e5b1-4a26-b2e5-aa4970d9f5ed
+Terminal WebSocket disconnected: 88534801-e5b1-4a26-b2e5-aa4970d9f5ed
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 9d86042f-f4f4-4815-b43d-042680b1a695 for workspace temp_ws_default
+Created file explorer session 9d86042f-f4f4-4815-b43d-042680b1a695 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 9d86042f-f4f4-4815-b43d-042680b1a695 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+FileExplorerSession closed: 9d86042f-f4f4-4815-b43d-042680b1a695
+Closed file explorer session 9d86042f-f4f4-4815-b43d-042680b1a695. Active sessions: 0
+File explorer WebSocket disconnected: 9d86042f-f4f4-4815-b43d-042680b1a695
+Agent team websocket attached for team run apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Created agent session 7aba1f3b-36de-4e8d-bfe8-3002956c34da for run apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Agent Team WebSocket connected: session=7aba1f3b-36de-4e8d-bfe8-3002956c34da, run=apirev7_team_d98179477a974a8eb15d53b24d4652d5
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 84e5dce8-9e96-4cb4-9b5d-e581118b364a for workspace temp_ws_default
+Created file explorer session 84e5dce8-9e96-4cb4-9b5d-e581118b364a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 84e5dce8-9e96-4cb4-9b5d-e581118b364a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+FileExplorerSession closed: 84e5dce8-9e96-4cb4-9b5d-e581118b364a
+Closed file explorer session 84e5dce8-9e96-4cb4-9b5d-e581118b364a. Active sessions: 0
+File explorer WebSocket disconnected: 84e5dce8-9e96-4cb4-9b5d-e581118b364a
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1788381149252,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-5t","err":{"type":"GraphQLError","message":"Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found.","stack":"Error: Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found.\n    at TaskDelegationProjectionService.read (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:73:19)\n    at async TaskDelegationProjectionService.list (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:46:26)\n    at async TaskDelegationResolver.getTaskDelegationRecords (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/task-delegation.js:152:17)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTaskDelegationRecords"],"locations":[{"line":1,"column":40}],"extensions":{}},"msg":"Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found."}
+[2026-09-02T20:33:26.214Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 7aba1f3b-36de-4e8d-bfe8-3002956c34da
+[2026-09-02T20:33:26.430Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T20:35:14.870Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:apirev7:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/server-data/agent-orgs/apirev7
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:apirev7-team:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/server-data/agent-teams/apirev7-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:bible-study-group:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:clara-ocean-friends:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:classroom-simulation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:evidence-driven-delivery-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:job-search-application-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:marketing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:movie-maker:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:presentation-chemie:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:product-design-prototyping-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:socratic-math-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-engineering-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:storm-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:video-tutorial-creation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-02T20:35:15.188Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-02T20:35:15.216Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1788381315233,"pid":23548,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:43397"}
+{"level":30,"time":1788381315268,"pid":23548,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8587"}
+[2026-09-02T20:35:15.268Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8587
+[2026-09-02T20:35:15.270Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8587
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-09-02T20:35:48.029Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T20:36:05.368Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-02T20:36:05.684Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T20:36:05.688Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788381365696,"pid":23669,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:45359"}
+{"level":30,"time":1788381365730,"pid":23669,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8587"}
+[2026-09-02T20:36:05.731Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8587
+[2026-09-02T20:36:05.733Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8587
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session 28c36d96-6d71-4082-8cda-9c9a9bd73b38 using backend PtySession for target /root
+Terminal WebSocket connected: 28c36d96-6d71-4082-8cda-9c9a9bd73b38
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788381398724,"pid":23669,"hostname":"1da6e6043ac7","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.571957990527153,"msg":"http request completed"}
+Closed PTY session 28c36d96-6d71-4082-8cda-9c9a9bd73b38
+Terminal WebSocket disconnected: 28c36d96-6d71-4082-8cda-9c9a9bd73b38
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Created terminal session 8b4f37d8-78bb-4f76-adcf-7044b372992f using backend PtySession for target /root
+Terminal WebSocket connected: 8b4f37d8-78bb-4f76-adcf-7044b372992f
+Terminal websocket attached for cwd /root
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Closed PTY session 8b4f37d8-78bb-4f76-adcf-7044b372992f
+Terminal WebSocket disconnected: 8b4f37d8-78bb-4f76-adcf-7044b372992f
+Created terminal session 2cb26c55-b2dd-4645-a0f8-2804b6f7ea70 using backend PtySession for target /root
+Terminal WebSocket connected: 2cb26c55-b2dd-4645-a0f8-2804b6f7ea70
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788381637298,"pid":23669,"hostname":"1da6e6043ac7","reqId":"req-1v","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.5035829991102219,"msg":"http request completed"}
+Closed PTY session 2cb26c55-b2dd-4645-a0f8-2804b6f7ea70
+Terminal WebSocket disconnected: 2cb26c55-b2dd-4645-a0f8-2804b6f7ea70
+Created terminal session 0354410e-ccff-4ca2-b470-1a070f5b479e using backend PtySession for target /root
+Terminal WebSocket connected: 0354410e-ccff-4ca2-b470-1a070f5b479e
+Terminal websocket attached for cwd /root
+{"level":30,"time":1788381844749,"pid":23669,"hostname":"1da6e6043ac7","reqId":"req-2l","err":{"type":"GraphQLError","message":"Active AgentOrg 'apirev7_5bfe50658a4144928ed4046deb4e2c41' was not found.","stack":"Error: Active AgentOrg 'apirev7_5bfe50658a4144928ed4046deb4e2c41' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'apirev7_5bfe50658a4144928ed4046deb4e2c41' was not found."}
+Created terminal session d21866c3-8d78-43bb-a2c2-88b971e91845 using backend PtySession for target /root
+Terminal WebSocket connected: d21866c3-8d78-43bb-a2c2-88b971e91845
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788381861905,"pid":23669,"hostname":"1da6e6043ac7","reqId":"req-30","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3223329931497574,"msg":"http request completed"}
+Closed PTY session d21866c3-8d78-43bb-a2c2-88b971e91845
+Terminal WebSocket disconnected: d21866c3-8d78-43bb-a2c2-88b971e91845
+Created terminal session a5c4f549-fd0d-4adc-8b9f-7c7ebc3ab6fc using backend PtySession for target /root
+Terminal WebSocket connected: a5c4f549-fd0d-4adc-8b9f-7c7ebc3ab6fc
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788381894070,"pid":23669,"hostname":"1da6e6043ac7","reqId":"req-3e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.985958993434906,"msg":"http request completed"}
+Closed PTY session a5c4f549-fd0d-4adc-8b9f-7c7ebc3ab6fc
+Closed PTY session 0354410e-ccff-4ca2-b470-1a070f5b479e
+Terminal WebSocket disconnected: 0354410e-ccff-4ca2-b470-1a070f5b479e
+Terminal WebSocket disconnected: a5c4f549-fd0d-4adc-8b9f-7c7ebc3ab6fc
+[2026-09-02T20:46:11.427Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-02T20:46:11.457Z] [INFO] [server.runtime] Server closed cleanly.

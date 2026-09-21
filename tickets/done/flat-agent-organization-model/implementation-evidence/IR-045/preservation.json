@@ -1,0 +1,10 @@
+{
+  "baselineCount": 13905,
+  "unchangedCount": 13902,
+  "changedOtherOwnerPaths": [
+    "tickets/in-progress/flat-agent-organization-model/architecture-design-revision-record.md",
+    "tickets/in-progress/flat-agent-organization-model/architecture-design-self-validation.md",
+    "tickets/in-progress/flat-agent-organization-model/design-spec.md"
+  ],
+  "note": "Architecture AD023 and ARCH020 documents independently completed during this round; Implementation did not edit or stage them. All other baseline hashes match; raw evidence/live app preserved. Own temporary route/process and initially absent SDK prerequisites removed."
+}

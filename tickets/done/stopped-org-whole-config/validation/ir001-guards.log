@@ -1,0 +1,71 @@
+## git diff --check
+PASS
+
+## temporary environment artifacts
+absent autobyteus-server-ts/node_modules
+absent autobyteus-ts/node_modules
+absent autobyteus-application-backend-sdk/node_modules
+absent autobyteus-application-sdk-contracts/node_modules
+absent generated autobyteus-application-sdk-contracts/dist
+
+## legacy exact-member production symbols
+PASS: no legacy exact-member production symbol remains
+
+## changed implementation source effective non-empty lines
+ 367 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ 368 autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts
+ 234 autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts
+ 203 autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts
+  68 autobyteus-web/components/workspace/config/AgentOrgDirectAgentOverrideRow.vue
+ 462 autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue
+ 212 autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+ 157 autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue
+  24 autobyteus-web/graphql/mutations/agentOrgRunMutations.ts
+  25 autobyteus-web/graphql/queries/runModelOptionsQueries.ts
+ 418 autobyteus-web/localization/messages/en/workspace.ts
+ 417 autobyteus-web/localization/messages/zh-CN/workspace.ts
+ 353 autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts
+  67 autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts
+  19 autobyteus-web/services/runConfigEditing/existingRunModelOptionsClient.ts
+  72 autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+ 291 autobyteus-web/stores/agentOrgContextsStore.ts
+ 488 autobyteus-web/stores/existingRunModelConfigStore.ts
+  52 autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts
+  24 autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-model-config.ts
+ 111 autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-model-config-mutator.ts
+ 139 autobyteus-web/components/workspace/config/AgentOrgRunConfigForm.vue
+  42 autobyteus-web/services/runConfigEditing/agentOrgRunModelConfigClient.ts
+  61 autobyteus-web/services/runConfigEditing/existingAgentOrgModelConfigDraft.ts
+  71 autobyteus-web/services/runConfigEditing/existingAgentOrgRunFormModel.ts
+  65 autobyteus-web/services/runConfigEditing/existingHierarchicalModelConfigDraft.ts
+  83 autobyteus-web/stores/existingRunModelConfigResultActions.ts
+PASS: all changed implementation sources <=500 effective non-empty lines
+
+## tracked production changed-line deltas
+1	1	autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+0	11	autobyteus-server-ts/src/agent-org-execution/domain/agent-org-member-model-config.ts
+0	23	autobyteus-server-ts/src/agent-org-execution/services/agent-org-member-model-config-mutator.ts
+93	59	autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts
+19	13	autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts
+28	21	autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts
+14	5	autobyteus-web/components/workspace/config/AgentOrgDirectAgentOverrideRow.vue
+51	72	autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue
+28	1	autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+0	119	autobyteus-web/components/workspace/org/AgentOrgMemberRunConfigPanel.vue
+17	8	autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue
+0	79	autobyteus-web/composables/useAgentOrgMemberModelConfig.ts
+9	9	autobyteus-web/docs/agent_execution_architecture.md
+16	10	autobyteus-web/docs/agent_orgs.md
+4	4	autobyteus-web/graphql/mutations/agentOrgRunMutations.ts
+10	5	autobyteus-web/graphql/queries/runModelOptionsQueries.ts
+2	0	autobyteus-web/localization/messages/en/workspace.ts
+2	0	autobyteus-web/localization/messages/zh-CN/workspace.ts
+35	24	autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts
+0	41	autobyteus-web/services/runConfigEditing/agentOrgMemberModelConfigClient.ts
+18	0	autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts
+9	5	autobyteus-web/services/runConfigEditing/existingRunModelOptionsClient.ts
+33	56	autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+24	19	autobyteus-web/stores/agentOrgContextsStore.ts
+117	83	autobyteus-web/stores/existingRunModelConfigStore.ts
+12	1	autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts
+Note: the largest tracked production file delta is existingRunModelConfigStore.ts at 117 additions / 83 deletions (200 changed lines total) in the cumulative refactor; the implementation split result-actions into a separate cohesive owner so the final source stays under 500 effective lines. This is a design-specified state-machine extension rather than unreviewed scope.

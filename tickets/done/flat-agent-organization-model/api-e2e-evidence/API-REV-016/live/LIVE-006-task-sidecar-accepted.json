@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a",
+  "records": [
+    {
+      "taskId": "task_ce348550defc476aaefea3ade67ad46d",
+      "delegatorAgentRunId": "aorg_e2e_lead_40ab463de3a341a18ba9756664500250",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"
+      },
+      "description": "Return exactly API16-INITIAL-SUBMISSION as the result by calling submit_task_result exactly once. Do not call review_task_result, send_message_to, get_handoff_rules, or create another task.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_04d36f333d8c49f2b11456f73bf20e99",
+          "message": "API16-INITIAL-SUBMISSION",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T14:29:45.511Z"
+        },
+        {
+          "reviewId": "review_1ee2a2c5c2d94a83a0893fe919a14e68",
+          "reviewedSubmissionId": "submission_04d36f333d8c49f2b11456f73bf20e99",
+          "decision": "request_revision",
+          "comment": "Resubmit exactly API16-REVISED-SUBMISSION using submit_task_result on this same task.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T14:31:56.433Z"
+        },
+        {
+          "submissionId": "submission_33acde48528b4a579d0d244a2edd6f94",
+          "message": "API16-REVISED-SUBMISSION",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T14:31:59.874Z"
+        },
+        {
+          "reviewId": "review_e93d3f1fbdd248beb2b53a8b1c112481",
+          "reviewedSubmissionId": "submission_33acde48528b4a579d0d244a2edd6f94",
+          "decision": "accept",
+          "comment": "API16-ACCEPTED",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T14:33:19.853Z"
+        }
+      ],
+      "createdAt": "2026-09-06T14:29:30.481Z"
+    }
+  ]
+}

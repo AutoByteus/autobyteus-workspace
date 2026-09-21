@@ -1,0 +1,5 @@
+migrationId=20260706_remove_global_skill_discovery_mode
+displayName=Remove global skill discovery mode migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=

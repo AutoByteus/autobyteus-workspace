@@ -1,0 +1,51 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (5 tests | 2 failed) 243ms
+   ✓ actual shared Org file input -> active target -> attachment upload owner > uploads, opens exact content, removes and clears on inactive agent-director without activation 50ms
+   ✓ actual shared Org file input -> active target -> attachment upload owner > uploads, opens exact content, removes and clears on inactive agent-team-worker-configured without activation 15ms
+   × actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-director attachments only on deliberate continuation and opens the canonical sent file 97ms
+     → Cannot call trigger on an empty DOMWrapper.
+   × actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-team-worker-configured attachments only on deliberate continuation and opens the canonical sent file 71ms
+     → Cannot call trigger on an empty DOMWrapper.
+   ✓ actual shared Org file input -> active target -> attachment upload owner > captures upload ownership across focus switches and does not acquire draft ownership for stopped tasks 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-director attachments only on deliberate continuation and opens the canonical sent file
+ FAIL  services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > finalizes captured agent-team-worker-configured attachments only on deliberate continuation and opens the canonical sent file
+Error: Cannot call trigger on an empty DOMWrapper.
+ ❯ Object.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:1574:27
+    1572|                     return function () { return false; };
+    1573|                 default:
+    1574|                     throw new Error("Cannot call ".concat(String(prop)…
+       |                           ^
+    1575|             }
+    1576|         }
+ ❯ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:164:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  02:36:11
+   Duration  10.50s (transform 5.96s, setup 8.92s, collect 211ms, tests 243ms, environment 421ms, prepare 311ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

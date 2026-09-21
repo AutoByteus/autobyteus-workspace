@@ -1,7 +1,6 @@
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { ConfiguredExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import type { ApplicationRunOwnershipReader } from "../../application-orchestration/services/application-run-ownership-service.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
@@ -75,16 +74,9 @@ export class StudioRunModelConfigService {
     const scopes: Array<{ scopeKind: "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
       scopeAddress: string; config: AgentLaunchConfiguration }> = [
       { scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", config: tree.rootTeam.defaultLaunchConfiguration }];
-    const visit = (members: readonly ConfiguredExecutionNode[]) => {
-      for (const member of members) {
-        if ("agentRunId" in member) scopes.push({ scopeKind: "CONFIGURED_AGENT", scopeAddress: member.address, config: member.launchConfiguration });
-        else {
-          scopes.push({ scopeKind: "CONFIGURED_TEAM", scopeAddress: member.address, config: member.defaultLaunchConfiguration });
-          visit(member.members);
-        }
-      }
-    };
-    visit(tree.rootTeam.members);
+    for (const member of tree.rootTeam.members) {
+      scopes.push({ scopeKind: "CONFIGURED_AGENT", scopeAddress: member.address, config: member.launchConfiguration });
+    }
     const options = await this.dependencies.modelSelectionService.listOptionsMany(scopes.map(({ config }) => ({
       runtimeKind: config.runtimeKind, currentModelIdentifier: config.llmModelIdentifier,
       workspaceRootPath: config.workspaceRootPath ?? process.cwd(),

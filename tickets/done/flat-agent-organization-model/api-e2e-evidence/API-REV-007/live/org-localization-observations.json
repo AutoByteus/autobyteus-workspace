@@ -1,0 +1,62 @@
+{
+  "caseId": "LIVE-003",
+  "result": "Pass",
+  "surface": "production browser tab 9 + real GraphQL",
+  "authored": {
+    "name": "APIREV7 组织 Ω",
+    "description": "APIREV7 组织 description stays exact",
+    "from": "/aorg_e2e_concierge",
+    "to": "/apirev7_team",
+    "when": "When escalation Ω requires 团队 intake, preserve this exact prose."
+  },
+  "zhCN": {
+    "sourceGroups": [
+      "直接智能体",
+      "团队 · APIREV7 本地化 Team α"
+    ],
+    "destinationGroups": [
+      "直接智能体",
+      "团队",
+      "团队 · APIREV7 本地化 Team α"
+    ],
+    "sourceExcludesTeamRoot": true,
+    "destinationIncludesTeamRoot": true
+  },
+  "en": {
+    "sourceGroups": [
+      "Direct Agents",
+      "Team · APIREV7 本地化 Team α"
+    ],
+    "destinationGroups": [
+      "Direct Agents",
+      "Teams",
+      "Team · APIREV7 本地化 Team α"
+    ]
+  },
+  "narrow": {
+    "viewport": "390x844",
+    "innerWidth": 390,
+    "innerHeight": 844,
+    "htmlScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "visibleUnlabeledButtons": 0
+  },
+  "persistence": {
+    "id": "apirev7",
+    "members": [
+      {
+        "memberName": "aorg_e2e_concierge",
+        "ref": "aorg-concierge",
+        "refType": "AGENT",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "apirev7_team",
+        "ref": "apirev7-team",
+        "refType": "AGENT_TEAM",
+        "refScope": "SHARED"
+      }
+    ],
+    "roundTripExact": true
+  }
+}

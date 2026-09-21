@@ -1,0 +1,35 @@
+{
+  "orgRunIdStable": true,
+  "members": {
+    "/aorg_e2e_concierge": {
+      "agentRunIdBefore": "aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+      "agentRunIdAfter": "aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+      "agentRunIdStable": true,
+      "platformAgentRunIdBefore": "01a0640e-c2b4-74a1-9c3c-e339c6992eeb",
+      "platformAgentRunIdAfter": "01a0640e-c2b4-74a1-9c3c-e339c6992eeb",
+      "platformAgentRunIdStable": true
+    },
+    "/apirev8_team/aorg_e2e_lead": {
+      "agentRunIdBefore": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "agentRunIdAfter": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "agentRunIdStable": true,
+      "platformAgentRunIdBefore": "01a0640e-c313-7bd3-bfab-fc613eb0c6be",
+      "platformAgentRunIdAfter": "01a0640e-c313-7bd3-bfab-fc613eb0c6be",
+      "platformAgentRunIdStable": true
+    },
+    "/apirev8_team/aorg_e2e_analyst": {
+      "agentRunIdBefore": "aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+      "agentRunIdAfter": "aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f",
+      "agentRunIdStable": true,
+      "platformAgentRunIdBefore": "01a0640e-c37f-7202-a65e-76b612b97e24",
+      "platformAgentRunIdAfter": "01a06413-698b-7e52-a6fd-aab7a6e0cffa",
+      "platformAgentRunIdStable": false
+    }
+  },
+  "expectation": {
+    "conversationBearingDirectAndLeadProviderIdentityStable": true,
+    "systemInstructionOnlyAnalystReboundToDifferentProviderId": true,
+    "logicalAgentRunIdsStable": true,
+    "settledTaskExecutionPreserved": true
+  }
+}

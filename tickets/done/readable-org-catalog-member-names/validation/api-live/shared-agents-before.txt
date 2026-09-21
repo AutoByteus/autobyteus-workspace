@@ -1,0 +1,63 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - textbox "Search agents by name or description..."
+  - button "Reload":
+    - text: Reload
+  - button "Create Agent"
+  - heading "Individual agents" [level=2]
+  - generic: 3 agents
+  - generic: CR
+  - heading "Common Researcher" [level=3]
+  - paragraph: Synthetic catalog-name validation
+  - generic: Tools 0
+  - generic: None
+  - generic: Skills 0
+  - generic: None
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic: MC
+  - heading "Memory Compactor" [level=3]
+  - paragraph: Summarizes the conversation history of a target agent so the target agent can continue later.
+  - generic: Tools 0
+  - generic: None
+  - generic: Skills 0
+  - generic: None
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic: RS
+  - heading "Retrospective Skill Improver" [level=3]
+  - paragraph: Improves configured durable skill packages from target run work-trace evidence.
+  - generic: Tools 2
+  - generic: run_bash
+  - generic: send_message_to
+  - generic: Skills 1
+  - generic: retrospective-skill-improver
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →

@@ -1,0 +1,29 @@
+{
+  "expected": "Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi...",
+  "before": {
+    "at": "2026-09-06T00:02:46.311Z",
+    "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_81a6edffd0c94545b9406c2ef21a4f60&mode=active",
+    "text": "Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi...",
+    "perfNav": [
+      {
+        "name": "http://127.0.0.1:3590/workspace/",
+        "type": "navigate",
+        "redirectCount": 0
+      }
+    ]
+  },
+  "prompt": "Return exactly APIREV11-DIRECT-THIRD-003 on the first line and five words on the second line.",
+  "after": {
+    "at": "2026-09-06T00:02:49.283Z",
+    "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_81a6edffd0c94545b9406c2ef21a4f60&mode=active",
+    "text": "Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi...",
+    "replyOccurrences": 2,
+    "perfNav": [
+      {
+        "name": "http://127.0.0.1:3590/workspace/",
+        "type": "navigate",
+        "redirectCount": 0
+      }
+    ]
+  }
+}

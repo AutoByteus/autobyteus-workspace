@@ -1,0 +1,76 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts stores/__tests__/agentOrgInspection.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 22ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts (8 tests) 23ms
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (6 tests) 50ms
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests | 1 failed) 197ms
+   ✓ exact Org task inspection independent of history drawer initialization > awaits the canonical cold read, then opens the settled non-coordinator; warm same-name links keep exact identity 92ms
+   ✓ exact Org task inspection independent of history drawer initialization > resolves inactive history through the same read owner and inspects without Restore, transport or activation 16ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict network unavailability without inferring root activity from the current context 14ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict graphql unavailability without inferring root activity from the current context 15ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict schema unavailability without inferring root activity from the current context 13ms
+   ✓ exact Org task inspection independent of history drawer initialization > retains strict missing unavailability without inferring root activity from the current context 13ms
+   × exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun 20ms
+     → Exact task Agent execution is unavailable.
+   ✓ exact Org task inspection independent of history drawer initialization > retains the exact AgentRun requirement before issuing navigation 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun
+Error: Exact task Agent execution is unavailable.
+ ❯ execute composables/useWorkspaceHistorySubjectActions.ts:52:15
+     50|       const agent = command.agentRunId ? context.index.agents.get(comm…
+     51|       if (!agent || (command.memberAddress && agent.address !== comman…
+     52|         throw new Error('Exact task Agent execution is unavailable.')
+       |               ^
+     53|       }
+     54|       orgContexts.select(run.rootRunId, { kind: 'agent_execution', age…
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:155:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 26 passed (27)
+   Start at  23:44:23
+   Duration  10.99s (transform 5.85s, setup 34.67s, collect 1.78s, tests 292ms, environment 3.25s, prepare 1.56s)
+
+ ELIFECYCLE  Command failed with exit code 1.

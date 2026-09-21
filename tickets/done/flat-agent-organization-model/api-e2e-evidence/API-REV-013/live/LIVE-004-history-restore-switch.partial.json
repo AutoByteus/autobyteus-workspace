@@ -1,0 +1,870 @@
+{
+  "events": [
+    {
+      "label": "inactive-org-history",
+      "at": "2026-09-06T02:10:34.002Z",
+      "viewport": {
+        "width": 1502,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:3592/workspace/?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nStopped Agent Org\n\nSelect a member from the historical run in the sidebar to continue from its saved state.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n~ $  ",
+      "current": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        }
+      ],
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": null,
+          "text": "Terminal"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Agents",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Collapse left panel",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Agent Teams",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Agent Orgs",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Skills",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Memory",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Nodes",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Add workspace",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Temp Workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "A本 APIREV8 本地化 Team β (1)",
+          "aria": null,
+          "title": null,
+          "test": "workspace-team-definition-row-apirev8-team",
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "APIREV8 组织 Ω (1)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "Settings",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Files",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Terminal",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Activity",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Token",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Artifacts",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "VNC Viewer",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Toggle Sidebar",
+          "test": "right-side-panel-toggle",
+          "expanded": null,
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "label": "standalone-team-from-inactive-org",
+      "at": "2026-09-06T02:10:34.339Z",
+      "viewport": {
+        "width": 1502,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:3592/workspace",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nA\naorg_e2e_analyst\nOffline\nYou\nReturn exactly APIREV10-TEAM-ACTIVE-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_analyst\n\nAPIREV10-TEAM-ACTIVE-001\nTeam active and request acknowledged.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+      "current": [
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "A aorg_e2e_analyst 3d"
+        }
+      ],
+      "selected": [
+        {
+          "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+          "text": "A aorg_e2e_analyst 3d"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Agents",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Collapse left panel",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Agent Teams",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Agent Orgs",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Skills",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Memory",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Nodes",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Add workspace",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Temp Workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "A本 APIREV8 本地化 Team β (1)",
+          "aria": null,
+          "title": null,
+          "test": "workspace-team-definition-row-apirev8-team",
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "aria": null,
+          "title": null,
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Archive team history",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Delete team history permanently",
+          "title": "Delete team history permanently",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "APIREV8 组织 Ω (1)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "Settings",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Edit Config",
+          "title": null,
+          "test": "workspace-header-edit-config",
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "New Agent",
+          "title": null,
+          "test": "workspace-header-new-run",
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Upload files",
+          "title": "Upload files",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Send message",
+          "test": null,
+          "expanded": null,
+          "disabled": true
+        },
+        {
+          "text": "Files",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Terminal",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Activity",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Token",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Artifacts",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "VNC Viewer",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Toggle Sidebar",
+          "test": "right-side-panel-toggle",
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Messages 0 Messages",
+          "aria": null,
+          "title": null,
+          "test": "team-messages-header",
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "Tasks 0 tasks",
+          "aria": null,
+          "title": null,
+          "test": "team-delegated-tasks-header",
+          "expanded": "false",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "label": "inactive-org-return",
+      "at": "2026-09-06T02:10:34.417Z",
+      "viewport": {
+        "width": 1502,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=history",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n3d\nA\naorg_e2e_lead\n3d\nA\naorg_e2e_analyst\n3d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nStopped Agent Org\n\nSelect a member from the historical run in the sidebar to continue from its saved state.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo workspaces available. Add a workspace to see files.\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+      "current": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        }
+      ],
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": null,
+          "text": "Files"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Agents",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Collapse left panel",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Agent Teams",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Agent Orgs",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Skills",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Memory",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Nodes",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Add workspace",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Temp Workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "A本 APIREV8 本地化 Team β (1)",
+          "aria": null,
+          "title": null,
+          "test": "workspace-team-definition-row-apirev8-team",
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "Return exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...",
+          "aria": null,
+          "title": null,
+          "test": "workspace-team-row-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89",
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Archive team history",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Delete team history permanently",
+          "title": "Delete team history permanently",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "APIREV8 组织 Ω (1)",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "true",
+          "disabled": false
+        },
+        {
+          "text": "AE aorg e2e concierge",
+          "aria": "aorg e2e concierge, offline",
+          "title": null,
+          "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "apirev8 team",
+          "aria": "apirev8 team. Team status: Offline",
+          "title": null,
+          "test": "agent-org-team-row-apirev8_team_157bfb307efe440ab6760c3c9ea74405",
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-team",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Remove from Workspaces",
+          "title": "Remove from Workspaces",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "workspace-default",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": "false",
+          "disabled": false
+        },
+        {
+          "text": "Settings",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Files",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Terminal",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Activity",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Token",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "Artifacts",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "VNC Viewer",
+          "aria": null,
+          "title": null,
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Toggle Sidebar",
+          "test": "right-side-panel-toggle",
+          "expanded": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": null,
+          "title": "Maximize view",
+          "test": null,
+          "expanded": null,
+          "disabled": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

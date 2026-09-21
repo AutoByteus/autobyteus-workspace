@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerCreateAgentTeamDefinitionTool } from "../../../../src/agent-tools/agent-team-management/create-agent-team-definition.js";
-import { AgentTeamDefinition } from "../../../../src/agent-team-definition/domain/models.js";
+import { AgentTeamDefinition } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 
 const mockService = {
   createDefinition: vi.fn(),
@@ -28,7 +28,6 @@ describe("createAgentTeamDefinitionTool", () => {
       {
         member_name: "coder",
         ref: "1",
-        ref_type: "agent",
         ref_scope: "shared",
       },
     ]);
@@ -51,7 +50,6 @@ describe("createAgentTeamDefinitionTool", () => {
     expect(createdDef.name).toBe("TestTeam");
     expect(createdDef.nodes).toHaveLength(1);
     expect(createdDef.nodes[0].memberName).toBe("coder");
-    expect(createdDef.nodes[0].refType).toBe("agent");
     expect(createdDef.nodes[0].refScope).toBe("shared");
     expect(result).toContain("created successfully");
     expect(result).toContain("456");

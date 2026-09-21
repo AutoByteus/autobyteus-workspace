@@ -87,6 +87,7 @@ export class WindowsServerManager extends BaseServerManager {
    * First tries graceful taskkill (without /f), then escalates to forceful kill after timeout.
    */
   public override stopServer(): Promise<void> {
+    this.cancelPendingStartup()
     if (!this.serverProcess) {
       logger.info('Server is not running');
       return Promise.resolve();
@@ -99,6 +100,7 @@ export class WindowsServerManager extends BaseServerManager {
       const pid = proc?.pid;
       
       const cleanup = () => {
+        if (this.serverProcess !== proc) return
         this.isServerRunning = false;
         this.ready = false;
         this.serverProcess = null;

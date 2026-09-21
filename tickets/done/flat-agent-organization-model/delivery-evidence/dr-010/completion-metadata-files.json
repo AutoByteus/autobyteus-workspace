@@ -1,0 +1,12 @@
+{
+  "files": [
+    "handoff-summary.md",
+    "release-deployment-report.md",
+    "delivery-revision-record.md",
+    "delivery-evidence/dr-010/repository-finalization.json",
+    "delivery-evidence/dr-010/payload-push.log",
+    "delivery-evidence/dr-010/remote-after-payload.txt",
+    "delivery-evidence/dr-010/completion-metadata-files.json"
+  ],
+  "scope": "Delivery completion metadata only; no source, tests or original evidence changed"
+}

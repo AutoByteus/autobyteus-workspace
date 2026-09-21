@@ -1,0 +1,41 @@
+timestamp=2026-09-06T14:19:38Z
+head=43ef19f2de69b2c16133577dac40471f75ebd913
+source_is_ancestor=true
+--- ports ---
+--- tabs ---
+none_confirmed_by_list_tabs
+--- fixture ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+--- copied data ---
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db/production.db 454656 644
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db/production.db.secret.key 32 600
+tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env 1751 644
+--- instrumentation syntax/hash ---
+9f47489da1f6b243e2d7d36a3cda77c7cb1453612ba5bea50a8550e86fe4ee57  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/live/inspector-logpoints.mjs
+--- dist hashes before ---
+284900b2ba772029c74213411b4dd9e3f75052620f505bd0373ebf61857ee7f1  autobyteus-server-ts/dist/agent-tools/mcp/agent-tools-mcp-routes.js
+9e49843960cc47b494c901b0d7491552a1e477eb90b4cbca0dc5c951acde8134  autobyteus-server-ts/dist/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js
+d59010d450faf9efe8279e379cdb50f8d4ed46f1f923c0787ed32ac05f4e9417  autobyteus-server-ts/dist/agent-tools/mcp/agent-tool-mcp-tool-executor.js
+b6b442d1b75e17e03f1a45f88e24caaee5d6893588c5eac51ec72feb33da1206  autobyteus-server-ts/dist/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js
+d41cecb90b1c190c9b372e3578eeedcc8beebad6f95768b8a5f167ea12473949  autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-command-queue.js
+a53e388349687eda5531976c95dc6652a1f4c0e753e96613844a393a5a3c7752  autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-engine.js
+5856348fa77ca79b5b614f970e1900bc882b670accf1378aa2bb18447d0234d6  autobyteus-server-ts/dist/agent-team-execution/task-delegation/team-task-lifecycle-adapter.js
+--- diff check ---
+pass

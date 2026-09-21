@@ -1,0 +1,7 @@
+188 nonempty lines: autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+430 nonempty lines: autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue
+397 nonempty lines: autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+90 nonempty lines: autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts
+194 nonempty lines: autobyteus-web/composables/useRunHistoryAvatarState.ts
+408 nonempty lines: autobyteus-web/localization/messages/en/workspace.ts
+407 nonempty lines: autobyteus-web/localization/messages/zh-CN/workspace.ts

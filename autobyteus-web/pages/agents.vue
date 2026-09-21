@@ -70,6 +70,7 @@ const currentView = computed((): View => {
 
 const currentId = computed(() => route.query.id as string | undefined);
 const returnToTeamId = computed(() => route.query.returnToTeam as string | undefined);
+const returnToOrgId = computed(() => route.query.returnToOrg as string | undefined);
 
 type AgentNavigationPayload =
   | { view: View; id?: string }
@@ -77,7 +78,11 @@ type AgentNavigationPayload =
 
 const handleNavigation = (payload: AgentNavigationPayload) => {
   if ('target' in payload && payload.target === 'agent-team') {
-    router.push({ path: '/agent-teams', query: { view: payload.view, id: payload.id } });
+    router.push({ path: '/agent-teams', query: {
+      view: payload.view,
+      id: payload.id,
+      ...(returnToOrgId.value ? { returnToOrg: returnToOrgId.value } : {}),
+    } });
     return;
   }
 
@@ -88,6 +93,7 @@ const handleNavigation = (payload: AgentNavigationPayload) => {
   }
   if (returnToTeamId.value && view !== 'list') {
     query.returnToTeam = returnToTeamId.value;
+    if (returnToOrgId.value) query.returnToOrg = returnToOrgId.value;
   }
   router.push({ path: '/agents', query });
 };

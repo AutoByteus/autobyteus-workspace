@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-15T11:02:34.351Z",
+  "mainPid": 42714,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus",
+  "childCount": 1,
+  "pid": 42722,
+  "generation": 1,
+  "ready": true,
+  "pending": false,
+  "polls": 485,
+  "snapshot": {
+    "status": "running",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "Healthy"
+  },
+  "windowId": 1,
+  "dom": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nMC\nMemory Compactor\n\nSummarizes the conversation history of a target agent so the target agent can continue later.\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→"
+}

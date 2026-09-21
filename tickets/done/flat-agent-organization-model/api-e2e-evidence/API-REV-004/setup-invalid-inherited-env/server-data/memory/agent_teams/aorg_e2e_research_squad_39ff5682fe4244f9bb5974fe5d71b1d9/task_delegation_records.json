@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9",
+  "records": [
+    {
+      "taskId": "task_36faf3ca2c424b6fb77a7ccc370ea38a",
+      "delegatorAgentRunId": "aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_cfe82433fb144958b6aeb910c251004e"
+      },
+      "description": "Bounded validation task: submit exactly the marker AORG4-TEAM-TASK-INITIAL-001 as the formal task result using submit_task_result. Do not perform unrelated work.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_5bffa6f047e74435838ffc8ce3b6803f",
+          "message": "AORG4-TEAM-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:38:10.075Z"
+        },
+        {
+          "reviewId": "review_bc82d4bc36434a07a48d0428cdd3f4b1",
+          "reviewedSubmissionId": "submission_5bffa6f047e74435838ffc8ce3b6803f",
+          "decision": "request_revision",
+          "comment": "Revise the same task result and resubmit using submit_task_result with exact marker AORG4-TEAM-TASK-REVISED-001.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:38:15.575Z"
+        },
+        {
+          "submissionId": "submission_8a784b4d9a424179a47c21e166d0210a",
+          "message": "AORG4-TEAM-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:38:27.539Z"
+        },
+        {
+          "reviewId": "review_2e5076bca8234a4099728e01e463bad3",
+          "reviewedSubmissionId": "submission_8a784b4d9a424179a47c21e166d0210a",
+          "decision": "accept",
+          "comment": "Accepted revised marker AORG4-TEAM-TASK-REVISED-001.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:38:32.758Z"
+        }
+      ],
+      "createdAt": "2026-09-02T06:37:49.689Z"
+    }
+  ]
+}

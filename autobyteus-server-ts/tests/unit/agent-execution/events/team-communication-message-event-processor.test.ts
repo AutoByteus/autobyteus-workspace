@@ -20,10 +20,6 @@ const runContext = new AgentRunContext({
   runtimeContext: null,
 });
 
-const memberAddress = (memberRouteKey: string) => ({
-  segments: [{ kind: "member" as const, memberRouteKey }],
-});
-
 describe("TeamCommunicationMessageProcessor", () => {
   it("emits one normalized message-centric event for an accepted inter-agent message with child references", () => {
     const processor = new TeamCommunicationMessageProcessor();
@@ -38,8 +34,8 @@ describe("TeamCommunicationMessageProcessor", () => {
           payload: {
             message_id: "message-1",
             team_run_id: "team-1",
-            sender_address: memberAddress("sender"),
-            receiver_address: memberAddress("receiver"),
+            sender_agent_id: "sender-run-1",
+            receiver_run_id: "receiver-run-1",
             content: "Please review the attached report.",
             message_type: "handoff",
             reference_files: ["/tmp/report.md", "/tmp/report.md", "/tmp/notes.txt"],
@@ -57,8 +53,8 @@ describe("TeamCommunicationMessageProcessor", () => {
       payload: expect.objectContaining({
         messageId: "message-1",
         teamRunId: "team-1",
-        senderAddress: memberAddress("sender"),
-        receiverAddress: memberAddress("receiver"),
+        senderAgentRunId: "sender-run-1",
+        receiverAgentRunId: "receiver-run-1",
         content: "Please review the attached report.",
         messageType: "handoff",
         referenceFiles: [
@@ -83,8 +79,8 @@ describe("TeamCommunicationMessageProcessor", () => {
           payload: {
             message_id: "message-2",
             team_run_id: "team-1",
-            sender_address: memberAddress("sender"),
-            receiver_address: memberAddress("receiver"),
+            sender_agent_id: "sender-run-1",
+            receiver_run_id: "receiver-run-1",
             content: "This body mentions /tmp/not-a-reference.md as prose only.",
             message_type: "handoff",
             created_at: "2026-04-08T00:00:00.000Z",

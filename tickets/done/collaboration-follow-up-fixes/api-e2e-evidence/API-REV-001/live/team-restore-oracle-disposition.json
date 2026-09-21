@@ -1,0 +1,9 @@
+{
+  "at": "2026-09-13T12:03:25.089169+00:00",
+  "stoppedHelper": [
+    "68443"
+  ],
+  "issue": "Actual assistant returned COLLAB-API01-TEAM-RESTORED. with a terminal period; strict test marker waited despite completed truthful restored reply. No retry/resend.",
+  "lostObservation": "Helper-local sent frames not flushed; use exact accepted new input and original Restore response, not reconstructed wire count.",
+  "scope": "Prompt exact formatting is a test correlation request, not ticket acceptance semantics."
+}

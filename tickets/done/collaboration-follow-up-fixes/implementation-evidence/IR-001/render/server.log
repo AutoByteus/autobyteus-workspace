@@ -1,0 +1,47 @@
+
+> autobyteus@1.4.69 dev /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 31181
+
+│
+▲  Changing NODE_ENV from production to development, to avoid unintended behavior.
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+ 
+              █▀▀▀▀▀▀▀█▀▀▀▀████▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀█ ▄▀▄▀▀█ █▀▀▀█ █
+              █ █   █ ███  ▀▄▄▄██ █   █ █
+              █ ▀▀▀▀▀ █▀▄▀▄▀▄▀█ █ ▀▀▀▀▀ █
+              █▀▀█▀▀█▀█▄ ██ ▄█▄ █▀█████▀█
+              █ █  ██▀▄▀▀▄█▀█▀ ▄ ▀▀▄ ▄▄▀█
+              █▀▀▄█▀▄▀▀█▀▀███ ▀▄ ▀▄█▄▄▄ █
+              █ ▀▀ ▀▀▀▄ ▄ █▄ █ ▀▀█▄▄▀▀ ▀█
+              █ █▄▀▄ ▀██ ▀▀ ▀▀▄▀▀▀▀ █ ▀▄█
+              █▀▀▀▀▀▀▀█▄▀▄▄▀  █ █▀█ ▀█▄▀█
+              █ █▀▀▀█ █▀▀█ ▀▄▄▀ ▀▀▀ ▀██▄█
+              █ █   █ █▄▀ ▀▄█▀▄██▄▄▀▄▀  █
+              █ ▀▀▀▀▀ █   █▀█  ▀▄ ▄▄▀▄▄ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:31181/
+  ➜ Network:  http://172.17.0.8:31181/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 51ms
+✔ Vite server built in 344ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 5343ms
+ℹ Vite client warmed up in 1ms
+ℹ hmr update /app.vue?vue&type=style&index=0&lang.css, /pages/ir001-render.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fcollaboration-follow-up-fixes%2Fautobyteus-web%2F.nuxt%2Froutes.mjs
+ℹ ✨ new dependencies optimized: @iconify/vue, zod, crypto-js/sha256, @xterm/xterm, @xterm/addon-fit, @novnc/novnc, @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+ℹ hmr update /pages/ir001-render.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/ir001-render.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fcollaboration-follow-up-fixes%2Fautobyteus-web%2F.nuxt%2Froutes.mjs
+ℹ hmr update /pages/ir001-render.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/ir001-render.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fcollaboration-follow-up-fixes%2Fautobyteus-web%2F.nuxt%2Froutes.mjs (x2)
+ℹ hmr update /pages/ir001-render.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/ir001-render.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fcollaboration-follow-up-fixes%2Fautobyteus-web%2F.nuxt%2Froutes.mjs (x3)
+ℹ hmr update /pages/ir001-render.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/ir001-render.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fcollaboration-follow-up-fixes%2Fautobyteus-web%2F.nuxt%2Froutes.mjs (x4)
+ℹ hmr update /pages/ir001-render.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/ir001-render.vue?macro=true, /@id/virtual:nuxt:%2Fhome%2Fautobyteus%2Fworkspace%2F.codex%2Fworktrees%2Fcollaboration-follow-up-fixes%2Fautobyteus-web%2F.nuxt%2Froutes.mjs (x5)

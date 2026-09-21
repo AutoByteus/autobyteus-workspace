@@ -1,0 +1,242 @@
+[
+    {
+        "migration_id": "20260517_team_run_metadata_member_tree",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1779011363151,
+        "completed_at": 1779011363309,
+        "summary": "Scanned 115; migrated 108; skipped 7; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-05-17 09:49:23"
+    },
+    {
+        "migration_id": "20260521_run_history_index_v2",
+        "status": "SUCCEEDED_WITH_WARNINGS",
+        "attempts": 1,
+        "started_at": 1779372411688,
+        "completed_at": 1779372411787,
+        "summary": "Scanned 203; migrated 53; skipped 0; failed 150.",
+        "error_message": "150 standalone run metadata item(s) could not be migrated.",
+        "updated_at": "2026-05-21 14:06:51"
+    },
+    {
+        "migration_id": "20260521_team_run_history_index_v2",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1779381054761,
+        "completed_at": 1779381054907,
+        "summary": "Scanned 148; migrated 142; skipped 6; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-05-21 16:30:54"
+    },
+    {
+        "migration_id": "20260617_raw_trace_rotation_layout",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1781753689312,
+        "completed_at": 1781753689871,
+        "summary": "Scanned 7; migrated 7; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-06-18 03:34:49"
+    },
+    {
+        "migration_id": "20260623_remove_self_evolution_run_metadata",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1782239496114,
+        "completed_at": 1782239496120,
+        "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-06-23 18:31:36"
+    },
+    {
+        "migration_id": "20260701_team_communication_projection_addresses",
+        "status": "SUCCEEDED_WITH_WARNINGS",
+        "attempts": 1,
+        "started_at": 1782924314321,
+        "completed_at": 1782924315080,
+        "summary": "Scanned 231; migrated 191; skipped 0; failed 40.",
+        "error_message": "40 Team Communication projection file(s) could not be migrated.",
+        "updated_at": "2026-07-01 16:45:15"
+    },
+    {
+        "migration_id": "20260703_token_usage_execution_address_backfill",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1783080356566,
+        "completed_at": 1783080361779,
+        "summary": "Scanned 15798; migrated 13246; skipped 2552; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-03 12:06:01"
+    },
+    {
+        "migration_id": "20260703_drop_token_usage_legacy_path_columns",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1783089740759,
+        "completed_at": 1783089741324,
+        "summary": "Scanned 2; migrated 2; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-03 14:42:21"
+    },
+    {
+        "migration_id": "20260706_remove_global_skill_discovery_mode",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1783317306487,
+        "completed_at": 1783317307278,
+        "summary": "Scanned 659; migrated 0; skipped 659; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-06 05:55:07"
+    },
+    {
+        "migration_id": "20260707_raw_trace_active_file_name",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1783451882155,
+        "completed_at": 1783451883445,
+        "summary": "Scanned 1896; migrated 1896; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-07 19:18:03"
+    },
+    {
+        "migration_id": "20260727_custom_provider_v1_secret_migration",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1785150288634,
+        "completed_at": 1785150288657,
+        "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-27 11:04:48"
+    },
+    {
+        "migration_id": "20260730_token_usage_custom_provider_model_value_backfill",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1785403262302,
+        "completed_at": 1785403263669,
+        "summary": "Scanned 100528; migrated 0; skipped 100528; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-30 09:21:03"
+    },
+    {
+        "migration_id": "20260730_reset_pre_lineage_memory",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1785429483922,
+        "completed_at": 1785429483927,
+        "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-30 16:38:03"
+    },
+    {
+        "migration_id": "20260730_token_usage_provider_name_snapshot_backfill",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1785473979342,
+        "completed_at": 1785474038392,
+        "summary": "Scanned 104696; migrated 1657; skipped 103039; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-31 05:00:39"
+    },
+    {
+        "migration_id": "20260731_remove_external_runtime_working_context_snapshots",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1785511847515,
+        "completed_at": 1785511849592,
+        "summary": "Scanned 2848; migrated 1738; skipped 1110; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-07-31 15:30:49"
+    },
+    {
+        "migration_id": "20260731_migrate_native_working_context_snapshots_v5",
+        "status": "SUCCEEDED_WITH_WARNINGS",
+        "attempts": 1,
+        "started_at": 1785554844852,
+        "completed_at": 1785554846660,
+        "summary": "Scanned 689; migrated 347; skipped 342; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-08-01 03:27:26"
+    },
+    {
+        "migration_id": "20260801_team_canonical_identity",
+        "status": "FAILED",
+        "attempts": 6,
+        "started_at": 1787022907521,
+        "completed_at": 1787022907853,
+        "summary": "Scanned 10; migrated 0; skipped 0; failed 10.",
+        "error_message": "10 required canonical identity item(s) failed. Runtime startup remains blocked.",
+        "updated_at": "2026-08-18 03:15:07"
+    },
+    {
+        "migration_id": "20260801_drop_token_usage_legacy_route_column",
+        "status": "FAILED",
+        "attempts": 2,
+        "started_at": 1786380210531,
+        "completed_at": 1786380210541,
+        "summary": "Scanned 1; migrated 0; skipped 0; failed 1.",
+        "error_message": "Canonical identity prerequisite status is FAILED.",
+        "updated_at": "2026-08-10 16:43:30"
+    },
+    {
+        "migration_id": "20260803_custom_provider_readable_identity",
+        "status": "SUCCEEDED_WITH_WARNINGS",
+        "attempts": 1,
+        "started_at": 1786357689277,
+        "completed_at": 1786357708820,
+        "summary": "Scanned 1100; migrated 30; skipped 1067; failed 3.",
+        "error_message": null,
+        "updated_at": "2026-08-10 10:28:28"
+    },
+    {
+        "migration_id": "20260814_team_run_execution_tree_v1",
+        "status": "SUCCEEDED_WITH_WARNINGS",
+        "attempts": 1,
+        "started_at": 1787047962659,
+        "completed_at": 1787047997786,
+        "summary": "Scanned 515; migrated 506; skipped 0; failed 9.",
+        "error_message": "9 TeamRun V1 migration warning item(s) were isolated; startup may continue.",
+        "updated_at": "2026-08-18 10:13:17"
+    },
+    {
+        "migration_id": "20260819_token_usage_run_records_v1",
+        "status": "SUCCEEDED",
+        "attempts": 6,
+        "started_at": 1787149955618,
+        "completed_at": 1787149971839,
+        "summary": "Scanned 158025; migrated 1283; skipped 0; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-08-19 14:32:51"
+    },
+    {
+        "migration_id": "20260823_repair_team_agent_memory_layout",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1787543986882,
+        "completed_at": 1787543987403,
+        "summary": "Scanned 112; migrated 9; skipped 103; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-08-24 03:59:47"
+    },
+    {
+        "migration_id": "20260824_team_run_execution_tree_v2",
+        "status": "SUCCEEDED",
+        "attempts": 1,
+        "started_at": 1787631363155,
+        "completed_at": 1787631372021,
+        "summary": "Scanned 522; migrated 514; skipped 8; failed 0.",
+        "error_message": null,
+        "updated_at": "2026-08-25 04:16:12"
+    },
+    {
+        "migration_id": "20260901_agent_org_flat_team_families_v1",
+        "status": "FAILED",
+        "attempts": 27,
+        "started_at": 1789725919218,
+        "completed_at": 1789725919323,
+        "summary": "Scanned 526; migrated 0; skipped 518; failed 8.",
+        "error_message": "8 flat-Team/AgentOrg runtime/history item(s) require correction and restart.",
+        "updated_at": "2026-09-18 10:05:19"
+    }
+]

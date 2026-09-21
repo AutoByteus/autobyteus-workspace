@@ -1,0 +1,12 @@
+2026-09-06T14:37:23Z
+LISTEN 0      511        127.0.0.1:8596       0.0.0.0:*    users:(("node",pid=6402,fd=31))  
+health=200
+{"status":"ok","message":"Server is running"}
+graphql=200
+{"data":{"__typename":"Query"}}
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db/production.db"
+No pending migrations to apply.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default
+[2026-09-06T14:37:10.059Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8596
+cfad23a71dcc3c95bea8f22b015433fa288d6f0d7a3f97cabef712c29e7387c1  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory/agent_teams/aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a/task_delegation_records.json
+80121f65742c54388793074268ee47091cdd589e2a39da8fc2c6b3d51012e11d  tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory/agent_teams/aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a/team_run_execution_tree.json

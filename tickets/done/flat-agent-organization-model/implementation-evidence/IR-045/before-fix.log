@@ -1,0 +1,96 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts -t 'actual typed-then-cleared|verified same-Agent replacement is held'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:371:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:270:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:328:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:106:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:371:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:270:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:328:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:106:26
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (14 tests | 2 failed | 12 skipped) 306ms
+   ↓ Org shared composer -> exact interaction -> correlated stream > clears exact agent-director text/attachments immediately, retains pending and projects one authoritative echo
+   ↓ Org shared composer -> exact interaction -> correlated stream > clears exact agent-team-worker-configured text/attachments immediately, retains pending and projects one authoritative echo
+   ↓ Org shared composer -> exact interaction -> correlated stream > clears exact agent-task-worker text/attachments immediately, retains pending and projects one authoritative echo
+   ↓ Org shared composer -> exact interaction -> correlated stream > restores an untouched rejected draft/attachments and shows local error without history or replay
+   ↓ Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is accepted
+   ↓ Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is rejected
+   ↓ Org shared composer -> exact interaction -> correlated stream > preserves not-yet-debounced newer textarea edits on rejection
+   × Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected 87ms
+     → expected 'first message' to be '' // Object.is equality
+   ↓ Org shared composer -> exact interaction -> correlated stream > rejects an already disconnected send without consuming its draft
+   ↓ Org shared composer -> exact interaction -> correlated stream > preserves a newer attachment-only draft after rejection
+   ↓ Org shared composer -> exact interaction -> correlated stream > handles a synchronous transport failure and retires its pending command
+   ↓ Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect
+   × Org shared composer -> exact interaction -> correlated stream > preserves actual textarea edits while a verified same-Agent replacement is held 218ms
+     → expected '' to be 'still composing my next message' // Object.is equality
+   ↓ Org shared composer -> exact interaction -> correlated stream > releases the exact pending submission on disconnect without touching the newly focused draft
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+AssertionError: expected 'first message' to be '' // Object.is equality
+
+- Expected
++ Received
+
++ first message
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:211:33
+    209|     ack('rejected'); await flushPromises()
+    210|     expect(context.submissionPending).toBe(false)
+    211|     expect(context.requirement).toBe('')
+       |                                 ^
+    212|     expect(wrapper!.find('textarea').element.value).toBe('')
+    213|     expect(context.contextFilePaths).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves actual textarea edits while a verified same-Agent replacement is held
+AssertionError: expected '' to be 'still composing my next message' // Object.is equality
+
+- Expected
++ Received
+
+- still composing my next message
+
+ ❯ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:322:33
+    320|     expect(current).not.toBe(context)
+    321|     expect(current.state.runId).toBe('agent-director')
+    322|     expect(current.requirement).toBe('still composing my next message')
+       |                                 ^
+    323|     expect(wrapper!.find('textarea').element.value).toBe('still compos…
+    324|     expect(current.contextFilePaths).toEqual([attachment('unsent')])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 skipped (14)
+   Start at  23:26:09
+   Duration  8.55s (transform 4.84s, setup 7.11s, collect 168ms, tests 306ms, environment 371ms, prepare 257ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

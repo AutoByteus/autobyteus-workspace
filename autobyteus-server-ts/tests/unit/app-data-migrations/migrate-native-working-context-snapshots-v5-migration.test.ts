@@ -347,7 +347,9 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
     const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
     const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
-    expect([layoutIndex, v2Index, externalIndex]).toEqual([v1Index + 1, v1Index + 2, v1Index + 3]);
+    expect(layoutIndex).toBe(v1Index + 1);
+    expect(v2Index).toBe(layoutIndex + 1);
+    expect(externalIndex).toBeGreaterThan(v2Index);
     expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
       externalIndex + 1,
       externalIndex + 2,

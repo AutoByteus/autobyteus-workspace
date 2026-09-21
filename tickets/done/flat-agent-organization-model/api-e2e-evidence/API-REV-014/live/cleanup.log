@@ -1,0 +1,35 @@
+timestamp=2026-09-06T12:08:28Z
+=== ports ===
+=== owned processes ===
+=== exact pids ===
+  PID  PPID STAT CMD
+=== copied sensitive ===
+=== fixture hashes ===
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+=== source identity ===
+3656220d2f7a1551aa54d8e7e9d3eb8d767b96f6
+source_is_ancestor=true
+=== diff check ===
+pass
+=== generated top-level shared outputs ===
+autobyteus-application-backend-sdk/dist absent
+autobyteus-application-sdk-contracts/dist absent
+=== browser tabs ===
+verified separately via AutoByteus close_tab/list_tabs: []

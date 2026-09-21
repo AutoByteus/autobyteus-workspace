@@ -1,0 +1,23 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data/.env
+Loading environment from: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8589
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8589
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data
+DB DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data/db
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-010/live/server-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-012/user-requested-retry/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Failed to start server: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/node_modules/@autobyteus/application-sdk-contracts/dist/index.js' imported from /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/websocket/application-agent-communication.js
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/node_modules/@autobyteus/application-sdk-contracts/dist/index.js' imported from /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/websocket/application-agent-communication.js","logPath":null}

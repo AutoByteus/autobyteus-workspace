@@ -1,0 +1,5 @@
+backend_pid=51922
+web_pid=51923
+  PID  PPID STAT                  STARTED CMD
+51922 51921 Sl+  Wed Sep  2 16:07:27 2026 node /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 8487 --data-dir /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data
+51923 51921 S+   Wed Sep  2 16:07:27 2026 python3 -m http.server 3487 --directory /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/dist/public

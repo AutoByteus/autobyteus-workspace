@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_0d35518a8b204de69d9e5892d769f4d7",
+  "messages": [
+    {
+      "messageId": "collabmsg_zWBHyw74RfSpc51f6_3Bd3gVcgar0d57",
+      "senderAgentRunId": "aorg_e2e_lead_05191864a4b2478485940f8bf1a6de06",
+      "receiverAgentRunId": "aorg_e2e_analyst_b10c56a02ef04e73a7c8adf372fa508d",
+      "content": "Return exactly AORG-ORG-TEAM-MESSAGE-003 on the first line and Mounted message delivered. on the second line.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T22:34:56.135Z"
+    },
+    {
+      "messageId": "collabmsg_KVfXCE7n3Nsndf-KBBpnVfGkCGVQIhkq",
+      "senderAgentRunId": "aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6",
+      "receiverAgentRunId": "aorg_e2e_verifier_b9a4358c4d384805bc1ca341622807e7",
+      "content": "The revised delegated-task result was submitted for task task_a74ec579d8d34fb58ca5788856b5486b and needs an independent check. Submitted content: AORG-ORG-TASK-REVISED-003 on the first line and Org revised. on the second line.",
+      "messageType": "handoff",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T22:37:13.349Z"
+    }
+  ]
+}

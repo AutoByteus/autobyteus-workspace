@@ -1,0 +1,60 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts > same saved reasoning low survives canonical Team copy (different member model: false)
+{"different":false,"canonical":{"runtime_kind":"autobyteus","llm_model_identifier":"gpt-5.4-mini","llm_config":{"reasoning_effort":"low"},"auto_execute_tools":false,"skill_access_mode":"PRELOADED_ONLY","workspace_root_path":"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"},"records":{"teamConfigs":[{"teamAddress":"/","runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.4-mini","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"skillAccessMode":"PRELOADED_ONLY","workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"}],"memberConfigs":[{"memberAddress":"/lead","agentDefinitionId":"team-local-agent:control-team:worker","runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.4-mini","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"skillAccessMode":"PRELOADED_ONLY","workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"}]}}
+
+stdout | services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts > same saved reasoning low survives canonical Team copy (different member model: true)
+{"different":true,"canonical":{"runtime_kind":"autobyteus","llm_model_identifier":"gpt-5.4","llm_config":{"reasoning_effort":"low"},"auto_execute_tools":false,"skill_access_mode":"PRELOADED_ONLY","workspace_root_path":"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"},"seedOverride":{"llmModelIdentifier":"gpt-5.4"},"records":{"teamConfigs":[{"teamAddress":"/","runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.4-mini","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"skillAccessMode":"PRELOADED_ONLY","workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"}],"memberConfigs":[{"memberAddress":"/lead","agentDefinitionId":"team-local-agent:control-team:worker","runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.4","llmConfig":null,"autoExecuteTools":false,"skillAccessMode":"PRELOADED_ONLY","workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/.local/api-stopped-config/data/temp_workspace"}]}}
+
+ ❯ services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts (2 tests | 1 failed) 12ms
+   ✓ same saved reasoning low survives canonical Team copy (different member model: false) 5ms
+   × same saved reasoning low survives canonical Team copy (different member model: true) 6ms
+     → expected null to deeply equal { reasoning_effort: 'low' }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts > same saved reasoning low survives canonical Team copy (different member model: true)
+AssertionError: expected null to deeply equal { reasoning_effort: 'low' }
+
+- Expected: 
+{
+  "reasoning_effort": "low",
+}
+
++ Received: 
+null
+
+ ❯ services/runConfigEditing/__tests__/crr006-team-seed-fidelity-probe.spec.ts:44:73
+     42|  expect(view.root.effectiveConfig.llmConfig).toEqual({reasoning_effort…
+     43|  expect(view.agentsByAddress[member.address].effectiveConfig.llmModelI…
+     44|  expect(view.agentsByAddress[member.address].effectiveConfig.llmConfig…
+       |                                                                         ^
+     45| })
+     46| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  04:56:06
+   Duration  5.73s (transform 3.21s, setup 5.03s, collect 163ms, tests 12ms, environment 132ms, prepare 125ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,36 @@
+
+> autobyteus@1.4.66 build:electron:linux:arm64 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64
+
+
+> autobyteus@1.4.66 guard:web-boundary /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.66 guard:localization-boundary /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.66 audit:localization-literals /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Unresolved product literals found.
+M-004	components/agentTeams/AgentTeamDefinitionForm.vue	Drop Agents here to add them to this Team	unresolved
+M-004	components/agentTeams/form/AgentTeamLibraryPanel.vue	Agent Library	unresolved
+M-004	components/agentTeams/form/AgentTeamLibraryPanel.vue	No Agents found.	unresolved
+M-004	components/agentTeams/form/AgentTeamLibraryPanel.vue	Drag Agents into the Team canvas. Teams cannot contain Teams.	unresolved
+M-008	components/workspace/org/AgentOrgWorkspaceView.vue	Choose an Agent or Team	unresolved
+M-008	components/workspace/org/AgentOrgWorkspaceView.vue	Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.	unresolved
+M-008	components/workspace/history/AgentOrgRunHistoryPanel.vue	Refresh Agent Org history	unresolved
+M-008	components/workspace/history/AgentOrgRunHistoryPanel.vue	Stop Agent Org	unresolved
+M-008	components/workspace/history/AgentOrgRunHistoryPanel.vue	Stop Agent Org	unresolved
+M-008	components/workspace/history/AgentOrgRunHistoryPanel.vue	Agent Orgs	unresolved
+M-008	components/workspace/config/AgentOrgRunConfigPanel.vue	Agent Org	unresolved
+M-008	components/workspace/config/AgentOrgRunConfigPanel.vue	Auto approve tools	unresolved
+M-008	components/workspace/config/AgentOrgRunConfigPanel.vue	Automatically allows tool calls and access requests for this run.	unresolved
+M-008	components/workspace/config/AgentOrgRunConfigPanel.vue	Auto approve tools	unresolved
+M-008	components/workspace/config/AgentOrgRunConfigPanel.vue	Workspace is required to run an Agent Org.	unresolved
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

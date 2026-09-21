@@ -1,0 +1,50 @@
+[
+  {
+    "address": "/unused",
+    "agentDefinitionId": "aorg-validation-agent",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+    }
+  },
+  {
+    "address": "/team/unused",
+    "agentDefinitionId": "aorg-validation-agent",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+    }
+  },
+  {
+    "address": "/unused",
+    "agentDefinitionId": "aorg-validation-agent",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+    }
+  }
+]

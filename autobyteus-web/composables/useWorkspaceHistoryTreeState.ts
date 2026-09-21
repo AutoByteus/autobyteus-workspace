@@ -1,18 +1,19 @@
-import { computed, ref, watch } from 'vue';
+import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
+import { computed, ref, unref, watch, type MaybeRef } from 'vue';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type {
   RunHistoryWorkspaceGroup,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
+  WorkspaceHistoryWorkspaceNode,
 } from '~/stores/runHistoryTypes';
-import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 interface RunHistoryTreeStoreLike {
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
   workspaceGroups: RunHistoryWorkspaceGroup[];
   navigationTopologyRevision: number;
-  getTreeNodes: () => RunTreeWorkspaceNode[];
+  getTreeNodes: () => WorkspaceHistoryWorkspaceNode[];
   getTeamNodes: (workspaceRootPath?: string) => TeamTreeNode[];
   getAgentNavigationAncestry: (runId: string) => {
     workspaceId: string;
@@ -26,6 +27,11 @@ interface RunHistoryTreeStoreLike {
     teamRunId: string,
     agentRunId: string,
   ) => string[];
+  getAgentOrgNavigationAncestry?: (rootRunId: string) => {
+    workspaceId: string;
+    definitionId: string;
+    teamAddresses?: string[];
+  } | null;
 }
 
 interface SelectionStoreLike {
@@ -36,15 +42,18 @@ interface SelectionStoreLike {
 export const useWorkspaceHistoryTreeState = (params: {
   runHistoryStore: RunHistoryTreeStoreLike;
   selectionStore: SelectionStoreLike;
+  selectedAgentOrg?: MaybeRef<Readonly<{ rootRunId: string; focusAddress: string | null; selection?: OrgWorkspaceSelection | null }> | null>;
 }) => {
   const expandedWorkspaces = ref<Record<string, boolean>>({});
   const expandedAgents = ref<Record<string, boolean>>({});
   const expandedTeamDefinitions = ref<Record<string, boolean>>({});
   const expandedTeams = ref<Record<string, boolean>>({});
   const expandedTeamMembers = ref<Record<string, boolean>>({});
+  const expandedAgentOrgDefinitions = ref<Record<string, boolean>>({});
+  const expandedAgentOrgRuns = ref<Record<string, boolean>>({});
+  const expandedAgentOrgTeams = ref<Record<string, boolean>>({});
   const observedSelectionKey = ref<string | null>(null);
   const revealAppliedForObservedKey = ref(false);
-  const pendingRevealKey = ref<string | null>(null);
 
   const workspaceNodes = computed(() => params.runHistoryStore.getTreeNodes());
 
@@ -56,6 +65,12 @@ export const useWorkspaceHistoryTreeState = (params: {
   });
 
   const selectedRevealKey = computed<string | null>(() => {
+    const selectedAgentOrg = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
+    if (selectedAgentOrg?.rootRunId) {
+      const exact = selectedAgentOrg.selection;
+      const identity = exact?.kind === 'agent_execution' ? exact.agentRunId : exact?.teamRunId ?? '';
+      return `agent_org:${selectedAgentOrg.rootRunId}\u0000${selectedAgentOrg.focusAddress ?? ''}\u0000${identity}`;
+    }
     const selectedType = params.selectionStore.selectedType;
     const selectedRunId = params.selectionStore.selectedRunId?.trim() || '';
     if (selectedType === 'team' && selectedRunId) {
@@ -131,6 +146,11 @@ export const useWorkspaceHistoryTreeState = (params: {
       : '';
   };
 
+  const agentOrgDefinitionKey = (workspaceId: string, definitionId: string): string =>
+    `${workspaceKey(workspaceId)}::agent-org-definition::${definitionId.trim()}`;
+  const agentOrgTeamKey = (rootRunId: string, address: string): string =>
+    `${rootRunId.trim()}::agent-org-team::${address.trim()}`;
+
   const isWorkspaceExpanded = (workspaceId: string): boolean => {
     const key = workspaceKey(workspaceId);
     return key ? expandedWorkspaces.value[key] ?? false : false;
@@ -150,7 +170,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     const target = normalizeRootPath(workspaceRootPath);
     const node = workspaceNodes.value.find((candidate) =>
       normalizeRootPath(candidate.workspaceRootPath) === target);
-    if (node) setWorkspaceExpanded(node.workspaceId, expanded);
+    if (node) setWorkspaceExpanded(node.stableKey, expanded);
   };
 
   const isAgentExpanded = (workspaceId: string, agentDefinitionId: string): boolean => {
@@ -301,6 +321,60 @@ export const useWorkspaceHistoryTreeState = (params: {
     return true;
   };
 
+  const isAgentOrgDefinitionExpanded = (workspaceId: string, definitionId: string): boolean =>
+    expandedAgentOrgDefinitions.value[agentOrgDefinitionKey(workspaceId, definitionId)] ?? false;
+  const toggleAgentOrgDefinition = (workspaceId: string, definitionId: string): void => {
+    const key = agentOrgDefinitionKey(workspaceId, definitionId);
+    expandedAgentOrgDefinitions.value = {
+      ...expandedAgentOrgDefinitions.value,
+      [key]: !isAgentOrgDefinitionExpanded(workspaceId, definitionId),
+    };
+  };
+  const isAgentOrgRunExpanded = (rootRunId: string): boolean =>
+    expandedAgentOrgRuns.value[rootRunId.trim()] ?? false;
+  const setAgentOrgRunExpanded = (rootRunId: string, expanded: boolean): void => {
+    expandedAgentOrgRuns.value = { ...expandedAgentOrgRuns.value, [rootRunId.trim()]: expanded };
+  };
+  const toggleAgentOrgRun = (rootRunId: string): void =>
+    setAgentOrgRunExpanded(rootRunId, !isAgentOrgRunExpanded(rootRunId));
+  const isAgentOrgTeamExpanded = (rootRunId: string, address: string): boolean =>
+    expandedAgentOrgTeams.value[agentOrgTeamKey(rootRunId, address)] ?? false;
+  const toggleAgentOrgTeam = (rootRunId: string, address: string): void => {
+    const key = agentOrgTeamKey(rootRunId, address);
+    expandedAgentOrgTeams.value = {
+      ...expandedAgentOrgTeams.value,
+      [key]: !isAgentOrgTeamExpanded(rootRunId, address),
+    };
+  };
+  const isAgentOrgRunSelected = (rootRunId: string): boolean => {
+    const selected = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
+    return selected?.rootRunId === rootRunId && !selected.selection;
+  };
+  const isAgentOrgMemberSelected = (rootRunId: string, address: string, agentRunId?: string): boolean => {
+    const selected = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
+    if (selected?.rootRunId !== rootRunId) return false;
+    if (agentRunId) return selected.selection?.kind === 'agent_execution' && selected.selection.agentRunId === agentRunId;
+    return selected.selection?.kind === 'configured_team' && selected.focusAddress === address;
+  };
+  const revealAgentOrgRunAncestry = (rootRunId: string, focusAddress = ''): boolean => {
+    const ancestry = params.runHistoryStore.getAgentOrgNavigationAncestry?.(rootRunId);
+    if (!ancestry) return false;
+    setWorkspaceExpanded(ancestry.workspaceId, true);
+    const key = agentOrgDefinitionKey(ancestry.workspaceId, ancestry.definitionId);
+    expandedAgentOrgDefinitions.value = { ...expandedAgentOrgDefinitions.value, [key]: true };
+    setAgentOrgRunExpanded(rootRunId, true);
+    const teamAddress = ancestry.teamAddresses?.find(
+      (address) => focusAddress === address || focusAddress.startsWith(`${address}/`),
+    );
+    if (teamAddress) {
+      expandedAgentOrgTeams.value = {
+        ...expandedAgentOrgTeams.value,
+        [agentOrgTeamKey(rootRunId, teamAddress)]: true,
+      };
+    }
+    return true;
+  };
+
   const revealSelectedAncestry = (key: string): boolean => {
     const separatorIndex = key.indexOf(':');
     if (separatorIndex <= 0) {
@@ -319,6 +393,10 @@ export const useWorkspaceHistoryTreeState = (params: {
     if (kind === 'team') {
       return revealTeamRunAncestry(id);
     }
+    if (kind === 'agent_org') {
+      const [rootRunId, focusAddress = ''] = id.split('\u0000', 2);
+      return revealAgentOrgRunAncestry(rootRunId, focusAddress);
+    }
     return false;
   };
 
@@ -326,11 +404,9 @@ export const useWorkspaceHistoryTreeState = (params: {
     if (key !== observedSelectionKey.value) {
       observedSelectionKey.value = key;
       revealAppliedForObservedKey.value = false;
-      pendingRevealKey.value = key;
     }
 
     if (!key) {
-      pendingRevealKey.value = null;
       return;
     }
 
@@ -339,12 +415,10 @@ export const useWorkspaceHistoryTreeState = (params: {
     }
 
     if (!revealSelectedAncestry(key)) {
-      pendingRevealKey.value = key;
       return;
     }
 
     revealAppliedForObservedKey.value = true;
-    pendingRevealKey.value = null;
   };
 
   const revealDependencySignature = computed(() => params.runHistoryStore.navigationTopologyRevision);
@@ -373,6 +447,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     expandedAgents.value = omitPrefix(expandedAgents.value);
     expandedTeamDefinitions.value = omitPrefix(expandedTeamDefinitions.value);
     expandedTeamMembers.value = omitPrefix(expandedTeamMembers.value);
+    expandedAgentOrgDefinitions.value = omitPrefix(expandedAgentOrgDefinitions.value);
   };
 
   return {
@@ -397,6 +472,14 @@ export const useWorkspaceHistoryTreeState = (params: {
     setTeamMemberExpanded,
     toggleTeamMember,
     expandTeamMemberAncestors,
+    isAgentOrgDefinitionExpanded,
+    toggleAgentOrgDefinition,
+    isAgentOrgRunExpanded,
+    toggleAgentOrgRun,
+    isAgentOrgTeamExpanded,
+    toggleAgentOrgTeam,
+    isAgentOrgRunSelected,
+    isAgentOrgMemberSelected,
     expandedWorkspaceIds,
     pruneWorkspace,
   };

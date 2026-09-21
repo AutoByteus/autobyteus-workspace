@@ -1,0 +1,109 @@
+{
+  "states": [
+    {
+      "name": "task-agent-compact-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nTask assigned\nIn progress\ndirector\n→\nworker\nSep 1, 12:00 AM\n\nVerify the release notes and share the retained report.",
+      "overflow": false
+    },
+    {
+      "name": "task-team-compact-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nTask assigned\nAccepted\ndirector\n→\nteam\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "task-team-identity-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nTask assigned\nAccepted\ndirector\n→\nteam\ndirector\n\nAddress: /director\n\nAgent run: agent-director\n\nteam\n\nTeam run: team-task\n\nlead\n\nAddress: /team/lead\n\nAgent run: agent-task-lead\n\nworker\n\nAddress: /team/worker\n\nAgent run: agent-task-worker\n\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "reversed-submission-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nResult submitted · Result 1\nteam\n→\ndirector\nSep 1, 12:03 AM\n\nAll requested changes are verified. See the retained report.",
+      "overflow": false
+    },
+    {
+      "name": "reference-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nreport.md\n/tmp/report.md\n\nRetained reference: exact report content.",
+      "overflow": false
+    },
+    {
+      "name": "messages-compact-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nMessage\nSep 1, 12:02 AM\n\nfrom lead\n\nThe task Team has completed the review. The exact report is retained.\n\nreport.md\nMessage\nlead\nSep 1, 12:02 AM\n\nThe task Team has completed the review. The exact report is retained.\n\nTasks\n2 tasks",
+      "overflow": false
+    },
+    {
+      "name": "messages-identity-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\nORG\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · worker\nTask: worker · r-task\nD\ndirector - CTOR\nIdle\nContext Files (0)\n(drag, paste, or upload)\nMessages\n1 Messages\nMessage\nSep 1, 12:02 AM\n\nfrom lead\n\nThe task Team has completed the review. The exact report is retained.\n\nreport.md\nMessage\nlead\nSep 1, 12:02 AM\n\nAddress: /team/lead\n\nAgent run: agent-task-lead\n\nTask: task-team\n\nHost run: team-task\n\nExecution run: team-task\n\nThe task Team has completed the review. The exact report is retained.\n\nTasks\n2 tasks",
+      "overflow": false
+    },
+    {
+      "name": "messages-identity-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nMessages\n1 Messages\nMessage\nSep 1, 12:02 AM\n\nfrom lead\n\nThe task Team has completed the review. The exact report is retained.\n\nreport.md\nMessage\nlead\nSep 1, 12:02 AM\n\nAddress: /team/lead\n\nAgent run: agent-task-lead\n\nTask: task-team\n\nHost run: team-task\n\nExecution run: team-task\n\nThe task Team has completed the review. The exact report is retained.\n\nTasks\n2 tasks",
+      "overflow": false
+    },
+    {
+      "name": "messages-compact-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nMessages\n1 Messages\nMessage\nSep 1, 12:02 AM\n\nfrom lead\n\nThe task Team has completed the review. The exact report is retained.\n\nreport.md\nMessage\nlead\nSep 1, 12:02 AM\n\nThe task Team has completed the review. The exact report is retained.\n\nTasks\n2 tasks",
+      "overflow": false
+    },
+    {
+      "name": "tasks-compact-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nTask assigned\nAccepted\ndirector\n→\nteam\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "tasks-all-members-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nMessages\n1 Messages\nTasks\n2 tasks\nVerify the release notes and share the retained report.\nIn progress\nUpdated 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\nAccepted\nUpdated 12:04 AM\ndirector → team\nResult submitted · Result 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\nResult 1 accepted\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\nTask assigned\nAccepted\ndirector\n→\nteam\ndirector\n\nAddress: /director\n\nAgent run: agent-director\n\nteam\n\nTeam run: team-task\n\nlead\n\nAddress: /team/lead\n\nAgent run: agent-task-lead\n\nworker\n\nAddress: /team/worker\n\nAgent run: agent-task-worker\n\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "tasks-all-members-zh-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n1 消息\n任务\n2 个任务\nVerify the release notes and share the retained report.\n进行中\n更新于 12:00 AM\ndirector → worker\nReview the implementation and return a concise result.\n已接受\n更新于 12:04 AM\ndirector → team\n已提交结果 · 结果 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\n结果 1 已接受\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\n已分配任务\n已接受\ndirector\n→\nteam\ndirector\n\n地址: /director\n\n智能体运行: agent-director\n\nteam\n\n团队运行: team-task\n\nlead\n\n地址: /team/lead\n\n智能体运行: agent-task-lead\n\nworker\n\n地址: /team/worker\n\n智能体运行: agent-task-worker\n\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "settled-task-participant-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n1 消息\n任务\n1 个任务\nReview the implementation and return a concise result.\n已接受\n更新于 12:04 AM\ndirector → team\n已提交结果 · 结果 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\n结果 1 已接受\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\n已分配任务\n已接受\ndirector\n→\nteam\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "settled-participant-zh-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\n组织\nReview organization\n(1)\nReview the current release\n10 天\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\n任务：worker · worker\n任务：worker · r-task\nL\nlead · k-lead\n任务\nOffline\n\nReview the implementation and return a concise result.\n\n已接受 · 离线\n\n此任务尚无活动记录。\n消息\n1 消息\n任务\n1 个任务\nReview the implementation and return a concise result.\n已接受\n更新于 12:04 AM\ndirector → team\n已提交结果 · 结果 1\n\nteam → director\n\n12:03 AM\n\nAll requested changes are verified. See the retained report.\n\nreport.md\n结果 1 已接受\n\ndirector → team\n\n12:04 AM\n\nAccepted. Thank you.\n\n已分配任务\n已接受\ndirector\n→\nteam\nSep 1, 12:00 AM\n\nReview the implementation and return a concise result.",
+      "overflow": false
+    },
+    {
+      "name": "mounted-team-participant-zh-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\nTEAMS\n组织\nReview organization\n(1)\nReview the current release\n10 天\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\n任务：worker · worker\n任务：worker · r-task\nL\nlead\nIdle\nContext Files (0)\n（拖动、粘贴或上传）\n消息\n0 消息\n任务\n1 个任务\nVerify the mounted Team deliverable.\n进行中\n更新于 12:00 AM\nlead → worker\n已分配任务\n进行中\nlead\n→\nworker\nSep 1, 12:00 AM\n\nVerify the mounted Team deliverable.",
+      "overflow": false
+    },
+    {
+      "name": "mounted-team-participant-zh-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n0 消息\n任务\n1 个任务\nVerify the mounted Team deliverable.\n进行中\n更新于 12:00 AM\nlead → worker\n已分配任务\n进行中\nlead\n→\nworker\nlead\n\n地址: /team/lead\n\n智能体运行: agent-lead-configured\n\nworker\n\n地址: /team/worker\n\n智能体运行: mounted-task-worker\n\nSep 1, 12:00 AM\n\nVerify the mounted Team deliverable.",
+      "overflow": false
+    },
+    {
+      "name": "standalone-team-tasks-zh-desktop",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n1 消息\n任务\n1 个任务\nVerify the Team release report.\n进行中\n更新于 12:00 PM\nlead → worker\n已分配任务\n进行中\nlead\n→\nworker\nAug 10, 12:00 PM\n\nVerify the Team release report.",
+      "overflow": false
+    },
+    {
+      "name": "standalone-team-task-detail-zh-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n1 消息\n任务\n1 个任务\nVerify the Team release report.\n进行中\n更新于 12:00 PM\nlead → worker\n已分配任务\n进行中\nlead\n→\nworker\nlead\n\n地址: /lead\n\n智能体运行: standalone-lead\n\nworker\n\n地址: /worker\n\n智能体运行: standalone-task-worker\n\nAug 10, 12:00 PM\n\nVerify the Team release report.",
+      "overflow": false
+    },
+    {
+      "name": "standalone-team-messages-zh-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n1 消息\nMessage\nSep 1, 12:01 AM\n\n来自 worker\n\nThe Team report is ready for review.\n\nMessage\nworker\nSep 1, 12:01 AM\n\nThe Team report is ready for review.\n\n任务\n1 个任务",
+      "overflow": false
+    },
+    {
+      "name": "standalone-team-message-detail-zh-narrow",
+      "body": "Compact collaboration · implementation render\nStandalone Team\nEN / 中文\nDirector\nTask Agent\nMounted Agent\nTask Team\nAccept & settle\nConversation / collaboration\n消息\n1 消息\nMessage\nSep 1, 12:01 AM\n\n来自 worker\n\nThe Team report is ready for review.\n\nMessage\nworker\nSep 1, 12:01 AM\n\n地址: /worker\n\n智能体运行: standalone-task-worker\n\n任务: team-task\n\n宿主运行: standalone-team\n\n执行运行: standalone-task-worker\n\nThe Team report is ready for review.\n\n任务\n1 个任务",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "assertions": [
+    "Exact ORG heading; no top strip; compact default; keyboard Enter/Space disclosures; touch controls; all exact settled Team members; reversed submission; references remain distinct; root subject resets; desktop/narrow no page overflow."
+  ],
+  "limits": "Implementation fixture: actual Org context/index/facets and shared components, synthetic retained records. No provider, WebSocket, native shell or full API/E2E signoff."
+}

@@ -1,0 +1,4 @@
+captured 2026-09-01T21:55:45,605454131+00:00
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:54:09.372Z","monotonicNs":"7960604170585","pid":26815,"stage":"shutdown_phase_start","context":null,"phase":"agent_org_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:54:09.372Z","monotonicNs":"7960604743460","pid":26815,"stage":"shutdown_phase_complete","context":null,"phase":"agent_org_runs"}
+{"probeSchemaVersion":1,"ts":"2026-09-01T21:54:09.373Z","monotonicNs":"7960604932126","pid":26815,"stage":"shutdown_phase_start","context":null,"phase":"agent_team_runs"}

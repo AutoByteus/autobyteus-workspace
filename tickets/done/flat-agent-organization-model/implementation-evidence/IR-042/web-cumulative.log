@@ -1,0 +1,848 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts stores/__tests__/agentOrgInspection.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts services/agentOrgExecution/__tests__ components/workspace/collaboration/__tests__ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryStore.spec.ts (41 tests) 120ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts (13 tests) 101ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts (5 tests) 79ms
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > shows exact focused communication count and no removed Task Plan section
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > keeps section expansion parent-owned with Messages open first
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > opens Tasks immediately for a current retained task record
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > opens Tasks when a current sequenced activation is applied while mounted
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts > CollaborationOverviewPanel current execution aggregate > resets Messages open and preserves exact run-based communication focus when selection changes
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=true class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'team-1',
+  focusedAgentRunId: 'impl-run',
+  focusedMemberAddress: '/implementation_engineer',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts (5 tests) 111ms
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects task-Agent details without changing the exact focused send target
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <AgentUserInputTextArea data-test="workflow-composer" >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests) 213ms
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks focus and current AgentRun send workflow > selects a task-Team summary without making its placement a send target
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <AgentUserInputTextArea data-test="workflow-composer" >
+  at <Anonymous tasks= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} messages= {
+  rootKind: 'agent_team',
+  rootRunId: 'classroom-root-run',
+  focusedAgentRunId: 'teacher-persistent-run',
+  focusedMemberAddress: '/Teacher',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 111ms
+ ✓ components/workspace/collaboration/__tests__/CompactTaskNavigation.spec.ts (2 tests) 111ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (10 tests) 175ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1513ms
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts (6 tests) 56ms
+stderr | components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts > shared participant Tasks inspection > exposes Tasks for a direct Org Agent and navigates by the actual task run rather than source address
+[Vue warn]: injection "Symbol(router)" not found.
+  at <CollaborationDelegatedTasksSection tasks= {
+  rootKind: 'agent_org',
+  rootRunId: 'org-run',
+  focusedAgentRunId: 'agent-director',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} collapsed=false class="h-full"  ... >
+  at <CollaborationOverviewPanel messages= {
+  rootKind: 'agent_org',
+  rootRunId: 'org-run',
+  focusedAgentRunId: 'agent-director',
+  focusedMemberAddress: '/director',
+  memberIdentityByAgentRunId: [Function: memberIdentityByAgentRunId],
+  listMessages: [Function: listMessages],
+  referenceContentPath: [Function: referenceContentPath]
+} tasks= {
+  rootKind: 'agent_org',
+  rootRunId: 'org-run',
+  focusedAgentRunId: 'agent-director',
+  listDelegatedTaskEntries: [Function: listDelegatedTaskEntries],
+  taskReferenceContentPath: [Function: taskReferenceContentPath]
+} >
+  at <Anonymous ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/collaboration/__tests__/CollaborationTaskInspection.spec.ts (1 test) 72ms
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (7 tests) 30ms
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (6 tests) 6ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgTaskParity.spec.ts (8 tests) 26ms
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 22ms
+stdout | stores/__tests__/agentOrgContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts (8 tests) 7ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (4 tests) 21ms
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (1 test) 3ms
+stderr | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts (2 tests) 3ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (1 test) 2ms
+
+ Test Files  20 passed (20)
+      Tests  151 passed (151)
+   Start at  15:03:08
+   Duration  26.08s (transform 7.75s, setup 142.76s, collect 10.33s, tests 2.78s, environment 36.47s, prepare 12.75s)

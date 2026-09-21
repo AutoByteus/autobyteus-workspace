@@ -1,0 +1,61 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/retainedActivityTermination.spec.ts stores/__tests__/retainedOrgActivityTermination.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web
+
+stderr | stores/__tests__/retainedActivityTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/retainedOrgActivityTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/retainedActivityTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/retainedOrgActivityTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: rejected Stop preserves Activity and last-known lifecycle
+Error terminating Team 'retention-team': Error: Team termination failed.
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web/stores/agentTeamRunStore.ts:206:58)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts:88:10
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: graphql Stop preserves Activity and last-known lifecycle
+Error terminating Team 'retention-team': Error: denied
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web/stores/agentTeamRunStore.ts:205:35)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts:88:10
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: network Stop preserves Activity and last-known lifecycle
+Error terminating Team 'retention-team': Error: offline server
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts:86:55
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:863:59
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+ ✓ stores/__tests__/retainedOrgActivityTermination.spec.ts (4 tests) 76ms
+ ✓ stores/__tests__/retainedActivityTermination.spec.ts (8 tests) 170ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  16:05:40
+   Duration  5.16s (transform 2.83s, setup 8.69s, collect 350ms, tests 246ms, environment 290ms, prepare 234ms)
+

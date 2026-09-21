@@ -1,0 +1,46 @@
+{
+  "at": "2026-09-13T12:04:20.222Z",
+  "results": [
+    {
+      "id": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+      "request": {
+        "operationName": "TerminateAgentOrgRun",
+        "variables": {
+          "agentOrgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf"
+        },
+        "query": "mutation TerminateAgentOrgRun($agentOrgRunId: String!) {\n  terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+      },
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+            "__typename": "AgentOrgRunMutationResult"
+          }
+        }
+      },
+      "status": 200
+    },
+    {
+      "id": "followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286",
+      "request": {
+        "operationName": "TerminateAgentRun",
+        "variables": {
+          "agentRunId": "followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286"
+        },
+        "query": "mutation TerminateAgentRun($agentRunId: String!) {\n  terminateAgentRun(agentRunId: $agentRunId) {\n    __typename\n    success\n    message\n  }\n}"
+      },
+      "body": {
+        "data": {
+          "terminateAgentRun": {
+            "__typename": "TerminateAgentRunResult",
+            "success": true,
+            "message": "Agent run terminated successfully."
+          }
+        }
+      },
+      "status": 200
+    }
+  ]
+}

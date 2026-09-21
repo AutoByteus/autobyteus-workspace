@@ -15,7 +15,7 @@ import {
   BROWSER_BRIDGE_TOKEN_ENV,
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { WorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
@@ -25,7 +25,7 @@ import type { SkillService } from "../../../../../../src/skills/services/skill-s
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
-import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
@@ -33,7 +33,7 @@ const WORKING_DIRECTORY = "/tmp/codex-workspace";
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools?: boolean;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
   llmModelIdentifier?: string;
   applicationExecutionContext?: ApplicationExecutionContext | null;
 } = {}) =>
@@ -47,7 +47,7 @@ const createRunContext = (input: {
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-      memberTeamContext: input.memberTeamContext ?? null,
+      memberExecutionContext: input.memberExecutionContext ?? null,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
     runtimeContext: null,
@@ -56,7 +56,7 @@ const createRunContext = (input: {
 const createRestoreRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools?: boolean;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
 } = {}) =>
   new AgentRunContext({
     runId: "run-restore",
@@ -68,7 +68,7 @@ const createRestoreRunContext = (input: {
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-      memberTeamContext: input.memberTeamContext ?? null,
+      memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {
@@ -86,8 +86,8 @@ const createRestoreRunContext = (input: {
     }),
   });
 
-const createMemberTeamContext = () =>
-  testMemberTeamContext({
+const createMemberExecutionContext = () =>
+  testMemberExecutionContext({
     teamRunId: "team-1",
     rootTeamRunId: "team-1",
     teamDefinitionId: "team-def-1",
@@ -300,13 +300,13 @@ describe("CodexThreadBootstrapper", () => {
       skills: [],
       requestImplementation: async () => ({ data: [] }),
     });
-    const memberTeamContext = createMemberTeamContext();
+    const memberExecutionContext = createMemberExecutionContext();
 
     const createdRunContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: true, memberTeamContext }),
+      createRunContext({ autoExecuteTools: true, memberExecutionContext }),
     );
     const restoredRunContext = await bootstrapper.bootstrapForRestore(
-      createRestoreRunContext({ autoExecuteTools: true, memberTeamContext }),
+      createRestoreRunContext({ autoExecuteTools: true, memberExecutionContext }),
     );
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
@@ -345,10 +345,10 @@ describe("CodexThreadBootstrapper", () => {
       skills: [],
       requestImplementation: async () => ({ data: [] }),
     });
-    const memberTeamContext = createMemberTeamContext();
+    const memberExecutionContext = createMemberExecutionContext();
 
     const createdRunContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: false, memberTeamContext }),
+      createRunContext({ autoExecuteTools: false, memberExecutionContext }),
     );
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
@@ -593,7 +593,7 @@ describe("CodexThreadBootstrapper", () => {
           senderRunId: "run-1",
           senderName: "agent-def",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          memberTeamContext: null,
+          memberExecutionContext: null,
         }),
       }),
     );

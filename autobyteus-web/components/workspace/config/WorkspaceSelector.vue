@@ -314,7 +314,8 @@ onMounted(async () => {
   }
   
   if (
-    workspaceOptions.value.length > 0
+    props.autoSelectDefault !== false
+    && workspaceOptions.value.length > 0
     && mode.value === 'new'
     && !modelValue.value.newWorkspacePath
     && !hasExplicitWorkspaceInteraction.value
@@ -343,7 +344,8 @@ watch(
 watch(workspaceOptions, (newOptions) => {
   if (isInteractionDisabled.value) return;
   if (
-    newOptions.length > 0
+    props.autoSelectDefault !== false
+    && newOptions.length > 0
     && mode.value === 'new'
     && !modelValue.value.newWorkspacePath
     && !hasExplicitWorkspaceInteraction.value

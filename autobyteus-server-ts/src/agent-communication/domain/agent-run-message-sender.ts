@@ -1,12 +1,12 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export type AgentRunMessageSenderContext = {
   senderRunId: string;
   senderName: string;
   runtimeKind: RuntimeKind | string | null;
-  memberTeamContext: MemberTeamContext | null;
+  memberExecutionContext: MemberExecutionContext | null;
 };
 
 const normalizeRequired = (value: string, fieldName: string): string => {
@@ -29,17 +29,17 @@ export const buildAgentRunMessageSenderContext = (input: {
   senderRunId: string;
   senderName?: string | null;
   runtimeKind?: RuntimeKind | string | null;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
 }): AgentRunMessageSenderContext => {
   const senderRunId = normalizeRequired(input.senderRunId, "senderRunId");
-  const memberTeamContext = input.memberTeamContext ?? null;
+  const memberExecutionContext = input.memberExecutionContext ?? null;
   return {
     senderRunId,
     senderName:
       normalizeOptional(input.senderName) ??
-      normalizeOptional(memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.identity.memberAddress) : null) ??
+      normalizeOptional(memberExecutionContext ? getAgentTeamAddressBasename(memberExecutionContext.identity.memberAddress) : null) ??
       senderRunId,
     runtimeKind: input.runtimeKind ?? null,
-    memberTeamContext,
+    memberExecutionContext,
   };
 };

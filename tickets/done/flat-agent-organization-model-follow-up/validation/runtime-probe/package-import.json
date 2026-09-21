@@ -1,0 +1,16 @@
+{
+  "importAgentPackage": [
+    {
+      "packageId": "built-in:default",
+      "displayName": "Built-in Storage",
+      "sharedAgentCount": 2,
+      "agentTeamCount": 0
+    },
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fflat-agent-organization-model-follow-up%2Ftest-support%2Ffixtures%2Flazy-configured-restore",
+      "displayName": "lazy-configured-restore",
+      "sharedAgentCount": 1,
+      "agentTeamCount": 1
+    }
+  ]
+}

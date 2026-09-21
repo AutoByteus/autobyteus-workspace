@@ -1,0 +1,25 @@
+{
+  "migration": {
+    "migrationId": "20260905_agent_org_history_first_message_summary_v1",
+    "status": "SUCCEEDED",
+    "requiredOnStartup": true,
+    "canRetry": false,
+    "recoveryAction": "NONE",
+    "attempts": 1,
+    "summary": "Scanned 2; migrated 1; skipped 1; failed 0.",
+    "errorMessage": null
+  },
+  "historyCounts": {
+    "AgentOrg": 2,
+    "AgentTeam": 2
+  },
+  "hashesBefore": [
+    "99ecc2e0343c92ca7c6b976b1767b97cb705478b5b1de1674b9467a75f62bd1b  /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/migration/idempotent-current/server-data/memory/agent_org_run_history_index.json",
+    "436032fb9e6ee764c4b157bf62ecf9f1178597962bf427fefc0797c8a9ff55bf  /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/migration/idempotent-current/server-data/memory/team_run_history_index.json"
+  ],
+  "hashesAfter": [
+    "99ecc2e0343c92ca7c6b976b1767b97cb705478b5b1de1674b9467a75f62bd1b  /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/migration/idempotent-current/server-data/memory/agent_org_run_history_index.json",
+    "436032fb9e6ee764c4b157bf62ecf9f1178597962bf427fefc0797c8a9ff55bf  /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/migration/idempotent-current/server-data/memory/team_run_history_index.json"
+  ],
+  "byteStable": true
+}

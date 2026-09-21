@@ -1,0 +1,16 @@
+autobyteus-web/components/server/ServerLoading.vue: 199 nonempty lines
+autobyteus-web/components/server/ServerMonitor.vue: 120 nonempty lines
+autobyteus-web/electron/server/baseServerManager.ts: 433 nonempty lines
+autobyteus-web/electron/server/serverStatusManager.ts: 163 nonempty lines
+autobyteus-web/electron/server/windowsServerManager.ts: 156 nonempty lines
+autobyteus-web/stores/serverStore.ts: 411 nonempty lines
+
+4	9	autobyteus-web/components/server/ServerLoading.vue
+4	4	autobyteus-web/components/server/ServerMonitor.vue
+19	0	autobyteus-web/docs/electron_packaging.md
+1	1	autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts
+50	0	autobyteus-web/electron/server/__tests__/ServerStatusManager.spec.ts
+98	62	autobyteus-web/electron/server/baseServerManager.ts
+11	0	autobyteus-web/electron/server/serverStatusManager.ts
+2	0	autobyteus-web/electron/server/windowsServerManager.ts
+11	6	autobyteus-web/stores/serverStore.ts

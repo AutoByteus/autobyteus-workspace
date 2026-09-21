@@ -1,0 +1,535 @@
+diff --git a/autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts b/autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts
+index 5f14ea093..d30d76121 100644
+--- a/autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts
++++ b/autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts
+@@ -117,6 +117,7 @@ const fetchProjection = async (
+     query: GetAgentOrgMemberRunProjection,
+     variables: { orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId },
+     fetchPolicy: 'network-only',
++    context: { queryDeduplication: false },
+   })
+   if (response.errors?.length) {
+     throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '))
+diff --git a/autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts b/autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts
+index 033bbb1db..1ad428654 100644
+--- a/autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts
++++ b/autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts
+@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
+ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+ 
+ const mocks = vi.hoisted(() => ({
++  applyAgentOrgActivity: vi.fn(),
+   instances: [] as Array<Record<string, any>>,
+   refreshAgentOrgHistory: vi.fn(async () => undefined),
+ }))
+@@ -24,7 +25,7 @@ vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({
+ }))
+ 
+ vi.mock('~/stores/runHistoryStore', () => ({
+-  useRunHistoryStore: () => ({ refreshAgentOrgHistory: mocks.refreshAgentOrgHistory, applyAgentOrgActivity: vi.fn() }),
++  useRunHistoryStore: () => ({ refreshAgentOrgHistory: mocks.refreshAgentOrgHistory, applyAgentOrgActivity: mocks.applyAgentOrgActivity }),
+ }))
+ 
+ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+@@ -48,6 +49,10 @@ describe('agentOrgContextsStore accepted-message history invalidation', () => {
+       commandId: 'command-1',
+     })
+ 
++    expect(mocks.refreshAgentOrgHistory).toHaveBeenCalledTimes(1)
++    mocks.applyAgentOrgActivity.mockClear()
++    mocks.instances[0]?.options.onInactive()
++    expect(mocks.applyAgentOrgActivity).toHaveBeenCalledExactlyOnceWith('org-run', false)
+     expect(mocks.refreshAgentOrgHistory).toHaveBeenCalledTimes(1)
+     store.disconnect('org-run')
+   })
+diff --git a/autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts b/autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts
+new file mode 100644
+index 000000000..9a53d624a
+--- /dev/null
++++ b/autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts
+@@ -0,0 +1,114 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
++import { createPinia, setActivePinia } from 'pinia'
++import { defineComponent, h } from 'vue'
++import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue'
++import type { WorkspaceHistorySectionState } from '~/components/workspace/history/workspaceHistorySectionContracts'
++import { flushPromises, mount } from '@vue/test-utils'
++import { ControlledOrgApollo, historyData } from '~/test-support/agentOrgApolloFixture'
++import { useRunHistoryStore } from '../runHistoryStore'
++import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport'
++const io = vi.hoisted(() => ({ client: null as any }))
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true }) }))
++vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ agentDefinitions: [], fetchAllAgentDefinitions: async () => undefined }) }))
++let wrapper: ReturnType<typeof mount>
++const HISTORY = 'ListCollaborationRootHistory', WORKSPACE = 'ListWorkspaceRunHistory'
++let transport: ControlledOrgApollo, store: ReturnType<typeof useRunHistoryStore>
++const row = () => store.getTreeNodes().flatMap(w => w.agentOrgDefinitions).flatMap(d => d.runs)[0]!
++const load = (kind: string) => kind === 'full' ? store.fetchTree() : store.refreshAgentOrgHistory()
++const workspace = { workspaceRootPath: '/workspace', workspaceName: 'Independent workspace', agentDefinitions: [], teamDefinitions: [] }
++function releaseWorkspace() { transport.pending(WORKSPACE).forEach(r => r.respond({ listWorkspaceRunHistory: [workspace] })) }
++async function count(n: number) { await vi.waitFor(() => expect(transport.named(HISTORY)).toHaveLength(n)); return transport.named(HISTORY) }
++beforeEach(() => {
++  setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client
++  store = useRunHistoryStore(); store.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
++  expect(row().isActive).toBe(true)
++  wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions), state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {} }) }), { global: { stubs: { Icon: true } } })
++  expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
++})
++afterEach(() => { wrapper.unmount(); transport.client.stop() })
++
++describe.each(['full', 'focused'])('old %s history', older => {
++  it.each(['full', 'focused'].flatMap(newer => [true, false].flatMap(oldFirst => ['inactive', 'network', 'graphql', 'malformed'].map(result => ({ newer, oldFirst, result })))))(
++    'new $newer $result oldFirst=$oldFirst', async ({ newer, oldFirst, result }) => {
++      const old = load(older)
++      const first = (await count(1))[0]!
++      const original = row()
++      store.applyAgentOrgActivity('org-run', false)
++      expect(row()).toEqual({ ...original, isActive: false })
++      // applyActivity starts its normal focused refresh; full refresh may also overlap.
++      await count(2)
++      await flushPromises()
++      expect(wrapper.find('[aria-label="Stopped"]').exists()).toBe(true)
++      expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(false)
++      const current = newer === 'full' ? load('full') : null
++      const calls = await count(newer === 'full' ? 3 : 2)
++      const latest = calls.at(-1)!
++      calls.forEach(r => expect(r.operation.getContext().queryDeduplication).toBe(false))
++      const finishOld = () => {
++        first.respond(historyData(true))
++        if (calls.length === 3) calls[1]!.respond(historyData(true))
++        releaseWorkspace()
++      }
++      if (oldFirst) { finishOld(); await old; expect(row().isActive).toBe(false) }
++      if (result === 'inactive') latest.respond(historyData(false))
++      else if (result === 'network') latest.fail('new history failed')
++      else if (result === 'graphql') latest.graphqlError('new GraphQL failure')
++      else latest.respond({ listCollaborationRootHistory: [{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: null, archived_at: null, is_active: false, summary: '', org: {} }] })
++      releaseWorkspace(); await current; await flushPromises()
++      const error = store.historyFamilyErrors.agentOrg
++      if (result === 'inactive') expect(error).toBeNull()
++      else expect(error).toBeTruthy()
++      if (!oldFirst) { finishOld(); await old; await flushPromises() }
++      expect(row()).toEqual({ ...original, isActive: false })
++      expect(store.historyFamilyErrors.agentOrg).toBe(error)
++      expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(false)
++      if (older === 'full' || newer === 'full') {
++        expect(store.workspaceGroups).toEqual([workspace])
++        expect(store.historyFamilyErrors.workspace).toBeNull()
++      }
++    },
++  )
++})
++it.each(['full', 'focused'].flatMap(kind => [true, false].map(success => ({ kind, success }))))('obsolete $kind error cannot overwrite newer success=$success', async ({ kind, success }) => {
++  const old = load(kind); const first = (await count(1))[0]!
++  const fresh = store.refreshAgentOrgHistory(); const second = (await count(2))[1]!
++  if (success) second.respond(historyData(false)); else second.fail('latest failure')
++  await fresh
++  first.graphqlError('obsolete failure'); releaseWorkspace(); await old
++  expect(store.historyFamilyErrors.agentOrg).toBe(success ? null : 'latest failure')
++  expect(row().isActive).toBe(!success)
++  await flushPromises()
++  expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(!success)
++})
++it('later independent active truth is not masked by a stopped overlay', async () => {
++  store.applyAgentOrgActivity('org-run', false); expect(row().isActive).toBe(false)
++  ;(await count(1))[0]!.respond(historyData(false)); await flushPromises()
++  const next = store.refreshAgentOrgHistory(); (await count(2))[1]!.respond(historyData(true)); await next
++  expect(row().isActive).toBe(true)
++  expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
++})
++it('preserves an unrelated exact root when publishing the confirmed inactive fact', async () => {
++  const other = structuredClone(store.agentOrgHistory[0]!)
++  other.rootRunId = 'other-root'; other.stableKey = 'agent_org:other-root'
++  other.executionTree.rootOrg.orgRunId = 'other-root'; other.summary = 'Unrelated conversation'
++  store.agentOrgHistory.push(other); store.refreshRunNavigationTopology('fixture')
++  const retainedOther = store.agentOrgHistory[1]
++  store.applyAgentOrgActivity('org-run', false)
++  expect(store.agentOrgHistory[1]).toBe(retainedOther)
++  expect(store.agentOrgHistory[1]?.isActive).toBe(true)
++  expect(store.agentOrgHistory[1]?.summary).toBe('Unrelated conversation')
++  const call = (await count(1))[0]!
++  call.fail('unavailable'); await flushPromises()
++  expect(store.agentOrgHistory[1]).toBe(retainedOther)
++})
++it('does not erase a workspace family on independent Org failure, or an Org family on workspace failure', async () => {
++  store.workspaceGroups = [workspace]
++  const loading = store.fetchTree(); const org = (await count(1))[0]!
++  transport.pending(WORKSPACE)[0]!.fail('workspace unavailable')
++  org.respond(historyData(false)); await loading
++  expect(store.workspaceGroups).toEqual([workspace])
++  expect(store.historyFamilyErrors.workspace).toBe('workspace unavailable')
++  expect(store.historyFamilyErrors.agentOrg).toBeNull()
++  expect(row().isActive).toBe(false)
++})
+diff --git a/autobyteus-web/stores/__tests__/agentOrgInspectionApollo.spec.ts b/autobyteus-web/stores/__tests__/agentOrgInspectionApollo.spec.ts
+new file mode 100644
+index 000000000..b4d367760
+--- /dev/null
++++ b/autobyteus-web/stores/__tests__/agentOrgInspectionApollo.spec.ts
+@@ -0,0 +1,209 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
++import { createPinia, setActivePinia } from 'pinia'
++import { flushPromises } from '@vue/test-utils'
++import { ControlledOrgApollo, OrgTestSocket, historyData, inspectionData, memberData, rootView } from '~/test-support/agentOrgApolloFixture'
++import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
++import { useRunHistoryStore } from '../runHistoryStore'
++import { useAgentActivityStore } from '../agentActivityStore'
++import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport'
++import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
++import { GetAgentOrgRunInspection, GetAgentOrgMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
++
++const io = vi.hoisted(() => ({ client: null as any }))
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({
++  waitForBoundBackendReady: async () => true, getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org' }),
++}) }))
++vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
++vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
++const ROOT = 'GetAgentOrgRunInspection', MEMBER = 'GetAgentOrgMemberRunProjection', HISTORY = 'ListCollaborationRootHistory'
++let transport: ControlledOrgApollo
++let orgs: ReturnType<typeof useAgentOrgContextsStore>, history: ReturnType<typeof useRunHistoryStore>
++const observedRow = () => history.getTreeNodes().flatMap(w => w.agentOrgDefinitions).flatMap(g => g.runs)[0]!
++const outcome = (p: Promise<void>) => p.then(() => null, e => e as Error)
++async function requests(name: string, count: number) {
++  await vi.waitFor(() => expect(transport.named(name)).toHaveLength(count))
++  return transport.named(name)
++}
++function releaseMembers(batch: ReturnType<ControlledOrgApollo['named']>, label: string) {
++  for (const r of batch) r.respond(memberData(r.operation.variables, label))
++}
++async function seed() {
++  const open = orgs.openForInspection('org-run')
++  ;(await requests(ROOT, 1))[0]!.respond(inspectionData(true))
++  releaseMembers(await requests(MEMBER, 7), 'committed')
++  await open
++  transport.pending(HISTORY).forEach(r => r.respond(historyData(true)))
++  await flushPromises()
++}
++async function beginStop() {
++  const stop = outcome(orgs.stopAndInspect('org-run'))
++  const r = (await requests('TerminateAgentOrgRun', 1))[0]!
++  expect(observedRow().isActive).toBe(true)
++  r.respond({ terminateAgentOrgRun: { success: true, message: null, agentOrgRunId: 'org-run' } })
++  await vi.waitFor(() => expect(observedRow().isActive).toBe(false))
++  // No history I/O is released to make the existing visible projection inactive.
++  return { stop }
++}
++beforeEach(() => {
++  setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client
++  OrgTestSocket.instances = []; vi.stubGlobal('WebSocket', OrgTestSocket)
++  orgs = useAgentOrgContextsStore(); history = useRunHistoryStore()
++  history.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
++  expect(observedRow().isActive).toBe(true)
++})
++afterEach(() => { orgs.disconnect('org-run'); transport.client.stop(); vi.unstubAllGlobals() })
++
++describe.each(['/director', '/team/lead'])('installed Apollo final inspection %s', address => {
++  it.each([false, true].flatMap(prior => [false, true].map(oldFirst => ({ prior, oldFirst }))))(
++    'root completed / child pending; prior=$prior oldFirst=$oldFirst', async ({ prior, oldFirst }) => {
++      if (prior) await seed()
++      orgs.select('org-run', address)
++      const retained = orgs.contextFor('org-run')?.selectedTarget()?.context
++      if (retained) retained.requirement = 'untouched draft'
++      const old = orgs.openForInspection('org-run')
++      // An ordinary duplicate open still shares the store-owned current inspection.
++      const duplicate = orgs.openForInspection('org-run')
++      const roots = await requests(ROOT, prior ? 2 : 1)
++      roots.at(-1)!.respond(inspectionData(true))
++      const oldBatch = (await requests(MEMBER, prior ? 14 : 7)).slice(-7)
++      expect(roots.at(-1)!.delivered).toBe(true)
++      expect(oldBatch.every(r => !r.delivered)).toBe(true)
++      const { stop } = await beginStop()
++      ;(await requests(ROOT, prior ? 3 : 2)).at(-1)!.respond(inspectionData(false))
++      const freshBatch = (await requests(MEMBER, prior ? 21 : 14)).slice(-7)
++      freshBatch.forEach((r, i) => {
++        expect(r.operation.query).toEqual(oldBatch[i]!.operation.query)
++        expect(r.operation.variables).toEqual(oldBatch[i]!.operation.variables)
++        expect(r.operation.getContext().queryDeduplication).toBe(false)
++      })
++      if (oldFirst) { releaseMembers(oldBatch, 'old'); await old; expect(orgs.contextFor('org-run')?.selectedTarget()?.context).toBe(retained) }
++      releaseMembers(freshBatch, 'final')
++      expect(await stop).toBeNull()
++      if (!oldFirst) { releaseMembers(oldBatch, 'old'); await old }
++      await duplicate
++      const final = orgs.contextFor('org-run')!, context = final.selectedTarget()!.context
++      expect(final.phase).toBe('historical'); expect(final.selectedAddress).toBe(address)
++      expect(context.conversation.messages).toHaveLength(1)
++      expect(JSON.stringify(context.conversation.messages)).toContain(`final:${context.state.runId}`)
++      expect(useAgentActivityStore().getActivities(context.state.runId).map(a => a.activityId)).toEqual([`final:${context.state.runId}`])
++      if (retained) { expect(context).toBe(retained); expect(context.requirement).toBe('untouched draft') }
++      expect(observedRow().isActive).toBe(false)
++      const count = transport.requests.length
++      await orgs.openForInspection('org-run')
++      expect(transport.requests).toHaveLength(count)
++      expect(orgs.contextFor('org-run')).toBe(final)
++      expect(OrgTestSocket.instances.flatMap(s => s.sent)).toEqual([])
++      expect(transport.named('RestoreAgentOrgRun')).toHaveLength(0)
++    },
++  )
++
++  it.each([true, false])('old root still pending, oldFirst=%s', async oldFirst => {
++    orgs.select('org-run', address)
++    const old = orgs.openForInspection('org-run')
++    const first = (await requests(ROOT, 1))[0]!
++    const { stop } = await beginStop()
++    const second = (await requests(ROOT, 2))[1]!
++    expect(first.operation.variables).toEqual(second.operation.variables)
++    if (oldFirst) { first.respond(inspectionData(true)); await old }
++    second.respond(inspectionData(false))
++    releaseMembers(await requests(MEMBER, 7), 'final')
++    expect(await stop).toBeNull()
++    if (!oldFirst) { first.respond(inspectionData(true)); await old }
++    expect(orgs.contextFor('org-run')?.phase).toBe('historical')
++    expect(observedRow().isActive).toBe(false)
++    expect(OrgTestSocket.instances).toHaveLength(0)
++  })
++})
++
++it('keeps global Apollo deduplication enabled for unchanged ordinary options', async () => {
++  const input = { query: GetAgentOrgRunInspection, variables: { orgRunId: 'org-run' }, fetchPolicy: 'network-only' as const }
++  const a = transport.client.query(input), b = transport.client.query(input)
++  expect(transport.named(ROOT)).toHaveLength(1)
++  transport.named(ROOT)[0]!.respond(inspectionData(false)); await Promise.all([a, b])
++  const childInput = { query: GetAgentOrgMemberRunProjection, variables: { orgRunId: 'org-run', memberAddress: '/director', agentRunId: 'agent-director' }, fetchPolicy: 'network-only' as const }
++  const c = transport.client.query(childInput), d = transport.client.query(childInput)
++  expect(transport.named(MEMBER)).toHaveLength(1)
++  transport.named(MEMBER)[0]!.respond(memberData(childInput.variables, 'baseline')); await Promise.all([c, d])
++})
++
++it.each(['network', 'graphql', 'null', 'identity', 'partial', 'activity-conflict'])('final member %s retains committed content atomically', async failure => {
++  await seed(); orgs.select('org-run', '/director')
++  const retained = orgs.contextFor('org-run')!, context = retained.selectedTarget()!.context
++  context.requirement = 'keep draft'
++  const messages = JSON.stringify(context.conversation.messages)
++  const beforeActivities = useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)
++  const old = orgs.openForInspection('org-run')
++  ;(await requests(ROOT, 2))[1]!.respond(inspectionData(true))
++  const oldBatch = (await requests(MEMBER, 14)).slice(-7)
++  const { stop } = await beginStop()
++  ;(await requests(ROOT, 3))[2]!.respond(inspectionData(false))
++  const fresh = (await requests(MEMBER, 21)).slice(-7)
++  // Stage one exact child, without publishing it, while another dependency is held.
++  fresh[0]!.respond(memberData(fresh[0]!.operation.variables, 'final'))
++  await flushPromises()
++  expect(context.conversation.messages).toHaveLength(1)
++  expect(JSON.stringify(context.conversation.messages)).toBe(messages)
++  expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)).toEqual(beforeActivities)
++  if (failure === 'activity-conflict') {
++    useAgentActivityStore().addActivity('agent-director', { kind: 'system_instruction', activityId: 'interleaved', content: 'newer local activity', timestamp: new Date() })
++    releaseMembers(fresh.slice(1), 'final')
++  } else {
++    releaseMembers(fresh.slice(1, -1), 'final')
++    const last = fresh.at(-1)!
++    if (failure === 'network' || failure === 'partial') last.fail('member failed')
++    else if (failure === 'graphql') last.graphqlError('member GraphQL error')
++    else if (failure === 'null') last.respond({ getAgentOrgMemberRunProjection: null })
++    else last.respond({ getAgentOrgMemberRunProjection: { ...memberData(last.operation.variables, 'bad').getAgentOrgMemberRunProjection, agentRunId: 'wrong-execution' } })
++  }
++  expect(await stop).toBeInstanceOf(Error)
++  releaseMembers(oldBatch, 'old'); await old
++  expect(orgs.contextFor('org-run')).toBe(retained)
++  expect(context.requirement).toBe('keep draft')
++  expect(JSON.stringify(context.conversation.messages)).toBe(messages)
++  expect(retained.phase).toBe('historical'); expect(observedRow().isActive).toBe(false)
++  expect(orgs.errorFor('org-run')).toBeTruthy()
++  expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId))
++    .toEqual(failure === 'activity-conflict' ? [...beforeActivities, 'interleaved'] : beforeActivities)
++  expect(useAgentActivityStore().getActivities('agent-task-worker').map(a => a.activityId)).toEqual(['committed:agent-task-worker'])
++})
++
++it.each(['network', 'null', 'identity'])('invalid new root %s retains the stopped prior context', async failure => {
++  await seed(); orgs.select('org-run', '/team/lead')
++  const retained = orgs.contextFor('org-run')!, context = retained.selectedTarget()!.context
++  context.requirement = 'same draft'
++  const before = JSON.stringify(context.conversation)
++  const old = orgs.openForInspection('org-run'); const first = (await requests(ROOT, 2))[1]!
++  const { stop } = await beginStop(); const next = (await requests(ROOT, 3))[2]!
++  if (failure === 'network') next.fail('inspection unavailable')
++  else if (failure === 'null') next.respond({ getAgentOrgRunInspection: null })
++  else next.respond({ getAgentOrgRunInspection: { ...inspectionData(false).getAgentOrgRunInspection, root_run_id: 'wrong-root' } })
++  expect(await stop).toBeInstanceOf(Error)
++  first.respond(inspectionData(true)); await old
++  expect(orgs.contextFor('org-run')).toBe(retained)
++  expect(JSON.stringify(context.conversation)).toBe(before)
++  expect(context.requirement).toBe('same draft'); expect(observedRow().isActive).toBe(false)
++  expect(transport.named(MEMBER)).toHaveLength(7)
++})
++
++it('invalidating an ordinary stage through disconnect cannot publish a partial candidate', async () => {
++  const old = orgs.openForInspection('org-run')
++  ;(await requests(ROOT, 1))[0]!.respond(inspectionData(true))
++  const batch = await requests(MEMBER, 7)
++  batch[0]!.respond(memberData(batch[0]!.operation.variables, 'partial')); await flushPromises()
++  orgs.disconnect('org-run'); releaseMembers(batch.slice(1), 'obsolete'); await old
++  expect(orgs.contextFor('org-run')).toBeNull()
++  expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
++  expect(OrgTestSocket.instances).toHaveLength(0)
++})
++
++it('stream staging and inspection staging independently acquire the same exact members', async () => {
++  const stream = stageAgentOrgExecutionContext({ source: 'stream', orgRunId: 'org-run', view: rootView(true) })
++  const first = await requests(MEMBER, 7)
++  const inspection = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false) })
++  const second = (await requests(MEMBER, 14)).slice(-7)
++  releaseMembers(second, 'final'); const staged = await inspection; staged.commitActivities()
++  releaseMembers(first, 'old'); await stream
++  expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)).toEqual(['final:agent-director'])
++  expect(JSON.stringify(staged.context.getAgentContext('agent-director')!.conversation)).toContain('final:agent-director')
++})
+diff --git a/autobyteus-web/stores/agentOrgContextsStore.ts b/autobyteus-web/stores/agentOrgContextsStore.ts
+index 8a1ca6aaf..e2e0297cd 100644
+--- a/autobyteus-web/stores/agentOrgContextsStore.ts
++++ b/autobyteus-web/stores/agentOrgContextsStore.ts
+@@ -76,10 +76,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+       orgRunId: id,
+       publish: (candidate, commitActivities) => publish(id, candidate, commitActivities),
+       reportError: (message) => report(id, message),
+-      onInactive: () => {
+-        markHistorical(id)
+-        void useRunHistoryStore().refreshAgentOrgHistory()
+-      },
++      onInactive: () => markHistorical(id),
+       onAcceptedExternalUserMessage: () => { void useRunHistoryStore().refreshAgentOrgHistory() },
+     })
+     services.set(id, service)
+@@ -115,7 +112,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+     const current = () => generations.get(id) === generation
+     try {
+       const result = await getApolloClient().query({ query: GetAgentOrgRunInspection,
+-        variables: { orgRunId: id }, fetchPolicy: 'network-only' })
++        variables: { orgRunId: id }, fetchPolicy: 'network-only', context: { queryDeduplication: false } })
+       if (!current()) return
+       if (result.errors?.length) throw new Error(result.errors.map((e: { message: string }) => e.message).join(', '))
+       const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAgentOrgRunInspection)
+diff --git a/autobyteus-web/stores/runHistoryLoadActions.ts b/autobyteus-web/stores/runHistoryLoadActions.ts
+index bddacf7a0..0efcd9c2d 100644
+--- a/autobyteus-web/stores/runHistoryLoadActions.ts
++++ b/autobyteus-web/stores/runHistoryLoadActions.ts
+@@ -1,3 +1,4 @@
++import type { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
+ import { getApolloClient } from '~/utils/apolloClient';
+ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+ import { useWorkspaceStore } from '~/stores/workspace';
+@@ -65,6 +66,20 @@ export interface RunHistoryFetchStoreLike {
+   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
+ }
+ 
++const readAgentOrgHistory = async (
++  client: ApolloClient<NormalizedCacheObject>,
++): Promise<AgentOrgRunHistoryItem[]> => {
++  const result = await client.query<{ listCollaborationRootHistory: unknown }>({
++    query: ListCollaborationRootHistory,
++    fetchPolicy: 'network-only',
++    context: { queryDeduplication: false },
++  });
++  if (result.errors?.length) {
++    throw new Error(result.errors.map((error) => error.message).join(', '));
++  }
++  return parseAgentOrgHistoryItems(result.data?.listCollaborationRootHistory ?? []);
++};
++
+ export const fetchRunHistoryTree = async (
+   store: RunHistoryFetchStoreLike,
+   limitPerAgent = 6,
+@@ -96,15 +111,7 @@ export const fetchRunHistoryTree = async (
+         }
+         return result.data?.listWorkspaceRunHistory || [];
+       }),
+-      client.query<{ listCollaborationRootHistory: unknown }>({
+-        query: ListCollaborationRootHistory,
+-        fetchPolicy: 'network-only',
+-      }).then((result) => {
+-        if (result.errors?.length) {
+-          throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '));
+-        }
+-        return parseAgentOrgHistoryItems(result.data?.listCollaborationRootHistory ?? []);
+-      }),
++      readAgentOrgHistory(client),
+     ]);
+ 
+     if (workspaceResult.status === 'fulfilled') {
+@@ -167,14 +174,7 @@ export const refreshAgentOrgHistoryForStore = async (
+     const windowNodeContextStore = useWindowNodeContextStore();
+     const isReady = await windowNodeContextStore.waitForBoundBackendReady();
+     if (!isReady) throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
+-    const result = await getApolloClient().query<{ listCollaborationRootHistory: unknown }>({
+-      query: ListCollaborationRootHistory,
+-      fetchPolicy: 'network-only',
+-    });
+-    if (result.errors?.length) {
+-      throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '));
+-    }
+-    const rows = parseAgentOrgHistoryItems(result.data?.listCollaborationRootHistory ?? []);
++    const rows = await readAgentOrgHistory(getApolloClient());
+     if (generation !== store.agentOrgRequestGeneration) return;
+     store.agentOrgHistory = rows;
+     store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
+diff --git a/autobyteus-web/test-support/agentOrgApolloFixture.ts b/autobyteus-web/test-support/agentOrgApolloFixture.ts
+new file mode 100644
+index 000000000..af9c71475
+--- /dev/null
++++ b/autobyteus-web/test-support/agentOrgApolloFixture.ts
+@@ -0,0 +1,62 @@
++import { ApolloClient, ApolloLink, InMemoryCache, Observable, type Operation, type FetchResult } from '@apollo/client/core'
++import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
++
++// Transport-only control. The caller still executes the installed Apollo query manager,
++// actual documents, strict readers, Pinia stores and staged publication.
++export class ControlledOrgApollo {
++  requests: Array<{
++    operation: Operation; delivered: boolean;
++    respond(data: Record<string, unknown>): void;
++    fail(message: string): void;
++    graphqlError(message: string): void;
++  }> = []
++  client = new ApolloClient({
++    cache: new InMemoryCache(),
++    link: new ApolloLink(operation => new Observable<FetchResult>(observer => {
++      const request = {
++        operation, delivered: false,
++        respond(data: Record<string, unknown>) { request.delivered = true; observer.next({ data }); observer.complete() },
++        fail(message: string) { request.delivered = true; observer.error(new Error(message)) },
++        graphqlError(message: string) { request.delivered = true; observer.next({ errors: [{ message }] }); observer.complete() },
++      }
++      this.requests.push(request)
++    })),
++  })
++  named(name: string) { return this.requests.filter(r => r.operation.operationName === name) }
++  pending(name: string) { return this.named(name).filter(r => !r.delivered) }
++}
++export const rootView = (active: boolean) => {
++  const view = taskBearingView()
++  view.is_active = active
++  if (!active) view.agent_statuses = []
++  return view
++}
++export const inspectionData = (active: boolean) => ({ getAgentOrgRunInspection: {
++  schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: rootView(active),
++} })
++export const historyData = (active: boolean) => ({ listCollaborationRootHistory: [{
++  __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run',
++  created_at: '2026-09-01T00:00:00.000Z', archived_at: null, is_active: active,
++  summary: 'Exact retained conversation', org: taskBearingView().execution_tree,
++}] })
++export const memberData = (variables: Operation['variables'], label: string) => ({ getAgentOrgMemberRunProjection: {
++  __typename: 'AgentOrgMemberRunProjection', agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
++  summary: label, lastActivityAt: '2026-09-01T00:00:03.000Z',
++  conversation: [{ kind: 'message', role: 'assistant', content: `${label}:${variables.agentRunId}`, ts: 1700000001 }],
++  activities: [{ kind: 'tool', invocationId: `${label}:${variables.agentRunId}`, toolName: 'read_file', status: 'success', result: label, ts: 1700000001 }],
++  hasEarlierActiveTraceEvents: false,
++} })
++export class OrgTestSocket {
++  static OPEN = 1
++  static CONNECTING = 0
++  static instances: OrgTestSocket[] = []
++  readyState = 1
++  onmessage: ((event: { data: string }) => void) | null = null
++  onclose: (() => void) | null = null
++  onerror = null
++  sent: string[] = []
++  constructor() { OrgTestSocket.instances.push(this) }
++  send(value: string) { this.sent.push(value) }
++  close() { this.readyState = 3; this.onclose?.() }
++  emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
++}

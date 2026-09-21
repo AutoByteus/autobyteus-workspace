@@ -6,6 +6,8 @@ import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execu
 import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
+import { projectTaskTeamExecution } from "../../../src/agent-team-execution/task-delegation/task-execution-tree-projection.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const withTaskAgent = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTreeSnapshot => ({
@@ -29,20 +31,25 @@ describe("AgentMemoryLocationService current V1 tree", () => {
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-current-"));
     layout = new AgentMemoryLayout(memoryDir);
-    const tree = withTaskAgent(testExecutionTree({
+    const baseTree = withTaskAgent(testExecutionTree({
       rootTeamRunId: "root-team-run",
       rootTeamDefinitionId: "classroom",
       coordinatorAddress: "/writer",
-      children: [
-        testAgentNode("/writer", { agentRunId: "writer-run" }),
-        testAgentTeamNode({
+      children: [testAgentNode("/writer", { agentRunId: "writer-run" })],
+    }));
+    const tree = addTaskExecutionToTree({
+      tree: baseTree,
+      ownerTeamRunId: "root-team-run",
+      execution: projectTaskTeamExecution({
+        node: testAgentTeamNode({
           address: "/ReviewSquad",
           coordinatorAddress: "/ReviewSquad/reviewer",
           teamRunId: "review-team-run",
           children: [testAgentNode("/ReviewSquad/reviewer", { agentRunId: "reviewer-run" })],
         }),
-      ],
-    }));
+        startedAt: "2026-08-15T00:02:00.000Z",
+      }),
+    });
     await new TeamRunExecutionTreeStore().write(
       layout.getTeamDirPath({ rootTeamRunId: "root-team-run", ancestorTeamRunIds: [] }),
       tree,
@@ -70,18 +77,18 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "writer-run"),
       },
       {
-        address: "/ReviewSquad/reviewer",
-        run: "reviewer-run",
-        ancestors: ["review-team-run"],
-        configured: true,
-        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "review-team-run", "reviewer-run"),
-      },
-      {
         address: "/writer",
         run: "task-writer-run",
         ancestors: [],
         configured: true,
         memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "task-writer-run"),
+      },
+      {
+        address: "/ReviewSquad/reviewer",
+        run: "reviewer-run",
+        ancestors: ["review-team-run"],
+        configured: false,
+        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "review-team-run", "reviewer-run"),
       },
     ]);
   });

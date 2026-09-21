@@ -1,0 +1,54 @@
+cleanup_time=2026-09-02T09:35:27Z
+owned_process_status:
+backend-initial.pid pid=23418 stopped
+web.pid pid=26978 stopped
+owned_listeners:
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+browser_tabs: [] (AutoByteus list_tabs after closing tab 6 and setup-only tabs 1-5)
+fixture_hash_check:
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+git_diff_check:
+git_status:
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? applications/brief-studio/dist/
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-devkit/dist/
+?? autobyteus-application-frontend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-web/test-results/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+
+generated_setup_cleanup:
+removed API-REV-005-created untracked SDK/devkit/Brief Studio dist and web test-results outputs
+git_status_after_generated_cleanup:
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md

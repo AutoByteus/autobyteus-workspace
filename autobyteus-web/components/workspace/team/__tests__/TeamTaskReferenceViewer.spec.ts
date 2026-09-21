@@ -39,8 +39,7 @@ const reference = {
 
 const mountSubject = () => mount(TeamTaskReferenceViewer, {
   props: {
-    teamRunId: 'team run/1',
-    taskId: 'task/1',
+    contentPath: 'team-runs/team%20run%2F1/task-delegations/task%2F1/references/task-reference%3A0%3A%2Ftmp%2Fdesign.md/content',
     reference,
   },
   global: {
@@ -106,8 +105,7 @@ describe('TeamTaskReferenceViewer.vue', () => {
 
     const wrapper = mount(TeamTaskReferenceViewer, {
       props: {
-        teamRunId: 'team run/1',
-        taskId: 'task/1',
+        contentPath: 'team-runs/team%20run%2F1/task-delegations/task%2F1/references/task-reference%3Asvg/content',
         reference: {
           ...reference,
           referenceId: 'task-reference:svg',

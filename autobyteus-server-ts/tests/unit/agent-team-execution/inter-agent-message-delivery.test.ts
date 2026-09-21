@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it } from "vitest";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import {
@@ -11,7 +12,7 @@ const buildParticipant = (
   kind: "agent",
   displayName: "review_lead",
   identity: {
-    rootTeamRunId: "team-parent",
+    root: createTeamRootExecutionIdentity("team-parent"),
     memberAddress: assertAgentTeamAddress("/BuildSquad/review_lead"),
     agentRunId: "review-lead-run",
   },
@@ -31,7 +32,7 @@ describe("inter-agent-message-delivery endpoint", () => {
   it("preserves the task Agent's intrinsic run identity without a task-chain wrapper", () => {
     const participant = buildParticipant({
       identity: {
-        rootTeamRunId: "team-parent",
+        root: createTeamRootExecutionIdentity("team-parent"),
         memberAddress: assertAgentTeamAddress("/BuildSquad/review_lead"),
         agentRunId: "task-agent-run",
       },
@@ -39,7 +40,7 @@ describe("inter-agent-message-delivery endpoint", () => {
 
     expect(buildDeliveryEndpointForParticipant(participant).participant).toBe(participant);
     expect(participant.identity).toEqual({
-      rootTeamRunId: "team-parent",
+      root: { rootSubjectKind: "agent_team", rootRunId: "team-parent" },
       memberAddress: "/BuildSquad/review_lead",
       agentRunId: "task-agent-run",
     });

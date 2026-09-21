@@ -12,8 +12,8 @@ const rebuildTeamRunCatalog = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock("../../../../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => runnerMock,
 }));
-vi.mock("../../../../../src/run-history/services/team-run-package-catalog.js", () => ({
-  TeamRunPackageCatalog: class {
+vi.mock("../../../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
+  RootRunPackageReadinessIndex: class {
     rebuild = rebuildTeamRunCatalog;
   },
 }));
@@ -64,7 +64,7 @@ describe("AppDataMigrationResolver", () => {
       .toBe("AppDataMigrationRecoveryAction");
   });
 
-  it("rebuilds strict V2 package admission before a manual TeamRun migration Retry completes", async () => {
+  it("rebuilds compound current-package admission before a manual TeamRun migration Retry completes", async () => {
     runnerMock.runMigration.mockResolvedValue({
       migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
       displayName: "Upgrade TeamRun execution trees to V2",

@@ -1,3 +1,4 @@
+import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { inspectTeamMemberForStore, teamMemberInspectionIdentity } from '../runHistoryTeamMemberInspectionActions';
 
@@ -15,7 +16,7 @@ const store = () => ({
 });
 
 describe('runHistoryTeamMemberInspectionActions', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
 
   it('publishes a row-scoped retry error without replacing the history panel or prior selection', async () => {
     mocks.inspect.mockResolvedValue({

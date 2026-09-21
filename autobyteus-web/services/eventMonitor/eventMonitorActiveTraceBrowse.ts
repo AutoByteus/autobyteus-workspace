@@ -22,7 +22,9 @@ type PageFetcher = typeof fetchEventMonitorActiveTracePage;
 
 const subjectKey = (subject: EventMonitorActiveTraceBrowseSubject): string => subject.kind === 'run'
   ? `run:${subject.runId}`
-  : `team:${subject.teamRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
+  : subject.kind === 'teamMember'
+    ? `team:${subject.teamRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`
+    : `org:${subject.orgRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
 
 const validateResponse = (
   response: EventMonitorActiveTracePageDto,

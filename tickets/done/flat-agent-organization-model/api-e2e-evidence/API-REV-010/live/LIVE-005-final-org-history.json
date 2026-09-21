@@ -1,0 +1,22 @@
+{
+    "data": {
+        "listCollaborationRootHistory": [
+            {
+                "__typename": "AgentTeamRootHistoryObject"
+            },
+            {
+                "__typename": "AgentOrgRootHistoryObject",
+                "root_run_id": "aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d",
+                "is_active": false
+            },
+            {
+                "__typename": "AgentOrgRootHistoryObject",
+                "root_run_id": "apirev8_613529cf063144d0a9e6cd6e385d58ba",
+                "is_active": false
+            },
+            {
+                "__typename": "AgentTeamRootHistoryObject"
+            }
+        ]
+    }
+}

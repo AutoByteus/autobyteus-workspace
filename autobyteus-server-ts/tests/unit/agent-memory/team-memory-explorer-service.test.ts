@@ -7,6 +7,9 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
+import { TaskDelegationRecordsV1Store } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
+import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const touch = async (filePath: string, mtime: number) => {
@@ -36,7 +39,14 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
         createdAt,
         children: [testAgentNode("/Teacher", { agentRunId, workspaceRootPath: `/tmp/${runId}` })],
       });
-      await store.write(layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] }), tree);
+      const packageDir = layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
+      await store.write(packageDir, tree);
+      await new TaskDelegationRecordsV1Store().write(packageDir, {
+        schemaVersion: 1, rootTeamRunId: runId, records: [],
+      });
+      await new TeamCommunicationV1Store().write(packageDir, {
+        schemaVersion: 1, rootTeamRunId: runId, messages: [],
+      });
     }
     await new TeamRunHistoryIndexStore(memoryDir).writeIndex([
       { teamRunId: "classroom-run-1", teamDefinitionId: "classroom-team", teamDefinitionName: "Classroom Team", workspaceRootPath: "/tmp/classroom-run-1", summary: "first lesson", createdAt: "2026-08-14T00:00:00.000Z", archivedAt: null, terminatedAt: null },
@@ -45,10 +55,15 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
     await touch(path.join(memoryDir, "agent_teams", "classroom-run-1", "teacher-run-1", "raw_traces_active.jsonl"), Date.parse("2026-08-14T01:00:00.000Z"));
     await touch(path.join(memoryDir, "agent_teams", "classroom-run-2", "teacher-run-2", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     resetTeamRunHistoryCatalogState(memoryDir);
+    const readiness = new RootRunPackageReadinessIndex(memoryDir);
+    await readiness.rebuild();
+    expect(readiness.listDiagnostics()).toEqual([]);
+    expect(readiness.listAdmitted("agent_team")).toEqual(["classroom-run-1", "classroom-run-2"]);
   });
 
   afterEach(async () => {
     resetTeamRunHistoryCatalogState(memoryDir);
+    resetRootRunPackageReadinessIndex(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 

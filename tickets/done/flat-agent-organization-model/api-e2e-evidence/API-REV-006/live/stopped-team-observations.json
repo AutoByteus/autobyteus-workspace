@@ -1,0 +1,76 @@
+{
+  "caseId": "LIVE-010",
+  "result": "Pass",
+  "teamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+  "terminatedVia": "production Agent Teams history Terminate team control",
+  "postStop": {
+    "checkpointRejected": "Active RootTeamRun ... was not found",
+    "historyIsActive": false,
+    "allStableMembers": "offline"
+  },
+  "restoreVia": "select stopped history row, then first prompt on Offline coordinator",
+  "continuation": {
+    "marker": "APIREV6-STANDALONE-POST-STOP-CONTINUE",
+    "domCount": 2,
+    "projectionCount": 2,
+    "status": "Idle"
+  },
+  "checkpointAfterRestore": {
+    "rootTeamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+    "changeSequence": 43,
+    "hasOpenExecutionWork": false
+  },
+  "retained": {
+    "conversationItems": 29,
+    "activityItems": 6,
+    "acceptedTaskCount": 2,
+    "messageCount": 1
+  },
+  "stableIdentityComparison": {
+    "/analyst": {
+      "before": {
+        "agentRunId": "aorg_e2e_analyst_311e08b5d76249ea945d3ec3a44edb19",
+        "platformAgentRunId": "01a062e7-ea61-76f2-b8d4-c90579f26fa6"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_analyst_311e08b5d76249ea945d3ec3a44edb19",
+        "platformAgentRunId": "01a06300-b31e-7471-8cd2-92912aeb97b0"
+      },
+      "logicalSame": true,
+      "providerSame": false
+    },
+    "/lead": {
+      "before": {
+        "agentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+        "platformAgentRunId": "01a062e7-e9a6-7ad1-8615-705ec1fbe0b0"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+        "platformAgentRunId": "01a062e7-e9a6-7ad1-8615-705ec1fbe0b0"
+      },
+      "logicalSame": true,
+      "providerSame": true
+    },
+    "/verifier": {
+      "before": {
+        "agentRunId": "aorg_e2e_verifier_d4ba043897fb4cbf911cb3bbe842502d",
+        "platformAgentRunId": "01a062e7-eace-7353-8f30-9b0de277aef8"
+      },
+      "after": {
+        "agentRunId": "aorg_e2e_verifier_d4ba043897fb4cbf911cb3bbe842502d",
+        "platformAgentRunId": "01a06300-b420-7551-b156-de2827b5bbff"
+      },
+      "logicalSame": true,
+      "providerSame": false
+    }
+  },
+  "evidence": [
+    "live/api/LIVE-010-post-stop-team-checkpoint-response.json",
+    "live/api/LIVE-010-post-stop-history-response.json",
+    "live/api/LIVE-010-post-restore-response.json",
+    "live/persistence/LIVE-010-post-restore-team-run-execution-tree.json",
+    "live/persistence/LIVE-010-provider-identity-comparison.json",
+    "live/screenshots/LIVE-010-standalone-team-stopped.png",
+    "live/screenshots/LIVE-010-standalone-team-restored-continued.png"
+  ]
+}

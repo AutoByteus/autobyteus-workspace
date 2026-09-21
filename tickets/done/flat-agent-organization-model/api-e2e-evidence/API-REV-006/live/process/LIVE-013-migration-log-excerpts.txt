@@ -1,0 +1,127 @@
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-09-02T16-07-38-578Z.log
+migrationId=20260517_team_run_metadata_member_tree
+displayName=Team run metadata member tree migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260521_run_history_index_v2-2026-09-02T16-07-38-889Z.log
+migrationId=20260521_run_history_index_v2
+displayName=Standalone run history index V2 migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-09-02T16-07-38-866Z.log
+migrationId=20260521_team_run_history_index_v2
+displayName=Team run history index V2 migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-09-02T16-07-38-686Z.log
+migrationId=20260617_raw_trace_rotation_layout
+displayName=Raw trace rotation layout migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-09-02T16-07-38-842Z.log
+migrationId=20260623_remove_self_evolution_run_metadata
+displayName=Remove self-evolution run metadata migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-09-02T16-07-38-724Z.log
+migrationId=20260701_team_communication_projection_addresses
+displayName=Team communication execution-address migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-09-02T16-07-38-566Z.log
+migrationId=20260706_remove_global_skill_discovery_mode
+displayName=Remove global skill discovery mode migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-09-02T16-07-38-698Z.log
+migrationId=20260707_raw_trace_active_file_name
+displayName=Raw trace active file name migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260727_custom_provider_v1_secret_migration-2026-09-02T16-07-38-556Z.log
+migrationId=20260727_custom_provider_v1_secret_migration
+displayName=Custom provider credential migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"custom-provider-v1","status":"SKIPPED","message":"CUSTOM_PROVIDER_V1_NOT_REQUIRED"}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260730_token_usage_custom_provider_model_value_backfill-2026-09-02T16-07-38-740Z.log
+migrationId=20260730_token_usage_custom_provider_model_value_backfill
+displayName=Token usage custom-provider model value backfill
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-model-value:summary","status":"SKIPPED","message":"rows=0; migrated=0; reasons={}"}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260730_token_usage_provider_name_snapshot_backfill-2026-09-02T16-07-38-770Z.log
+migrationId=20260730_token_usage_provider_name_snapshot_backfill
+displayName=Token usage provider-name snapshot backfill
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-provider-name:summary","status":"SKIPPED","message":"rows=0; migrated=0; reasons={}"}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260731_migrate_native_working_context_snapshots_v5-2026-09-02T16-07-38-714Z.log
+migrationId=20260731_migrate_native_working_context_snapshots_v5
+displayName=Migrate native WorkingContext snapshots to strict v5
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-09-02T16-07-38-672Z.log
+migrationId=20260731_remove_external_runtime_working_context_snapshots
+displayName=Remove external runtime WorkingContext snapshots
+statusSummary={"scannedCount":6,"migratedCount":0,"skippedCount":6,"failedCount":0}
+error=
+details=
+{"itemId":"agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_concierge_d7294128108e45faab581ab5206b6f6c","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/memory/agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_concierge_d7294128108e45faab581ab5206b6f6c/working_context_snapshot.json","status":"SKIPPED","message":"Eligible external runtime snapshot was already absent."}
+{"itemId":"agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_research_squad_5f0f7e7be54d4775abe6d386e259a5f4/aorg_e2e_analyst_f638bb99ebfd4329a6ef7f0701627467","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/memory/agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_research_squad_5f0f7e7be54d4775abe6d386e259a5f4/aorg_e2e_analyst_f638bb99ebfd4329a6ef7f0701627467/working_context_snapshot.json","status":"SKIPPED","message":"Eligible external runtime snapshot was already absent."}
+{"itemId":"agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_research_squad_5f0f7e7be54d4775abe6d386e259a5f4/aorg_e2e_lead_2f6de1f54a3a4ae8b787a5075e008a56","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/memory/agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_research_squad_5f0f7e7be54d4775abe6d386e259a5f4/aorg_e2e_lead_2f6de1f54a3a4ae8b787a5075e008a56/working_context_snapshot.json","status":"SKIPPED","message":"Eligible external runtime snapshot was already absent."}
+{"itemId":"agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_research_squad_5f0f7e7be54d4775abe6d386e259a5f4/aorg_e2e_verifier_f05fdbbcf1ae43c7a8772d1e3d0122d5","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/memory/agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_research_squad_5f0f7e7be54d4775abe6d386e259a5f4/aorg_e2e_verifier_f05fdbbcf1ae43c7a8772d1e3d0122d5/working_context_snapshot.json","status":"SKIPPED","message":"Eligible external runtime snapshot was already absent."}
+{"itemId":"agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_support_pair_57a3bc7daf9e41f2805dfe48e4881edd/aorg_e2e_lead_02846766d28442d9b7f1da6c46b2a276","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/memory/agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_support_pair_57a3bc7daf9e41f2805dfe48e4881edd/aorg_e2e_lead_02846766d28442d9b7f1da6c46b2a276/working_context_snapshot.json","status":"SKIPPED","message":"Eligible external runtime snapshot was already absent."}
+{"itemId":"agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_support_pair_57a3bc7daf9e41f2805dfe48e4881edd/aorg_e2e_verifier_956ce9f69a0c4bbd8b80694477d47531","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/memory/agent_orgs/aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9/aorg_e2e_support_pair_57a3bc7daf9e41f2805dfe48e4881edd/aorg_e2e_verifier_956ce9f69a0c4bbd8b80694477d47531/working_context_snapshot.json","status":"SKIPPED","message":"Eligible external runtime snapshot was already absent."}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260803_custom_provider_readable_identity-2026-09-02T16-07-38-905Z.log
+migrationId=20260803_custom_provider_readable_identity
+displayName=Custom provider readable identity reset
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"readable-provider-reset","status":"SKIPPED","message":"CUSTOM_PROVIDER_READABLE_ID_NOT_REQUIRED","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/llm/custom-llm-providers.json"}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260814_team_run_execution_tree_v1-2026-09-02T16-07-38-609Z.log
+migrationId=20260814_team_run_execution_tree_v1
+displayName=TeamRun execution-tree V1 migration
+statusSummary={"scannedCount":2,"migratedCount":0,"skippedCount":2,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage:root-update-transaction","status":"SKIPPED","message":"Token runtime root schema/index are current; no row root update was required."}
+{"itemId":"team-history-index","backupPath":null,"status":"SKIPPED","message":"TeamRun history index already matches 0 admitted root(s)."}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260819_token_usage_run_records_v1-2026-09-02T16-07-38-814Z.log
+migrationId=20260819_token_usage_run_records_v1
+displayName=Token usage one-row run records V1
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-run-records-v1:summary","status":"MIGRATED","message":"Legacy token usage source was already empty; current state was retained."}
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260823_repair_team_agent_memory_layout-2026-09-02T16-07-38-618Z.log
+migrationId=20260823_repair_team_agent_memory_layout
+displayName=Repair Team Agent memory layout
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260824_team_run_execution_tree_v2-2026-09-02T16-07-38-628Z.log
+migrationId=20260824_team_run_execution_tree_v2
+displayName=Upgrade TeamRun execution trees to V2
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+### /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-09-02T16-07-38-652Z.log
+migrationId=20260901_agent_org_flat_team_families_v1
+displayName=Cut over flat Team and AgentOrg definition/run families
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_f35d812bf984490290de59d28df83334",
+  "records": [
+    {
+      "taskId": "task_8e270c0e191d41f18330f1d3b0c85af3",
+      "delegatorAgentRunId": "aorg_e2e_lead_1f7eeda8c95b4636a522450e0d3024c3",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_ea9bdb6b009a45f5ae3874ecbdb3eb36"
+      },
+      "description": "Produce AORG-SETTLEMENT-ANALYST-DRAFT-001 on the first line and one short validation sentence. Then formally call submit_task_result with that output; do not stop at ordinary assistant text. The reviewer will request one revision. If revision feedback arrives, change the first line to AORG-SETTLEMENT-ANALYST-REVISED-001 and formally resubmit the same task.",
+      "referenceFiles": [],
+      "status": "awaiting_review",
+      "updates": [
+        {
+          "submissionId": "submission_da2186fc2a3945c18514a2437e5f6000",
+          "message": "AORG-SETTLEMENT-ANALYST-DRAFT-001\nValidation confirms the settlement analyst draft meets the requested two-line format.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-01T21:33:45.263Z"
+        }
+      ],
+      "createdAt": "2026-09-01T21:29:45.366Z"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"data":null,"errors":[{"message":"Cannot query field \"id\" on type \"AppDataMigrationRecordObject\".","locations":[{"line":1,"column":32}]},{"message":"Cannot query field \"lastError\" on type \"AppDataMigrationRecordObject\".","locations":[{"line":1,"column":42}]}]}

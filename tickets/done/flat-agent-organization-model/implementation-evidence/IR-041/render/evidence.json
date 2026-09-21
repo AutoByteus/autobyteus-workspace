@@ -1,0 +1,37 @@
+{
+  "states": [
+    {
+      "name": "en-desktop",
+      "heading": "ORGS",
+      "body": "TEAMS\nORGS\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · r-task\nTask: team · m-task\nlead · k-lead\nworker · worker",
+      "overflow": false
+    },
+    {
+      "name": "zh-desktop",
+      "heading": "组织",
+      "body": "TEAMS\n组织\nReview organization\n(1)\nReview the current release\n10 天\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\n任务：worker · r-task\n任务：team · m-task\nlead · k-lead\nworker · worker",
+      "overflow": false
+    },
+    {
+      "name": "zh-narrow",
+      "heading": "组织",
+      "body": "TEAMS\n组织\nReview organization\n(1)\nReview the current release\n10 天\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\n任务：worker · r-task\n任务：team · m-task\nlead · k-lead\nworker · worker",
+      "overflow": false
+    },
+    {
+      "name": "en-narrow",
+      "heading": "ORGS",
+      "body": "TEAMS\nORGS\nReview organization\n(1)\nReview the current release\n10d\nD\ndirector\nW\nworker\nteam\nL\nlead\nW\nworker\nTask: worker · r-task\nTask: team · m-task\nlead · k-lead\nworker · worker",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "assertions": [
+    "English Orgs renders ORGS below Teams",
+    "Chinese 组织 unchanged",
+    "Locale switches preserve exact row elements, selection and expanded tree",
+    "Keyboard Space and touch retain existing disclosure behavior",
+    "No desktop/narrow horizontal overflow"
+  ],
+  "limits": "Implementation-only isolated production history collection with synthetic strict tree and local state; Teams sibling is fixture chrome. No provider, stream, full app route, native or API/E2E signoff."
+}

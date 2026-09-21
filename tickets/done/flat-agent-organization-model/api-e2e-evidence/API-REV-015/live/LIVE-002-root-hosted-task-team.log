@@ -1,0 +1,22 @@
+{
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "approved": true,
+  "taskId": "task_949b4aa38fb545f7b5692a8a084ae7b7",
+  "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+  "ready": 1,
+  "assertions": {
+    "oneAdded": true,
+    "approvedIfRequired": true,
+    "exactDelegator": true,
+    "exactRecipient": true,
+    "activeTeam": true,
+    "structuralRootTaskTeam": true,
+    "readyExactlyOnce": true,
+    "conciergeSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

@@ -1,0 +1,125 @@
+{
+  "agents": [
+    {
+      "id": "aorg-analyst",
+      "name": "AORG E2E Analyst",
+      "toolNames": [
+        "submit_task_result",
+        "review_task_result"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "aorg-concierge",
+      "name": "AORG E2E Concierge",
+      "toolNames": [
+        "submit_task_result",
+        "review_task_result"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "aorg-lead",
+      "name": "AORG E2E Lead",
+      "toolNames": [
+        "submit_task_result",
+        "review_task_result"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "aorg-verifier",
+      "name": "AORG E2E Verifier",
+      "toolNames": [
+        "submit_task_result",
+        "review_task_result"
+      ],
+      "defaultLaunchConfig": null
+    }
+  ],
+  "teams": [
+    {
+      "id": "aorg-research-squad",
+      "name": "AORG E2E Research Squad",
+      "coordinatorMemberName": "lead",
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "aorg-lead",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "analyst",
+          "ref": "aorg-analyst",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "verifier",
+          "ref": "aorg-verifier",
+          "refScope": "SHARED"
+        }
+      ]
+    },
+    {
+      "id": "aorg-support-pair",
+      "name": "AORG E2E Support Pair",
+      "coordinatorMemberName": "dispatcher",
+      "nodes": [
+        {
+          "memberName": "dispatcher",
+          "ref": "aorg-lead",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "specialist",
+          "ref": "aorg-verifier",
+          "refScope": "SHARED"
+        }
+      ]
+    }
+  ],
+  "orgs": [
+    {
+      "id": "aorg-direct-agents-org",
+      "name": "AORG E2E Direct Agents Org",
+      "members": [
+        {
+          "memberName": "lead",
+          "ref": "aorg-lead",
+          "refType": "AGENT",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "verifier",
+          "ref": "aorg-verifier",
+          "refType": "AGENT",
+          "refScope": "SHARED"
+        }
+      ]
+    },
+    {
+      "id": "aorg-mixed-org",
+      "name": "AORG E2E Mixed Org",
+      "members": [
+        {
+          "memberName": "concierge",
+          "ref": "aorg-concierge",
+          "refType": "AGENT",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "research-team",
+          "ref": "aorg-research-squad",
+          "refType": "AGENT_TEAM",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "support-team",
+          "ref": "aorg-support-pair",
+          "refType": "AGENT_TEAM",
+          "refScope": "SHARED"
+        }
+      ]
+    }
+  ]
+}

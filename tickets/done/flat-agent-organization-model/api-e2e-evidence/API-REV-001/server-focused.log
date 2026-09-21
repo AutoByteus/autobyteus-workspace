@@ -1,0 +1,293 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > preflights every owned Team before writing and reports the exact deeper-member invariant 25ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > resumes a valid one-level definition after interruption commits an owned Team V2 file 23ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > resumes an exact prospective Org config written before interruption 17ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > keeps a native flat Team V2 package a strict zero-write cohort 16ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > converts one organization-like Team V2 package by direct family rename and transfers history 40ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > accepts the exact predecessor V1-to-released-V2 output before converting it to Org V1 24ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > rejects a released V2 member with an unrecognized compatibility field before mutation 19ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > fails closed on a sidecar correlation mismatch without creating the Org family 16ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > reports a family collision without modifying either package 12ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts > AgentOrg flat-Team family startup migration > cleans retired Team authorities from a completely written current Org package on restart 27ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > builds and listens only after readable identity status SUCCEEDED
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > builds and listens only after readable identity status SUCCEEDED 49ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > builds and listens only after readable identity status SUCCEEDED_WITH_WARNINGS 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > retains the warning-only policy for an unrelated ordinary migration failure 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > blocks missing readable identity state before composition construction and unwinds process resources 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > blocks running readable identity state before composition construction and unwinds process resources 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > blocks failed readable identity state before composition construction and unwinds process resources 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > blocks a migration runner exception before composition construction and unwinds process resources 2ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts > RootRunPackageReadinessIndex > admits exact current Team V2 and Org V1 packages 25ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts > RootRunPackageReadinessIndex > rejects the same root ID from both physical families 17ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts > RootRunPackageReadinessIndex > rejects retired Team authority inside an Org package 9ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts > RootRunPackageReadinessIndex > rejects retired Org authority inside a Team package 8ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts > RootRunPackageReadinessIndex > rejects strict sidecar correlation mismatch without trying another family 7ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts > RootRunPackageReadinessIndex > rebuilds the native flat Team zero-write cohort without changing bytes or stats 9ms
+stdout | tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/collaboration-definition-admission/definition-admission-service.test.ts > DefinitionAdmissionService > admits only exact Team V2 and Org V1 targets with resolved dependencies 23ms
+ ✓ tests/unit/collaboration-definition-admission/definition-admission-service.test.ts > DefinitionAdmissionService > marks every same-identity physical package unavailable without selecting a precedence winner 6ms
+ ✓ tests/unit/collaboration-definition-admission/definition-admission-service.test.ts > DefinitionAdmissionService > does not modify an incompatible external package while reporting target-only unavailability 7ms
+ ✓ tests/unit/collaboration-definition-admission/definition-admission-service.test.ts > DefinitionAdmissionService > reports an unavailable Team dependency with both physical definition paths 7ms
+ ✓ tests/unit/collaboration-definition-admission/definition-admission-service.test.ts > DefinitionAdmissionService > keeps unrelated scanning available when an Org-owned reference has no exact physical mapping 6ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts > AgentOrg and compound execution locations > projects truthful direct and mounted-Team memory paths 237ms
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts > AgentOrg and compound execution locations > uses the explicit Org root when the same address exists in multiple stored Orgs 9ms
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts > AgentOrg and compound execution locations > rejects ambiguous cross-family AgentRun identities 1ms
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts > Team execution view strict projection > projects one atomic initial V1 execution/task/message/status snapshot 9ms
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts > Team execution view strict projection > keeps snapshot placement identity out of the exact live status payload 1ms
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts > Team execution view strict projection > projects live status and the following Agent event contiguously through strict admission 1ms
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts > Team execution view strict projection > projects exact current AgentRun identity for provider segment events 1ms
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts > Team execution view strict projection > locates a nested task Agent under its concrete containing task TeamRun 1ms
+ ✓ tests/unit/services/agent-streaming/team-execution-view-projector.test.ts > Team execution view strict projection > projects exact same-root communication and recipient input correlation 1ms
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-communication/global-agent-run-message-router.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > commits one root-owned message and only then releases exact receiver input 7ms
+ ✓ tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > rejects a self target before reservation or persistence 1ms
+ ✓ tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > rejects stale execution identity before reserving receiver input 0ms
+ ✓ tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > closes admission without fallback and leaves the V1 snapshot unchanged 1ms
+stdout | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > opens one correlated native Org snapshot barrier and sequences events 7ms
+ ✓ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > rejects wrong-root commands and routes a correlated command only to the exact AgentRun 2ms
+ ✓ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > fails closed when the requested Org root is not active 0ms
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getAll and reuses it
+[2026-09-01T11:44:49.551Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:44:49.552Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getAll and reuses it
+[2026-09-01T11:44:49.552Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getById
+[2026-09-01T11:44:49.554Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:44:49.554Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getById
+[2026-09-01T11:44:49.554Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > returns null for missing id
+[2026-09-01T11:44:49.554Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:44:49.554Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > returns null for missing id
+[2026-09-01T11:44:49.555Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create
+[2026-09-01T11:44:49.555Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:44:49.555Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create
+[2026-09-01T11:44:49.555Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create
+[2026-09-01T11:44:49.556Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID 3.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update
+[2026-09-01T11:44:49.557Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:44:49.557Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update
+[2026-09-01T11:44:49.557Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update
+[2026-09-01T11:44:49.557Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID 1.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete
+[2026-09-01T11:44:49.557Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T11:44:49.557Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete
+[2026-09-01T11:44:49.558Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete
+[2026-09-01T11:44:49.558Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID 1.
+
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getAll and reuses it 3ms
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > populates cache on first getById 1ms
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > returns null for missing id 1ms
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on create 2ms
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > updates cache on update 1ms
+ ✓ tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts > CachedAgentTeamDefinitionProvider > removes items from cache on delete 1ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts > AgentOrgRunManager lifecycle > publishes one complete Org root under the compound identity and unregisters it on termination 6ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts > AgentOrgRunManager lifecycle > rejects duplicate publication before building another candidate 2ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts > AgentOrgRunManager lifecycle > closes new root admission without disturbing the active Org 1ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > allocates exactly one Agent-only Team and preserves authored handoff/rule order 4ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects configured Team members before allocating execution identities 1ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects 'missing root' before allocation 1ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects 'extra Team scope' before allocation 1ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects 'missing Agent' before allocation 0ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects 'unknown Agent' before allocation 1ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects 'wrong definition' before allocation 0ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects 'divergent skill policy' before allocation 0ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > rejects an admitted definition identity mismatch 1ms
+ ✓ tests/unit/agent-team-execution/flat-team-topology-planner.test.ts > FlatTeamTopologyPlanner > builds configuration-first launch inputs for every direct Agent 0ms
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts > root-neutral current task lifecycle invariants > checks current-schema readiness before task preparation 4ms
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts > root-neutral current task lifecycle invariants > builds the bound assignee packet without exposing a task id 1ms
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts > root-neutral current task lifecycle invariants > settles terminal descendants before their owning parent during shutdown 2ms
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts > root-neutral current task lifecycle invariants > does not abort prepared work after persistence finalization becomes indeterminate 1ms
+stdout | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/run-history/team-run-v2-package-schema.test.ts > TeamRun V2 state package > strictly validates one native flat Team tree with exact Team sidecars 2ms
+ ✓ tests/unit/run-history/team-run-v2-package-schema.test.ts > TeamRun V2 state package > rejects the retired V1 tree from the current reader 2ms
+ ✓ tests/unit/run-history/team-run-v2-package-schema.test.ts > TeamRun V2 state package > rejects unknown fields instead of normalizing them 0ms
+stdout | tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > returns only the bound sender's ordered outgoing handoffs in canonical AutoByteus JSON
+Successfully registered tool definition: 'get_handoff_rules'
+
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > returns only the bound sender's ordered outgoing handoffs in canonical AutoByteus JSON 3ms
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > treats no outgoing handoffs as a successful empty result 0ms
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > rejects outside Team collaboration context 0ms
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > keeps the MCP adapter unavailable outside Team context 1ms
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts > get_handoff_rules > keeps the actual MCP provider envelope equal to the native service result 1ms
+stdout | tests/unit/agent-team-execution/flat-team-execution-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts > TeamCommunicationMessageProcessor > emits one normalized message-centric event for an accepted inter-agent message with child references 2ms
+ ✓ tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts > TeamCommunicationMessageProcessor > does not emit file-first sidecar events or scan prose paths 0ms
+ ✓ tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts > TeamCommunicationMessageProcessor > skips raw inter-agent messages without required message metadata 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 10 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts [ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts ]
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts [ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts ]
+ FAIL  tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts [ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts ]
+ FAIL  tests/unit/agent-communication/global-agent-run-message-router.test.ts [ tests/unit/agent-communication/global-agent-run-message-router.test.ts ]
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts [ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts ]
+ FAIL  tests/unit/agent-team-definition/agent-team-definition-service.test.ts [ tests/unit/agent-team-definition/agent-team-definition-service.test.ts ]
+ FAIL  tests/unit/agent-team-execution/flat-team-execution-factory.test.ts [ tests/unit/agent-team-execution/flat-team-execution-factory.test.ts ]
+ FAIL  tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts [ tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts ]
+ FAIL  tests/unit/agent-tools/team-communication/send-message-to.test.ts [ tests/unit/agent-tools/team-communication/send-message-to.test.ts ]
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts:17:7
+  5  |    APPLICATION_MANIFEST_VERSION,
+  6  |    parseApplicationAgentToolDeclarations
+  7  |  } from "@autobyteus/application-sdk-contracts";
+     |          ^
+  8  |  export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
+  9  |  const SLOT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+
+ Test Files  10 failed | 15 passed (25)
+      Tests  78 passed (78)
+   Start at  11:44:27
+   Duration  26.71s (transform 4.07s, setup 147ms, import 2.72s, tests 741ms, environment 2ms)
+

@@ -1,0 +1,27 @@
+(node:7126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+{"level":30,"time":1788705638390,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":1.1819580048322678,"msg":"http request completed"}
+{"level":30,"time":1788705638398,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-2","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":202,"elapsedMs":0.3639589995145798,"msg":"http request completed"}
+{"level":30,"time":1788705638400,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-3","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":0.619208998978138,"msg":"http request completed"}
+{"level":30,"time":1788705638515,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":200,"elapsedMs":0.715999998152256,"msg":"http request completed"}
+{"level":30,"time":1788705638516,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":202,"elapsedMs":0.4259580001235008,"msg":"http request completed"}
+{"level":30,"time":1788705638523,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-6","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":200,"elapsedMs":5.947499997913837,"msg":"http request completed"}
+Published codex_app_server agent run 'aorg_e2e_lead_40ab463de3a341a18ba9756664500250'.
+Published codex_app_server agent run 'aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726'.
+Published codex_app_server agent run 'aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26'.
+{"level":30,"time":1788705638600,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-7","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":200,"elapsedMs":1.0185410007834435,"msg":"http request completed"}
+{"level":30,"time":1788705638602,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-8","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":202,"elapsedMs":0.2718750014901161,"msg":"http request completed"}
+{"level":30,"time":1788705638608,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-9","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":200,"elapsedMs":0.7504170015454292,"msg":"http request completed"}
+Agent team websocket attached for team run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Created agent session 0f880771-7b74-46f9-8a59-9595d0ed2caf for run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Agent Team WebSocket connected: session=0f880771-7b74-46f9-8a59-9595d0ed2caf, run=aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a

@@ -82,8 +82,8 @@ const assertDraftMutable = (
 }
 const currentMemberTree = (config: Readonly<TeamRunConfig>): readonly TeamDefinitionMemberNode[] | null => {
   const definitions = useAgentTeamDefinitionStore()
-  const definition = definitions.getAgentTeamDefinitionById(config.teamDefinitionId)
-  return definition ? buildTeamMemberTreeFromDefinition(definition, { getTeamDefinitionById: definitions.getAgentTeamDefinitionById }) : null
+  const definition = definitions.getCatalogAgentTeamDefinitionById(config.teamDefinitionId)
+  return definition ? buildTeamMemberTreeFromDefinition(definition, { getTeamDefinitionById: definitions.getCatalogAgentTeamDefinitionById }) : null
 }
 const requireMemberTree = (config: Readonly<TeamRunConfig>): readonly TeamDefinitionMemberNode[] => {
   const tree = currentMemberTree(config)
@@ -250,7 +250,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
     setTemplate(definition: AgentTeamDefinition) { this.createDraft(buildTeamRunTemplate(definition), normalizeMemberAddress(definition.coordinatorMemberName)) },
     setConfig(config: TeamRunConfig) {
-      const definition = useAgentTeamDefinitionStore().getAgentTeamDefinitionById(config.teamDefinitionId)
+      const definition = useAgentTeamDefinitionStore().getCatalogAgentTeamDefinitionById(config.teamDefinitionId)
       this.createDraft(config, normalizeMemberAddress(definition?.coordinatorMemberName || Object.keys(config.agentOverrides)[0] || 'coordinator'))
     },
     applyConfigEdit(edit: TeamLaunchConfigEdit) {

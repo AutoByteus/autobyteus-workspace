@@ -17,7 +17,7 @@
 
         <div>
           <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.type') }}</p>
-          <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.typeAgent') : $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.typeTeam') }}</p>
+          <p class="mt-1 text-sm text-slate-900">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.typeAgent') }}</p>
         </div>
 
         <div>
@@ -33,7 +33,6 @@
         <div>
           <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.coordinator') }}</p>
           <div
-            v-if="selectedNode.refType === 'AGENT'"
             class="mt-1 inline-flex items-center gap-2 text-sm text-slate-800"
           >
             <span>{{ coordinatorEnabled ? $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.statusEnabled') : $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.statusDisabled') }}</span>
@@ -53,7 +52,6 @@
               />
             </button>
           </div>
-          <p v-else class="mt-1 text-sm text-slate-500">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.only_agent_members_can_be_coordinator') }}</p>
         </div>
       </div>
     </template>

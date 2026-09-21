@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it } from "vitest";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
@@ -6,7 +7,7 @@ import { projectTeamAgentEventMessage } from "../../../src/services/agent-stream
 
 const runId = "team-member-run";
 const execution = createTeamAgentExecutionBinding({
-  rootTeamRunId: "root-team-run",
+  root: createTeamRootExecutionIdentity("root-team-run"),
   memberAddress: "/Researcher",
   agentRunId: runId,
 });

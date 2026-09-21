@@ -2,24 +2,26 @@
 
 ## Scope
 
-Manages current Team runs, immutable topology, runtime-specific Agent members,
-exact nested execution addressing, task delegation, restore, and Team event
-projection through one server-owned boundary.
+Manages standalone flat Team runs, immutable direct-Agent topology,
+runtime-specific Agent members, exact execution addressing, task delegation,
+restore, and Team event projection through one server-owned boundary. Persistent
+multi-Team composition belongs to [Agent Organization](./agent_orgs.md), not to
+the Team runtime.
 
 ## Backend And Topology Model
 
-- `TeamBackendKind.MIXED` is the only active server Team orchestration backend.
-  Homogeneous AutoByteus, Codex, Claude, heterogeneous, and nested definitions
-  all use `MixedTeamManager`.
-- `TeamRunService` resolves the complete definition graph before launch and
-  builds one immutable rooted topology. Every Agent and AgentTeam placement has
-  one canonical rooted `AgentTeamAddress`, such as `/review_team/reviewer`.
-- `TeamRunConfig.rootTeam` and its derived topology index are runtime authority.
-  Logical member names, paths, route keys, flat rosters, runtime ID parsing, and
-  browser tree state are not alternative topology authorities.
-- Each Agent placement owns one runtime-specific `AgentRun`. A persistent nested
-  AgentTeam owns a child `TeamRun`; its Agents retain root collaboration
-  addresses while runtime traversal remains internal to the manager tree.
+- `TeamBackendKind.MIXED` remains the persisted backend-kind value, but current
+  execution is constructed by `FlatTeamExecutionFactory`,
+  `FlatTeamRunBackend`, and `FlatTeamExecutionManager`.
+- `TeamRunService` and `FlatTeamTopologyPlanner` resolve one AgentTeam Definition
+  V2 before launch. The root Team is `/`; all configured children are direct
+  Agents, and exactly one is the configured coordinator.
+- `TeamRunConfig.rootTeam` and its derived execution index are runtime
+  authority. Logical names, flat roster projections, provider IDs, and browser
+  state are not alternative topology authorities.
+- Configured Team-in-Team composition is rejected. A Team delegated for a task
+  is a task-scoped runtime execution beneath its exact host and does not mutate
+  configured membership or become a persistent configured child.
 - Per-Agent runtime selection stays below the Team boundary. `AgentRunManager`
   selects the AutoByteus, Codex, or Claude backend from each launch setting.
   Each execution family injects its own provider factories, definition
@@ -29,15 +31,13 @@ projection through one server-owned boundary.
 
 ## Launch-Time Identity
 
-Public launch input contains `teamDefinitionId`, one complete configuration for
-every exact Team address, and one complete configuration for every exact Agent
-address; callers do not choose concrete run identities. `TeamRunService`
-canonicalizes and activates all requested Team/Agent workspace roots, then
-`TeamDefinitionTopologyPlanner` resolves the complete definition graph and
-validates exact Team/Agent coverage, subject kinds, definition bindings, and
-root-inherited skill access. No run identity is allocated until that validation
-passes. The planner then allocates the root/nested TeamRun IDs and AgentRun IDs,
-binds their canonical addresses, and produces one immutable `TeamRunConfig`.
+Public launch input contains `teamDefinitionId`, one complete root Team default,
+and one complete configuration for every exact direct-Agent address; callers do
+not choose concrete run identities. `TeamRunService` canonicalizes workspace
+roots, and `FlatTeamTopologyPlanner` validates the flat definition, coordinator,
+exact Agent coverage, definition bindings, and configured skill access before
+allocating a root TeamRun ID and direct AgentRun IDs. The result is one immutable
+`TeamRunConfig`.
 
 IDs are opaque runtime/storage identities. Names/slugs can improve readability
 but must never be parsed for routing, task ownership, restore, or UI identity.
@@ -47,21 +47,21 @@ local AgentRun identity. For current Team execution trees,
 continuation uses the local AgentRun ID plus its persisted memory state, and new
 native nodes keep `platformAgentRunId: null`.
 
-Member memory is root-hierarchical. `TeamRunPhysicalScope` is immutable execution
-context: the root starts with an empty ancestor chain and each concrete child
-TeamRun appends its own TeamRun ID exactly once. Every direct configured member,
-task Agent, task-Team member, and deeper nested member passes its containing
-TeamRun scope to `AgentMemoryLocationService`; the persisted V2 execution tree
-derives the same scope for cold reads. Consumers do not derive a fallback path
-from a logical address or provider ID.
+Member memory is root-hierarchical. A standalone Team begins with the Team root
+identity and an empty task-Team ancestor chain. Direct configured Agents use the
+root TeamRun ID plus their AgentRun ID. A task Team appends its concrete
+TeamRun ID to the immutable `RootExecutionPhysicalScope`; its Agent and deeper
+task-Team descendants use that task ancestry. `RootedAgentMemoryLocator` owns
+physical path resolution. Consumers do not derive paths from logical addresses
+or provider IDs.
 
 Required startup migration `20260823_repair_team_agent_memory_layout` contains
-the only knowledge of the defective flat nested-member location. It moves each
-unambiguous whole directory admitted by a validated migration-owned V1
-intermediate tree into the
-canonical scope, leaves direct-root/current/unrelated data alone, and uses the
-existing migration record/manual Retry path for failures or bounded warnings.
-Current Team runtime and history code remain canonical-only.
+the only knowledge of the previously released nested-member memory defect. The
+later required startup cutover
+`20260901_agent_org_flat_team_families_v1` classifies prior fixed-depth Team V2
+packages: native flat Team packages remain Team V2 without writes, while the
+supported former multi-Team shape becomes the separate AgentOrg V1 family.
+Current Team runtime and history remain target-schema-only.
 
 ## Canonical Execution Address
 
@@ -77,43 +77,49 @@ type TeamExecutionAddress = Readonly<{
 }>;
 ```
 
-- persistent Agent: empty task-Team chain and `taskAgentRunId: null`;
+- direct configured Agent: empty task-Team chain and `taskAgentRunId: null`;
 - delegated task Agent: empty task-Team chain and its exact allocated
   `taskAgentRunId`;
 - Agent inside a task Team: ordered concrete `taskTeamRunIds`, its canonical
-  member placement, and `taskAgentRunId: null`;
-- nested task Teams append run IDs in traversal order.
+  member address, and `taskAgentRunId: null`;
+- nested task Teams append their run IDs in traversal order.
 
 ## Runtime Composition Path
 
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
-| Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
-| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance; native core then appends only the terminal configured Skills catalog. |
-| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries; native Bash/file guidance is excluded. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically included in effective team tool exposure and routed through Agent Tools MCP. |
+| Current standalone Team run | `FlatTeamExecutionManager` | Each configured Agent owns one runtime-specific `AgentRun`; delegated task Teams are task-scoped child executions | `ConfiguredAgentExecutionRegistry`, `TaskAgentExecutionRegistry`, and `TaskTeamExecutionRegistry` keep configured and task lifecycles distinct. |
+| AutoByteus member | `FlatTeamAgentExecutionHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance. |
+| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically exposed through Agent Tools MCP. |
 
 ## Durable Member Activation And Restore
 
 Root create versus restore intent is explicit process-local materialization
-state. `AgentTeamRunManager` passes it through the mixed root, configured-member
-registry, and persistent nested subteams; configured handles do not infer a
-restored native run from `platformAgentRunId`. Before any candidate is built,
-the handle canonicalizes and reactivates the persisted workspace through
+state. `AgentTeamRunManager` passes it through `FlatTeamExecutionFactory` and
+the configured-Agent registry; handles do not infer a restored native run from
+`platformAgentRunId`. Before a candidate is built, a handle canonicalizes and
+reactivates the persisted workspace through
 `WorkspaceManager.ensureWorkspaceByRootPath(...)`.
 
-Each configured Agent handle and configured subteam handle owns one readiness
-attempt. Concurrent commands join that attempt. `AgentRunManager` returns a
-private activation candidate that is not visible through active lookup and has
-no input/event surface until the governing durability step succeeds:
+Each configured Agent handle owns one readiness attempt. Concurrent commands
+join that attempt. `AgentRunManager` returns a private activation candidate that
+is not visible through active lookup and has no input/event surface until the
+governing durability step succeeds:
 
-- A fresh external member creates one provider conversation and stages its
-  exact non-local ID as a `TeamAgentPlatformBinding`. `RootTeamRun` adopts that
-  binding through a lock-head execution-tree mutation before candidate
-  publication.
-- A restored external member must have an exact persisted provider binding.
-  Local conversation activity with a null binding is an explicit non-resumable
-  failure, not permission to create a replacement. Codex resume has no
-  start-thread fallback; Claude resumes the same preselected UUID.
+- At first work, a configured external member carries the complete
+  `CollaborationAgentPlatformBindingChange` through the root-owned callback.
+  `RootTeamRun.commitAgentPlatformBindingChange` commits against the current
+  tree under its persistence lock before local cache update, candidate
+  publication, or input acceptance.
+- A restored external member with real conversation activity continues its
+  exact persisted provider binding. Activity with a null binding fails closed,
+  not by creating a replacement. Codex resume has no start-thread fallback;
+  Claude resumes the same preselected UUID.
+- Verified absence of conversation activity permits a new provider conversation.
+  A retained non-null empty-conversation binding is replaced only after an
+  expected-old comparison in that same durable root boundary. Unreadable
+  activity never permits replacement. This uses the current storage format;
+  no migration or reset is needed.
 - A restored native member with canonical prior activity restores the same
   local AgentRun ID, memory directory, and WorkingContext. A restored native
   member with no activity may create fresh. Native members never stage or adopt
@@ -121,8 +127,8 @@ no input/event surface until the governing durability step succeeds:
   closed.
 - A delegated task Agent is always a fresh execution. An external task binding
   is applied to the same lock-head tree snapshot as task activation, and both
-  tree/task durability finish before candidate publication and work release.
-  Native task Agents stage no provider binding.
+  tree/task durability finish before publication and work release. Native task
+  Agents stage no provider binding.
 
 A failed pre-durability attempt aborts the private candidate and is retryable
 only after cleanup is confirmed. An indeterminate durable write, publication
@@ -133,7 +139,7 @@ Task delegation receives narrow capabilities from
 `createTaskExecutionIdentityCapabilities(...)` rather than an Agent manager or
 allocator object. The task path may allocate and inspect only the identities it
 needs, preserving the same General Process versus Application execution-family
-boundary for task Agents and task Teams.
+boundary used elsewhere.
 
 ## Stopped Team Model Configuration
 
@@ -144,11 +150,12 @@ or non-cataloged packages, and writes the current V2 execution tree through the
 existing atomic tree store. Save-first therefore makes the new values visible
 to the next restore; restore-first returns `RUN_ACTIVE` without writing.
 
-Each patch targets one exact configured Team or configured Agent address.
-`TeamRunModelConfigMutator` resolves that address in the immutable stored
-topology and replaces only `llmModelIdentifier` and `llmConfig` in that scope's
-`defaultLaunchConfiguration` or `launchConfiguration`. Both fields are required
-per patch; `llmConfig` may explicitly be null. It cannot change runtime kind,
+Each patch targets the root Team address `/` or one exact direct configured
+Agent address. `TeamRunModelConfigMutator` resolves that address in the
+immutable stored topology and replaces only
+`llmModelIdentifier` and `llmConfig` in `defaultLaunchConfiguration` or
+`launchConfiguration`. Both fields are required; `llmConfig` may explicitly be
+null. It cannot change runtime kind,
 workspace, automatic-tool policy, concrete run IDs, provider bindings, task
 nodes, hierarchy, or addresses. Every intended scope validates against its own
 original saved selection and fixed runtime before the single tree write. A
@@ -160,10 +167,9 @@ the whole Save; it is not silently omitted. See
 
 The browser may plan bounded propagation from a parent edit, but the server
 receives the resulting exact-scope patches rather than inheritance intent. The
-planner links descendants using draft-start runtime/model/settings equality.
-Parent pair edits follow only those original links; descendants that started
-divergent or were explicitly edited directly remain unchanged, even if a direct
-edit later equals its parent. Mixed-runtime branches do not link,
+planner links direct Agents using draft-start runtime/model/settings equality.
+It preserves Agents that started divergent or were edited directly, even when a
+later direct edit equals its parent. Mixed-runtime Agents do not link,
 and stopped-run editing exposes no Reset-to-definition action because the V2
 snapshot does not preserve original override provenance. No configuration
 revision, rebase, or cross-client merge protocol is part of this boundary.
@@ -181,14 +187,15 @@ resume reads locked and direct stopped updates at `RUN_ACTIVE`; terminal release
 restores ordinary General eligibility. See [Run History](./run_history.md) and
 [Application Orchestration](./application_orchestration.md).
 
-## Nested Member Identity And Commands
+## Exact Member Identity And Commands
 
-The root ID must match the bound TeamRun. The member address must exist in the
-selected topology. Each task-Team ID must select the next active task Team, and
-the optional task-Agent ID must select the exact active task Agent for that
-logical member. Missing/stale/mismatched identity fails closed. There is no
-fallback to a coordinator, structural template, path, route key, name, task
-instance ID, generated browser identity, or first matching leaf.
+The root ID must match the bound TeamRun. A configured member address must name
+one direct Agent in the flat root. Each task-Team ID must select the next active
+task Team, and the optional task-Agent ID must select the exact active task
+Agent for that logical member. Missing, stale, or mismatched identity fails
+closed. There is no fallback to the coordinator, a structural template, route
+key, name, task instance ID, generated browser identity, or first matching
+leaf.
 
 ## Team Commands
 
@@ -202,8 +209,8 @@ The Team WebSocket accepts strict command DTOs from
   address emitted with the pending tool call.
 
 `AgentTeamStreamHandler` parses the DTO, verifies the root, and calls
-`TeamRun.executeMemberCommand(...)`. `MixedTeamManager` traverses the exact
-execution chain and dispatches to the selected persistent Agent, task Agent, or
+`TeamRun.executeMemberCommand(...)`. `FlatTeamExecutionManager` traverses the exact
+execution chain and dispatches to the selected configured Agent, task Agent, or
 task-Team Agent. Send may restore the root Team container as part of the
 supported Team follow-up path; interrupt and tool decisions are active-only and
 must not restore stopped work.
@@ -214,6 +221,25 @@ client `command_id` and execution address with `accepted`, `rejected`, or
 terminal status has already been projected.
 
 ## Root And Agent Lifecycle
+
+Fresh and restored standalone Teams and Org-mounted Teams pass
+`prepareConfiguredAgents: false`. The full configured topology is available,
+but configured Agents remain unstarted and Offline until required by work.
+Restore retains its mode, member identity, history and saved provider binding;
+Offline does not mean that a retained member has no history or binding.
+The first supported input or peer delivery activates only its exact receiver;
+selecting a row or publishing the root is not worker startup. Concurrent first
+inputs for the same member share one readiness attempt. Different members
+prepare independently and serialize only their root persistence mutations.
+This is an execution policy, not a UI color/status override. Work-bearing task
+preparation still stages identity before durable task publication and release.
+An uncertain commit or post-durability local/publication failure is nonretryable
+until safe root reopen; a definite failed write can retry after confirmed cleanup.
+Reopening is a safety/reconciliation boundary, not permission to replay an old
+message automatically. Distinguish a pending send whose admission was lost from
+an input already accepted before process loss. Inspect canonical state and use
+the existing deliberate-input path; do not infer acceptance from frame deliveries
+across multiple browser tabs or from an unchanged status color.
 
 `AgentTeamRunManager` alone owns root Team liveness. Its lookup vocabulary is
 deliberately precise:
@@ -267,9 +293,9 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
    `offline` or whose Stop is pending, exposes **Stop** only. Member status is
    not root terminality and never authorizes deletion.
 2. Stop targets the exact root TeamRun ID, closes new materialization admission,
-   joins work already admitted, freezes one recursive scope, interrupts active
-   turns before quiescence, and terminates every materialized configured,
-   delegated, and nested descendant. Each published Agent member delegates
+   joins work already admitted, freezes the root plus its task-execution scope,
+   interrupts active turns before quiescence, and terminates every materialized
+   configured Agent and task-scoped descendant. Each published Agent member delegates
    reversible preparation and committed finish to
    `AgentRunManager.prepareAgentRunTermination(expectedRun)`; a cancelled or
    rejected finish retains its active run/session, while an accepted finish is
@@ -427,7 +453,7 @@ by `src/agent-communication`; it does not create Team Communication projection.
 
 ## Canonical Team Events And WebSocket Projection
 
-Mixed Agent member handles subscribe to post-pipeline `AgentRunEvent`s, verify
+Flat Team Agent execution handles subscribe to post-pipeline `AgentRunEvent`s, verify
 the real AgentRun binding, and call the sole
 `createTeamAgentExecutionBinding(...)` constructor. It classifies persistent
 Agent, task Agent, and task-Team Agent identities. `TeamAgentEventAdapter` maps
@@ -472,16 +498,15 @@ replace the normal post-activation event-egress contract.
 ## Restore And Persistence
 
 - `team_run_execution_tree.json` is the canonical immutable V2 runtime tree.
-  The root and every configured nested Team store a complete
-  `defaultLaunchConfiguration`; every configured Agent stores a complete
-  `launchConfiguration`.
+  Its single root Team stores a complete `defaultLaunchConfiguration`; every
+  direct configured Agent stores a complete `launchConfiguration`.
 - Stored handoffs are the immutable launch-time compiled snapshot. Restore does
   not recompile current definition files.
 - Stored concrete AgentRun/TeamRun IDs and provider resume IDs are data; public
   new-launch input cannot supply them.
-- Persistent nested TeamRuns restore through their parent topology. Task
-  executions are represented by their concrete address and retained task
-  records; stale records alone do not recreate an active execution.
+- There are no persistent configured child TeamRuns. Task executions are
+  represented by their concrete execution address and retained task records;
+  stale records alone do not recreate an active execution.
 - `TeamRunService.resolveActiveTeamRun(teamRunId)` is the supported
   restore-aware root lookup for Team connection/send flows. It may restore an
   unmanaged persisted root, but it returns no replacement while the exact root
@@ -527,8 +552,13 @@ The required startup sequence has three distinct Team package stages:
 3. `20260824_team_run_execution_tree_v2` transforms exact V1 trees to exact V2.
    It maps legacy runtime labels to current runtime values, sets the root address
    to `/`, preserves IDs, topology, Agent snapshots, tasks, handoffs, application
-   binding, and timestamps, and materializes each Team's complete default from
-   its unique persisted direct coordinator Agent snapshot.
+   binding, and timestamps, and materializes Team defaults from direct
+   coordinator Agent snapshots.
+4. `20260901_agent_org_flat_team_families_v1` performs the final fixed-depth
+   split. Exact native flat Team V2 packages are validated and left in place;
+   supported former organization-like Team packages move atomically to the
+   AgentOrg V1 family. Unsupported or conflicting items remain unavailable and
+   retry on the next startup; current readers never decode the retired shape.
 
 The V2 migration is required on startup, has `ANYTIME` policy, and depends on the
 memory-layout migration. Exact V2 files are idempotently skipped. Missing,
@@ -547,54 +577,39 @@ from a coordinator. The dated configured-recovery branch is not a migration or
 runtime input.
 
 The execution tree owns Team identity, definition, creation/archive facts,
-application binding, handoffs, complete configured topology, task execution
-snapshots, and launch configuration. The Team history index owns list-oriented
-summary and termination facts. Normal catalogs do not scan predecessor metadata
-or manufacture missing packages.
+application binding, handoffs, the flat configured-Agent topology, task
+execution snapshots, and launch configuration. The Team history index owns
+list-oriented summary and termination facts. Normal catalogs do not scan
+predecessor metadata or manufacture missing packages. AgentOrg packages and
+history indexes are documented separately in [Agent Organization](./agent_orgs.md).
 
 ## TS Source
 
-- `src/agent-team-execution/domain/team-member-execution-identity.ts`
 - `src/agent-team-execution/domain/team-agent-execution-binding.ts`
 - `src/agent-team-execution/domain/team-run-config.ts`
 - `src/agent-team-execution/domain/team-run-execution-tree.ts`
 - `src/agent-team-execution/domain/team-run.ts`
+- `src/agent-team-execution/local/flat-team-execution-factory.ts`
+- `src/agent-team-execution/local/flat-team-execution-manager.ts`
+- `src/agent-team-execution/local/flat-team-run-backend.ts`
+- `src/agent-team-execution/local/registries/configured-agent-execution-registry.ts`
+- `src/agent-team-execution/local/registries/task-agent-execution-registry.ts`
+- `src/agent-team-execution/local/registries/task-team-execution-registry.ts`
+- `src/agent-team-execution/services/flat-team-topology-planner.ts`
 - `src/agent-team-execution/services/team-run-service.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts`
 - `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
 - `src/agent-team-execution/services/team-run-persistence-coordinator.ts`
-- `src/agent-team-execution/services/team-definition-topology-planner.ts`
-- `src/agent-team-execution/services/team-logical-placement-resolver.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
 - `src/agent-team-execution/services/member-collaboration-instruction-renderer.ts`
 - `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
-- `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.ts`
 - `src/agent-team-execution/services/member-command-status-overlay-store.ts`
 - `src/agent-team-execution/services/team-agent-event-adapter.ts`
 - `src/agent-team-execution/task-delegation`
-- `src/agent-team-execution/backends/mixed`
+- `src/agent-collaboration/execution`
 - `src/agent-tools/task-delegation`
 - `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
-- `src/app-data-migrations/migrations/team-run-migration-state-classifier.ts`
-- `src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-metadata-converter.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-task-delegation-converter.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-predecessor-source-resolver.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.ts`
-- `src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.ts`
-- `src/run-history/services/team-run-history-index-row-projector.ts`
-- `src/run-history/services/team-run-package-catalog.ts`
-- `src/run-history/services/team-run-state-package-loader.ts`
-- `src/run-history/store/team-run-execution-tree-store.ts`
-- `src/run-history/store/team-run-history-index-store.ts`
-- `@autobyteus/team-stream-contracts`
+- `src/app-data-migrations/migrations/agent-org-flat-team-families-v1`

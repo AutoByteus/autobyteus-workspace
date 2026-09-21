@@ -1,0 +1,94 @@
+{
+  "thresholdMs": 10000,
+  "profile": "owned representative clone (redacted)",
+  "launches": [
+    {
+      "run": 1,
+      "serverPid": 29311,
+      "processStartAt": "2026-09-18T10:00:23.743Z",
+      "listenMs": 4839.0,
+      "firstHealthMs": 4962.68,
+      "underThreshold": true,
+      "migrationStartMs": 3807.938,
+      "migrationEndMs": 3951.964,
+      "failedMigrations": [
+        {
+          "migrationId": "20260901_agent_org_flat_team_families_v1",
+          "status": "FAILED",
+          "attempts": 24,
+          "detailCount": null
+        }
+      ],
+      "failedMigrationEightItemWarning": true,
+      "readinessStartMs": 3952.494,
+      "readinessEndMs": 4396.714,
+      "admittedTeams": 518,
+      "admittedOrgs": 17,
+      "diagnostics": 8,
+      "rawTraceReadCount": 0,
+      "externalFetchCount": 0,
+      "healthStatus": 200,
+      "cleanShutdown": true
+    },
+    {
+      "run": 2,
+      "serverPid": 30287,
+      "processStartAt": "2026-09-18T10:00:50.602Z",
+      "listenMs": 2137.0,
+      "firstHealthMs": 2184.234,
+      "underThreshold": true,
+      "migrationStartMs": 1254.577,
+      "migrationEndMs": 1363.601,
+      "failedMigrations": [
+        {
+          "migrationId": "20260901_agent_org_flat_team_families_v1",
+          "status": "FAILED",
+          "attempts": 25,
+          "detailCount": null
+        }
+      ],
+      "failedMigrationEightItemWarning": true,
+      "readinessStartMs": 1364.037,
+      "readinessEndMs": 1741.764,
+      "admittedTeams": 518,
+      "admittedOrgs": 17,
+      "diagnostics": 8,
+      "rawTraceReadCount": 0,
+      "externalFetchCount": 0,
+      "healthStatus": 200,
+      "cleanShutdown": true
+    },
+    {
+      "run": 3,
+      "serverPid": 30359,
+      "processStartAt": "2026-09-18T10:00:53.487Z",
+      "listenMs": 2105.0,
+      "firstHealthMs": 2188.935,
+      "underThreshold": true,
+      "migrationStartMs": 1225.465,
+      "migrationEndMs": 1331.41,
+      "failedMigrations": [
+        {
+          "migrationId": "20260901_agent_org_flat_team_families_v1",
+          "status": "FAILED",
+          "attempts": 26,
+          "detailCount": null
+        }
+      ],
+      "failedMigrationEightItemWarning": true,
+      "readinessStartMs": 1331.81,
+      "readinessEndMs": 1701.236,
+      "admittedTeams": 518,
+      "admittedOrgs": 17,
+      "diagnostics": 8,
+      "rawTraceReadCount": 0,
+      "externalFetchCount": 0,
+      "healthStatus": 200,
+      "cleanShutdown": true
+    }
+  ],
+  "allUnderThreshold": true,
+  "totalRawTraceReads": 0,
+  "totalExternalFetches": 0,
+  "warningPreservedAll": true
+}

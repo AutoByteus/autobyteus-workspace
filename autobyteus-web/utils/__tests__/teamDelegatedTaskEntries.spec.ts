@@ -8,6 +8,11 @@ import {
 } from '~/test-support/currentTeamTestFixtures';
 import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries';
 
+const agent = (label: string, agentRunId: string, address = `/${label}`) => ({ kind: 'named', targetKind: 'agent', label, link: { label, agentRunId, address } });
+const taskTeam = { kind: 'named', targetKind: 'task_team', label: 'design_team', teamRunId: 'task-team-run', participants: [
+  { agentRunId: 'task-team-run:team-lead-run', address: '/design_team/team_lead', label: 'team_lead' },
+  { agentRunId: 'task-team-run:design-worker-run', address: '/design_team/worker', label: 'worker' },
+] };
 const ROOT = 'root-team-run';
 const TIME = '2026-08-20T10:00:00.000Z';
 const reference = (id: string, path: string) => ({
@@ -91,7 +96,7 @@ describe('deriveDelegatedTaskEntries', () => {
     expect(deriveDelegatedTaskEntries(context, 'coordinator-run')).toEqual([{
       kind: 'task_agent',
       entryKey: 'task:task-cycle',
-      teamRunId: ROOT,
+      root: { kind: 'agent_team', runId: ROOT },
       taskId: 'task-cycle',
       runId: 'task-worker-run',
       displayStatus: 'accepted',
@@ -100,33 +105,33 @@ describe('deriveDelegatedTaskEntries', () => {
         {
           kind: 'assignment', itemKey: 'task:task-cycle:assignment', createdAt: '2026-08-20T10:10:00.000Z',
           content: 'Prepare the proposal.',
-          direction: { kind: 'directed', from: { kind: 'named', label: 'coordinator' }, to: { kind: 'named', label: 'worker' } },
+          direction: { kind: 'directed', from: agent('coordinator', 'coordinator-run'), to: agent('worker', 'task-worker-run') },
           referenceFiles: [expect.objectContaining({ referenceId: 'root-ref', path: '/tmp/requirements.md' })],
         },
         {
           kind: 'submission', itemKey: 'task:task-cycle:submission:submission-1', createdAt: '2026-08-20T10:28:00.000Z',
           content: 'Initial proposal.',
-          direction: { kind: 'directed', from: { kind: 'named', label: 'worker' }, to: { kind: 'named', label: 'coordinator' } },
+          direction: { kind: 'directed', from: agent('worker', 'task-worker-run'), to: agent('coordinator', 'coordinator-run') },
           referenceFiles: [expect.objectContaining({ referenceId: 'submission-ref', path: '/tmp/proposal.md' })],
           resultOrdinal: 1, revised: false,
         },
         {
           kind: 'review', decision: 'request_revision', itemKey: 'task:task-cycle:review:review-1',
           createdAt: '2026-08-20T10:42:00.000Z', content: 'Keep the current layout.',
-          direction: { kind: 'directed', from: { kind: 'named', label: 'coordinator' }, to: { kind: 'named', label: 'worker' } },
+          direction: { kind: 'directed', from: agent('coordinator', 'coordinator-run'), to: agent('worker', 'task-worker-run') },
           referenceFiles: [expect.objectContaining({ referenceId: 'review-ref', path: '/tmp/feedback.md' })],
           reviewedResultOrdinal: 1,
         },
         {
           kind: 'submission', itemKey: 'task:task-cycle:submission:submission-2', createdAt: '2026-08-20T11:06:00.000Z',
           content: 'Revised proposal.',
-          direction: { kind: 'directed', from: { kind: 'named', label: 'worker' }, to: { kind: 'named', label: 'coordinator' } },
+          direction: { kind: 'directed', from: agent('worker', 'task-worker-run'), to: agent('coordinator', 'coordinator-run') },
           referenceFiles: [], resultOrdinal: 2, revised: true,
         },
         {
           kind: 'review', decision: 'accept', itemKey: 'task:task-cycle:review:review-2',
           createdAt: '2026-08-20T11:18:00.000Z', content: null,
-          direction: { kind: 'directed', from: { kind: 'named', label: 'coordinator' }, to: { kind: 'named', label: 'worker' } },
+          direction: { kind: 'directed', from: agent('coordinator', 'coordinator-run'), to: agent('worker', 'task-worker-run') },
           referenceFiles: [], reviewedResultOrdinal: 2,
         },
       ],
@@ -169,7 +174,7 @@ describe('deriveDelegatedTaskEntries', () => {
       'in_progress', 'awaiting_review', 'revision_requested', 'accepted', 'interrupted',
     ]);
     expect(entries.at(-1)?.lifecycleItems.at(-1)).toEqual(expect.objectContaining({
-      kind: 'interruption', content: 'Root TeamRun terminated.', direction: { kind: 'system' }, referenceFiles: [],
+      kind: 'interruption', content: 'Root TeamRun terminated.', direction: { kind: 'system', assignment: { from: agent('coordinator', 'coordinator-run'), to: agent('worker', 'interrupted-run') } }, referenceFiles: [],
     }));
   });
 
@@ -189,10 +194,10 @@ describe('deriveDelegatedTaskEntries', () => {
     const entry = deriveDelegatedTaskEntries(context, 'task-team-run:team-lead-run')[0];
     expect(entry).toEqual(expect.objectContaining({ taskId: 'task-team-1', kind: 'task_team', runId: 'task-team-run' }));
     expect(entry.lifecycleItems[0].direction).toEqual({
-      kind: 'directed', from: { kind: 'named', label: 'coordinator' }, to: { kind: 'named', label: 'design_team' },
+      kind: 'directed', from: agent('coordinator', 'coordinator-run'), to: taskTeam,
     });
     expect(entry.lifecycleItems[1].direction).toEqual({
-      kind: 'directed', from: { kind: 'named', label: 'design_team' }, to: { kind: 'named', label: 'coordinator' },
+      kind: 'directed', from: taskTeam, to: agent('coordinator', 'coordinator-run'),
     });
     expect(deriveDelegatedTaskEntries(context, 'team-lead-run')).toEqual([]);
   });

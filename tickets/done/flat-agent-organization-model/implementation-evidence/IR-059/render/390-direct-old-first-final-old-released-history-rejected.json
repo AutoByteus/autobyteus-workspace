@@ -1,0 +1,235 @@
+{
+  "errors": [],
+  "phase": "historical",
+  "active": false,
+  "address": "/director",
+  "exactRun": "agent-director",
+  "messages": [
+    {
+      "type": "ai",
+      "text": "Final retained output:agent-director",
+      "timestamp": "2023-11-14T22:13:21.000Z",
+      "isComplete": true,
+      "segments": [
+        {
+          "type": "text",
+          "content": "Final retained output:agent-director"
+        }
+      ],
+      "reasoning": null
+    }
+  ],
+  "activities": [
+    {
+      "kind": "tool",
+      "activityId": "Final retained output:agent-director",
+      "invocationId": "Final retained output:agent-director",
+      "toolName": "read_file",
+      "type": "tool_call",
+      "status": "success",
+      "contextText": "read_file",
+      "arguments": {},
+      "logs": [],
+      "result": "Final retained output",
+      "error": null,
+      "timestamp": "2023-11-14T22:13:21.000Z"
+    }
+  ],
+  "status": "offline",
+  "draft": "IR059 retained final draft",
+  "mode": "history",
+  "rootRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+  "pending": false,
+  "historyError": "Follow-up history unavailable",
+  "socketSends": 0,
+  "requests": [
+    {
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {},
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0"
+      },
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {},
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "independent": false,
+      "delivered": true
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {},
+      "independent": false,
+      "delivered": true
+    }
+  ],
+  "rows": [
+    {
+      "rootRunId": "ir059-b3afa333-166c-4e31-a472-e3e0f0cecce0",
+      "active": false,
+      "summary": "Exact retained conversation"
+    }
+  ]
+}

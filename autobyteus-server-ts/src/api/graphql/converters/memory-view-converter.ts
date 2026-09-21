@@ -35,6 +35,7 @@ export class MemoryViewConverter {
       toolResult: domainTrace.toolResult ?? null,
       toolError: domainTrace.toolError ?? null,
       media: domainTrace.media ?? null,
+      ...(domainTrace.scope === "turn" && domainTrace.fileAttachments?.length ? { fileAttachments: domainTrace.fileAttachments } : {}),
       turnId: domainTrace.turnId,
       seq: domainTrace.seq,
       ts: domainTrace.ts,

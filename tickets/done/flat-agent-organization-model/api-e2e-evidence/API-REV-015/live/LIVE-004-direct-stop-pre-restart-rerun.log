@@ -1,0 +1,16 @@
+{
+  "orgRunId": "aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30",
+  "beforeSha": "3beb46afaa3534fa9d79b39803b8aa3a7415c77bb6b6596a590fa873678c66a1",
+  "afterSha": "3beb46afaa3534fa9d79b39803b8aa3a7415c77bb6b6596a590fa873678c66a1",
+  "assertions": {
+    "oneMessage": true,
+    "byteIdentical": true,
+    "configurationRoute": true,
+    "noConnectingReconnect": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  },
+  "errors": [],
+  "responses": []
+}

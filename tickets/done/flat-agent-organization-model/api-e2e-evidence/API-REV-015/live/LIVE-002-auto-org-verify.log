@@ -1,0 +1,15 @@
+{
+  "orgRunId": "aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e",
+  "statusCount": 6,
+  "assertions": {
+    "exactActive": true,
+    "rootAuto": true,
+    "directAndMembersAuto": true,
+    "teamDefaultsAuto": true,
+    "completeSnapshot": true,
+    "sixUniqueStatuses": true,
+    "currentRootVisible": true,
+    "noNotice": true,
+    "noOverflow": true
+  }
+}

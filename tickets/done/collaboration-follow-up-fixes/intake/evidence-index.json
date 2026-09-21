@@ -1,0 +1,258 @@
+{
+  "package": "COLLAB-FOLLOWUP-001",
+  "revision": "RER-001",
+  "recordedAt": "2026-09-13T09:47:11.925460+00:00",
+  "baseBranch": "origin/requirements/flat-agent-organization-model",
+  "baseCommit": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+  "branch": "requirements/collaboration-follow-up-fixes",
+  "bootstrap": "Created isolated worktree after fetch and exact remote-head comparison; initially clean",
+  "priorPackageStatus": "Done, read-only; no reopening",
+  "runtimeValidation": "None performed by Requirements; source/archived evidence only",
+  "entries": [
+    {
+      "finding": "INV-001",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/known-issues.md",
+      "sha256": "d83f765e66bd56e5b04fd36e1c893159d342296ba280643f0477af172cf3b1f4",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-001",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/handoff-summary.md",
+      "sha256": "4c5c949698fcd0dfa51b1164054210a94258e69897657a59b7698f760e21ffb6",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-001",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/terminal-verification.json",
+      "sha256": "be0d0963db5f07c9d207c4293dc14fe414f714d86820b2eee5ee9cd15c133319",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-001",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/reference-resolution.json",
+      "sha256": "3e1ad4eb483772d65d10302d03bb4f5a21d148bc6b2174a7744611961f12f110",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-001",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/upstream-evidence-limits.md",
+      "sha256": "bb053604be263e1e468f920df4514ec68c0b538a74003c73b3c01e85d1445c8c",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-001",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/code-review-evidence/CRR-091/user-acceptance.json",
+      "sha256": "7298451dbf5eb19b2c510b8435add6acf8ee5c16deba87393513ffadeb55971d",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-002",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/USER-pre-message-status-regression.json",
+      "sha256": "6ba9a32d9f76e317f2a07c8c14f438b4f4173dc06185533d48655b72239e334a",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-002",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/USER-pre-message-status-source-comparison.json",
+      "sha256": "eceb2e579ad7db92fd6ab84c9faadf8d2039c8e4469e8969900d3119142fc4b0",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-004",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-mounted-result.json",
+      "sha256": "3ba7900f7ab22765ad7c3566d43bda27630b83bab670810cec3797365b75beb6",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-004",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-mounted-input.json",
+      "sha256": "29102bd3beca55e3749190e77d5ecb4b237fc482d1cb9a52e360d9ce621297dd",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-004",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-current.mjs",
+      "sha256": "49342f06adcb66b5fd7900a9da1dc7f3bc4531c215220ef22f2cf7334ad0d712",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-004",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-mounted-confirm-result.json",
+      "sha256": "9bd400edfeee5790018a9fb51770e3fc59c3910038af8e0b2c3043bafbb6fda8",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-004",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/LIVE-PUB-mounted-confirm-plan.json",
+      "sha256": "e143df7396f65360e24153ad7a77524d194c401b8d2c55f785c160a131ad4a1e",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-006",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/API-FIND-040-summary.json",
+      "sha256": "89449f1396a6434ef42055a2f9d4fe44fb1ee04567d6c9fc1011b433290f8170",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-006",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/NATIVE-file-only-result.json",
+      "sha256": "d84c00e482741360717d857ab17bf1d367848825b7c4a155ee49d6d7d1494508",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-006",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/NATIVE-file-only-open-initial-live.json",
+      "sha256": "40df851ec4a03c147baa1b6fb958b79b7787672d418e0aa8feccfac1e394216c",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-006",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/NATIVE-file-only-open-reopened.json",
+      "sha256": "e681fcc0e5644724662c3a62d532dfda772a0ebe3cb747c3475604255624cbd3",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-006",
+      "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/api-e2e-evidence/API-REV-038/live/USER-context-file-open-destination.json",
+      "sha256": "11ba7e04fb8207bb0c6127d89f4757373618f8e056562f1fb33f46abe5a43f85",
+      "kind": "historical-evidence-read-only"
+    },
+    {
+      "finding": "INV-002",
+      "path": "/home/autobyteus/data/memory/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/software_engineering_team_570be46d520142849ac61785be03dca1/api_e2e_engineer_d23a092db04042b69d944416be75d3b9/context_files/ctx_0eb4ee998fa5__image.png",
+      "sha256": "43a1e08ef2da65e62b1ffd05527368cb05aac976c30fe1e1686988f62cb59bbb",
+      "kind": "user-screenshot-viewed"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "repositoryRelative": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "3782a3652f7ec3c488df35d38686cadec96cfdc41ac84aa5881326bc522bcdb0",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+      "repositoryRelative": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "bc44e1588c8afc83ba40754ae43f5da78afe7a5b7d7a742b6299d80dad4d7b46",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "repositoryRelative": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "ddfcf905d4e7321025b8fe904e65c50678602faccca73cac6e95005ba79fcac1",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "repositoryRelative": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "4d93b64cac1a94310eb4ded3709fb084fe55ddce837ac7b4e104a208569a3a94",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/agentTeamRunStore.ts",
+      "repositoryRelative": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "770134170a132fe164e19c01063f9d414a20f175f1cbe7e8904b425d6cc793c5",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/agentTeams/AgentTeamDetail.vue",
+      "repositoryRelative": "autobyteus-web/components/agentTeams/AgentTeamDetail.vue",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "4ba6b1cf61ce5ba4f76d96972c55f43c270b1abfb6c397ab4207f5163f98cb34",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "repositoryRelative": "autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "a67b4fff2a6c57c0ee02ee55be55091d16a0457563f3dd980026eb8c014a3dde",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue",
+      "repositoryRelative": "autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "630a89bae9708a07f50616e4da8399731705e0f2d612c85771ed1c558deb1161",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts",
+      "repositoryRelative": "autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "750b318a736a0aff0e130f306fc40fa79abefa609e32110bb26043c78f0ac915",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/agentSelectionStore.ts",
+      "repositoryRelative": "autobyteus-web/stores/agentSelectionStore.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "ff1330b8de32e9fe1d50ca61a4013cb884d7877ecd3d8ea50a65ef18725178ec",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/agentRunStore.ts",
+      "repositoryRelative": "autobyteus-web/stores/agentRunStore.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "cb467a397d40a456d5c844acc8f72cdabb1df20d257992568237c0db91a4c103",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "repositoryRelative": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "76dd6eb2f311b69eac2af23dd9d3c35d7f0fe1682aa880d201c246c5d19023aa",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/agentContextsStore.ts",
+      "repositoryRelative": "autobyteus-web/stores/agentContextsStore.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "f112d2d7c69c604128c5f0ce3fa4fd99932d888b2794f54af6b9cf0d5ddbba8a",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/eventMonitor/recentEventMonitorMutationCoordinator.ts",
+      "repositoryRelative": "autobyteus-web/services/eventMonitor/recentEventMonitorMutationCoordinator.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "c86fec0de249d90707945f5a52356157ba7da32f85214875fa3c668d467073c5",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/utils/contextFiles/contextAttachmentPresentation.ts",
+      "repositoryRelative": "autobyteus-web/utils/contextFiles/contextAttachmentPresentation.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "ec122c4b427469c4ccbd34aa49c3adaf651adf6f37fad3696f0122d2b678e29d",
+      "kind": "current-source-read-only"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/conversation/UserMessage.vue",
+      "repositoryRelative": "autobyteus-web/components/conversation/UserMessage.vue",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "cb0bcb0d71a73a9e42531c1b999bc436200c004ec66085c3965515daf12c09fe",
+      "kind": "current-source-read-only"
+    },
+    {
+      "repositoryRelative": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
+      "revision": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+      "sha256": "5933623e2212d053e9a3bb4c34e7105334563846ae83e25538b7c6c4446a2f7a",
+      "kind": "immutable-original-source-comparison"
+    },
+    {
+      "repositoryRelative": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts",
+      "revision": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+      "sha256": "53aad9d3222a0339d8936909cf7032397216eae504b5b5cca71f31242c2f46e5",
+      "kind": "immutable-original-source-comparison"
+    },
+    {
+      "repositoryRelative": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts",
+      "revision": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+      "sha256": "698b6fd93a6a6a5da7861f09882a0e8a3a9b1b0ebca5480ccd55522bacc19123",
+      "kind": "immutable-original-source-comparison"
+    }
+  ]
+}

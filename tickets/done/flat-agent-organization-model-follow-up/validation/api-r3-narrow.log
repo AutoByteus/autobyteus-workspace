@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts (19 tests) 122ms
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  12:04:20
+   Duration  5.42s (transform 2.75s, setup 4.64s, collect 121ms, tests 122ms, environment 177ms, prepare 142ms)
+

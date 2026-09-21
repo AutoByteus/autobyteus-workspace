@@ -1,0 +1,1455 @@
+{
+  "navigationDiagnostic": [
+    {
+      "at": "2026-09-13T01:33:07.551Z",
+      "type": "click",
+      "details": {
+        "isTrusted": true,
+        "key": null,
+        "target": "agent-org-workspace-view",
+        "text": "",
+        "title": null
+      },
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead"
+    }
+  ],
+  "at": "2026-09-13T01:33:18.254Z",
+  "mode": "mounted",
+  "org": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+  "target": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+  "started": "2026-09-13T01:33:06.432Z",
+  "initial": {
+    "at": "2026-09-13T01:33:06.423Z",
+    "status": "idle",
+    "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+    "selected": "true"
+  },
+  "assertions": {
+    "initialIdle": true,
+    "freshUiRunningThenIdle": true,
+    "freshWireRunningThenIdle": true,
+    "oneObservedSocket": true,
+    "noReplacementSnapshot": true,
+    "noRefocusOrReload": true,
+    "noErrors": true
+  },
+  "statuses": [
+    {
+      "at": "2026-09-13T01:33:12.142Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2656,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "initializing",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:12.221Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2661,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:12.221Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2662,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:12.231Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2664,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:14.808Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2682,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:14.810Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2684,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:14.842Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2686,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:14.860Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2688,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:14.916Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2690,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.400Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2692,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.404Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2694,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.405Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2696,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.409Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2698,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.418Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2700,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.421Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2702,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.462Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2704,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.468Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2706,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.474Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2708,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.475Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2710,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.626Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2712,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.631Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2714,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.632Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2716,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.633Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2718,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.635Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2720,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.898Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2722,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.911Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2724,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:33:17.912Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2726,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "polls": [
+    {
+      "at": "2026-09-13T01:33:06.532Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:06.632Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:06.733Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:06.834Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:06.935Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.037Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.138Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.239Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.340Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.441Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.541Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.641Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.742Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.856Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:07.957Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.058Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.159Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.260Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.361Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.462Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.564Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.664Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.765Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.866Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:08.967Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.069Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.170Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.272Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.372Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.473Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.574Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.675Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.776Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.877Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:09.978Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.079Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.180Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.281Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.383Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.485Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.587Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.688Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.789Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.889Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:10.990Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.091Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.192Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.293Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.393Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.494Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.595Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.697Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.798Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.898Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:11.999Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.099Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.199Z",
+      "status": "initializing",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.300Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.400Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.501Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.705Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.806Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:12.906Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.007Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.108Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.209Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.309Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.410Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.511Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.612Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.713Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.813Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:13.914Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.017Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.119Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.219Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.320Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.421Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.522Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.623Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.724Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.825Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:14.926Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.028Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.128Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.229Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.330Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.430Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.531Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.632Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.734Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.834Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:15.935Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.037Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.137Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.238Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.340Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.440Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.541Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.642Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.742Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.843Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:16.944Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.044Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.146Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.246Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.355Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.456Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.557Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.658Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.759Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.860Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:17.962Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:33:18.062Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    }
+  ],
+  "errors": [],
+  "limitation": "This probe observes secondary task-row status without selecting it; it does not prove task-center content. RER028 exact retained participant selection is covered separately. Terminal status and formal lifecycle are separate cases."
+}

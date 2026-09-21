@@ -1,0 +1,12 @@
+autobyteus-web/graphql/queries/runHistoryQueries.ts:241:export const GetAgentOrgMemberRunProjection = gql`
+autobyteus-web/graphql/queries/runHistoryQueries.ts:242:  query GetAgentOrgMemberRunProjection(
+autobyteus-web/graphql/queries/runHistoryQueries.ts:359:export const GetAgentOrgRunInspection = gql`
+autobyteus-web/graphql/queries/runHistoryQueries.ts:360:  query GetAgentOrgRunInspection($orgRunId: String!) {
+autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts:3:export const ListCollaborationRootHistory = gql`
+autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts:4:  query ListCollaborationRootHistory {
+autobyteus-web/stores/agentOrgContextsStore.ts:14:import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
+autobyteus-web/stores/agentOrgContextsStore.ts:114:      const result = await getApolloClient().query({ query: GetAgentOrgRunInspection,
+autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts:20:import { GetAgentOrgMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts:117:    query: GetAgentOrgMemberRunProjection,
+autobyteus-web/stores/runHistoryLoadActions.ts:12:import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries';
+autobyteus-web/stores/runHistoryLoadActions.ts:73:    query: ListCollaborationRootHistory,

@@ -1,0 +1,6 @@
+{
+  "command": "pnpm -C autobyteus-web test:nuxt $(cat /tmp/aorg-ir058/web-paths.txt) --run",
+  "exitCode": 143,
+  "observation": "Process ended by SIGTERM before final summary; no failing assertion reported. Origin unknown, not attributed to implementation, memory, or another owner. No remaining matching Vitest process observed. Incomplete run is not counted as acceptance.",
+  "recovery": "Same current 102-file cohort partitioned into two disjoint 51-file commands; no source/protocol/assertion change."
+}

@@ -1,0 +1,22 @@
+Corrected API-REV-002 revision-delivery evidence
+
+Task: task_cbd139cb628e49cdb38a5e95c5826cd8
+Fresh task AgentRun: aorg_e2e_analyst_647ecebd7ced43fdbc02ff40a4cbf9ed
+
+The request_revision notification was NOT absent. It was delivered to the fresh
+task Agent about 5m08s after review_task_result returned status=active:
+- initial submit_task_result succeeded at trace ts 1788292494.953
+- review_task_result(request_revision) succeeded at trace ts 1788292502.333
+- revision user event arrived at trace ts 1788292809.998
+
+The task Agent then started submit_task_result with:
+  AORG-TEAM-TASK-REVISED-002
+at trace ts 1788292816.186, but no tool_result or second submission record was
+persisted before shutdown more than one minute later. The persisted task still
+contained only the initial submission and request_revision review. It was later
+interrupted during explicit Team reopen with the supported reason:
+  Interrupted because live task recovery is not supported after TeamRun reopen.
+
+Authoritative trace excerpt: revision-task-trace-excerpt.log
+Focused finding description: revision-resubmission-timeout-evidence.md
+Shutdown evidence: shutdown-error-excerpt.log

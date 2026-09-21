@@ -1,0 +1,99 @@
+{
+  "at": "2026-09-06T13:17:18.207Z",
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "parentTeamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+  "target": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+  "lead": {
+    "address": "/research-team/lead",
+    "agentDefinitionId": "aorg-lead",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+    "platformAgentRunId": "01a076cc-6151-7fe2-b86f-69d8be204416",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+    }
+  },
+  "beforeTaskCount": 3,
+  "afterTaskCount": 3,
+  "beforeMsgCount": 0,
+  "afterMsgCount": 1,
+  "approvedOuter": true,
+  "approvedNested": false,
+  "content": "Call delegate_task exactly once with recipient_address /research-team and description \"As the recursively nested research Team coordinator, remain active. Do not call submit_task_result until a later message explicitly requests settlement. Reply exactly APIREV15-NESTED-TASK-TEAM-READY-002 and wait.\". Use the field name description. Do not send an ordinary message. After the successful tool result, reply exactly APIREV15-NESTED-TASK-TEAM-READY-002-DELEGATED.",
+  "message": {
+    "messageId": "collabmsg_ad08znH340IhOhSssGoDYa6e3Uzwz4EJ",
+    "senderAgentRunId": "aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8",
+    "receiverAgentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+    "content": "Call delegate_task exactly once with recipient_address /research-team and description \"As the recursively nested research Team coordinator, remain active. Do not call submit_task_result until a later message explicitly requests settlement. Reply exactly APIREV15-NESTED-TASK-TEAM-READY-002 and wait.\". Use the field name description. Do not send an ordinary message. After the successful tool result, reply exactly APIREV15-NESTED-TASK-TEAM-READY-002-DELEGATED.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-09-06T13:13:21.287Z"
+  },
+  "parent": {
+    "address": "/support-team",
+    "teamRunId": "aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+    "members": [
+      {
+        "address": "/support-team/dispatcher",
+        "agentRunId": "aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17",
+        "platformAgentRunId": "01a076d2-3107-7343-b83f-f737cd6000f8"
+      },
+      {
+        "address": "/support-team/specialist",
+        "agentRunId": "aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e",
+        "platformAgentRunId": null
+      }
+    ],
+    "taskExecutions": [],
+    "startedAt": "2026-09-06T13:04:41.683Z",
+    "settledAt": null
+  },
+  "nested": null,
+  "targetTraceMarker": [
+    {
+      "id": "rt_1788700401306_af53bd77-a267-418a-b4ca-3a3ef8af7711",
+      "ts": 1788700401.306,
+      "turn_id": "01a076da-1e8c-7f52-b538-4e8047e4148a",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "You received a message from sender name: lead, sender id: aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8\nmessage:\nCall delegate_task exactly once with recipient_address /research-team and description \"As the recursively nested research Team coordinator, remain active. Do not call submit_task_result until a later message explicitly requests settlement. Reply exactly APIREV15-NESTED-TASK-TEAM-READY-002 and wait.\". Use the field name description. Do not send an ordinary message. After the successful tool result, reply exactly APIREV15-NESTED-TASK-TEAM-READY-002-DELEGATED.",
+      "source_event": "AgentRun.postUserMessage"
+    }
+  ],
+  "ready": [],
+  "view": {
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8"
+    ],
+    "nestedRows": [],
+    "bodyHasMarker": true,
+    "alerts": [],
+    "overflow": false
+  },
+  "errors": [],
+  "responses": [],
+  "assertions": {
+    "outerMessageCommitted": true,
+    "exactOuterRuns": true,
+    "targetReceivedOnce": true,
+    "oneNestedAdded": false,
+    "exactNestedDelegator": false,
+    "exactRecipient": false,
+    "nestedActive": false,
+    "nestedUnderParent": false,
+    "readyExactlyOnce": false,
+    "nestedVisible": false,
+    "configuredLeadRemainsSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "recorded_at": "2026-09-13T12:52:35.914052+00:00",
+  "user_verbatim": "So I think the finalize will clean up the work tree, right? I mean, if you the ticket work tree is a separate work tree. Because the base branch work tree is its own work tree.",
+  "interpretation": "User clarified that completed ticket-worktree cleanup is expected as part of finalization; the separate base worktree must remain.",
+  "prior_user_completion": "DR-002 user-acceptance.json remains authoritative for feature acceptance/base finalization.",
+  "source_rework": false
+}

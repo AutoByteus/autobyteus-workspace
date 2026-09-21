@@ -1,0 +1,1699 @@
+{
+  "at": "2026-09-13T01:29:08.716Z",
+  "mode": "mounted",
+  "org": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+  "target": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+  "started": "2026-09-13T01:28:53.579Z",
+  "initial": {
+    "at": "2026-09-13T01:28:53.569Z",
+    "status": "idle",
+    "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+    "selected": "true"
+  },
+  "assertions": {
+    "initialIdle": true,
+    "freshUiRunningThenIdle": true,
+    "freshWireRunningThenIdle": true,
+    "oneObservedSocket": true,
+    "noReplacementSnapshot": true,
+    "noRefocusOrReload": false,
+    "noErrors": true
+  },
+  "statuses": [
+    {
+      "at": "2026-09-13T01:28:59.428Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2569,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "initializing",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:28:59.476Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2574,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:28:59.478Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2575,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:28:59.481Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2577,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:03.236Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2595,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:03.238Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2597,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:03.513Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2599,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:06.077Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2601,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:06.082Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2603,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:06.093Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2605,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:06.115Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2607,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:06.140Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2609,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:06.206Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2611,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:07.940Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2613,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:07.943Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2615,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:07.947Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2617,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:07.950Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2619,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:07.971Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2621,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.082Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2623,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.084Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2625,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.085Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2627,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.088Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2629,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.089Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2631,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.104Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2633,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.105Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2635,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.180Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2637,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.343Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2639,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.349Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2641,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "running",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-13T01:29:08.360Z",
+      "requestId": "95855.13297",
+      "frame": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0",
+          "change_sequence": 2643,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/support-team/dispatcher",
+            "agent_run_id": "aorg_e2e_lead_7b0a4d2334404d2b85797d72539ebbe7",
+            "message": {
+              "type": "AGENT_STATUS",
+              "payload": {
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "polls": [
+    {
+      "at": "2026-09-13T01:28:53.682Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:53.782Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:53.883Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:53.984Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.085Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.186Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.287Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.388Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.489Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.590Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.691Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.793Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.894Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:54.994Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.094Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.195Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.296Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.397Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.498Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.600Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.701Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.801Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:55.903Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.003Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.104Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.205Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.310Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.410Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.510Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.612Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.713Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.815Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:56.915Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.016Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.118Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.219Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.319Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.420Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.521Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.622Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.723Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.829Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:57.928Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.029Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.130Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.231Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.332Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.433Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.534Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.635Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.736Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.837Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:58.938Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.038Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.139Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.240Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.342Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.442Z",
+      "status": "initializing",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.543Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.646Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.747Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.848Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_df5a865c6d3e40f3a5a8c76bcfe16df0&mode=active&memberAddress=/research-team/lead",
+      "selected": "true"
+    },
+    {
+      "at": "2026-09-13T01:28:59.949Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.050Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.151Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.252Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.352Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.453Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.554Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.655Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.756Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.856Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:00.957Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.058Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.159Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.261Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.361Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.462Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.564Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.664Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.768Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.869Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:01.969Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.070Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.171Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.272Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.371Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.472Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.574Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.675Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.776Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.878Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:02.981Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.082Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.184Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.284Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.385Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.485Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.586Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.688Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.789Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.889Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:03.990Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.091Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.193Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.294Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.396Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.497Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.597Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.699Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.799Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:04.900Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.000Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.101Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.202Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.303Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.404Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.505Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.606Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.706Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.807Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:05.909Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.009Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.110Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.210Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.310Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.411Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.512Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.613Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.714Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.816Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:06.915Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.017Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.117Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.219Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.319Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.420Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.522Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.622Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.723Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.824Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:07.925Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:08.026Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:08.127Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:08.228Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:08.328Z",
+      "status": "running",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:08.429Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    },
+    {
+      "at": "2026-09-13T01:29:08.530Z",
+      "status": "idle",
+      "url": "http://127.0.0.1:3600/workspace",
+      "selected": "false"
+    }
+  ],
+  "errors": [],
+  "limitation": "This probe observes secondary task-row status without selecting it; it does not prove task-center content. RER028 exact retained participant selection is covered separately. Terminal status and formal lifecycle are separate cases."
+}

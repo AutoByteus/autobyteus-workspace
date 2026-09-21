@@ -1,0 +1,16 @@
+Scope: all 14 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1718
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1718, reused 1716, downloaded 0, added 34
+Progress: resolved 1718, reused 1716, downloaded 0, added 423
+Progress: resolved 1718, reused 1716, downloaded 0, added 621
+Progress: resolved 1718, reused 1716, downloaded 0, added 897
+Progress: resolved 1718, reused 1716, downloaded 0, added 1152
+Progress: resolved 1718, reused 1716, downloaded 0, added 1653
+Progress: resolved 1718, reused 1716, downloaded 0, added 1718, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-application-devkit/dist/cli.js'
+
+Done in 6.9s using pnpm v10.28.2

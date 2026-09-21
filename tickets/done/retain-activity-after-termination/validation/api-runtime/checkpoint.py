@@ -1,0 +1,4 @@
+import json,pathlib,sys
+E=pathlib.Path(__file__).resolve().parent; W=E.parents[4]; label=sys.argv[1]; rid=sys.argv[2] if len(sys.argv)>2 else None
+r=[json.loads(l) for l in (E/'browser-observations.jsonl').read_text().splitlines()]; s=[x for x in r if x['kind']=='state' and (not rid or x['state'].get('selected')==rid)][-1]
+(E/(label+'-state.json')).write_text(json.dumps(s,indent=2));(E/(label+'-telemetry.json')).write_text((E/'telemetry.json').read_text()); mem=W/'autobyteus-server-ts/tests/.tmp/activity-retain-api001/memory';files={str(p.relative_to(mem)):json.loads(p.read_text()) for p in mem.rglob('*execution_tree.json')};(E/(label+'-trees.json')).write_text(json.dumps(files,indent=2)); print(s['state'].get('selected'),s['state'].get('status'),[(a['id'],len(a['items'])) for a in s['state']['activities']]);print('trees',len(files))

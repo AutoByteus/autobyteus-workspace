@@ -1,11 +1,7 @@
-export type TeamLocalDefinitionSubject = 'agent' | 'agent_team';
-
 const TEAM_LOCAL_AGENT_ID_PREFIX = 'team-local-agent:';
-const TEAM_LOCAL_TEAM_ID_PREFIX = 'team-local-team:';
 
 export type ParsedTeamLocalDefinitionId =
-  | { subject: 'agent'; ownerTeamId: string; localDefinitionId: string }
-  | { subject: 'agent_team'; ownerTeamId: string; localDefinitionId: string };
+  { subject: 'agent'; ownerTeamId: string; localDefinitionId: string };
 
 const normalizeRequiredPart = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -59,15 +55,10 @@ export const buildTeamLocalAgentDefinitionId = (
   localAgentId: string,
 ): string => buildTeamLocalDefinitionId(TEAM_LOCAL_AGENT_ID_PREFIX, ownerTeamId, localAgentId);
 
-export const buildTeamLocalTeamDefinitionId = (
-  ownerTeamId: string,
-  localTeamId: string,
-): string => buildTeamLocalDefinitionId(TEAM_LOCAL_TEAM_ID_PREFIX, ownerTeamId, localTeamId);
-
 const parseWithPrefix = (
   value: string,
   prefix: string,
-  subject: TeamLocalDefinitionSubject,
+  subject: 'agent',
 ): ParsedTeamLocalDefinitionId | null => {
   if (!value.startsWith(prefix)) {
     return null;
@@ -88,9 +79,7 @@ const parseWithPrefix = (
     return null;
   }
 
-  return subject === 'agent'
-    ? { subject, ownerTeamId, localDefinitionId }
-    : { subject, ownerTeamId, localDefinitionId };
+  return { subject, ownerTeamId, localDefinitionId };
 };
 
 export const parseTeamLocalDefinitionId = (
@@ -100,16 +89,10 @@ export const parseTeamLocalDefinitionId = (
   if (!normalized) {
     return null;
   }
-  return parseWithPrefix(normalized, TEAM_LOCAL_AGENT_ID_PREFIX, 'agent')
-    ?? parseWithPrefix(normalized, TEAM_LOCAL_TEAM_ID_PREFIX, 'agent_team');
+  return parseWithPrefix(normalized, TEAM_LOCAL_AGENT_ID_PREFIX, 'agent');
 };
 
 export const isTeamLocalAgentDefinitionId = (value: string | null | undefined): boolean => {
   const parsed = parseTeamLocalDefinitionId(value);
   return parsed?.subject === 'agent';
-};
-
-export const isTeamLocalTeamDefinitionId = (value: string | null | undefined): boolean => {
-  const parsed = parseTeamLocalDefinitionId(value);
-  return parsed?.subject === 'agent_team';
 };

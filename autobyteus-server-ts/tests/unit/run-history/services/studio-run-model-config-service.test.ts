@@ -56,14 +56,16 @@ const harness = () => {
   const getTeamRunResumeConfig = vi.fn(async () => teamResume);
   const updateStoppedModelConfig = vi.fn(async () => ({ subject: "agent-general" }));
   const updateStoppedModelConfigs = vi.fn(async () => ({ subject: "team-general" }));
+  const listOptionsMany = vi.fn(async (contexts) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, currentContextTokens: 128000, replacements: [], unavailableReason: null })));
   return {
+    listOptionsMany,
     hasLiveRunOwnership,
     getAgentRunResumeConfig,
     getTeamRunResumeConfig,
     updateStoppedModelConfig,
     updateStoppedModelConfigs,
     service: new StudioRunModelConfigService({
-      modelSelectionService: { listOptions: vi.fn(), listOptionsMany: vi.fn() },
+      modelSelectionService: { listOptions: vi.fn(), listOptionsMany },
       applicationRunOwnership: { hasLiveRunOwnership },
       agentResumeConfigService: { getAgentRunResumeConfig },
       teamResumeConfigService: { getTeamRunResumeConfig },
@@ -75,6 +77,19 @@ const harness = () => {
 
 describe("StudioRunModelConfigService", () => {
   beforeEach(() => vi.restoreAllMocks());
+
+  it("projects exactly root and direct configured Agent model-option contexts from flat Team V2", async () => {
+    const h = harness();
+    const options = await h.service.teamRunModelOptions("team-run-1");
+    expect(options.map(({ scopeKind, scopeAddress }) => ({ scopeKind, scopeAddress }))).toEqual([
+      { scopeKind: "CONFIGURED_TEAM", scopeAddress: "/" },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/coordinator" },
+    ]);
+    expect(h.listOptionsMany).toHaveBeenCalledWith([
+      expect.objectContaining({ currentModelIdentifier: teamTree.rootTeam.defaultLaunchConfiguration.llmModelIdentifier }),
+      expect.objectContaining({ currentModelIdentifier: teamTree.rootTeam.members[0].launchConfiguration.llmModelIdentifier }),
+    ]);
+  });
 
   it("overlays Application-owned Agent and Team reads with the existing active lock", async () => {
     const agent = harness();

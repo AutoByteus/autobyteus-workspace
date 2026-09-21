@@ -1,0 +1,101 @@
+{
+  "errors": null,
+  "rootKinds": [
+    {
+      "t": "AgentOrgRootHistoryObject",
+      "k": "agent_org",
+      "id": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+      "active": true
+    },
+    {
+      "t": "AgentTeamRootHistoryObject",
+      "k": "agent_team",
+      "id": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+      "active": null
+    },
+    {
+      "t": "AgentOrgRootHistoryObject",
+      "k": "agent_org",
+      "id": "aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9",
+      "active": false
+    }
+  ],
+  "orgCheckpoint": {
+    "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+    "changeSequence": 624,
+    "hasOpenExecutionWork": false
+  },
+  "teamCheckpoint": {
+    "rootTeamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+    "changeSequence": 870,
+    "hasOpenExecutionWork": false
+  },
+  "orgProjection": {
+    "agentRunId": "aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6",
+    "memberAddress": "/research-team/lead",
+    "conversationCount": 16,
+    "activityCount": 5
+  },
+  "teamProjection": {
+    "agentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+    "conversationCount": 27,
+    "activityCount": 6
+  },
+  "teamMessages": [
+    {
+      "messageId": "collabmsg_8ooc2h9g77G9FYapvRl6WR7gAkjyE_0c",
+      "senderAgentRunId": "aorg_e2e_analyst_566640d90b8d4b70ad58abe81c8fe4bf",
+      "receiverAgentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+      "content": "APIREV6-STANDALONE-TASK-MESSAGE",
+      "messageType": "agent_message",
+      "createdAt": "2026-09-02T16:16:46.632Z",
+      "referenceFiles": []
+    }
+  ],
+  "teamTasks": [
+    {
+      "taskId": "task_e625fff626294a688b146539a2a2c7d8",
+      "status": "accepted",
+      "recipientAddress": "/analyst",
+      "updates": [
+        {
+          "kind": "submission",
+          "decision": null,
+          "content": "APIREV6-TASK-SUBMISSION-V1"
+        },
+        {
+          "kind": "review",
+          "decision": "accept",
+          "content": null
+        }
+      ]
+    },
+    {
+      "taskId": "task_aa15bce5c28145268b522d94d6c46b02",
+      "status": "accepted",
+      "recipientAddress": "/analyst",
+      "updates": [
+        {
+          "kind": "submission",
+          "decision": null,
+          "content": "APIREV6-REVISION-SUBMISSION-V1"
+        },
+        {
+          "kind": "review",
+          "decision": "request_revision",
+          "content": "APIREV6-REVISION-REQUEST: submit exactly APIREV6-REVISION-SUBMISSION-V2 using submit_task_result, then stop and await explicit acceptance."
+        },
+        {
+          "kind": "submission",
+          "decision": null,
+          "content": "APIREV6-REVISION-SUBMISSION-V2"
+        },
+        {
+          "kind": "review",
+          "decision": "accept",
+          "content": "APIREV6-REVISION-ACCEPTED"
+        }
+      ]
+    }
+  ]
+}

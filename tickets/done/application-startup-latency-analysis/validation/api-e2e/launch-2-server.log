@@ -1,0 +1,210 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/.env
+[dotenv@17.3.1] injecting env (0) from ../.local/api-startup-profile/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51382
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51382
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:34218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-09-18T10:04:27.523Z] [WARN] [server.runtime] Studio app-data migration '20260901_agent_org_flat_team_families_v1' is FAILED: 8 flat-Team/AgentOrg runtime/history item(s) require correction and restart.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-18T10:04:27.900Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/application-startup-latency-analysis/.local/api-startup-profile/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 54 items.
+Populating agent definition cache for the first time...
+[2026-09-18T10:04:28.307Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-18T10:04:28.314Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 54 items.
+{"level":30,"time":1789725868323,"pid":34218,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:51112"}
+{"level":30,"time":1789725868346,"pid":34218,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:51382"}
+[2026-09-18T10:04:28.346Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51382
+[2026-09-18T10:04:28.347Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:51382
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 6 items.
+Found 6 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 6 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[09/18/26 12:04:28] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+[2026-09-18T10:04:28.904Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-18T10:04:28.923Z] [INFO] [server.runtime] Server closed cleanly.
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/bin/autobyteus-image-audio-server", line 10, in <module>
+  |     sys.exit(main())
+  |              ^^^^^^
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/src/image_audio_mcp/server.py", line 258, in main
+  |     server.run()
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/mcp/server/fastmcp/server.py", line 296, in run
+  |     anyio.run(self.run_stdio_async)
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_core/_eventloop.py", line 77, in run
+  |     return async_backend.run(func, args, {}, backend_options)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2342, in run
+  |     return runner.run(wrapper())
+  |            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+  |     return self._loop.run_until_complete(task)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+  |     return future.result()
+  |            ^^^^^^^^^^^^^^^
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2325, in wrapper
+  |     return await func(*args)
+  |            ^^^^^^^^^^^^^^^^^
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/mcp/server/fastmcp/server.py", line 755, in run_stdio_async
+  |     async with stdio_server() as (read_stream, write_stream):
+  |   File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 217, in __aexit__
+  |     await anext(self.gen)
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/mcp/server/stdio.py", line 85, in stdio_server
+  |     async with anyio.create_task_group() as tg:
+  |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/mcp/server/stdio.py", line 81, in stdout_writer
+    |     await stdout.flush()
+    |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_core/_fileio.py", line 140, in flush
+    |     return await to_thread.run_sync(self._fp.flush)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/to_thread.py", line 63, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2502, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/Users/normy/autobyteus_org/autobyteus_mcps/autobyteus-image-audio/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    | BrokenPipeError: [Errno 32] Broken pipe
+    +------------------------------------
+Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>
+BrokenPipeError: [Errno 32] Broken pipe

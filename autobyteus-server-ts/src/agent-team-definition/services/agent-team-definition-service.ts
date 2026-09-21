@@ -3,12 +3,14 @@ import {
   AgentTeamDefinitionUpdate,
   TeamMember,
   type TeamMemberRefScope,
-} from "../domain/models.js";
+} from "../domain/agent-team-definition.js";
 import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
 import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { assertValidTeamDefinitionGraph } from "./team-definition-graph-validator.js";
+import { assertValidFlatTeamDefinition } from "./flat-team-definition-validator.js";
+import { FlatTeamDefinitionResolver } from "./flat-team-definition-resolver.js";
+import { DefinitionEndpointCatalog, type DefinitionEndpointCatalogProjection } from "../../agent-collaboration/definition/definition-endpoint-catalog.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -52,7 +54,7 @@ const assertValidCoordinatorMember = (
 };
 
 const assertValidTeamMembers = (
-  nodes: Array<{ refType: "agent" | "agent_team"; refScope?: TeamMemberRefScope | null }>,
+  nodes: Array<{ refScope: TeamMemberRefScope }>,
 ): void => {
   for (const node of nodes) {
     if (!node.refScope) {
@@ -70,7 +72,6 @@ const cloneTeamMembers = (nodes: readonly TeamMember[]): TeamMember[] =>
   nodes.map((node) => new TeamMember({
     memberName: node.memberName,
     ref: node.ref,
-    refType: node.refType,
     refScope: node.refScope,
   }));
 
@@ -113,6 +114,8 @@ const buildDefinitionUpdateCandidate = (
   ownerApplicationName: existing.ownerApplicationName,
   ownerPackageId: existing.ownerPackageId,
   ownerLocalApplicationId: existing.ownerLocalApplicationId,
+  revision: existing.revision,
+  source: existing.source,
 });
 
 export class AgentTeamDefinitionService {
@@ -163,8 +166,16 @@ export class AgentTeamDefinitionService {
     definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
     definition.defaultLaunchConfig =
       normalizeDefaultLaunchConfigInput(definition.defaultLaunchConfig) ?? null;
+    const validationCandidate = new AgentTeamDefinition({
+      ...definition,
+      id: "__new_team_candidate__",
+      nodes: cloneTeamMembers(definition.nodes),
+    });
+    await assertValidFlatTeamDefinition({
+      rootDefinition: validationCandidate,
+      lookup: { getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id) },
+    });
     const created = await this.provider.create(definition);
-    await this.assertDefinitionGraphOrRollback(created);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
   }
@@ -185,6 +196,16 @@ export class AgentTeamDefinitionService {
     return this.provider.getTemplates();
   }
 
+  async getEndpointCatalog(definitionId: string): Promise<DefinitionEndpointCatalogProjection> {
+    const definition = await this.provider.getById(definitionId);
+    if (!definition) throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
+    const topology = await new FlatTeamDefinitionResolver().resolve({
+      rootDefinition: definition,
+      lookup: { getAgentById: (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id) },
+    });
+    return new DefinitionEndpointCatalog().projectTeam(topology);
+  }
+
   async updateDefinition(
     definitionId: string,
     updateData: AgentTeamDefinitionUpdate,
@@ -194,13 +215,19 @@ export class AgentTeamDefinitionService {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
 
+    if (!updateData.expectedRevision) throw new Error("expectedRevision is required for Team definition update.");
+    if (existing.revision !== updateData.expectedRevision) {
+      const conflict = new Error("The Team definition changed after this draft was loaded. Refresh and apply the draft again.") as Error & { code: string };
+      conflict.code = "DEFINITION_REVISION_CONFLICT";
+      throw conflict;
+    }
     const candidate = buildDefinitionUpdateCandidate(existing, updateData);
+    candidate.revision = updateData.expectedRevision;
     assertValidTeamMembers(candidate.nodes);
     assertValidCoordinatorMember(candidate.coordinatorMemberName, candidate.nodes);
-    await assertValidTeamDefinitionGraph({
+    await assertValidFlatTeamDefinition({
       rootDefinition: candidate,
       lookup: {
-        getTeamById: async (id) => id === candidate.id ? candidate : this.provider.getById(id),
         getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
       },
     });
@@ -233,26 +260,4 @@ export class AgentTeamDefinitionService {
     }
   }
 
-  private async assertDefinitionGraphOrRollback(definition: AgentTeamDefinition): Promise<void> {
-    try {
-      await assertValidTeamDefinitionGraph({
-        rootDefinition: definition,
-        lookup: {
-          getTeamById: async (id) => id === definition.id ? definition : this.provider.getById(id),
-          getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
-        },
-      });
-    } catch (error) {
-      if (definition.id) {
-        await this.provider.delete(definition.id).catch((rollbackError) => {
-          logger.warn(
-            `Failed to roll back invalid agent team definition '${definition.id}': ${
-              rollbackError instanceof Error ? rollbackError.message : String(rollbackError)
-            }`,
-          );
-        });
-      }
-      throw error;
-    }
-  }
 }

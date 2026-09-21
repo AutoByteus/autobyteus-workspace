@@ -36,6 +36,7 @@ vi.mock("../../../../src/agent-team-execution/services/agent-team-run-manager.js
 
 import { registerContextFileRoutes } from "../../../../src/api/rest/context-files.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
+import { ContextFileReadService } from "../../../../src/context-files/services/context-file-read-service.js";
 import {
   testAgentNode,
   testAgentTeamNode,
@@ -126,11 +127,11 @@ const writeExecutionTree = (input: {
   memoryDir: string;
   rootTeamRunId: string;
   rootAgentRunId?: string;
+  rootAgents?: Array<{ address: string; agentRunId: string }>;
   nested?: Array<{ address: string; teamRunId: string; agentAddress: string; agentRunId: string }>;
 }): void => {
-  const rootAgent = [testAgentNode("/A", {
-    agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}`,
-  })];
+  const rootAgents = input.rootAgents?.map((entry) => testAgentNode(entry.address, { agentRunId: entry.agentRunId }))
+    ?? [testAgentNode("/A", { agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}` })];
   const nested = (input.nested ?? []).map((entry) => testAgentTeamNode({
     address: entry.address,
     teamRunId: entry.teamRunId,
@@ -142,7 +143,7 @@ const writeExecutionTree = (input: {
     rootTeamDefinitionId: "context-file-team",
     teamDefinitionName: "Context File Team",
     coordinatorAddress: "/A",
-    children: [...rootAgent, ...nested],
+    children: [...rootAgents, ...nested],
   });
   const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({
     rootTeamRunId: input.rootTeamRunId,
@@ -219,10 +220,81 @@ describe("REST context-files routes", () => {
       `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/${encodeURIComponent(uploaded.storedFilename)}`,
     );
     expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("team member notes");
-    expect(fs.existsSync(new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
+    const finalDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
       { rootTeamRunId, ancestorTeamRunIds: [] },
       agentRunId,
-    ))).toBe(true);
+    );
+    expect(fs.existsSync(finalDir)).toBe(true);
+    fs.unlinkSync(path.join(finalDir, "context_files", uploaded.storedFilename));
+    expect((await app.inject({ method: "GET", url: finalized.locator })).statusCode).toBe(404);
+  });
+
+  it("maps known final Team failures exactly and keeps serving the valid same-owner file", async () => {
+    const rootTeamRunId = "root-team-owner-boundary";
+    writeExecutionTree({
+      memoryDir,
+      rootTeamRunId,
+      rootAgents: [
+        { address: "/A", agentRunId: "agent-run-A" },
+        { address: "/B", agentRunId: "agent-run-B" },
+      ],
+    });
+    const draftOwner = { kind: "team_member_draft", teamDraftId: "draft-owner-boundary", memberAddress: "/A" };
+    const uploaded = await uploadDraftAttachment(app, draftOwner, "exact.md", "exact Team member bytes");
+    const finalized = await finalizeAttachment(
+      app,
+      draftOwner,
+      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/A" },
+      uploaded,
+    );
+
+    expect((await app.inject({
+      method: "GET",
+      url: `/rest/team-runs/${rootTeamRunId}/members/not-rooted/context-files/${uploaded.storedFilename}`,
+    })).statusCode).toBe(400);
+    expect((await app.inject({
+      method: "GET",
+      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/${encodeURIComponent("../secret.txt")}`,
+    })).statusCode).toBe(400);
+    expect((await app.inject({
+      method: "GET",
+      url: `/rest/team-runs/missing-containing-team/members/${encodeURIComponent("/A")}/context-files/${uploaded.storedFilename}`,
+    })).statusCode).toBe(404);
+    expect((await app.inject({
+      method: "GET",
+      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/missing")}/context-files/${uploaded.storedFilename}`,
+    })).statusCode).toBe(404);
+    expect((await app.inject({
+      method: "GET",
+      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/B")}/context-files/${uploaded.storedFilename}`,
+    })).statusCode).toBe(404);
+    expect((await app.inject({
+      method: "GET",
+      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/ctx_missing__exact.md`,
+    })).statusCode).toBe(404);
+
+    const exact = await app.inject({ method: "GET", url: finalized.locator });
+    expect(exact.statusCode).toBe(200);
+    expect(exact.body).toBe("exact Team member bytes");
+  });
+
+  it("does not convert an unexpected final Team access fault into a client error", async () => {
+    const rootTeamRunId = "root-team-unexpected-fault";
+    writeExecutionTree({ memoryDir, rootTeamRunId, rootAgentRunId: "agent-run-A" });
+    const access = vi.spyOn(ContextFileReadService.prototype, "getFinalFilePath")
+      .mockRejectedValueOnce(new Error("controlled unexpected access fault"));
+
+    try {
+      const response = await app.inject({
+        method: "GET",
+        url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/ctx_fault__exact.md`,
+      });
+
+      expect(response.statusCode).toBe(500);
+      expect(response.body).not.toContain("File not found");
+    } finally {
+      access.mockRestore();
+    }
   });
 
   it("finalizes a nested member through its exact containing TeamRun and canonical address", async () => {

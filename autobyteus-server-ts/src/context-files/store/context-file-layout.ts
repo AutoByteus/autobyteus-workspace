@@ -37,15 +37,12 @@ export class ContextFileLayout {
     if (owner.kind === "agent_draft") {
       return resolveSafeChildPath(this.draftRootDir, "agent-runs", owner.draftRunId, "context_files");
     }
-
-    return resolveSafeChildPath(
-      this.draftRootDir,
-      "team-runs",
-      owner.teamDraftId,
-      "members",
-      encodeURIComponent(owner.memberAddress),
-      "context_files",
-    );
+    if (owner.kind === "org_member_draft") {
+      return resolveSafeChildPath(this.draftRootDir, "agent-org-runs", owner.orgRunId,
+        "agent-runs", owner.agentRunId, "context_files");
+    }
+    return resolveSafeChildPath(this.draftRootDir, "team-runs", owner.teamDraftId,
+      "members", encodeURIComponent(owner.memberAddress), "context_files");
   }
 
   getFinalOwnerDirPath(owner: ContextFileResolvedFinalOwnerDescriptor): string {

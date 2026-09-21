@@ -1,0 +1,88 @@
+{
+  "at": "2026-09-06T12:57:19.575Z",
+  "url": "http://127.0.0.1:3596/settings/?apiRev=015",
+  "body": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAgent Packages\n\nLink a local package path or paste a public GitHub repository URL. GitHub packages are installed into app-managed storage, while local paths remain in place.\n\nBuilt-in Storage\nBuilt-in | Shared Agents: 2 | Team-local Agents: 0 | Teams: 1 | Applications: 0\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data\nBuilt-in package is platform managed.\nDefault\naorg-api-rev-002-agent-package\nLocal Path | Shared Agents: 4 | Team-local Agents: 0 | Teams: 2 | Applications: 0\n/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove\nPackage Path Or GitHub URL\nImport Package",
+  "net": [
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/rest/health",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:8596/graphql",
+      "status": 200,
+      "method": "POST"
+    }
+  ],
+  "errors": [],
+  "onlyOwnedRequests": true,
+  "hasPkg": true,
+  "counts": true,
+  "otherRootsAbsent": true,
+  "noErrorBanner": true
+}

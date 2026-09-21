@@ -1,0 +1,13 @@
+
+> @autobyteus-example/brief-studio-authoring@ build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:12176) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T17:31:16.596Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T17:31:16.597Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+this.appConfig.getAgentOrgsDir is not a function
+ ELIFECYCLE  Command failed with exit code 1.
+expected_current_build_exit=1

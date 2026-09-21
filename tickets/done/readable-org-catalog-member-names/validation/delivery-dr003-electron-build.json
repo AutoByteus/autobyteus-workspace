@@ -1,0 +1,42 @@
+{
+  "ticket": "ORG-CATALOG-NAMES-20260916-001",
+  "delivery_revision": "DR-003",
+  "date_utc": "2026-09-16T09:51:33.248308+00:00",
+  "result": "Local Electron build Completed",
+  "authority": "New user build request relayed by Solution Designer; electron-build-request.md",
+  "source_commit": "a2e220fbd86a74da2ae2ea05aa1f72a55c004c86",
+  "branch": "requirements/flat-agent-organization-model",
+  "base_worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base",
+  "version": "1.4.69",
+  "electron": "42.4.1",
+  "platform": "darwin arm64",
+  "flavor": "enterprise",
+  "signed": false,
+  "notarized": false,
+  "publication": "never",
+  "preparation_exit": 0,
+  "packaging_exit": 0,
+  "dmg_verify": "Pass",
+  "zip_verify": "Pass",
+  "packaged_terminal_spawn": "Pass (Electron Node mode only; no GUI/backend launch)",
+  "packaged_electron_renderer_files_match": 239,
+  "implementation_manifest_match": 9,
+  "old_output": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/.local/electron-catalog-names-build-20260916/previous-electron-dist",
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg",
+      "bytes": 467835233,
+      "sha256": "1982006842a06415b1d6ee322c075d84db716929b443831e9c82afbc534d4aac"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip",
+      "bytes": 462710319,
+      "sha256": "e81ea772eac144aadf2bf8566620af068442f1357e63011de4f040f769d053f1"
+    }
+  ],
+  "production_profile_data_mutation": false,
+  "installation_gui_deployment": "Not performed",
+  "cleanup": "Prior DR-002 ticket cleanup unchanged; base and new/old outputs intentionally retained",
+  "receipt_commit": "Following docs-only commit changes no build input"
+}

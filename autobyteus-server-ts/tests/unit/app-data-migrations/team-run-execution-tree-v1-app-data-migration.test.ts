@@ -98,7 +98,9 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     await catalog.rebuild();
     expect(catalog.listAdmittedRootIds()).toEqual([]);
     expect(catalog.getDiagnostics().get(validRoot)).toContain("schemaVersion");
-    expect(catalog.getDiagnostics().get(invalidRoot)).toContain("pending migration");
+    expect(catalog.getDiagnostics().get(invalidRoot)).toContain(
+      "Current package is missing required authorities",
+    );
   });
 
   it("does not promote partial target residue without its protected predecessor backup", async () => {

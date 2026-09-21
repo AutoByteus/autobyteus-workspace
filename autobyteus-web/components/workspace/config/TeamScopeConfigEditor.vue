@@ -177,14 +177,14 @@
         :read-only="scope.mode === 'editable' && isInteractionDisabled"
         :runtime-selection-locked="isFixedFieldDisabled"
         :model-selection-locked="isInteractionDisabled"
-      :original-model-identifier="existingScope?.originalModelIdentifier"
-      :model-options="existingScope?.modelOptions"
+        :original-model-identifier="existingScope?.originalModelIdentifier"
+        :model-options="existingScope?.modelOptions"
         :model-config-disabled="isInteractionDisabled"
         :model-config-read-only="isInteractionDisabled"
         :historical-model-config="scope.mode === 'existing' && scope.originalModelIdentifier === scope.effectiveConfig.llmModelIdentifier"
         :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help')"
         :model-label="t('workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model')"
-        :model-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
+        :model-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : teamModelHelpText || t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
         :id-prefix="inputIdPrefix"
         :advanced-initially-expanded="scope.mode === 'existing'"
         :historical-value-unavailable-message="historicalUnavailableMessage"
@@ -251,6 +251,7 @@ import AutoApproveSwitch from './AutoApproveSwitch.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
 import type { TeamScopeFormModel } from '~/types/agent/TeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { hasMeaningfulLaunchOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils'
@@ -259,10 +260,12 @@ const props = withDefaults(defineProps<{
   scope: Readonly<TeamScopeFormModel>
   isRoot?: boolean
   disabled?: boolean
+  teamModelHelpText?: string | null
   modelConfigFieldErrors?: Readonly<Record<string, string>>
 }>(), {
   isRoot: false,
   disabled: false,
+  teamModelHelpText: null,
 })
 const emit = defineEmits<{
   (e: 'update-root', field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: unknown): void
@@ -271,7 +274,7 @@ const emit = defineEmits<{
   (e: 'update:workspace-selection', address: string, selection: WorkspaceSelectionState): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
   (e: 'update-existing-model-config', address: string, config: ExistingRunModelSelection, directlyEdited: boolean): void
-  (e: 'schema-state', address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
+  (e: 'schema-state', address: string, state: RuntimeModelConfigSchemaState): void
 }>()
 const { t } = useLocalization()
 const editableScope = computed(() => props.scope.mode === 'editable' ? props.scope : null)

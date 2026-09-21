@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_909a9d8d7fa14337ae99b850f6303574",
+  "messages": [
+    {
+      "messageId": "collabmsg_xjKxBRRd3cL3O0VFQA6zl_qKk08FiBFS",
+      "senderAgentRunId": "aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4",
+      "receiverAgentRunId": "aorg_e2e_analyst_5a787039299e4d61bebd98a6dea1fa2d",
+      "content": "APIREV14-DIRECT-MOUNTED-MSG-001 from /concierge to /research-team/analyst",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/direct-mounted.txt"
+      ],
+      "createdAt": "2026-09-06T11:33:38.401Z"
+    },
+    {
+      "messageId": "collabmsg_nEA2rXpzDBY3eW2FSDZysdm4gUZsJMdw",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4",
+      "content": "APIREV14-MOUNTED-DIRECT-MSG-001 from /research-team/lead to /concierge",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/mounted-direct.txt"
+      ],
+      "createdAt": "2026-09-06T11:44:08.429Z"
+    },
+    {
+      "messageId": "collabmsg_Uxi6tXINqXwJSR_eStE-x_x0vHMosUKk",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_verifier_999c777c63b5454592a73674b806b840",
+      "content": "APIREV14-CROSS-TEAM-MSG-001 from /research-team/lead to /support-team/specialist",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/cross-team.txt"
+      ],
+      "createdAt": "2026-09-06T11:44:39.537Z"
+    },
+    {
+      "messageId": "collabmsg_Bz1BJUWJD9b4J7P24ZoaBrA4Drj-QFBo",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+      "content": "APIREV14-CONFIGURED-TO-TASK-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:52:37.861Z"
+    },
+    {
+      "messageId": "collabmsg_KTzjiokZAcDyPcfYl3FAZbt2qOk9XJzO",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4",
+      "content": "APIREV14-TASK-TO-CONFIGURED-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:53:17.217Z"
+    },
+    {
+      "messageId": "collabmsg_c3NaPdwwGacvODHF2hgBooIpsKGi4sWW",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+      "content": "APIREV14-TASK-CLARIFICATION-001: Your live catalog exposes send_message_to. Call send_message_to exactly once with recipient_address /concierge, content APIREV14-TASK-TO-CONFIGURED-REAL-001, and reference_files [/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt]. After success reply exactly APIREV14-TASK-TO-CONFIGURED-REAL-001-SENT. Do not submit_task_result yet.",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:54:40.602Z"
+    },
+    {
+      "messageId": "collabmsg_rF6t4hDjpb-UmklON0TAIMN9AboaW5s-",
+      "senderAgentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+      "receiverAgentRunId": "aorg_e2e_concierge_5c253d0e1a754e929adadc4a13250ed4",
+      "content": "APIREV14-TASK-TO-CONFIGURED-REAL-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:54:48.957Z"
+    },
+    {
+      "messageId": "collabmsg_pa50ALY6LFeG4foSdSFpwTOMaFIwD6h0",
+      "senderAgentRunId": "aorg_e2e_lead_f86044fef6b845e4b607c8eeba38e096",
+      "receiverAgentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+      "content": "APIREV14-TASK-TASK-CLARIFICATION-001: Call send_message_to exactly once with target_agent_run_id aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1, content APIREV14-TASK-TO-TASK-MSG-001, and reference_files [/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt]. Do not set recipient_address. After success reply exactly APIREV14-TASK-TO-TASK-MSG-001-SENT. Do not submit_task_result yet.",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:58:07.771Z"
+    },
+    {
+      "messageId": "collabmsg_AcEx7jJwsIgN-TGewY1fzBfhaPvxxF13",
+      "senderAgentRunId": "aorg_e2e_analyst_359a703e5a044a5b9ec1a9bbd062d495",
+      "receiverAgentRunId": "aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1",
+      "content": "APIREV14-TASK-TO-TASK-MSG-001",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-014/runtime/workspace-default/refs/task-exclusion.txt"
+      ],
+      "createdAt": "2026-09-06T11:58:11.914Z"
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (6 tests) 79ms
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent team websocket attached for team run team-run-1
+Created agent session e688e41d-7c0b-4f96-a580-001fe608b422 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent Team WebSocket connected: session=e688e41d-7c0b-4f96-a580-001fe608b422, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Closed agent session e688e41d-7c0b-4f96-a580-001fe608b422
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent team websocket attached for team run team-run-1
+Created agent session d1bd0506-4e8b-4df6-8170-3ab55c0b2057 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent Team WebSocket connected: session=d1bd0506-4e8b-4df6-8170-3ab55c0b2057, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Closed agent session d1bd0506-4e8b-4df6-8170-3ab55c0b2057
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent team websocket attached for team run team-run-1
+Created agent session dff67b7c-013f-4d7c-b56f-7324ed6ab471 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent Team WebSocket connected: session=dff67b7c-013f-4d7c-b56f-7324ed6ab471, run=team-run-1
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Error handling team message for dff67b7c-013f-4d7c-b56f-7324ed6ab471: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Closed agent session dff67b7c-013f-4d7c-b56f-7324ed6ab471
+
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts (3 tests) 172ms
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts (5 tests) 12ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Created agent session 5b1a73f9-6e01-4262-b705-d935c3511328 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Agent Team WebSocket connected: session=5b1a73f9-6e01-4262-b705-d935c3511328, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic V1 snapshot before lifecycle changes
+Closed agent session 5b1a73f9-6e01-4262-b705-d935c3511328
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Created agent session ac4f8408-49f9-4c25-b75d-4f54f3764e7b for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Agent Team WebSocket connected: session=ac4f8408-49f9-4c25-b75d-4f54f3764e7b, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Closed agent session ac4f8408-49f9-4c25-b75d-4f54f3764e7b
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session 6f372104-292b-418a-a77b-d64ee07e8c76 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Agent Team WebSocket connected: session=6f372104-292b-418a-a77b-d64ee07e8c76, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session 6f372104-292b-418a-a77b-d64ee07e8c76
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session e895a1fc-9388-4f89-af45-2328cd9b0255 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Agent Team WebSocket connected: session=e895a1fc-9388-4f89-af45-2328cd9b0255, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session e895a1fc-9388-4f89-af45-2328cd9b0255
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Created agent session 9f1b73ee-34dc-403e-a802-1d0b053072bb for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Agent Team WebSocket connected: session=9f1b73ee-34dc-403e-a802-1d0b053072bb, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Closed agent session 9f1b73ee-34dc-403e-a802-1d0b053072bb
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Created agent session e7e16422-7eeb-43e2-9492-1cfb8f7c8ee8 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Agent Team WebSocket connected: session=e7e16422-7eeb-43e2-9492-1cfb8f7c8ee8, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Closed agent session e7e16422-7eeb-43e2-9492-1cfb8f7c8ee8
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (7 tests) 30ms
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts (10 tests) 171ms
+ ✓ tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts (5 tests) 61ms
+ ✓ tests/unit/agent-team-execution/root-team-run-termination.test.ts (3 tests) 60ms
+ ✓ tests/unit/run-history/services/team-run-package-catalog.test.ts (2 tests) 43ms
+stdout | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts (7 tests) 20ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts (3 tests) 8ms
+ ✓ tests/unit/run-history/services/workspace-run-history-service.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-termination.test.ts (1 test) 4ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts (1 test) 4ms
+ ✓ tests/unit/agent-team-execution/root-task-lifecycle-command-queue.test.ts (3 tests) 5ms
+ ✓ tests/unit/api/graphql/types/run-history.test.ts (1 test) 3ms
+
+ Test Files  15 passed (15)
+      Tests  61 passed (61)
+   Start at  21:17:49
+   Duration  14.20s (transform 3.79s, setup 82ms, import 10.92s, tests 674ms, environment 1ms)
+

@@ -1,0 +1,77 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+FA
+Followup Assistant
+(1)
+Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools.
+now
+TEAMS
+FF
+Followup Flat Team
+(1)
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-R...
+16m
+C
+coordinator
+16m
+L
+lead
+16m
+R
+reviewer
+16m
+ORGS
+Followup Organization
+(1)
+Use send_message_to exactly twice, sequentially. First recipient_address /receiver, content "Repl...
+8m
+D
+director
+R
+receiver
+research team
+C
+coordinator
+L
+lead
+R
+reviewer
+Task: research team · c60c28
+coordinator · 3a9d7e
+lead · a68902
+reviewer · 23060c
+Settings
+FA
+Followup Assistant - 6286
+Idle
+You
+Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools.
+
+Context files
+
+COLLAB-API01-first-text.txt
+FA
+Followup Assistant
+Thinking
+
+COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47
+
+Context Files (0)
+(drag, paste, or upload)
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Loading workspace…
+No file selected
+
+Select a file from the explorer to view or edit its content.

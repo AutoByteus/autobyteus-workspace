@@ -1,0 +1,70 @@
+{
+  "graphql": {
+    "log": "server-cohort.log",
+    "testFile": "autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts",
+    "failedTests": 9,
+    "stopsBeforeAttachmentRead": true,
+    "error": "The process AgentRunManager/AgentTeamRunManager is not initialized.",
+    "boundaries": [
+      {
+        "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+        "entrySha256": "3c26d45e95f871b6945f27f2d04278a2625836cd947b5f2398b85377bc30dd12",
+        "currentSha256": "3c26d45e95f871b6945f27f2d04278a2625836cd947b5f2398b85377bc30dd12",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+        "entrySha256": "5923ae13f2cc995f8d9ea5b163f1bbb122bd768914fc7b6795ef4069168536f3",
+        "currentSha256": "5923ae13f2cc995f8d9ea5b163f1bbb122bd768914fc7b6795ef4069168536f3",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts",
+        "entrySha256": "7acf169c4894b76b15bfaa1b040360635f7d56b6bba9553bc7f5e73f334de80e",
+        "currentSha256": "7acf169c4894b76b15bfaa1b040360635f7d56b6bba9553bc7f5e73f334de80e",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts",
+        "entrySha256": "0f9ace17e1d39d7af35c54db0bf8cd2a75a15bf1bc8a958573866288bab09253",
+        "currentSha256": "0f9ace17e1d39d7af35c54db0bf8cd2a75a15bf1bc8a958573866288bab09253",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/src/run-history/services/team-run-history-service.ts",
+        "entrySha256": "8328523faa1a3dc64a4a9c3b2e4391f31bbe2264d11b4f0e6a09aa1d281332f8",
+        "currentSha256": "8328523faa1a3dc64a4a9c3b2e4391f31bbe2264d11b4f0e6a09aa1d281332f8",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/src/api/graphql/types/run-history.ts",
+        "entrySha256": "f4a4f0f722a0946076114e1cdc460429e55038e318df9092491720b9a4882ac3",
+        "currentSha256": "f4a4f0f722a0946076114e1cdc460429e55038e318df9092491720b9a4882ac3",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/src/api/graphql/types/team-run-history.ts",
+        "entrySha256": "9826718146d8d3f85c86f0561ce973d52d18e4ed3452cf5d9719e8d84ba176a5",
+        "currentSha256": "9826718146d8d3f85c86f0561ce973d52d18e4ed3452cf5d9719e8d84ba176a5",
+        "unchanged": true
+      },
+      {
+        "path": "autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts",
+        "entrySha256": "7b415e5b1ea859be918b3f5984cb6e360de3e71f77ea894adbcbb481fb5c05af",
+        "currentSha256": "7b415e5b1ea859be918b3f5984cb6e360de3e71f77ea894adbcbb481fb5c05af",
+        "unchanged": true
+      }
+    ],
+    "limit": "Source equality establishes unchanged initializer paths, not a baseline runtime rerun or a successful hosted GraphQL flow. Existing E2E field selection/assertion was mechanically updated; no harness fix or production lifecycle bypass was added."
+  },
+  "teamMemory": {
+    "log": "server-current.log",
+    "baselineLog": "team-memory-baseline.log",
+    "failedTests": 2,
+    "baselineMethod": "Same two tests rerun with pre-IR055 context-file-record-locators.ts; same catalog assertions fail. Current visitor restored before completion/build. No other baseline production restore or global baseline Pass claimed."
+  },
+  "typescript": {
+    "log": "server-all-typecheck.log",
+    "result": "Failed repository all-tests rootDir/include config; production config/full build passed."
+  }
+}

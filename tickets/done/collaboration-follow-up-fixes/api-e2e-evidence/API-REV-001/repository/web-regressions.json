@@ -1,0 +1,17 @@
+{
+  "name": "web-regressions",
+  "case": "REPO-WEB",
+  "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+  "command": [
+    "pnpm",
+    "test:nuxt",
+    "--run",
+    "stores/__tests__/workspaceSelectionComposition.spec.ts",
+    "components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+    "--maxWorkers=2"
+  ],
+  "started": "2026-09-13T11:32:24.763527+00:00",
+  "exit": 0,
+  "finished": "2026-09-13T11:32:44.352240+00:00",
+  "tail": "0this%20option.%22%5D%7D\nAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D\nAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D\nAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D\nAn error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D\n\n \u2713 stores/__tests__/workspaceSelectionComposition.spec.ts (7 tests) 874ms\n\n Test Files  2 passed (2)\n      Tests  10 passed (10)\n   Start at  11:32:31\n   Duration  12.90s (transform 6.03s, setup 19.25s, collect 870ms, tests 903ms, environment 1.70s, prepare 875ms)\n\n"
+}

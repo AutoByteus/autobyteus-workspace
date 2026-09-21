@@ -1,0 +1,27 @@
+{
+  "name": "LIVE-006R-restored-continuation",
+  "url": "http://127.0.0.1:3596/workspace/",
+  "viewport": {
+    "width": 1510,
+    "height": 801
+  },
+  "documentWidth": 1510,
+  "selected": [
+    {
+      "tag": "DIV",
+      "text": "L\nlead\n13m",
+      "test": "workspace-team-member-aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a-/lead",
+      "ariaCurrent": "true",
+      "ariaSelected": "true"
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Team",
+      "test": null,
+      "ariaCurrent": null,
+      "ariaSelected": "true"
+    }
+  ],
+  "tasks": "Tasks\n1 task\nReturn exactly API16-INITIAL-SUBMISSION as the result by calling submit_task_result exactly once. Do not call review_task_result, send_message_to, get_handoff_rules, or create another task.\nAccepted\nUpdated 02:33 PM\nlead → analyst\nResult submitted · Result 1\n\nanalyst → lead\n\n02:29 PM\n\nAPI16-INITIAL-SUBMISSION\n\nRevision requested · Result 1\n\nlead → analyst\n\n02:31 PM\n\nResubmit exactly API16-REVISED-SUBMISSION using submit_task_result on this same task.\n\nRevised result submitted · Result 2\n\nanalyst → lead\n\n02:31 PM\n\nAPI16-REVISED-SUBMISSION\n\nResult 2 accepted\n\nlead → analyst\n\n02:33 PM\n\nAPI16-ACCEPTED\n\nTask assigned\nAccepted\n\nlead → analyst\n\nSep 6, 02:29 PM\n\nReturn exactly API16-INITIAL-SUBMISSION as the result by calling submit_task_result exactly once. Do not call review_task_result, send_message_to, get_handoff_rules, or create another task.",
+  "alerts": []
+}

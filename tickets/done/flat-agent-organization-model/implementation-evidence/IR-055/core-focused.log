@@ -1,0 +1,67 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-ts
+
+stdout | tests/unit/memory/user-file-attachments.test.ts > user raw file attachment facts > native ingestion uses original event refs (adapted=false), preserving processed text/media and TOOL exclusion
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/memory/user-file-attachments.test.ts > user raw file attachment facts > native ingestion uses original event refs (adapted=true), preserving processed text/media and TOOL exclusion
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+ ❯ tests/unit/memory/user-file-attachments.test.ts (16 tests | 2 failed) 23ms
+     ✓ captures immutable exact references without inference, partitions all types once and roundtrips one row 2ms
+     ✓ reads optional absence undefined without adding attachment facts 1ms
+     ✓ reads optional absence null without adding attachment facts 0ms
+     ✓ reads optional absence undefined without adding attachment facts 0ms
+     ✓ rejects malformed present facts {} rather than silently hiding them 1ms
+     ✓ rejects malformed present facts "bad" rather than silently hiding them 0ms
+     ✓ rejects malformed present facts {"uri":"","file_type":"text","file_name":null} rather than silently hiding them 0ms
+     ✓ rejects malformed present facts {"uri":"/rest/agent-org-runs/org/agent-runs/task-2/context-files/ctx_1__report.txt","file_type":"retired","file_name":null} rather than silently hiding them 0ms
+     ✓ rejects malformed present facts {"uri":"/rest/agent-org-runs/org/agent-runs/task-2/context-files/ctx_1__report.txt","file_type":"text","file_name":12} rather than silently hiding them 0ms
+     ✓ rejects malformed present facts {"uri":"/rest/agent-org-runs/org/agent-runs/task-2/context-files/ctx_1__report.txt","file_type":"text"} rather than silently hiding them 0ms
+     ✓ rejects malformed present facts {"uri":"/rest/agent-org-runs/org/agent-runs/task-2/context-files/ctx_1__report.txt","file_type":"image","file_name":null} rather than silently hiding them 0ms
+     ✓ rejects non-user facts and preserves whitespace/nullable name/unknown type byte-for-byte 0ms
+     ✓ clones the internal snapshot without provider-payload leakage 1ms
+     × native ingestion uses original event refs (adapted=false), preserving processed text/media and TOOL exclusion 10ms
+     × native ingestion uses original event refs (adapted=true), preserving processed text/media and TOOL exclusion 2ms
+     ✓ retains exact facts through actual raw-store rotation, cold archive read and retry 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/memory/user-file-attachments.test.ts > user raw file attachment facts > native ingestion uses original event refs (adapted=false), preserving processed text/media and TOOL exclusion
+ FAIL  tests/unit/memory/user-file-attachments.test.ts > user raw file attachment facts > native ingestion uses original event refs (adapted=true), preserving processed text/media and TOOL exclusion
+AssertionError: expected RawTraceItem{ …(15) } to match object { traceType: 'user', …(4) }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,7 +1,10 @@
+- {
+-   "content": "processed",
++ RawTraceItem {
++   "content": "processed
++
++ Reference files:
++ - /provider/image.png",
+    "fileAttachments": [
+      {
+        "fileName": "Accepted label.txt",
+        "fileType": "text",
+        "uri": "/rest/agent-org-runs/org/agent-runs/task-2/context-files/ctx_1__report.txt",
+
+ ❯ tests/unit/memory/user-file-attachments.test.ts:96:21
+     94|     let rows = store.listTurnRawTracesOrdered();
+     95|     expect(rows).toHaveLength(1);
+     96|     expect(rows[0]).toMatchObject({ traceType: 'user', content: 'proce…
+       |                     ^
+     97|       fileAttachments: [{ uri, fileType: 'text', fileName: 'Accepted l…
+     98|       media: { images: ['/provider/image.png'], audio: [], video: [] },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 14 passed (16)
+   Start at  15:47:55
+   Duration  771ms (transform 520ms, setup 200ms, import 419ms, tests 23ms, environment 0ms)
+

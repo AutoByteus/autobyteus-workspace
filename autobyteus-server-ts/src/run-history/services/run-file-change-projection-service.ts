@@ -1,6 +1,11 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import {
+  CollaborationExecutionLocationService,
+  type LocatedCollaborationAgentExecution,
+} from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import { canonicalizeRunFileChangePath, resolveRunFileChangeAbsolutePath } from "../../services/run-file-changes/run-file-change-path-identity.js";
 import { normalizeRunFileChangeProjection } from "../../services/run-file-changes/run-file-change-projection-normalizer.js";
 import { RunFileChangeProjectionStore, getRunFileChangeProjectionStore } from "../../services/run-file-changes/run-file-change-projection-store.js";
@@ -9,7 +14,7 @@ import { RunFileChangeService, getRunFileChangeService } from "../../services/ru
 import type { RunFileChangeEntry, RunFileChangeProjection } from "../../services/run-file-changes/run-file-change-types.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "./agent-run-metadata-service.js";
-import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
 
 export interface ResolvedRunFileChangeEntry {
   entry: RunFileChangeEntry;
@@ -25,30 +30,31 @@ type ProjectionContext = {
 
 export class RunFileChangeProjectionService {
   private readonly agentRuns: AgentRunManager;
-  private readonly teamRuns: AgentTeamRunManager;
   private readonly agentMetadata: AgentRunMetadataService;
   private readonly projectionStore: RunFileChangeProjectionStore;
   private readonly changes: RunFileChangeService;
   private readonly workspaces: WorkspaceManager;
-  private readonly teamLocations: TeamRunExecutionTreeLocationService;
+  private readonly collaborationLocations: Pick<CollaborationExecutionLocationService, "findAgent">;
 
   constructor(options: {
     agentRunManager?: AgentRunManager;
-    teamRunManager?: AgentTeamRunManager;
     metadataService?: AgentRunMetadataService;
     projectionStore?: RunFileChangeProjectionStore;
     runFileChangeService?: RunFileChangeService;
     workspaceManager?: WorkspaceManager;
-    teamLocations?: TeamRunExecutionTreeLocationService;
+    collaborationLocations?: Pick<CollaborationExecutionLocationService, "findAgent">;
     memoryDir?: string;
   } = {}) {
+    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.agentRuns = options.agentRunManager ?? AgentRunManager.getInstance();
-    this.teamRuns = options.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.agentMetadata = options.metadataService ?? getAgentRunMetadataService();
     this.projectionStore = options.projectionStore ?? getRunFileChangeProjectionStore();
     this.changes = options.runFileChangeService ?? getRunFileChangeService();
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
-    this.teamLocations = options.teamLocations ?? new TeamRunExecutionTreeLocationService({ memoryDir: options.memoryDir });
+    this.collaborationLocations = options.collaborationLocations ?? new CollaborationExecutionLocationService({
+      teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+      orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
+    });
   }
 
   async getProjection(runId: string): Promise<RunFileChangeEntry[]> {
@@ -87,23 +93,27 @@ export class RunFileChangeProjectionService {
       };
     }
 
-    const team = await this.teamLocations.findAgent({ agentRunId: runId });
-    if (!team) return { projection: { version: 2, entries: [] }, workspaceRootPath: null, isActiveRun: false };
-    const workspaceRootPath = team.configuredPlacement?.launchConfiguration.workspaceRootPath ?? null;
-    const managedRoot = this.teamRuns.getManagedTeamRun(team.rootTeamRunId);
-    if (managedRoot) return {
-      projection: await this.changes.getProjectionForTeamMemberRun(managedRoot, runId),
-      workspaceRootPath,
-      isActiveRun: true,
-    };
+    const location = await this.collaborationLocations.findAgent({ agentRunId: runId });
+    if (!location) return { projection: { version: 2, entries: [] }, workspaceRootPath: null, isActiveRun: false };
+    const workspaceRootPath = this.workspaceRootPath(location);
     return {
-      projection: normalizeRunFileChangeProjection(
-        await this.projectionStore.readProjection(team.memoryDir),
-        { runId, workspaceRootPath },
-      ),
+      projection: location.isActive
+        ? await this.changes.getProjectionForCollaborationMember({
+            agentRunId: location.agentRunId,
+            memoryDir: location.memoryDir,
+            workspaceRootPath,
+          })
+        : normalizeRunFileChangeProjection(
+            await this.projectionStore.readProjection(location.memoryDir),
+            { runId, workspaceRootPath },
+          ),
       workspaceRootPath,
-      isActiveRun: false,
+      isActiveRun: location.isActive,
     };
+  }
+
+  private workspaceRootPath(location: LocatedCollaborationAgentExecution): string | null {
+    return location.configuredPlacement?.launchConfiguration.workspaceRootPath ?? null;
   }
 
   private async activeStandalone(run: AgentRun): Promise<ProjectionContext> {

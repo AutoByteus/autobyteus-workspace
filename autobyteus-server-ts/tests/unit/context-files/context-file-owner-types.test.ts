@@ -27,17 +27,17 @@ describe('context-file-owner-types', () => {
     );
   });
 
-  it('normalizes team member route keys and extracts stored filename/display name', () => {
+  it('preserves exact Team member addresses and extracts stored filename/display name', () => {
     const owner = parseFinalContextFileOwnerDescriptor({
       kind: 'team_member_final',
       teamRunId: 'team-1',
-      memberRouteKey: 'Solution Designer',
+      memberAddress: '/solution-designer',
       memberRunId: 'caller-supplied-run-id',
     });
 
     expect(owner).not.toHaveProperty('memberRunId');
     const locator = buildFinalContextFileLocator(owner, 'ctx_abc123__diagram-final.png');
-    expect(locator).toBe('/rest/team-runs/team-1/members/Solution%20Designer/context-files/ctx_abc123__diagram-final.png');
+    expect(locator).toBe('/rest/team-runs/team-1/members/%2Fsolution-designer/context-files/ctx_abc123__diagram-final.png');
     expect(getStoredFilenameFromLocator(locator)).toBe('ctx_abc123__diagram-final.png');
     expect(getDisplayNameFromStoredFilename('ctx_abc123__diagram-final.png')).toBe('diagram-final.png');
   });

@@ -11,14 +11,13 @@ import {
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 
-export type AgentTeamDefinitionOwnershipScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED'
+export type AgentTeamDefinitionOwnershipScope = 'SHARED' | 'APPLICATION_OWNED' | 'AGENT_ORG_OWNED'
 export type AgentMemberRefScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED' | null
 
 export interface TeamMemberInput {
   __typename?: string
   memberName: string
   ref: string
-  refType: 'AGENT' | 'AGENT_TEAM'
   refScope?: AgentMemberRefScope
 }
 
@@ -30,10 +29,13 @@ export interface AgentTeamDefinition {
   instructions: string
   category?: string | null
   avatarUrl?: string | null
-  updatedAt?: string | null
+  revision?: string | null
+  handoffs?: TeamDefinitionHandoff[]
   coordinatorMemberName: string
   nodes: TeamMemberInput[]
   ownershipScope?: AgentTeamDefinitionOwnershipScope | null
+  ownerOrgId?: string | null
+  ownerOrgName?: string | null
   ownerTeamId?: string | null
   ownerTeamName?: string | null
   ownerApplicationId?: string | null
@@ -43,6 +45,8 @@ export interface AgentTeamDefinition {
   defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
+export interface TeamDefinitionHandoff { from: string; to: string; rules: string[] }
+
 export interface CreateAgentTeamDefinitionInput {
   name: string
   description: string
@@ -51,11 +55,13 @@ export interface CreateAgentTeamDefinitionInput {
   coordinatorMemberName: string
   avatarUrl?: string | null
   nodes: TeamMemberInput[]
+  handoffs?: TeamDefinitionHandoff[]
   defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 export interface UpdateAgentTeamDefinitionInput {
   id: string
+  expectedRevision: string
   name?: string | null
   description?: string | null
   instructions?: string | null
@@ -63,17 +69,14 @@ export interface UpdateAgentTeamDefinitionInput {
   coordinatorMemberName?: string | null
   avatarUrl?: string | null
   nodes?: TeamMemberInput[] | null
+  handoffs?: TeamDefinitionHandoff[] | null
   defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 const normalizeOwnershipScope = (
   value: AgentTeamDefinitionOwnershipScope | null | undefined,
 ): AgentTeamDefinitionOwnershipScope => (
-  value === 'APPLICATION_OWNED'
-    ? 'APPLICATION_OWNED'
-    : value === 'TEAM_LOCAL'
-      ? 'TEAM_LOCAL'
-      : 'SHARED'
+  value === 'APPLICATION_OWNED' || value === 'AGENT_ORG_OWNED' ? value : 'SHARED'
 )
 
 export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', () => {
@@ -197,7 +200,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' }).then((result: { data: { agentTeamDefinitions?: AgentTeamDefinition[] } }) => {
         agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
       })
-      return getAgentTeamDefinitionById.value(data.createAgentTeamDefinition.id)
+      return getCatalogAgentTeamDefinitionById.value(data.createAgentTeamDefinition.id)
     } catch (cause) {
       error.value = cause
       console.error('Failed to create agent team definition:', cause)
@@ -232,7 +235,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' }).then((result: { data: { agentTeamDefinitions?: AgentTeamDefinition[] } }) => {
         agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
       })
-      return getAgentTeamDefinitionById.value(data.updateAgentTeamDefinition.id)
+      return getCatalogAgentTeamDefinitionById.value(data.updateAgentTeamDefinition.id)
     } catch (cause) {
       error.value = cause
       console.error('Failed to update agent team definition:', cause)
@@ -275,23 +278,19 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     }
   }
 
-  const getAgentTeamDefinitionById = computed(() => (
+  // Synchronous catalog lookups only. A miss does not mean absent storage or
+  // invalid ownership; selected Org references use the exact scoped reader.
+  const getCatalogAgentTeamDefinitionById = computed(() => (
     (id: string) => agentTeamDefinitions.value.find((definition) => definition.id === id) || null
   ))
 
-  const getAgentTeamDefinitionByName = computed(() => (
+  const getCatalogAgentTeamDefinitionByName = computed(() => (
     (name: string) => agentTeamDefinitions.value.find((definition) => definition.name === name) || null
   ))
 
   const sharedAgentTeamDefinitions = computed(() => (
     agentTeamDefinitions.value.filter(
       (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'SHARED',
-    )
-  ))
-
-  const teamLocalAgentTeamDefinitions = computed(() => (
-    agentTeamDefinitions.value.filter(
-      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'TEAM_LOCAL',
     )
   ))
 
@@ -302,20 +301,12 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
   ))
 
   const rootAgentTeamDefinitions = computed(() => (
-    agentTeamDefinitions.value.filter(
-      (definition) => normalizeOwnershipScope(definition.ownershipScope) !== 'TEAM_LOCAL',
-    )
+    [...agentTeamDefinitions.value]
   ))
 
   const getApplicationOwnedTeamDefinitionsByOwnerApplicationId = computed(() => (
     (ownerApplicationId: string): AgentTeamDefinition[] => applicationOwnedAgentTeamDefinitions.value.filter(
       (definition) => (definition.ownerApplicationId || '').trim() === ownerApplicationId.trim(),
-    )
-  ))
-
-  const getTeamLocalTeamDefinitionsByOwnerTeamId = computed(() => (
-    (ownerTeamId: string): AgentTeamDefinition[] => teamLocalAgentTeamDefinitions.value.filter(
-      (definition) => (definition.ownerTeamId || '').trim() === ownerTeamId.trim(),
     )
   ))
 
@@ -328,7 +319,6 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
   return {
     agentTeamDefinitions,
     sharedAgentTeamDefinitions,
-    teamLocalAgentTeamDefinitions,
     applicationOwnedAgentTeamDefinitions,
     rootAgentTeamDefinitions,
     loading,
@@ -340,9 +330,8 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     updateAgentTeamDefinition,
     deleteAgentTeamDefinition,
     invalidateAgentTeamDefinitions,
-    getAgentTeamDefinitionById,
-    getAgentTeamDefinitionByName,
+    getCatalogAgentTeamDefinitionById,
+    getCatalogAgentTeamDefinitionByName,
     getApplicationOwnedTeamDefinitionsByOwnerApplicationId,
-    getTeamLocalTeamDefinitionsByOwnerTeamId,
   }
 })

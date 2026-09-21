@@ -1,0 +1,971 @@
+{
+  "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+  "lead": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+  "verifier": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+  "initial": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+    "is_active": true,
+    "summary": "",
+    "org": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-06T00:09:55.560Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "aorg-direct-agents-org",
+        "orgDefinitionName": "AORG E2E Direct Agents Org",
+        "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-lead",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+            "platformAgentRunId": "01a0740c-de78-72a1-b108-21630ad28e04",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          },
+          {
+            "address": "/verifier",
+            "agentDefinitionId": "aorg-verifier",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+            "platformAgentRunId": "01a0740c-deee-70e3-90d8-0efd2ed1dbc8",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    }
+  },
+  "whitespaceAck": {
+    "at": "2026-09-06T00:09:55.996Z",
+    "index": 3,
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+      "command_id": "empty-accepted",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+      "state": "rejected",
+      "code": "AGENT_RUN_INPUT_INVALID",
+      "message": "AgentRun input content must be a non-empty string."
+    }
+  },
+  "afterWhitespace": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+    "is_active": true,
+    "summary": "",
+    "org": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-06T00:09:55.560Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "aorg-direct-agents-org",
+        "orgDefinitionName": "AORG E2E Direct Agents Org",
+        "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-lead",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+            "platformAgentRunId": "01a0740c-de78-72a1-b108-21630ad28e04",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          },
+          {
+            "address": "/verifier",
+            "agentDefinitionId": "aorg-verifier",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+            "platformAgentRunId": "01a0740c-deee-70e3-90d8-0efd2ed1dbc8",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    }
+  },
+  "invalidAck": {
+    "at": "2026-09-06T00:09:56.003Z",
+    "index": 4,
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+      "command_id": "invalid-target",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "not-a-real-agent-run",
+      "state": "rejected",
+      "code": "RUN_NOT_FOUND",
+      "message": "AgentRun 'not-a-real-agent-run' is not live in AgentOrg 'aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c'."
+    }
+  },
+  "afterInvalid": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+    "is_active": true,
+    "summary": "",
+    "org": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-06T00:09:55.560Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "aorg-direct-agents-org",
+        "orgDefinitionName": "AORG E2E Direct Agents Org",
+        "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-lead",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+            "platformAgentRunId": "01a0740c-de78-72a1-b108-21630ad28e04",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          },
+          {
+            "address": "/verifier",
+            "agentDefinitionId": "aorg-verifier",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+            "platformAgentRunId": "01a0740c-deee-70e3-90d8-0efd2ed1dbc8",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    }
+  },
+  "concurrentA": "APIREV11-CONCURRENT-A lead accepted competition",
+  "concurrentB": "APIREV11-CONCURRENT-B verifier accepted competition",
+  "acks": [
+    {
+      "at": "2026-09-06T00:09:56.036Z",
+      "index": 14,
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "command_id": "concurrent-a",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+        "state": "accepted",
+        "code": null,
+        "message": null
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.036Z",
+      "index": 13,
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "command_id": "concurrent-b",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+        "state": "accepted",
+        "code": null,
+        "message": null
+      }
+    }
+  ],
+  "winner": "APIREV11-CONCURRENT-B verifier accepted competition",
+  "afterConcurrent": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+    "is_active": true,
+    "summary": "APIREV11-CONCURRENT-B verifier accepted competition",
+    "org": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-06T00:09:55.560Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/verifier",
+          "rules": [
+            "When the lead response needs an exact verification marker."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "aorg-direct-agents-org",
+        "orgDefinitionName": "AORG E2E Direct Agents Org",
+        "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "aorg-lead",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+            "platformAgentRunId": "01a0740c-de78-72a1-b108-21630ad28e04",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          },
+          {
+            "address": "/verifier",
+            "agentDefinitionId": "aorg-verifier",
+            "role": null,
+            "description": null,
+            "agentRunId": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+            "platformAgentRunId": "01a0740c-deee-70e3-90d8-0efd2ed1dbc8",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    }
+  },
+  "messages": [
+    {
+      "at": "2026-09-06T00:09:55.995Z",
+      "index": 0,
+      "type": "CONNECTED",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "session_id": "d678a8f7-1b48-4c00-849b-9efd99079cc4"
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:55.995Z",
+      "index": 1,
+      "type": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "schema_version": 1,
+        "root_org": {
+          "base_change_sequence": 0,
+          "is_active": true,
+          "execution_tree": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "createdAt": "2026-09-06T00:09:55.560Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [
+              {
+                "from": "/lead",
+                "to": "/verifier",
+                "rules": [
+                  "When the lead response needs an exact verification marker."
+                ]
+              }
+            ],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "aorg-direct-agents-org",
+              "orgDefinitionName": "AORG E2E Direct Agents Org",
+              "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+              },
+              "members": [
+                {
+                  "address": "/lead",
+                  "agentDefinitionId": "aorg-lead",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+                  "platformAgentRunId": "01a0740c-de78-72a1-b108-21630ad28e04",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": false,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+                  }
+                },
+                {
+                  "address": "/verifier",
+                  "agentDefinitionId": "aorg-verifier",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+                  "platformAgentRunId": "01a0740c-deee-70e3-90d8-0efd2ed1dbc8",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-5.6-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": false,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-011/live/workspace-default"
+                  }
+                }
+              ],
+              "taskExecutions": []
+            }
+          },
+          "task_records": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+            "records": []
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "orgRunId": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+            "messages": []
+          },
+          "agent_statuses": [
+            {
+              "member_address": "/lead",
+              "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/verifier",
+              "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:55.995Z",
+      "index": 2,
+      "type": "ROOT_LIFECYCLE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "is_active": true
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:55.996Z",
+      "index": 3,
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "command_id": "empty-accepted",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+        "state": "rejected",
+        "code": "AGENT_RUN_INPUT_INVALID",
+        "message": "AgentRun input content must be a non-empty string."
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.003Z",
+      "index": 4,
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "command_id": "invalid-target",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "not-a-real-agent-run",
+        "state": "rejected",
+        "code": "RUN_NOT_FOUND",
+        "message": "AgentRun 'not-a-real-agent-run' is not live in AgentOrg 'aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c'."
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.019Z",
+      "index": 5,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 1,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "initializing",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.020Z",
+      "index": 6,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 2,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "initializing",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.025Z",
+      "index": 7,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 3,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "msg-concurrent-b",
+              "dedupe_key": "api11:aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c:concurrent-b",
+              "content": "APIREV11-CONCURRENT-B verifier accepted competition",
+              "input_origin": "user_message",
+              "received_at": "2026-09-06T00:09:56.017Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": null,
+              "parent_communication_message_id": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.028Z",
+      "index": 8,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 4,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "msg-concurrent-a",
+              "dedupe_key": "api11:aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c:concurrent-a",
+              "content": "APIREV11-CONCURRENT-A lead accepted competition",
+              "input_origin": "user_message",
+              "received_at": "2026-09-06T00:09:56.024Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": null,
+              "parent_communication_message_id": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.029Z",
+      "index": 9,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 5,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "initializing",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.029Z",
+      "index": 10,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 6,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+            "payload": {
+              "trace_id": "rt_1788653395663_1e9fa095-eed4-44a5-bf37-8d0583191bdd",
+              "content": "## Agent Identity\n\n- Name: AORG E2E Verifier\n- Description: Verifies deterministic results in Team and Org scopes.\n\n### Responsibilities and Boundaries\n\nYou are a concise verifier used in real API/E2E collaboration tests. When asked\nfor a marker, return the exact requested marker on the first line and state\nwhether the supplied condition is verified on the second line.\n\nWhen you are the delegator/reviewer for an explicitly requested test task, use\n`review_task_result` exactly as requested: request one revision when instructed,\notherwise accept the submitted result. When you are running as a fresh task\nassignee, complete the bounded task and call `submit_task_result`; if a revision\nis requested, resubmit against the same task instead of replying only in text.\n\n## Team Instruction\n\nProvide a small coordinator-free scope for exact direct-Agent focus validation.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/verifier\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+              "ts": 1788653395.663
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.030Z",
+      "index": 11,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 7,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "initializing",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.031Z",
+      "index": 12,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 8,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+            "payload": {
+              "trace_id": "rt_1788653395563_972e1645-f317-47f4-9a7f-f8d64ea974a0",
+              "content": "## Agent Identity\n\n- Name: AORG E2E Lead\n- Description: Coordinates deterministic AgentTeam and AgentOrg validation turns.\n\n### Responsibilities and Boundaries\n\nYou are the lead for a deterministic API/E2E validation package. Follow the\nuser's request directly. When asked for a marker, return the exact requested\nmarker on the first line and one short sentence on the second line. Do not\ndelegate unless the user explicitly asks you to do so.\n\nWhen you are the delegator/reviewer for an explicitly requested test task, use\n`review_task_result` exactly as requested: request one revision when instructed,\notherwise accept the submitted result. When you are running as a fresh task\nassignee, complete the bounded task and call `submit_task_result`; if a revision\nis requested, resubmit against the same task instead of replying only in text.\n\n## Team Instruction\n\nProvide a small coordinator-free scope for exact direct-Agent focus validation.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/lead\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+              "ts": 1788653395.563
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.036Z",
+      "index": 13,
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "command_id": "concurrent-b",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+        "state": "accepted",
+        "code": null,
+        "message": null
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.036Z",
+      "index": 14,
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "command_id": "concurrent-a",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+        "state": "accepted",
+        "code": null,
+        "message": null
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.044Z",
+      "index": 15,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 9,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.051Z",
+      "index": 16,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 10,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.086Z",
+      "index": 17,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 11,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.086Z",
+      "index": 18,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 12,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.086Z",
+      "index": 19,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 13,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/verifier",
+          "agent_run_id": "aorg_e2e_verifier_f76c742fdb65414ca2863c27e4dd426a",
+          "message": {
+            "type": "TURN_STARTED",
+            "payload": {
+              "turn_id": "01a0740c-e040-7513-84fe-6ed38167ad00"
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.093Z",
+      "index": 20,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 14,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.093Z",
+      "index": 21,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 15,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-09-06T00:09:56.093Z",
+      "index": 22,
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "aorg_e2e_direct_agents_org_0f936f0150494689a29dc3ad2dd19c6c",
+        "change_sequence": 16,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/lead",
+          "agent_run_id": "aorg_e2e_lead_eb5770992f974d359fa2af5e7222067f",
+          "message": {
+            "type": "TURN_STARTED",
+            "payload": {
+              "turn_id": "01a0740c-e040-7513-84fe-6eecb94dd67e"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:59:28.530Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=false and keeps it out of lists
+Agent definition cache populated with 1 items.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:59:28.619Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > resolves exact owned content with catalog already loaded=true and keeps it out of lists
+Agent definition cache populated with 1 items.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > retains exact physical membership, genuine missing negatives, and shared/Team-local controls
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:59:28.683Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > retains exact physical membership, genuine missing negatives, and shared/Team-local controls
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > retains exact physical membership, genuine missing negatives, and shared/Team-local controls
+Agent definition cache populated with 1 items.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-12T07:59:28.758Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts > Org-owned Agent exact lookup through hosted cached service and GraphQL > reads parent-owned updates and reference removal without caching the exact child into the catalog
+Agent definition cache populated with 1 items.
+
+ ✓ tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts (4 tests) 318ms
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getAll and reuses it
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getAll and reuses it
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getAll and reuses it
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getAll and reuses it
+Cache HIT for agent definition ID: 1
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getById
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getById
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getById
+Cache HIT for agent definition ID: 1
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > populates cache on first getById
+Cache HIT for agent definition ID: 2
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > returns null for missing id
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > returns null for missing id
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > returns null for missing id
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > returns null for missing id
+Cache MISS for agent definition ID: 999. As cache is exhaustive, it does not exist.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on create
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on create
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on create
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on create
+In-memory cache: Added new agent definition with ID 3.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on create
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on update
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on update
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on update
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on update
+In-memory cache: Updated agent definition with ID 1.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > updates cache on update
+Cache HIT for agent definition ID: 1
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > removes items from cache on delete
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > removes items from cache on delete
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > removes items from cache on delete
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > removes items from cache on delete
+In-memory cache: Removed agent definition with ID 1.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > removes items from cache on delete
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > removes items from cache on delete
+Cache MISS for agent definition ID: 1. As cache is exhaustive, it does not exist.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > bypasses the shared cache for team-local ids
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > reads Org-owned ids through persistence without populating or contaminating the shared cache
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > reads Org-owned ids through persistence without populating or contaminating the shared cache
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > reads Org-owned ids through persistence without populating or contaminating the shared cache
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > reads Org-owned ids through persistence without populating or contaminating the shared cache
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > reads Org-owned ids through persistence without populating or contaminating the shared cache
+Retrieving all agent definitions from cache.
+
+stdout | tests/unit/agent-definition/cached-agent-definition-provider.test.ts > CachedAgentDefinitionProvider > preserves persistence failures for an exact owned read
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ✓ tests/unit/agent-definition/cached-agent-definition-provider.test.ts (10 tests) 14ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  07:59:21
+   Duration  7.07s (transform 3.32s, setup 39ms, import 5.56s, tests 332ms, environment 0ms)
+

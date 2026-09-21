@@ -32,10 +32,18 @@
         class="h-full min-h-0"
         data-test="right-side-files-panel"
       >
-        <FileExplorerLayout :active="isFilesTabActive" :layout="fileExplorerLayout" />
+        <FileExplorerLayout
+          :active="isFilesTabActive"
+          :layout="fileExplorerLayout"
+          :workspace-id="activeWorkspaceId"
+        />
       </div>
       <div v-if="effectiveActiveTab === 'teamMembers'" class="h-full min-h-0">
-        <TeamOverviewPanel />
+        <CollaborationOverviewPanel
+          v-if="activeMessagesView"
+          :messages="activeMessagesView"
+          :tasks="activeTasksView!"
+        />
       </div>
       <div
         v-if="shouldMountTerminalPanel"
@@ -43,7 +51,10 @@
         class="h-full min-h-0"
         data-test="right-side-terminal-panel"
       >
-        <TerminalPanel :active="isTerminalTabActive" />
+        <TerminalPanel
+          :active="isTerminalTabActive"
+          :workspace-metadata="activeWorkspaceMetadata"
+        />
       </div>
       <div v-if="effectiveActiveTab === 'vnc'" class="h-full min-h-0">
         <VncViewer />
@@ -71,9 +82,8 @@ import { useAgentTodoStore } from '~/stores/agentTodoStore';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightPanelOpenFileAutoSwitch } from '~/composables/useRightPanelOpenFileAutoSwitch';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import TabList from '~/components/tabs/TabList.vue';
-import TeamOverviewPanel from '~/components/workspace/team/TeamOverviewPanel.vue';
+import CollaborationOverviewPanel from '~/components/workspace/collaboration/CollaborationOverviewPanel.vue';
 import TerminalPanel from '~/components/workspace/tools/TerminalPanel.vue';
 import VncViewer from '~/components/workspace/tools/VncViewer.vue';
 import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue';
@@ -88,7 +98,6 @@ const props = withDefaults(defineProps<{
   mode: 'desktop',
 });
 
-const selectionStore = useAgentSelectionStore();
 const activeContextStore = useActiveContextStore();
 const todoStore = useAgentTodoStore();
 
@@ -96,6 +105,19 @@ const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTa
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
+const activeWorkspaceId = computed(() => activeContextStore.activeWorkspaceTarget?.context.config.workspaceId ?? undefined);
+const activeWorkspaceMetadata = computed(() => activeContextStore.activeWorkspaceTarget?.context.config.workspaceMetadata ?? null);
+const activeTasksView = computed(() => {
+  const target = activeContextStore.activeWorkspaceTarget;
+  return target && 'collaborationTasks' in target ? target.collaborationTasks : null;
+});
+const activeMessagesView = computed(() => {
+  const target = activeContextStore.activeWorkspaceTarget;
+  return target && 'collaborationMessages' in target ? target.collaborationMessages : null;
+});
+const activeMessagesScopeKey = computed(() => activeMessagesView.value
+  ? `${activeMessagesView.value.rootKind}:${activeMessagesView.value.rootRunId}`
+  : null);
 const filesTabEnabled = computed(() => props.mode !== 'mobile-tools');
 const fileExplorerLayout = computed(() => props.mode === 'desktop' ? 'split' : 'stacked');
 const showPanelToggle = computed(() => props.mode === 'desktop');
@@ -124,11 +146,11 @@ const handleTabSelect = (tabName: string) => {
   setActiveTab(tabName as any);
 };
 
-// Watch for changes in the selected profile type to adjust the active tab via the composable logic
-watch(() => selectionStore.selectedType, (newType) => {
-  if (newType === 'team') {
+// Keep the contextual collaboration tool aligned with the selected tagged root.
+watch(activeMessagesScopeKey, (scopeKey) => {
+  if (scopeKey) {
     setActiveTab('teamMembers');
-  } else if (newType === 'agent') {
+  } else if (activeContextStore.activeWorkspaceTarget?.kind === 'standalone_agent') {
     setActiveTab('progress');
   }
 }, { immediate: true });
@@ -155,7 +177,7 @@ watch(isTerminalTabActive, (isActive) => {
 
 // Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
 watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value) : [], (newTodoList) => {
-  if (selectionStore.selectedType === 'agent' && newTodoList.length > 0 && activeTab.value !== 'progress') {
+  if (activeContextStore.activeWorkspaceTarget && newTodoList.length > 0 && activeTab.value !== 'progress') {
     setActiveTab('progress');
   }
 });

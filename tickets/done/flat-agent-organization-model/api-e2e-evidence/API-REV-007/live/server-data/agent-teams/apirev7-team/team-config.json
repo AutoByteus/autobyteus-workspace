@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "coordinatorMemberName": "aorg_e2e_lead",
+  "members": [
+    {
+      "memberName": "aorg_e2e_lead",
+      "ref": "aorg-lead",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "aorg_e2e_analyst",
+      "ref": "aorg-analyst",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/aorg_e2e_lead",
+      "to": "/aorg_e2e_analyst",
+      "rules": [
+        "When 需求包含 α, keep 用户 prose exact."
+      ]
+    }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

@@ -1,0 +1,908 @@
+Debugger listening on ws://127.0.0.1:9238/70a52717-8f0c-4588-8d54-a289927ed645
+For help, see: https://nodejs.org/learn/getting-started/debugging
+Debugger attached.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env
+Loading environment from: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env
+[dotenv@17.3.1] injecting env (24) from ../tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:60806
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:60806
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data
+DB DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:2443) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-06T14:23:29.374Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-06T14:23:29.716Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-06T14:23:29.721Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788704609739,"pid":2443,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:36439"}
+{"level":30,"time":1788704609781,"pid":2443,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:8596"}
+[2026-09-06T14:23:29.782Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8596
+[2026-09-06T14:23:29.784Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8596
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788704609841,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":2.911541998386383,"msg":"http request completed"}
+{"level":30,"time":1788704609847,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.42145799845457077,"msg":"http request completed"}
+{"level":30,"time":1788704668482,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6294579952955246,"msg":"http request completed"}
+{"level":30,"time":1788704668493,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.490582995116711,"msg":"http request completed"}
+{"level":30,"time":1788704673717,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6141249984502792,"msg":"http request completed"}
+{"level":30,"time":1788704673726,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3687090054154396,"msg":"http request completed"}
+{"level":30,"time":1788704673739,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7311250045895576,"msg":"http request completed"}
+{"level":30,"time":1788704673741,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.44566699862480164,"msg":"http request completed"}
+{"level":30,"time":1788704673743,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.3123340010643005,"msg":"http request completed"}
+{"level":30,"time":1788704673745,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.4143339991569519,"msg":"http request completed"}
+{"level":30,"time":1788704673772,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.524167001247406,"msg":"http request completed"}
+{"level":30,"time":1788704673774,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.15399999916553497,"msg":"http request completed"}
+{"level":30,"time":1788704673781,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8652919977903366,"msg":"http request completed"}
+{"level":30,"time":1788704673786,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.0659160017967224,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+{"level":30,"time":1788704673790,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.437166005373001,"msg":"http request completed"}
+{"level":30,"time":1788704673835,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":26.568416997790337,"msg":"http request completed"}
+{"level":30,"time":1788704673859,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":38.81420800089836,"msg":"http request completed"}
+Created terminal session 6fdc4c0e-f91d-4a0b-bcaa-678470a4f194 using backend PtySession for target /root
+Terminal WebSocket connected: 6fdc4c0e-f91d-4a0b-bcaa-678470a4f194
+Terminal websocket attached for cwd /root
+{"level":30,"time":1788704673915,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":98.60858300328255,"msg":"http request completed"}
+{"level":30,"time":1788704673994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":188.34241700172424,"msg":"http request completed"}
+{"level":40,"time":1788704675722,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8107919991016388,"msg":"http request completed"}
+{"level":30,"time":1788704679002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-m","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5590839982032776,"msg":"http request completed"}
+{"level":30,"time":1788704679008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-n","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.4510830044746399,"msg":"http request completed"}
+{"level":30,"time":1788704679009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-o","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.22304199635982513,"msg":"http request completed"}
+{"level":30,"time":1788704679020,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.627250000834465,"msg":"http request completed"}
+{"level":30,"time":1788704679038,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.59079200029373,"msg":"http request completed"}
+{"level":30,"time":1788704684002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-r","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.3096249997615814,"msg":"http request completed"}
+{"level":30,"time":1788704684013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.043249994516373,"msg":"http request completed"}
+{"level":30,"time":1788704684030,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.644124999642372,"msg":"http request completed"}
+{"level":30,"time":1788704689012,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-u","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.692500002682209,"msg":"http request completed"}
+{"level":30,"time":1788704689017,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-v","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.4264589995145798,"msg":"http request completed"}
+{"level":30,"time":1788704689018,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-w","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.260624997317791,"msg":"http request completed"}
+{"level":30,"time":1788704689027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.351999998092651,"msg":"http request completed"}
+{"level":30,"time":1788704689044,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.184334002435207,"msg":"http request completed"}
+{"level":30,"time":1788704694001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-z","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5433750003576279,"msg":"http request completed"}
+{"level":30,"time":1788704694010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-10","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.635209001600742,"msg":"http request completed"}
+{"level":30,"time":1788704694024,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-11","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.402957998216152,"msg":"http request completed"}
+{"level":30,"time":1788704699004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-12","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.38041599839925766,"msg":"http request completed"}
+{"level":30,"time":1788704699007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-13","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.21562499552965164,"msg":"http request completed"}
+{"level":30,"time":1788704699008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-14","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.19954199343919754,"msg":"http request completed"}
+{"level":30,"time":1788704699012,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-15","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.9973749965429306,"msg":"http request completed"}
+{"level":30,"time":1788704699024,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-16","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.24133300036192,"msg":"http request completed"}
+{"level":30,"time":1788704704003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-17","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6650840044021606,"msg":"http request completed"}
+{"level":30,"time":1788704704017,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-18","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.155749998986721,"msg":"http request completed"}
+{"level":30,"time":1788704704037,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-19","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":28.15820800513029,"msg":"http request completed"}
+{"level":30,"time":1788704708999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1a","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5328750014305115,"msg":"http request completed"}
+{"level":30,"time":1788704709002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1b","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.30037499964237213,"msg":"http request completed"}
+{"level":30,"time":1788704709003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1c","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2369999960064888,"msg":"http request completed"}
+{"level":30,"time":1788704709008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.792749993503094,"msg":"http request completed"}
+{"level":30,"time":1788704709021,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.41449999809265,"msg":"http request completed"}
+{"level":30,"time":1788704713998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1f","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3868750035762787,"msg":"http request completed"}
+{"level":30,"time":1788704714005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.513916999101639,"msg":"http request completed"}
+{"level":30,"time":1788704714017,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.45499999821186,"msg":"http request completed"}
+{"level":30,"time":1788704719001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1i","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.041541002690792,"msg":"http request completed"}
+{"level":30,"time":1788704719005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1j","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.600833997130394,"msg":"http request completed"}
+{"level":30,"time":1788704719006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1k","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1939999982714653,"msg":"http request completed"}
+{"level":30,"time":1788704719013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.1677080020308495,"msg":"http request completed"}
+{"level":30,"time":1788704719028,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.589999996125698,"msg":"http request completed"}
+{"level":30,"time":1788704723999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1n","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5687500014901161,"msg":"http request completed"}
+{"level":30,"time":1788704724012,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.883750006556511,"msg":"http request completed"}
+{"level":30,"time":1788704724027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.579542003571987,"msg":"http request completed"}
+{"level":30,"time":1788704728999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1q","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5053749978542328,"msg":"http request completed"}
+{"level":30,"time":1788704729002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1r","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3367910012602806,"msg":"http request completed"}
+{"level":30,"time":1788704729004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1s","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.25541599839925766,"msg":"http request completed"}
+{"level":30,"time":1788704729010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.570833005011082,"msg":"http request completed"}
+{"level":30,"time":1788704729026,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.50629200041294,"msg":"http request completed"}
+{"level":30,"time":1788704733998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1v","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5255410000681877,"msg":"http request completed"}
+{"level":30,"time":1788704734008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.09595799446106,"msg":"http request completed"}
+{"level":30,"time":1788704734026,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.024749994277954,"msg":"http request completed"}
+{"level":30,"time":1788704739018,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1y","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.746291995048523,"msg":"http request completed"}
+{"level":30,"time":1788704739021,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1z","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2817080020904541,"msg":"http request completed"}
+{"level":30,"time":1788704739023,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-20","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3084169998764992,"msg":"http request completed"}
+{"level":30,"time":1788704739028,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-21","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.597417004406452,"msg":"http request completed"}
+{"level":30,"time":1788704739041,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-22","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.397124998271465,"msg":"http request completed"}
+{"level":30,"time":1788704744000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-23","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5901660025119781,"msg":"http request completed"}
+{"level":30,"time":1788704744016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-24","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":11.79662500321865,"msg":"http request completed"}
+{"level":30,"time":1788704744032,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-25","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":26.254791997373104,"msg":"http request completed"}
+{"level":30,"time":1788704749002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-26","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5954580008983612,"msg":"http request completed"}
+{"level":30,"time":1788704749007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-27","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.38883399963378906,"msg":"http request completed"}
+{"level":30,"time":1788704749010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-29","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.25949999690055847,"msg":"http request completed"}
+{"level":30,"time":1788704749016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-28","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.712540999054909,"msg":"http request completed"}
+{"level":30,"time":1788704749039,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":27.03395800292492,"msg":"http request completed"}
+{"level":30,"time":1788704753998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2b","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5255829989910126,"msg":"http request completed"}
+{"level":30,"time":1788704754009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.397750005126,"msg":"http request completed"}
+{"level":30,"time":1788704754027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.62925000488758,"msg":"http request completed"}
+{"level":30,"time":1788704758995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2e","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.34312500059604645,"msg":"http request completed"}
+{"level":30,"time":1788704758998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2f","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1585419997572899,"msg":"http request completed"}
+{"level":30,"time":1788704758999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2g","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.26695799827575684,"msg":"http request completed"}
+{"level":30,"time":1788704759004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.087250001728535,"msg":"http request completed"}
+{"level":30,"time":1788704759014,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.202624998986721,"msg":"http request completed"}
+{"level":30,"time":1788704763996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2j","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3202499970793724,"msg":"http request completed"}
+{"level":30,"time":1788704764002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.052583001554012,"msg":"http request completed"}
+{"level":30,"time":1788704764013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.970582999289036,"msg":"http request completed"}
+{"level":30,"time":1788704769000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2m","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.539000004529953,"msg":"http request completed"}
+{"level":30,"time":1788704769003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2n","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.20283299684524536,"msg":"http request completed"}
+{"level":30,"time":1788704769005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2p","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.11220800131559372,"msg":"http request completed"}
+{"level":30,"time":1788704769008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.3698330000042915,"msg":"http request completed"}
+{"level":30,"time":1788704769020,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.596834003925323,"msg":"http request completed"}
+{"level":30,"time":1788704773999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2r","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8276250064373016,"msg":"http request completed"}
+{"level":30,"time":1788704774010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.068042002618313,"msg":"http request completed"}
+{"level":30,"time":1788704774027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.069333001971245,"msg":"http request completed"}
+{"level":30,"time":1788704778996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2u","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5708750039339066,"msg":"http request completed"}
+{"level":30,"time":1788704778999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2v","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.41233399510383606,"msg":"http request completed"}
+{"level":30,"time":1788704779001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2w","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17620899528265,"msg":"http request completed"}
+{"level":30,"time":1788704779006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.93970800191164,"msg":"http request completed"}
+{"level":30,"time":1788704779016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.634666994214058,"msg":"http request completed"}
+{"level":30,"time":1788704783999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2z","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7667910009622574,"msg":"http request completed"}
+{"level":30,"time":1788704784004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-30","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.47758299857378006,"msg":"http request completed"}
+{"level":30,"time":1788704784005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-31","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2495409995317459,"msg":"http request completed"}
+{"level":30,"time":1788704784012,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-32","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.870875000953674,"msg":"http request completed"}
+{"level":30,"time":1788704784027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-33","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.749624997377396,"msg":"http request completed"}
+{"level":30,"time":1788704788994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-34","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5693750008940697,"msg":"http request completed"}
+{"level":30,"time":1788704789001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-35","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.282709002494812,"msg":"http request completed"}
+{"level":30,"time":1788704789014,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-36","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.605875000357628,"msg":"http request completed"}
+{"level":30,"time":1788704793997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-37","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9966249987483025,"msg":"http request completed"}
+{"level":30,"time":1788704794002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-38","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.35579100251197815,"msg":"http request completed"}
+{"level":30,"time":1788704794003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-39","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2803330048918724,"msg":"http request completed"}
+{"level":30,"time":1788704794010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.849666997790337,"msg":"http request completed"}
+{"level":30,"time":1788704794029,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.955875001847744,"msg":"http request completed"}
+{"level":30,"time":1788704798997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3c","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3378330022096634,"msg":"http request completed"}
+{"level":30,"time":1788704799003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.8907079994678497,"msg":"http request completed"}
+{"level":30,"time":1788704799014,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.912834003567696,"msg":"http request completed"}
+{"level":30,"time":1788704803996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3f","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.35866600275039673,"msg":"http request completed"}
+{"level":30,"time":1788704803998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3g","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18958299607038498,"msg":"http request completed"}
+{"level":30,"time":1788704803999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3h","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.14137499779462814,"msg":"http request completed"}
+{"level":30,"time":1788704804003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.7652079984545708,"msg":"http request completed"}
+{"level":30,"time":1788704804016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.15691599994898,"msg":"http request completed"}
+{"level":30,"time":1788704808994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3k","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6467499956488609,"msg":"http request completed"}
+{"level":30,"time":1788704809001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.9834999963641167,"msg":"http request completed"}
+{"level":30,"time":1788704809015,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.119584001600742,"msg":"http request completed"}
+{"level":30,"time":1788704813996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3n","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.487916998565197,"msg":"http request completed"}
+{"level":30,"time":1788704813999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3o","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.262874998152256,"msg":"http request completed"}
+{"level":30,"time":1788704814000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3p","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.13520799577236176,"msg":"http request completed"}
+{"level":30,"time":1788704814007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.920542001724243,"msg":"http request completed"}
+{"level":30,"time":1788704814020,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.58508300036192,"msg":"http request completed"}
+{"level":30,"time":1788704818992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3s","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.35145799815654755,"msg":"http request completed"}
+{"level":30,"time":1788704818997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.480124995112419,"msg":"http request completed"}
+{"level":30,"time":1788704819009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.19666700065136,"msg":"http request completed"}
+{"level":30,"time":1788704823997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3v","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5678339973092079,"msg":"http request completed"}
+{"level":30,"time":1788704824002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3w","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.602459006011486,"msg":"http request completed"}
+{"level":30,"time":1788704824003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3x","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.33066699653863907,"msg":"http request completed"}
+{"level":30,"time":1788704824011,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.912749998271465,"msg":"http request completed"}
+{"level":30,"time":1788704824027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.034583002328873,"msg":"http request completed"}
+{"level":30,"time":1788704829004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-40","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.4729999974370003,"msg":"http request completed"}
+{"level":30,"time":1788704829007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-41","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.33766699582338333,"msg":"http request completed"}
+{"level":30,"time":1788704829008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-42","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.16591699421405792,"msg":"http request completed"}
+{"level":30,"time":1788704829012,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-43","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.9105410054326057,"msg":"http request completed"}
+{"level":30,"time":1788704829034,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-44","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.91362500190735,"msg":"http request completed"}
+{"level":30,"time":1788704833992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-45","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3686250001192093,"msg":"http request completed"}
+{"level":30,"time":1788704833998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-46","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.364124998450279,"msg":"http request completed"}
+{"level":30,"time":1788704834010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-47","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.261916995048523,"msg":"http request completed"}
+{"level":30,"time":1788704838994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-48","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3344999998807907,"msg":"http request completed"}
+{"level":30,"time":1788704838996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-49","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17945799976587296,"msg":"http request completed"}
+{"level":30,"time":1788704838998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4b","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.10695800185203552,"msg":"http request completed"}
+{"level":30,"time":1788704839001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.472167000174522,"msg":"http request completed"}
+{"level":30,"time":1788704839013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.365333005785942,"msg":"http request completed"}
+Closed PTY session 6fdc4c0e-f91d-4a0b-bcaa-678470a4f194
+Terminal WebSocket disconnected: 6fdc4c0e-f91d-4a0b-bcaa-678470a4f194
+{"level":30,"time":1788704843994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4d","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7395000010728836,"msg":"http request completed"}
+{"level":30,"time":1788704844000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4e","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.7262500002980232,"msg":"http request completed"}
+{"level":30,"time":1788704844002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4f","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.7469169944524765,"msg":"http request completed"}
+{"level":30,"time":1788704844013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.87966700643301,"msg":"http request completed"}
+{"level":30,"time":1788704844027,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.860707998275757,"msg":"http request completed"}
+{"level":30,"time":1788704848992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4i","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3978330045938492,"msg":"http request completed"}
+{"level":30,"time":1788704848999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.9270419999957085,"msg":"http request completed"}
+{"level":30,"time":1788704849010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.65812499821186,"msg":"http request completed"}
+{"level":30,"time":1788704853990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4l","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3382919952273369,"msg":"http request completed"}
+{"level":30,"time":1788704853992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4m","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2320830002427101,"msg":"http request completed"}
+{"level":30,"time":1788704853993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4n","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.10350000113248825,"msg":"http request completed"}
+{"level":30,"time":1788704853998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.320416994392872,"msg":"http request completed"}
+{"level":30,"time":1788704854009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.89087499678135,"msg":"http request completed"}
+{"level":30,"time":1788704858992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4q","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5834169983863831,"msg":"http request completed"}
+{"level":30,"time":1788704858995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4r","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2671250030398369,"msg":"http request completed"}
+{"level":30,"time":1788704858996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4s","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18595799803733826,"msg":"http request completed"}
+{"level":30,"time":1788704859003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.351291999220848,"msg":"http request completed"}
+{"level":30,"time":1788704859021,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.73037499934435,"msg":"http request completed"}
+{"level":30,"time":1788704860050,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":34.587499998509884,"msg":"http request completed"}
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+{"level":30,"time":1788704860092,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":39.93687500059605,"msg":"http request completed"}
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default (file-explorer-websocket); active leases: 1
+FileExplorerSession created: d71fc8f3-8d59-4d98-b24b-55f3fbe90d88 for workspace temp_ws_default
+Created file explorer session d71fc8f3-8d59-4d98-b24b-55f3fbe90d88 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: d71fc8f3-8d59-4d98-b24b-55f3fbe90d88 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+{"level":30,"time":1788704860318,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":312.95425000041723,"msg":"http request completed"}
+{"level":30,"time":1788704863994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4z","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.45320799946784973,"msg":"http request completed"}
+{"level":30,"time":1788704863998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-50","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.30295799672603607,"msg":"http request completed"}
+{"level":30,"time":1788704864000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-52","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.14887500554323196,"msg":"http request completed"}
+{"level":30,"time":1788704864004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-51","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.275541000068188,"msg":"http request completed"}
+{"level":30,"time":1788704864018,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-53","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.258791998028755,"msg":"http request completed"}
+{"level":30,"time":1788704868990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-54","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3191249966621399,"msg":"http request completed"}
+{"level":30,"time":1788704868997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-55","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.627167001366615,"msg":"http request completed"}
+{"level":30,"time":1788704869011,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-56","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.152042001485825,"msg":"http request completed"}
+{"level":30,"time":1788704873992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-57","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6005830019712448,"msg":"http request completed"}
+{"level":30,"time":1788704873997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-58","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.39558399468660355,"msg":"http request completed"}
+{"level":30,"time":1788704874006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-59","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.69633299857378,"msg":"http request completed"}
+{"level":30,"time":1788704874020,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.84008400142193,"msg":"http request completed"}
+{"level":30,"time":1788704878988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5b","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.345709003508091,"msg":"http request completed"}
+{"level":30,"time":1788704878997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.130125001072884,"msg":"http request completed"}
+{"level":30,"time":1788704879006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.145625002682209,"msg":"http request completed"}
+{"level":30,"time":1788704883990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5e","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.4156250059604645,"msg":"http request completed"}
+{"level":30,"time":1788704883993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5f","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.20579200237989426,"msg":"http request completed"}
+{"level":30,"time":1788704883994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5g","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.22108300030231476,"msg":"http request completed"}
+{"level":30,"time":1788704884000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.575291998684406,"msg":"http request completed"}
+{"level":30,"time":1788704884013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.718375004827976,"msg":"http request completed"}
+{"level":30,"time":1788704888992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5j","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7197920009493828,"msg":"http request completed"}
+{"level":30,"time":1788704888997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5k","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.41724999994039536,"msg":"http request completed"}
+{"level":30,"time":1788704888998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5l","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.21720799803733826,"msg":"http request completed"}
+{"level":30,"time":1788704889005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.319667004048824,"msg":"http request completed"}
+{"level":30,"time":1788704889022,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.587083004415035,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[API16_CORR]{"ts":"2026-09-06T14:28:11.508Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","body":"{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"elicitation\":{\"form\":{},\"url\":{}}},\"clientInfo\":{\"name\":\"codex-mcp-client\",\"title\":\"Codex\",\"version\":\"0.153.4\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.508Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":0,"rpcMethod":"initialize","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.510Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":0,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.510Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":0,"statusCode":200}
+{"level":30,"time":1788704891511,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":6.911375001072884,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.518Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","body":"{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.519Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcMethod":"notifications/initialized","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.523Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","kind":"empty","statusCode":202}
+{"level":30,"time":1788704891530,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-2","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":202,"elapsedMs":12.545459002256393,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.532Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","body":"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{\"_meta\":{\"progressToken\":0}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.532Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":1,"rpcMethod":"tools/list","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.533Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":1,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.534Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":1,"statusCode":200}
+{"level":30,"time":1788704891534,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-3","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":3.2502079978585243,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+[API16_CORR]{"ts":"2026-09-06T14:28:11.587Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","body":"{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"elicitation\":{\"form\":{},\"url\":{}}},\"clientInfo\":{\"name\":\"codex-mcp-client\",\"title\":\"Codex\",\"version\":\"0.153.4\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.587Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcId":0,"rpcMethod":"initialize","senderRunId":"aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.588Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcId":0,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.588Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcId":0,"statusCode":200}
+{"level":30,"time":1788704891589,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":200,"elapsedMs":2.249958001077175,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.589Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","body":"{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.590Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcMethod":"notifications/initialized","senderRunId":"aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.590Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","kind":"empty","statusCode":202}
+{"level":30,"time":1788704891591,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":202,"elapsedMs":1.6447080001235008,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.592Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","body":"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{\"_meta\":{\"progressToken\":0}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.592Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcId":1,"rpcMethod":"tools/list","senderRunId":"aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.592Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcId":1,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.593Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","rpcId":1,"statusCode":200}
+{"level":30,"time":1788704891593,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":200,"elapsedMs":1.6556660011410713,"msg":"http request completed"}
+Published codex_app_server agent run 'aorg_e2e_lead_40ab463de3a341a18ba9756664500250'.
+Published codex_app_server agent run 'aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726'.
+Published codex_app_server agent run 'aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26'.
+{"level":30,"time":1788704891687,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":800.9184999987483,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.688Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","body":"{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"elicitation\":{\"form\":{},\"url\":{}}},\"clientInfo\":{\"name\":\"codex-mcp-client\",\"title\":\"Codex\",\"version\":\"0.153.4\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.689Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcId":0,"rpcMethod":"initialize","senderRunId":"aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.689Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcId":0,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.689Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcId":0,"statusCode":200}
+{"level":30,"time":1788704891690,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":200,"elapsedMs":2.112083002924919,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.691Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","body":"{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.691Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcMethod":"notifications/initialized","senderRunId":"aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.692Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","kind":"empty","statusCode":202}
+{"level":30,"time":1788704891692,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":202,"elapsedMs":1.6769580021500587,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.695Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","body":"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{\"_meta\":{\"progressToken\":0}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.695Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcId":1,"rpcMethod":"tools/list","senderRunId":"aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26"}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.695Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcId":1,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:28:11.696Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","rpcId":1,"statusCode":200}
+{"level":30,"time":1788704891696,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":200,"elapsedMs":1.5325829982757568,"msg":"http request completed"}
+{"level":30,"time":1788704891701,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.084874995052814,"msg":"http request completed"}
+{"level":30,"time":1788704891708,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.740333005785942,"msg":"http request completed"}
+{"level":30,"time":1788704891711,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9444999992847443,"msg":"http request completed"}
+{"level":30,"time":1788704891719,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.121834002435207,"msg":"http request completed"}
+{"level":30,"time":1788704891721,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8124580010771751,"msg":"http request completed"}
+{"level":30,"time":1788704891723,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5884169936180115,"msg":"http request completed"}
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default
+FileExplorerSession closed: d71fc8f3-8d59-4d98-b24b-55f3fbe90d88
+Closed file explorer session d71fc8f3-8d59-4d98-b24b-55f3fbe90d88. Active sessions: 0
+File explorer WebSocket disconnected: d71fc8f3-8d59-4d98-b24b-55f3fbe90d88
+{"level":30,"time":1788704891752,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5v","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.2788750007748604,"msg":"http request completed"}
+{"level":30,"time":1788704891764,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.553417004644871,"msg":"http request completed"}
+{"level":30,"time":1788704893993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5x","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5259160026907921,"msg":"http request completed"}
+{"level":30,"time":1788704894004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.804416000843048,"msg":"http request completed"}
+{"level":30,"time":1788704894018,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-5z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.869667001068592,"msg":"http request completed"}
+Agent team websocket attached for team run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Created agent session 77574217-bb01-4e21-a7bb-95788cba5883 for run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Agent Team WebSocket connected: session=77574217-bb01-4e21-a7bb-95788cba5883, run=aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+{"level":30,"time":1788704894046,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-61","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.21183300018310547,"msg":"http request completed"}
+{"level":30,"time":1788704894048,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-62","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4199170023202896,"msg":"http request completed"}
+{"level":30,"time":1788704898992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-63","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.47966600209474564,"msg":"http request completed"}
+{"level":30,"time":1788704899004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-64","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.4122089967131615,"msg":"http request completed"}
+{"level":30,"time":1788704899019,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-65","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.1248330026865,"msg":"http request completed"}
+{"level":30,"time":1788704903989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-66","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5770829990506172,"msg":"http request completed"}
+{"level":30,"time":1788704903993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-67","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.4222080036997795,"msg":"http request completed"}
+{"level":30,"time":1788704903993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-68","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1852080002427101,"msg":"http request completed"}
+{"level":30,"time":1788704904002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-69","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.759582996368408,"msg":"http request completed"}
+{"level":30,"time":1788704904017,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.49050000309944,"msg":"http request completed"}
+{"level":30,"time":1788704908992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6b","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.4523329958319664,"msg":"http request completed"}
+{"level":30,"time":1788704908994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6c","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.16691699624061584,"msg":"http request completed"}
+{"level":30,"time":1788704908995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6d","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.08495799452066422,"msg":"http request completed"}
+{"level":30,"time":1788704909001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.138167001307011,"msg":"http request completed"}
+{"level":30,"time":1788704909012,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.13324999809265,"msg":"http request completed"}
+{"level":30,"time":1788704913989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6g","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5247500017285347,"msg":"http request completed"}
+{"level":30,"time":1788704914001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.294375002384186,"msg":"http request completed"}
+{"level":30,"time":1788704914022,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":28.057166002690792,"msg":"http request completed"}
+{"level":30,"time":1788704919003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6j","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.962458997964859,"msg":"http request completed"}
+{"level":30,"time":1788704919007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6k","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.29224999994039536,"msg":"http request completed"}
+{"level":30,"time":1788704919009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6l","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.24929200112819672,"msg":"http request completed"}
+{"level":30,"time":1788704919020,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.191792003810406,"msg":"http request completed"}
+{"level":30,"time":1788704919036,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.688249997794628,"msg":"http request completed"}
+{"level":30,"time":1788704923987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6o","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5512090027332306,"msg":"http request completed"}
+{"level":30,"time":1788704924002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.96612499654293,"msg":"http request completed"}
+{"level":30,"time":1788704924020,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":25.578166998922825,"msg":"http request completed"}
+{"level":30,"time":1788704928991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6r","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5750829949975014,"msg":"http request completed"}
+{"level":30,"time":1788704928995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6s","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.35599999874830246,"msg":"http request completed"}
+{"level":30,"time":1788704928996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6t","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2032500058412552,"msg":"http request completed"}
+{"level":30,"time":1788704929004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.422582998871803,"msg":"http request completed"}
+{"level":30,"time":1788704929021,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.853832997381687,"msg":"http request completed"}
+{"level":30,"time":1788704933989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6w","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.48454199731349945,"msg":"http request completed"}
+{"level":30,"time":1788704933998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.186707995831966,"msg":"http request completed"}
+{"level":30,"time":1788704934010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.420125000178814,"msg":"http request completed"}
+{"level":30,"time":1788704938986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-6z","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.38099999725818634,"msg":"http request completed"}
+{"level":30,"time":1788704938989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-70","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.22529099881649017,"msg":"http request completed"}
+{"level":30,"time":1788704938991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-72","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.10991699993610382,"msg":"http request completed"}
+{"level":30,"time":1788704938997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-71","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.259124994277954,"msg":"http request completed"}
+{"level":30,"time":1788704939009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-73","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.80179199576378,"msg":"http request completed"}
+{"level":30,"time":1788704943988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-74","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6683750003576279,"msg":"http request completed"}
+{"level":30,"time":1788704943995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-75","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.548249997198582,"msg":"http request completed"}
+{"level":30,"time":1788704944005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-76","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.103459000587463,"msg":"http request completed"}
+{"level":30,"time":1788704948038,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-77","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.36787500232458115,"msg":"http request completed"}
+{"level":30,"time":1788704948065,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-78","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.19904199987649918,"msg":"http request completed"}
+{"level":30,"time":1788704948066,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-79","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2155420035123825,"msg":"http request completed"}
+{"level":30,"time":1788704948086,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.537041999399662,"msg":"http request completed"}
+{"level":30,"time":1788704948118,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":51.35870800167322,"msg":"http request completed"}
+{"level":30,"time":1788704948985,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7c","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.35033300518989563,"msg":"http request completed"}
+{"level":30,"time":1788704949015,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.771209001541138,"msg":"http request completed"}
+{"level":30,"time":1788704949179,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":179.39483299851418,"msg":"http request completed"}
+{"level":30,"time":1788704953988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7f","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.38712500035762787,"msg":"http request completed"}
+{"level":30,"time":1788704953991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7g","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.2220420017838478,"msg":"http request completed"}
+{"level":30,"time":1788704953992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7h","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1245419979095459,"msg":"http request completed"}
+{"level":30,"time":1788704953998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.449165999889374,"msg":"http request completed"}
+{"level":30,"time":1788704954011,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.185500003397465,"msg":"http request completed"}
+{"level":30,"time":1788704958989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7k","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.893665999174118,"msg":"http request completed"}
+{"level":30,"time":1788704958995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7m","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.296083003282547,"msg":"http request completed"}
+{"level":30,"time":1788704959000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.107374995946884,"msg":"http request completed"}
+{"level":30,"time":1788704959015,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.228832997381687,"msg":"http request completed"}
+{"level":30,"time":1788704963984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7o","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.31908300518989563,"msg":"http request completed"}
+{"level":30,"time":1788704963991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.788707993924618,"msg":"http request completed"}
+{"level":30,"time":1788704964004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.344791002571583,"msg":"http request completed"}
+{"level":30,"time":1788704968986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7r","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.4267499968409538,"msg":"http request completed"}
+{"level":30,"time":1788704968988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7s","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.19879100471735,"msg":"http request completed"}
+{"level":30,"time":1788704968989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7t","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18541700392961502,"msg":"http request completed"}
+{"level":30,"time":1788704968996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.233125001192093,"msg":"http request completed"}
+{"level":30,"time":1788704969009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.255750000476837,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.479Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","body":"{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"_meta\":{\"callId\":\"exec-7f475033-10c2-4a99-9b7c-6c5241164f9a\",\"x-codex-turn-metadata\":{\"session_id\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"thread_id\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"turn_started_at_unix_ms\":1788704948069,\"turn_id\":\"01a0771f-7f61-7a11-9488-acef6ca01fd2\",\"workspaces\":{\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\":{\"associated_remote_urls\":{\"origin\":\"https://github.com/AutoByteus/autobyteus-workspace.git\"},\"latest_git_commit_hash\":\"43ef19f2de69b2c16133577dac40471f75ebd913\",\"has_changes\":true}},\"sandbox\":\"none\",\"sandbox_mode\":\"danger-full-access\",\"auto_review_enabled\":false,\"node_repl_auto_review_required\":false,\"node_repl_disabled\":false,\"model\":\"gpt-5.6-sol\",\"reasoning_effort\":\"low\"},\"threadId\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"itemId\":\"ctc_0ee64053ba3839f2016a9d78ca9fc887d2835dd2912b229407\",\"progressToken\":1},\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/analyst\",\"description\":\"Return exactly API16-INITIAL-SUBMISSION as the result by calling submit_task_result exactly once. Do not call review_task_result, send_message_to, get_handoff_rules, or create another task.\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.479Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":2,"rpcMethod":"tools/call","toolName":"delegate_task","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.480Z","stage":"MCP_DISPATCHER_TOOL_START","rpcId":2,"toolName":"delegate_task","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.480Z","stage":"MCP_EXECUTOR_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"delegate_task","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.480Z","stage":"TASK_MCP_ADAPTER_START","toolName":"delegate_task","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/lead","agentRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+Resolved configured temp workspace root to TempWorkspace.
+[API16_CORR]{"ts":"2026-09-06T14:29:30.575Z","stage":"TASK_FIFO_SUBMIT","kind":"activate","open":true,"failStopped":false,"running":false,"queued":0}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.575Z","stage":"TASK_FIFO_ENQUEUE","kind":"activate","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.576Z","stage":"TASK_FIFO_COMMAND_START","kind":"activate","running":true,"queuedRemaining":0}
+Published codex_app_server agent run 'aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df'.
+[API16_CORR]{"ts":"2026-09-06T14:29:30.586Z","stage":"TASK_MCP_ADAPTER_COMPLETE","toolName":"delegate_task","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","resultStatus":"active","taskId":"task_ce348550defc476aaefea3ade67ad46d"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.587Z","stage":"MCP_EXECUTOR_ADAPTER_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"delegate_task","resultKind":"mcp_tool_result"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.589Z","stage":"MCP_EXECUTOR_NOTIFY_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"delegate_task","resultKind":"mcp_tool_result"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.589Z","stage":"MCP_DISPATCHER_TOOL_COMPLETE","rpcId":2,"toolName":"delegate_task","resultKind":"mcp_tool_result"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.590Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":2,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.590Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":2,"statusCode":200}
+{"level":30,"time":1788704970591,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":112.32683300226927,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.604Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","body":"{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"elicitation\":{\"form\":{},\"url\":{}}},\"clientInfo\":{\"name\":\"codex-mcp-client\",\"title\":\"Codex\",\"version\":\"0.153.4\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.604Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":0,"rpcMethod":"initialize","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.606Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":0,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.607Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":0,"statusCode":200}
+{"level":30,"time":1788704970610,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b","method":"POST","url":"/mcp/agent-tools/agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","statusCode":200,"elapsedMs":6.622124999761581,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.613Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","body":"{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.614Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcMethod":"notifications/initialized","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.615Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","kind":"empty","statusCode":202}
+{"level":30,"time":1788704970617,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c","method":"POST","url":"/mcp/agent-tools/agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","statusCode":202,"elapsedMs":3.9950420036911964,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.628Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","body":"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{\"_meta\":{\"progressToken\":0}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.630Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":1,"rpcMethod":"tools/list","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.631Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":1,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:29:30.632Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":1,"statusCode":200}
+{"level":30,"time":1788704970633,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","statusCode":200,"elapsedMs":4.744166001677513,"msg":"http request completed"}
+{"level":30,"time":1788704973984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7w","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.44437500089406967,"msg":"http request completed"}
+{"level":30,"time":1788704973991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.467165999114513,"msg":"http request completed"}
+{"level":30,"time":1788704974002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.809707999229431,"msg":"http request completed"}
+{"level":30,"time":1788704978990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-7z","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8869579955935478,"msg":"http request completed"}
+{"level":30,"time":1788704978994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-80","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.39979200065135956,"msg":"http request completed"}
+{"level":30,"time":1788704978995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-81","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.4227079972624779,"msg":"http request completed"}
+{"level":30,"time":1788704979002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-82","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.152708999812603,"msg":"http request completed"}
+{"level":30,"time":1788704979013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-83","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.028667002916336,"msg":"http request completed"}
+{"level":30,"time":1788704983983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-84","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3969999998807907,"msg":"http request completed"}
+{"level":30,"time":1788704983991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-85","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.472833998501301,"msg":"http request completed"}
+{"level":30,"time":1788704984004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-86","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.113165996968746,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.507Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","body":"{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"_meta\":{\"callId\":\"exec-d4e1e59e-708f-425d-b37a-c924140e0800\",\"x-codex-turn-metadata\":{\"session_id\":\"01a0771f-d70a-72e0-9479-ac16caea1bd3\",\"thread_id\":\"01a0771f-d70a-72e0-9479-ac16caea1bd3\",\"turn_started_at_unix_ms\":1788704970602,\"turn_id\":\"01a0771f-d761-73b0-85d8-19f065100837\",\"workspaces\":{\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\":{\"associated_remote_urls\":{\"origin\":\"https://github.com/AutoByteus/autobyteus-workspace.git\"},\"latest_git_commit_hash\":\"43ef19f2de69b2c16133577dac40471f75ebd913\",\"has_changes\":true}},\"sandbox\":\"none\",\"sandbox_mode\":\"danger-full-access\",\"auto_review_enabled\":false,\"node_repl_auto_review_required\":false,\"node_repl_disabled\":false,\"model\":\"gpt-5.6-sol\",\"reasoning_effort\":\"low\"},\"threadId\":\"01a0771f-d70a-72e0-9479-ac16caea1bd3\",\"itemId\":\"ctc_0bb207e5b85010ab016a9d78d9fb6887d29ff21fb42cf050eb\",\"progressToken\":1},\"name\":\"submit_task_result\",\"arguments\":{\"message\":\"API16-INITIAL-SUBMISSION\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.508Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":2,"rpcMethod":"tools/call","toolName":"submit_task_result","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.508Z","stage":"MCP_DISPATCHER_TOOL_START","rpcId":2,"toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.508Z","stage":"MCP_EXECUTOR_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","toolName":"submit_task_result","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.508Z","stage":"TASK_MCP_ADAPTER_START","toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.509Z","stage":"TASK_ROUTER_SUBMIT","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","message":"API16-INITIAL-SUBMISSION"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.509Z","stage":"TASK_ENGINE_SUBMIT_START","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.510Z","stage":"TASK_ENGINE_FIFO_ADMISSION","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.510Z","stage":"TASK_FIFO_SUBMIT","kind":"submit_result","open":true,"failStopped":false,"running":false,"queued":0}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.510Z","stage":"TASK_FIFO_ENQUEUE","kind":"submit_result","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.510Z","stage":"TASK_FIFO_COMMAND_START","kind":"submit_result","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.511Z","stage":"TASK_SUBMIT_AT_HEAD","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.511Z","stage":"TASK_COMMIT_START","taskId":"task_ce348550defc476aaefea3ade67ad46d","fromStatus":"active","toStatus":"awaiting_review","updates":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.511Z","stage":"TEAM_ADAPTER_COMMIT_START","taskId":"task_ce348550defc476aaefea3ade67ad46d","fromStatus":"active","toStatus":"awaiting_review","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.515Z","stage":"TEAM_ADAPTER_DURABLE_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","toStatus":"awaiting_review"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.515Z","stage":"TASK_COMMIT_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","status":"awaiting_review","recordStatus":"awaiting_review"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.517Z","stage":"TASK_NOTIFICATION_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","status":"awaiting_review","warning":null}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.517Z","stage":"TASK_MCP_ADAPTER_COMPLETE","toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","resultStatus":"awaiting_review","taskId":"task_ce348550defc476aaefea3ade67ad46d"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.518Z","stage":"MCP_EXECUTOR_ADAPTER_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","toolName":"submit_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.518Z","stage":"MCP_EXECUTOR_NOTIFY_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","toolName":"submit_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.518Z","stage":"MCP_DISPATCHER_TOOL_COMPLETE","rpcId":2,"toolName":"submit_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.518Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":2,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:29:45.518Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":2,"statusCode":200}
+{"level":30,"time":1788704985519,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e","method":"POST","url":"/mcp/agent-tools/agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","statusCode":200,"elapsedMs":12.170625001192093,"msg":"http request completed"}
+{"level":30,"time":1788704988984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-87","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.6335840001702309,"msg":"http request completed"}
+{"level":30,"time":1788704988993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-88","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.20683399587869644,"msg":"http request completed"}
+{"level":30,"time":1788704988994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-89","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.21266699582338333,"msg":"http request completed"}
+{"level":30,"time":1788704989001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.121040999889374,"msg":"http request completed"}
+{"level":30,"time":1788704989016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.00058300048113,"msg":"http request completed"}
+{"level":30,"time":1788704993987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8c","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.0374580025672913,"msg":"http request completed"}
+{"level":30,"time":1788704994001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.032625004649162,"msg":"http request completed"}
+{"level":30,"time":1788704994014,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.276207998394966,"msg":"http request completed"}
+{"level":30,"time":1788704998981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8f","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3553749993443489,"msg":"http request completed"}
+{"level":30,"time":1788704998983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8g","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17441699653863907,"msg":"http request completed"}
+{"level":30,"time":1788704998984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8h","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.20704200118780136,"msg":"http request completed"}
+{"level":30,"time":1788704998990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.799292005598545,"msg":"http request completed"}
+{"level":30,"time":1788704999005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.253208003938198,"msg":"http request completed"}
+{"level":30,"time":1788705003983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8k","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7092910036444664,"msg":"http request completed"}
+{"level":30,"time":1788705003986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8l","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17650000005960464,"msg":"http request completed"}
+{"level":30,"time":1788705003987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8m","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1679999977350235,"msg":"http request completed"}
+{"level":30,"time":1788705003993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.298624999821186,"msg":"http request completed"}
+{"level":30,"time":1788705004006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.718208998441696,"msg":"http request completed"}
+{"level":30,"time":1788705008985,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8p","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.780749998986721,"msg":"http request completed"}
+{"level":30,"time":1788705008989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8q","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.24058299511671066,"msg":"http request completed"}
+{"level":30,"time":1788705008990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8r","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.13633400201797485,"msg":"http request completed"}
+{"level":30,"time":1788705008998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.596625000238419,"msg":"http request completed"}
+{"level":30,"time":1788705009014,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.852624997496605,"msg":"http request completed"}
+{"level":30,"time":1788705013984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8u","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.0369170010089874,"msg":"http request completed"}
+{"level":30,"time":1788705013996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.536499999463558,"msg":"http request completed"}
+{"level":30,"time":1788705014009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.90116699784994,"msg":"http request completed"}
+{"level":30,"time":1788705018983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8x","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5842090025544167,"msg":"http request completed"}
+{"level":30,"time":1788705018987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8y","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17624999582767487,"msg":"http request completed"}
+{"level":30,"time":1788705018988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-8z","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1313749998807907,"msg":"http request completed"}
+{"level":30,"time":1788705018993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-90","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.30375000089407,"msg":"http request completed"}
+{"level":30,"time":1788705019007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-91","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.888208001852036,"msg":"http request completed"}
+{"level":30,"time":1788705023984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-92","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7642499953508377,"msg":"http request completed"}
+{"level":30,"time":1788705023990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-94","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18575000017881393,"msg":"http request completed"}
+{"level":30,"time":1788705023997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-93","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.625707998871803,"msg":"http request completed"}
+{"level":30,"time":1788705024011,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-95","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.450374998152256,"msg":"http request completed"}
+{"level":30,"time":1788705028982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-96","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.138207994401455,"msg":"http request completed"}
+{"level":30,"time":1788705028998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-97","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.889917001128197,"msg":"http request completed"}
+{"level":30,"time":1788705029014,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-98","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":25.006750002503395,"msg":"http request completed"}
+{"level":30,"time":1788705033981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-99","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8260840028524399,"msg":"http request completed"}
+{"level":30,"time":1788705033986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9a","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.35441599786281586,"msg":"http request completed"}
+{"level":30,"time":1788705033988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9b","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3136250004172325,"msg":"http request completed"}
+{"level":30,"time":1788705033996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.7247079983353615,"msg":"http request completed"}
+{"level":30,"time":1788705034009,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.679750002920628,"msg":"http request completed"}
+{"level":30,"time":1788705038982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9e","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.1457080021500587,"msg":"http request completed"}
+{"level":30,"time":1788705038996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.019374996423721,"msg":"http request completed"}
+{"level":30,"time":1788705039010,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.19462499767542,"msg":"http request completed"}
+{"level":30,"time":1788705043983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9h","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5984589979052544,"msg":"http request completed"}
+{"level":30,"time":1788705043988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9i","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.34462500363588333,"msg":"http request completed"}
+{"level":30,"time":1788705043989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9j","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.22166600078344345,"msg":"http request completed"}
+{"level":30,"time":1788705043998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.295791998505592,"msg":"http request completed"}
+{"level":30,"time":1788705044013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.625790998339653,"msg":"http request completed"}
+{"level":30,"time":1788705048981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9m","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8456260040402412,"msg":"http request completed"}
+{"level":30,"time":1788705048993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.521458998322487,"msg":"http request completed"}
+{"level":30,"time":1788705049006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.43095799535513,"msg":"http request completed"}
+{"level":30,"time":1788705053980,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9p","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8549170047044754,"msg":"http request completed"}
+{"level":30,"time":1788705053985,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9q","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.35975000262260437,"msg":"http request completed"}
+{"level":30,"time":1788705053986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9r","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.12187499552965164,"msg":"http request completed"}
+{"level":30,"time":1788705053993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.08687499910593,"msg":"http request completed"}
+{"level":30,"time":1788705054003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.536082997918129,"msg":"http request completed"}
+{"level":30,"time":1788705058978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9u","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.4392920061945915,"msg":"http request completed"}
+{"level":30,"time":1788705058987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.474124997854233,"msg":"http request completed"}
+{"level":30,"time":1788705059002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.52487500011921,"msg":"http request completed"}
+{"level":30,"time":1788705063981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9x","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8338330015540123,"msg":"http request completed"}
+{"level":30,"time":1788705063985,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9y","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.30754199624061584,"msg":"http request completed"}
+{"level":30,"time":1788705063986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-9z","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17225000262260437,"msg":"http request completed"}
+{"level":30,"time":1788705063995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a0","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.118499994277954,"msg":"http request completed"}
+{"level":30,"time":1788705064011,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.26020799577236,"msg":"http request completed"}
+{"level":30,"time":1788705068981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a2","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8620829954743385,"msg":"http request completed"}
+{"level":30,"time":1788705068994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.368416994810104,"msg":"http request completed"}
+{"level":30,"time":1788705069008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.563458003103733,"msg":"http request completed"}
+{"level":30,"time":1788705073982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a5","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.963749997317791,"msg":"http request completed"}
+{"level":30,"time":1788705073988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a6","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.32874999940395355,"msg":"http request completed"}
+{"level":30,"time":1788705073989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a7","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3237079977989197,"msg":"http request completed"}
+{"level":30,"time":1788705074001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.720833994448185,"msg":"http request completed"}
+{"level":30,"time":1788705074018,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-a9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":26.182624995708466,"msg":"http request completed"}
+{"level":30,"time":1788705078989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-aa","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.998709000647068,"msg":"http request completed"}
+{"level":30,"time":1788705078998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ab","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.5379590019583702,"msg":"http request completed"}
+{"level":30,"time":1788705079000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ac","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.7835419997572899,"msg":"http request completed"}
+{"level":30,"time":1788705079013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ae","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.213583000004292,"msg":"http request completed"}
+{"level":30,"time":1788705079026,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ad","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":25.035875000059605,"msg":"http request completed"}
+{"level":30,"time":1788705083981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-af","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8671659976243973,"msg":"http request completed"}
+{"level":30,"time":1788705083994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ag","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.025040999054909,"msg":"http request completed"}
+{"level":30,"time":1788705084004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ah","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.64333400130272,"msg":"http request completed"}
+{"level":30,"time":1788705088975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ai","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3045000061392784,"msg":"http request completed"}
+{"level":30,"time":1788705088977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-aj","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.13354100286960602,"msg":"http request completed"}
+{"level":30,"time":1788705088978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ak","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.10387499630451202,"msg":"http request completed"}
+{"level":30,"time":1788705088984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-al","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.59145899862051,"msg":"http request completed"}
+{"level":30,"time":1788705088995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-am","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.18937499821186,"msg":"http request completed"}
+{"level":30,"time":1788705093978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-an","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8462909981608391,"msg":"http request completed"}
+{"level":30,"time":1788705093982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ao","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3113330006599426,"msg":"http request completed"}
+{"level":30,"time":1788705093983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ap","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.16237500309944153,"msg":"http request completed"}
+{"level":30,"time":1788705093992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-aq","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.8748330026865005,"msg":"http request completed"}
+{"level":30,"time":1788705094004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ar","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.3080830052495,"msg":"http request completed"}
+{"level":30,"time":1788705098979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-as","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.1675000041723251,"msg":"http request completed"}
+{"level":30,"time":1788705098992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-at","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.051875002682209,"msg":"http request completed"}
+{"level":30,"time":1788705099006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-au","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.945667006075382,"msg":"http request completed"}
+{"level":30,"time":1788705103920,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-av","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.35624999552965164,"msg":"http request completed"}
+{"level":30,"time":1788705103923,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-aw","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.13816699385643005,"msg":"http request completed"}
+{"level":30,"time":1788705103923,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ax","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.0820000022649765,"msg":"http request completed"}
+{"level":30,"time":1788705103938,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ay","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.171875,"msg":"http request completed"}
+{"level":30,"time":1788705103967,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-az","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":41.080458998680115,"msg":"http request completed"}
+{"level":30,"time":1788705103983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b0","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.32370900362730026,"msg":"http request completed"}
+{"level":30,"time":1788705104000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":12.403124995529652,"msg":"http request completed"}
+{"level":30,"time":1788705104016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":26.6521669998765,"msg":"http request completed"}
+{"level":30,"time":1788705108976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b3","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.36787499487400055,"msg":"http request completed"}
+{"level":30,"time":1788705108978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b4","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.15629199892282486,"msg":"http request completed"}
+{"level":30,"time":1788705108979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b5","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18312500417232513,"msg":"http request completed"}
+{"level":30,"time":1788705108984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.42424999922514,"msg":"http request completed"}
+{"level":30,"time":1788705108995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.883292004466057,"msg":"http request completed"}
+{"level":30,"time":1788705113978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b8","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.1030000001192093,"msg":"http request completed"}
+{"level":30,"time":1788705113981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-b9","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1902499943971634,"msg":"http request completed"}
+{"level":30,"time":1788705113982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ba","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1619580015540123,"msg":"http request completed"}
+{"level":30,"time":1788705113988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bb","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.007874995470047,"msg":"http request completed"}
+{"level":30,"time":1788705114000,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bc","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.14766700565815,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.430Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","body":"{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"_meta\":{\"callId\":\"exec-165c2539-53c4-4572-a1ec-684e36ad7d55\",\"x-codex-turn-metadata\":{\"session_id\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"thread_id\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"turn_started_at_unix_ms\":1788705103930,\"turn_id\":\"01a07721-e032-78a0-904e-7d6536a1395a\",\"workspaces\":{\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\":{\"associated_remote_urls\":{\"origin\":\"https://github.com/AutoByteus/autobyteus-workspace.git\"},\"latest_git_commit_hash\":\"43ef19f2de69b2c16133577dac40471f75ebd913\",\"has_changes\":true}},\"sandbox\":\"none\",\"sandbox_mode\":\"danger-full-access\",\"auto_review_enabled\":false,\"node_repl_auto_review_required\":false,\"node_repl_disabled\":false,\"model\":\"gpt-5.6-sol\",\"reasoning_effort\":\"low\"},\"threadId\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"itemId\":\"ctc_0ee64053ba3839f2016a9d795c0fb087d28d59a9852a8689a7\",\"progressToken\":2},\"name\":\"review_task_result\",\"arguments\":{\"task_id\":\"task_ce348550defc476aaefea3ade67ad46d\",\"decision\":\"request_revision\",\"comment\":\"Resubmit exactly API16-REVISED-SUBMISSION using submit_task_result on this same task.\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.430Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":3,"rpcMethod":"tools/call","toolName":"review_task_result","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.431Z","stage":"MCP_DISPATCHER_TOOL_START","rpcId":3,"toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.431Z","stage":"MCP_EXECUTOR_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"review_task_result","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.431Z","stage":"TASK_MCP_ADAPTER_START","toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/lead","agentRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.432Z","stage":"TASK_FIFO_SUBMIT","kind":"review_result","open":true,"failStopped":false,"running":false,"queued":0}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.432Z","stage":"TASK_FIFO_ENQUEUE","kind":"review_result","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.432Z","stage":"TASK_FIFO_COMMAND_START","kind":"review_result","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.433Z","stage":"TEAM_ADAPTER_COMMIT_START","taskId":"task_ce348550defc476aaefea3ade67ad46d","fromStatus":"awaiting_review","toStatus":"active","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.437Z","stage":"TEAM_ADAPTER_DURABLE_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","toStatus":"active"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.441Z","stage":"TASK_MCP_ADAPTER_COMPLETE","toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","resultStatus":"active","taskId":"task_ce348550defc476aaefea3ade67ad46d"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.443Z","stage":"MCP_EXECUTOR_ADAPTER_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"review_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.443Z","stage":"MCP_EXECUTOR_NOTIFY_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"review_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.443Z","stage":"MCP_DISPATCHER_TOOL_COMPLETE","rpcId":3,"toolName":"review_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.444Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":3,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:31:56.444Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":3,"statusCode":200}
+{"level":30,"time":1788705116445,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":15.132457993924618,"msg":"http request completed"}
+{"level":30,"time":1788705118979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bd","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8790000006556511,"msg":"http request completed"}
+{"level":30,"time":1788705118984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-be","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.30366600304841995,"msg":"http request completed"}
+{"level":30,"time":1788705118985,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bf","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.15162499994039536,"msg":"http request completed"}
+{"level":30,"time":1788705118991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bg","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.776166997849941,"msg":"http request completed"}
+{"level":30,"time":1788705119002,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bh","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.775875002145767,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.871Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","body":"{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"_meta\":{\"callId\":\"exec-906e68dd-4b17-4bf6-93a5-f30605c1b3da\",\"x-codex-turn-metadata\":{\"session_id\":\"01a0771f-d70a-72e0-9479-ac16caea1bd3\",\"thread_id\":\"01a0771f-d70a-72e0-9479-ac16caea1bd3\",\"turn_started_at_unix_ms\":1788705116446,\"turn_id\":\"01a07722-1117-7921-ad23-3d4a7b1df26a\",\"workspaces\":{\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\":{\"associated_remote_urls\":{\"origin\":\"https://github.com/AutoByteus/autobyteus-workspace.git\"},\"latest_git_commit_hash\":\"43ef19f2de69b2c16133577dac40471f75ebd913\",\"has_changes\":true}},\"sandbox\":\"none\",\"sandbox_mode\":\"danger-full-access\",\"auto_review_enabled\":false,\"node_repl_auto_review_required\":false,\"node_repl_disabled\":false,\"model\":\"gpt-5.6-sol\",\"reasoning_effort\":\"low\"},\"threadId\":\"01a0771f-d70a-72e0-9479-ac16caea1bd3\",\"itemId\":\"ctc_0bb207e5b85010ab016a9d795fdb7087d29873535b561db0d1\",\"progressToken\":2},\"name\":\"submit_task_result\",\"arguments\":{\"message\":\"API16-REVISED-SUBMISSION\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.871Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":3,"rpcMethod":"tools/call","toolName":"submit_task_result","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.871Z","stage":"MCP_DISPATCHER_TOOL_START","rpcId":3,"toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.872Z","stage":"MCP_EXECUTOR_START","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","toolName":"submit_task_result","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.873Z","stage":"TASK_MCP_ADAPTER_START","toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","senderRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.873Z","stage":"TASK_ROUTER_SUBMIT","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","message":"API16-REVISED-SUBMISSION"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.873Z","stage":"TASK_ENGINE_SUBMIT_START","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_ENGINE_FIFO_ADMISSION","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_FIFO_SUBMIT","kind":"submit_result","open":true,"failStopped":false,"running":false,"queued":0}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_FIFO_ENQUEUE","kind":"submit_result","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_FIFO_COMMAND_START","kind":"submit_result","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_SUBMIT_AT_HEAD","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/analyst","agentRunId":"aorg_e2e_analyst_e25f40d042ec46d7968728647c0687df","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.874Z","stage":"TASK_COMMIT_START","taskId":"task_ce348550defc476aaefea3ade67ad46d","fromStatus":"active","toStatus":"awaiting_review","updates":3}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.875Z","stage":"TEAM_ADAPTER_COMMIT_START","taskId":"task_ce348550defc476aaefea3ade67ad46d","fromStatus":"active","toStatus":"awaiting_review","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.877Z","stage":"TEAM_ADAPTER_DURABLE_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","toStatus":"awaiting_review"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.877Z","stage":"TASK_COMMIT_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","status":"awaiting_review","recordStatus":"awaiting_review"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.879Z","stage":"TASK_NOTIFICATION_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","status":"awaiting_review","warning":null}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.879Z","stage":"TASK_MCP_ADAPTER_COMPLETE","toolName":"submit_task_result","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","resultStatus":"awaiting_review","taskId":"task_ce348550defc476aaefea3ade67ad46d"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.879Z","stage":"MCP_EXECUTOR_ADAPTER_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","toolName":"submit_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.879Z","stage":"MCP_EXECUTOR_NOTIFY_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","toolName":"submit_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.880Z","stage":"MCP_DISPATCHER_TOOL_COMPLETE","rpcId":3,"toolName":"submit_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.880Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":3,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:31:59.880Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","rpcId":3,"statusCode":200}
+{"level":30,"time":1788705119880,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g","method":"POST","url":"/mcp/agent-tools/agtrun_CYb_mjX2L0m_z_WCd1ytzCpB9AKRmGKW8m4q2QdAZg0","statusCode":200,"elapsedMs":9.921125002205372,"msg":"http request completed"}
+{"level":30,"time":1788705123974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bi","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.35304199904203415,"msg":"http request completed"}
+{"level":30,"time":1788705123980,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bj","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.9920829981565475,"msg":"http request completed"}
+{"level":30,"time":1788705123990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bk","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.622584000229836,"msg":"http request completed"}
+{"level":30,"time":1788705128974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bl","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3892499953508377,"msg":"http request completed"}
+{"level":30,"time":1788705128976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bm","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.19624999910593033,"msg":"http request completed"}
+{"level":30,"time":1788705128977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bn","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.16220899671316147,"msg":"http request completed"}
+{"level":30,"time":1788705128982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bo","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.470916002988815,"msg":"http request completed"}
+{"level":30,"time":1788705128994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bp","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.574875004589558,"msg":"http request completed"}
+{"level":30,"time":1788705133975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bq","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.45875000208616257,"msg":"http request completed"}
+{"level":30,"time":1788705133978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bs","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.14354199916124344,"msg":"http request completed"}
+{"level":30,"time":1788705133983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-br","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.239624999463558,"msg":"http request completed"}
+{"level":30,"time":1788705133995,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bt","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.649666003882885,"msg":"http request completed"}
+{"level":30,"time":1788705138974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bu","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.44049999862909317,"msg":"http request completed"}
+{"level":30,"time":1788705138982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bv","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.3952919989824295,"msg":"http request completed"}
+{"level":30,"time":1788705138994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bw","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.355874992907047,"msg":"http request completed"}
+{"level":30,"time":1788705143974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bx","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.2942909970879555,"msg":"http request completed"}
+{"level":30,"time":1788705143977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-by","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17029200494289398,"msg":"http request completed"}
+{"level":30,"time":1788705143977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-bz","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.09408300369977951,"msg":"http request completed"}
+{"level":30,"time":1788705143981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c0","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.692749999463558,"msg":"http request completed"}
+{"level":30,"time":1788705143992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.304124996066093,"msg":"http request completed"}
+{"level":30,"time":1788705148973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c2","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.47725000232458115,"msg":"http request completed"}
+{"level":30,"time":1788705148984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.578874997794628,"msg":"http request completed"}
+{"level":30,"time":1788705148997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.884540997445583,"msg":"http request completed"}
+{"level":30,"time":1788705153972,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c5","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.37929099798202515,"msg":"http request completed"}
+{"level":30,"time":1788705153974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c6","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1345829963684082,"msg":"http request completed"}
+{"level":30,"time":1788705153975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c7","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.20383299887180328,"msg":"http request completed"}
+{"level":30,"time":1788705153981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.48658400028944,"msg":"http request completed"}
+{"level":30,"time":1788705153993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-c9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.034708000719547,"msg":"http request completed"}
+{"level":30,"time":1788705158975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ca","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.902708001434803,"msg":"http request completed"}
+{"level":30,"time":1788705158979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cb","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3017919957637787,"msg":"http request completed"}
+{"level":30,"time":1788705158980,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cc","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1585410013794899,"msg":"http request completed"}
+{"level":30,"time":1788705158987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cd","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.961666993796825,"msg":"http request completed"}
+{"level":30,"time":1788705158999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ce","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.89774999767542,"msg":"http request completed"}
+{"level":30,"time":1788705163976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cf","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.826542004942894,"msg":"http request completed"}
+{"level":30,"time":1788705163989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cg","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.71612499654293,"msg":"http request completed"}
+{"level":30,"time":1788705164005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ch","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.28625000268221,"msg":"http request completed"}
+{"level":30,"time":1788705168975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ci","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7966249957680702,"msg":"http request completed"}
+{"level":30,"time":1788705168980,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cj","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.25395799428224564,"msg":"http request completed"}
+{"level":30,"time":1788705168980,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ck","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1513330042362213,"msg":"http request completed"}
+{"level":30,"time":1788705168988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cl","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.397291004657745,"msg":"http request completed"}
+{"level":30,"time":1788705168999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cm","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.43570899963379,"msg":"http request completed"}
+{"level":30,"time":1788705173977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cn","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9090830013155937,"msg":"http request completed"}
+{"level":30,"time":1788705173984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cp","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.29224999994039536,"msg":"http request completed"}
+{"level":30,"time":1788705173993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-co","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":11.126333996653557,"msg":"http request completed"}
+{"level":30,"time":1788705174008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cq","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.965916998684406,"msg":"http request completed"}
+{"level":30,"time":1788705178974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cr","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.0077919960021973,"msg":"http request completed"}
+{"level":30,"time":1788705178990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cs","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.800333000719547,"msg":"http request completed"}
+{"level":30,"time":1788705179006,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ct","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.40404199808836,"msg":"http request completed"}
+{"level":30,"time":1788705183972,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cu","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3293750062584877,"msg":"http request completed"}
+{"level":30,"time":1788705183974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cv","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1305829957127571,"msg":"http request completed"}
+{"level":30,"time":1788705183974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cw","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.17041700333356857,"msg":"http request completed"}
+{"level":30,"time":1788705183979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cx","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.641332998871803,"msg":"http request completed"}
+{"level":30,"time":1788705183989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cy","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.585207998752594,"msg":"http request completed"}
+{"level":30,"time":1788705188829,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-cz","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3380410000681877,"msg":"http request completed"}
+{"level":30,"time":1788705188859,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d0","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":25.390500001609325,"msg":"http request completed"}
+{"level":30,"time":1788705188896,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":61.830292001366615,"msg":"http request completed"}
+{"level":30,"time":1788705188971,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d2","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5433750003576279,"msg":"http request completed"}
+{"level":30,"time":1788705188982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.574166998267174,"msg":"http request completed"}
+{"level":30,"time":1788705188999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.405207999050617,"msg":"http request completed"}
+{"level":30,"time":1788705193970,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d5","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.31337499618530273,"msg":"http request completed"}
+{"level":30,"time":1788705193973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d6","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.614875003695488,"msg":"http request completed"}
+{"level":30,"time":1788705193974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d8","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.14441699534654617,"msg":"http request completed"}
+{"level":30,"time":1788705193979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.211916998028755,"msg":"http request completed"}
+{"level":30,"time":1788705193990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-d9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.266375005245209,"msg":"http request completed"}
+{"level":30,"time":1788705198971,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-da","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3020000010728836,"msg":"http request completed"}
+{"level":30,"time":1788705198978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-db","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.707208000123501,"msg":"http request completed"}
+{"level":30,"time":1788705198987,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dc","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.362957999110222,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.851Z","stage":"MCP_HTTP_INGRESS","method":"POST","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","body":"{\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"tools/call\",\"params\":{\"_meta\":{\"callId\":\"exec-92dd662b-7435-4d11-a031-a0710642b3cd\",\"x-codex-turn-metadata\":{\"session_id\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"thread_id\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"turn_started_at_unix_ms\":1788705188839,\"turn_id\":\"01a07723-2be0-77a1-be29-60c9382915e4\",\"workspaces\":{\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\":{\"associated_remote_urls\":{\"origin\":\"https://github.com/AutoByteus/autobyteus-workspace.git\"},\"latest_git_commit_hash\":\"43ef19f2de69b2c16133577dac40471f75ebd913\",\"has_changes\":true}},\"sandbox\":\"none\",\"sandbox_mode\":\"danger-full-access\",\"auto_review_enabled\":false,\"node_repl_auto_review_required\":false,\"node_repl_disabled\":false,\"model\":\"gpt-5.6-sol\",\"reasoning_effort\":\"low\"},\"threadId\":\"01a0771e-a1ae-7173-ad0c-5da5f7f94bd1\",\"itemId\":\"ctc_0ee64053ba3839f2016a9d79b0530c87d2b3d181c418a2e54d\",\"progressToken\":3},\"name\":\"review_task_result\",\"arguments\":{\"task_id\":\"task_ce348550defc476aaefea3ade67ad46d\",\"decision\":\"accept\",\"comment\":\"API16-ACCEPTED\"}}}"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.851Z","stage":"MCP_ROUTE_DISPATCH_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":4,"rpcMethod":"tools/call","toolName":"review_task_result","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.852Z","stage":"MCP_DISPATCHER_TOOL_START","rpcId":4,"toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.852Z","stage":"MCP_EXECUTOR_START","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"review_task_result","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.852Z","stage":"TASK_MCP_ADAPTER_START","toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","senderRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250","rootKind":"agent_team","rootRunId":"aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a","memberAddress":"/lead","agentRunId":"aorg_e2e_lead_40ab463de3a341a18ba9756664500250"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.853Z","stage":"TASK_FIFO_SUBMIT","kind":"review_result","open":true,"failStopped":false,"running":false,"queued":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.853Z","stage":"TASK_FIFO_ENQUEUE","kind":"review_result","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.853Z","stage":"TASK_FIFO_COMMAND_START","kind":"review_result","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.853Z","stage":"TEAM_ADAPTER_COMMIT_START","taskId":"task_ce348550defc476aaefea3ade67ad46d","fromStatus":"awaiting_review","toStatus":"accepted","recordCount":1}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.857Z","stage":"TEAM_ADAPTER_DURABLE_COMPLETE","taskId":"task_ce348550defc476aaefea3ade67ad46d","toStatus":"accepted"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.857Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":true,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.857Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.858Z","stage":"TASK_MCP_ADAPTER_COMPLETE","toolName":"review_task_result","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","resultStatus":"accepted","taskId":"task_ce348550defc476aaefea3ade67ad46d"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.858Z","stage":"MCP_EXECUTOR_ADAPTER_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"review_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.858Z","stage":"MCP_EXECUTOR_NOTIFY_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","toolName":"review_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.858Z","stage":"MCP_DISPATCHER_TOOL_COMPLETE","rpcId":4,"toolName":"review_task_result","resultKind":"operation_result"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.858Z","stage":"MCP_ROUTE_DISPATCH_COMPLETE","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":4,"kind":"json","statusCode":200}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.858Z","stage":"MCP_HTTP_RESPONSE_SEND","sessionId":"agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","rpcId":4,"statusCode":200}
+{"level":30,"time":1788705199859,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-h","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":8.646916002035141,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.868Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":true,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.869Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":true,"queuedBefore":1}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.869Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":1}
+[API16_CORR]{"ts":"2026-09-06T14:33:19.869Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+{"level":30,"time":1788705203973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dd","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.1278750002384186,"msg":"http request completed"}
+{"level":30,"time":1788705203978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-de","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.4166250005364418,"msg":"http request completed"}
+{"level":30,"time":1788705203989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dg","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.40837500244379044,"msg":"http request completed"}
+{"level":30,"time":1788705203993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-df","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.239957995712757,"msg":"http request completed"}
+{"level":30,"time":1788705204008,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dh","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.0197089985013,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:33:24.284Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:33:24.284Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+{"level":30,"time":1788705208972,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-di","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8240419998764992,"msg":"http request completed"}
+{"level":30,"time":1788705208981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dj","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.7697919979691505,"msg":"http request completed"}
+{"level":30,"time":1788705208992,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dk","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.361791998147964,"msg":"http request completed"}
+{"level":30,"time":1788705213970,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dl","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.31916599720716476,"msg":"http request completed"}
+{"level":30,"time":1788705213973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dm","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.168333001434803,"msg":"http request completed"}
+{"level":30,"time":1788705213973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dn","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.13637499511241913,"msg":"http request completed"}
+{"level":30,"time":1788705213978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-do","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.09816700220108,"msg":"http request completed"}
+{"level":30,"time":1788705213988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dp","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.722249999642372,"msg":"http request completed"}
+{"level":30,"time":1788705218972,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dq","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9361670017242432,"msg":"http request completed"}
+{"level":30,"time":1788705218977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dr","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.36079100519418716,"msg":"http request completed"}
+{"level":30,"time":1788705218983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dt","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3626670017838478,"msg":"http request completed"}
+{"level":30,"time":1788705218998,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ds","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.22366699576378,"msg":"http request completed"}
+{"level":30,"time":1788705219016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-du","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":30.873750001192093,"msg":"http request completed"}
+{"level":30,"time":1788705223971,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dv","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7089579999446869,"msg":"http request completed"}
+{"level":30,"time":1788705223984,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dw","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.607625000178814,"msg":"http request completed"}
+{"level":30,"time":1788705223997,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dx","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.38170900195837,"msg":"http request completed"}
+{"level":30,"time":1788705228973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dy","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8942499980330467,"msg":"http request completed"}
+{"level":30,"time":1788705228978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-dz","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3072500005364418,"msg":"http request completed"}
+{"level":30,"time":1788705228979,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e0","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.31516700237989426,"msg":"http request completed"}
+{"level":30,"time":1788705228989,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.068291999399662,"msg":"http request completed"}
+{"level":30,"time":1788705229004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":21.75620900094509,"msg":"http request completed"}
+{"level":30,"time":1788705233973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e3","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7857079952955246,"msg":"http request completed"}
+{"level":30,"time":1788705233985,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.723958000540733,"msg":"http request completed"}
+{"level":30,"time":1788705233999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.979667000472546,"msg":"http request completed"}
+{"level":30,"time":1788705238972,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e6","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.0119160041213036,"msg":"http request completed"}
+{"level":30,"time":1788705238974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e7","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18504200130701065,"msg":"http request completed"}
+{"level":30,"time":1788705238975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e8","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.13291700184345245,"msg":"http request completed"}
+{"level":30,"time":1788705238980,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-e9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.1792920008301735,"msg":"http request completed"}
+{"level":30,"time":1788705238988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ea","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":12.193709000945091,"msg":"http request completed"}
+{"level":30,"time":1788705243971,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-eb","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9124170020222664,"msg":"http request completed"}
+{"level":30,"time":1788705243978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ed","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.23845800012350082,"msg":"http request completed"}
+{"level":30,"time":1788705243986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ec","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.162000000476837,"msg":"http request completed"}
+{"level":30,"time":1788705244003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ee","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":22.94795800000429,"msg":"http request completed"}
+{"level":30,"time":1788705248967,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ef","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.36158400028944016,"msg":"http request completed"}
+{"level":30,"time":1788705248975,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-eg","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.678208000957966,"msg":"http request completed"}
+{"level":30,"time":1788705248993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-eh","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.078957997262478,"msg":"http request completed"}
+{"level":30,"time":1788705253970,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ei","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7214169949293137,"msg":"http request completed"}
+{"level":30,"time":1788705253974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ej","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.6478749960660934,"msg":"http request completed"}
+{"level":30,"time":1788705253976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ek","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.22225000709295273,"msg":"http request completed"}
+{"level":30,"time":1788705253983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-el","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.067082993686199,"msg":"http request completed"}
+{"level":30,"time":1788705253996,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-em","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.86216700077057,"msg":"http request completed"}
+{"level":30,"time":1788705258971,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-en","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.927375003695488,"msg":"http request completed"}
+{"level":30,"time":1788705258986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-eo","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.839374996721745,"msg":"http request completed"}
+{"level":30,"time":1788705259001,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ep","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.177709005773067,"msg":"http request completed"}
+{"level":30,"time":1788705263973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-eq","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.0662920027971268,"msg":"http request completed"}
+{"level":30,"time":1788705263981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-er","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3709160014986992,"msg":"http request completed"}
+{"level":30,"time":1788705263982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-es","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.34674999862909317,"msg":"http request completed"}
+{"level":30,"time":1788705264003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-et","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.7771669998765,"msg":"http request completed"}
+{"level":30,"time":1788705264021,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-eu","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":36.48666600137949,"msg":"http request completed"}
+{"level":30,"time":1788705268973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ev","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8627080023288727,"msg":"http request completed"}
+{"level":30,"time":1788705268986,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ew","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.07854200154543,"msg":"http request completed"}
+{"level":30,"time":1788705269003,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ex","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":23.946625001728535,"msg":"http request completed"}
+{"level":30,"time":1788705273972,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ey","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.7202919945120811,"msg":"http request completed"}
+{"level":30,"time":1788705273976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ez","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.32237499952316284,"msg":"http request completed"}
+{"level":30,"time":1788705273977,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f0","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3067920058965683,"msg":"http request completed"}
+{"level":30,"time":1788705273990,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.583125002682209,"msg":"http request completed"}
+{"level":30,"time":1788705274004,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.45362500101328,"msg":"http request completed"}
+{"level":30,"time":1788705278971,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f3","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.41441600024700165,"msg":"http request completed"}
+{"level":30,"time":1788705278978,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.66533300280571,"msg":"http request completed"}
+{"level":30,"time":1788705278988,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.986708000302315,"msg":"http request completed"}
+{"level":30,"time":1788705283969,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f6","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.0167080014944077,"msg":"http request completed"}
+{"level":30,"time":1788705283973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f7","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.4185839965939522,"msg":"http request completed"}
+{"level":30,"time":1788705283974,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f8","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1197500005364418,"msg":"http request completed"}
+{"level":30,"time":1788705283981,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fa","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.299874998629093,"msg":"http request completed"}
+{"level":30,"time":1788705283993,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-f9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.29170800000429,"msg":"http request completed"}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.978Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.978Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.979Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.980Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.981Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.981Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.994Z","stage":"TASK_FIFO_ENQUEUE","kind":"settle","running":false,"queuedBefore":0}
+[API16_CORR]{"ts":"2026-09-06T14:34:47.994Z","stage":"TASK_FIFO_COMMAND_START","kind":"settle","running":true,"queuedRemaining":0}
+{"level":30,"time":1788705287999,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fb","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.107042007148266,"msg":"http request completed"}
+Closed agent session 77574217-bb01-4e21-a7bb-95788cba5883
+{"level":30,"time":1788705288005,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fc","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.28379200398921967,"msg":"http request completed"}
+{"level":30,"time":1788705288016,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fd","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.657416999340057,"msg":"http request completed"}
+{"level":30,"time":1788705288030,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fe","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":19.717749997973442,"msg":"http request completed"}
+{"level":30,"time":1788705288976,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ff","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9606250002980232,"msg":"http request completed"}
+{"level":30,"time":1788705288982,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fg","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3897090032696724,"msg":"http request completed"}
+{"level":30,"time":1788705288983,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fh","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1544170007109642,"msg":"http request completed"}
+{"level":30,"time":1788705288994,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fi","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.525666996836662,"msg":"http request completed"}
+{"level":30,"time":1788705289013,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fj","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":28.148500002920628,"msg":"http request completed"}
+{"level":30,"time":1788705293973,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fk","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.738125003874302,"msg":"http request completed"}
+{"level":30,"time":1788705293991,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fl","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":12.497208997607231,"msg":"http request completed"}
+{"level":30,"time":1788705294007,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fm","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":26.95395800471306,"msg":"http request completed"}
+{"level":30,"time":1788705299345,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fn","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.8122910037636757,"msg":"http request completed"}
+{"level":30,"time":1788705299350,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fo","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3270839974284172,"msg":"http request completed"}
+{"level":30,"time":1788705299353,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fq","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1715419963002205,"msg":"http request completed"}
+{"level":30,"time":1788705299367,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fp","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.886790998280048,"msg":"http request completed"}
+{"level":30,"time":1788705299380,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fr","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.92645899951458,"msg":"http request completed"}
+{"level":30,"time":1788705304343,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fs","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.5197920054197311,"msg":"http request completed"}
+{"level":30,"time":1788705304349,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ft","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.604332998394966,"msg":"http request completed"}
+{"level":30,"time":1788705304360,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fu","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.619874998927116,"msg":"http request completed"}
+{"level":30,"time":1788705309341,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fv","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3642499968409538,"msg":"http request completed"}
+{"level":30,"time":1788705309343,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fw","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.19620899856090546,"msg":"http request completed"}
+{"level":30,"time":1788705309344,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fx","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.1394590064883232,"msg":"http request completed"}
+{"level":30,"time":1788705309350,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fy","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.957874998450279,"msg":"http request completed"}
+{"level":30,"time":1788705309364,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-fz","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":18.680583000183105,"msg":"http request completed"}
+{"level":30,"time":1788705314343,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g0","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.9605409950017929,"msg":"http request completed"}
+{"level":30,"time":1788705314348,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g1","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3243330046534538,"msg":"http request completed"}
+{"level":30,"time":1788705314349,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g2","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.3264169991016388,"msg":"http request completed"}
+{"level":30,"time":1788705314359,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.751667000353336,"msg":"http request completed"}
+{"level":30,"time":1788705314372,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.880666993558407,"msg":"http request completed"}
+{"level":30,"time":1788705319344,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g5","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":0.3496669977903366,"msg":"http request completed"}
+{"level":30,"time":1788705319352,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.4577910006046295,"msg":"http request completed"}
+{"level":30,"time":1788705319363,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.19666700065136,"msg":"http request completed"}
+{"level":30,"time":1788705324347,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g8","method":"GET","url":"/rest/health","statusCode":200,"elapsedMs":1.1763329952955246,"msg":"http request completed"}
+{"level":30,"time":1788705324351,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-g9","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.43025000393390656,"msg":"http request completed"}
+{"level":30,"time":1788705324352,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-ga","method":"OPTIONS","url":"/graphql","statusCode":204,"elapsedMs":0.18850000202655792,"msg":"http request completed"}
+{"level":30,"time":1788705324364,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-gb","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":10.360959000885487,"msg":"http request completed"}
+{"level":30,"time":1788705324379,"pid":2443,"hostname":"17de3252c4f7","reqId":"req-gc","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":24.900833003222942,"msg":"http request completed"}
+[2026-09-06T14:35:26.187Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-06T14:35:26.329Z] [INFO] [server.runtime] Server closed cleanly.
+Waiting for the debugger to disconnect...

@@ -1,0 +1,2172 @@
+[
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671090-68370-create/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671153-68370-pack/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/.gitignore",
+    "sha256": "fe3bbaf60399bf282a6db5e3b8eef46fc948335078681413e67985d04a7557c8",
+    "bytes": 27
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/README.md",
+    "sha256": "118e4740cbf12d7aaf59262cc9f7c07d7b95df945e0674f5c82c7d4ca6336e44",
+    "bytes": 4979
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json",
+    "sha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+    "bytes": 213
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md",
+    "sha256": "5c7e98e50371e5f3c530ede3a0b519fd8ead4a1c915e0b4e104914bdf10755f7",
+    "bytes": 3440
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json",
+    "sha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+    "bytes": 213
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md",
+    "sha256": "05882e50eb20e1d6f34ebc1848fc835a012ec9efb64d58b1e24f1136cba7a360",
+    "bytes": 3966
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/agent-teams/brief-studio-team/team-config.json",
+    "sha256": "fea5fb5d1fa904b83b26a603b4a344147aa1f9113e1847d4d1c03d92f345dbf2",
+    "bytes": 395
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/agent-teams/brief-studio-team/team.md",
+    "sha256": "bf0514660e685e2bed77fc3e4d096a8a634b8b8574b4a7046091bf4a35e02964",
+    "bytes": 1894
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/api/graphql/schema.graphql",
+    "sha256": "c0f04929135c0a27b0622fea35f74fb8f0c5d6c6416e7e34ed2b1de146aebb5a",
+    "bytes": 1962
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/application.json",
+    "sha256": "ffdbbb2368a257994c0ebca95ffe229b1b9e0789750fdcc8500c8f19cc39cc73",
+    "bytes": 1510
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/autobyteus-app.config.mjs",
+    "sha256": "6392eff5cc16a1ac78ee5ee6580e469b4d85a9f8bc6c28748684b29967d1c7c4",
+    "bytes": 730
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/agent-tools/get-brief-context.ts",
+    "sha256": "326f67f94ce75a03ac102916021a8a45a221064d5d379c2f3975f05182064b8f",
+    "bytes": 1527
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/domain/artifact-model.ts",
+    "sha256": "e7940b8c8632ad9bec115c824341681fd6fa6e986e54595d1a759cbdd31541af",
+    "bytes": 466
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/domain/brief-execution-model.ts",
+    "sha256": "b9fe5c52d6f4c2e91c2c4bb1f85bd34e44b6ba8540cc92646e8fd6d0181f4fe1",
+    "bytes": 228
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/domain/brief-model.ts",
+    "sha256": "cacb26ac5b102477644b245ddc8d2e5ceb8fbd4a59dd4a81e8918d55f91e4e64",
+    "bytes": 517
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/domain/review-note-model.ts",
+    "sha256": "220dd0af8112281d857f22171dcb868613cf547ea912f836ba063b35600c5f38",
+    "bytes": 110
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/event-handlers/on-artifact.ts",
+    "sha256": "5291b01d3d8c74cdf006c18b1ec41d47e091112d5dc19de4d7c72e9db89ca897",
+    "bytes": 376
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/event-handlers/on-run-failed.ts",
+    "sha256": "10a97cc465dc2cf7aefdf8c17196b79563f7bf7189eabe73868cf349842707bb",
+    "bytes": 302
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/event-handlers/on-run-orphaned.ts",
+    "sha256": "d2841d96867086d21b12e4bfd93cc349b5f261774a5b223dfcac6d52e1355b4e",
+    "bytes": 304
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/event-handlers/on-run-started.ts",
+    "sha256": "298721d2fc49f0ccf8342c24fdb03500255c56229503dff1a26d0a303920f141",
+    "bytes": 303
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/event-handlers/on-run-terminated.ts",
+    "sha256": "083f9125ad2ddf7e424f6f7b117b27b95bb12c3510e4dc1be75b7b368abe324e",
+    "bytes": 306
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/graphql/index.ts",
+    "sha256": "85758983f7e44968d583a9667424b7133cbec12c3dd5f5935d5adc972049f52f",
+    "bytes": 4650
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/index.ts",
+    "sha256": "b853992b13ad32a97e4f4d8f74c33405eb52ac737d1f1dc6243e0a822b2da9e6",
+    "bytes": 1213
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/migrations/001_create_brief_tables.sql",
+    "sha256": "b18d150ee9900c36c75a2e05414a4c3be54d58e8ce5019dc04d80a9b53b9d7be",
+    "bytes": 982
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/migrations/002_artifact_publication_model.sql",
+    "sha256": "d8d7b1ced11e3525acdbb07d83899af86120258695ff9fe37ab88d54c32ca8e7",
+    "bytes": 188
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/migrations/003_application_owned_orchestration.sql",
+    "sha256": "487febfd2b9c0b0a8f00c091bafe779e9887f41383f969addb3260ea06f0289b",
+    "bytes": 593
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/migrations/004_pending_launch_requests.sql",
+    "sha256": "1b21739380032a3b0e19a5bd90da37795ceb2cb2ccc78420e163585f849929e4",
+    "bytes": 569
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/migrations/005_published_artifact_reconciliation.sql",
+    "sha256": "c27da5695301dff98c5c44b30ec8b473c822c0edfc1074e3d7111a880a9c0a7a",
+    "bytes": 2273
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/app-database.ts",
+    "sha256": "59d3d36d8823364921ccbf61a9232dde1ae5fa3a78811f71a452c5511a5b5aa6",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/artifact-repository.ts",
+    "sha256": "6dcd0c69ecb348de10889556869efd578cf7973190661d916b9db0e7a5129315",
+    "bytes": 2264
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/brief-artifact-revision-repository.ts",
+    "sha256": "31aa91e1fd2899d8b33be5d40895ebd2aa1af9e2182d48ade8d72adf6d9d6f3f",
+    "bytes": 1217
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/brief-binding-repository.ts",
+    "sha256": "4ed4d867fb4336636a21cc3d0bac0fbe0eaf476ad5087f9e828a2a9d937ad3c9",
+    "bytes": 3199
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/brief-repository.ts",
+    "sha256": "b82215b63e859c3ed38994ef55e4c349909325db04c653c832d4aeacd0ce583c",
+    "bytes": 3607
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/pending-launch-request-repository.ts",
+    "sha256": "a406473cd57f4fe62e3335e5aed25ea35224d4de30d918545acbc1577c5a6bd6",
+    "bytes": 2340
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/processed-event-repository.ts",
+    "sha256": "006d33b0d452c6c2e7fc5036da43b40c864c6dc3b3111129ccebb7f45770b43a",
+    "bytes": 580
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/repositories/review-note-repository.ts",
+    "sha256": "0ac4501a50010851967f9ba0d0b01b2749e8e8ea7cfab276d891a5b700b66671",
+    "bytes": 1078
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/brief-artifact-paths.ts",
+    "sha256": "8fe6aabb9eee4828e1c093817841c1b984c91db585d960e4a39d383c12a0cc7b",
+    "bytes": 5379
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts",
+    "sha256": "0595e05e7d7a5796e41d43ff7f13c420ffaf42bd6ab7d1e4a3408c1f8e6d6a85",
+    "bytes": 8933
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/brief-projection-service.ts",
+    "sha256": "63db03ea8b1f3f4a21e2a704c12c8710d2635ba1bf601b3b70223b2ef0c0c8c9",
+    "bytes": 2727
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/brief-read-service.ts",
+    "sha256": "007e911917dc8a289d43701cf9f6b07612276dd594994004d43c419f620145b1",
+    "bytes": 2535
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/brief-review-service.ts",
+    "sha256": "86a43b417d11379ba4dd2bd80c5bbcb7ea0076e648d9222a57cc3127a72ab7e6",
+    "bytes": 4239
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/brief-run-launch-service.ts",
+    "sha256": "a3dc1b16506ebf79c5d0c368c38c4b5895abaa5310e8b627dbe5def9ae30ce59",
+    "bytes": 9925
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/backend-src/services/run-binding-correlation-service.ts",
+    "sha256": "acf5be98beb6e62c729b8f1836efcb3aebabdecfa81db87929c1522803ad72d2",
+    "bytes": 7069
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/README.md",
+    "sha256": "9594e55ce78fc49f3efd5699ff8bc6eeff5d7944e1f4a18c133d465b8affce77",
+    "bytes": 380
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json",
+    "sha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+    "bytes": 213
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md",
+    "sha256": "5c7e98e50371e5f3c530ede3a0b519fd8ead4a1c915e0b4e104914bdf10755f7",
+    "bytes": 3440
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json",
+    "sha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+    "bytes": 213
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md",
+    "sha256": "05882e50eb20e1d6f34ebc1848fc835a012ec9efb64d58b1e24f1136cba7a360",
+    "bytes": 3966
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json",
+    "sha256": "fea5fb5d1fa904b83b26a603b4a344147aa1f9113e1847d4d1c03d92f345dbf2",
+    "bytes": 395
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md",
+    "sha256": "bf0514660e685e2bed77fc3e4d096a8a634b8b8574b4a7046091bf4a35e02964",
+    "bytes": 1894
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/application.json",
+    "sha256": "ffdbbb2368a257994c0ebca95ffe229b1b9e0789750fdcc8500c8f19cc39cc73",
+    "bytes": 1510
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/bundle.json",
+    "sha256": "815a32a2039d66c8a13f519b429d5d87c9addf322d5740184698632294c6810a",
+    "bytes": 555
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs",
+    "sha256": "ca32ee6a584d9df374b5b29eaab9f6e832049220119f3c6ab4d38fb8ef34e03d",
+    "bytes": 52776
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/001_create_brief_tables.sql",
+    "sha256": "b18d150ee9900c36c75a2e05414a4c3be54d58e8ce5019dc04d80a9b53b9d7be",
+    "bytes": 982
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/002_artifact_publication_model.sql",
+    "sha256": "d8d7b1ced11e3525acdbb07d83899af86120258695ff9fe37ab88d54c32ca8e7",
+    "bytes": 188
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/003_application_owned_orchestration.sql",
+    "sha256": "487febfd2b9c0b0a8f00c091bafe779e9887f41383f969addb3260ea06f0289b",
+    "bytes": 593
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/004_pending_launch_requests.sql",
+    "sha256": "1b21739380032a3b0e19a5bd90da37795ceb2cb2ccc78420e163585f849929e4",
+    "bytes": 569
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/005_published_artifact_reconciliation.sql",
+    "sha256": "c27da5695301dff98c5c44b30ec8b473c822c0edfc1074e3d7111a880a9c0a7a",
+    "bytes": 2273
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js",
+    "sha256": "0332edb39d0b5d2a9753de03257d3b1fcfc97ac509adf954cc818380214a5084",
+    "bytes": 87475
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-renderer.js",
+    "sha256": "177f6e331446de0e8844c646ea7590f15c343c350545880ab5b85c9f6f4ee86d",
+    "bytes": 14508
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-runtime.js",
+    "sha256": "f59ece38676a0d6d1a15712fdef564bd5c96167aaa6ab3e9ff4a6af704049e4a",
+    "bytes": 6191
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js",
+    "sha256": "0f5cf81e58ae33e4fd61fc873eb4664327182e8f23ff729bbf38900c5e5222d1",
+    "bytes": 3577
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/icon.svg",
+    "sha256": "45d1634112fb8b1f83c4ee346f674c8705c199e17f756d8b64dcf7d87bc9269a",
+    "bytes": 1276
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/index.html",
+    "sha256": "ddc65c01a4eb9cee230c586a6486774a10a73f01a08b29d8ba48997a6eec626b",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/dist/importable-package/applications/brief-studio/ui/styles.css",
+    "sha256": "ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0",
+    "bytes": 8739
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/app.js",
+    "sha256": "6cd8e4a94a4ae6ddfa4d4f5e9b5e250ff1ad4d8a88d915a2fcb5858110ead86e",
+    "bytes": 647
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/brief-studio-renderer.js",
+    "sha256": "177f6e331446de0e8844c646ea7590f15c343c350545880ab5b85c9f6f4ee86d",
+    "bytes": 14508
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/brief-studio-runtime.js",
+    "sha256": "f59ece38676a0d6d1a15712fdef564bd5c96167aaa6ab3e9ff4a6af704049e4a",
+    "bytes": 6191
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/generated/graphql-client.js",
+    "sha256": "0f5cf81e58ae33e4fd61fc873eb4664327182e8f23ff729bbf38900c5e5222d1",
+    "bytes": 3577
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/icon.svg",
+    "sha256": "45d1634112fb8b1f83c4ee346f674c8705c199e17f756d8b64dcf7d87bc9269a",
+    "bytes": 1276
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/index.html",
+    "sha256": "ddc65c01a4eb9cee230c586a6486774a10a73f01a08b29d8ba48997a6eec626b",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/frontend-src/styles.css",
+    "sha256": "ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0",
+    "bytes": 8739
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/package.json",
+    "sha256": "b647397f65219c9828a30311b1215288ddadd4c1dc174b1c3b27ab0535b213af",
+    "bytes": 705
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/tsconfig.backend.json",
+    "sha256": "a92f1d039c78a3bf6a02b23e2c64c0f45b062d7158c245e23ba68febdf531786",
+    "bytes": 331
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-url.d.ts",
+    "sha256": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12",
+    "bytes": 473
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-url.d.ts.map",
+    "sha256": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff",
+    "bytes": 380
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671357-68370-brief-studio-pack/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-url.js.map",
+    "sha256": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0",
+    "bytes": 2121
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/application.json",
+    "sha256": "478bdc6263dbaa114bc697f8df00c3cd8e5937df717309175b169d8c0a75085b",
+    "bytes": 1127
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/agent-teams/sample-team/agents/lead/agent-config.json",
+    "sha256": "fcf7e248992ca022113f3c6d8d97d9163b3dd52326c656d892db5c0886bd2bdc",
+    "bytes": 167
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/agent-teams/sample-team/agents/lead/agent.md",
+    "sha256": "b160703c3142b9551b527d5fdc83dbd37f1e551ed17ed58228359b75b6943db8",
+    "bytes": 106
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/agent-teams/sample-team/team-config.json",
+    "sha256": "8e3c170865a25e1d534564adbf0c023074c501794802483a3009a9e8372e4919",
+    "bytes": 314
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/agent-teams/sample-team/team.md",
+    "sha256": "d43e9ebcf8a6acab974214eab8e5c74c2b5fcc5144611f7ee6a49db324db9c5f",
+    "bytes": 127
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127671742-68370-team-scope-defaults/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672174-68370-atomic-pack-metadata/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672369-68370-stale-application-v4/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672534-68370-nested-application-exposures/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672739-68370-missing-websocket-exposure/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127672939-68370-invalid/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673127-68370-backend-v6-rejection/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/application.json",
+    "sha256": "6252d1050c8bd6c8451c19b5d81a0797db526179a6d4eac213a045aff77671be",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673318-68370-unsafe-id----escaped/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/application.json",
+    "sha256": "0216fe53fb86af6effaaa404ab41fcb14ee6fecacafa729ffbf8878ba9933995",
+    "bytes": 399
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673368-68370-unsafe-id-a-b/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673439-68370-path-owner-unsafe-id/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/autobyteus-app.config.mjs",
+    "sha256": "e60d4b7fc5b05199aa2c2b9dde097abe439a3737f09123134c8a8a2b8723db0c",
+    "bytes": 145
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673477-68370-overlap-agentsDir/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/autobyteus-app.config.mjs",
+    "sha256": "712a773bbd429c0a4026214210764dd828071c0fb226a45fede607271adfa8e8",
+    "bytes": 149
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673545-68370-overlap-agentTeamsDir/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/application.json",
+    "sha256": "a6a1f420dea93d2ad6a5255a6916bca3f7d4b32651890d607b4768148e6e8438",
+    "bytes": 406
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/autobyteus-app.config.mjs",
+    "sha256": "9342c31f8b09b4920805a3387258af00323e92938fd59064b8b3c209b36c5f5a",
+    "bytes": 761
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127673590-68370-unsafe-validate/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/.gitignore",
+    "sha256": "1818fd51fbb3fc2a09606b23de0c87b6ce06ac04e6150cabefeb748d923c8e04",
+    "bytes": 33
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/README.md",
+    "sha256": "8b042b75ff2adcfdbde7fbf3defdf2f663badf395b5a8645add1f2f8ce5d8e06",
+    "bytes": 592
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/alternate/frontend/changed.js",
+    "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "bytes": 11
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/application.json",
+    "sha256": "553e0e73b6e839a972055f118b87031ef1ea6d1db53746d89539a0db896eca95",
+    "bytes": 407
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/autobyteus-app.config.mjs",
+    "sha256": "479b67388e9646057f1f856c93fb10d1cc676dd139d13ab4fb9356adf9718c4d",
+    "bytes": 310
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/package.json",
+    "sha256": "7da358da7dc6f5258dba2c3d2e705e9b663b9499a522215d7a851dae1d3279ba",
+    "bytes": 602
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/agent-teams/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/agents/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/backend/assets/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/backend/index.ts",
+    "sha256": "8623caa7e9503f845967ae57e1585b4585017985a9e8e975fc66cf178630347a",
+    "bytes": 891
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/backend/migrations/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/frontend/app.ts",
+    "sha256": "cd395030559eea7d1d0bae5a48c4909cbd2f965839bfc1b8957660ebad60f6df",
+    "bytes": 1288
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/frontend/icon.svg",
+    "sha256": "e6131dc69af5ea1b948f0acc359763b3fd2f56e302286eb917d53d702fa2270c",
+    "bytes": 237
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/frontend/index.html",
+    "sha256": "2f221e43f5a02a8f79f43bb8736f43f9c2f90b68ccb6257d0a32eec6082305b3",
+    "bytes": 348
+  },
+  {
+    "path": "autobyteus-application-devkit/.tmp-tests/1789127675138-68370-dynamic-watch/sample-app/src/frontend/styles.css",
+    "sha256": "a3941caa8b8b00b7d169e43a7a632d61cb3d6ee4efe9f4d043cb979d89b89624",
+    "bytes": 820
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/cli.d.ts",
+    "sha256": "c4d037d08fe01ed1a8e79e3aa1c7af4fb9520f6c126b3ce6a266bf0326f9c908",
+    "bytes": 118
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/cli.d.ts.map",
+    "sha256": "20e9c9770ce2e79c6a1b5990e892c37d35dd666917cb5724e9c610ed917c60d8",
+    "bytes": 173
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/cli.js",
+    "sha256": "ce6b2fd13e8b3d4136c491a1eeb7cd35e5257a90b969657b782065ec78919c72",
+    "bytes": 2075
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/cli.js.map",
+    "sha256": "892e8f1ed5465a98828975c1ec027810c9498ff7e745c270d0a540a5ace33d7c",
+    "bytes": 1725
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/command-options.d.ts",
+    "sha256": "4ae0b9bfe3f17a0ad3e8dd646a8e7009c0540aee4ad54c02ca666465768e0f0d",
+    "bytes": 537
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/command-options.d.ts.map",
+    "sha256": "ab5f3d1cdc938b2dde81b7068de759c2bedd68c03e2da73113c6a6c2f7c6deea",
+    "bytes": 554
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/command-options.js",
+    "sha256": "9e287ecc305214186480278a239435c461f22afc3f1ca69ca033d48a4f1d38c0",
+    "bytes": 1444
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/command-options.js.map",
+    "sha256": "7a4e2d6cc7315dab454e2171430a44aac16d5f916615775c3e8f84801576b0da",
+    "bytes": 1908
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/create.d.ts",
+    "sha256": "8c13db221fba13125dcfee6bd8b02b71fbf0eb776b84db1898c0f06e517f0833",
+    "bytes": 110
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/create.d.ts.map",
+    "sha256": "f99bb818aaf621c8f51dbfac299c5ca07e84de39bb501dae91eba83a5f4182f3",
+    "bytes": 191
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/create.js",
+    "sha256": "d83e11ff23ce7efb3f8020e9c70ed81a21c35e79cd699aec8e074c4273dd6157",
+    "bytes": 1192
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/create.js.map",
+    "sha256": "9537f3f953473c9cd5e27c394eaf8b9c6d4d38613592b6c05f249487db6ef02a",
+    "bytes": 1068
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/dev.d.ts",
+    "sha256": "059320dce582f027f1de485ad113ffde40c3779fa38ca0d0e2fdc3c11c895828",
+    "bytes": 104
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/dev.d.ts.map",
+    "sha256": "e8b7e28da0b35b680dff65b22bc29c2202aa5aad5f2bb24979ca0a9ed35a7ed8",
+    "bytes": 183
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/dev.js",
+    "sha256": "6e74a0e88bf7d231d92c24e379180c4dce2ff146195c6e04241851f2926c76d7",
+    "bytes": 1282
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/dev.js.map",
+    "sha256": "e89feecab5a8bcc24a1cc3f5bb979bfbdc57a1245c6cbac98b13d04095c2e352",
+    "bytes": 1099
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/pack.d.ts",
+    "sha256": "f2242562bd31e5af60582555b5f4c1789496b727a9c38979730dee3668047a97",
+    "bytes": 106
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/pack.d.ts.map",
+    "sha256": "35d7bd10b3d08c5798877451cc1b0ba90d21152418d9e4bae4343ea69a54b300",
+    "bytes": 184
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/pack.js",
+    "sha256": "00a0a5a368040a7975d90e4299c2c596f4ca4136703b0b3c7679bdd0ccaccc42",
+    "bytes": 634
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/pack.js.map",
+    "sha256": "d564fef7c48664ebc2450eb19edd3a5f7d6309f4a099bc43cdf23fb7d37f569b",
+    "bytes": 629
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/start.d.ts",
+    "sha256": "3e88c2eddcf8e35222f48215293fe7d1f5959c93a4f3ab0aa115ecdab89a49c5",
+    "bytes": 108
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/start.d.ts.map",
+    "sha256": "24203b4275e194b3df2179605f06c9a300a2fa639fcafef00f524e08715438b5",
+    "bytes": 187
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/start.js",
+    "sha256": "8b53969c3328eef2bd68c310f8e4cf84df20e3b70995b38e98ce8160f8c9561d",
+    "bytes": 2129
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/start.js.map",
+    "sha256": "9b83195be817010a012b8b02b719a89d0fc32319428e0e5d0a6293e4e14696bf",
+    "bytes": 1777
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/validate.d.ts",
+    "sha256": "f642549d1a53b8ed2d490b16803d6b157df1e7a3117340107a74e53c702712b1",
+    "bytes": 114
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/validate.d.ts.map",
+    "sha256": "4ec2757c3a1268eaac08068f6d9899c88fb1b5ec72b85637b4f8918590b282d3",
+    "bytes": 195
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/validate.js",
+    "sha256": "956018758debfc1a282f7b3f46a10d26dc55569d9f98a77067e78b6752f236ba",
+    "bytes": 1738
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/commands/validate.js.map",
+    "sha256": "5586554ec983bc2e5c7c96efaa48b53e57f426bde3dcf57e996b01f379762892",
+    "bytes": 1550
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/application-devkit-config.d.ts",
+    "sha256": "dac9528a8a97072e6a075c630461a9958c2f536d8e41da27dd38acc971f52c06",
+    "bytes": 2295
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/application-devkit-config.d.ts.map",
+    "sha256": "caf37c5c70dda4c654f109134ab2dc5844b47e33e8a039adf083692f1178703e",
+    "bytes": 2094
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/application-devkit-config.js",
+    "sha256": "b6763994e222dcdbdfbc090bec3811fe0ef6e7757d16aef917393a29f346b13f",
+    "bytes": 3599
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/application-devkit-config.js.map",
+    "sha256": "d37ee21c79047ffa5671309447785a2505beb3b7e80c23402bd9905eeaffd5d7",
+    "bytes": 3159
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.d.ts",
+    "sha256": "6707537741e0b89aa1ca98b036a081426a3cbc1cd37d08622c92e0f6a45cd604",
+    "bytes": 565
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.d.ts.map",
+    "sha256": "4a00d70708132f7408163470ab07ec0136d5f1f85f3d290e5000b166e8e6e43e",
+    "bytes": 480
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.js",
+    "sha256": "39a6cf1c2f5229d2bb1402b7a90d99a47c77d5ff4f4bf5a52ba73ff6463a1534",
+    "bytes": 1394
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.js.map",
+    "sha256": "ffca7cfe2541b458b059e9e551e443b02149e3495612ec97d556bface4661b20",
+    "bytes": 1438
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-development-project-state.d.ts",
+    "sha256": "68011adda479cc441638b79159284c55c3190ac3b82149fd2be7bad1126d1874",
+    "bytes": 560
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-development-project-state.d.ts.map",
+    "sha256": "0993974dab21690f865491532928055c8464b33c70fe2b04ebc555dab8704429",
+    "bytes": 493
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-development-project-state.js",
+    "sha256": "f03776fe0f0ea0b32bf79f0b8df5cc1246260e8a1f799ea0d6dfa83f2a4d1181",
+    "bytes": 755
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-development-project-state.js.map",
+    "sha256": "bec47e2175c66fe57e267a85170fe6487b9b71d56fe76e93a3287b476b2a819a",
+    "bytes": 736
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-project-watch.d.ts",
+    "sha256": "e2e86d37e20af090ce79da679ebbb7e17a21522c6d610695a630eea7b2e7545b",
+    "bytes": 491
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-project-watch.d.ts.map",
+    "sha256": "45deb3044724c7db697e374ddcc31f115cf3ef44191f4e52918d530d55417e73",
+    "bytes": 569
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-project-watch.js",
+    "sha256": "0efded3d7379d70f65ee8cb69981f06b86a11f9c99ecbb1c3208a846e0dedefc",
+    "bytes": 3771
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/application-project-watch.js.map",
+    "sha256": "358d0326452e15bac3c2d1ca6234f3c602ff06568a82d2444a84d2d729352a6a",
+    "bytes": 3478
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.d.ts",
+    "sha256": "85d2f98ec63ca4f2915255854b583782f81b9411735c57623e5cbbdd5b01e2e0",
+    "bytes": 189
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.d.ts.map",
+    "sha256": "4c91354cffc28e4b8240ce4744e92d025efaffb3e8c53e4b679d6a8b17f25677",
+    "bytes": 275
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.js",
+    "sha256": "20ad1f2de7e3761ac07c9cdb3b460fadfbfc9bc002a909fb17016289e8fe48f1",
+    "bytes": 1385
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.js.map",
+    "sha256": "d6df550cf3df807e40d9dcd99d93e7fc58e4b4ba6afeaf661f47e10c84e8a8b3",
+    "bytes": 1572
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-browser-session.d.ts",
+    "sha256": "fb6ef22ee12920b3e8aa3df3fcd1d53874cb85efa5175738e36cf3d1c05c744f",
+    "bytes": 1009
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-browser-session.d.ts.map",
+    "sha256": "801f1d3a03f97c7d2ca8b18e7f3eee59cc00dad4b2d6ceff3005b661a359ded3",
+    "bytes": 1081
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-browser-session.js",
+    "sha256": "6934e6c51ebadb199821f071f07f9567f1d16700585f42b24bbea1e2e8724dd9",
+    "bytes": 3025
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-browser-session.js.map",
+    "sha256": "9f9866fb2420c4405932e28743941cb9f8985f6b30ee14ccc8a45bd55558a61e",
+    "bytes": 2918
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.d.ts",
+    "sha256": "58b038efff0527dcc4ff8257cdcf7c463ab5a07c3a187cc5908560def48c1bd8",
+    "bytes": 395
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.d.ts.map",
+    "sha256": "a6cd77883e10b154b0f465a130b12c8b444dc9542f871683f355e26300908aa6",
+    "bytes": 447
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.js",
+    "sha256": "18124cd32193e3984fc48acca4f54655a299c73c3196385d678cca03b7a6f1cd",
+    "bytes": 1374
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.js.map",
+    "sha256": "a9bfd55315600d11456ab314cb69ab032e638f5d7043515179a65a9435b0c115",
+    "bytes": 1539
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/standalone-development-session.d.ts",
+    "sha256": "d59826ea170189a2e72f84bcc2ee5ad1b3bf418953665090c81087a34e5ad4dd",
+    "bytes": 281
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/standalone-development-session.d.ts.map",
+    "sha256": "3af55502e71f950d4f14d89632b84ceca42487f486479a9612bfd618a1688956",
+    "bytes": 387
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/standalone-development-session.js",
+    "sha256": "cb19a201164a02256d7dd5106973949373f1b44c22a7dae00083809bfa000ec0",
+    "bytes": 3066
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/standalone-development-session.js.map",
+    "sha256": "25c9560ea7d999953c532441ec6dd37fa8d67e9e03160ea37e17ce412217e308",
+    "bytes": 2610
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-application-client.d.ts",
+    "sha256": "2279699eb848f66a18161a17627a63c4acfd96e9a036f812d898d1af79c28962",
+    "bytes": 425
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-application-client.d.ts.map",
+    "sha256": "020ea89b06bb9808e543a1cdb6d7901a45e3d1e810e033793519adb2586f7265",
+    "bytes": 453
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-application-client.js",
+    "sha256": "bcb1e755f406d8d011ffde2c93b7e9484feee1a08749e4048895f8d1118cfece",
+    "bytes": 3484
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-application-client.js.map",
+    "sha256": "4909f1a2c2e479bc4c4fd12d245ef2c929517a5ae8b7aad01101a6fb842b5af2",
+    "bytes": 2874
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-development-session.d.ts",
+    "sha256": "6d1e05a76a28b70b9da53f254c4b52204d3899089ad1d871c716d63e543f9b08",
+    "bytes": 185
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-development-session.d.ts.map",
+    "sha256": "e9ae8b300cf8d8d3476733c25627fd4f75cc335364fa0d2467ce706e32f5fc7d",
+    "bytes": 281
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-development-session.js",
+    "sha256": "1b8abc023ef022a32817b88d5890d9b5398e5399f8a6638ad6de3c038875c5b8",
+    "bytes": 1759
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/development/studio-development-session.js.map",
+    "sha256": "880f23ae5089e9bb71aa8af96c6952b101f49b6f9410ca28dde2c7343c76c84b",
+    "bytes": 1440
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/index.d.ts",
+    "sha256": "c03f3fb5e0038578b79271c1cc47a6ce4cf43e0cc5ff8fac1036d1c390b8e593",
+    "bytes": 1759
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/index.d.ts.map",
+    "sha256": "a7a238ea200c79bba378c1906df5f352bf8ec4f772729b6dbed842ccd1feb7ba",
+    "bytes": 956
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/index.js",
+    "sha256": "b57b5ee25eecf87cf047d8033d80d0e577635219191d68ae9334ad95a27d0d92",
+    "bytes": 962
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/index.js.map",
+    "sha256": "4c5f1d5b8726334c3caaba8fce0e7d8f4e6babc55ed4b3d0f108b026ec8f743a",
+    "bytes": 568
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-builder.d.ts",
+    "sha256": "9bd700f7c748917b89065af21c68f807579f50eada86bcdacf317e9ad7f19ae5",
+    "bytes": 291
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-builder.d.ts.map",
+    "sha256": "b49d899239e04b2ed61cd32c15b8c2212f96ac37f4074c61b9bbea34342f4f3b",
+    "bytes": 310
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-builder.js",
+    "sha256": "7d5e3d26602368107799f75dc965a1cef8a537bf246ab6fcabf354c81f33d970",
+    "bytes": 2389
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-builder.js.map",
+    "sha256": "ee99614e684916803785412b30132ae275150f2da0687559a7ef3548e4082809",
+    "bytes": 2539
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.d.ts",
+    "sha256": "32d6928b5217f5504be7d673e87d9cd4a3be0bd88f715e4a667cb20121bbd66a",
+    "bytes": 691
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.d.ts.map",
+    "sha256": "936fc850ee436fb728c7049c9485947fa6a7c033f23150ac5ab07ec6e6ef1b05",
+    "bytes": 564
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.js",
+    "sha256": "055d411581f3f41dd6b30e81d26f21cede168959cef940d73a0202f6149889aa",
+    "bytes": 1357
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.js.map",
+    "sha256": "bc45509de21b460914330167514e32e62849d2f01561083e1fae643862aff444",
+    "bytes": 1244
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/frontend-builder.d.ts",
+    "sha256": "aebd7764ead384cf5f9af57ff9cf348d275431546efc7fcd94b231944f5ab204",
+    "bytes": 322
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/frontend-builder.d.ts.map",
+    "sha256": "41b7c14e1a0a4b429974a890fb701b1b4b47cfa71fde1f30f126f8889b292bfe",
+    "bytes": 366
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/frontend-builder.js",
+    "sha256": "9accebb0b0f7b75729179f77db78c63e56dde8fce232421ebece42fd2f76c84e",
+    "bytes": 2732
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/frontend-builder.js.map",
+    "sha256": "2b97f2c8c2ed2e8d38c99e68f79faf979f9511724fdbf24aedbd667bff5ddcb4",
+    "bytes": 2938
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/package-assembler.d.ts",
+    "sha256": "8905f5a6f905ac525e8ebf6a0f50c5ac3027c918d8b6c0b96492e5e042872786",
+    "bytes": 672
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/package-assembler.d.ts.map",
+    "sha256": "eb24c3db4dac3945adb93a0a998e2fa049ac66f1a039687182e202b7cc660449",
+    "bytes": 651
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/package-assembler.js",
+    "sha256": "111e040e4eceb63ffa062a9cfe14102d9659cb9672bcee8ee422d7ca35f27f50",
+    "bytes": 4000
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/package-assembler.js.map",
+    "sha256": "34e78400b53945c47bec3286a19c0d3c4ba834f3506a3e06e737456c7ddde618",
+    "bytes": 3477
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/resource-copier.d.ts",
+    "sha256": "ee75afcdf673a8737491ffd43484e390f5837dff2f6c0bed9803d00895f2c523",
+    "bytes": 312
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/resource-copier.d.ts.map",
+    "sha256": "221a6db8166ca0d4ca6851c69f117019844e21bc7ef747baf7f59c36222615f1",
+    "bytes": 332
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/resource-copier.js",
+    "sha256": "7a99c4a493f094fa626472adae249fc664cd7613fd9562d21860d5e7549fd09a",
+    "bytes": 1252
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/package/resource-copier.js.map",
+    "sha256": "01ddbde063092959ea34300049222d8554b4c7af30cbe446f42e65b19e855ea6",
+    "bytes": 1528
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/paths/application-project-paths.d.ts",
+    "sha256": "522afa22665952a9c33a84b9c3e4aeed7b4ea432dc16cb84a1a523e7f4cab90d",
+    "bytes": 1141
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/paths/application-project-paths.d.ts.map",
+    "sha256": "d95f2ec776d7a7ee6ed8f69bec459e42de33060e2bb5ab8cd3fe08e67c2b6f65",
+    "bytes": 1008
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/paths/application-project-paths.js",
+    "sha256": "af486570a8f19dca88f921ece8041fef2cd3b08084486817db62b50629804511",
+    "bytes": 6000
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/paths/application-project-paths.js.map",
+    "sha256": "c4434c5cc33d65afc1d7aa881e482cb690f8f5a6a47dc84e66fdd84ed9ecf01a",
+    "bytes": 5579
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/template/template-materializer.d.ts",
+    "sha256": "e36478e0884138b19f51c42905f83b9c13500b42169c175a554ba1a2196c7b72",
+    "bytes": 524
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/template/template-materializer.d.ts.map",
+    "sha256": "a8270ad3e8daa4c162088176f37a57d077ad8e514f02e97932e85aa99966a959",
+    "bytes": 563
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/template/template-materializer.js",
+    "sha256": "6aafb6153b2dfff7032ccf0b6d10c1d60345c9b866537521357f5a1ee0dfc777",
+    "bytes": 3698
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/template/template-materializer.js.map",
+    "sha256": "4497ccc93361ff3c37befda546a99a8fe65522f69115191c23132444da2ebc26",
+    "bytes": 3894
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/application-root-validator.d.ts",
+    "sha256": "84c3b3a4d40755609aece091bfe0ee02465f24588e217bb4e8d5d1e81b103945",
+    "bytes": 299
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/application-root-validator.d.ts.map",
+    "sha256": "a0f4c8446db70241184bc850acbbf2d1ea4816b5a99b47988c332f562f28ec29",
+    "bytes": 367
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/application-root-validator.js",
+    "sha256": "487249320f7e52b6cd4e67b275cc59cc456745522768dda447399d7b000e2477",
+    "bytes": 5655
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/application-root-validator.js.map",
+    "sha256": "db90bb871f03b22ea1a651f28c6ee4650d0311f97cc36bcca09e6929dd9f7ed8",
+    "bytes": 4773
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.d.ts",
+    "sha256": "647ad042c1e41a8eed4cccec6501ba98b1cad03b910b7c852a8a1b6d0acc16df",
+    "bytes": 495
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.d.ts.map",
+    "sha256": "f39a35222f70d4b552b05e7a05e9ef31faa1072aa3bcb41dace29dc672a477dd",
+    "bytes": 522
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.js",
+    "sha256": "4b3abcb3367276d23afb2139bbe9beec2297145629ed2e185b2dc02400f3326c",
+    "bytes": 5455
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.js.map",
+    "sha256": "cd561401cb3c3b8db5c972aea195302c2077f53ca9d9fb7ad918baec919ce920",
+    "bytes": 4217
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/local-application-id.d.ts",
+    "sha256": "1b7cdaabc2351ae92e5ccf5c57a5abdcc788edb009e8550d0c850e5ac8233e8e",
+    "bytes": 480
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/local-application-id.d.ts.map",
+    "sha256": "a3b9b05614e80a0ebfc32720c5bc87506e6c7a26acb68ab906ac2d6e3e3abbbb",
+    "bytes": 358
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/local-application-id.js",
+    "sha256": "e3c86314726354305e96ca87c5f16bead558550e43d699a3aad4bd990c677444",
+    "bytes": 982
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/local-application-id.js.map",
+    "sha256": "8abcd370e9550f1069b739b82de78362b5284f39858e626c296c0e6b67efbd37",
+    "bytes": 923
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/manifest-paths.d.ts",
+    "sha256": "449623a95c86cb64954d766020d49402f279524bb81f12da5e15dccfa75e0a18",
+    "bytes": 460
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/manifest-paths.d.ts.map",
+    "sha256": "41fd5715d90305793753555207205c704102ccb04cdc0db7109491d42048014e",
+    "bytes": 442
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/manifest-paths.js",
+    "sha256": "4808ffe5ec928fa7b314a93faab1cc07409738d3b60d8c1abda743d7e379fb94",
+    "bytes": 1682
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/manifest-paths.js.map",
+    "sha256": "f8021c67d4c41cafa1976c1a7b87b28b2668fa7466e1ddf7693077790400599b",
+    "bytes": 1770
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/package-validator.d.ts",
+    "sha256": "0b16f19859d4d7e71630cda72edf45a71c7e1ec6afc377689ed114cd8b4f1707",
+    "bytes": 212
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/package-validator.d.ts.map",
+    "sha256": "9df1dc1e6f1603385ad9dba797c5c7b821e54dba53f05519f4477f628386047b",
+    "bytes": 263
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/package-validator.js",
+    "sha256": "997dd411f4d149401cef09b2b4d66433218406d2c2b2c383d4c2768a40f7567c",
+    "bytes": 1758
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/package-validator.js.map",
+    "sha256": "f7e5a87b6ff20707d90f68e5566de2dccf4b747cd7b94f97d98b848466e7be3c",
+    "bytes": 1578
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-helpers.d.ts",
+    "sha256": "caaef80c99b63bb4218d3075924968928030568e400caaa32b66fd7237a00bdb",
+    "bytes": 1749
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-helpers.d.ts.map",
+    "sha256": "f4a006e55f2b81797192eedf286852127118c6ef324394e5e5433a9ca873868c",
+    "bytes": 1445
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-helpers.js",
+    "sha256": "82fd7e445d12343dd11fe2d9fc68201ec4953b96149368ee81d0c29cbc7fb448",
+    "bytes": 3922
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-helpers.js.map",
+    "sha256": "6f5c742ee73e56fd869ca5a31d8935b92c3b9f9e509fb4d775c6a5c95f028ece",
+    "bytes": 4232
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-result.d.ts",
+    "sha256": "ed55e6ef337420cb8f9e037e7feeb96078f253d700841783d5b1613b5bc2e8ad",
+    "bytes": 656
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-result.d.ts.map",
+    "sha256": "3b972249ec81baa7dadb03209049111d3374b74c19e1a213573e6cfae4f47d89",
+    "bytes": 656
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-result.js",
+    "sha256": "d930598b4b73b4e339eb2ff7f8a445980659bdd1329c366dbc1b97454b84f4f3",
+    "bytes": 780
+  },
+  {
+    "path": "autobyteus-application-devkit/dist/validation/validation-result.js.map",
+    "sha256": "a6496f81775d1855aa2a5a047ca7c3cc4cbbf53072c3de9fe5c883efdacea3d3",
+    "bytes": 964
+  }
+]

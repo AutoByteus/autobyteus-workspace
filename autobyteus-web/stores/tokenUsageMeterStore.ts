@@ -3,6 +3,7 @@ import { computed, reactive } from 'vue';
 import { getApolloClient } from '~/utils/apolloClient';
 import {
   GET_AGENT_RUN_TOKEN_USAGE_SUMMARY,
+  GET_AGENT_ORG_MEMBER_TOKEN_USAGE_SUMMARY,
   GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY,
   GET_TEAM_RUN_TOKEN_USAGE_SUMMARY,
 } from '~/graphql/queries/token_usage_meter_queries';
@@ -23,6 +24,11 @@ import {
 
 export interface TeamTokenUsageMemberIdentity {
   teamRunId: string;
+  agentRunId: string;
+}
+export interface AgentOrgTokenUsageMemberIdentity {
+  orgRunId: string;
+  memberAddress: string;
   agentRunId: string;
 }
 
@@ -417,6 +423,27 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return getTeamMemberSummary({ teamRunId, agentRunId });
   }
 
+  async function fetchAgentOrgMemberSummary(
+    input: AgentOrgTokenUsageMemberIdentity,
+  ): Promise<TokenUsageRunSummary | null> {
+    const orgRunId = normalizedId(input.orgRunId);
+    const memberAddress = normalizedId(input.memberAddress);
+    const agentRunId = normalizedId(input.agentRunId);
+    if (!orgRunId || !memberAddress || !agentRunId) return null;
+    const client = getApolloClient();
+    const { data } = await client.query({
+      query: GET_AGENT_ORG_MEMBER_TOKEN_USAGE_SUMMARY,
+      variables: { orgRunId, memberAddress, agentRunId },
+      fetchPolicy: 'network-only',
+    });
+    const summary = data?.getAgentOrgMemberTokenUsageSummary as TokenUsageRunSummary | undefined;
+    if (!summary || summary.runId !== agentRunId || summary.rootTeamRunId !== null) {
+      throw new Error('AgentOrg member token summary returned a different root/member identity.');
+    }
+    upsertRecordBackedAgentRunSummary({ runId: agentRunId, summary });
+    return getRunSummary(agentRunId);
+  }
+
   const hasAnyUsage = computed(() => Object.keys(runSummaries).length > 0
     || Object.keys(teamAggregateEntries).length > 0
     || Object.keys(teamMemberSummaries).length > 0);
@@ -438,5 +465,6 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     fetchAgentRunSummary,
     fetchTeamRunSummary,
     fetchTeamMemberSummary,
+    fetchAgentOrgMemberSummary,
   };
 });

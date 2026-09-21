@@ -1,0 +1,12 @@
+--- listeners ---
+--- owned backend/static pids ---
+--- tabs ---
+tabs=[]
+--- generated untracked build outputs ---
+removed applications/brief-studio/dist
+autobyteus-application-backend-sdk/dist
+autobyteus-application-devkit/dist
+autobyteus-application-frontend-sdk/dist
+autobyteus-application-sdk-contracts/dist
+--- CRR-009 focused correction generated outputs ---
+removed focused-test/app packaging dist outputs after evidence capture

@@ -1,0 +1,8 @@
+{
+  "query": "query Negative($orgRunId:String!,$memberAddress:String!,$agentRunId:String!){getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$memberAddress,agentRunId:$agentRunId){agentRunId memberAddress summary}}",
+  "variables": {
+    "orgRunId": "aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9",
+    "memberAddress": "/research-team/lead",
+    "agentRunId": "aorg_e2e_lead_WRONG"
+  }
+}

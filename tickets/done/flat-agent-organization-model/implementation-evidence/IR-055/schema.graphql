@@ -1,0 +1,2359 @@
+type Query {
+  health: HealthStatus!
+  getServerSettings: [ServerSetting!]!
+  getEffectiveStreamingContentFlushIntervalMs: Int!
+  getSearchConfig: SearchConfig!
+  getWorkingContextCompactionStrategies: [WorkingContextCompactionStrategyOption!]!
+  getEffectiveWorkingContextCompactionStrategyId: String!
+  listApplications: [Application!]!
+  application(id: String!): Application
+  applicationsCapability: ApplicationsCapability!
+  skills: [Skill!]!
+  skill(name: String!): Skill
+  skillFileTree(name: String!): String
+  skillFileContent(path: String!, skillName: String!): String
+  skillSources: [SkillSource!]!
+  agentRunModelOptions(agentRunId: String!): RunModelOptionsObject!
+  teamRunModelOptions(teamRunId: String!): [TeamScopeModelOptionsObject!]!
+  workspaces: [WorkspaceMetadata!]!
+  workspaceMetadata(rootPath: String!): WorkspaceMetadata!
+  agentDefinition(id: String!): AgentDefinition
+  agentDefinitions: [AgentDefinition!]!
+  agentTemplates: [AgentDefinition!]!
+  agentTeamEndpointCatalog(id: String!): AgentTeamDefinitionEndpointCatalog!
+  agentTeamDefinition(id: String!): AgentTeamDefinition
+  agentTeamDefinitions: [AgentTeamDefinition!]!
+  agentTeamTemplates: [AgentTeamDefinition!]!
+  agentOrgDefinitions: [AgentOrgDefinition!]!
+  agentOrgDefinition(id: String!): AgentOrgDefinition
+  agentOrgEndpointCatalog(id: String!): DefinitionEndpointCatalog!
+  totalCostInPeriod(endTime: DateTime!, startTime: DateTime!): Float
+  tokenUsageTaskStatisticsInPeriod(endTime: DateTime!, startTime: DateTime!): TokenUsageTaskStatisticsResultGraphql!
+  usageStatisticsInPeriod(endTime: DateTime!, startTime: DateTime!): [UsageStatistics!]!
+  getAgentRunTokenUsageSummary(runId: String!): TokenUsageRunSummaryGraphql!
+  getTeamRunTokenUsageSummary(teamRunId: String!): TokenUsageRunSummaryGraphql!
+  getTeamMemberTokenUsageSummary(agentRunId: String!, teamRunId: String!): TokenUsageRunSummaryGraphql!
+  getAgentOrgRunInspection(orgRunId: String!): JSON!
+  getAgentOrgMemberRunProjection(agentRunId: String!, memberAddress: String!, orgRunId: String!): AgentOrgMemberRunProjectionPayload!
+  getAgentOrgMemberEventMonitorActiveTracePage(beforeCursor: String, agentRunId: String!, memberAddress: String!, orgRunId: String!): EventMonitorActiveTracePage!
+  getAgentOrgExecutionCheckpoint(orgRunId: String!): AgentOrgExecutionCheckpointPayload!
+  getAgentOrgMemberTokenUsageSummary(agentRunId: String!, memberAddress: String!, orgRunId: String!): TokenUsageRunSummaryGraphql!
+  tokenUsageAnalytics(input: TokenUsageAnalyticsInputGraphql!): TokenUsageAnalyticsResultGraphql!
+  availableToolNames: [String!]!
+  availableOptionalInputProcessorNames: [String!]!
+  availableOptionalLlmResponseProcessorNames: [String!]!
+  availableOptionalToolExecutionResultProcessorNames: [String!]!
+  availableOptionalToolInvocationPreprocessorNames: [String!]!
+  availableOptionalLifecycleProcessorNames: [String!]!
+  fileContent(filePath: String!, workspaceId: String!): String!
+  searchFiles(query: String!, workspaceId: String!): [String!]!
+  folderChildren(folderPath: String!, workspaceId: String!): String!
+  providerCredentialSettings(runtimeKind: String): [ProviderCredentialSettingObject!]!
+  providerModelCatalogSnapshots(runtimeKind: String): [ProviderModelCatalogSnapshotObject!]!
+  getGeminiSetupConfig: GeminiSetupStateObject!
+  qwenSetupStatus: QwenSetupStatus!
+  tools(sourceServerId: String, origin: ToolOriginEnum): [ToolDefinitionDetail!]!
+  toolsGroupedByCategory(origin: ToolOriginEnum!): [ToolCategoryGroup!]!
+  mcpServers: [McpServerConfigUnion!]!
+  previewMcpServerTools(input: McpServerInput!): [ToolDefinitionDetail!]!
+  listMemoryExplorerSources: [MemoryExplorerSourceOption!]!
+  listAgentsWithMemory(pageSize: Int! = 25, page: Int! = 1, search: String, source: MemoryExplorerSourceInput): AgentWithMemoryPage!
+  listAgentRunsWithMemory(pageSize: Int! = 25, page: Int! = 1, search: String, source: MemoryExplorerSourceInput, selector: AgentWithMemorySelectorInput!): AgentRunMemoryPage!
+  listAgentTeamsWithMemory(pageSize: Int! = 25, page: Int! = 1, search: String, source: MemoryExplorerSourceInput): AgentTeamWithMemoryPage!
+  listAgentTeamRunsWithMemory(pageSize: Int! = 25, page: Int! = 1, search: String, source: MemoryExplorerSourceInput, teamDefinitionId: String!): AgentTeamRunMemoryPage!
+  getAgentRunMemoryView(rawTraceFileName: String, rawTraceLimit: Int, includeArchive: Boolean! = false, includeRawTraceFiles: Boolean! = false, includeRawTraces: Boolean! = false, includeSemantic: Boolean! = true, includeEpisodic: Boolean! = true, includeWorkingContext: Boolean! = true, source: MemoryExplorerSourceInput, runId: String!): AgentMemoryView!
+  getTeamMemberRunMemoryView(rawTraceFileName: String, rawTraceLimit: Int, includeArchive: Boolean! = false, includeRawTraceFiles: Boolean! = false, includeRawTraces: Boolean! = false, includeSemantic: Boolean! = true, includeEpisodic: Boolean! = true, includeWorkingContext: Boolean! = true, source: MemoryExplorerSourceInput, agentRunId: String!, teamRunId: String!): AgentMemoryView!
+  getMemorySyncStatus: MemorySyncStatusGql!
+  getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql!
+  listMemoryHubUrlCandidates(manualBaseUrl: String, currentNodeBaseUrl: String): [ServerAddressCandidateGql!]!
+  listMemoryImports: [MemoryImportSummaryGql!]!
+  externalChannelCapabilities: ExternalChannelCapabilities!
+  externalChannelBindings: [ExternalChannelBindingGql!]!
+  externalChannelTeamDefinitionOptions: [ExternalChannelTeamDefinitionOptionGql!]!
+  listWorkspaceRunHistory(limitPerAgent: Int! = 6): [WorkspaceRunHistoryGroupObject!]!
+  workspaceRunHistory(limitPerAgent: Int! = 6, workspaceId: String!): WorkspaceRunHistoryGroupObject!
+  getRunProjection(runId: String!): RunProjectionPayload!
+  getRunEventMonitorActiveTracePage(beforeCursor: String, runId: String!): EventMonitorActiveTracePage!
+  getAgentRunResumeConfig(runId: String!): RunResumeConfigPayload!
+  getRunFileChanges(runId: String!): [RunFileChangeEntryObject!]!
+  getTeamCommunicationMessages(teamRunId: String!): [TeamCommunicationMessageObject!]!
+  getTaskDelegationRecords(teamRunId: String!): [TaskDelegationRecordObject!]!
+  getTeamRunResumeConfig(teamRunId: String!): TeamRunResumeConfigPayload!
+  getTeamMemberRunProjection(agentRunId: String!, teamRunId: String!): TeamMemberRunProjectionPayload!
+  getTeamRunExecutionCheckpoint(teamRunId: String!): TeamRunExecutionCheckpointPayload!
+  getTeamMemberEventMonitorActiveTracePage(beforeCursor: String, agentRunId: String!, teamRunId: String!): EventMonitorActiveTracePage!
+  runtimeAvailabilities: [RuntimeAvailabilityObject!]!
+  agentPackages: [AgentPackage!]!
+  applicationPackages: [ApplicationPackage!]!
+  applicationPackageDetails(packageId: String!): ApplicationPackageDetails
+  managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject!
+  managedMessagingGatewayWeComAccounts: [ManagedMessagingGatewayWeComAccountObject!]!
+  managedMessagingGatewayPeerCandidates(limit: Int! = 50, includeGroups: Boolean! = true, provider: String!): ManagedMessagingGatewayPeerCandidateListObject!
+  getAppDataMigrations: [AppDataMigrationRecordObject!]!
+  skillImprovementCapability: SkillImprovementCapability!
+  skillImprovementStrategyCatalog: GraphqlSkillImprovementStrategyCatalog!
+  getAgentRunSkillImprovementEligibility(runId: String!): GraphqlSkillImprovementEligibility!
+  getTeamMemberSkillImprovementEligibility(agentRunId: String!, teamRunId: String!): GraphqlSkillImprovementEligibility!
+  getSkillImprovementRunRecord(improvementRunId: String!): GraphqlSkillImprovementRunRecord
+  getSecretVaultStatus: SecretVaultStatus!
+  definitionAdmissionDiagnostics: [DefinitionAdmissionDiagnostic!]!
+  listCollaborationRootHistory: [CollaborationRootHistoryItem!]!
+}
+
+type HealthStatus {
+  status: String!
+  message: String!
+}
+
+type ServerSetting {
+  key: String!
+  value: String!
+  description: String!
+  isEditable: Boolean!
+  isDeletable: Boolean!
+}
+
+type SearchConfig {
+  provider: String!
+  vaultHealth: String!
+  instructionCode: String
+  serperStorageState: String
+  serpapiStorageState: String
+  vertexAiSearchStorageState: String
+  vertexAiSearchServingConfig: String
+}
+
+type WorkingContextCompactionStrategyOption {
+  id: String!
+  name: String!
+}
+
+type Application {
+  id: String!
+  localApplicationId: String!
+  packageId: String!
+  name: String!
+  description: String
+  iconAssetPath: String
+  entryHtmlAssetPath: String!
+  writable: Boolean!
+  bundleResources: [ApplicationExecutionResource!]!
+  executionResourceSlots: [ApplicationExecutionResourceSlotSummary!]!
+}
+
+type ApplicationExecutionResource {
+  kind: ApplicationExecutionResourceKind!
+  localId: String!
+  definitionId: String!
+}
+
+enum ApplicationExecutionResourceKind {
+  AGENT
+  AGENT_TEAM
+}
+
+type ApplicationExecutionResourceSlotSummary {
+  slotKey: String!
+  required: Boolean!
+}
+
+type ApplicationsCapability {
+  enabled: Boolean!
+  scope: ApplicationsCapabilityScope!
+  settingKey: String!
+  source: ApplicationsCapabilitySource!
+}
+
+enum ApplicationsCapabilityScope {
+  BOUND_NODE
+}
+
+enum ApplicationsCapabilitySource {
+  SERVER_SETTING
+  INITIALIZED_FROM_DISCOVERED_APPLICATIONS
+  INITIALIZED_EMPTY_CATALOG
+}
+
+type Skill {
+  name: String!
+  description: String!
+  content: String!
+  rootPath: String!
+  fileCount: Int!
+  isReadonly: Boolean!
+  isDisabled: Boolean!
+  createdAt: String
+  updatedAt: String
+}
+
+type SkillSource {
+  path: String!
+  skillCount: Int!
+  isDefault: Boolean!
+}
+
+type RunModelOptionsObject {
+  currentModelIdentifier: String!
+  currentContextTokens: Float
+  replacements: [RunModelOptionObject!]!
+  unavailableReason: String
+}
+
+type RunModelOptionObject {
+  llmModelIdentifier: String!
+  contextTokens: Float!
+}
+
+type TeamScopeModelOptionsObject {
+  currentModelIdentifier: String!
+  currentContextTokens: Float
+  replacements: [RunModelOptionObject!]!
+  unavailableReason: String
+  scopeKind: String!
+  scopeAddress: String!
+}
+
+type WorkspaceMetadata {
+  workspaceId: String!
+  name: String!
+  displayName: String!
+  config: JSON!
+  workspaceRootPath: String!
+  absolutePath: String
+  kind: String!
+  isTemp: Boolean!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+type AgentDefinition {
+  id: String!
+  name: String!
+  role: String
+  description: String!
+  instructions: String!
+  category: String
+  avatarUrl: String
+  toolNames: [String!]!
+  inputProcessorNames: [String!]!
+  llmResponseProcessorNames: [String!]!
+  toolExecutionResultProcessorNames: [String!]!
+  toolInvocationPreprocessorNames: [String!]!
+  lifecycleProcessorNames: [String!]!
+  skillNames: [String!]!
+  ownershipScope: AgentDefinitionOwnershipScope!
+  ownerTeamId: String
+  ownerTeamName: String
+  ownerOrgId: String
+  ownerOrgName: String
+  ownerApplicationId: String
+  ownerApplicationName: String
+  ownerPackageId: String
+  ownerLocalApplicationId: String
+  defaultLaunchConfig: DefaultLaunchConfig
+}
+
+enum AgentDefinitionOwnershipScope {
+  SHARED
+  TEAM_LOCAL
+  AGENT_ORG_OWNED
+  APPLICATION_OWNED
+}
+
+type DefaultLaunchConfig {
+  llmModelIdentifier: String
+  runtimeKind: String
+  llmConfig: JSON
+}
+
+type AgentTeamDefinitionEndpointCatalog {
+  from: [AgentTeamDefinitionEndpoint!]!
+  to: [AgentTeamDefinitionEndpoint!]!
+}
+
+type AgentTeamDefinitionEndpoint {
+  kind: String!
+  address: String!
+  memberName: String!
+  definitionId: String!
+  coordinatorAddress: String
+  coordinatorMemberName: String
+}
+
+type AgentTeamDefinition {
+  id: String!
+  name: String!
+  description: String!
+  instructions: String!
+  category: String
+  nodes: [TeamMember!]!
+  coordinatorMemberName: String!
+  handoffs: [AgentTeamHandoff!]!
+  avatarUrl: String
+  ownershipScope: AgentTeamDefinitionOwnershipScope!
+  ownerTeamId: String
+  ownerTeamName: String
+  ownerOrgId: String
+  ownerOrgName: String
+  ownerApplicationId: String
+  ownerApplicationName: String
+  ownerPackageId: String
+  ownerLocalApplicationId: String
+  defaultLaunchConfig: DefaultLaunchConfig
+  revision: String
+}
+
+type TeamMember {
+  memberName: String!
+  ref: String!
+  refScope: AgentMemberRefScope!
+}
+
+enum AgentMemberRefScope {
+  SHARED
+  TEAM_LOCAL
+  APPLICATION_OWNED
+}
+
+type AgentTeamHandoff {
+  from: String!
+  to: String!
+  rules: [String!]!
+}
+
+enum AgentTeamDefinitionOwnershipScope {
+  SHARED
+  TEAM_LOCAL
+  AGENT_ORG_OWNED
+  APPLICATION_OWNED
+}
+
+type AgentOrgDefinition {
+  id: String!
+  name: String!
+  description: String!
+  instructions: String!
+  category: String
+  members: [AgentOrgMember!]!
+  handoffs: [AgentOrgHandoff!]!
+  avatarUrl: String
+  defaultLaunchConfig: DefaultLaunchConfig
+  revision: String
+}
+
+type AgentOrgMember {
+  memberName: String!
+  ref: String!
+  refType: AgentOrgMemberType!
+  refScope: AgentOrgMemberScope!
+}
+
+enum AgentOrgMemberType {
+  AGENT
+  AGENT_TEAM
+}
+
+enum AgentOrgMemberScope {
+  SHARED
+  AGENT_ORG_OWNED
+  APPLICATION_OWNED
+}
+
+type AgentOrgHandoff {
+  from: String!
+  to: String!
+  rules: [String!]!
+}
+
+type DefinitionEndpointCatalog {
+  from: [DefinitionEndpoint!]!
+  to: [DefinitionEndpoint!]!
+}
+
+type DefinitionEndpoint {
+  kind: String!
+  address: String!
+  memberName: String!
+  definitionId: String!
+  coordinatorAddress: String
+  coordinatorMemberName: String
+}
+
+"""DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values"""
+scalar DateTime
+
+type TokenUsageTaskStatisticsResultGraphql {
+  rows: [TokenUsageTaskStatisticsRowGraphql!]!
+}
+
+type TokenUsageTaskStatisticsRowGraphql {
+  rowId: String!
+  rowKind: String!
+  runId: String
+  taskId: String
+  rootTeamRunId: String
+  displayName: String!
+  summary: String
+  createdAt: String!
+  createdTimeSource: String!
+  models: [String!]!
+  modelDisplayNames: [String!]!
+  runtimeKinds: [String!]!
+  aggregate: TokenUsageCostSummaryAggregateGraphql!
+  children: [TokenUsageTaskStatisticsRowGraphql!]!
+}
+
+type TokenUsageCostSummaryAggregateGraphql {
+  grossInputTokens: SafeInt!
+  standardInputTokens: SafeInt!
+  cacheMissInputTokens: SafeInt!
+  cacheReadInputTokens: SafeInt!
+  cacheCreationInputTokens: SafeInt!
+  cacheCreation5mInputTokens: SafeInt!
+  cacheCreation1hInputTokens: SafeInt!
+  outputTokens: SafeInt!
+  reasoningOutputTokens: SafeInt!
+  billableOutputTokens: SafeInt!
+  totalTokens: SafeInt!
+  cacheReadInputTokenRate: Float
+  standardInputTokenRate: Float
+  cacheCreationInputTokenRate: Float
+  cacheState: String!
+  estimatedApiInputCost: Float
+  estimatedApiStandardInputCost: Float
+  estimatedApiCacheReadInputCost: Float
+  estimatedApiCacheCreationInputCost: Float
+  estimatedApiCacheCreation5mInputCost: Float
+  estimatedApiCacheCreation1hInputCost: Float
+  estimatedApiOutputCost: Float
+  estimatedApiReasoningOutputCost: Float
+  estimatedApiTotalCost: Float
+  currency: String
+  apiCostStatus: String!
+  missingPriceDimensions: [String!]!
+  pricingPolicyKey: String
+  selectedPricingTierId: String
+  unitPrices: TokenUsageUnitPricesGraphql!
+  usageReportCount: Int!
+  updatedAt: String
+  observedRuntimeKinds: [String!]!
+  observedModelIdentifiers: [String!]!
+  observedModelProviders: [String!]!
+}
+
+"""
+The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification.
+"""
+scalar SafeInt @specifiedBy(url: "https://www.ecma-international.org/ecma-262/#sec-number.issafeinteger")
+
+type TokenUsageUnitPricesGraphql {
+  standardInput: TokenUsageUnitPriceSummaryGraphql!
+  cacheReadInput: TokenUsageUnitPriceSummaryGraphql!
+  cacheCreationInput: TokenUsageUnitPriceSummaryGraphql!
+  cacheCreation5mInput: TokenUsageUnitPriceSummaryGraphql!
+  cacheCreation1hInput: TokenUsageUnitPriceSummaryGraphql!
+  output: TokenUsageUnitPriceSummaryGraphql!
+  reasoningOutput: TokenUsageUnitPriceSummaryGraphql!
+}
+
+type TokenUsageUnitPriceSummaryGraphql {
+  status: String!
+  pricePerMillion: Float
+}
+
+type UsageStatistics {
+  runtimeKind: String!
+  llmModel: String!
+  modelDisplayName: String!
+  inputTokens: SafeInt!
+  promptTokens: SafeInt!
+  cacheReadInputTokens: SafeInt!
+  cacheCreationInputTokens: SafeInt!
+  cacheReadInputTokenRate: Float
+  cacheState: String!
+  outputTokens: SafeInt!
+  assistantTokens: SafeInt!
+  thinkingTokens: SafeInt!
+  reasoningTokens: SafeInt!
+  inputCost: Float
+  promptCost: Float
+  outputCost: Float
+  assistantCost: Float
+  thinkingCost: Float
+  reasoningCost: Float
+  totalCost: Float
+  currency: String
+  apiCostStatus: String!
+  aggregate: TokenUsageCostSummaryAggregateGraphql!
+}
+
+type TokenUsageRunSummaryGraphql {
+  grossInputTokens: SafeInt!
+  standardInputTokens: SafeInt!
+  cacheMissInputTokens: SafeInt!
+  cacheReadInputTokens: SafeInt!
+  cacheCreationInputTokens: SafeInt!
+  cacheCreation5mInputTokens: SafeInt!
+  cacheCreation1hInputTokens: SafeInt!
+  outputTokens: SafeInt!
+  reasoningOutputTokens: SafeInt!
+  billableOutputTokens: SafeInt!
+  totalTokens: SafeInt!
+  cacheReadInputTokenRate: Float
+  standardInputTokenRate: Float
+  cacheCreationInputTokenRate: Float
+  cacheState: String!
+  estimatedApiInputCost: Float
+  estimatedApiStandardInputCost: Float
+  estimatedApiCacheReadInputCost: Float
+  estimatedApiCacheCreationInputCost: Float
+  estimatedApiCacheCreation5mInputCost: Float
+  estimatedApiCacheCreation1hInputCost: Float
+  estimatedApiOutputCost: Float
+  estimatedApiReasoningOutputCost: Float
+  estimatedApiTotalCost: Float
+  currency: String
+  apiCostStatus: String!
+  missingPriceDimensions: [String!]!
+  pricingPolicyKey: String
+  selectedPricingTierId: String
+  unitPrices: TokenUsageUnitPricesGraphql!
+  usageReportCount: Int!
+  updatedAt: String
+  observedRuntimeKinds: [String!]!
+  observedModelIdentifiers: [String!]!
+  observedModelProviders: [String!]!
+  runId: String!
+  rootTeamRunId: String
+  agentDefinitionId: String
+  workspaceId: String
+  latestPromptTokens: SafeInt
+  effectiveContextWindowTokens: SafeInt
+  contextWindowUsagePercent: Float
+  latestModelProvider: String
+  latestModelIdentifier: String
+  latestRuntimeKind: String
+}
+
+type AgentOrgMemberRunProjectionPayload {
+  agentRunId: String!
+  memberAddress: String!
+  conversation: [JSON!]!
+  activities: [JSON!]!
+  summary: String
+  lastActivityAt: String
+  hasEarlierActiveTraceEvents: Boolean!
+}
+
+type EventMonitorActiveTracePage {
+  events: [EventMonitorActiveTracePageEvent!]!
+  beforeCursor: String
+  hasEarlier: Boolean!
+  loadedEarlierCount: Int!
+  activeGeneration: String!
+  cursorStatus: String!
+}
+
+type EventMonitorActiveTracePageEvent {
+  eventId: ID!
+  turnGroupId: ID!
+  occurredAtMs: Float
+  visuals: [EventMonitorActiveTracePageVisual!]!
+}
+
+union EventMonitorActiveTracePageVisual = EventMonitorUserVisual | EventMonitorAssistantTextVisual | EventMonitorThinkingVisual | EventMonitorToolCardVisual | EventMonitorMediaVisual | EventMonitorCompactionVisual
+
+type EventMonitorUserVisual {
+  visualId: ID!
+  eventId: ID!
+  kindOrdinal: Int!
+  kind: String!
+  text: String!
+  attachments: [EventMonitorActiveTraceAttachment!]!
+}
+
+type EventMonitorActiveTraceAttachment {
+  attachmentId: ID!
+  fileType: String!
+  fileName: String
+  locator: String!
+}
+
+type EventMonitorAssistantTextVisual {
+  visualId: ID!
+  eventId: ID!
+  kindOrdinal: Int!
+  kind: String!
+  content: String!
+}
+
+type EventMonitorThinkingVisual {
+  visualId: ID!
+  eventId: ID!
+  kindOrdinal: Int!
+  kind: String!
+  content: String!
+}
+
+type EventMonitorToolCardVisual {
+  visualId: ID!
+  eventId: ID!
+  kindOrdinal: Int!
+  kind: String!
+  invocationId: String!
+  cardKind: String!
+  toolName: String!
+  statusKey: String!
+  summaryArgs: EventMonitorToolSummaryArgs!
+  errorMessage: String
+  approvalTarget: EventMonitorApprovalTarget
+}
+
+type EventMonitorToolSummaryArgs {
+  path: String
+  file_path: String
+  filepath: String
+  filename: String
+  target_path: String
+  command: String
+  cmd: String
+  script: String
+  query: String
+  prompt: String
+  url: String
+  message: String
+  text: String
+  title: String
+  name: String
+  raw: String
+}
+
+type EventMonitorApprovalTarget {
+  agentRunId: ID!
+}
+
+type EventMonitorMediaVisual {
+  visualId: ID!
+  eventId: ID!
+  kindOrdinal: Int!
+  kind: String!
+  mediaType: String!
+  urls: [String!]!
+}
+
+type EventMonitorCompactionVisual {
+  visualId: ID!
+  eventId: ID!
+  kindOrdinal: Int!
+  kind: String!
+  activityId: String!
+  phase: String!
+  message: String!
+  turnId: String
+  rawTraceCount: Int
+  semanticFactCount: Int
+  provider: String
+}
+
+type AgentOrgExecutionCheckpointPayload {
+  orgRunId: String!
+  changeSequence: Int!
+  hasOpenExecutionWork: Boolean!
+}
+
+type TokenUsageAnalyticsResultGraphql {
+  appliedRange: TokenUsageAnalyticsAppliedRangeGraphql!
+  comparisonRange: TokenUsageAnalyticsRangeGraphql
+  coverage: TokenUsageAnalyticsCoverageGraphql!
+  comparisonCoverage: TokenUsageAnalyticsCoverageGraphql
+  appliedFilters: TokenUsageAnalyticsAppliedFiltersGraphql!
+  selectedAggregate: TokenUsageCostSummaryAggregateGraphql!
+  selectedCostQuality: TokenUsageAnalyticsCostQualityGraphql!
+  comparisonAggregate: TokenUsageCostSummaryAggregateGraphql
+  comparisonCostQuality: TokenUsageAnalyticsCostQualityGraphql
+  activeDayCount: Int!
+  trendBuckets: [TokenUsageAnalyticsBucketGraphql!]!
+  comparisonBuckets: [TokenUsageAnalyticsBucketGraphql!]!
+  breakdownRows: [TokenUsageAnalyticsBreakdownRowGraphql!]!
+  filterOptions: TokenUsageAnalyticsFilterOptionsGraphql!
+}
+
+type TokenUsageAnalyticsAppliedRangeGraphql {
+  startTime: String!
+  endTimeExclusive: String!
+  preset: String!
+  granularity: String!
+}
+
+type TokenUsageAnalyticsRangeGraphql {
+  startTime: String!
+  endTimeExclusive: String!
+}
+
+type TokenUsageAnalyticsCoverageGraphql {
+  status: String!
+  coverageStart: String!
+}
+
+type TokenUsageAnalyticsAppliedFiltersGraphql {
+  runtimeKind: String
+  providerKey: String
+  modelKey: String
+}
+
+type TokenUsageAnalyticsCostQualityGraphql {
+  kind: String!
+  currency: String
+  missingPriceDimensions: [String!]!
+}
+
+type TokenUsageAnalyticsBucketGraphql {
+  bucketStart: String!
+  bucketEndExclusive: String!
+  aggregate: TokenUsageCostSummaryAggregateGraphql!
+  costQuality: TokenUsageAnalyticsCostQualityGraphql!
+}
+
+type TokenUsageAnalyticsBreakdownRowGraphql {
+  rowKey: String!
+  identityKey: String!
+  providerKey: String!
+  modelKey: String!
+  runtimeKind: String!
+  modelProvider: String
+  providerName: String
+  providerDisplayName: String!
+  modelIdentifier: String
+  modelValue: String
+  modelDisplayName: String!
+  aggregate: TokenUsageCostSummaryAggregateGraphql!
+  costQuality: TokenUsageAnalyticsCostQualityGraphql!
+}
+
+type TokenUsageAnalyticsFilterOptionsGraphql {
+  runtimeKinds: [String!]!
+  providers: [TokenUsageAnalyticsProviderOptionGraphql!]!
+  models: [TokenUsageAnalyticsModelOptionGraphql!]!
+}
+
+type TokenUsageAnalyticsProviderOptionGraphql {
+  key: String!
+  modelProvider: String
+  providerName: String
+  displayName: String!
+}
+
+type TokenUsageAnalyticsModelOptionGraphql {
+  key: String!
+  modelIdentifier: String
+  modelValue: String
+  displayName: String!
+}
+
+input TokenUsageAnalyticsInputGraphql {
+  rangePreset: String!
+  startTime: DateTime!
+  endTimeExclusive: DateTime!
+  runtimeKind: String
+  providerKey: String
+  modelKey: String
+}
+
+type ProviderCredentialSettingObject {
+  provider: CatalogProviderObject!
+  apiKeyConfigured: Boolean!
+}
+
+type CatalogProviderObject {
+  id: String!
+  name: String!
+  providerType: String!
+  isCustom: Boolean!
+  baseUrl: String
+  catalogMode: String!
+}
+
+type ProviderModelCatalogSnapshotObject {
+  runtimeKind: String!
+  ownerProvider: CatalogProviderObject!
+  sources: [ModelSourceStatusObject!]!
+  llmModels: [ModelDetail!]!
+  audioModels: [ModelDetail!]!
+  imageModels: [ModelDetail!]!
+  videoModels: [ModelDetail!]!
+}
+
+type ModelSourceStatusObject {
+  modelKind: String!
+  state: String!
+  modelCount: Int!
+  successfulUnitCount: Int!
+  failedUnitCount: Int!
+  safeMessage: String
+}
+
+type ModelDetail {
+  modelIdentifier: String!
+  name: String!
+  description: String
+  value: String!
+  canonicalName: String!
+  providerId: String!
+  providerName: String!
+  providerType: String!
+  runtime: String!
+  hostUrl: String
+  configSchema: JSON
+  maxContextTokens: Int
+  activeContextTokens: Int
+  maxInputTokens: Int
+  maxOutputTokens: Int
+  metadataProvenance: ModelMetadataProvenance
+}
+
+enum ModelMetadataProvenance {
+  LIVE
+  CURATED_FALLBACK
+  CURATED_ONLY
+}
+
+type GeminiSetupStateObject {
+  activeMode: GeminiSetupMode
+  aiStudioConfigured: Boolean
+  vertexExpressConfigured: Boolean
+  vertexProject: GeminiVertexProjectObject
+}
+
+enum GeminiSetupMode {
+  AI_STUDIO
+  VERTEX_EXPRESS
+  VERTEX_PROJECT
+}
+
+type GeminiVertexProjectObject {
+  project: String!
+  location: String!
+}
+
+type QwenSetupStatus {
+  effectiveBaseUrl: String!
+  endpointSource: QwenEndpointSource!
+}
+
+enum QwenEndpointSource {
+  DEFAULT
+  CONFIGURED
+}
+
+type ToolDefinitionDetail {
+  name: String!
+  description: String!
+  origin: ToolOriginEnum!
+  category: String!
+  argumentSchema: ToolArgumentSchema
+}
+
+enum ToolOriginEnum {
+  LOCAL
+  MCP
+}
+
+type ToolArgumentSchema {
+  parameters: [ToolParameterDefinition!]!
+}
+
+type ToolParameterDefinition {
+  name: String!
+  paramType: ToolParameterTypeEnum!
+  description: String!
+  required: Boolean!
+  defaultValue: String
+  enumValues: [String!]
+  jsonSchema: JSON
+}
+
+enum ToolParameterTypeEnum {
+  STRING
+  INTEGER
+  FLOAT
+  BOOLEAN
+  ENUM
+  OBJECT
+  ARRAY
+}
+
+type ToolCategoryGroup {
+  categoryName: String!
+  tools: [ToolDefinitionDetail!]!
+}
+
+union McpServerConfigUnion = StdioMcpServerConfig | StreamableHttpMcpServerConfig
+
+type StdioMcpServerConfig {
+  serverId: String!
+  transportType: McpTransportTypeEnum!
+  enabled: Boolean!
+  toolNamePrefix: String
+  command: String!
+  args: [String!]
+  env: JSON
+  cwd: String
+}
+
+enum McpTransportTypeEnum {
+  STDIO
+  STREAMABLE_HTTP
+}
+
+type StreamableHttpMcpServerConfig {
+  serverId: String!
+  transportType: McpTransportTypeEnum!
+  enabled: Boolean!
+  toolNamePrefix: String
+  url: String!
+  token: String
+  headers: JSON
+}
+
+input McpServerInput {
+  serverId: String!
+  transportType: McpTransportTypeEnum!
+  enabled: Boolean
+  toolNamePrefix: String
+  stdioConfig: StdioMcpServerConfigInput
+  streamableHttpConfig: StreamableHttpMcpServerConfigInput
+}
+
+input StdioMcpServerConfigInput {
+  command: String!
+  args: [String!]
+  env: JSON
+  cwd: String
+}
+
+input StreamableHttpMcpServerConfigInput {
+  url: String!
+  token: String
+  headers: JSON
+}
+
+type MemoryExplorerSourceOption {
+  key: String!
+  type: MemoryExplorerSourceType!
+  label: String!
+  sourceNodeId: String
+  displayName: String
+  readOnly: Boolean!
+  lastImportedAt: String
+  lastSyncStatus: String
+}
+
+enum MemoryExplorerSourceType {
+  LOCAL
+  IMPORTED
+}
+
+type AgentWithMemoryPage {
+  entries: [AgentWithMemorySummary!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  totalPages: Int!
+}
+
+type AgentWithMemorySummary {
+  attribution: AgentMemoryAttribution!
+  agentDefinitionId: String
+  displayName: String!
+  stableId: String!
+  runCount: Int!
+  latestMemoryAt: String
+  memory: MemoryAvailabilitySummary!
+}
+
+enum AgentMemoryAttribution {
+  DEFINITION
+  UNATTRIBUTED
+}
+
+type MemoryAvailabilitySummary {
+  latestMemoryAt: String
+  hasWorkingContext: Boolean!
+  hasEpisodic: Boolean!
+  hasSemantic: Boolean!
+  hasRawTraces: Boolean!
+  hasRawArchive: Boolean!
+}
+
+input MemoryExplorerSourceInput {
+  type: MemoryExplorerSourceType!
+  sourceNodeId: String
+}
+
+type AgentRunMemoryPage {
+  entries: [AgentRunMemorySummary!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  totalPages: Int!
+}
+
+type AgentRunMemorySummary {
+  runId: String!
+  agentDefinitionId: String
+  agentName: String
+  summary: String
+  workspaceRootPath: String
+  createdAt: String
+  lastUpdatedAt: String
+  memory: MemoryAvailabilitySummary!
+}
+
+input AgentWithMemorySelectorInput {
+  attribution: AgentMemoryAttribution!
+  agentDefinitionId: String
+}
+
+type AgentTeamWithMemoryPage {
+  entries: [AgentTeamWithMemorySummary!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  totalPages: Int!
+}
+
+type AgentTeamWithMemorySummary {
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  teamRunCount: Int!
+  memberMemoryCount: Int!
+  latestMemoryAt: String
+  memory: MemoryAvailabilitySummary!
+}
+
+type AgentTeamRunMemoryPage {
+  entries: [AgentTeamRunMemorySummary!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  totalPages: Int!
+}
+
+type AgentTeamRunMemorySummary {
+  teamRunId: String!
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  summary: String
+  workspaceRootPath: String
+  createdAt: String
+  lastUpdatedAt: String
+  memory: MemoryAvailabilitySummary!
+  memberTargets: [TeamMemberMemoryTargetSummary!]!
+}
+
+type TeamMemberMemoryTargetSummary {
+  memberAddress: String!
+  displayName: String!
+  agentRunId: String!
+  agentDefinitionId: String
+  lastUpdatedAt: String
+  memory: MemoryAvailabilitySummary!
+}
+
+type AgentMemoryView {
+  runId: String!
+  workingContext: [MemoryMessage!]
+  episodic: [JSON!]
+  semantic: [JSON!]
+  rawTraces: [MemoryTraceEvent!]
+  rawTraceFiles: [RawTraceFileSummary!]
+  selectedRawTraceFileName: String
+}
+
+type MemoryMessage {
+  role: String!
+  content: String
+  reasoning: String
+  toolPayload: JSON
+  ts: Float
+}
+
+type MemoryTraceEvent {
+  scope: String!
+  id: String
+  traceType: String!
+  sourceEvent: String
+  content: String
+  toolName: String
+  toolCallId: String
+  toolArgs: JSON
+  toolResult: JSON
+  toolError: String
+  media: JSON
+  fileAttachments: [MemoryFileAttachment!]
+  turnId: String
+  seq: Int
+  ts: Float!
+}
+
+type MemoryFileAttachment {
+  uri: String!
+  fileType: String!
+  fileName: String
+}
+
+type RawTraceFileSummary {
+  fileName: String!
+  kind: String!
+  recordCount: Int!
+  segmentIndex: Int
+  firstTimestamp: Float
+  lastTimestamp: Float
+}
+
+type MemorySyncStatusGql {
+  hub: MemorySyncHubConfigGql!
+  source: MemorySyncSourceConfigGql!
+  connectionInfo: MemoryHubConnectionInfoGql!
+  sourceState: MemorySyncSourceStateGql
+  imports: [MemoryImportSummaryGql!]!
+  oneTimePlaintextToken: String
+}
+
+type MemorySyncHubConfigGql {
+  enabled: Boolean!
+  advertisedHubBaseUrl: String
+  updatedAt: String
+}
+
+type MemorySyncSourceConfigGql {
+  enabled: Boolean!
+  sourceNodeId: String
+  displayName: String
+  hubBaseUrl: String
+  hubTokenConfigured: Boolean!
+  hubTokenPreview: String
+  backgroundEnabled: Boolean!
+  intervalMs: Int!
+  batchSize: Int!
+  updatedAt: String
+}
+
+type MemoryHubConnectionInfoGql {
+  hubEnabled: Boolean!
+  advertisedHubBaseUrl: String
+  ingestEndpointUrl: String
+  healthEndpointUrl: String
+  credentials: [MemoryHubCredentialSummaryGql!]!
+  secureTransportWarning: String
+}
+
+type MemoryHubCredentialSummaryGql {
+  credentialId: String!
+  label: String
+  boundSourceNodeId: String
+  createdAt: String!
+  lastUsedAt: String
+  revokedAt: String
+  status: String!
+}
+
+type MemorySyncSourceStateGql {
+  jobState: String!
+  lastSuccessfulSyncAt: String
+  lastError: String
+  trackedFileCount: Int!
+}
+
+type MemoryImportSummaryGql {
+  sourceNodeId: String!
+  displayName: String
+  lastKnownEndpoint: String
+  firstImportedAt: String
+  lastImportedAt: String
+  lastSyncStatus: String
+  lastError: String
+  fileCount: Int!
+  totalBytes: Float!
+  lastCommittedBatchId: String
+  lastCommittedAt: String
+}
+
+type ServerAddressCandidateGql {
+  id: String!
+  kind: String!
+  label: String!
+  baseUrl: String!
+  source: String!
+}
+
+type ExternalChannelCapabilities {
+  bindingCrudEnabled: Boolean!
+  reason: String
+  acceptedProviderTransportPairs: [String!]!
+}
+
+type ExternalChannelBindingGql {
+  id: String!
+  provider: String!
+  transport: String!
+  accountId: String!
+  peerId: String!
+  threadId: String
+  targetType: String!
+  targetAgentDefinitionId: String
+  targetTeamDefinitionId: String
+  launchPreset: ExternalChannelLaunchPresetGql
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetGql
+  teamRunId: String
+  targetMemberAddress: String
+  updatedAt: DateTime!
+}
+
+type ExternalChannelLaunchPresetGql {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: SkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+enum SkillAccessModeEnum {
+  PRELOADED_ONLY
+  NONE
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+type ExternalChannelTeamLaunchPresetGql {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: SkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+type ExternalChannelTeamDefinitionOptionGql {
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  description: String!
+  coordinatorMemberName: String!
+  memberCount: Int!
+}
+
+type WorkspaceRunHistoryGroupObject {
+  workspaceRootPath: String!
+  workspaceName: String!
+  agentDefinitions: [RunHistoryAgentGroupObject!]!
+  teamDefinitions: [WorkspaceHistoryTeamDefinitionObject!]!
+}
+
+type RunHistoryAgentGroupObject {
+  agentDefinitionId: String!
+  agentName: String!
+  runs: [RunHistoryItemObject!]!
+}
+
+type RunHistoryItemObject {
+  runId: String!
+  summary: String!
+  createdAt: String!
+  archivedAt: String
+  terminatedAt: String
+  status: String!
+  isActive: Boolean!
+  shouldConnectStream: Boolean!
+  statusSource: String!
+}
+
+type WorkspaceHistoryTeamDefinitionObject {
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  runs: [WorkspaceHistoryTeamRunItemObject!]!
+}
+
+type WorkspaceHistoryTeamRunItemObject {
+  teamRunId: String!
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  coordinatorAddress: String!
+  workspaceRootPath: String
+  summary: String!
+  createdAt: String!
+  archivedAt: String
+  terminatedAt: String
+  isActive: Boolean!
+  members: [WorkspaceHistoryTeamRunMemberObject!]!
+  rootTeam: JSON!
+}
+
+type WorkspaceHistoryTeamRunMemberObject {
+  memberAddress: String!
+  displayName: String!
+  agentRunId: String!
+  status: String!
+  runtimeKind: String!
+  workspaceRootPath: String
+}
+
+type RunProjectionPayload {
+  runId: String!
+  conversation: [JSON!]!
+  activities: [JSON!]!
+  summary: String
+  lastActivityAt: String
+  hasEarlierActiveTraceEvents: Boolean!
+}
+
+type RunResumeConfigPayload {
+  runId: String!
+  isActive: Boolean!
+  metadataConfig: RunMetadataConfigObject!
+  modelConfigEditability: RunModelConfigEditabilityObject!
+}
+
+type RunMetadataConfigObject {
+  agentDefinitionId: String!
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  llmConfig: JSON
+  autoExecuteTools: Boolean!
+  skillAccessMode: SkillAccessModeEnum
+  runtimeKind: String!
+  runtimeReference: RunRuntimeReferenceObject!
+}
+
+type RunRuntimeReferenceObject {
+  runtimeKind: String!
+  sessionId: String
+  threadId: String
+  metadata: JSON
+}
+
+type RunModelConfigEditabilityObject {
+  editable: Boolean!
+  reason: String
+}
+
+type RunFileChangeEntryObject {
+  id: String!
+  runId: String!
+  path: String!
+  type: String!
+  status: String!
+  sourceTool: String!
+  sourceInvocationId: String
+  content: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type TeamCommunicationMessageObject {
+  messageId: String!
+  senderAgentRunId: String!
+  receiverAgentRunId: String!
+  content: String!
+  messageType: String!
+  createdAt: String!
+  referenceFiles: [TeamCommunicationReferenceFileObject!]!
+}
+
+type TeamCommunicationReferenceFileObject {
+  referenceId: String!
+  path: String!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type TaskDelegationRecordObject {
+  taskId: String!
+  delegatorAgentRunId: String!
+  recipientAddress: String!
+  targetAgentRunId: String
+  targetTeamRunId: String
+  description: String!
+  referenceFiles: [TaskDelegationReferenceFileObject!]!
+  status: String!
+  updates: [TaskDelegationUpdateObject!]!
+  createdAt: String!
+}
+
+type TaskDelegationReferenceFileObject {
+  referenceId: String!
+  path: String!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type TaskDelegationUpdateObject {
+  kind: String!
+  submissionId: String
+  reviewId: String
+  interruptionId: String
+  reviewedSubmissionId: String
+  decision: String
+  content: String
+  referenceFiles: [TaskDelegationReferenceFileObject!]!
+  createdAt: String!
+}
+
+type TeamRunResumeConfigPayload {
+  teamRunId: String!
+  isActive: Boolean!
+  executionTree: JSON!
+  modelConfigEditability: RunModelConfigEditabilityObject!
+}
+
+type TeamMemberRunProjectionPayload {
+  agentRunId: String!
+  conversation: [JSON!]!
+  activities: [JSON!]!
+  summary: String
+  lastActivityAt: String
+  hasEarlierActiveTraceEvents: Boolean!
+}
+
+type TeamRunExecutionCheckpointPayload {
+  rootTeamRunId: String!
+  changeSequence: Int!
+  hasOpenExecutionWork: Boolean!
+}
+
+type RuntimeAvailabilityObject {
+  runtimeKind: String!
+  enabled: Boolean!
+  reason: String
+}
+
+type AgentPackage {
+  packageId: String!
+  displayName: String!
+  path: String!
+  sourceKind: AgentPackageSourceKind!
+  source: String!
+  sharedAgentCount: Int!
+  teamLocalAgentCount: Int!
+  agentTeamCount: Int!
+  applicationCount: Int!
+  isDefault: Boolean!
+  isRemovable: Boolean!
+  updateInfo: AgentPackageUpdateInfo!
+}
+
+enum AgentPackageSourceKind {
+  BUILT_IN
+  LOCAL_PATH
+  GITHUB_REPOSITORY
+}
+
+type AgentPackageUpdateInfo {
+  status: AgentPackageUpdateStatus!
+  canCheck: Boolean!
+  canUpdate: Boolean!
+  canReload: Boolean!
+  message: String!
+  installedRevision: String
+  latestRevision: String
+  checkedAt: String
+  lastError: String
+}
+
+enum AgentPackageUpdateStatus {
+  NOT_APPLICABLE
+  RELOAD_AVAILABLE
+  NOT_CHECKED
+  UNKNOWN
+  UP_TO_DATE
+  UPDATE_AVAILABLE
+  CHECK_FAILED
+  UPDATE_FAILED
+}
+
+type ApplicationPackage {
+  packageId: String!
+  displayName: String!
+  sourceKind: ApplicationPackageSourceKind!
+  sourceSummary: String
+  applicationCount: Int!
+  isPlatformOwned: Boolean!
+  isRemovable: Boolean!
+}
+
+enum ApplicationPackageSourceKind {
+  BUILT_IN
+  LOCAL_PATH
+  GITHUB_REPOSITORY
+}
+
+type ApplicationPackageDetails {
+  packageId: String!
+  displayName: String!
+  sourceKind: ApplicationPackageSourceKind!
+  sourceSummary: String
+  rootPath: String!
+  source: String!
+  managedInstallPath: String
+  bundledSourceRootPath: String
+  applicationCount: Int!
+  isPlatformOwned: Boolean!
+  isRemovable: Boolean!
+}
+
+type ManagedMessagingGatewayStatusObject {
+  supported: Boolean!
+  enabled: Boolean!
+  lifecycleState: String!
+  message: String
+  lastError: String
+  activeVersion: String
+  desiredVersion: String
+  releaseTag: String
+  installedVersions: [String!]!
+  bindHost: String
+  bindPort: Int
+  pid: Int
+  providerConfig: JSONObject!
+  providerStatusByProvider: JSONObject!
+  supportedProviders: [String!]!
+  excludedProviders: [String!]!
+  diagnostics: JSONObject!
+  runtimeReliabilityStatus: JSONObject
+  runtimeRunning: Boolean!
+}
+
+type ManagedMessagingGatewayWeComAccountObject {
+  accountId: String!
+  label: String!
+  mode: String!
+}
+
+type ManagedMessagingGatewayPeerCandidateListObject {
+  accountId: String
+  updatedAt: String!
+  items: [ManagedMessagingGatewayPeerCandidateObject!]!
+}
+
+type ManagedMessagingGatewayPeerCandidateObject {
+  peerId: String!
+  peerType: String!
+  threadId: String
+  displayName: String
+  lastMessageAt: String!
+}
+
+type AppDataMigrationRecordObject {
+  migrationId: String!
+  displayName: String!
+  description: String!
+  status: AppDataMigrationStatus!
+  requiredOnStartup: Boolean!
+  canRetry: Boolean!
+  recoveryAction: AppDataMigrationRecoveryAction!
+  attempts: Float!
+  startedAt: DateTime
+  completedAt: DateTime
+  summary: String
+  errorMessage: String
+  logPath: String
+}
+
+enum AppDataMigrationStatus {
+  NOT_RUN
+  RUNNING
+  SUCCEEDED
+  FAILED
+  SUCCEEDED_WITH_WARNINGS
+}
+
+enum AppDataMigrationRecoveryAction {
+  MANUAL_RETRY
+  RESTART_TO_RETRY
+  NONE
+}
+
+type SkillImprovementCapability {
+  enabled: Boolean!
+  settingKey: String!
+  source: String!
+}
+
+type GraphqlSkillImprovementStrategyCatalog {
+  triggerStrategies: [GraphqlSkillImprovementStrategyDescriptor!]!
+  improverStrategies: [GraphqlSkillImprovementStrategyDescriptor!]!
+  defaultTriggerStrategy: String!
+  defaultImproverStrategy: String!
+}
+
+type GraphqlSkillImprovementStrategyDescriptor {
+  name: String!
+  label: String!
+  status: String!
+  description: String!
+}
+
+type GraphqlSkillImprovementEligibility {
+  eligible: Boolean!
+  reasons: [String!]!
+  warnings: [String!]!
+  skillTargets: [GraphqlSkillImprovementSkillTarget!]!
+  effectiveConfig: GraphqlSkillImprovementEffectiveConfig
+}
+
+type GraphqlSkillImprovementSkillTarget {
+  skillName: String!
+  skillRootPath: String!
+  skillMdPath: String!
+  sourceLabel: String
+  isWritable: Boolean!
+}
+
+type GraphqlSkillImprovementEffectiveConfig {
+  enabled: Boolean!
+  triggerStrategy: String!
+  improverStrategy: String!
+  improverAgentDefinitionId: String
+  resolvedAt: String!
+  sourceTrace: [GraphqlSkillImprovementConfigSourceTraceEntry!]!
+}
+
+type GraphqlSkillImprovementConfigSourceTraceEntry {
+  source: String!
+  fields: [String!]!
+}
+
+type GraphqlSkillImprovementRunRecord {
+  improvementRunId: String!
+  status: String!
+  requestedAt: String!
+  completedAt: String
+  triggerStrategy: String!
+  improverStrategy: String!
+  target: GraphqlSkillImprovementTargetRef!
+  effectiveConfig: GraphqlSkillImprovementEffectiveConfig!
+  sourceRunIds: [String!]!
+  improverAgentDefinitionId: String!
+  improverRunId: String
+  runtimeKind: String
+  llmModelIdentifier: String
+  workspaceRootPath: String
+  skillTargets: [GraphqlSkillImprovementSkillTarget!]!
+  evidenceSummaryHash: String
+  notificationSummary: GraphqlSkillImprovementNotificationSummary
+  errors: [String!]!
+}
+
+type GraphqlSkillImprovementTargetRef {
+  kind: String!
+  runId: String
+  teamRunId: String
+  agentRunId: String
+}
+
+type GraphqlSkillImprovementNotificationSummary {
+  status: String!
+  message: String
+  error: String
+}
+
+type SecretVaultStatus {
+  health: String!
+  instructionCode: String
+  assurance: String!
+}
+
+type DefinitionAdmissionDiagnostic {
+  subjectKind: String!
+  sourceClass: String!
+  packageRoot: String!
+  definitionPath: String!
+  definitionId: String
+  expectedFamily: String!
+  code: String!
+  reason: String!
+  dependencyChain: [String!]!
+  ownerAction: String!
+}
+
+union CollaborationRootHistoryItem = AgentTeamRootHistoryObject | AgentOrgRootHistoryObject
+
+type AgentTeamRootHistoryObject {
+  root_subject_kind: String!
+  root_run_id: String!
+  created_at: String!
+  archived_at: String
+  is_active: Boolean!
+  summary: String!
+  team: JSON!
+}
+
+type AgentOrgRootHistoryObject {
+  root_subject_kind: String!
+  root_run_id: String!
+  created_at: String!
+  archived_at: String
+  is_active: Boolean!
+  summary: String!
+  org: JSON!
+}
+
+type Mutation {
+  updateServerSetting(value: String!, key: String!): String!
+  deleteServerSetting(key: String!): String!
+  setSearchConfig(vertexAiSearchServingConfig: String, vertexAiSearchApiKey: String, serpapiApiKey: String, serperApiKey: String, provider: String!): String!
+  setApplicationsEnabled(enabled: Boolean!): ApplicationsCapability!
+  createSkill(input: CreateSkillInput!): Skill!
+  updateSkill(input: UpdateSkillInput!): Skill!
+  deleteSkill(name: String!): DeleteSkillResult!
+  uploadSkillFile(content: String!, path: String!, skillName: String!): Boolean!
+  deleteSkillFile(path: String!, skillName: String!): Boolean!
+  disableSkill(name: String!): Skill!
+  enableSkill(name: String!): Skill!
+  reloadSkillCatalog: SkillCatalogReloadResult!
+  addSkillSource(path: String!): [SkillSource!]!
+  removeSkillSource(path: String!): [SkillSource!]!
+  terminateAgentRun(agentRunId: String!): TerminateAgentRunResult!
+  createAgentRun(input: CreateAgentRunInput!): CreateAgentRunResult!
+  prepareAgentRun(input: CreateAgentRunInput!): PrepareAgentRunResult!
+  cancelPreparedAgentRun(agentRunId: String!): CancelPreparedAgentRunResult!
+  restoreAgentRun(agentRunId: String!): RestoreAgentRunResult!
+  updateStoppedAgentRunModelConfig(input: UpdateStoppedAgentRunModelConfigInput!): UpdateStoppedAgentRunModelConfigResult!
+  approveToolInvocation(input: ApproveToolInvocationInput!): ApproveToolInvocationResult!
+  createAgentTeamRun(input: CreateAgentTeamRunInput!): CreateAgentTeamRunResult!
+  terminateAgentTeamRun(teamRunId: String!): TerminateAgentTeamRunResult!
+  restoreAgentTeamRun(teamRunId: String!): RestoreAgentTeamRunResult!
+  updateStoppedTeamRunModelConfigs(input: UpdateStoppedTeamRunModelConfigsInput!): UpdateStoppedTeamRunModelConfigsResult!
+  createWorkspace(input: CreateWorkspaceInput!): WorkspaceMetadata!
+  removeWorkspace(input: RemoveWorkspaceInput!): RemoveWorkspaceResultInfo!
+  refreshAgentDefinitionCatalog: Boolean!
+  createAgentDefinition(input: CreateAgentDefinitionInput!): AgentDefinition!
+  updateAgentDefinition(input: UpdateAgentDefinitionInput!): AgentDefinition!
+  deleteAgentDefinition(id: String!): DeleteAgentDefinitionResult!
+  refreshAgentTeamDefinitionCatalog: Boolean!
+  createAgentTeamDefinition(input: CreateAgentTeamDefinitionInput!): AgentTeamDefinition!
+  updateAgentTeamDefinition(input: UpdateAgentTeamDefinitionInput!): AgentTeamDefinition!
+  deleteAgentTeamDefinition(id: String!): DeleteAgentTeamDefinitionResult!
+  createAgentOrgDefinition(input: CreateAgentOrgDefinitionInput!): AgentOrgDefinition!
+  updateAgentOrgDefinition(input: UpdateAgentOrgDefinitionInput!): AgentOrgDefinition!
+  deleteAgentOrgDefinition(id: String!): Boolean!
+  createAgentOrgRun(input: CreateAgentOrgRunInput!): AgentOrgRunMutationResult!
+  restoreAgentOrgRun(agentOrgRunId: String!): AgentOrgRunMutationResult!
+  terminateAgentOrgRun(agentOrgRunId: String!): AgentOrgRunMutationResult!
+  writeFileContent(content: String!, filePath: String!, workspaceId: String!): String!
+  deleteFileOrFolder(path: String!, workspaceId: String!): String!
+  moveFileOrFolder(destinationPath: String!, sourcePath: String!, workspaceId: String!): String!
+  renameFileOrFolder(newName: String!, targetPath: String!, workspaceId: String!): String!
+  createFileOrFolder(isFile: Boolean!, path: String!, workspaceId: String!): String!
+  ensureProviderModelCatalog(runtimeKind: String, providerId: String!): ProviderModelCatalogSnapshotObject!
+  reloadProviderModelCatalog(runtimeKind: String, providerId: String!): ProviderModelCatalogSnapshotObject!
+  saveProviderApiKey(apiKey: String!, providerId: String!): ProviderCredentialSettingObject!
+  saveQwenConfiguration(input: QwenConfigurationInput!): QwenConfigurationCommandResult!
+  probeCustomProvider(input: CustomProviderInputObject!): CustomProviderProbeResultObject!
+  createCustomProvider(input: CustomProviderInputObject!): ProviderCredentialSettingObject!
+  deleteCustomProvider(providerId: String!): DeleteCustomProviderResult!
+  saveGeminiAiStudio(activateAfterSave: Boolean!, apiKey: String!): GeminiConfigurationCommandResult!
+  saveGeminiVertexExpress(activateAfterSave: Boolean!, apiKey: String!): GeminiConfigurationCommandResult!
+  saveGeminiVertexProject(activateAfterSave: Boolean!, location: String!, project: String!): GeminiConfigurationCommandResult!
+  useGeminiMode(mode: GeminiSetupMode!): GeminiConfigurationCommandResult!
+  reloadToolSchema(name: String!): ReloadToolSchemaResult!
+  configureMcpServer(input: McpServerInput!): ConfigureMcpServerResult!
+  deleteMcpServer(serverId: String!): DeleteMcpServerResult!
+  discoverAndRegisterMcpServerTools(serverId: String!): DiscoverAndRegisterMcpServerToolsResult!
+  importMcpServerConfigs(jsonString: String!): ImportMcpServerConfigsResult!
+  updateMemoryHubConfig(input: UpdateMemoryHubConfigInput!): MemorySyncStatusGql!
+  updateMemorySyncSourceConfig(input: UpdateMemorySyncSourceConfigInput!): MemorySyncStatusGql!
+  createMemoryHubSourceCredential(input: CreateMemoryHubCredentialInput): MemoryHubCredentialMutationResultGql!
+  regenerateMemoryHubSourceCredential(credentialId: String!): MemoryHubCredentialMutationResultGql!
+  revokeMemoryHubSourceCredential(credentialId: String!): MemoryHubCredentialSummaryGql!
+  testMemoryHubConnection(input: TestMemoryHubConnectionInput!): MemoryHubConnectionTestResultGql!
+  startMemorySync: MemorySyncRunResultGql!
+  upsertExternalChannelBinding(input: UpsertExternalChannelBindingInput!): ExternalChannelBindingGql!
+  deleteExternalChannelBinding(id: String!): Boolean!
+  deleteStoredRun(runId: String!): DeleteStoredRunMutationResult!
+  archiveStoredRun(runId: String!): ArchiveStoredRunMutationResult!
+  deleteStoredTeamRun(teamRunId: String!): DeleteStoredTeamRunMutationResult!
+  archiveStoredTeamRun(teamRunId: String!): ArchiveStoredTeamRunMutationResult!
+  importAgentPackage(input: ImportAgentPackageInput!): [AgentPackage!]!
+  removeAgentPackage(packageId: String!): [AgentPackage!]!
+  reloadAgentPackage(packageId: String!): [AgentPackage!]!
+  checkAgentPackageUpdates(packageIds: [String!]): [AgentPackage!]!
+  updateAgentPackage(packageId: String!): [AgentPackage!]!
+  importApplicationPackage(input: ImportApplicationPackageInput!): [ApplicationPackage!]!
+  reloadApplicationPackage(packageId: String!): [ApplicationPackage!]!
+  removeApplicationPackage(packageId: String!): [ApplicationPackage!]!
+  enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject!
+  disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject!
+  updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject!
+  saveManagedMessagingGatewayProviderConfig(input: JSONObject!): ManagedMessagingGatewayStatusObject!
+  runAppDataMigration(migrationId: String!): AppDataMigrationMutationResult!
+  setSkillImprovementEnabled(enabled: Boolean!): SkillImprovementCapability!
+  startAgentRunSkillImprovement(input: StartAgentRunSkillImprovementInput!): GraphqlSkillImprovementStartResult!
+  startTeamMemberSkillImprovement(input: StartTeamMemberSkillImprovementInput!): GraphqlSkillImprovementStartResult!
+}
+
+input CreateSkillInput {
+  name: String!
+  description: String!
+  content: String!
+}
+
+input UpdateSkillInput {
+  name: String!
+  description: String
+  content: String
+}
+
+type DeleteSkillResult {
+  success: Boolean!
+  message: String!
+}
+
+type SkillCatalogReloadResult {
+  skills: [Skill!]!
+  skillSources: [SkillSource!]!
+}
+
+type TerminateAgentRunResult {
+  success: Boolean!
+  message: String!
+}
+
+type CreateAgentRunResult {
+  success: Boolean!
+  message: String!
+  runId: String
+}
+
+input CreateAgentRunInput {
+  agentDefinitionId: String!
+  workspaceRootPath: String!
+  workspaceId: String
+  llmModelIdentifier: String!
+  autoExecuteTools: Boolean!
+  llmConfig: JSON
+  skillAccessMode: SkillAccessModeEnum!
+  runtimeKind: String!
+  initialSummary: String
+}
+
+type PrepareAgentRunResult {
+  success: Boolean!
+  message: String!
+  runId: String
+  activationState: String
+  preparedExpiresAt: String
+}
+
+type CancelPreparedAgentRunResult {
+  success: Boolean!
+  message: String!
+}
+
+type RestoreAgentRunResult {
+  success: Boolean!
+  message: String!
+  runId: String
+}
+
+type UpdateStoppedAgentRunModelConfigResult {
+  success: Boolean!
+  outcome: String!
+  message: String!
+  isActive: Boolean!
+  editability: RunModelConfigEditabilityObject!
+  canonicalSelection: RunModelSelectionObject
+  fieldErrors: [RunModelConfigFieldErrorObject!]!
+}
+
+type RunModelSelectionObject {
+  llmModelIdentifier: String!
+  llmConfig: JSON
+}
+
+type RunModelConfigFieldErrorObject {
+  path: String!
+  message: String!
+}
+
+input UpdateStoppedAgentRunModelConfigInput {
+  agentRunId: String!
+  llmModelIdentifier: String!
+  llmConfig: JSON
+}
+
+type ApproveToolInvocationResult {
+  success: Boolean!
+  message: String!
+}
+
+input ApproveToolInvocationInput {
+  agentRunId: String!
+  invocationId: String!
+  isApproved: Boolean!
+  reason: String
+}
+
+type CreateAgentTeamRunResult {
+  success: Boolean!
+  message: String!
+  teamRunId: String
+}
+
+input CreateAgentTeamRunInput {
+  teamDefinitionId: String!
+  teamConfigs: [TeamScopeLaunchConfigInput!]!
+  memberConfigs: [TeamMemberConfigInput!]!
+}
+
+input TeamScopeLaunchConfigInput {
+  teamAddress: String!
+  llmModelIdentifier: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: SkillAccessModeEnum!
+  workspaceRootPath: String
+  llmConfig: JSON
+  runtimeKind: String!
+}
+
+input TeamMemberConfigInput {
+  memberAddress: String!
+  agentDefinitionId: String!
+  llmModelIdentifier: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: SkillAccessModeEnum!
+  workspaceRootPath: String
+  llmConfig: JSON
+  runtimeKind: String!
+}
+
+type TerminateAgentTeamRunResult {
+  success: Boolean!
+  message: String!
+}
+
+type RestoreAgentTeamRunResult {
+  success: Boolean!
+  message: String!
+  teamRunId: String
+}
+
+type UpdateStoppedTeamRunModelConfigsResult {
+  success: Boolean!
+  outcome: String!
+  message: String!
+  isActive: Boolean!
+  editability: RunModelConfigEditabilityObject!
+  canonicalExecutionTree: JSON
+  fieldErrors: [RunModelConfigFieldErrorObject!]!
+}
+
+input UpdateStoppedTeamRunModelConfigsInput {
+  teamRunId: String!
+  patches: [TeamRunModelConfigPatchInput!]!
+}
+
+input TeamRunModelConfigPatchInput {
+  scopeKind: String!
+  scopeAddress: String!
+  llmModelIdentifier: String!
+  llmConfig: JSON
+}
+
+input CreateWorkspaceInput {
+  rootPath: String!
+}
+
+type RemoveWorkspaceResultInfo {
+  success: Boolean!
+  message: String!
+  workspaceId: String!
+  workspaceRootPath: String
+}
+
+input RemoveWorkspaceInput {
+  workspaceId: String!
+}
+
+input CreateAgentDefinitionInput {
+  name: String!
+  role: String
+  description: String!
+  instructions: String!
+  category: String
+  avatarUrl: String
+  toolNames: [String!]
+  inputProcessorNames: [String!]
+  llmResponseProcessorNames: [String!]
+  toolExecutionResultProcessorNames: [String!]
+  toolInvocationPreprocessorNames: [String!]
+  lifecycleProcessorNames: [String!]
+  skillNames: [String!]
+  defaultLaunchConfig: DefaultLaunchConfigInput
+}
+
+input DefaultLaunchConfigInput {
+  llmModelIdentifier: String
+  runtimeKind: String
+  llmConfig: JSON
+}
+
+input UpdateAgentDefinitionInput {
+  id: String!
+  name: String
+  role: String
+  description: String
+  instructions: String
+  category: String
+  avatarUrl: String
+  toolNames: [String!]
+  inputProcessorNames: [String!]
+  llmResponseProcessorNames: [String!]
+  toolExecutionResultProcessorNames: [String!]
+  toolInvocationPreprocessorNames: [String!]
+  lifecycleProcessorNames: [String!]
+  skillNames: [String!]
+  defaultLaunchConfig: DefaultLaunchConfigInput
+}
+
+type DeleteAgentDefinitionResult {
+  success: Boolean!
+  message: String!
+}
+
+input CreateAgentTeamDefinitionInput {
+  name: String!
+  description: String!
+  instructions: String!
+  category: String
+  nodes: [TeamMemberInput!]!
+  coordinatorMemberName: String!
+  handoffs: [AgentTeamHandoffInput!]
+  avatarUrl: String
+  defaultLaunchConfig: DefaultLaunchConfigInput
+}
+
+input TeamMemberInput {
+  memberName: String!
+  ref: String!
+  refScope: AgentMemberRefScope!
+}
+
+input AgentTeamHandoffInput {
+  from: String!
+  to: String!
+  rules: [String!]!
+}
+
+input UpdateAgentTeamDefinitionInput {
+  id: String!
+  expectedRevision: String!
+  name: String
+  description: String
+  instructions: String
+  category: String
+  nodes: [TeamMemberInput!]
+  coordinatorMemberName: String
+  handoffs: [AgentTeamHandoffInput!]
+  avatarUrl: String
+  defaultLaunchConfig: DefaultLaunchConfigInput
+}
+
+type DeleteAgentTeamDefinitionResult {
+  success: Boolean!
+  message: String!
+}
+
+input CreateAgentOrgDefinitionInput {
+  name: String!
+  description: String!
+  instructions: String!
+  category: String
+  members: [AgentOrgMemberInput!]!
+  handoffs: [AgentOrgHandoffInput!]
+  avatarUrl: String
+  defaultLaunchConfig: DefaultLaunchConfigInput
+}
+
+input AgentOrgMemberInput {
+  memberName: String!
+  ref: String!
+  refType: AgentOrgMemberType!
+  refScope: AgentOrgMemberScope!
+}
+
+input AgentOrgHandoffInput {
+  from: String!
+  to: String!
+  rules: [String!]!
+}
+
+input UpdateAgentOrgDefinitionInput {
+  id: String!
+  expectedRevision: String!
+  name: String
+  description: String
+  instructions: String
+  category: String
+  members: [AgentOrgMemberInput!]
+  handoffs: [AgentOrgHandoffInput!]
+  avatarUrl: String
+  defaultLaunchConfig: DefaultLaunchConfigInput
+}
+
+type AgentOrgRunMutationResult {
+  success: Boolean!
+  message: String!
+  agentOrgRunId: String
+}
+
+input CreateAgentOrgRunInput {
+  agentOrgDefinitionId: String!
+  rootConfiguration: AgentOrgRootLaunchConfigurationInput!
+  teamOverrides: [AgentOrgPlacementLaunchOverrideInput!]
+  agentOverrides: [AgentOrgPlacementLaunchOverrideInput!]
+}
+
+input AgentOrgRootLaunchConfigurationInput {
+  runtimeKind: String!
+  llmModelIdentifier: String!
+  llmConfig: JSON
+  autoExecuteTools: Boolean!
+  skillAccessMode: SkillAccessModeEnum!
+  workspaceRootPath: String
+}
+
+input AgentOrgPlacementLaunchOverrideInput {
+  address: String!
+  configuration: AgentOrgPlacementLaunchConfigurationInput!
+}
+
+input AgentOrgPlacementLaunchConfigurationInput {
+  runtimeKind: String
+  llmModelIdentifier: String
+  llmConfig: JSON
+  autoExecuteTools: Boolean
+  skillAccessMode: SkillAccessModeEnum
+  workspaceRootPath: String
+}
+
+type QwenConfigurationCommandResult {
+  setup: QwenSetupStatus!
+  credentialSetting: ProviderCredentialSettingObject!
+}
+
+input QwenConfigurationInput {
+  baseUrl: String!
+  apiKey: String!
+}
+
+type CustomProviderProbeResultObject {
+  discoveredModels: [CustomProviderProbeModelObject!]!
+}
+
+type CustomProviderProbeModelObject {
+  id: String!
+  name: String!
+}
+
+input CustomProviderInputObject {
+  name: String!
+  baseUrl: String!
+  apiKey: String!
+}
+
+type DeleteCustomProviderResult {
+  providerId: String!
+  deleted: Boolean!
+}
+
+type GeminiConfigurationCommandResult {
+  setup: GeminiSetupStateObject!
+  credentialSetting: ProviderCredentialSettingObject!
+}
+
+type ReloadToolSchemaResult {
+  success: Boolean!
+  message: String!
+  tool: ToolDefinitionDetail
+}
+
+type ConfigureMcpServerResult {
+  savedConfig: McpServerConfigUnion!
+}
+
+type DeleteMcpServerResult {
+  success: Boolean!
+  message: String!
+}
+
+type DiscoverAndRegisterMcpServerToolsResult {
+  success: Boolean!
+  message: String!
+  discoveredTools: [ToolDefinitionDetail!]!
+}
+
+type ImportMcpServerConfigsResult {
+  success: Boolean!
+  message: String!
+  importedCount: Int!
+  failedCount: Int!
+}
+
+input UpdateMemoryHubConfigInput {
+  enabled: Boolean
+  advertisedHubBaseUrl: String
+}
+
+input UpdateMemorySyncSourceConfigInput {
+  enabled: Boolean
+  sourceNodeId: String
+  displayName: String
+  hubBaseUrl: String
+  hubToken: String
+  backgroundEnabled: Boolean
+  intervalMs: Int
+  batchSize: Int
+}
+
+type MemoryHubCredentialMutationResultGql {
+  credential: MemoryHubCredentialSummaryGql!
+  plaintextToken: String
+}
+
+input CreateMemoryHubCredentialInput {
+  label: String
+  boundSourceNodeId: String
+}
+
+type MemoryHubConnectionTestResultGql {
+  ok: Boolean!
+  hubEnabled: Boolean!
+  sourceNodeId: String!
+  authenticated: Boolean!
+  message: String
+}
+
+input TestMemoryHubConnectionInput {
+  mode: MemoryHubConnectionTestMode!
+  hubBaseUrl: String
+  token: String
+  sourceNodeId: String
+}
+
+enum MemoryHubConnectionTestMode {
+  SAVED
+  DRAFT
+}
+
+type MemorySyncRunResultGql {
+  startedAt: String!
+  finishedAt: String!
+  scannedFiles: Int!
+  changedFiles: Int!
+  unchangedFiles: Int!
+  deferredFiles: Int!
+  committedBatches: Int!
+  duplicateBatches: Int!
+}
+
+input UpsertExternalChannelBindingInput {
+  provider: String!
+  transport: String!
+  accountId: String!
+  peerId: String!
+  threadId: String
+  targetType: String!
+  targetAgentDefinitionId: String
+  targetTeamDefinitionId: String
+  launchPreset: ExternalChannelLaunchPresetInput
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetInput
+  targetMemberAddress: String
+}
+
+input ExternalChannelLaunchPresetInput {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String
+  autoExecuteTools: Boolean
+  skillAccessMode: SkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+input ExternalChannelTeamLaunchPresetInput {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String
+  autoExecuteTools: Boolean
+  skillAccessMode: SkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+type DeleteStoredRunMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+type ArchiveStoredRunMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+type DeleteStoredTeamRunMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+type ArchiveStoredTeamRunMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+input ImportAgentPackageInput {
+  sourceKind: AgentPackageImportSourceKind!
+  source: String!
+}
+
+enum AgentPackageImportSourceKind {
+  LOCAL_PATH
+  GITHUB_REPOSITORY
+}
+
+input ImportApplicationPackageInput {
+  sourceKind: ApplicationPackageImportSourceKind!
+  source: String!
+}
+
+enum ApplicationPackageImportSourceKind {
+  LOCAL_PATH
+  GITHUB_REPOSITORY
+}
+
+type AppDataMigrationMutationResult {
+  success: Boolean!
+  message: String!
+  migration: AppDataMigrationRecordObject
+}
+
+type GraphqlSkillImprovementStartResult {
+  improvementRunId: String!
+  improverRunId: String
+  record: GraphqlSkillImprovementRunRecord!
+}
+
+input StartAgentRunSkillImprovementInput {
+  runId: String!
+}
+
+input StartTeamMemberSkillImprovementInput {
+  teamRunId: String!
+  agentRunId: String!
+}

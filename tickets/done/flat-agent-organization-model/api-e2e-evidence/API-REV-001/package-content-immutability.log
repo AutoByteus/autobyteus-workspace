@@ -1,0 +1,4 @@
+Package content immutability check (hash columns only; paths normalized away).
+before_entries=14
+after_entries=14
+PACKAGE_CONTENT_IMMUTABLE=PASS

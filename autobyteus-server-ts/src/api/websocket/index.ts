@@ -6,17 +6,20 @@ import { registerApplicationBackendNotificationWebsocket } from "./application-b
 import { registerApplicationBackendWebsocket } from "./application-backends.js";
 import { registerApplicationAgentCommunicationWebsocket } from "./application-agent-communication.js";
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRealtimeContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
+import type { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
+import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
 
 export async function registerWebsocketRoutes(
   app: FastifyInstance,
   dependencies: {
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRealtimeContracts;
+    agentOrgRunService: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">;
   },
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
-  await registerAgentWebsocket(app);
+  await registerAgentWebsocket(app, undefined, undefined, new AgentOrgStreamHandler(dependencies.agentOrgRunService));
   await registerApplicationBackendNotificationWebsocket(app, {
     notificationHub: dependencies.application.notifications,
     lifecycle: dependencies.lifecycleReadiness,

@@ -1,0 +1,12 @@
+node:internal/url:818
+      href = bindingUrl.parse(input, base, true);
+                        ^
+
+TypeError: Invalid URL
+    at new URL (node:internal/url:818:25)
+    at file:///tmp/aorg-ir055/render-inspect.mjs:33:18 {
+  code: 'ERR_INVALID_URL',
+  input: ''
+}
+
+Node.js v22.23.2

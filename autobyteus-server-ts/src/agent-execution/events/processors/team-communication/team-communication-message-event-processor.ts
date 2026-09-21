@@ -30,7 +30,21 @@ export class TeamCommunicationMessageProcessor implements AgentRunEventProcessor
       if (!teamRunId) {
         continue;
       }
-      const message = normalizeTeamCommunicationMessage(event.payload, {
+      const message = normalizeTeamCommunicationMessage({
+        teamRunId,
+        messageId: readString(event.payload.message_id) ?? readString(event.payload.messageId),
+        senderAgentRunId: readString(event.payload.sender_agent_id)
+          ?? readString(event.payload.senderAgentRunId),
+        receiverAgentRunId: readString(event.payload.receiver_run_id)
+          ?? readString(event.payload.receiverAgentRunId)
+          ?? event.runId,
+        content: event.payload.content,
+        messageType: readString(event.payload.original_message_type)
+          ?? readString(event.payload.message_type)
+          ?? readString(event.payload.messageType),
+        referenceFiles: event.payload.reference_files ?? event.payload.referenceFiles,
+        createdAt: readString(event.payload.created_at) ?? readString(event.payload.createdAt),
+      }, {
         teamRunId,
       });
       if (!message) {

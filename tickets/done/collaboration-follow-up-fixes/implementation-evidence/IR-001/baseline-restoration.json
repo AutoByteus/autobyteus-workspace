@@ -1,0 +1,120 @@
+{
+  "head": "4d88ad1b687e513d7c87d2d91fed96fdd61de7ee",
+  "restored": [
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "sha256": "6bd72ed3e07ef332ed63b701d0dd26d7af22828a495888f19d7cc30da8c8e1f7",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+      "sha256": "e36be4bf8ae6e1aab3fa6e5b3851c5f53ac206f77935700cb5987fc607f23fcc",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+      "sha256": "8fb887bbf68b7fd84325c879902b2d2edc5efe6e30bfac343b2827b46f6697dd",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts",
+      "sha256": "7ae2b615dba6c2714ff7de3f9055e228a4115cb23fe0161c46df9e3b280ab0f1",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "sha256": "fd90f3d607f96a3967e49ead8fff27ba35b33300748d3afaeb978eda349faa90",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/components/AppLeftPanel.vue",
+      "sha256": "d54b57f537a0510f6f59028ee9f52d8724f88799e153b520b6bad86b5604d81f",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/running/RunningAgentsPanel.vue",
+      "sha256": "97e6e7f801df180bbffdefe46f4b1ab7e7c51b826b20f9235a946496317ea591",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts",
+      "sha256": "a1dd1c6d28c4ebd6698cb79f2f6f39236c66597578829a34790caaa3511ce46f",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts",
+      "sha256": "90a367678c489032fa6e0233258455fc070b995264cfb09b9343ca9eea3f6a20",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts",
+      "sha256": "cb4a2bb19591bdb4ecf914799585540e500e8d46c43561a2a491b5bd7f323ce2",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts",
+      "sha256": "08e4f47fd1c87ff9c557bbf9b6a8ec1ddcd995332705a942305217ac43aaa21e",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts",
+      "sha256": "8ebb18ccd1f9252dc62abe42fd01f72290097025455e67e149ebaaa087357017",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts",
+      "sha256": "dd07129fed77686074c43f829e3feda9f62c84d9d75a4172fede417722928332",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts",
+      "sha256": "dfc8a5826516bd9a71ea9af34ca0f93e04f77e4fbcf11ebfa8c9cc2928fadb69",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "sha256": "07dcf4340cf8124c0191f5a2e81d83f85a903bd0ccdabb616218d121f04190c1",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/services/workspace/workspaceNavigationService.ts",
+      "sha256": "aba4f5ab85af6dc15529d8144d92121806ca31ecb4446b9f9b74231ac64c0d96",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "2be8477170396e0f5941286fc1b568349f5a73519540a542e8534527632d3077",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentSelectionStore.ts",
+      "sha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryDraftActions.ts",
+      "sha256": "0c0a4640d821f7b845bb7c58ed46ad4bfe72951fd4b58b72db94687de4f14ffe",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "8187eb99678e43a6a3f32329c8eb60993efec51305cc21115f10ffc95f8e9b59",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistorySelectionActions.ts",
+      "sha256": "9ca5a7f65a765c8e30674e185de1e6861b4906caa003fa2ee7fc34199becbc32",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "sha256": "e525f720e882d38adca48ec7fe347cf1e1d6b950d0e48b82d104eb3e4a8ab2f3",
+      "exact": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts",
+      "sha256": "00c989cdc1894715cdbe76edd47f684ad779fdb1fbe806a3e52817831fdf136d",
+      "exact": true
+    }
+  ]
+}

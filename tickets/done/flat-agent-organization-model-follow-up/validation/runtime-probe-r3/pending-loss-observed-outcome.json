@@ -1,0 +1,91 @@
+{
+  "messageId": "client_9a9a18a6-b393-4852-8c86-378e1643e209",
+  "observedAcceptanceFrames": [
+    {
+      "at": "2026-09-14T10:30:47.961Z",
+      "tabId": "67675ce1-5dc2-477e-9f0e-838b666d502a",
+      "kind": "incoming",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d",
+      "frame": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 985,
+          "recipient_agent_run_id": "aorg_validation_agent_bb999411867245399d1d112a0ffcf31f",
+          "message_id": "client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "dedupe_key": "member_input:aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d:aorg_validation_agent_bb999411867245399d1d112a0ffcf31f:client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "content": "Reply PENDING-SEND-R3-731 only. Do not use tools.",
+          "input_origin": "user_message",
+          "received_at": "2026-09-14T10:30:47.925Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "at": "2026-09-14T10:30:47.974Z",
+      "tabId": "ed97993f-88e8-4f4c-8a79-b12dbac44ac7",
+      "kind": "incoming",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d",
+      "frame": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 985,
+          "recipient_agent_run_id": "aorg_validation_agent_bb999411867245399d1d112a0ffcf31f",
+          "message_id": "client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "dedupe_key": "member_input:aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d:aorg_validation_agent_bb999411867245399d1d112a0ffcf31f:client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "content": "Reply PENDING-SEND-R3-731 only. Do not use tools.",
+          "input_origin": "user_message",
+          "received_at": "2026-09-14T10:30:47.925Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "at": "2026-09-14T10:30:48.006Z",
+      "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+      "kind": "incoming",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d",
+      "frame": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 985,
+          "recipient_agent_run_id": "aorg_validation_agent_bb999411867245399d1d112a0ffcf31f",
+          "message_id": "client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "dedupe_key": "member_input:aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d:aorg_validation_agent_bb999411867245399d1d112a0ffcf31f:client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "content": "Reply PENDING-SEND-R3-731 only. Do not use tools.",
+          "input_origin": "user_message",
+          "received_at": "2026-09-14T10:30:47.925Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "at": "2026-09-14T10:30:48.219Z",
+      "tabId": "f25f9200-787b-4f96-8723-070dd2658ace",
+      "kind": "incoming",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d",
+      "frame": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 985,
+          "recipient_agent_run_id": "aorg_validation_agent_bb999411867245399d1d112a0ffcf31f",
+          "message_id": "client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "dedupe_key": "member_input:aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d:aorg_validation_agent_bb999411867245399d1d112a0ffcf31f:client_9a9a18a6-b393-4852-8c86-378e1643e209",
+          "content": "Reply PENDING-SEND-R3-731 only. Do not use tools.",
+          "input_origin": "user_message",
+          "received_at": "2026-09-14T10:30:47.925Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    }
+  ],
+  "persistedUserCount": 1,
+  "note": "Actual observation determines pending versus accepted; do not infer from timing trigger."
+}

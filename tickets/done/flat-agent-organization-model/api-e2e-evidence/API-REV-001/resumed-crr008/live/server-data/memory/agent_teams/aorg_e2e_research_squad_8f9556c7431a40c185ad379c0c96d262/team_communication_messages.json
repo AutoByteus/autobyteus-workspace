@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_8f9556c7431a40c185ad379c0c96d262",
+  "messages": [
+    {
+      "messageId": "collabmsg_RZNFgjxA-qMA75Az3jUL4LhYEE7hg9ri",
+      "senderAgentRunId": "aorg_e2e_lead_3f453e1d49164fc788f25c18f6bd2526",
+      "receiverAgentRunId": "aorg_e2e_analyst_49b640a77c504650a10c03067393b9b0",
+      "content": "Reply with exactly AORG-TEAM-ANALYST-MSG-001.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T16:42:25.157Z"
+    },
+    {
+      "messageId": "collabmsg_07LQesWHi1giGdGzdywKuLaPkhpCfh3i",
+      "senderAgentRunId": "aorg_e2e_analyst_32efe0faeee0427091dcda5348757149",
+      "receiverAgentRunId": "aorg_e2e_verifier_e7bddce120f148f99e97651c1a9c44ad",
+      "content": "AORG-TEAM-TASK-SUBMIT-001\nValidation result is complete and needs an independent check.",
+      "messageType": "handoff",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T16:44:22.794Z"
+    }
+  ]
+}

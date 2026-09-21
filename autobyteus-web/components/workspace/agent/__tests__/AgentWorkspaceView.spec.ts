@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import AgentWorkspaceView from '../AgentWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { createPinia, setActivePinia } from 'pinia';
 
 const {
   state,
@@ -52,6 +53,7 @@ const {
       clearConfig: vi.fn(),
     },
     selectionStoreMock: {
+      selectedType: 'agent',
       clearSelection: vi.fn(),
     },
     workspaceCenterViewStoreMock: {
@@ -111,6 +113,7 @@ const buildAgentContext = (overrides: Record<string, unknown> = {}) => ({
 
 describe('AgentWorkspaceView', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
     state.activeRun = buildAgentContext();
   });

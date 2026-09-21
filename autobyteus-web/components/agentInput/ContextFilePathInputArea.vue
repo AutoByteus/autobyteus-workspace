@@ -158,9 +158,6 @@
 import { computed, ref, watch } from 'vue';
 import { useContextAttachmentComposer } from '~/composables/useContextAttachmentComposer';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -171,14 +168,12 @@ import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
 import { getContextAttachmentIcon } from '~/utils/contextFiles/contextAttachmentIcons';
 import {
   buildAgentDraftContextFileOwner,
+  buildOrgMemberDraftContextFileOwner,
   buildTeamMemberDraftContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 
 const activeContextStore = useActiveContextStore();
-const agentContextsStore = useAgentContextsStore();
-const agentSelectionStore = useAgentSelectionStore();
-const agentTeamContextsStore = useAgentTeamContextsStore();
 const contextFileUploadStore = useContextFileUploadStore();
 const fileExplorerStore = useFileExplorerStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -203,28 +198,15 @@ const isImageModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
 
 const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
-  if (!targetContext) {
-    return null;
-  }
-
-  if (agentSelectionStore.selectedType === 'agent' && agentContextsStore.activeRun === targetContext) {
-    return buildAgentDraftContextFileOwner(targetContext.state.runId);
-  }
-
-  const activeTeam = agentSelectionStore.selectedType === 'team' ? agentTeamContextsStore.activeTeamContext : null;
-  if (!activeTeam) {
-    return null;
-  }
-
-  const messageTargetContext = agentTeamContextsStore.activeExecutionFocusedMemberContext;
-  if (!messageTargetContext || messageTargetContext !== targetContext) {
-    return null;
-  }
-
-  return buildTeamMemberDraftContextFileOwner(
-    activeTeam.view.getRootTeamRunId(),
-    activeTeam.view.getFocusedMemberAddress(),
-  );
+  const target = activeContextStore.activeWorkspaceTarget;
+  if (!targetContext || !target || target.context !== targetContext) return null;
+  // Configured Org drafts remain editable during transport synchronization;
+  // retained task/standalone read-only targets do not acquire upload authority.
+  if (target.access === 'read_only' && target.kind !== 'agent_org_direct_agent'
+    && target.kind !== 'agent_org_team_member') return null;
+  if ('root' in target) return buildOrgMemberDraftContextFileOwner(target.root.orgRunId, target.context.state.runId);
+  if (target.kind === 'standalone_agent') return buildAgentDraftContextFileOwner(target.context.state.runId);
+  return buildTeamMemberDraftContextFileOwner(target.team.rootRunId, target.team.focusedMemberAddress);
 };
 
 const getTargetForContext = (targetContext: AgentContext | null) => {

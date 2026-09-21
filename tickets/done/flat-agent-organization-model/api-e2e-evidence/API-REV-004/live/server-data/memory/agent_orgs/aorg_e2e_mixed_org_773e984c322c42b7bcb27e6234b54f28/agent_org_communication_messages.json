@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_773e984c322c42b7bcb27e6234b54f28",
+  "messages": [
+    {
+      "messageId": "collabmsg_laBmAP82cASxiK8k54EgWCVlwGyBaHAB",
+      "senderAgentRunId": "aorg_e2e_concierge_43e1792fa8ac4c2fbac06fad0b447d65",
+      "receiverAgentRunId": "aorg_e2e_lead_aa2a675cc88b43c49ebce805c73ebdaf",
+      "content": "AORG4C-ORG-TEAM-MESSAGE-001",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T07:05:11.391Z"
+    }
+  ]
+}

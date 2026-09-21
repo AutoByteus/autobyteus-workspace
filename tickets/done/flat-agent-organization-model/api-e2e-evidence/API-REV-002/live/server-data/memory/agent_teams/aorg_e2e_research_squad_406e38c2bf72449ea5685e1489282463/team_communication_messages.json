@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_406e38c2bf72449ea5685e1489282463",
+  "messages": [
+    {
+      "messageId": "collabmsg_KFhursP8-RcmkGBOV8pq_gv05TUVJfTv",
+      "senderAgentRunId": "aorg_e2e_lead_ba085468b828408abb166692912680fc",
+      "receiverAgentRunId": "aorg_e2e_analyst_0967437e6f724a45abf2890fb7731d7e",
+      "content": "Return exactly AORG-TEAM-MSG-002 on the first line and acknowledge delivery on the second line.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-01T19:53:32.244Z"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { ChannelBinding } from "../../../../src/external-channel/domain/models.js";
 import { FileChannelBindingProvider } from "../../../../src/external-channel/providers/file-channel-binding-provider.js";
@@ -35,7 +36,7 @@ const createBinding = (): ChannelBinding => ({
   teamDefinitionId: "team-definition-1",
   teamLaunchPreset: null,
   teamRunId: "team-1",
-  targetMemberRouteKey: "coordinator",
+  targetMemberAddress: "/coordinator",
   allowTransportFallback: false,
   createdAt: new Date("2026-04-26T00:00:00.000Z"),
   updatedAt: new Date("2026-04-26T00:00:00.000Z"),
@@ -58,7 +59,7 @@ const createAgentBinding = (): ChannelBinding => ({
   teamDefinitionId: null,
   teamLaunchPreset: null,
   teamRunId: null,
-  targetMemberRouteKey: null,
+  targetMemberAddress: null,
 });
 
 const createAgentRun = () => {
@@ -80,18 +81,19 @@ const createAgentRun = () => {
 
 const createTeamRun = () => {
   const listeners = new Set<(event: unknown) => void>();
-  const runtimeContext = {
-    memberContexts: [
-      { memberName: "coordinator", memberRouteKey: "coordinator", memberRunId: "run-coordinator", getPlatformAgentRunId: () => null },
-      { memberName: "worker", memberRouteKey: "worker", memberRunId: "run-worker", getPlatformAgentRunId: () => null },
-    ],
-  };
   return {
     run: {
-      runId: "team-1",
-      context: { coordinatorMemberName: "coordinator", runtimeContext },
-      config: { coordinatorMemberName: "coordinator", memberConfigs: [{ memberName: "coordinator" }, { memberName: "worker" }] },
-      getRuntimeContext: () => runtimeContext,
+      teamRunId: "team-1",
+      getCoordinatorAgentRunId: () => "run-coordinator",
+      resolveRecipient: (address: string) => ({ kind: "agent", address }),
+      getExecutionTreeSnapshot: () => ({
+        rootTeam: {
+          members: [
+            { address: "/coordinator", agentRunId: "run-coordinator" },
+            { address: "/worker", agentRunId: "run-worker" },
+          ],
+        },
+      }),
       subscribeToEvents: (listener: (event: unknown) => void) => {
         listeners.add(listener);
         return () => listeners.delete(listener);
@@ -113,22 +115,21 @@ const teamAgentEvent = (input: {
   text?: string;
 }) => ({
   eventSourceType: TeamRunEventSourceType.AGENT,
-  teamRunId: "team-1",
-  data: {
-    runtimeKind: RuntimeKind.AUTOBYTEUS,
-    memberName: input.memberName,
-    memberRunId: input.memberRunId,
-    agentEvent: {
-      eventType: input.eventType,
-      runId: input.memberRunId,
-      statusHint: "ACTIVE",
-      payload: {
-        turnId: input.turnId,
-        segment_type: "text",
-        delta: input.text,
-        text: input.text,
-      },
-    },
+  execution: {
+    root: createTeamRootExecutionIdentity("team-1"),
+    memberAddress: `/${input.memberName}`,
+    agentRunId: input.memberRunId,
+  },
+  payload: {
+    eventType: input.eventType,
+    statusHint: "ACTIVE",
+    details: input.eventType === AgentRunEventType.SEGMENT_CONTENT
+      ? { segmentId: "segment-1", turnId: input.turnId, segmentType: "text", delta: input.text ?? "" }
+      : input.eventType === AgentRunEventType.SEGMENT_END
+        ? { segmentId: "segment-1", turnId: input.turnId, metadata: null, interrupted: false, reason: null, failed: false, error: null }
+        : input.eventType === AgentRunEventType.TURN_COMPLETED
+          ? { turnId: input.turnId, reason: null }
+          : { turnId: input.turnId },
   },
 });
 
@@ -245,8 +246,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       target: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: "run-coordinator",
-        entryMemberRouteKey: "coordinator",
+        entryAgentRunId: "run-coordinator",
       },
       turnId: "initial-turn",
     });
@@ -280,15 +280,14 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       target: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: "run-coordinator",
-        entryMemberRouteKey: "coordinator",
+        entryAgentRunId: "run-coordinator",
       },
     });
 
     await runtime.stop();
   });
 
-  it("publishes clean callback text from overlapping coordinator stream fragments", async () => {
+  it("publishes callback text from exact coordinator stream deltas", async () => {
     const filePath = `/tmp/channel-output-deliveries-${randomUUID()}.json`;
     tempFiles.add(filePath);
     const deliveryService = new ChannelRunOutputDeliveryService(
@@ -325,8 +324,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       target: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: "run-coordinator",
-        entryMemberRouteKey: "coordinator",
+        entryAgentRunId: "run-coordinator",
       },
       turnId: "initial-turn",
     });
@@ -338,15 +336,15 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         turnId: "overlap-turn",
         fragments: [
           "Sent the",
-          " the student",
-          " student a",
-          " a hard",
-          " hard cyclic",
-          " cyclic inequality",
-          " inequality problem",
-          " problem to",
-          " to solve",
-          " solve.",
+          " student",
+          " a",
+          " hard",
+          " cyclic",
+          " inequality",
+          " problem",
+          " to",
+          " solve",
+          ".",
         ],
       });
 
@@ -378,8 +376,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
     const target = {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
-      entryMemberRunId: "run-coordinator",
-      entryMemberRouteKey: "coordinator",
+      entryAgentRunId: "run-coordinator",
     };
 
     const observing = await deliveryService.upsertObservedTurn({
@@ -478,8 +475,11 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
     const deliveryFilePath = `/tmp/channel-output-deliveries-${randomUUID()}.json`;
     tempFiles.add(bindingFilePath);
     tempFiles.add(deliveryFilePath);
+    const teamRun = createTeamRun();
     const bindingService = new ChannelBindingService(
       new FileChannelBindingProvider(bindingFilePath),
+      {},
+      { teamRunService: { resolveActiveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any },
     );
     const deliveryService = new ChannelRunOutputDeliveryService(
       new FileChannelRunOutputDeliveryProvider(deliveryFilePath),
@@ -497,14 +497,14 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetMemberRouteKey: "coordinator",
+      targetMemberAddress: "/coordinator",
     });
     const reboundBinding = await bindingService.upsertBinding({
       ...route,
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetMemberRouteKey: "worker",
+      targetMemberAddress: "/worker",
     });
     const staleCoordinatorRecord = await deliveryService.upsertObservedTurn({
       bindingId: reboundBinding.id,
@@ -512,8 +512,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       target: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: "run-coordinator",
-        entryMemberRouteKey: "coordinator",
+        entryAgentRunId: "run-coordinator",
       },
       turnId: "stale-coordinator-turn",
       correlationMessageId: "telegram-message-1",
@@ -536,7 +535,6 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         }),
       },
     });
-    const teamRun = createTeamRun();
     const runtime = new ChannelRunOutputDeliveryRuntime({
       bindingService,
       messageReceiptService: {
@@ -599,14 +597,14 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetMemberRouteKey: "worker",
+      targetMemberAddress: "/worker",
     });
     const reboundBinding = await bindingService.upsertBinding({
       ...route,
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetMemberRouteKey: null,
+      targetMemberAddress: null,
     });
     const staleWorkerRecord = await deliveryService.upsertObservedTurn({
       bindingId: reboundBinding.id,
@@ -614,8 +612,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       target: {
         targetType: "TEAM",
         teamRunId: "team-1",
-        entryMemberRunId: "run-worker",
-        entryMemberRouteKey: "worker",
+        entryAgentRunId: "run-worker",
       },
       turnId: "stale-worker-turn",
       correlationMessageId: "telegram-message-1",

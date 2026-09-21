@@ -1,0 +1,13 @@
+{"level":40,"time":1788705460044,"pid":6402,"hostname":"17de3252c4f7","reqId":"req-19","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.642374999821186,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Unexpected failure while preparing agent run 'aorg_e2e_lead_40ab463de3a341a18ba9756664500250' for runtime 'codex_app_server'. Error: Codex app server RPC error -32600: no rollout found for thread id 01a0771e-a1ae-7173-ad0c-5da5f7f94bd1
+    at CodexAppServerClient.handleLine (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client.js:245:32)
+    at CodexAppServerClient.onStdout (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client.js:193:18)
+    at Socket.<anonymous> (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client.js:36:18)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Error restoring agent team run with ID aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a: PlatformAgentRunRestoreError: The persisted provider conversation could not be restored.

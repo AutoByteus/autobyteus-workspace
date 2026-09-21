@@ -1,0 +1,10 @@
+remote: 
+remote: Create a pull request for 'requirements/collaboration-follow-up-fixes' on GitHub by visiting:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/requirements/collaboration-follow-up-fixes        
+remote: 
+remote: GitHub found 933 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 420 high, 423 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new branch]          requirements/collaboration-follow-up-fixes -> requirements/collaboration-follow-up-fixes
+branch 'requirements/collaboration-follow-up-fixes' set up to track 'origin/requirements/collaboration-follow-up-fixes'.

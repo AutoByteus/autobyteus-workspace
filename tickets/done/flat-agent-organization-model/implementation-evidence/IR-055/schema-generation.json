@@ -1,0 +1,5 @@
+{
+  "schemaSha256": "d51e9f809c6b45735cfbe909d76967bafb8d69d76784269dff51f6932079f6a8",
+  "fullGeneratedOutputSha256": "70ad78cf162ef72db345a23723ba32bab2cd62523e4318ea4a29e153b49602a8",
+  "note": "Current compiled buildGraphqlSchema and repository documents generated successfully. Only affected attachment/memory declarations, fragments and documents were adopted in generated/graphql.ts; unrelated pre-existing generated-schema drift was not rewritten. Schema construction is not a running GraphQL server or accepted-input lifecycle."
+}

@@ -1,12 +1,40 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
-import { AgentTeamDefinition, AgentTeamDefinitionUpdate, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
 import {
-  buildCanonicalApplicationId,
-  buildCanonicalApplicationOwnedTeamId,
-} from "../../../src/application-bundles/utils/application-bundle-identity.js";
+  AgentTeamDefinition,
+  AgentTeamDefinitionUpdate,
+  TeamMember,
+} from "../../../src/agent-team-definition/domain/agent-team-definition.js";
+import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 
-describe("AgentTeamDefinitionService", () => {
+const agent = (memberName: string, ref = `agent-${memberName}`) => new TeamMember({
+  memberName,
+  ref,
+  refScope: "shared",
+});
+
+const definition = (input: {
+  id?: string | null;
+  revision?: string | null;
+  handoffs?: AgentTeamDefinition["handoffs"];
+} = {}) => new AgentTeamDefinition({
+  id: input.id,
+  revision: input.revision,
+  name: "Delivery Team",
+  description: "Ships approved work.",
+  instructions: "Coordinate carefully.",
+  category: "coordination",
+  nodes: [agent("coordinator"), agent("reviewer")],
+  coordinatorMemberName: "coordinator",
+  handoffs: input.handoffs ?? [{ from: "/coordinator", to: "/reviewer", rules: ["Review ready work."] }],
+  defaultLaunchConfig: {
+    runtimeKind: "autobyteus",
+    llmModelIdentifier: "gpt-5.4-mini",
+    llmConfig: { reasoning_effort: "medium" },
+  },
+});
+
+describe("AgentTeamDefinitionService flat Team authority", () => {
+  let stored: AgentTeamDefinition | null;
   let provider: {
     create: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
@@ -15,498 +43,124 @@ describe("AgentTeamDefinitionService", () => {
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
-  let agentDefinitionService: {
-    getAgentDefinitionById: ReturnType<typeof vi.fn>;
-    getFreshAgentDefinitionById: ReturnType<typeof vi.fn>;
-  };
-
-  const buildDefinition = (id?: string) =>
-    new AgentTeamDefinition({
-      id,
-      name: "Team",
-      description: "Desc",
-      instructions: "Team instructions",
-      category: "coordination",
-      nodes: [
-        new TeamMember({
-          memberName: "coord1",
-          ref: "agent1",
-          refType: "agent",
-          refScope: "shared",
-        }),
-        new TeamMember({
-          memberName: "subteam2",
-          ref: "team2",
-          refType: "agent_team",
-          refScope: "shared",
-        }),
-      ],
-      coordinatorMemberName: "coord1",
-    });
-
-  const buildLeafDefinition = (id: string) =>
-    new AgentTeamDefinition({
-      id,
-      name: "Leaf Team",
-      description: "Leaf Desc",
-      instructions: "Leaf instructions",
-      nodes: [
-        new TeamMember({
-          memberName: "leaf",
-          ref: "agent2",
-          refType: "agent",
-          refScope: "shared",
-        }),
-      ],
-      coordinatorMemberName: "leaf",
-    });
-
-  const mockDefinitionGraph = (root: AgentTeamDefinition) => {
-    const leaf = buildLeafDefinition("team2");
-    provider.getById.mockImplementation(async (id: string) => {
-      if (id === root.id) {
-        return root;
-      }
-      if (id === leaf.id) {
-        return leaf;
-      }
-      return null;
-    });
-  };
+  let agents: { getAgentDefinitionById: ReturnType<typeof vi.fn>; getFreshAgentDefinitionById: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
+    stored = definition({ id: "team-1", revision: "rev-1" });
     provider = {
-      create: vi.fn(
-        async (definition: AgentTeamDefinition) =>
-          new AgentTeamDefinition({
-            id: "def-123",
-            name: definition.name,
-            description: definition.description,
-            instructions: definition.instructions,
-            category: definition.category ?? null,
-            nodes: definition.nodes,
-            coordinatorMemberName: definition.coordinatorMemberName,
-          }),
-      ),
-      getById: vi.fn(async (id: string) => id === "team2" ? buildLeafDefinition("team2") : null),
-      getAll: vi.fn(async () => []),
+      create: vi.fn(async (candidate: AgentTeamDefinition) => definition({ id: "team-created", revision: "rev-created", handoffs: candidate.handoffs })),
+      getById: vi.fn(async (id: string) => id === stored?.id ? stored : null),
+      getAll: vi.fn(async () => stored ? [stored] : []),
       getTemplates: vi.fn(async () => []),
-      update: vi.fn(async (definition: AgentTeamDefinition) => definition),
-      delete: vi.fn(async () => true),
-    };
-    agentDefinitionService = {
-      getAgentDefinitionById: vi.fn(async () => ({ id: "agent" })),
-      getFreshAgentDefinitionById: vi.fn(async () => ({ id: "agent" })),
-    };
-  });
-
-  const buildService = () => new AgentTeamDefinitionService({ provider, agentDefinitionService });
-
-  it("creates agent team definitions", async () => {
-    const service = buildService();
-    const definition = buildDefinition();
-
-    const created = await service.createDefinition(definition);
-
-    expect(provider.create).toHaveBeenCalledOnce();
-    const passed = provider.create.mock.calls[0]?.[0] as AgentTeamDefinition;
-    expect(passed.id).toBeNull();
-    expect(created.id).toBe("def-123");
-  });
-
-  it("rejects creating a definition that already has an id", async () => {
-    const service = buildService();
-    const definition = buildDefinition("existing-id");
-
-    await expect(service.createDefinition(definition)).rejects.toThrow(
-      "Cannot create a definition that already has an ID.",
-    );
-  });
-
-  it("rolls back a created definition when graph validation fails", async () => {
-    const service = buildService();
-    const definition = new AgentTeamDefinition({
-      name: "Invalid Team",
-      description: "Self-reference",
-      instructions: "Invalid",
-      nodes: [
-        new TeamMember({
-          memberName: "coord1",
-          ref: "agent1",
-          refType: "agent",
-          refScope: "shared",
-        }),
-        new TeamMember({
-          memberName: "self",
-          ref: "def-123",
-          refType: "agent_team",
-          refScope: "shared",
-        }),
-      ],
-      coordinatorMemberName: "coord1",
-    });
-
-    await expect(service.createDefinition(definition)).rejects.toThrow(
-      "cannot reference itself",
-    );
-    expect(provider.delete).toHaveBeenCalledWith("def-123");
-  });
-
-  it("gets definitions by id", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    mockDefinitionGraph(existing);
-
-    const retrieved = await service.getDefinitionById("def-123");
-
-    expect(provider.getById).toHaveBeenCalledWith("def-123");
-    expect(retrieved).toBe(existing);
-  });
-
-  it("returns null for missing definitions", async () => {
-    const service = buildService();
-    provider.getById.mockResolvedValue(null);
-
-    const retrieved = await service.getDefinitionById("missing-id");
-
-    expect(provider.getById).toHaveBeenCalledWith("missing-id");
-    expect(retrieved).toBeNull();
-  });
-
-  it("gets all definitions", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    provider.getAll.mockResolvedValue([existing]);
-
-    const allDefs = await service.getAllDefinitions();
-
-    expect(provider.getAll).toHaveBeenCalledOnce();
-    expect(allDefs).toEqual([existing]);
-  });
-
-  it("updates definitions with provided fields", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    mockDefinitionGraph(existing);
-    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
-
-    const updateData = new AgentTeamDefinitionUpdate({
-      description: "Updated Description",
-      instructions: "Updated team instructions",
-      category: "updated-category",
-      avatarUrl: "http://localhost:8000/rest/files/images/updated-team-avatar.png",
-    });
-
-    const updated = await service.updateDefinition("def-123", updateData);
-
-    expect(provider.getById).toHaveBeenCalledWith("def-123");
-    expect(provider.update).toHaveBeenCalledOnce();
-    expect(updated.description).toBe("Updated Description");
-    expect(updated.instructions).toBe("Updated team instructions");
-    expect(updated.category).toBe("updated-category");
-    expect(updated.avatarUrl).toBe("http://localhost:8000/rest/files/images/updated-team-avatar.png");
-    expect(updated.nodes[1].refType).toBe("agent_team");
-  });
-
-  it("leaves the current definition unchanged when an invalid handoff update is rejected", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    existing.defaultLaunchConfig = {
-      runtimeKind: "autobyteus",
-      llmModelIdentifier: "gpt-5.4-mini",
-      llmConfig: { reasoning_effort: "medium" },
-    };
-    mockDefinitionGraph(existing);
-    const beforeUpdate = structuredClone(existing);
-
-    await expect(service.updateDefinition(
-      "def-123",
-      new AgentTeamDefinitionUpdate({
-        description: "This rejected value must not leak",
-        handoffs: [{
-          from: "coord1",
-          to: "./subteam2/leaf",
-          rules: ["Invalid bare source address"],
-        }],
+      update: vi.fn(async (candidate: AgentTeamDefinition) => {
+        stored = new AgentTeamDefinition({ ...candidate, revision: "rev-2" });
+        return stored;
       }),
-    )).rejects.toMatchObject({ code: "COLLABORATION_ADDRESS_INVALID" });
+      delete: vi.fn(async () => { stored = null; return true; }),
+    };
+    const lookup = vi.fn(async (id: string) => id.startsWith("agent-") ? { id } : null);
+    agents = { getAgentDefinitionById: lookup, getFreshAgentDefinitionById: lookup };
+  });
+
+  const service = () => new AgentTeamDefinitionService({ provider, agentDefinitionService: agents });
+
+  it("creates an Agent-only Team after validating every referenced Agent", async () => {
+    const candidate = definition();
+    const created = await service().createDefinition(candidate);
+
+    expect(provider.create).toHaveBeenCalledWith(candidate);
+    expect(agents.getFreshAgentDefinitionById).toHaveBeenCalledWith("agent-coordinator");
+    expect(agents.getFreshAgentDefinitionById).toHaveBeenCalledWith("agent-reviewer");
+    expect(created.id).toBe("team-created");
+  });
+
+  it("rejects create with an existing id, missing Agent, or invalid coordinator", async () => {
+    await expect(service().createDefinition(definition({ id: "existing" })))
+      .rejects.toThrow("already has an ID");
+
+    const missing = definition();
+    missing.nodes[1]!.ref = "missing";
+    await expect(service().createDefinition(missing)).rejects.toThrow("references missing agent");
+
+    const invalidCoordinator = definition();
+    invalidCoordinator.coordinatorMemberName = "missing";
+    await expect(service().createDefinition(invalidCoordinator)).rejects.toThrow("Coordinator member name");
+    expect(provider.create).not.toHaveBeenCalled();
+  });
+
+  it("reads current definitions, lists the catalog, and returns null for a miss", async () => {
+    const current = await service().getDefinitionById("team-1");
+    expect(current).toBe(stored);
+    expect(await service().getDefinitionById("missing")).toBeNull();
+    expect(await service().getAllDefinitions()).toEqual([stored]);
+  });
+
+  it("requires compare-and-swap revision evidence before update", async () => {
+    await expect(service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({
+      description: "Changed.",
+    }))).rejects.toThrow("expectedRevision is required");
+
+    await expect(service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({
+      description: "Changed.",
+      expectedRevision: "stale",
+    }))).rejects.toMatchObject({ code: "DEFINITION_REVISION_CONFLICT" });
+    expect(provider.update).not.toHaveBeenCalled();
+  });
+
+  it("atomically validates, persists, and detaches a valid update", async () => {
+    const previous = stored!;
+    const handoffs = [{ from: "/reviewer", to: "/coordinator", rules: ["First.", "Second."] }];
+    const updated = await service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({
+      description: "Updated description.",
+      handoffs,
+      expectedRevision: "rev-1",
+    }));
+
+    expect(updated.description).toBe("Updated description.");
+    expect(updated.handoffs).toEqual(handoffs);
+    expect(updated.revision).toBe("rev-2");
+    expect(previous.description).toBe("Ships approved work.");
+    expect(previous.handoffs).not.toEqual(handoffs);
+    expect(provider.update).toHaveBeenCalledOnce();
+  });
+
+  it("preserves handoff/rule order and rejects invalid endpoints before persistence", async () => {
+    const before = structuredClone(stored);
+    await expect(service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({
+      handoffs: [{ from: "/coordinator", to: "/missing", rules: ["Do not persist."] }],
+      expectedRevision: "rev-1",
+    }))).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
 
     expect(provider.update).not.toHaveBeenCalled();
-    expect(await service.getDefinitionById("def-123")).toBe(existing);
-    expect(existing).toEqual(beforeUpdate);
+    expect(stored).toEqual(before);
   });
 
-  it("persists and returns a detached valid handoff update", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    const leaf = buildLeafDefinition("team2");
-    let stored = existing;
-    provider.getById.mockImplementation(async (id: string) => {
-      if (id === stored.id) {
-        return stored;
-      }
-      return id === leaf.id ? leaf : null;
-    });
-    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => {
-      stored = definition;
-      return definition;
-    });
-    const handoffs = [{
-      from: "/coord1",
-      to: "/subteam2/leaf",
-      rules: ["Send completed work to the leaf reviewer."],
-    }];
+  it("clears explicit launch defaults and preserves them when omitted", async () => {
+    const cleared = await service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({
+      defaultLaunchConfig: null,
+      expectedRevision: "rev-1",
+    }));
+    expect(cleared.defaultLaunchConfig).toBeNull();
 
-    const updated = await service.updateDefinition(
-      "def-123",
-      new AgentTeamDefinitionUpdate({ handoffs }),
-    );
-
-    expect(provider.update).toHaveBeenCalledOnce();
-    expect(provider.update).toHaveBeenCalledWith(updated);
-    expect(updated).not.toBe(existing);
-    expect(updated.handoffs).toEqual(handoffs);
-    expect(await service.getDefinitionById("def-123")).toBe(updated);
-    expect(existing.handoffs).toEqual([]);
+    const preserved = await service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({
+      description: "Updated again.",
+      expectedRevision: "rev-2",
+    }));
+    expect(preserved.defaultLaunchConfig).toBeNull();
   });
 
-  it("clears defaultLaunchConfig when the update explicitly sets null", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    existing.defaultLaunchConfig = {
-      runtimeKind: "autobyteus",
-      llmModelIdentifier: "gpt-5.4-mini",
-      llmConfig: { reasoning_effort: "medium" },
-    };
-    mockDefinitionGraph(existing);
-    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
-
-    const updated = await service.updateDefinition(
-      "def-123",
-      new AgentTeamDefinitionUpdate({
-        defaultLaunchConfig: null,
-      }),
-    );
-
-    expect(provider.update).toHaveBeenCalledOnce();
-    expect(updated.defaultLaunchConfig).toBeNull();
+  it("deletes only an existing shared Team", async () => {
+    await expect(service().deleteDefinition("missing")).rejects.toThrow("not found");
+    await expect(service().deleteDefinition("team-1")).resolves.toBe(true);
+    expect(provider.delete).toHaveBeenCalledWith("team-1");
   });
 
-  it("preserves defaultLaunchConfig when the update omits the field", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    existing.defaultLaunchConfig = {
-      runtimeKind: "autobyteus",
-      llmModelIdentifier: "gpt-5.4-mini",
-      llmConfig: { reasoning_effort: "medium" },
-    };
-    mockDefinitionGraph(existing);
-    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
-
-    const updateData = new AgentTeamDefinitionUpdate({
-      description: "Updated without changing launch defaults",
-    });
-
-    const updated = await service.updateDefinition("def-123", updateData);
-
-    expect(provider.update).toHaveBeenCalledOnce();
-    expect(updated.description).toBe("Updated without changing launch defaults");
-    expect(updated.defaultLaunchConfig).toEqual({
-      runtimeKind: "autobyteus",
-      llmModelIdentifier: "gpt-5.4-mini",
-      llmConfig: { reasoning_effort: "medium" },
-    });
-  });
-
-  it("rejects application-owned nested team refs from shared definitions", async () => {
-    const service = buildService();
-    const applicationId = buildCanonicalApplicationId("built-in:applications", "sample-app");
-    const siblingTeamId = buildCanonicalApplicationOwnedTeamId(
-      "built-in:applications",
-      "sample-app",
-      "review-team",
-    );
-    const existing = new AgentTeamDefinition({
-      id: "def-123",
-      name: "Shared Team",
-      description: "Desc",
-      instructions: "Instructions",
-      nodes: [
-        new TeamMember({
-          memberName: "coord1",
-          ref: "agent1",
-          refType: "agent",
-          refScope: "shared",
-        }),
-        new TeamMember({
-          memberName: "review",
-          ref: siblingTeamId,
-          refType: "agent_team",
-          refScope: "application_owned",
-        }),
-      ],
-      coordinatorMemberName: "coord1",
-      ownershipScope: "shared",
-    });
-    const sibling = buildLeafDefinition(siblingTeamId);
-    sibling.ownershipScope = "application_owned";
-    sibling.ownerApplicationId = applicationId;
-    provider.getById.mockImplementation(async (id: string) => {
-      if (id === existing.id) {
-        return existing;
-      }
-      if (id === sibling.id) {
-        return sibling;
-      }
-      return null;
-    });
-
-    await expect(
-      service.updateDefinition("def-123", new AgentTeamDefinitionUpdate({ description: "Updated" })),
-    ).rejects.toThrow("outside an application-owned team context");
-  });
-
-  it("allows same-application application-owned team refs from application-owned definitions", async () => {
-    const service = buildService();
-    const applicationId = buildCanonicalApplicationId("built-in:applications", "sample-app");
-    const rootTeamId = buildCanonicalApplicationOwnedTeamId(
-      "built-in:applications",
-      "sample-app",
-      "main-team",
-    );
-    const siblingTeamId = buildCanonicalApplicationOwnedTeamId(
-      "built-in:applications",
-      "sample-app",
-      "review-team",
-    );
-    const existing = new AgentTeamDefinition({
-      id: rootTeamId,
-      name: "Application Team",
-      description: "Desc",
-      instructions: "Instructions",
-      nodes: [
-        new TeamMember({
-          memberName: "coord1",
-          ref: "agent1",
-          refType: "agent",
-          refScope: "team_local",
-        }),
-        new TeamMember({
-          memberName: "review",
-          ref: siblingTeamId,
-          refType: "agent_team",
-          refScope: "application_owned",
-        }),
-      ],
-      coordinatorMemberName: "coord1",
-      ownershipScope: "application_owned",
-      ownerApplicationId: applicationId,
-    });
-    const sibling = buildLeafDefinition(siblingTeamId);
-    sibling.ownershipScope = "application_owned";
-    sibling.ownerApplicationId = applicationId;
-    provider.getById.mockImplementation(async (id: string) => {
-      if (id === existing.id) {
-        return existing;
-      }
-      if (id === sibling.id) {
-        return sibling;
-      }
-      return null;
-    });
-    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
-
-    const updated = await service.updateDefinition(
-      rootTeamId,
-      new AgentTeamDefinitionUpdate({ description: "Updated" }),
-    );
-
-    expect(updated.description).toBe("Updated");
-    expect(provider.update).toHaveBeenCalledOnce();
-  });
-
-  it("rejects application-owned refs from team-local definitions without inherited application context", async () => {
-    const service = buildService();
-    const applicationId = buildCanonicalApplicationId("built-in:applications", "sample-app");
-    const siblingTeamId = buildCanonicalApplicationOwnedTeamId(
-      "built-in:applications",
-      "sample-app",
-      "review-team",
-    );
-    const existing = new AgentTeamDefinition({
-      id: "team-local-team:shared-parent:review-cell",
-      name: "Local Team",
-      description: "Desc",
-      instructions: "Instructions",
-      nodes: [
-        new TeamMember({
-          memberName: "coord1",
-          ref: "agent1",
-          refType: "agent",
-          refScope: "shared",
-        }),
-        new TeamMember({
-          memberName: "review",
-          ref: siblingTeamId,
-          refType: "agent_team",
-          refScope: "application_owned",
-        }),
-      ],
-      coordinatorMemberName: "coord1",
-      ownershipScope: "team_local",
-      ownerTeamId: "shared-parent",
-    });
-    const sibling = buildLeafDefinition(siblingTeamId);
-    sibling.ownershipScope = "application_owned";
-    sibling.ownerApplicationId = applicationId;
-    provider.getById.mockImplementation(async (id: string) => {
-      if (id === existing.id) {
-        return existing;
-      }
-      if (id === sibling.id) {
-        return sibling;
-      }
-      return null;
-    });
-
-    await expect(
-      service.updateDefinition(
-        existing.id!,
-        new AgentTeamDefinitionUpdate({ description: "Updated" }),
-      ),
-    ).rejects.toThrow("outside an application-owned team context");
-  });
-
-  it("throws when updating missing definitions", async () => {
-    const service = buildService();
-    provider.getById.mockResolvedValue(null);
-
-    const updateData = new AgentTeamDefinitionUpdate({ description: "Updated Description" });
-
-    await expect(service.updateDefinition("missing-id", updateData)).rejects.toThrow(
-      "Agent Team Definition with ID missing-id not found.",
-    );
-  });
-
-  it("deletes definitions", async () => {
-    const service = buildService();
-    const existing = buildDefinition("def-123");
-    provider.getById.mockResolvedValue(existing);
-    provider.delete.mockResolvedValue(true);
-
-    const result = await service.deleteDefinition("def-123");
-
-    expect(provider.getById).toHaveBeenCalledWith("def-123");
-    expect(provider.delete).toHaveBeenCalledWith("def-123");
-    expect(result).toBe(true);
-  });
-
-  it("throws when deleting missing definitions", async () => {
-    const service = buildService();
-    provider.getById.mockResolvedValue(null);
-
-    await expect(service.deleteDefinition("missing-id")).rejects.toThrow(
-      "Agent Team Definition with ID missing-id not found.",
-    );
+  it("rejects deletion of Org-owned and application-owned Team definitions", async () => {
+    for (const ownershipScope of ["agent_org_owned", "application_owned"] as const) {
+      stored = definition({ id: "team-1", revision: "rev-1" });
+      stored.ownershipScope = ownershipScope;
+      await expect(service().deleteDefinition("team-1")).rejects.toThrow("not supported");
+    }
+    expect(provider.delete).not.toHaveBeenCalled();
   });
 });

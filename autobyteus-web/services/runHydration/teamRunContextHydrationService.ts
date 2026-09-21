@@ -297,6 +297,8 @@ const hydrateCurrentTeamRunContext = async (
       workspaceMetadata: workspaces.get(address) ?? null,
     }),
   });
+  const focus = view.focusAgentForInspection(initialFocusedAgentRunId);
+  if (focus.disposition === 'rejected') throw new Error(focus.message);
   return {
     teamRunId: input.teamRunId,
     focusedAgentRunId: view.getFocusedAgentRunId(),

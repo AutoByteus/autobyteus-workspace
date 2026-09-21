@@ -12,17 +12,17 @@ import { GraphQLError } from "graphql";
 import {
   AgentMemberRefScope,
   AgentTeamDefinitionOwnershipScope,
-  NodeType,
 } from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as DomainAgentTeamDefinition,
   AgentTeamDefinitionUpdate,
   TeamMember as DomainTeamMember,
-} from "../../../agent-team-definition/domain/models.js";
+} from "../../../agent-team-definition/domain/agent-team-definition.js";
 import { AgentTeamDefinitionConverter } from "../converters/agent-team-definition-converter.js";
 import {
   getStudioAgentDefinitionService,
   getStudioAgentTeamDefinitionService,
+  getStudioDefinitionAdmissionService,
 } from "../studio-application-api-services.js";
 import {
   GraphqlDefaultLaunchConfig,
@@ -30,7 +30,6 @@ import {
   toDomainDefaultLaunchConfig,
 } from "./default-launch-config.js";
 
-registerEnumType(NodeType, { name: "TeamMemberType" });
 registerEnumType(AgentMemberRefScope, { name: "AgentMemberRefScope" });
 registerEnumType(AgentTeamDefinitionOwnershipScope, {
   name: "AgentTeamDefinitionOwnershipScope",
@@ -40,8 +39,6 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const toDomainRefType = (value: NodeType): "agent" | "agent_team" =>
-  value === NodeType.AGENT ? "agent" : "agent_team";
 
 const toDomainRefScope = (
   value: AgentMemberRefScope | null | undefined,
@@ -66,11 +63,8 @@ export class TeamMember {
   @Field(() => String)
   ref!: string;
 
-  @Field(() => NodeType)
-  refType!: NodeType;
-
-  @Field(() => AgentMemberRefScope, { nullable: true })
-  refScope?: AgentMemberRefScope | null;
+  @Field(() => AgentMemberRefScope)
+  refScope!: AgentMemberRefScope;
 }
 
 @ObjectType()
@@ -136,6 +130,12 @@ export class AgentTeamDefinition {
   ownerTeamName?: string | null;
 
   @Field(() => String, { nullable: true })
+  ownerOrgId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerOrgName?: string | null;
+
+  @Field(() => String, { nullable: true })
   ownerApplicationId?: string | null;
 
   @Field(() => String, { nullable: true })
@@ -149,6 +149,9 @@ export class AgentTeamDefinition {
 
   @Field(() => GraphqlDefaultLaunchConfig, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfig | null;
+
+  @Field(() => String, { nullable: true })
+  revision?: string | null;
 }
 
 @InputType()
@@ -159,11 +162,8 @@ export class TeamMemberInput {
   @Field(() => String)
   ref!: string;
 
-  @Field(() => NodeType)
-  refType!: NodeType;
-
-  @Field(() => AgentMemberRefScope, { nullable: true })
-  refScope?: AgentMemberRefScope | null;
+  @Field(() => AgentMemberRefScope)
+  refScope!: AgentMemberRefScope;
 }
 
 @InputType()
@@ -200,6 +200,9 @@ export class CreateAgentTeamDefinitionInput {
 export class UpdateAgentTeamDefinitionInput {
   @Field(() => String)
   id!: string;
+
+  @Field(() => String)
+  expectedRevision!: string;
 
   @Field(() => String, { nullable: true })
   name?: string | null;
@@ -238,18 +241,40 @@ export class DeleteAgentTeamDefinitionResult {
   message!: string;
 }
 
+@ObjectType()
+export class AgentTeamDefinitionEndpoint {
+  @Field(() => String) kind!: string;
+  @Field(() => String) address!: string;
+  @Field(() => String) memberName!: string;
+  @Field(() => String) definitionId!: string;
+  @Field(() => String, { nullable: true }) coordinatorAddress!: string | null;
+  @Field(() => String, { nullable: true }) coordinatorMemberName!: string | null;
+}
+
+@ObjectType()
+export class AgentTeamDefinitionEndpointCatalog {
+  @Field(() => [AgentTeamDefinitionEndpoint]) from!: AgentTeamDefinitionEndpoint[];
+  @Field(() => [AgentTeamDefinitionEndpoint]) to!: AgentTeamDefinitionEndpoint[];
+}
+
 @Resolver()
 export class AgentTeamDefinitionResolver {
+  @Query(() => AgentTeamDefinitionEndpointCatalog)
+  async agentTeamEndpointCatalog(@Arg("id", () => String) id: string): Promise<AgentTeamDefinitionEndpointCatalog> {
+    await getStudioDefinitionAdmissionService().requireAvailable("agent_team", id);
+    const value = await getStudioAgentTeamDefinitionService().getEndpointCatalog(id);
+    return { from: [...value.from], to: [...value.to] };
+  }
   @Query(() => AgentTeamDefinition, { nullable: true })
   async agentTeamDefinition(
     @Arg("id", () => String) id: string,
   ): Promise<AgentTeamDefinition | null> {
     try {
       const service = getStudioAgentTeamDefinitionService();
-      const domainDefinition = await service.getDefinitionById(id);
-      if (!domainDefinition) {
-        return null;
-      }
+      const admitted = await getStudioDefinitionAdmissionService().requireAvailable("agent_team", id).catch(() => null);
+      if (!admitted) return null;
+      const domainDefinition = admitted.definition;
+      if (!("nodes" in domainDefinition)) return null;
       return AgentTeamDefinitionConverter.toGraphql(domainDefinition);
     } catch (error) {
       logger.error(`Error fetching agent team definition by ID ${id}: ${String(error)}`);
@@ -260,8 +285,10 @@ export class AgentTeamDefinitionResolver {
   @Query(() => [AgentTeamDefinition])
   async agentTeamDefinitions(): Promise<AgentTeamDefinition[]> {
     try {
-      const service = getStudioAgentTeamDefinitionService();
-      const definitions = await service.getAllDefinitions();
+      const admitted = await getStudioDefinitionAdmissionService().scan();
+      const definitions = admitted.flatMap((result) => result.status === "available" && result.subjectKind === "agent_team"
+        ? [result.definition]
+        : []).filter((definition): definition is DomainAgentTeamDefinition => "nodes" in definition && definition.ownershipScope !== "agent_org_owned");
       return definitions.map((definition) => AgentTeamDefinitionConverter.toGraphql(definition));
     } catch (error) {
       logger.error(`Error fetching all agent team definitions: ${String(error)}`);
@@ -304,8 +331,7 @@ export class AgentTeamDefinitionResolver {
           new DomainTeamMember({
             memberName: node.memberName,
             ref: node.ref,
-            refType: toDomainRefType(node.refType),
-            refScope: toDomainRefScope(node.refScope),
+            refScope: toDomainRefScope(node.refScope)!,
           }),
       );
 
@@ -343,8 +369,7 @@ export class AgentTeamDefinitionResolver {
                 new DomainTeamMember({
                   memberName: node.memberName,
                   ref: node.ref,
-                  refType: toDomainRefType(node.refType),
-                  refScope: toDomainRefScope(node.refScope),
+                        refScope: toDomainRefScope(node.refScope)!,
                 }),
             );
 
@@ -358,6 +383,7 @@ export class AgentTeamDefinitionResolver {
         handoffs: input.handoffs ?? null,
         avatarUrl: input.avatarUrl ?? null,
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
+        expectedRevision: input.expectedRevision,
       });
 
       const updated = await service.updateDefinition(input.id, update);

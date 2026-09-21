@@ -1,0 +1,89 @@
+{
+  "package": "COLLAB-FOLLOWUP-001",
+  "revision": "AD-REV-001",
+  "mandatorySectionCount": 43,
+  "missingSections": [],
+  "localMarkdownLinks": [
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-investigation.md",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-evidence/AD-REV-001/source-witnesses.json",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-evidence/AD-REV-001/navigation-probe.cjs",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-evidence/AD-REV-001/navigation-probe.log",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-evidence/AD-REV-001/attachment-probe.cjs",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-evidence/AD-REV-001/attachment-probe.log",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-evidence/AD-REV-001/diagnostic-disposition.md",
+      "exists": true
+    },
+    {
+      "from": "design-spec.md",
+      "reference": "architecture-design-self-validation.md",
+      "exists": true
+    }
+  ],
+  "sourceWitnessesChecked": 48,
+  "sourceDrift": [],
+  "approvedUpstream": [
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/requirements-doc.md",
+      "unchanged": true,
+      "sha256": "961c646871768f1cb0a906927b59578b6925ee498fc880ec1c37e7d8c84e67e5"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/requirements-revision-record.md",
+      "unchanged": true,
+      "sha256": "5879663560f1d41b0e1fbfaa227d8954fdeead9335f6b46718e0e9d007d8736f"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/investigation-notes.md",
+      "unchanged": true,
+      "sha256": "6cab907dd6b573828b812f24acd9be0ecdb9b1209ae6a00e5694fa22a52b4985"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/intake/user-request.md",
+      "unchanged": true,
+      "sha256": "d1596938e4f656bacef4b26fde7267260c7eff6cf21c79a14f2390c5247aee9d"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/intake/evidence-index.json",
+      "unchanged": true,
+      "sha256": "af7c9f622ec708cf44a8be08af5d84de97086383b23d8cdb6d3c968977f4c457"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/intake/original-personal-comparison.json",
+      "unchanged": true,
+      "sha256": "18772204acbbe70d2b802e28afad340ae78e105246d21c8bf42c83fc411b70a6"
+    }
+  ],
+  "forbiddenImplementationHandoffCreated": false,
+  "scope": "Document/source integrity checks only, not implementation tests",
+  "stagedWhitespaceCheck": {
+    "initial": "9 generated blank excerpt labels with trailing whitespace",
+    "correction": "Trimmed generated excerpt label trailing spaces; original Git blobs unchanged",
+    "final": "Pass: git diff --cached --check exit 0 after formatting correction"
+  }
+}

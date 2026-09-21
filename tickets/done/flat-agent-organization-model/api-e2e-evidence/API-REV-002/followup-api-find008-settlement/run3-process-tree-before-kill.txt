@@ -1,0 +1,3 @@
+26815   580 Ssl        33:12 node dist/app.js --host 127.0.0.1 --port 8447 --data-dir /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement
+27663 26815 Sl         27:41 node /usr/bin/codex app-server
+27670 27663 Sl         27:41 /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/bin/codex app-server

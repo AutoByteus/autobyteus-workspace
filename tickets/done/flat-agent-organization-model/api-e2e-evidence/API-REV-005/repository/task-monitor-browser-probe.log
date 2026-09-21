@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.66 test:e2e:task-agent-monitor-visibility /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> node tests/e2e/task-agent-monitor-visibility-probe.mjs
+
+Task Agent monitor visibility browser probe passed. Evidence: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/test-results/task-agent-monitor-visibility/evidence.json

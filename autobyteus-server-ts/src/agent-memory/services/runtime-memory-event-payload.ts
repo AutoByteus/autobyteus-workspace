@@ -1,5 +1,5 @@
 import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
-import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { partitionRawTraceAttachments } from "autobyteus-ts/memory/models/raw-trace-attachments.js";
 
 export const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -68,14 +68,6 @@ export const asBoolean = (value: unknown): boolean | null =>
 export const asNumber = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
 
-export const extractForwardedMessageMedia = (
+export const extractForwardedMessageAttachments = (
   message: AgentRunUserMessageForwardedPayload["message"],
-): RawTraceMedia | null => {
-  const media: RawTraceMedia = { images: [], audio: [], video: [] };
-  for (const file of message.contextFiles ?? []) {
-    if (file.fileType === "image") media.images?.push(file.uri);
-    else if (file.fileType === "audio") media.audio?.push(file.uri);
-    else if (file.fileType === "video") media.video?.push(file.uri);
-  }
-  return media.images?.length || media.audio?.length || media.video?.length ? media : null;
-};
+) => partitionRawTraceAttachments(message.contextFiles ?? []);

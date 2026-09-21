@@ -1,7 +1,9 @@
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 export type TeamMemberInspectionResult =
+  | SupersededSelection
   | Readonly<{
     disposition: 'committed';
     teamRunId: string;
@@ -17,12 +19,15 @@ export type TeamMemberInspectionResult =
 export const inspectMountedTeamMember = async (input: {
   teamRunId: string;
   agentRunId: string;
+  selectionIntent?: WorkspaceSelectionIntent;
   commit: (result: Readonly<{
     teamRunId: string;
     agentRunId: string;
     memberAddress: string;
   }>) => void;
 }): Promise<TeamMemberInspectionResult> => {
+  const intent = input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
   const teamRunId = input.teamRunId.trim();
   const agentRunId = input.agentRunId.trim();
   try {
@@ -32,14 +37,15 @@ export const inspectMountedTeamMember = async (input: {
       throw new Error(`Team context '${teamRunId}' is not mounted.`);
     }
     if (!team.view.hasAgentRun(agentRunId)) {
-      throw new Error(`AgentRun '${agentRunId}' is not visible in the mounted Team yet.`);
+      throw new Error(`AgentRun '${agentRunId}' is not retained in the mounted Team.`);
     }
-    await ensureAuthoritativeTeamMemberProjection({ team, agentRunId });
+    await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
+    if (!intent.isCurrent()) return { disposition: 'superseded' };
     if (contexts.getTeamContextById(teamRunId) !== team) {
       throw new Error(`Team context '${teamRunId}' changed before selection commit.`);
     }
     const memberAddress = team.view.getMemberAddress(agentRunId);
-    const focus = team.view.focusAgent(agentRunId);
+    const focus = team.view.focusAgentForInspection(agentRunId);
     if (!memberAddress || focus.disposition === 'rejected'
       || team.view.getFocusedAgentRunId() !== agentRunId) {
       throw new Error(focus.disposition === 'rejected'
@@ -50,6 +56,7 @@ export const inspectMountedTeamMember = async (input: {
     input.commit(committed);
     return Object.freeze({ disposition: 'committed' as const, ...committed });
   } catch (error) {
+    if (!intent.isCurrent()) return { disposition: 'superseded' };
     return Object.freeze({
       disposition: 'rejected' as const,
       code: 'TEAM_MEMBER_INSPECTION_FAILED',

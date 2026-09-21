@@ -1,0 +1,29 @@
+{
+  "outgoing": {
+    "at": "2026-09-14T10:30:47.902Z",
+    "tabId": "f25f9200-787b-4f96-8723-070dd2658ace",
+    "kind": "frontend-outgoing",
+    "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d",
+    "frame": {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "content": "Reply PENDING-SEND-R3-731 only. Do not use tools.",
+        "context_file_paths": [],
+        "image_urls": [],
+        "agent_run_id": "aorg_validation_agent_bb999411867245399d1d112a0ffcf31f",
+        "message_id": "client_9a9a18a6-b393-4852-8c86-378e1643e209",
+        "dedupe_key": "member_input:aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d:aorg_validation_agent_bb999411867245399d1d112a0ffcf31f:client_9a9a18a6-b393-4852-8c86-378e1643e209"
+      }
+    }
+  },
+  "server": {
+    "serverUrl": "http://127.0.0.1:50244",
+    "port": 50244,
+    "pid": 3713,
+    "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001",
+    "database": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/db/aorg-api-rev001.db",
+    "cycle": 3
+  },
+  "signal": "SIGKILL",
+  "managerPid": 3382
+}

@@ -1,0 +1,154 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > restores an untouched rejected draft/attachments and shows local error without history or replay
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > rejects an already disconnected send without consuming its draft
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+    at submit (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:165:40)
+    at Object.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:210:74)
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:257:18)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:224:25
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves a newer attachment-only draft after rejection
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > handles a synchronous transport failure and retires its pending command
+Failed to send message via activeContextStore: Error: transport failed
+    at Socket.<anonymous> (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:245:67)
+    at Socket.mockCall (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+spy@3.2.4/node_modules/@vitest/spy/dist/index.js:96:15)
+    at Socket.send (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/tinyspy@4.0.4/node_modules/tinyspy/dist/index.js:47:80)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:221:16
+    at new Promise (<anonymous>)
+    at AgentOrgStreamingService.command (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:208:12)
+    at AgentOrgStreamingService.sendPrepared (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:171:17)
+    at submit (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:193:21)
+    at Object.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:210:74)
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:257:18)
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect
+Failed to send message via activeContextStore: Error: AgentOrg stream closed before command acknowledgement.
+    at AgentOrgStreamingService.rejectPending (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:467:22)
+    at Socket.socket.onclose (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:118:12)
+    at Socket.close (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:41:10)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:270:12
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > defers view disposal until the exact pending submission finishes without touching another draft
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:350:27)
+    at AgentOrgStreamingService.handleMessage (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:248:12)
+    at AgentOrgStreamingService.processFrame (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:307:18)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:105:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-director Send, preserves real input/identity through readiness and sends once
+Failed to send message via activeContextStore: Error: AgentOrg member submission is already pending.
+    at submit (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:166:66)
+    at Object.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:210:74)
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:257:18)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:401:25
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-team-worker-configured Send, preserves real input/identity through readiness and sends once
+Failed to send message via activeContextStore: Error: AgentOrg member submission is already pending.
+    at submit (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:166:66)
+    at Object.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/agentOrgContextsStore.ts:210:74)
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:257:18)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:401:25
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > keeps stopped exact tasks read-only, not continuable configured lookalikes
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/stores/activeContextStore.ts:255:59)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:422:25
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores untouched input on failed restore, keeps deliberate discard and releases the root guard
+Failed to send message via activeContextStore: Error: restore rejected
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:431:40
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores untouched input on failed restore, keeps deliberate discard and releases the root guard
+Failed to send message via activeContextStore: Error: restore rejected again
+    at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:441:12
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1547ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (21 tests) 1589ms
+
+ Test Files  2 passed (2)
+      Tests  37 passed (37)
+   Start at  23:41:41
+   Duration  11.38s (transform 5.70s, setup 16.74s, collect 425ms, tests 3.14s, environment 1.09s, prepare 661ms)

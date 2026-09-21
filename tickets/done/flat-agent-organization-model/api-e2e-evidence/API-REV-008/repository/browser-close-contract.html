@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><pre id="result">pending</pre><script>
+const check = (code) => {
+  const socket = new WebSocket('ws://127.0.0.1:9');
+  try { socket.close(code, 'Invalid AgentOrg stream'); return { code, allowed: true, exceptionName: null }; }
+  catch (error) { return { code, allowed: false, exceptionName: error.name, message: error.message }; }
+};
+document.getElementById('result').textContent = JSON.stringify({userAgent:navigator.userAgent,reserved:check(1002),application:check(4000)});
+</script>

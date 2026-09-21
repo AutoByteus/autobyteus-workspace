@@ -1,0 +1,102 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - generic: Failed to fetch
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (2)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (2)
+  - button "Active team run Remember BROWSER-NATIVE-TEAM-R3. Reply with that marker only. Do not use tools." [expanded]:
+    - img "Active team run"
+    - generic: Remember BROWSER-NATIVE-TEAM-R3. Reply with that marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: 9m
+  - tree "Remember BROWSER-NATIVE-TEAM-R3. Reply with that marker only. Do not use tools. organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 9m
+    - treeitem "Agent, worker, level 1, running, /worker" [level=1] [selected]:
+      - generic: W
+      - generic: worker
+      - generic: 9m
+    - treeitem "Agent, unused, level 1, idle, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: 9m
+  - button "Active team run Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools.":
+    - img "Active team run"
+    - generic: Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: 6h
+  - generic: Orgs
+  - button "AORG Validation Org (2)":
+    - generic: AORG Validation Org
+    - generic: (2)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: W
+  - heading "worker" [level=4]
+  - 'generic "Agent Status: Running"':
+    - generic: Running
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Remember BROWSER-NATIVE-TEAM-R3. Reply with that marker only. Do not use tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: BROWSER-NATIVE-TEAM-R3
+  - generic: You
+  - generic: What marker did I ask you to remember? Reply with it followed by BROWSER-TEAM-RESUMED-R3. Do not use tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: BROWSER-NATIVE-TEAM-R3 BROWSER-TEAM-RESUMED-R3
+  - generic: You
+  - generic: Remember ACCEPTED-LOSS-R3-731. Then write 200 words about oranges. Do not use tools.
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..." [active]: NEW-DRAFT-AFTER-LOSS-R3
+  - button "Stop generation":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team" [selected]: Team
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

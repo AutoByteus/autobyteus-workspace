@@ -34,7 +34,7 @@ import { ApplicationAvailabilityStateRegistry } from "../../../src/application-p
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
 import { createApplicationEngineTestRuntime } from "./application-engine-test-runtime.js";
 
 const TOOL_NAME = "get_brief_context";
@@ -331,7 +331,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       row: (typeof bindingRows)[number],
       runtimeKind: RuntimeKind,
     ): ActiveSession => {
-      const memberTeamContext = testMemberTeamContext({
+      const memberExecutionContext = testMemberExecutionContext({
         rootTeamRunId: row.teamRunId,
         memberAddress: row.memberAddress,
         agentRunId: row.agentRunId,
@@ -339,15 +339,15 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       const activation = sessionService.activateForRun({
         owner: {
           runId: row.agentRunId,
-          teamIdentity: memberTeamContext.identity,
+          collaborationIdentity: memberExecutionContext.identity,
         },
         sender: buildAgentRunMessageSenderContext({
           senderRunId: row.agentRunId,
           runtimeKind,
-          memberTeamContext,
+          memberExecutionContext,
         }),
         runtimeKind,
-        runtimeExposure: buildRuntimeAgentToolExposure([TOOL_NAME], memberTeamContext),
+        runtimeExposure: buildRuntimeAgentToolExposure([TOOL_NAME], memberExecutionContext),
         executionContext: {
           applicationExecutionContext: {
             applicationId,
@@ -442,12 +442,18 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       },
     });
     expect(requireLiveTeamMember).toHaveBeenNthCalledWith(1, {
-      rootTeamRunId: "team-alpha",
+      root: {
+        rootSubjectKind: "agent_team",
+        rootRunId: "team-alpha",
+      },
       memberAddress: "/researcher",
       agentRunId: "run-alpha",
     });
     expect(requireLiveTeamMember).toHaveBeenNthCalledWith(2, {
-      rootTeamRunId: "team-beta",
+      root: {
+        rootSubjectKind: "agent_team",
+        rootRunId: "team-beta",
+      },
       memberAddress: "/writer",
       agentRunId: "run-beta",
     });

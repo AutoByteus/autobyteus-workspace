@@ -1,0 +1,47 @@
+{
+  "sourceManifest": [
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "match": true
+    },
+    {
+      "path": "autobyteus-web/test-support/historyFamilyPublicationFixture.ts",
+      "match": true
+    }
+  ],
+  "authored": [
+    {
+      "path": "data/agents/latency-agent/agent.md",
+      "match": true
+    },
+    {
+      "path": "data/agents/latency-agent/agent-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/latency-org/org-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-orgs/latency-org/org.md",
+      "match": true
+    },
+    {
+      "path": "data/agent-teams/latency-team/team-config.json",
+      "match": true
+    },
+    {
+      "path": "data/agent-teams/latency-team/team.md",
+      "match": true
+    }
+  ],
+  "diffCheck": 0
+}

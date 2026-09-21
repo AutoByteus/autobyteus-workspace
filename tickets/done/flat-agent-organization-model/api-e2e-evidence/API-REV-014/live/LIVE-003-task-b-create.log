@@ -1,0 +1,15 @@
+{
+  "taskId": "task_8130d2e5d40c410d841042409f12d7a9",
+  "taskExecution": {
+    "agentRunId": "aorg_e2e_verifier_c058d76c97434e2e906474ed730624d1"
+  },
+  "status": "active",
+  "assertions": {
+    "oneTaskCreated": true,
+    "correctRecipient": true,
+    "taskRunMaterialized": true,
+    "stillActive": true,
+    "readyObserved": false,
+    "delegatorStayedSelected": true
+  }
+}

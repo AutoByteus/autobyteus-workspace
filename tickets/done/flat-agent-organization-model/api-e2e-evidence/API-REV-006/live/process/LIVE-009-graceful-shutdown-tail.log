@@ -1,0 +1,160 @@
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Created terminal session a738d3c5-7289-499c-bf65-e980a2d3b419 using backend PtySession for target /root
+Terminal WebSocket connected: a738d3c5-7289-499c-bf65-e980a2d3b419
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788365284429,"pid":51922,"hostname":"1da6e6043ac7","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.702542006969452,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Created terminal session 539e3544-ffb6-44fa-815d-667647a68866 using backend PtySession for target /root
+Terminal WebSocket connected: 539e3544-ffb6-44fa-815d-667647a68866
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788365317342,"pid":51922,"hostname":"1da6e6043ac7","reqId":"req-w","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.5303750038146973,"msg":"http request completed"}
+Closed PTY session 539e3544-ffb6-44fa-815d-667647a68866
+Terminal WebSocket disconnected: 539e3544-ffb6-44fa-815d-667647a68866
+Created terminal session dd424ea7-3612-4a56-b8f1-ef83200d8323 using backend PtySession for target /root
+Terminal WebSocket connected: dd424ea7-3612-4a56-b8f1-ef83200d8323
+Terminal websocket attached for cwd /root
+Closed PTY session dd424ea7-3612-4a56-b8f1-ef83200d8323
+Terminal WebSocket disconnected: dd424ea7-3612-4a56-b8f1-ef83200d8323
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 2da586e3-9da7-49fb-8034-eb247146a58a for workspace temp_ws_default
+Created file explorer session 2da586e3-9da7-49fb-8034-eb247146a58a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 2da586e3-9da7-49fb-8034-eb247146a58a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517'.
+Published codex_app_server agent run 'aorg_e2e_analyst_311e08b5d76249ea945d3ec3a44edb19'.
+Published codex_app_server agent run 'aorg_e2e_verifier_d4ba043897fb4cbf911cb3bbe842502d'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/server-data/temp_workspace
+FileExplorerSession closed: 2da586e3-9da7-49fb-8034-eb247146a58a
+Closed file explorer session 2da586e3-9da7-49fb-8034-eb247146a58a. Active sessions: 0
+File explorer WebSocket disconnected: 2da586e3-9da7-49fb-8034-eb247146a58a
+Agent team websocket attached for team run aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f
+Created agent session a1b05e40-7f73-4226-af32-dced8c64c907 for run aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f
+Agent Team WebSocket connected: session=a1b05e40-7f73-4226-af32-dced8c64c907, run=aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_analyst_566640d90b8d4b70ad58abe81c8fe4bf'.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_analyst_1bdeec48d2c24aba80446ea1687cb036'.
+Closed PTY session a738d3c5-7289-499c-bf65-e980a2d3b419
+Terminal WebSocket disconnected: a738d3c5-7289-499c-bf65-e980a2d3b419
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Created and registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 6,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_concierge_d7294128108e45faab581ab5206b6f6c'.
+Published codex_app_server agent run 'aorg_e2e_lead_2f6de1f54a3a4ae8b787a5075e008a56'.
+Published codex_app_server agent run 'aorg_e2e_analyst_f638bb99ebfd4329a6ef7f0701627467'.
+Published codex_app_server agent run 'aorg_e2e_verifier_f05fdbbcf1ae43c7a8772d1e3d0122d5'.
+Published codex_app_server agent run 'aorg_e2e_lead_02846766d28442d9b7f1da6c46b2a276'.
+Published codex_app_server agent run 'aorg_e2e_verifier_956ce9f69a0c4bbd8b80694477d47531'.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Published codex_app_server agent run 'aorg_e2e_analyst_9b0d3fb28c334d329da71e8d269ef083'.
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'aorg_e2e_analyst_9b0d3fb28c334d329da71e8d269ef083',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+{"level":30,"time":1788366399776,"pid":51922,"hostname":"1da6e6043ac7","reqId":"req-5v","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9' was not found."}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Published codex_app_server agent run 'aorg_e2e_concierge_29b8b40561a0427684f09765473bbdc2'.
+Published codex_app_server agent run 'aorg_e2e_lead_673321a1707e4ec4bf1609d72e3e0da6'.
+Published codex_app_server agent run 'aorg_e2e_analyst_48b635708c134b4dbab576f060a0e925'.
+Published codex_app_server agent run 'aorg_e2e_verifier_d10066b6d1ab4d57888fce0bb22da5db'.
+Published codex_app_server agent run 'aorg_e2e_lead_92c973e9b61743d8aa29bc5ff8744839'.
+Published codex_app_server agent run 'aorg_e2e_verifier_ef755fd6b4354fbe8097683305830490'.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/live/workspaces/org-retry.
+Reusing registered workspace ID: agent_ws_6bfbc398fba16fb8608b07a2f626f14de8079d6d32784f9c7003fbbfd0364ebe
+Published codex_app_server agent run 'aorg_e2e_analyst_b1d9385d0bb348e3ba1ff1cc6dcea623'.
+{"level":30,"time":1788366573085,"pid":51922,"hostname":"1da6e6043ac7","reqId":"req-6i","err":{"type":"GraphQLError","message":"Unknown query","stack":"FastifyError: Unknown query\n    at executeQuery (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:227:14)\n    at executeRegularQuery (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.handler (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:317:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Unknown query"}
+{"level":40,"time":1788366573086,"pid":51922,"hostname":"1da6e6043ac7","reqId":"req-6i","method":"GET","url":"/graphql","statusCode":400,"elapsedMs":2.035708010196686,"msg":"http request completed"}
+[2026-09-02T16:36:10.970Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session a1b05e40-7f73-4226-af32-dced8c64c907
+[2026-09-02T16:36:11.045Z] [INFO] [server.runtime] Server closed cleanly.

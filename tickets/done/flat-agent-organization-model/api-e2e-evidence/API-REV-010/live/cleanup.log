@@ -1,0 +1,31 @@
+=== owned resources ===
+tabs: [] (AutoByteus list_tabs after closing tab 13)
+ports:
+8589/3589 closed
+processes:
+server 41872 and renderer 35122 stopped
+=== reviewed identity ===
+HEAD 100e2c82cb948e1cbef4026ab6f74ab815285a34
+source parent 4d378df9cba56bd1b9ebf20d9b055f964398f642
+source is artifact ancestor: PASS
+=== diff check ===
+git diff --check: PASS
+=== immutable import fixture ===
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK

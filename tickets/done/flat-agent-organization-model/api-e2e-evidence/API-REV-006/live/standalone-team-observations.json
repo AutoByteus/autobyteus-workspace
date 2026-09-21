@@ -1,0 +1,38 @@
+{
+  "case": "LIVE-006",
+  "teamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+  "surface": "AutoByteus open_tab 8 production renderer and isolated real backend",
+  "freshActivation": {
+    "selected": "/lead",
+    "initialStableMemberStatus": "Offline",
+    "firstPromptMarker": "APIREV6-LEAD-FRESH-START",
+    "observedAfterFirstPrompt": "Idle"
+  },
+  "messageAndImmediateSettlementTask": {
+    "taskId": "task_e625fff626294a688b146539a2a2c7d8",
+    "taskAgentRunId": "aorg_e2e_analyst_566640d90b8d4b70ad58abe81c8fe4bf",
+    "message": "APIREV6-STANDALONE-TASK-MESSAGE",
+    "submission": "APIREV6-TASK-SUBMISSION-V1",
+    "finalStatus": "accepted"
+  },
+  "controlledRevisionTask": {
+    "taskId": "task_aa15bce5c28145268b522d94d6c46b02",
+    "taskAgentRunId": "aorg_e2e_analyst_1bdeec48d2c24aba80446ea1687cb036",
+    "statusSequence": ["awaiting_review", "active", "awaiting_review", "accepted"],
+    "submission1": "APIREV6-REVISION-SUBMISSION-V1",
+    "revision": "APIREV6-REVISION-REQUEST: submit exactly APIREV6-REVISION-SUBMISSION-V2 using submit_task_result, then stop and await explicit acceptance.",
+    "submission2": "APIREV6-REVISION-SUBMISSION-V2",
+    "acceptance": "APIREV6-REVISION-ACCEPTED",
+    "selectedBeforeLaterWork": true,
+    "selectedRemainedExactThroughRevisionAndV2": true,
+    "monitorContainedRetainedAndLiveEvents": true,
+    "settlementRemovedTransientRow": true,
+    "fallbackSelection": "/lead",
+    "taskPanelAfterSettlement": "2 tasks, both Accepted; exact V1/revision/V2/acceptance retained"
+  },
+  "durability": {
+    "activationPrecedesFirstProviderEventMs": 149,
+    "taskSidecarStatus": "accepted",
+    "result2IsAccepted": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "assertions": {
+    "exactHistoricalRoute": true,
+    "exactTerminalCopy": true,
+    "rootSummaryRetained": true,
+    "standaloneTeamInactive": true,
+    "noOrgStopOrReconnect": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

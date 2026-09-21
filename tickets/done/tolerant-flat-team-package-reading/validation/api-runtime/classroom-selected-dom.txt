@@ -1,0 +1,66 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: Team Definition
+  - generic: Classroom Simulation Team
+  - generic: Runtime
+  - combobox "Runtime":
+    - option "AutoByteus" [selected]
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - paragraph: Selects the runtime backend used by this team run.
+  - generic: Default LLM Model (Global)
+  - button "Select a model":
+    - generic: Select a model
+  - paragraph: This model will be used by all members unless overridden.
+  - generic: Workspace Directory
+  - tablist:
+    - tab "Existing" [selected]:
+      - generic: Existing
+    - tab "New":
+      - generic: New
+  - button "📁 Temp Workspace (Default) Default temporary workspace":
+    - generic: 📁 Temp Workspace (Default)
+    - generic: Default temporary workspace
+  - paragraph: "Workspace: Temp Workspace"
+  - generic: Auto approve tools
+  - paragraph: "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run."
+  - switch "Auto approve tools":
+    - generic: Auto approve tools
+  - button "Team Members Override (2)":
+    - generic: Team Members Override (2)
+  - button "Run Team" [disabled]:
+    - generic: Run Team
+  - paragraph: Team / needs a model before launch.
+  - tablist "Workspace tools":
+    - tab "Files" [selected]: Files
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - textbox "Search..."
+  - button "Maximize view":
+  - heading "No file selected" [level=3]
+  - paragraph: Select a file from the explorer to view or edit its content.

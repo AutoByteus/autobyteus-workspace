@@ -1,0 +1,9 @@
+timestamp=2026-09-06T14:24:28Z
+{"status":"ok","message":"Server is running"}
+graphql_http=200
+renderer_http=200
+breakpoints_set=23
+breakpoints_resolved=23
+LISTEN 0      5          127.0.0.1:3596       0.0.0.0:*    users:(("python3",pid=2644,fd=3))
+LISTEN 0      511        127.0.0.1:8596       0.0.0.0:*    users:(("node",pid=2443,fd=39))  
+LISTEN 0      511        127.0.0.1:9238       0.0.0.0:*    users:(("node",pid=2443,fd=26))  

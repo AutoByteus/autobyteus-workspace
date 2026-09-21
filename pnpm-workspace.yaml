@@ -8,4 +8,6 @@ packages:
   - "autobyteus-application-frontend-sdk"
   - "autobyteus-application-devkit"
   - "autobyteus-team-stream-contracts"
+  - "autobyteus-agent-presentation-contracts"
+  - "autobyteus-collaboration-stream-contracts"
   - "applications/*"

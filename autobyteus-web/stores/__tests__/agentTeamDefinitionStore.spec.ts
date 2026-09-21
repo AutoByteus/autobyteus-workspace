@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useAgentTeamDefinitionStore } from '../agentTeamDefinitionStore';
 import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQueries';
+import { loadAgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences';
+import { GetAgentOrgReferencedAgent, GetAgentOrgReferencedTeam } from '~/graphql/queries/agentOrgDefinitionQueries';
+import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId';
 import { RefreshAgentTeamDefinitionCatalog } from '~/graphql/mutations/agentTeamDefinitionMutations';
 
 const mockQuery = vi.fn();
@@ -66,7 +69,7 @@ describe('agentTeamDefinitionStore', () => {
     expect(store.agentTeamDefinitions[0].id).toBe('team-1');
   });
 
-  it('keeps team-local child teams out of the root catalog projection', () => {
+  it('projects every admitted flat Team definition as an independent root', () => {
     const store = useAgentTeamDefinitionStore();
     store.agentTeamDefinitions = [
       {
@@ -79,16 +82,6 @@ describe('agentTeamDefinitionStore', () => {
         ownershipScope: 'SHARED',
       },
       {
-        id: 'team-local-team:company:research',
-        name: 'Research',
-        description: 'Local department',
-        instructions: 'Coordinate research',
-        coordinatorMemberName: 'lead',
-        nodes: [],
-        ownershipScope: 'TEAM_LOCAL',
-        ownerTeamId: 'company',
-      },
-      {
         id: 'bundle-team__pkg__app__review',
         name: 'Review',
         description: 'Application-owned review team',
@@ -97,14 +90,11 @@ describe('agentTeamDefinitionStore', () => {
         nodes: [],
         ownershipScope: 'APPLICATION_OWNED',
       },
-    ] as any;
+    ];
 
     expect(store.rootAgentTeamDefinitions.map((definition) => definition.id)).toEqual([
       'company',
       'bundle-team__pkg__app__review',
-    ]);
-    expect(store.getTeamLocalTeamDefinitionsByOwnerTeamId('company')).toEqual([
-      expect.objectContaining({ id: 'team-local-team:company:research' }),
     ]);
   });
 
@@ -215,5 +205,56 @@ describe('agentTeamDefinitionStore', () => {
     expect(store.agentTeamDefinitions[0].id).toBe('team-2');
     expect(Array.isArray(store.agentTeamDefinitions[0].nodes)).toBe(true);
     expect((store.agentTeamDefinitions[0] as any).__ref).toBeUndefined();
+  });
+});
+
+
+describe('catalog lookup versus exact selected-Org resolution', () => {
+  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
+
+  it('looks up eligible shared/application catalog IDs and names without querying on a miss', () => {
+    const store = useAgentTeamDefinitionStore();
+    store.agentTeamDefinitions = [
+      { id: 'shared', name: 'Shared', description: '', instructions: '', coordinatorMemberName: 'lead', nodes: [], ownershipScope: 'SHARED' },
+      { id: 'application-team', name: 'Application', description: '', instructions: '', coordinatorMemberName: 'lead', nodes: [], ownershipScope: 'APPLICATION_OWNED' },
+    ];
+    for (const definition of store.agentTeamDefinitions) {
+      expect(store.getCatalogAgentTeamDefinitionById(definition.id)).toBe(definition);
+      expect(store.getCatalogAgentTeamDefinitionByName(definition.name)).toBe(definition);
+    }
+    expect(store.getCatalogAgentTeamDefinitionById('agent-org-owned-team:alpha:squad')).toBeNull();
+    expect(store.getCatalogAgentTeamDefinitionByName('Not in catalog')).toBeNull();
+    expect(mockQuery).not.toHaveBeenCalled();
+    expect(mockMutate).not.toHaveBeenCalled();
+    expect(store.agentTeamDefinitions).toHaveLength(2);
+  });
+
+  it('resolves the same owned ID exactly while both catalog getters remain misses', async () => {
+    const store = useAgentTeamDefinitionStore();
+    const teamId = 'agent-org-owned-team:alpha:squad';
+    const agentId = buildTeamLocalAgentDefinitionId(teamId, 'worker');
+    const team = { id: teamId, name: 'Owned Squad', description: '', instructions: 'Owned instruction',
+      ownershipScope: 'AGENT_ORG_OWNED', ownerOrgId: 'alpha', coordinatorMemberName: 'lead',
+      nodes: [{ memberName: 'lead', ref: 'worker', refScope: 'TEAM_LOCAL' }] };
+    mockQuery.mockImplementation(async ({ query, variables }) => {
+      if (query === GetAgentOrgReferencedTeam && variables.id === teamId) return { data: { agentTeamDefinition: team } };
+      if (query === GetAgentOrgReferencedAgent && variables.id === agentId) return { data: { agentDefinition: {
+        id: agentId, name: 'Worker', description: '', ownershipScope: 'TEAM_LOCAL', ownerTeamId: teamId,
+      } } };
+      throw new Error('Unexpected exact read');
+    });
+    expect(store.getCatalogAgentTeamDefinitionById(teamId)).toBeNull();
+    expect(mockQuery).not.toHaveBeenCalled();
+    const result = await loadAgentOrgDefinitionReferences('alpha', [
+      { memberName: 'group', ref: teamId, refType: 'AGENT_TEAM', refScope: 'AGENT_ORG_OWNED' },
+    ], { getCatalogAgentById: () => null, getCatalogTeamById: store.getCatalogAgentTeamDefinitionById });
+    expect(result.unavailable).toEqual([]);
+    expect(result.teams[teamId]).toEqual(team);
+    expect(result.agents[agentId]?.name).toBe('Worker');
+    expect(mockQuery).toHaveBeenCalledTimes(2);
+    expect(mockMutate).not.toHaveBeenCalled();
+    expect(store.getCatalogAgentTeamDefinitionById(teamId)).toBeNull();
+    expect(store.getCatalogAgentTeamDefinitionByName('Owned Squad')).toBeNull();
+    expect(store.agentTeamDefinitions).toEqual([]);
   });
 });

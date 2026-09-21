@@ -1,0 +1,352 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/.env
+Loading environment from: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/.env
+[dotenv@17.3.1] injecting env (20) from ../tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8596
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8596
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data
+DB DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/db
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:73586) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-06T12:48:47.755Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:apirev8:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/agent-orgs/apirev8
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:apirev8-team:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/agent-teams/apirev8-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:bible-study-group:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:clara-ocean-friends:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:classroom-simulation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:evidence-driven-delivery-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:job-search-application-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:marketing-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:movie-maker:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:presentation-chemie:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:product-design-prototyping-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:socratic-math-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-engineering-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:storm-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:video-tutorial-creation-team:DEFINITION_SCHEMA_VERSION_UNSUPPORTED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-06T12:48:48.049Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'classroom-simulation-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'evidence-driven-delivery-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'northstar-operating-company' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'product-design-prototyping-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-development-department' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-development-department/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-engineering-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-engineering-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'storm-team' at '/home/autobyteus/workspace/autobyteus-agents/agent-teams/storm-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-06T12:48:48.076Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1788698928092,"pid":73586,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:43907"}
+{"level":30,"time":1788698928126,"pid":73586,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:8596"}
+[2026-09-06T12:48:48.127Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8596
+[2026-09-06T12:48:48.129Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8596
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788699409270,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6495000012218952,"msg":"http request completed"}
+{"level":40,"time":1788699417887,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-9","method":"GET","url":"/health","statusCode":404,"elapsedMs":3.20533300191164,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 42 items.
+[2026-09-06T12:57:14.381Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'bible-study-group' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/bible-study-group/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'clara-ocean-friends' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/clara-ocean-friends/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'job-search-application-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/job-search-application-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'marketing-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/marketing-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'movie-maker' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/movie-maker/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'nested-classroom-test' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'presentation-chemie' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/presentation-chemie/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'socratic-math-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/socratic-math-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+DEFINITION_CONTRACT_INVALID: skipped Team 'video-tutorial-creation-team' at '/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/team-config.json'; expected Team Definition Config V2: AgentTeam Definition Config V2 must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members, schemaVersion.
+[2026-09-06T12:57:14.392Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-09-06T12:57:15.181Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-06T12:57:15.183Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-06T12:57:16.069Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-06T12:57:16.074Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+{"level":40,"time":1788699439977,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7177920006215572,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Created terminal session f32d8494-0395-4bf3-93a6-bb745b2daed9 using backend PtySession for target /root
+Terminal WebSocket connected: f32d8494-0395-4bf3-93a6-bb745b2daed9
+Terminal websocket attached for cwd /root
+Closed PTY session f32d8494-0395-4bf3-93a6-bb745b2daed9
+Terminal WebSocket disconnected: f32d8494-0395-4bf3-93a6-bb745b2daed9
+Created terminal session 77d220bd-c799-42cc-b0f0-a2622c9a6121 using backend PtySession for target /root
+Terminal WebSocket connected: 77d220bd-c799-42cc-b0f0-a2622c9a6121
+Terminal websocket attached for cwd /root
+[CodexAppServerClient] stderr: [2m2026-09-06T12:58:04.522277Z[0m [31mERROR[0m [2mcodex_models_manager::manager[0m[2m:[0m failed to refresh available models: timeout waiting for child process to exit
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77'.
+Published codex_app_server agent run 'aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41'.
+Published codex_app_server agent run 'aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5'.
+Published codex_app_server agent run 'aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede'.
+Published codex_app_server agent run 'aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab'.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538/aorg_support_pair_2abf806c33e8430796844d4e95efb9b2/aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538/aorg_support_pair_2abf806c33e8430796844d4e95efb9b2/aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e/raw_traces_active.jsonl
+Published codex_app_server agent run 'aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17'.
+Closed PTY session 77d220bd-c799-42cc-b0f0-a2622c9a6121
+Terminal WebSocket disconnected: 77d220bd-c799-42cc-b0f0-a2622c9a6121
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f'.
+Published codex_app_server agent run 'aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08'.
+Published codex_app_server agent run 'aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23'.
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538/aorg_support_pair_2abf806c33e8430796844d4e95efb9b2/aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 12,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 13,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_lead_40fa603e7a044ab181ba6df6ef64bf30'.
+Published codex_app_server agent run 'aorg_e2e_analyst_dd1e3fc958fc4ceaa14d928db020566c'.
+Published codex_app_server agent run 'aorg_e2e_verifier_d7bbcb79947c4f299374b9ed4ee9ffb1'.
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538/aorg_support_pair_2abf806c33e8430796844d4e95efb9b2/aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e/raw_traces_active.jsonl
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'aorg_e2e_lead_0b0ec17bcf7c4947b3c37da238dc9e17',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+{"level":30,"time":1788700720068,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-wf","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051' was not found."}
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Created terminal session 0e939edc-adfc-4255-866d-8ad39d1de4bc using backend PtySession for target /root
+Terminal WebSocket connected: 0e939edc-adfc-4255-866d-8ad39d1de4bc
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788700905273,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-119","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.338458999991417,"msg":"http request completed"}
+Closed PTY session 0e939edc-adfc-4255-866d-8ad39d1de4bc
+Terminal WebSocket disconnected: 0e939edc-adfc-4255-866d-8ad39d1de4bc
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Created terminal session c19d0ed8-7cd3-4c52-af3e-9159e8c7a637 using backend PtySession for target /root
+Terminal WebSocket connected: c19d0ed8-7cd3-4c52-af3e-9159e8c7a637
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788700922050,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-12a","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.1376670002937317,"msg":"http request completed"}
+Closed PTY session c19d0ed8-7cd3-4c52-af3e-9159e8c7a637
+Terminal WebSocket disconnected: c19d0ed8-7cd3-4c52-af3e-9159e8c7a637
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Created terminal session 79e6e65a-13d2-4ec2-97f4-9660b0d88efa using backend PtySession for target /root
+Terminal WebSocket connected: 79e6e65a-13d2-4ec2-97f4-9660b0d88efa
+Terminal websocket attached for cwd /root
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1788700939143,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-13b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3206249997019768,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77'.
+Published codex_app_server agent run 'aorg_e2e_lead_fb66d4294cda4d1b9b1e8f6deb46a8c8'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b8676b6b7d59437d91a1d5a09e6cec41'.
+Published codex_app_server agent run 'aorg_e2e_verifier_276a5ff09a704b77b125b4c6a64b9cb5'.
+Published codex_app_server agent run 'aorg_e2e_lead_0b61ba04495e4aa7856ad9f128b00ede'.
+Published codex_app_server agent run 'aorg_e2e_verifier_5caac3545d324e0c97566e44a19373ab'.
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_e2e_research_squad_4a7b36f38c434a3da17527572d10c538/aorg_support_pair_2abf806c33e8430796844d4e95efb9b2/aorg_e2e_verifier_b3bd74fe06f54f42abc8d3e89e93345e/raw_traces_active.jsonl
+{"level":30,"time":1788701002432,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-15f","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051' was not found."}
+Closed PTY session 79e6e65a-13d2-4ec2-97f4-9660b0d88efa
+Terminal WebSocket disconnected: 79e6e65a-13d2-4ec2-97f4-9660b0d88efa
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_concierge_0e7d948b0ac44209ae9dc306c11456a3'.
+Published codex_app_server agent run 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42'.
+Published codex_app_server agent run 'aorg_e2e_analyst_8134ba2057a0494cbce0f564cb3b5068'.
+Published codex_app_server agent run 'aorg_e2e_verifier_bdba26a893f14021b7255f8ad14fbb47'.
+Published codex_app_server agent run 'aorg_e2e_lead_aa28176c726549c9944d6a8238951dd9'.
+Published codex_app_server agent run 'aorg_e2e_verifier_436e7bc35c2645cbaa1f8723a2492611'.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_research_squad_c02f253c2cb344518d51dd54fcb935cb/aorg_support_pair_819ec3a53a6642c291d66b49c77db768/aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_research_squad_c02f253c2cb344518d51dd54fcb935cb/aorg_support_pair_819ec3a53a6642c291d66b49c77db768/aorg_e2e_verifier_9bbba6565b3d4ed486f0efb054748464/raw_traces_active.jsonl
+Published codex_app_server agent run 'aorg_e2e_lead_a576224e563446a1b761ca219e2d81d3'.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_research_squad_c02f253c2cb344518d51dd54fcb935cb/aorg_support_pair_819ec3a53a6642c291d66b49c77db768/aorg_research_squad_e7ce4c70c40a4a12b37bc91a952cf13c/aorg_e2e_analyst_9db16ea1b3474b52a64b447c06f61d94/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_research_squad_c02f253c2cb344518d51dd54fcb935cb/aorg_support_pair_819ec3a53a6642c291d66b49c77db768/aorg_e2e_verifier_9bbba6565b3d4ed486f0efb054748464/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_research_squad_c02f253c2cb344518d51dd54fcb935cb/aorg_support_pair_819ec3a53a6642c291d66b49c77db768/aorg_research_squad_e7ce4c70c40a4a12b37bc91a952cf13c/aorg_e2e_lead_1e7bffcc18554736bd70e77f7761256f/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e/aorg_e2e_research_squad_c02f253c2cb344518d51dd54fcb935cb/aorg_support_pair_819ec3a53a6642c291d66b49c77db768/aorg_research_squad_e7ce4c70c40a4a12b37bc91a952cf13c/aorg_e2e_verifier_b662988315734fe0a2f6e03f69e805c1/raw_traces_active.jsonl
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 8,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'aorg_e2e_lead_1e7bffcc18554736bd70e77f7761256f'.
+{"level":30,"time":1788701398769,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1gg","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.","stack":"Error: AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":75}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'."}
+{"level":30,"time":1788701398777,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1gh","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.","stack":"Error: AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":75}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'."}
+{"level":30,"time":1788701398780,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1gi","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 1)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":1,"column":240}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found."}
+{"level":30,"time":1788701430961,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1hb","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.","stack":"Error: AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":75}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42' at '/support-team/specialist' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'."}
+{"level":30,"time":1788701430969,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1hc","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.","stack":"Error: AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":75}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_66c6f1948b304697beaebcb2deba4d42_WRONG' at '/research-team/lead' was not found in AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e'."}
+{"level":30,"time":1788701430974,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1hd","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 1)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":1,"column":240}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_mixed_org_0e2c3f8c899e4196b086ad2c1d2b5b0e_WRONG' was not found."}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_93381295647446bfb032c112c75acab9'.
+Published codex_app_server agent run 'aorg_e2e_verifier_38ef5d250d094b22899bbfa5ae219041'.
+{"level":30,"time":1788701713546,"pid":73586,"hostname":"17de3252c4f7","reqId":"req-1pl","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30' was not found.","stack":"Error: Active AgentOrg 'aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:230:19)\n    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_e2e_direct_agents_org_8f9cbacaeca14280afe6cbfb43637a30' was not found."}
+[2026-09-06T13:35:50.433Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-06T13:35:50.749Z] [INFO] [server.runtime] Server closed cleanly.

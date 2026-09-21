@@ -1,0 +1,28 @@
+{
+  "case": "LIVE-008",
+  "graphql": {
+    "endpoint": "http://127.0.0.1:8487/graphql",
+    "errors": null,
+    "rootHistory": [
+      {"kind":"agent_org","runId":"aorg_e2e_mixed_org_0d1e043893ce489ba41ac10e67a6bcf9","active":true},
+      {"kind":"agent_team","runId":"aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f"},
+      {"kind":"agent_org","runId":"aorg_e2e_mixed_org_00def61888844de181ac7990ebba90a9","active":false}
+    ],
+    "orgCheckpoint":{"changeSequence":624,"hasOpenExecutionWork":false},
+    "teamCheckpoint":{"changeSequence":870,"hasOpenExecutionWork":false},
+    "orgProjection":{"address":"/research-team/lead","conversationCount":16,"activityCount":5},
+    "teamProjection":{"address":"/lead","conversationCount":27,"activityCount":6},
+    "standaloneTeamHydration":{"messages":1,"tasks":2,"acceptedTasks":2,"revisionResult2Retained":true}
+  },
+  "narrow": {
+    "viewport":"390x844",
+    "openPath":"primary navigation strip Agent Orgs button -> transient left drawer",
+    "drawerContains":"workspace -> Agent Orgs -> active Org -> direct Agent and mounted Team tree",
+    "teamFocus":{"clicked":"support team. Team status: Idle","center":"dispatcher / Idle","expanded":true},
+    "agentFocus":{"clicked":"specialist, idle","center":"specialist / Idle"},
+    "horizontalOverflow":false,
+    "visibleUnlabelledButtons":0,
+    "drawerClosedWithBackdrop":true,
+    "focusPersistedAfterClose":"specialist / Idle"
+  }
+}

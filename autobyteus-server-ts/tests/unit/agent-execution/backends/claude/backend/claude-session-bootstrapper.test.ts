@@ -3,16 +3,16 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
-import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/claude-bootstrapper-workspace";
 
-const createMemberTeamContext = () =>
-  testMemberTeamContext({
+const createMemberExecutionContext = () =>
+  testMemberExecutionContext({
     teamRunId: "team-run-1",
     rootTeamRunId: "team-run-1",
     teamDefinitionId: "team-def-1",
@@ -25,11 +25,11 @@ const createMemberTeamContext = () =>
 
 const createRunContext = (input: {
   autoExecuteTools: boolean;
-  memberTeamContext?: MemberTeamContext | null;
+  memberExecutionContext?: MemberExecutionContext | null;
   skillAccessMode?: SkillAccessMode;
 }) =>
   new AgentRunContext({
-    runId: input.memberTeamContext?.agentRunId ?? "run-claude-standalone",
+    runId: input.memberExecutionContext?.agentRunId ?? "run-claude-standalone",
     config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       agentDefinitionId: "agent-def-claude",
@@ -37,7 +37,7 @@ const createRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools,
       workspaceId: "workspace-claude",
       skillAccessMode: input.skillAccessMode ?? SkillAccessMode.NONE,
-      memberTeamContext: input.memberTeamContext ?? null,
+      memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: null,
   });
@@ -63,13 +63,13 @@ const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = []) => {
 
 describe("ClaudeSessionBootstrapper", () => {
   it("keeps team autoExecuteTools as AutoByteus approval state while using default provider permission mode", async () => {
-    const memberTeamContext = createMemberTeamContext();
+    const memberExecutionContext = createMemberExecutionContext();
     const { bootstrapper } = createBootstrapper();
 
     const runContext = await bootstrapper.bootstrapForCreate(
       createRunContext({
         autoExecuteTools: true,
-        memberTeamContext,
+        memberExecutionContext,
       }),
     );
 
@@ -80,7 +80,7 @@ describe("ClaudeSessionBootstrapper", () => {
       autoExecuteTools: true,
     });
     expect(runContext.runtimeContext.autoExecuteTools).toBe(true);
-    expect(runContext.config.memberTeamContext).toBe(memberTeamContext);
+    expect(runContext.config.memberExecutionContext).toBe(memberExecutionContext);
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Addressing");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Collaboration");

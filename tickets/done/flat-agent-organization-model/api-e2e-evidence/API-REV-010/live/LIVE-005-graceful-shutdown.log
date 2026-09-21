@@ -1,0 +1,44 @@
+=== TERM command ===
+kill -TERM 34978
+=== shutdown tail ===
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Reusing registered workspace ID: agent_ws_9fe85cb2fe65bfbd8682e47c13427814e1d45414ce1ff7bb7ddb7367a71237bc
+[CodexAppServerClient] stderr: [2m2026-09-04T14:15:34.172054Z[0m [31mERROR[0m [2mcodex_models_manager::manager[0m[2m:[0m failed to refresh available models: timeout waiting for child process to exit
+Published codex_app_server agent run 'aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413'.
+Published codex_app_server agent run 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b998cbd70042421d8fb82f31bfa3687f'.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Reusing registered workspace ID: agent_ws_9fe85cb2fe65bfbd8682e47c13427814e1d45414ce1ff7bb7ddb7367a71237bc
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Reusing registered workspace ID: agent_ws_9fe85cb2fe65bfbd8682e47c13427814e1d45414ce1ff7bb7ddb7367a71237bc
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'summary', 'details' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Reusing registered workspace ID: agent_ws_9fe85cb2fe65bfbd8682e47c13427814e1d45414ce1ff7bb7ddb7367a71237bc
+Published codex_app_server agent run 'aorg_e2e_lead_0cc5675f75b64305b653fd534cd39f2e'.
+Published codex_app_server agent run 'aorg_e2e_analyst_7bb7577677e443c887c937fe42b0347e'.
+Agent team websocket attached for team run apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Created agent session 6e6018d5-f94d-4453-a0c6-e71e93a51580 for run apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Agent Team WebSocket connected: session=6e6018d5-f94d-4453-a0c6-e71e93a51580, run=apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89
+Closed PTY session 3101c4eb-9a79-4447-81e3-8584fd420434
+Terminal WebSocket disconnected: 3101c4eb-9a79-4447-81e3-8584fd420434
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Reusing registered workspace ID: agent_ws_9fe85cb2fe65bfbd8682e47c13427814e1d45414ce1ff7bb7ddb7367a71237bc
+Published codex_app_server agent run 'aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94'.
+[CodexAppServerClient] stderr: [2m2026-09-04T14:35:32.908053Z[0m [31mERROR[0m [2mcodex_models_manager::manager[0m[2m:[0m failed to refresh available models: timeout waiting for child process to exit
+{"level":30,"time":1788532589003,"pid":34978,"hostname":"1da6e6043ac7","reqId":"req-q6","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.","stack":"Error: AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":71}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79' at '/aorg_e2e_concierge' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'."}
+{"level":30,"time":1788532589007,"pid":34978,"hostname":"1da6e6043ac7","reqId":"req-q7","err":{"type":"GraphQLError","message":"AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.","stack":"Error: AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'.\n    at AgentOrgMemberRunViewProjectionService.requireLocation (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:68:19)\n    at async AgentOrgMemberRunViewProjectionService.getProjection (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/run-history/services/agent-org-member-run-view-projection-service.js:26:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgMemberRunProjection"],"locations":[{"line":1,"column":71}],"extensions":{}},"msg":"AgentRun 'aorg_e2e_lead_WRONG' at '/apirev8_team/aorg_e2e_lead' was not found in AgentOrg 'apirev8_613529cf063144d0a9e6cd6e385d58ba'."}
+[2026-09-04T14:41:08.192Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 6e6018d5-f94d-4453-a0c6-e71e93a51580
+[2026-09-04T14:41:08.450Z] [INFO] [server.runtime] Server closed cleanly.
+=== process/port after ===

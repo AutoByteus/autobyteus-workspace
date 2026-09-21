@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { defineComponent, nextTick } from 'vue';
+import { defineComponent, nextTick, type PropType } from 'vue';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import TeamOverviewPanel from '../TeamOverviewPanel.vue';
+import CollaborationOverviewPanel from '~/components/workspace/collaboration/CollaborationOverviewPanel.vue';
 import AgentTeamEventMonitor from '../AgentTeamEventMonitor.vue';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
@@ -14,6 +14,9 @@ import {
   testSubTeamNode,
   testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
+import { testCollaborationMessagesContextView, testCollaborationTasksContextView } from '~/test-support/teamWorkspaceContextView';
+import type { CollaborationTasksContextView } from '~/types/workspace/collaborationTasksContextView';
+import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
 
 const labels: Record<string, string> = {
   'agentInput.components.agentInput.AgentUserInputTextArea.type_a_message': 'Type a message...',
@@ -32,14 +35,18 @@ const labels: Record<string, string> = {
 };
 
 const WorkflowHarness = defineComponent({
-  components: { TeamOverviewPanel, AgentTeamEventMonitor, AgentUserInputTextArea },
-  template: '<div><TeamOverviewPanel /><AgentTeamEventMonitor /><AgentUserInputTextArea data-test="workflow-composer" /></div>',
+  components: { CollaborationOverviewPanel, AgentTeamEventMonitor, AgentUserInputTextArea },
+  props: {
+    tasks: { type: Object as PropType<CollaborationTasksContextView>, required: true },
+    messages: { type: Object as PropType<CollaborationMessagesContextView>, required: true },
+  },
+  template: '<div><CollaborationOverviewPanel :tasks="tasks" :messages="messages" /><AgentTeamEventMonitor /><AgentUserInputTextArea data-test="workflow-composer" /></div>',
 });
 
-const TeamCommunicationPanelStub = defineComponent({
-  name: 'TeamCommunicationPanel',
-  props: ['teamContext', 'focusedAgentRunId'],
-  template: '<div data-test="team-communication-panel" :data-team-run-id="teamContext.view.getRootTeamRunId()" :data-focused-agent-run-id="focusedAgentRunId" />',
+const CollaborationMessagesPanelStub = defineComponent({
+  name: 'CollaborationMessagesPanel',
+  props: ['messages'],
+  template: '<div data-test="team-communication-panel" :data-team-run-id="messages.rootRunId" :data-focused-agent-run-id="messages.focusedAgentRunId" />',
 });
 
 const mountWorkflow = () => {
@@ -74,12 +81,16 @@ const mountWorkflow = () => {
   const teamRunStore = useAgentTeamRunStore();
   const sendMessageSpy = vi.spyOn(teamRunStore, 'sendMessageToFocusedMember').mockResolvedValue(undefined);
   const wrapper = mount(WorkflowHarness, {
+    props: {
+      tasks: testCollaborationTasksContextView(teamContext),
+      messages: testCollaborationMessagesContextView(teamContext),
+    },
     global: {
       stubs: {
         Icon: true,
         MarkdownRenderer: { props: ['content'], template: '<div data-test="markdown-renderer">{{ content }}</div>' },
         TeamTaskReferenceViewer: { template: '<div data-test="task-reference-viewer" />' },
-        TeamCommunicationPanel: TeamCommunicationPanelStub,
+        CollaborationMessagesPanel: CollaborationMessagesPanelStub,
         AgentEventMonitor: {
           props: ['conversation', 'runId', 'agentName'],
           template: '<div data-test="agent-event-monitor" :data-run-id="runId" :data-agent-name="agentName" />',

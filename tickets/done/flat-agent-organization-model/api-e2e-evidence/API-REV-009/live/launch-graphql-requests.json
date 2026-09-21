@@ -1,0 +1,68 @@
+[
+  {
+    "at": "2026-09-03T15:47:16.120Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"CreateAgentOrgRun\",\"variables\":{\"input\":{\"agentOrgDefinitionId\":\"aorg-mixed-org\",\"rootConfiguration\":{\"runtimeKind\":\"codex_app_server\",\"llmModelIdentifier\":\"gpt-5.6-sol\",\"llmConfig\":{\"reasoning_effort\":\"low\"},\"autoExecuteTools\":false,\"skillAccessMode\":\"PRELOADED_ONLY\",\"workspaceRootPath\":\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-default\"},\"teamOverrides\":[{\"address\":\"/research-team\",\"configuration\":{\"workspaceRootPath\":\"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team\"}}],\"agentOverrides\":[{\"address\":\"/research-team/analyst\",\"configuration\":{\"runtimeKind\":\"autobyteus\",\"llmModelIdentifier\":\"deepseek-v4-flash\",\"llmConfig\":null}}]}},\"query\":\"mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {\\n  createAgentOrgRun(input: $input) {\\n    success\\n    message\\n    agentOrgRunId\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:17.692Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"ListWorkspaceRunHistory\",\"variables\":{\"limitPerAgent\":6},\"query\":\"query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\\n    workspaceRootPath\\n    workspaceName\\n    agentDefinitions {\\n      agentDefinitionId\\n      agentName\\n      runs {\\n        runId\\n        summary\\n        createdAt\\n        archivedAt\\n        terminatedAt\\n        status\\n        isActive\\n        shouldConnectStream\\n        statusSource\\n        __typename\\n      }\\n      __typename\\n    }\\n    teamDefinitions {\\n      teamDefinitionId\\n      teamDefinitionName\\n      runs {\\n        teamRunId\\n        teamDefinitionId\\n        teamDefinitionName\\n        coordinatorAddress\\n        workspaceRootPath\\n        summary\\n        createdAt\\n        archivedAt\\n        terminatedAt\\n        isActive\\n        rootTeam\\n        members {\\n          memberAddress\\n          displayName\\n          agentRunId\\n          status\\n          runtimeKind\\n          workspaceRootPath\\n          __typename\\n        }\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:17.693Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"ListCollaborationRootHistory\",\"variables\":{},\"query\":\"query ListCollaborationRootHistory {\\n  listCollaborationRootHistory {\\n    __typename\\n    ... on AgentOrgRootHistoryObject {\\n      root_subject_kind\\n      root_run_id\\n      created_at\\n      archived_at\\n      is_active\\n      summary\\n      org\\n      __typename\\n    }\\n    ... on AgentTeamRootHistoryObject {\\n      root_subject_kind\\n      root_run_id\\n      __typename\\n    }\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.747Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"ListWorkspaceRunHistory\",\"variables\":{\"limitPerAgent\":6},\"query\":\"query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\\n    workspaceRootPath\\n    workspaceName\\n    agentDefinitions {\\n      agentDefinitionId\\n      agentName\\n      runs {\\n        runId\\n        summary\\n        createdAt\\n        archivedAt\\n        terminatedAt\\n        status\\n        isActive\\n        shouldConnectStream\\n        statusSource\\n        __typename\\n      }\\n      __typename\\n    }\\n    teamDefinitions {\\n      teamDefinitionId\\n      teamDefinitionName\\n      runs {\\n        teamRunId\\n        teamDefinitionId\\n        teamDefinitionName\\n        coordinatorAddress\\n        workspaceRootPath\\n        summary\\n        createdAt\\n        archivedAt\\n        terminatedAt\\n        isActive\\n        rootTeam\\n        members {\\n          memberAddress\\n          displayName\\n          agentRunId\\n          status\\n          runtimeKind\\n          workspaceRootPath\\n          __typename\\n        }\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.747Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"ListCollaborationRootHistory\",\"variables\":{},\"query\":\"query ListCollaborationRootHistory {\\n  listCollaborationRootHistory {\\n    __typename\\n    ... on AgentOrgRootHistoryObject {\\n      root_subject_kind\\n      root_run_id\\n      created_at\\n      archived_at\\n      is_active\\n      summary\\n      org\\n      __typename\\n    }\\n    ... on AgentTeamRootHistoryObject {\\n      root_subject_kind\\n      root_run_id\\n      __typename\\n    }\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.789Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"GetAgentOrgMemberRunProjection\",\"variables\":{\"orgRunId\":\"aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d\",\"memberAddress\":\"/concierge\",\"agentRunId\":\"aorg_e2e_concierge_50a69c0366c34ace9ae976667810e6eb\"},\"query\":\"query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\\n  getAgentOrgMemberRunProjection(\\n    orgRunId: $orgRunId\\n    memberAddress: $memberAddress\\n    agentRunId: $agentRunId\\n  ) {\\n    agentRunId\\n    memberAddress\\n    summary\\n    lastActivityAt\\n    conversation\\n    activities\\n    hasEarlierActiveTraceEvents\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.791Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"GetAgentOrgMemberRunProjection\",\"variables\":{\"orgRunId\":\"aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d\",\"memberAddress\":\"/research-team/lead\",\"agentRunId\":\"aorg_e2e_lead_636b6dc790694566bf520396cb10665e\"},\"query\":\"query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\\n  getAgentOrgMemberRunProjection(\\n    orgRunId: $orgRunId\\n    memberAddress: $memberAddress\\n    agentRunId: $agentRunId\\n  ) {\\n    agentRunId\\n    memberAddress\\n    summary\\n    lastActivityAt\\n    conversation\\n    activities\\n    hasEarlierActiveTraceEvents\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.792Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"GetAgentOrgMemberRunProjection\",\"variables\":{\"orgRunId\":\"aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d\",\"memberAddress\":\"/research-team/analyst\",\"agentRunId\":\"aorg_e2e_analyst_86c94422696d4cc2813089e968030f57\"},\"query\":\"query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\\n  getAgentOrgMemberRunProjection(\\n    orgRunId: $orgRunId\\n    memberAddress: $memberAddress\\n    agentRunId: $agentRunId\\n  ) {\\n    agentRunId\\n    memberAddress\\n    summary\\n    lastActivityAt\\n    conversation\\n    activities\\n    hasEarlierActiveTraceEvents\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.795Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"GetAgentOrgMemberRunProjection\",\"variables\":{\"orgRunId\":\"aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d\",\"memberAddress\":\"/research-team/verifier\",\"agentRunId\":\"aorg_e2e_verifier_1ee779081d764a58854ca4bd7c4190b5\"},\"query\":\"query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\\n  getAgentOrgMemberRunProjection(\\n    orgRunId: $orgRunId\\n    memberAddress: $memberAddress\\n    agentRunId: $agentRunId\\n  ) {\\n    agentRunId\\n    memberAddress\\n    summary\\n    lastActivityAt\\n    conversation\\n    activities\\n    hasEarlierActiveTraceEvents\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.796Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"GetAgentOrgMemberRunProjection\",\"variables\":{\"orgRunId\":\"aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d\",\"memberAddress\":\"/support-team/dispatcher\",\"agentRunId\":\"aorg_e2e_lead_f2eb929590884d86a0f071381e9cb391\"},\"query\":\"query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\\n  getAgentOrgMemberRunProjection(\\n    orgRunId: $orgRunId\\n    memberAddress: $memberAddress\\n    agentRunId: $agentRunId\\n  ) {\\n    agentRunId\\n    memberAddress\\n    summary\\n    lastActivityAt\\n    conversation\\n    activities\\n    hasEarlierActiveTraceEvents\\n    __typename\\n  }\\n}\"}"
+  },
+  {
+    "at": "2026-09-03T15:47:19.800Z",
+    "method": "POST",
+    "url": "http://127.0.0.1:8589/graphql",
+    "postData": "{\"operationName\":\"GetAgentOrgMemberRunProjection\",\"variables\":{\"orgRunId\":\"aorg_e2e_mixed_org_b42a161089a84f31b6fc294be822871d\",\"memberAddress\":\"/support-team/specialist\",\"agentRunId\":\"aorg_e2e_verifier_a3719e0bd8e5461ca3af8275d798daa3\"},\"query\":\"query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\\n  getAgentOrgMemberRunProjection(\\n    orgRunId: $orgRunId\\n    memberAddress: $memberAddress\\n    agentRunId: $agentRunId\\n  ) {\\n    agentRunId\\n    memberAddress\\n    summary\\n    lastActivityAt\\n    conversation\\n    activities\\n    hasEarlierActiveTraceEvents\\n    __typename\\n  }\\n}\"}"
+  }
+]

@@ -24,8 +24,12 @@ describe("definition catalog refresh GraphQL boundary", () => {
     const handle = configureStudioApplicationApiServices({
       agentDefinitionService,
       agentTeamDefinitionService,
+      agentOrgDefinitionService: {} as never,
       agentRunService: {} as never,
       teamRunService: {} as never,
+      agentOrgRunService: {} as never,
+      definitionAdmissionService: {} as never,
+      collaborationRootHistoryService: {} as never,
       runModelConfigService: {} as never,
       bundleService: {} as ApplicationBundleService,
       capabilityService: {} as never,

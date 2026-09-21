@@ -1,0 +1,6 @@
+migrationId=20260803_custom_provider_readable_identity
+displayName=Custom provider readable identity reset
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"readable-provider-reset","status":"SKIPPED","message":"CUSTOM_PROVIDER_READABLE_ID_NOT_REQUIRED","filePath":"/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-002/followup-api-find008-settlement/live-data-settlement/llm/custom-llm-providers.json"}

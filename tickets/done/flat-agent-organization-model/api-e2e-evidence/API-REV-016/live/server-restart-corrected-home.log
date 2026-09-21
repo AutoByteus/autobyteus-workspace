@@ -1,0 +1,144 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env
+Loading environment from: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env
+[dotenv@17.3.1] injecting env (23) from ../tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8596
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8596
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data
+DB DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db
+LOGS DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/server-data/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:7126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-06T14:40:06.061Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-016/runtime/workspace-default with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-06T14:40:06.416Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-06T14:40:06.423Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1788705606432,"pid":7126,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:38567"}
+{"level":30,"time":1788705606472,"pid":7126,"hostname":"17de3252c4f7","msg":"Server listening at http://127.0.0.1:8596"}
+[2026-09-06T14:40:06.472Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8596
+[2026-09-06T14:40:06.474Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8596
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-008/live/workspace.
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-009/live/workspace-team.
+Created terminal session 2c309762-0687-418a-9e07-cc30180316fe using backend PtySession for target /root
+Terminal WebSocket connected: 2c309762-0687-418a-9e07-cc30180316fe
+Terminal websocket attached for cwd /root
+{"level":40,"time":1788705619781,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.6347500011324883,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1788705638390,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":1.1819580048322678,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1788705638398,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-2","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":202,"elapsedMs":0.3639589995145798,"msg":"http request completed"}
+{"level":30,"time":1788705638400,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-3","method":"POST","url":"/mcp/agent-tools/agtrun_Rzx5jQHre6Kb2YCOM2W2xA6BOjz-NkeMB_Ez3kM57h8","statusCode":200,"elapsedMs":0.619208998978138,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1788705638515,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":200,"elapsedMs":0.715999998152256,"msg":"http request completed"}
+{"level":30,"time":1788705638516,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":202,"elapsedMs":0.4259580001235008,"msg":"http request completed"}
+{"level":30,"time":1788705638523,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-6","method":"POST","url":"/mcp/agent-tools/agtrun_bllaQDbBiuOFACB3ARdBrSaeOU1ZJdL1DOJOhG13V2E","statusCode":200,"elapsedMs":5.947499997913837,"msg":"http request completed"}
+Published codex_app_server agent run 'aorg_e2e_lead_40ab463de3a341a18ba9756664500250'.
+Published codex_app_server agent run 'aorg_e2e_analyst_2a21999581844306a7ccd14f44c7c726'.
+Published codex_app_server agent run 'aorg_e2e_verifier_a551d3d43aea4ffca2453ac2ba069d26'.
+{"level":30,"time":1788705638600,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-7","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":200,"elapsedMs":1.0185410007834435,"msg":"http request completed"}
+{"level":30,"time":1788705638602,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-8","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":202,"elapsedMs":0.2718750014901161,"msg":"http request completed"}
+{"level":30,"time":1788705638608,"pid":7126,"hostname":"17de3252c4f7","reqId":"req-9","method":"POST","url":"/mcp/agent-tools/agtrun_WzhuDZuPtvKEKCsAUxOe0wlZuOkTQyoTBnt8oWOjbPc","statusCode":200,"elapsedMs":0.7504170015454292,"msg":"http request completed"}
+Agent team websocket attached for team run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Created agent session 0f880771-7b74-46f9-8a59-9595d0ed2caf for run aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Agent Team WebSocket connected: session=0f880771-7b74-46f9-8a59-9595d0ed2caf, run=aorg_e2e_research_squad_1cfb7cc5ac8b4f0ba208f3c8f1686a0a
+Closed agent session 0f880771-7b74-46f9-8a59-9595d0ed2caf
+[2026-09-06T14:42:18.138Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed PTY session 2c309762-0687-418a-9e07-cc30180316fe
+Terminal WebSocket disconnected: 2c309762-0687-418a-9e07-cc30180316fe
+[2026-09-06T14:42:18.185Z] [INFO] [server.runtime] Server closed cleanly.

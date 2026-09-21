@@ -1,0 +1,7 @@
+
+> autobyteus-server-ts@0.1.1 prebuild /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+sh: 1: pnpm: not found
+ ELIFECYCLE  Command failed.
+exit_status=1

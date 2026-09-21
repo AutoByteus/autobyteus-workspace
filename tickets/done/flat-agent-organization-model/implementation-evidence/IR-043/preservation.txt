@@ -1,0 +1,3 @@
+11545 starting other-owner hashes; changed=0
+Own source/tests and safe IR-043 artifacts selectively committed.
+Own temporary renderer route/process and initially absent SDK dist removed.

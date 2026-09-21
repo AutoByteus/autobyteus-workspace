@@ -1,0 +1,84 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "No active team runs AV AORG Validation Team (1)" [expanded]:
+    - img "No active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - button "Inactive team run Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll..." [expanded]:
+    - img "Inactive team run"
+    - generic: Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll...
+  - button "Archive team history":
+  - button "Delete team history permanently":
+  - generic: 4m
+  - tree "Use read_file exactly once to read the attached activity-note.txt. Reply with its first line foll... organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 4m
+    - treeitem "Agent, worker, level 1, offline, /worker" [active] [level=1] [selected]:
+      - generic: W
+      - generic: worker
+      - generic: 4m
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: 4m
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: W
+  - heading "worker" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: "You received a message from sender name: lead, sender id: aorg_validation_agent_8738bf014c4c4574bd07a4d948135562 message: Reply TEAM-WORKER-ONE only; do not use tools."
+  - generic: W
+  - generic: worker
+  - paragraph: TEAM-WORKER-ONE
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team"
+    - tab "Terminal"
+    - tab "Activity" [selected]: Activity
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 1 Events
+  - article:
+    - button "System instructions. AutoByteus-supplied · Codex baseInstructions. Available. Captured 14.09.2026, 16:13:12. 6197 characters.":
+      - generic: System instructions
+      - generic: AutoByteus-supplied · Codex baseInstructions
+      - generic: Captured 14.09.2026, 16:13:12 · 6197 characters
+      - generic: Available

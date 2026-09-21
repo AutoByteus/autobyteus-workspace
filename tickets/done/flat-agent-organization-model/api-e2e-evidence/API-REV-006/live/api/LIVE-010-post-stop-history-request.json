@@ -1,0 +1,1 @@
+{"query":"query Live010History { listCollaborationRootHistory { __typename ... on AgentTeamRootHistoryObject { root_subject_kind root_run_id is_active archived_at summary team } ... on AgentOrgRootHistoryObject { root_subject_kind root_run_id is_active } } }"}

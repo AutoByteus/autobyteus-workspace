@@ -1,0 +1,45 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts components/conversation/__tests__/UserMessageHistoryFiles.spec.ts utils/contextFiles/__tests__/contextAttachmentModel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-web
+
+stderr | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/contextFiles/__tests__/contextAttachmentModel.spec.ts (9 tests) 7ms
+ ✓ components/conversation/__tests__/UserMessageHistoryFiles.spec.ts (4 tests) 20ms
+stdout | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts (3 tests) 59ms
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  17:40:58
+   Duration  12.33s (transform 6.50s, setup 23.37s, collect 3.15s, tests 86ms, environment 2.10s, prepare 1.13s)
+

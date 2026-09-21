@@ -109,15 +109,23 @@ class SealedApplicationAgentToolCapability implements ApplicationAgentToolCapabi
     ) {
       throw new Error("Application tool execution identity is inconsistent.");
     }
-    const memberIdentity = sender.memberTeamContext?.identity ?? null;
+    const memberIdentity = sender.memberExecutionContext?.identity ?? null;
     if (memberIdentity && memberIdentity.agentRunId !== sender.senderRunId) {
       throw new Error("Application Team producer identity is inconsistent.");
+    }
+    if (memberIdentity?.root.rootSubjectKind === "agent_org") {
+      throw new Error("Application execution scopes do not admit AgentOrg producers.");
     }
     return Object.freeze({
       applicationId: executionContext.applicationId,
       bindingId: executionContext.bindingId,
       producer: memberIdentity
-        ? Object.freeze({ kind: "team_member" as const, ...memberIdentity })
+        ? Object.freeze({
+            kind: "team_member" as const,
+            rootTeamRunId: memberIdentity.root.rootRunId,
+            memberAddress: memberIdentity.memberAddress,
+            agentRunId: memberIdentity.agentRunId,
+          })
         : Object.freeze({ kind: "agent" as const, agentRunId: sender.senderRunId }),
     });
   }

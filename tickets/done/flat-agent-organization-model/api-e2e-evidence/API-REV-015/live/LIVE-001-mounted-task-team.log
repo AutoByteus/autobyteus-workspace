@@ -1,0 +1,9 @@
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-001-mounted-task-team.mjs:23
+  throw new Error(`Timed out waiting for ${label}.`);
+        ^
+
+Error: Timed out waiting for one durable delegated Team task.
+    at waitFor (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-001-mounted-task-team.mjs:23:9)
+    at async file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/live/LIVE-001-mounted-task-team.mjs:90:20
+
+Node.js v22.23.2

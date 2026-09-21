@@ -1,0 +1,59 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/readable-org-catalog-member-names/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/readable-org-catalog-member-names/autobyteus-web
+
+stderr | components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts (1 test | 1 failed) 25ms
+   × ordinary Org list exact member names > shows actual Agent/Team names for owned/shared refs without detail or catalog insertion and reads no Team children 24ms
+     → expected [ …(4) ] to deeply equal [ 'Actual Research Team', …(3) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts > ordinary Org list exact member names > shows actual Agent/Team names for owned/shared refs without detail or catalog insertion and reads no Team children
+AssertionError: expected [ …(4) ] to deeply equal [ 'Actual Research Team', …(3) ]
+
+- Expected
++ Received
+
+  [
+-   "Actual Research Team",
+-   "Actual Director",
+-   "Shared Team Name",
+-   "Shared Agent Name",
++   "agent-org-owned-team:alpha:squad",
++   "agent-org-owned-agent:alpha:guide",
++   "shared-team",
++   "shared-agent",
+  ]
+
+ ❯ components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts:46:38
+     44|     const w = mountList(); await flushPromises()
+     45|     const chips = w.findAll('[data-test^="org-member-"]')
+     46|     expect(chips.map(c => c.text())).toEqual(names)
+       |                                      ^
+     47|     expect(chips.map(c => c.attributes('aria-label'))).toEqual(['Team …
+     48|     expect(io.query.mock.calls.map(([request]) => request.variables.id…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  11:15:38
+   Duration  7.46s (transform 2.88s, setup 6.80s, collect 166ms, tests 25ms, environment 129ms, prepare 122ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

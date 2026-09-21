@@ -1,0 +1,9 @@
+{
+  "actualMemoryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl",
+  "userTraceCount": 1,
+  "assistant": [
+    "STORAGE-RECOVERY-R3"
+  ],
+  "permissionRestored": true,
+  "qualification": "Earlier diagnostic zero-user check used direct-member path; wrong for mounted physical scope. Pre-retry no accepted runtime/tree unchanged evidence remains, final exact mounted trace contains one user message."
+}

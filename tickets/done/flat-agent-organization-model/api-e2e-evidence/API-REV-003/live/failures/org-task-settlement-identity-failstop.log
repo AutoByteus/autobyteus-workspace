@@ -1,0 +1,61 @@
+255-Published codex_app_server agent run 'aorg_e2e_verifier_462a1b085363459288b635b084f508ef'.
+256-Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+257-Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-003/live/server-data/temp_workspace
+258-FileExplorerSession closed: a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3
+259-Closed file explorer session a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3. Active sessions: 0
+260-File explorer WebSocket disconnected: a0ebbaf0-ed2e-4fb0-b6a2-4fa74b5487f3
+261-Resolved configured temp workspace root to TempWorkspace.
+262-Published codex_app_server agent run 'aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6'.
+263:[AgentRun] listener failed for run 'aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6': Error: AgentRun 'aorg_e2e_analyst_0762fbf83b7b4893ac59fd8d5e953fc6' does not resolve to the supplied member identity.
+264:Task 'task_a74ec579d8d34fb58ca5788856b5486b' settlement failed: RootTaskFailStoppedError: Task delegation stopped because root persistence authority is indeterminate.
+265-    at RootTaskLifecycleCommandQueue.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-command-queue.js:35:23)
+266-    at RootTaskLifecycleEngine.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-engine.js:27:20)
+267-    at AgentOrgRun.enterFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:317:25)
+268-    at AgentOrgRun.onAgentExecutionEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:173:18)
+269-    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/services/agent-org-execution-scope-builder.js:51:21)
+270-    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/local/flat-team-agent-execution-handle.js:82:78)
+271-    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:253:36
+272-    at dispatchRuntimeEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/shared/runtime-event-dispatch.js:4:13)
+273-    at AgentRun.dispatchCanonicalStatus (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:442:9)
+274-    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:435:18
+275:Task 'task_a74ec579d8d34fb58ca5788856b5486b' settlement failed: RootTaskFailStoppedError: Task delegation stopped because root persistence authority is indeterminate.
+276-    at RootTaskLifecycleCommandQueue.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-command-queue.js:35:23)
+277-    at RootTaskLifecycleEngine.enterRootFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/task/root-task-lifecycle-engine.js:27:20)
+278-    at AgentOrgRun.enterFailStop (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:317:25)
+279-    at AgentOrgRun.onAgentExecutionEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js:173:18)
+280-    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-org-execution/services/agent-org-execution-scope-builder.js:51:21)
+281-    at Object.publishAgentEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/local/flat-team-agent-execution-handle.js:82:78)
+282-    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:253:36
+283-    at dispatchRuntimeEvent (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/backends/shared/runtime-event-dispatch.js:4:13)
+284-    at AgentRun.dispatchCanonicalStatus (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:442:9)
+285-    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-execution/domain/agent-run.js:435:18
+286-Created terminal session 158cd2cb-9c51-4b77-9ea4-e57008daec46 using backend PtySession for target /root
+287-Terminal WebSocket connected: 158cd2cb-9c51-4b77-9ea4-e57008daec46
+288-Terminal websocket attached for cwd /root
+289-{"level":40,"time":1788302259196,"pid":42474,"hostname":"0d2d48492ef2","reqId":"req-8t","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.4048750009387732,"msg":"http request completed"}
+290-Closed PTY session 158cd2cb-9c51-4b77-9ea4-e57008daec46
+291-Terminal WebSocket disconnected: 158cd2cb-9c51-4b77-9ea4-e57008daec46
+292-[CodexAppServerClient] stderr: [2m2026-09-01T22:38:01.238811Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+293-Created terminal session c2edd7bf-3613-45a1-a023-36d34c9ab3c9 using backend PtySession for target /root
+294-Terminal WebSocket connected: c2edd7bf-3613-45a1-a023-36d34c9ab3c9
+295-Terminal websocket attached for cwd /root
+296-Resolved configured temp workspace root to TempWorkspace.
+297-[CodexAppServerClient] stderr: [2m2026-09-01T22:39:20.620167Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+298-Resolved configured temp workspace root to TempWorkspace.
+299-[CodexClientThreadRouter] app-server message was not routed {
+300-  kind: 'notification',
+301-  method: 'deprecationNotice',
+302-  requestId: undefined,
+303-  threadCount: 2,
+304-  paramKeys: [ 'summary', 'details' ]
+305-}
+306-Resolved configured temp workspace root to TempWorkspace.
+307-[CodexClientThreadRouter] app-server message was not routed {
+308-  kind: 'notification',
+309-  method: 'deprecationNotice',
+310-  requestId: undefined,
+311-  threadCount: 3,
+312-  paramKeys: [ 'summary', 'details' ]
+313-}
+314-Resolved configured temp workspace root to TempWorkspace.
+315-[CodexClientThreadRouter] app-server message was not routed {

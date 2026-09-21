@@ -1,0 +1,23 @@
+{
+  "address": "/",
+  "teamRunId": null,
+  "taskExecutions": []
+}
+{
+  "address": "/research-team",
+  "teamRunId": "aorg_e2e_research_squad_eeea03887cec488ab7e8e694b9ebb48a",
+  "taskExecutions": [
+    {
+      "address": "/research-team/analyst",
+      "agentRunId": "aorg_e2e_analyst_a6027675f12f4c8091207e6ea5704344",
+      "platformAgentRunId": "01a06175-25d4-7a62-b159-f579ef1f6e2e",
+      "startedAt": "2026-09-02T09:31:02.463Z",
+      "settledAt": "2026-09-02T09:33:29.801Z"
+    }
+  ]
+}
+{
+  "address": "/support-team",
+  "teamRunId": "aorg_e2e_support_pair_0046ca10479a410d92dda7de38ff4f4d",
+  "taskExecutions": []
+}

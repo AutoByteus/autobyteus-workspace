@@ -1,0 +1,20 @@
+{
+  "nonempty_line_counts": {
+    "autobyteus-web/components/agentOrgs/AgentOrgAvatar.vue": 13,
+    "autobyteus-web/components/agentOrgs/AgentOrgAvatarEditor.vue": 56,
+    "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue": 402,
+    "autobyteus-web/components/common/ConfirmationModal.vue": 74,
+    "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue": 188,
+    "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue": 430,
+    "autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue": 397,
+    "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts": 90,
+    "autobyteus-web/composables/useRunHistoryAvatarState.ts": 194,
+    "autobyteus-web/localization/messages/en/agentOrgs.ts": 73,
+    "autobyteus-web/localization/messages/en/workspace.ts": 408,
+    "autobyteus-web/localization/messages/zh-CN/agentOrgs.ts": 73,
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts": 407,
+    "autobyteus-web/stores/agentOrgDefinitionStore.ts": 99
+  },
+  "maximum": 430,
+  "over_500": {}
+}

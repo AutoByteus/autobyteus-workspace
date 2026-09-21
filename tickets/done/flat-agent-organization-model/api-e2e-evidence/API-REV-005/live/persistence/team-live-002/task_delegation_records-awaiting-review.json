@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_b64ab122404a414ca49c5da44ef9bfc0",
+  "records": [
+    {
+      "taskId": "task_67c02e48943849ffac37231cc7e2bf63",
+      "delegatorAgentRunId": "aorg_e2e_lead_3535c877f616405288e243edb38a1ef6",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_875c5eba2b4442a5b161af199d41943a"
+      },
+      "description": "Produce a two-stage validation result. First send an ordinary message to /lead whose first line is exactly APIREV5-ANALYST-LIVE-ONE and whose second line says the task is active. Then inspect the provided objective carefully and do a second visible work step before calling submit_task_result. Submit exactly APIREV5-TASK-SUBMISSION-V1 followed by a concise statement that standalone Team task routing succeeded. Do not call review_task_result.",
+      "referenceFiles": [],
+      "status": "awaiting_review",
+      "updates": [
+        {
+          "submissionId": "submission_0e729ed2ef2e4280b7ae675ca3ec0b8f",
+          "message": "APIREV5-TASK-SUBMISSION-V1\nStandalone Team task routing succeeded.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T09:22:11.728Z"
+        }
+      ],
+      "createdAt": "2026-09-02T09:21:46.441Z"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "identities": [
+    {
+      "agentRunId": "aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa",
+      "before": "01a09e0a-d9c1-7fe2-bed8-3eb48289a5f3",
+      "after": "01a09e0a-d9c1-7fe2-bed8-3eb48289a5f3",
+      "existingBoundIdentityPreserved": true
+    },
+    {
+      "agentRunId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "before": null,
+      "after": "01a09e14-07d6-7eb2-b0ba-b0f575e029a5",
+      "existingBoundIdentityPreserved": null
+    },
+    {
+      "agentRunId": "aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588",
+      "before": null,
+      "after": null,
+      "existingBoundIdentityPreserved": null
+    },
+    {
+      "agentRunId": "aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860",
+      "before": null,
+      "after": null,
+      "existingBoundIdentityPreserved": null
+    },
+    {
+      "agentRunId": "aorg_validation_agent_88444438ccbd45ebbafcee769accca27",
+      "before": "01a09e0b-6c2d-7751-a6a4-7daf6262f8a3",
+      "after": "01a09e0b-6c2d-7751-a6a4-7daf6262f8a3",
+      "existingBoundIdentityPreserved": true
+    },
+    {
+      "agentRunId": "aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9",
+      "before": null,
+      "after": null,
+      "existingBoundIdentityPreserved": null
+    },
+    {
+      "agentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "before": null,
+      "after": null,
+      "existingBoundIdentityPreserved": null
+    },
+    {
+      "agentRunId": "aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181",
+      "before": "01a09e0c-a5af-7d33-963d-80ee9081027e",
+      "after": "01a09e0c-a5af-7d33-963d-80ee9081027e",
+      "existingBoundIdentityPreserved": true
+    },
+    {
+      "agentRunId": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+      "before": null,
+      "after": null,
+      "existingBoundIdentityPreserved": null
+    }
+  ],
+  "attachmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/context_files/ctx_fb4ff5336e0e__attachment-rev001.txt",
+  "content": "ATTACHMENT-CONTENT-REV001-ORANGE-731\n",
+  "sha256": "f56047aed23652d4a43d4919da0eb1f70d34403e2ba4952b0a5b20953bc26ec4",
+  "communicationSidecars": {
+    "agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/agent_org_communication_messages.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "orgRunId": "aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3",
+      "messages": [
+        {
+          "messageId": "collabmsg_OqoAJgWJCf5vFTS48PRDBl6BbOg6Of7A",
+          "senderAgentRunId": "aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa",
+          "receiverAgentRunId": "aorg_validation_agent_88444438ccbd45ebbafcee769accca27",
+          "content": "Reply with ORG-PEER-C-REV001 and the marker you remembered before restart. Do not use tools.",
+          "messageType": "agent_message",
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T03:56:05.505Z"
+        }
+      ]
+    },
+    "agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/team_communication_messages.json": {
+      "schemaVersion": 1,
+      "rootTeamRunId": "aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+      "messages": []
+    }
+  }
+}

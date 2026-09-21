@@ -1,0 +1,17 @@
+cleanup_timestamp=2026-09-06T00:20:08Z
+owned_ports_after_cleanup:
+none
+isolated_history_index_state:
+f 2110 agent_org_run_history_index.json
+isolated_server_process:
+none
+normal_server_process:
+none
+fixture_hash_check:
+18/18 OK; see fixture-hash-after.log
+browser_tabs_after_cleanup:
+[]; persistent tab 1 closed via close_tab
+generated_build_outputs:
+removed untracked autobyteus-application-backend-sdk/dist and autobyteus-application-sdk-contracts/dist created by documented build; evidence logs retained
+sensitive_copied_files:
+removed 14 isolated copied .env / *.secret.key files; retained redacted environment logs only; see sensitive-file-cleanup.log

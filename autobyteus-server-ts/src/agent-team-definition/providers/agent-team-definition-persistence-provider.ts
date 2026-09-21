@@ -1,4 +1,4 @@
-import { AgentTeamDefinition } from "../domain/models.js";
+import { AgentTeamDefinition } from "../domain/agent-team-definition.js";
 import { FileAgentTeamDefinitionProvider } from "./file-agent-team-definition-provider.js";
 
 export type AgentTeamDefinitionProviderContract = {

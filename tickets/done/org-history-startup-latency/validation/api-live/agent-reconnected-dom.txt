@@ -1,0 +1,99 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "LA Latency Agent (1)" [expanded]:
+    - generic: LA
+    - generic: Latency Agent
+    - generic: (1)
+  - button "使用此智能体开始新的运行":
+  - button "Reply exactly LATENCY-AGENT-917. Do not call tools. 终止运行 6m" [active]:
+    - generic: Reply exactly LATENCY-AGENT-917. Do not call tools.
+    - button "终止运行":
+    - generic: 6m
+  - generic: Teams
+  - button "无活跃团队运行 Latency Team (1)" [expanded]:
+    - img "无活跃团队运行"
+    - generic: Latency Team
+    - generic: (1)
+  - button "非活跃团队运行 Reply exactly LATENCY-TEAM-917. Do not call tools." [expanded]:
+    - img "非活跃团队运行"
+    - generic: Reply exactly LATENCY-TEAM-917. Do not call tools.
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 5m
+  - tree "Reply exactly LATENCY-TEAM-917. Do not call tools.组织树":
+    - treeitem "智能体，lead，第 1 级，离线，/lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 5m
+  - generic: 组织
+  - button "Latency Org (1)" [expanded]:
+    - generic: Latency Org
+    - generic: (1)
+  - button "折叠 Reply exactly LATENCY-ORG-917. Do not call tools. 下的成员" [expanded]:
+  - treeitem "已停止 Reply exactly LATENCY-ORG-917. Do not call tools.":
+    - generic "已停止"
+    - generic: Reply exactly LATENCY-ORG-917. Do not call tools.
+  - generic: 5 分钟
+  - tree "Latency Org 执行层级":
+    - treeitem "guide, 离线, /guide, latency_agent_6fe64ab4f7524226b550158b338ec219" [level=1]:
+      - generic: G
+      - generic: guide
+    - treeitem "squad. 团队状态：离线" [level=1]:
+      - img "团队状态：离线"
+      - generic: squad
+  - button "设置":
+    - generic: 设置
+- main:
+  - generic: LA
+  - heading "Latency Agent - 49C2" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "编辑配置":
+  - button "新建智能体":
+  - generic: You
+  - generic: Reply exactly LATENCY-AGENT-917. Do not call tools.
+  - generic: LA
+  - generic: Latency Agent
+  - paragraph: LATENCY-AGENT-917
+  - button "Context Files (0) （拖动、粘贴或上传）" [expanded]:
+    - generic: Context Files (0)
+    - generic: （拖动、粘贴或上传）
+  - button "上传文件":
+  - textbox "输入消息..."
+  - button "Send message" [disabled]:
+  - tablist "工作区工具":
+    - tab "文件"
+    - tab "终端"
+    - tab "活动" [selected]: 活动
+    - tab "Token"
+    - tab "产物"
+    - tab "VNC 查看器"
+  - button "切换侧边栏":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 1 Events
+  - article:
+    - button "系统指令。由 AutoByteus 提供 · Native 已配置系统提示词。可用。捕获于 17.09.2026, 07:55:42。2727 个字符。":
+      - generic: 系统指令
+      - generic: 由 AutoByteus 提供 · Native 已配置系统提示词
+      - generic: 捕获于 17.09.2026, 07:55:42 · 2727 个字符
+      - generic: 可用

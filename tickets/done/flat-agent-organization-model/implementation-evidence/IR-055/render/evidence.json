@@ -1,0 +1,3130 @@
+{
+  "observations": [
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/direct/context_files/ctx_476e487192f0__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/direct/context_files/ctx_476e487192f0__diagram.png",
+          "displayName": "ctx_476e487192f0__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_07479d3a28c1__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+          "storedFilename": "ctx_07479d3a28c1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_166574a2d4b4__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_166574a2d4b4__report.pdf",
+          "storedFilename": "ctx_166574a2d4b4__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkwNzQ:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/direct/context_files/ctx_476e487192f0__diagram.png",
+          "displayName": "ctx_476e487192f0__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkwNzQ:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+          "storedFilename": "ctx_07479d3a28c1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkwNzQ:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_166574a2d4b4__report.pdf",
+          "storedFilename": "ctx_166574a2d4b4__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/repeat/context_files/ctx_931d3f989ac3__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/repeat/context_files/ctx_931d3f989ac3__diagram.png",
+          "displayName": "ctx_931d3f989ac3__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_649f7d4c5eff__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+          "storedFilename": "ctx_649f7d4c5eff__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_8bc7ab187813__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_8bc7ab187813__report.pdf",
+          "storedFilename": "ctx_8bc7ab187813__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkxNzQ:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/repeat/context_files/ctx_931d3f989ac3__diagram.png",
+          "displayName": "ctx_931d3f989ac3__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkxNzQ:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+          "storedFilename": "ctx_649f7d4c5eff__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkxNzQ:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_8bc7ab187813__report.pdf",
+          "storedFilename": "ctx_8bc7ab187813__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/team/lead/context_files/ctx_646e3485e526__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/team/lead/context_files/ctx_646e3485e526__diagram.png",
+          "displayName": "ctx_646e3485e526__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c9fe927d5d99__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+          "storedFilename": "ctx_c9fe927d5d99__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ed28e4da907f__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_ed28e4da907f__report.pdf",
+          "storedFilename": "ctx_ed28e4da907f__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkyNjY:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/team/lead/context_files/ctx_646e3485e526__diagram.png",
+          "displayName": "ctx_646e3485e526__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkyNjY:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+          "storedFilename": "ctx_c9fe927d5d99__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkyNjY:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_ed28e4da907f__report.pdf",
+          "storedFilename": "ctx_ed28e4da907f__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/task-team/task-lead/context_files/ctx_4e731b0f7030__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/task-team/task-lead/context_files/ctx_4e731b0f7030__diagram.png",
+          "displayName": "ctx_4e731b0f7030__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_38521e602b18__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+          "storedFilename": "ctx_38521e602b18__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c5262c4f1ac5__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c5262c4f1ac5__report.pdf",
+          "storedFilename": "ctx_c5262c4f1ac5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkzNTA:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/task-team/task-lead/context_files/ctx_4e731b0f7030__diagram.png",
+          "displayName": "ctx_4e731b0f7030__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkzNTA:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+          "storedFilename": "ctx_38521e602b18__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkzNTA:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c5262c4f1ac5__report.pdf",
+          "storedFilename": "ctx_c5262c4f1ac5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agents/standalone/context_files/ctx_4f0917f5f8cb__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agents/standalone/context_files/ctx_4f0917f5f8cb__diagram.png",
+          "displayName": "ctx_4f0917f5f8cb__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_38bc2712bc82__notes.txt",
+          "locator": "/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+          "storedFilename": "ctx_38bc2712bc82__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_20259346d81c__report.pdf",
+          "locator": "/rest/runs/standalone/context-files/ctx_20259346d81c__report.pdf",
+          "storedFilename": "ctx_20259346d81c__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk0Mjg:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agents/standalone/context_files/ctx_4f0917f5f8cb__diagram.png",
+          "displayName": "ctx_4f0917f5f8cb__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk0Mjg:user:0:attachment:file:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+          "storedFilename": "ctx_38bc2712bc82__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk0Mjg:user:0:attachment:file:1",
+          "locator": "/rest/runs/standalone/context-files/ctx_20259346d81c__report.pdf",
+          "storedFilename": "ctx_20259346d81c__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_teams/standalone-team/standalone-lead/context_files/ctx_09f9a06ec83e__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_teams/standalone-team/standalone-lead/context_files/ctx_09f9a06ec83e__diagram.png",
+          "displayName": "ctx_09f9a06ec83e__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_4a2d1de0c6d1__notes.txt",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+          "storedFilename": "ctx_4a2d1de0c6d1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ca9f94560156__report.pdf",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_ca9f94560156__report.pdf",
+          "storedFilename": "ctx_ca9f94560156__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk1MTI:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_teams/standalone-team/standalone-lead/context_files/ctx_09f9a06ec83e__diagram.png",
+          "displayName": "ctx_09f9a06ec83e__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk1MTI:user:0:attachment:file:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+          "storedFilename": "ctx_4a2d1de0c6d1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk1MTI:user:0:attachment:file:1",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_ca9f94560156__report.pdf",
+          "storedFilename": "ctx_ca9f94560156__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2bb258892d6d__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2bb258892d6d__diagram.png",
+          "storedFilename": "ctx_2bb258892d6d__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_d9e151f9226c__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+          "storedFilename": "ctx_d9e151f9226c__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_adf15b7ee2e5__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_adf15b7ee2e5__report.pdf",
+          "storedFilename": "ctx_adf15b7ee2e5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk2MjdfM2NhOTVlODEtNTIzMC00MmRjLTg0NWYtODZmNTM3MDhhZjA0:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2bb258892d6d__diagram.png",
+          "storedFilename": "ctx_2bb258892d6d__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk2MjdfM2NhOTVlODEtNTIzMC00MmRjLTg0NWYtODZmNTM3MDhhZjA0:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+          "storedFilename": "ctx_d9e151f9226c__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk2MjdfM2NhOTVlODEtNTIzMC00MmRjLTg0NWYtODZmNTM3MDhhZjA0:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_adf15b7ee2e5__report.pdf",
+          "storedFilename": "ctx_adf15b7ee2e5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_9a7ab756dd02__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a7ab756dd02__diagram.png",
+          "storedFilename": "ctx_9a7ab756dd02__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ad532d7d0fb6__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+          "storedFilename": "ctx_ad532d7d0fb6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_5830ba8d8ed5__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_5830ba8d8ed5__report.pdf",
+          "storedFilename": "ctx_5830ba8d8ed5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3MTRfOTliMjgwZmItNTQyMy00YThlLTg0MGQtY2U3NGEyNTAxNDll:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a7ab756dd02__diagram.png",
+          "storedFilename": "ctx_9a7ab756dd02__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3MTRfOTliMjgwZmItNTQyMy00YThlLTg0MGQtY2U3NGEyNTAxNDll:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+          "storedFilename": "ctx_ad532d7d0fb6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3MTRfOTliMjgwZmItNTQyMy00YThlLTg0MGQtY2U3NGEyNTAxNDll:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_5830ba8d8ed5__report.pdf",
+          "storedFilename": "ctx_5830ba8d8ed5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_154a4ef6ca94__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_154a4ef6ca94__diagram.png",
+          "storedFilename": "ctx_154a4ef6ca94__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_0a5103ade468__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+          "storedFilename": "ctx_0a5103ade468__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_6491b2205e5d__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_6491b2205e5d__report.pdf",
+          "storedFilename": "ctx_6491b2205e5d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3OThfOGQ2YmI1YmItNDFiZC00NGZiLTkzYWQtYTRiNjdhMzY2Y2Vj:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_154a4ef6ca94__diagram.png",
+          "storedFilename": "ctx_154a4ef6ca94__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3OThfOGQ2YmI1YmItNDFiZC00NGZiLTkzYWQtYTRiNjdhMzY2Y2Vj:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+          "storedFilename": "ctx_0a5103ade468__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3OThfOGQ2YmI1YmItNDFiZC00NGZiLTkzYWQtYTRiNjdhMzY2Y2Vj:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_6491b2205e5d__report.pdf",
+          "storedFilename": "ctx_6491b2205e5d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_250dacd310e8__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_250dacd310e8__diagram.png",
+          "storedFilename": "ctx_250dacd310e8__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c38b7e8eb7c8__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+          "storedFilename": "ctx_c38b7e8eb7c8__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_bf5a56febb1d__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_bf5a56febb1d__report.pdf",
+          "storedFilename": "ctx_bf5a56febb1d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk4ODFfOGU1ODFiODMtN2I4Zi00NmYxLThlZmEtMjk0YWVmYTM2ODk1:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_250dacd310e8__diagram.png",
+          "storedFilename": "ctx_250dacd310e8__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk4ODFfOGU1ODFiODMtN2I4Zi00NmYxLThlZmEtMjk0YWVmYTM2ODk1:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+          "storedFilename": "ctx_c38b7e8eb7c8__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk4ODFfOGU1ODFiODMtN2I4Zi00NmYxLThlZmEtMjk0YWVmYTM2ODk1:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_bf5a56febb1d__report.pdf",
+          "storedFilename": "ctx_bf5a56febb1d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2887e5607ab0__diagram.png",
+          "locator": "/rest/runs/standalone/context-files/ctx_2887e5607ab0__diagram.png",
+          "storedFilename": "ctx_2887e5607ab0__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ca7540693360__notes.txt",
+          "locator": "/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+          "storedFilename": "ctx_ca7540693360__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_15cb4a36b487__report.pdf",
+          "locator": "/rest/runs/standalone/context-files/ctx_15cb4a36b487__report.pdf",
+          "storedFilename": "ctx_15cb4a36b487__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk5NTdfYmUwNGRhOWEtMzNhMS00OGQxLTljMjAtZWU0MTZkZDIxMWQ2:user:0:attachment:image:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_2887e5607ab0__diagram.png",
+          "storedFilename": "ctx_2887e5607ab0__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk5NTdfYmUwNGRhOWEtMzNhMS00OGQxLTljMjAtZWU0MTZkZDIxMWQ2:user:0:attachment:file:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+          "storedFilename": "ctx_ca7540693360__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk5NTdfYmUwNGRhOWEtMzNhMS00OGQxLTljMjAtZWU0MTZkZDIxMWQ2:user:0:attachment:file:1",
+          "locator": "/rest/runs/standalone/context-files/ctx_15cb4a36b487__report.pdf",
+          "storedFilename": "ctx_15cb4a36b487__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_7f8273dcba7f__diagram.png",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_7f8273dcba7f__diagram.png",
+          "storedFilename": "ctx_7f8273dcba7f__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_aac09e87805d__notes.txt",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+          "storedFilename": "ctx_aac09e87805d__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_1413171c49a3__report.pdf",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_1413171c49a3__report.pdf",
+          "storedFilename": "ctx_1413171c49a3__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAwMzRfZmFhNTU5YWItYjNhMC00YjE2LTgzYWItY2U0YWQ4ODRiYjBh:user:0:attachment:image:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_7f8273dcba7f__diagram.png",
+          "storedFilename": "ctx_7f8273dcba7f__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAwMzRfZmFhNTU5YWItYjNhMC00YjE2LTgzYWItY2U0YWQ4ODRiYjBh:user:0:attachment:file:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+          "storedFilename": "ctx_aac09e87805d__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAwMzRfZmFhNTU5YWItYjNhMC00YjE2LTgzYWItY2U0YWQ4ODRiYjBh:user:0:attachment:file:1",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_1413171c49a3__report.pdf",
+          "storedFilename": "ctx_1413171c49a3__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_8468d0943318__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_8468d0943318__diagram.png",
+          "storedFilename": "ctx_8468d0943318__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_4226a93a57b7__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+          "storedFilename": "ctx_4226a93a57b7__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_3876a0180a6b__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3876a0180a6b__report.pdf",
+          "storedFilename": "ctx_3876a0180a6b__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAxMzVfMTJjMzc0OGMtMzM3NC00NmI2LWEzYzUtYzMyMDlhYzgyZDhh:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_8468d0943318__diagram.png",
+          "storedFilename": "ctx_8468d0943318__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAxMzVfMTJjMzc0OGMtMzM3NC00NmI2LWEzYzUtYzMyMDlhYzgyZDhh:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+          "storedFilename": "ctx_4226a93a57b7__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAxMzVfMTJjMzc0OGMtMzM3NC00NmI2LWEzYzUtYzMyMDlhYzgyZDhh:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3876a0180a6b__report.pdf",
+          "storedFilename": "ctx_3876a0180a6b__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_577998171525__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_577998171525__diagram.png",
+          "storedFilename": "ctx_577998171525__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ee1dcbb924a1__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+          "storedFilename": "ctx_ee1dcbb924a1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_151c5e084985__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_151c5e084985__report.pdf",
+          "storedFilename": "ctx_151c5e084985__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAyMThfNzFmNmRhZWItZGJlZS00NjY4LWEzNGEtYjk3N2FlZTFmOWVl:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_577998171525__diagram.png",
+          "storedFilename": "ctx_577998171525__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAyMThfNzFmNmRhZWItZGJlZS00NjY4LWEzNGEtYjk3N2FlZTFmOWVl:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+          "storedFilename": "ctx_ee1dcbb924a1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAyMThfNzFmNmRhZWItZGJlZS00NjY4LWEzNGEtYjk3N2FlZTFmOWVl:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_151c5e084985__report.pdf",
+          "storedFilename": "ctx_151c5e084985__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_7d9fada46577__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_7d9fada46577__diagram.png",
+          "storedFilename": "ctx_7d9fada46577__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_65439ff51765__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+          "storedFilename": "ctx_65439ff51765__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c0b84645a82d__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c0b84645a82d__report.pdf",
+          "storedFilename": "ctx_c0b84645a82d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzMDJfYzY5MWQ2MjgtM2JkYy00YWMxLWI5NWEtMjY4NzU4ODdjNzgy:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_7d9fada46577__diagram.png",
+          "storedFilename": "ctx_7d9fada46577__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzMDJfYzY5MWQ2MjgtM2JkYy00YWMxLWI5NWEtMjY4NzU4ODdjNzgy:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+          "storedFilename": "ctx_65439ff51765__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzMDJfYzY5MWQ2MjgtM2JkYy00YWMxLWI5NWEtMjY4NzU4ODdjNzgy:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c0b84645a82d__report.pdf",
+          "storedFilename": "ctx_c0b84645a82d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_db80fb011a45__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_db80fb011a45__diagram.png",
+          "storedFilename": "ctx_db80fb011a45__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_d256f07cf1e0__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+          "storedFilename": "ctx_d256f07cf1e0__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_73712703178e__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_73712703178e__report.pdf",
+          "storedFilename": "ctx_73712703178e__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzODRfNzZiMTMxN2ItYzdiOC00OTQ4LWI1OWYtOTE5MWVjODMxZGE1:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_db80fb011a45__diagram.png",
+          "storedFilename": "ctx_db80fb011a45__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzODRfNzZiMTMxN2ItYzdiOC00OTQ4LWI1OWYtOTE5MWVjODMxZGE1:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+          "storedFilename": "ctx_d256f07cf1e0__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzODRfNzZiMTMxN2ItYzdiOC00OTQ4LWI1OWYtOTE5MWVjODMxZGE1:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_73712703178e__report.pdf",
+          "storedFilename": "ctx_73712703178e__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2ee82320aeaa__diagram.png",
+          "locator": "/rest/runs/standalone/context-files/ctx_2ee82320aeaa__diagram.png",
+          "storedFilename": "ctx_2ee82320aeaa__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_7b34428864a6__notes.txt",
+          "locator": "/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+          "storedFilename": "ctx_7b34428864a6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_fb76d6a7ce93__report.pdf",
+          "locator": "/rest/runs/standalone/context-files/ctx_fb76d6a7ce93__report.pdf",
+          "storedFilename": "ctx_fb76d6a7ce93__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA0NTlfYWQyNTcyNzMtMGRkYi00MmNiLWIzNzItOTVhZWMyNGE2NGY2:user:0:attachment:image:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_2ee82320aeaa__diagram.png",
+          "storedFilename": "ctx_2ee82320aeaa__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA0NTlfYWQyNTcyNzMtMGRkYi00MmNiLWIzNzItOTVhZWMyNGE2NGY2:user:0:attachment:file:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+          "storedFilename": "ctx_7b34428864a6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA0NTlfYWQyNTcyNzMtMGRkYi00MmNiLWIzNzItOTVhZWMyNGE2NGY2:user:0:attachment:file:1",
+          "locator": "/rest/runs/standalone/context-files/ctx_fb76d6a7ce93__report.pdf",
+          "storedFilename": "ctx_fb76d6a7ce93__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2306e5d6f888__diagram.png",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_2306e5d6f888__diagram.png",
+          "storedFilename": "ctx_2306e5d6f888__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_f73b22b95ad1__notes.txt",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+          "storedFilename": "ctx_f73b22b95ad1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_330097a2ac30__report.pdf",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_330097a2ac30__report.pdf",
+          "storedFilename": "ctx_330097a2ac30__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA1NDRfMGIyMjlhZDUtMGIyYS00YWRmLTg1ZDctYTRjNmRiODEzNjdi:user:0:attachment:image:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_2306e5d6f888__diagram.png",
+          "storedFilename": "ctx_2306e5d6f888__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA1NDRfMGIyMjlhZDUtMGIyYS00YWRmLTg1ZDctYTRjNmRiODEzNjdi:user:0:attachment:file:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+          "storedFilename": "ctx_f73b22b95ad1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA1NDRfMGIyMjlhZDUtMGIyYS00YWRmLTg1ZDctYTRjNmRiODEzNjdi:user:0:attachment:file:1",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_330097a2ac30__report.pdf",
+          "storedFilename": "ctx_330097a2ac30__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/direct/context_files/ctx_476e487192f0__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/direct/context_files/ctx_476e487192f0__diagram.png",
+          "displayName": "ctx_476e487192f0__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_07479d3a28c1__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+          "storedFilename": "ctx_07479d3a28c1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_166574a2d4b4__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_166574a2d4b4__report.pdf",
+          "storedFilename": "ctx_166574a2d4b4__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkwNzQ:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/direct/context_files/ctx_476e487192f0__diagram.png",
+          "displayName": "ctx_476e487192f0__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkwNzQ:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+          "storedFilename": "ctx_07479d3a28c1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkwNzQ:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_166574a2d4b4__report.pdf",
+          "storedFilename": "ctx_166574a2d4b4__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/repeat/context_files/ctx_931d3f989ac3__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/repeat/context_files/ctx_931d3f989ac3__diagram.png",
+          "displayName": "ctx_931d3f989ac3__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_649f7d4c5eff__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+          "storedFilename": "ctx_649f7d4c5eff__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_8bc7ab187813__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_8bc7ab187813__report.pdf",
+          "storedFilename": "ctx_8bc7ab187813__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkxNzQ:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/repeat/context_files/ctx_931d3f989ac3__diagram.png",
+          "displayName": "ctx_931d3f989ac3__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkxNzQ:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+          "storedFilename": "ctx_649f7d4c5eff__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkxNzQ:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_8bc7ab187813__report.pdf",
+          "storedFilename": "ctx_8bc7ab187813__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/team/lead/context_files/ctx_646e3485e526__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/team/lead/context_files/ctx_646e3485e526__diagram.png",
+          "displayName": "ctx_646e3485e526__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c9fe927d5d99__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+          "storedFilename": "ctx_c9fe927d5d99__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ed28e4da907f__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_ed28e4da907f__report.pdf",
+          "storedFilename": "ctx_ed28e4da907f__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkyNjY:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/team/lead/context_files/ctx_646e3485e526__diagram.png",
+          "displayName": "ctx_646e3485e526__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkyNjY:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+          "storedFilename": "ctx_c9fe927d5d99__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkyNjY:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_ed28e4da907f__report.pdf",
+          "storedFilename": "ctx_ed28e4da907f__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/task-team/task-lead/context_files/ctx_4e731b0f7030__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/task-team/task-lead/context_files/ctx_4e731b0f7030__diagram.png",
+          "displayName": "ctx_4e731b0f7030__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_38521e602b18__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+          "storedFilename": "ctx_38521e602b18__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c5262c4f1ac5__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c5262c4f1ac5__report.pdf",
+          "storedFilename": "ctx_c5262c4f1ac5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkzNTA:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_orgs/org/task-team/task-lead/context_files/ctx_4e731b0f7030__diagram.png",
+          "displayName": "ctx_4e731b0f7030__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkzNTA:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+          "storedFilename": "ctx_38521e602b18__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1NjkzNTA:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c5262c4f1ac5__report.pdf",
+          "storedFilename": "ctx_c5262c4f1ac5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agents/standalone/context_files/ctx_4f0917f5f8cb__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agents/standalone/context_files/ctx_4f0917f5f8cb__diagram.png",
+          "displayName": "ctx_4f0917f5f8cb__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_38bc2712bc82__notes.txt",
+          "locator": "/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+          "storedFilename": "ctx_38bc2712bc82__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_20259346d81c__report.pdf",
+          "locator": "/rest/runs/standalone/context-files/ctx_20259346d81c__report.pdf",
+          "storedFilename": "ctx_20259346d81c__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk0Mjg:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agents/standalone/context_files/ctx_4f0917f5f8cb__diagram.png",
+          "displayName": "ctx_4f0917f5f8cb__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk0Mjg:user:0:attachment:file:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+          "storedFilename": "ctx_38bc2712bc82__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk0Mjg:user:0:attachment:file:1",
+          "locator": "/rest/runs/standalone/context-files/ctx_20259346d81c__report.pdf",
+          "storedFilename": "ctx_20259346d81c__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/attachment-history-yDrr7g/memory/agent_teams/standalone-team/standalone-lead/context_files/ctx_09f9a06ec83e__diagram.png",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_teams/standalone-team/standalone-lead/context_files/ctx_09f9a06ec83e__diagram.png",
+          "displayName": "ctx_09f9a06ec83e__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_4a2d1de0c6d1__notes.txt",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+          "storedFilename": "ctx_4a2d1de0c6d1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ca9f94560156__report.pdf",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_ca9f94560156__report.pdf",
+          "storedFilename": "ctx_ca9f94560156__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "workspace_path",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk1MTI:user:0:attachment:image:0",
+          "locator": "/tmp/attachment-history-yDrr7g/memory/agent_teams/standalone-team/standalone-lead/context_files/ctx_09f9a06ec83e__diagram.png",
+          "displayName": "ctx_09f9a06ec83e__diagram.png",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk1MTI:user:0:attachment:file:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+          "storedFilename": "ctx_4a2d1de0c6d1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjE2OnJ0XzE3ODkyMjg1Njk1MTI:user:0:attachment:file:1",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_ca9f94560156__report.pdf",
+          "storedFilename": "ctx_ca9f94560156__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2bb258892d6d__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2bb258892d6d__diagram.png",
+          "storedFilename": "ctx_2bb258892d6d__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_d9e151f9226c__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+          "storedFilename": "ctx_d9e151f9226c__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_adf15b7ee2e5__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_adf15b7ee2e5__report.pdf",
+          "storedFilename": "ctx_adf15b7ee2e5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk2MjdfM2NhOTVlODEtNTIzMC00MmRjLTg0NWYtODZmNTM3MDhhZjA0:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_2bb258892d6d__diagram.png",
+          "storedFilename": "ctx_2bb258892d6d__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk2MjdfM2NhOTVlODEtNTIzMC00MmRjLTg0NWYtODZmNTM3MDhhZjA0:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+          "storedFilename": "ctx_d9e151f9226c__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk2MjdfM2NhOTVlODEtNTIzMC00MmRjLTg0NWYtODZmNTM3MDhhZjA0:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_adf15b7ee2e5__report.pdf",
+          "storedFilename": "ctx_adf15b7ee2e5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_9a7ab756dd02__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a7ab756dd02__diagram.png",
+          "storedFilename": "ctx_9a7ab756dd02__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ad532d7d0fb6__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+          "storedFilename": "ctx_ad532d7d0fb6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_5830ba8d8ed5__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_5830ba8d8ed5__report.pdf",
+          "storedFilename": "ctx_5830ba8d8ed5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3MTRfOTliMjgwZmItNTQyMy00YThlLTg0MGQtY2U3NGEyNTAxNDll:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_9a7ab756dd02__diagram.png",
+          "storedFilename": "ctx_9a7ab756dd02__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3MTRfOTliMjgwZmItNTQyMy00YThlLTg0MGQtY2U3NGEyNTAxNDll:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+          "storedFilename": "ctx_ad532d7d0fb6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3MTRfOTliMjgwZmItNTQyMy00YThlLTg0MGQtY2U3NGEyNTAxNDll:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_5830ba8d8ed5__report.pdf",
+          "storedFilename": "ctx_5830ba8d8ed5__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_154a4ef6ca94__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_154a4ef6ca94__diagram.png",
+          "storedFilename": "ctx_154a4ef6ca94__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_0a5103ade468__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+          "storedFilename": "ctx_0a5103ade468__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_6491b2205e5d__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_6491b2205e5d__report.pdf",
+          "storedFilename": "ctx_6491b2205e5d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3OThfOGQ2YmI1YmItNDFiZC00NGZiLTkzYWQtYTRiNjdhMzY2Y2Vj:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_154a4ef6ca94__diagram.png",
+          "storedFilename": "ctx_154a4ef6ca94__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3OThfOGQ2YmI1YmItNDFiZC00NGZiLTkzYWQtYTRiNjdhMzY2Y2Vj:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+          "storedFilename": "ctx_0a5103ade468__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk3OThfOGQ2YmI1YmItNDFiZC00NGZiLTkzYWQtYTRiNjdhMzY2Y2Vj:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_6491b2205e5d__report.pdf",
+          "storedFilename": "ctx_6491b2205e5d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_250dacd310e8__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_250dacd310e8__diagram.png",
+          "storedFilename": "ctx_250dacd310e8__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c38b7e8eb7c8__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+          "storedFilename": "ctx_c38b7e8eb7c8__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_bf5a56febb1d__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_bf5a56febb1d__report.pdf",
+          "storedFilename": "ctx_bf5a56febb1d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk4ODFfOGU1ODFiODMtN2I4Zi00NmYxLThlZmEtMjk0YWVmYTM2ODk1:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_250dacd310e8__diagram.png",
+          "storedFilename": "ctx_250dacd310e8__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk4ODFfOGU1ODFiODMtN2I4Zi00NmYxLThlZmEtMjk0YWVmYTM2ODk1:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+          "storedFilename": "ctx_c38b7e8eb7c8__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk4ODFfOGU1ODFiODMtN2I4Zi00NmYxLThlZmEtMjk0YWVmYTM2ODk1:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_bf5a56febb1d__report.pdf",
+          "storedFilename": "ctx_bf5a56febb1d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2887e5607ab0__diagram.png",
+          "locator": "/rest/runs/standalone/context-files/ctx_2887e5607ab0__diagram.png",
+          "storedFilename": "ctx_2887e5607ab0__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ca7540693360__notes.txt",
+          "locator": "/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+          "storedFilename": "ctx_ca7540693360__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_15cb4a36b487__report.pdf",
+          "locator": "/rest/runs/standalone/context-files/ctx_15cb4a36b487__report.pdf",
+          "storedFilename": "ctx_15cb4a36b487__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk5NTdfYmUwNGRhOWEtMzNhMS00OGQxLTljMjAtZWU0MTZkZDIxMWQ2:user:0:attachment:image:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_2887e5607ab0__diagram.png",
+          "storedFilename": "ctx_2887e5607ab0__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk5NTdfYmUwNGRhOWEtMzNhMS00OGQxLTljMjAtZWU0MTZkZDIxMWQ2:user:0:attachment:file:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+          "storedFilename": "ctx_ca7540693360__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1Njk5NTdfYmUwNGRhOWEtMzNhMS00OGQxLTljMjAtZWU0MTZkZDIxMWQ2:user:0:attachment:file:1",
+          "locator": "/rest/runs/standalone/context-files/ctx_15cb4a36b487__report.pdf",
+          "storedFilename": "ctx_15cb4a36b487__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_7f8273dcba7f__diagram.png",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_7f8273dcba7f__diagram.png",
+          "storedFilename": "ctx_7f8273dcba7f__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_aac09e87805d__notes.txt",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+          "storedFilename": "ctx_aac09e87805d__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_1413171c49a3__report.pdf",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_1413171c49a3__report.pdf",
+          "storedFilename": "ctx_1413171c49a3__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAwMzRfZmFhNTU5YWItYjNhMC00YjE2LTgzYWItY2U0YWQ4ODRiYjBh:user:0:attachment:image:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_7f8273dcba7f__diagram.png",
+          "storedFilename": "ctx_7f8273dcba7f__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAwMzRfZmFhNTU5YWItYjNhMC00YjE2LTgzYWItY2U0YWQ4ODRiYjBh:user:0:attachment:file:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+          "storedFilename": "ctx_aac09e87805d__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAwMzRfZmFhNTU5YWItYjNhMC00YjE2LTgzYWItY2U0YWQ4ODRiYjBh:user:0:attachment:file:1",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_1413171c49a3__report.pdf",
+          "storedFilename": "ctx_1413171c49a3__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_8468d0943318__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_8468d0943318__diagram.png",
+          "storedFilename": "ctx_8468d0943318__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_4226a93a57b7__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+          "storedFilename": "ctx_4226a93a57b7__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_3876a0180a6b__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3876a0180a6b__report.pdf",
+          "storedFilename": "ctx_3876a0180a6b__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAxMzVfMTJjMzc0OGMtMzM3NC00NmI2LWEzYzUtYzMyMDlhYzgyZDhh:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_8468d0943318__diagram.png",
+          "storedFilename": "ctx_8468d0943318__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAxMzVfMTJjMzc0OGMtMzM3NC00NmI2LWEzYzUtYzMyMDlhYzgyZDhh:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+          "storedFilename": "ctx_4226a93a57b7__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAxMzVfMTJjMzc0OGMtMzM3NC00NmI2LWEzYzUtYzMyMDlhYzgyZDhh:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_3876a0180a6b__report.pdf",
+          "storedFilename": "ctx_3876a0180a6b__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_577998171525__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_577998171525__diagram.png",
+          "storedFilename": "ctx_577998171525__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_ee1dcbb924a1__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+          "storedFilename": "ctx_ee1dcbb924a1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_151c5e084985__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_151c5e084985__report.pdf",
+          "storedFilename": "ctx_151c5e084985__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAyMThfNzFmNmRhZWItZGJlZS00NjY4LWEzNGEtYjk3N2FlZTFmOWVl:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_577998171525__diagram.png",
+          "storedFilename": "ctx_577998171525__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAyMThfNzFmNmRhZWItZGJlZS00NjY4LWEzNGEtYjk3N2FlZTFmOWVl:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+          "storedFilename": "ctx_ee1dcbb924a1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAyMThfNzFmNmRhZWItZGJlZS00NjY4LWEzNGEtYjk3N2FlZTFmOWVl:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_151c5e084985__report.pdf",
+          "storedFilename": "ctx_151c5e084985__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_7d9fada46577__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_7d9fada46577__diagram.png",
+          "storedFilename": "ctx_7d9fada46577__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_65439ff51765__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+          "storedFilename": "ctx_65439ff51765__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_c0b84645a82d__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c0b84645a82d__report.pdf",
+          "storedFilename": "ctx_c0b84645a82d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzMDJfYzY5MWQ2MjgtM2JkYy00YWMxLWI5NWEtMjY4NzU4ODdjNzgy:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_7d9fada46577__diagram.png",
+          "storedFilename": "ctx_7d9fada46577__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzMDJfYzY5MWQ2MjgtM2JkYy00YWMxLWI5NWEtMjY4NzU4ODdjNzgy:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+          "storedFilename": "ctx_65439ff51765__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzMDJfYzY5MWQ2MjgtM2JkYy00YWMxLWI5NWEtMjY4NzU4ODdjNzgy:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c0b84645a82d__report.pdf",
+          "storedFilename": "ctx_c0b84645a82d__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_db80fb011a45__diagram.png",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_db80fb011a45__diagram.png",
+          "storedFilename": "ctx_db80fb011a45__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_d256f07cf1e0__notes.txt",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+          "storedFilename": "ctx_d256f07cf1e0__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_73712703178e__report.pdf",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_73712703178e__report.pdf",
+          "storedFilename": "ctx_73712703178e__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzODRfNzZiMTMxN2ItYzdiOC00OTQ4LWI1OWYtOTE5MWVjODMxZGE1:user:0:attachment:image:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_db80fb011a45__diagram.png",
+          "storedFilename": "ctx_db80fb011a45__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzODRfNzZiMTMxN2ItYzdiOC00OTQ4LWI1OWYtOTE5MWVjODMxZGE1:user:0:attachment:file:0",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+          "storedFilename": "ctx_d256f07cf1e0__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzAzODRfNzZiMTMxN2ItYzdiOC00OTQ4LWI1OWYtOTE5MWVjODMxZGE1:user:0:attachment:file:1",
+          "locator": "/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_73712703178e__report.pdf",
+          "storedFilename": "ctx_73712703178e__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2ee82320aeaa__diagram.png",
+          "locator": "/rest/runs/standalone/context-files/ctx_2ee82320aeaa__diagram.png",
+          "storedFilename": "ctx_2ee82320aeaa__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_7b34428864a6__notes.txt",
+          "locator": "/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+          "storedFilename": "ctx_7b34428864a6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_fb76d6a7ce93__report.pdf",
+          "locator": "/rest/runs/standalone/context-files/ctx_fb76d6a7ce93__report.pdf",
+          "storedFilename": "ctx_fb76d6a7ce93__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA0NTlfYWQyNTcyNzMtMGRkYi00MmNiLWIzNzItOTVhZWMyNGE2NGY2:user:0:attachment:image:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_2ee82320aeaa__diagram.png",
+          "storedFilename": "ctx_2ee82320aeaa__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA0NTlfYWQyNTcyNzMtMGRkYi00MmNiLWIzNzItOTVhZWMyNGE2NGY2:user:0:attachment:file:0",
+          "locator": "/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+          "storedFilename": "ctx_7b34428864a6__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA0NTlfYWQyNTcyNzMtMGRkYi00MmNiLWIzNzItOTVhZWMyNGE2NGY2:user:0:attachment:file:1",
+          "locator": "/rest/runs/standalone/context-files/ctx_fb76d6a7ce93__report.pdf",
+          "storedFilename": "ctx_fb76d6a7ce93__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "ctx_2306e5d6f888__diagram.png",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_2306e5d6f888__diagram.png",
+          "storedFilename": "ctx_2306e5d6f888__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_f73b22b95ad1__notes.txt",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+          "storedFilename": "ctx_f73b22b95ad1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "ctx_330097a2ac30__report.pdf",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_330097a2ac30__report.pdf",
+          "storedFilename": "ctx_330097a2ac30__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "overflow": false,
+      "attachments": [
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA1NDRfMGIyMjlhZDUtMGIyYS00YWRmLTg1ZDctYTRjNmRiODEzNjdi:user:0:attachment:image:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_2306e5d6f888__diagram.png",
+          "storedFilename": "ctx_2306e5d6f888__diagram.png",
+          "displayName": "diagram.png",
+          "phase": "final",
+          "type": "Image"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA1NDRfMGIyMjlhZDUtMGIyYS00YWRmLTg1ZDctYTRjNmRiODEzNjdi:user:0:attachment:file:0",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+          "storedFilename": "ctx_f73b22b95ad1__notes.txt",
+          "displayName": "accepted-notes.txt",
+          "phase": "final",
+          "type": "Text"
+        },
+        {
+          "kind": "uploaded",
+          "id": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3ODkyMjg1NzA1NDRfMGIyMjlhZDUtMGIyYS00YWRmLTg1ZDctYTRjNmRiODEzNjdi:user:0:attachment:file:1",
+          "locator": "/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_330097a2ac30__report.pdf",
+          "storedFilename": "ctx_330097a2ac30__report.pdf",
+          "displayName": "accepted-report.pdf",
+          "phase": "final",
+          "type": "Pdf"
+        }
+      ]
+    }
+  ],
+  "opens": [
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "desktop",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "direct",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_07479d3a28c1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "repeat",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_649f7d4c5eff__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_c9fe927d5d99__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "task-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_38521e602b18__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_38bc2712bc82__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "autobyteus",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_4a2d1de0c6d1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "direct",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_d9e151f9226c__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "repeat",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ad532d7d0fb6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_0a5103ade468__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "task-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_c38b7e8eb7c8__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_ca7540693360__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "codex_app_server",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_aac09e87805d__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "direct",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/direct/context-files/ctx_4226a93a57b7__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "repeat",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/repeat/context-files/ctx_ee1dcbb924a1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/lead/context-files/ctx_65439ff51765__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "task-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/agent-org-runs/org/agent-runs/task-lead/context-files/ctx_d256f07cf1e0__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/runs/standalone/context-files/ctx_7b34428864a6__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "initial/cold",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+      "bytesMatch": true
+    },
+    {
+      "name": "narrow",
+      "producer": "claude_agent_sdk",
+      "target": "standalone-lead",
+      "read": "active trace page",
+      "url": "http://localhost:8000/rest/team-runs/standalone-team/members/%2Flead/context-files/ctx_f73b22b95ad1__notes.txt",
+      "bytesMatch": true
+    }
+  ],
+  "errors": [],
+  "mutations": [],
+  "limits": "Implementation renderer with actual shared UserMessage and initial/cold/page hydration from exported real disposable REST/admission/recorder/native-memory/read-surface integration outputs. Provider backend was bounded in those tests; browser file/fixture transport is controlled from the same exported bytes. Not a live provider, normal Tasks navigation, current server/browser lifecycle, native shell or API acceptance. Native media values unchanged.",
+  "passed": true
+}

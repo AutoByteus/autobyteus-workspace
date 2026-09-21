@@ -3,6 +3,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 const shellMessages = {
   'shell.navigation.agents': 'Agents',
   'shell.navigation.agentTeams': 'Agent Teams',
+  'shell.navigation.agentOrgs': 'Agent Orgs',
   'shell.navigation.applications': 'Applications',
   'shell.navigation.skills': 'Skills',
   'shell.navigation.memory': 'Memory',
@@ -10,6 +11,8 @@ const shellMessages = {
   'shell.navigation.settings': 'Settings',
   'shell.rightTabs.files': 'Files',
   'shell.rightTabs.team': 'Team',
+  'shell.rightTabs.org': 'Org',
+  'shell.rightTabs.agentOrg': 'Agent Org',
   'shell.rightTabs.terminal': 'Terminal',
   'shell.rightTabs.usage': 'Token',
   'shell.tokenUsage.title': 'Token Meter',

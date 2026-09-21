@@ -1,7 +1,12 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { RunHistoryWorkspaceGroup, TeamTreeNode } from './runHistoryTypes';
+import { projectWorkspaceHistoryByWorkspace } from '~/utils/runTreeProjection';
+import type {
+  AgentOrgRunHistoryItem,
+  RunHistoryWorkspaceGroup,
+  TeamTreeNode,
+  WorkspaceHistoryWorkspaceNode,
+} from './runHistoryTypes';
 import {
   buildRunHistoryTeamNodes,
   buildRunHistoryTreeNodes,
@@ -19,8 +24,14 @@ export interface RunHistoryTeamNavigationAncestry {
   teamDefinitionGroupKey: string;
 }
 
+export interface RunHistoryAgentOrgNavigationAncestry {
+  workspaceId: string;
+  definitionId: string;
+  teamAddresses: string[];
+}
+
 export interface RunHistoryNavigationProjectionState {
-  workspaceNodes: RunTreeWorkspaceNode[];
+  workspaceNodes: WorkspaceHistoryWorkspaceNode[];
   teamNodes: TeamTreeNode[];
   teamNodesByWorkspaceRoot: Record<string, TeamTreeNode[]>;
   runIndexById: Record<string, { workspaceIndex: number; agentIndex: number; runIndex: number }>;
@@ -28,6 +39,7 @@ export interface RunHistoryNavigationProjectionState {
   memberIndexByIdentity: Record<string, number>;
   runAncestryById: Record<string, RunHistoryAgentNavigationAncestry>;
   teamAncestryById: Record<string, RunHistoryTeamNavigationAncestry>;
+  agentOrgAncestryById: Record<string, RunHistoryAgentOrgNavigationAncestry>;
   memberAncestorExecutionKeysByIdentity: Record<string, string[]>;
 }
 
@@ -38,6 +50,7 @@ export interface RunHistoryNavigationProjectionBuildInput {
   workspacesById: Parameters<typeof buildRunHistoryTreeNodes>[0]['workspacesById'];
   agentContexts: Map<string, AgentContext>;
   teamContexts: AgentTeamContext[];
+  agentOrgHistory: AgentOrgRunHistoryItem[];
 }
 
 export const runHistoryExecutionRowIndexKey = (teamRunId: string, rowKey: string): string =>
@@ -100,13 +113,17 @@ export const buildRunHistoryNavigationProjection = (
   input: RunHistoryNavigationProjectionBuildInput,
   previous?: RunHistoryNavigationProjectionState | null,
 ): RunHistoryNavigationProjectionState => {
-  const builtWorkspaceNodes = buildRunHistoryTreeNodes({
+  const establishedWorkspaceNodes = buildRunHistoryTreeNodes({
     workspaceGroups: input.workspaceGroups,
     agentAvatarByDefinitionId: input.agentAvatarByDefinitionId,
     allWorkspaces: input.allWorkspaces,
     workspacesById: input.workspacesById,
     agentContexts: input.agentContexts,
   });
+  const builtWorkspaceNodes = projectWorkspaceHistoryByWorkspace(
+    establishedWorkspaceNodes,
+    input.agentOrgHistory,
+  );
   const builtTeamNodes = buildRunHistoryTeamNodes({
     workspaceGroups: input.workspaceGroups,
     teamContexts: input.teamContexts,
@@ -129,17 +146,29 @@ export const buildRunHistoryNavigationProjection = (
     : completedTeamNodes;
   const runIndexById: RunHistoryNavigationProjectionState['runIndexById'] = {};
   const runAncestryById: RunHistoryNavigationProjectionState['runAncestryById'] = {};
+  const agentOrgAncestryById: RunHistoryNavigationProjectionState['agentOrgAncestryById'] = {};
   workspaceNodes.forEach((workspace, workspaceIndex) => workspace.agents.forEach(
     (agent, agentIndex) => agent.runs.forEach((run, runIndex) => {
       runIndexById[run.runId] = { workspaceIndex, agentIndex, runIndex };
       runAncestryById[run.runId] = {
-        workspaceId: workspace.workspaceId,
+        workspaceId: workspace.stableKey,
         agentDefinitionId: agent.agentDefinitionId,
       };
     }),
   ));
-  const workspaceIdByRootPath = new Map(
-    workspaceNodes.map((workspace) => [normalizeRootPath(workspace.workspaceRootPath), workspace.workspaceId]),
+  workspaceNodes.forEach((workspace) => (workspace.agentOrgDefinitions ?? []).forEach((definition) => {
+    definition.runs.forEach((run) => {
+      agentOrgAncestryById[run.rootRunId] = {
+        workspaceId: workspace.stableKey,
+        definitionId: definition.definitionId,
+        teamAddresses: run.executionTree.rootOrg.members
+          .filter((member) => 'teamRunId' in member)
+          .map((member) => member.address),
+      };
+    });
+  }));
+  const workspacePresentationIdByRootPath = new Map(
+    workspaceNodes.map((workspace) => [normalizeRootPath(workspace.workspaceRootPath), workspace.stableKey]),
   );
   const builtTeamNodesByWorkspaceRoot: Record<string, TeamTreeNode[]> = {};
   const teamIndexById: RunHistoryNavigationProjectionState['teamIndexById'] = {};
@@ -153,7 +182,7 @@ export const buildRunHistoryNavigationProjection = (
       workspaceRootPath: team.workspaceRootPath,
       workspaceIndex: rows.length,
     };
-    const workspaceId = workspaceIdByRootPath.get(normalizeRootPath(team.workspaceRootPath));
+    const workspaceId = workspacePresentationIdByRootPath.get(normalizeRootPath(team.workspaceRootPath));
     if (workspaceId) {
       teamAncestryById[team.teamRunId] = {
         workspaceId,
@@ -185,6 +214,7 @@ export const buildRunHistoryNavigationProjection = (
     memberIndexByIdentity,
     runAncestryById,
     teamAncestryById,
+    agentOrgAncestryById,
     memberAncestorExecutionKeysByIdentity,
   };
 };

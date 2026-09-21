@@ -1,3 +1,4 @@
+import type { DelegatedTaskDisplayStatus } from '~/types/workspace/collaborationTaskPresentation';
 import type {
   TaskTeamMemberExecutionDto,
   TeamReferenceFileDto,
@@ -9,78 +10,11 @@ import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
 import type { TeamTaskHistoryRow } from '~/services/teamExecution/teamExecutionViewModels';
 import {
   deriveTaskDelegationPresentation,
-  type TaskDelegationDisplayStatus,
 } from '~/services/teamExecution/taskDelegationPresentation';
 
-export type DelegatedTaskEntryKind = 'task_agent' | 'task_team';
-export type DelegatedTaskDisplayStatus = TaskDelegationDisplayStatus;
+import type { DelegatedTaskEntryKind, DelegatedTaskEntry, DelegatedTaskParticipant, DelegatedTaskDirection, DelegatedTaskLifecycleItem } from '~/types/workspace/collaborationTaskPresentation';
 
-export type DelegatedTaskParticipant =
-  | Readonly<{ kind: 'named'; label: string }>
-  | Readonly<{ kind: 'delegator_fallback' }>
-  | Readonly<{ kind: 'assignee_fallback' }>;
-
-export type DelegatedTaskDirection =
-  | Readonly<{
-    kind: 'directed';
-    from: DelegatedTaskParticipant;
-    to: DelegatedTaskParticipant;
-  }>
-  | Readonly<{ kind: 'system' }>;
-
-interface DelegatedTaskLifecycleItemBase<TContent extends string | null = string> {
-  readonly itemKey: string;
-  readonly createdAt: string;
-  readonly content: TContent;
-  readonly direction: DelegatedTaskDirection;
-  readonly referenceFiles: readonly TeamReferenceFile[];
-}
-
-export type DelegatedTaskLifecycleItem =
-  | (DelegatedTaskLifecycleItemBase & Readonly<{ kind: 'assignment' }>)
-  | (DelegatedTaskLifecycleItemBase & Readonly<{
-    kind: 'submission';
-    resultOrdinal: number;
-    revised: boolean;
-  }>)
-  | (DelegatedTaskLifecycleItemBase<string | null> & Readonly<{
-    kind: 'review';
-    decision: 'accept';
-    reviewedResultOrdinal: number;
-  }>)
-  | (DelegatedTaskLifecycleItemBase & Readonly<{
-    kind: 'review';
-    decision: 'request_revision';
-    reviewedResultOrdinal: number;
-  }>)
-  | (DelegatedTaskLifecycleItemBase & Readonly<{
-    kind: 'interruption';
-    referenceFiles: readonly [];
-  }>);
-
-export interface DelegatedTaskEntry {
-  readonly kind: DelegatedTaskEntryKind;
-  readonly entryKey: string;
-  readonly teamRunId: string;
-  readonly taskId: string;
-  readonly runId: string;
-  readonly displayStatus: DelegatedTaskDisplayStatus;
-  readonly lastActivityAt: string;
-  readonly lifecycleItems: readonly [DelegatedTaskLifecycleItem, ...DelegatedTaskLifecycleItem[]];
-}
-
-export type DelegatedTaskItemLocator = Readonly<{
-  entryKey: string;
-  itemKey: string;
-}>;
-
-export type DelegatedTaskReferenceLocator = Readonly<{
-  entryKey: string;
-  itemKey: string;
-  referenceId: string;
-}>;
-
-const agentIdsInTaskTeam = (
+export const agentIdsInTaskTeam = (
   tree: TeamRunExecutionTreeDto,
   teamRunId: string,
 ): ReadonlySet<string> => {
@@ -144,19 +78,23 @@ const referenceFiles = (references: readonly TeamReferenceFileDto[]): TeamRefere
   updatedAt: reference.updated_at,
 }));
 
-const namedParticipant = (label: string): DelegatedTaskParticipant => ({ kind: 'named', label });
-
-const delegatorParticipant = (
-  team: AgentTeamContext,
-  task: TeamTaskHistoryRow,
-): DelegatedTaskParticipant => {
-  const address = team.view.getMemberAddress(task.delegatorAgentRunId);
-  return address ? namedParticipant(memberAddressBasename(address)) : { kind: 'delegator_fallback' };
+const agentParticipant = (team: AgentTeamContext, agentRunId: string): DelegatedTaskParticipant | null => {
+  const address = team.view.getMemberAddress(agentRunId);
+  if (!address) return null;
+  const label = memberAddressBasename(address);
+  return { kind: 'named', label, targetKind: 'agent', link: { agentRunId, address, label } };
 };
-
-const assigneeParticipant = (task: TeamTaskHistoryRow): DelegatedTaskParticipant => {
+const assigneeParticipant = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTaskParticipant => {
   const label = memberAddressBasename(task.targetAddress);
-  return label ? namedParticipant(label) : { kind: 'assignee_fallback' };
+  if (task.targetAgentRunId) return agentParticipant(team, task.targetAgentRunId)
+    ?? { kind: 'named', label, targetKind: 'unavailable' };
+  if (task.targetTeamRunId) return { kind: 'named', label, targetKind: 'task_team', teamRunId: task.targetTeamRunId,
+    participants: [...agentIdsInTaskTeam(team.view.getExecutionTree(), task.targetTeamRunId)].map((agentRunId) => {
+      const address = team.view.getMemberAddress(agentRunId);
+      if (!address) throw new Error(`Missing task participant '${agentRunId}'.`);
+      return { agentRunId, address, label: memberAddressBasename(address) };
+    }) };
+  return { kind: 'assignee_fallback' };
 };
 
 const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTaskEntry => {
@@ -165,8 +103,8 @@ const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTas
   if (!runId) throw new Error(`Task '${task.task.task_id}' has no exact execution identity.`);
 
   const taskId = task.task.task_id;
-  const delegator = delegatorParticipant(team, task);
-  const assignee = assigneeParticipant(task);
+  const delegator = agentParticipant(team, task.delegatorAgentRunId) ?? { kind: 'delegator_fallback' as const };
+  const assignee = assigneeParticipant(team, task);
   const assignmentDirection: DelegatedTaskDirection = { kind: 'directed', from: delegator, to: assignee };
   const submissionDirection: DelegatedTaskDirection = { kind: 'directed', from: assignee, to: delegator };
   const lifecycleItems: DelegatedTaskLifecycleItem[] = [{
@@ -240,7 +178,7 @@ const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTas
       itemKey: `task:${taskId}:interruption:${update.interruption_id}`,
       createdAt: update.created_at,
       content: update.reason,
-      direction: { kind: 'system' },
+      direction: { kind: 'system', assignment: { from: delegator, to: assignee } },
       referenceFiles: [],
     });
   }
@@ -248,7 +186,7 @@ const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTas
   return {
     kind,
     entryKey: `task:${taskId}`,
-    teamRunId: team.view.getRootTeamRunId(),
+    root: { kind: 'agent_team', runId: team.view.getRootTeamRunId() },
     taskId,
     runId,
     displayStatus: deriveTaskDelegationPresentation(task.task).displayStatus,

@@ -1,0 +1,26 @@
+window_id=48234500
+
+xwininfo: Window id: 0x2e00004 "autobyteus"
+
+  Absolute upper-left X:  155
+  Absolute upper-left Y:  71
+  Relative upper-left X:  5
+  Relative upper-left Y:  29
+  Width: 1200
+  Height: 800
+  Depth: 24
+  Visual: 0x21
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x20 (installed)
+  Bit Gravity State: NorthWestGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: no
+  Map State: IsViewable
+  Override Redirect State: no
+  Corners:  +155+71  -155+71  -155-44  +155-44
+  -geometry 1200x800+155-44
+
+{"status":"ok","message":"Server is running"}health={"status":"ok","message":"Server is running"}

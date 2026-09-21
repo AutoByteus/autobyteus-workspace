@@ -18,8 +18,8 @@ export const isGetHandoffRulesToolName = (toolName: string | null | undefined): 
 export const createAutoByteusGetHandoffRulesToolForSender = (
   sender: AgentRunMessageSenderContext,
 ): BaseTool => {
-  if (!sender.memberTeamContext) {
+  if (!sender.memberExecutionContext) {
     throw new Error("get_handoff_rules requires a Team-bound Agent sender.");
   }
-  return createBoundAutoByteusGetHandoffRulesTool(sender.memberTeamContext);
+  return createBoundAutoByteusGetHandoffRulesTool(sender.memberExecutionContext);
 };

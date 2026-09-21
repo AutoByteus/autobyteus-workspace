@@ -1,0 +1,40 @@
+timestamp=2026-09-02T08:51:05Z
+head=b2c96d6b0eed5ffb3a0eaa503eb7f1cf353e9c9e
+branch=requirements/flat-agent-organization-model
+--- status ---
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+--- fixture hash ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+fixture_files=18
+--- relevant ports ---
+port_8457=CLOSED
+port_3457=CLOSED
+port_8467=CLOSED
+port_3467=CLOSED
+--- owned runtime process search ---
+19276 /bin/bash -lc set -o pipefail {   echo "timestamp=$(date -u +%FT%TZ)"   echo "head=$(git -C '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model' rev-parse HEAD)"   echo "branch=$(git -C '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model' branch --show-current)"   echo "--- status ---"   git -C '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model' status --short   echo "--- fixture hash ---"   cd '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package'   sha256sum -c PACKAGE.sha256   echo "fixture_files=$(find . -type f ! -name PACKAGE.sha256 | wc -l)"   echo "--- relevant ports ---"   for p in 8457 3457 8467 3467; do     if ss -ltnp "( sport = :$p )" | grep -q LISTEN; then echo "port_$p=LISTEN"; ss -ltnp "( sport = :$p )"; else echo "port_$p=CLOSED"; fi   done   echo "--- owned runtime process search ---"   pgrep -af "flat-agent-organization-model.*(dist/app.js|serve|http.server|nuxt)" || true } 2>&1 | tee '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/repository/preflight.log'
+19279 /bin/bash -lc set -o pipefail {   echo "timestamp=$(date -u +%FT%TZ)"   echo "head=$(git -C '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model' rev-parse HEAD)"   echo "branch=$(git -C '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model' branch --show-current)"   echo "--- status ---"   git -C '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model' status --short   echo "--- fixture hash ---"   cd '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package'   sha256sum -c PACKAGE.sha256   echo "fixture_files=$(find . -type f ! -name PACKAGE.sha256 | wc -l)"   echo "--- relevant ports ---"   for p in 8457 3457 8467 3467; do     if ss -ltnp "( sport = :$p )" | grep -q LISTEN; then echo "port_$p=LISTEN"; ss -ltnp "( sport = :$p )"; else echo "port_$p=CLOSED"; fi   done   echo "--- owned runtime process search ---"   pgrep -af "flat-agent-organization-model.*(dist/app.js|serve|http.server|nuxt)" || true } 2>&1 | tee '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/repository/preflight.log'

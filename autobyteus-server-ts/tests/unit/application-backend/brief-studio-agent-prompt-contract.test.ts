@@ -76,7 +76,7 @@ describe("Brief Studio maintained Codex Agent contract", () => {
 
   it("keeps Codex/Luna and selects only honest routed capabilities", () => {
     expect(teamConfig.coordinatorMemberName).toBe("researcher");
-    expect(teamConfig.defaultLaunchConfig).toEqual(expectedLaunchConfig);
+    expect(teamConfig.defaultLaunchConfig).toEqual({ ...expectedLaunchConfig, llmConfig: null });
     for (const config of [researcherConfig, writerConfig]) {
       expect(config.defaultLaunchConfig).toEqual(expectedLaunchConfig);
       expect(config.toolNames).toEqual(expectedRoutedToolNames);

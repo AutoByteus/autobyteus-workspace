@@ -63,7 +63,7 @@
             class="mr-1.5"
             :status="row.row.currentStatus"
           />
-          <NestedTeamAggregateStatusDot
+          <TeamAggregateStatusDot
             v-else
             class="mr-1.5"
             :status="aggregateStatus"
@@ -126,7 +126,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
-import NestedTeamAggregateStatusDot from '~/components/workspace/history/NestedTeamAggregateStatusDot.vue';
+import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import { useLocalization } from '~/composables/useLocalization';

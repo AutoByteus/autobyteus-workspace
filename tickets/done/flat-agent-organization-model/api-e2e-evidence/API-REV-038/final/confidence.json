@@ -1,0 +1,56 @@
+{
+  "at": "2026-09-13T03:21:00.373395+00:00",
+  "result": "Fail",
+  "method": "Seven-category unweighted mean; not test pass percentage or probability of a bug. Strong direct failure evidence does not turn failed acceptance into Pass.",
+  "postRepositoryPercent": 78.6,
+  "finalPercent": 85.6,
+  "scorecard": [
+    {
+      "category": "Requirement and AC proof",
+      "postRepositoryPercent": 75,
+      "finalPercent": 50,
+      "reason": "Unwaived first-send attachment Open criterion fails404. File is durable and reopen works, so this is bounded access friction, not data loss; strict clean acceptance still cannot pass. Two earlier exceptions separately accepted."
+    },
+    {
+      "category": "Changed-boundary directness",
+      "postRepositoryPercent": 90,
+      "finalPercent": 98,
+      "reason": "Four actual hosted Stop/history and12root/member overlap controls directly cross current compiled Apollo/HTTP/WS/backend/provider boundaries. Minor remaining permutations, not synthetic owner evidence."
+    },
+    {
+      "category": "Integration realism and mock gap",
+      "postRepositoryPercent": 75,
+      "finalPercent": 96,
+      "reason": "Current browser/task/provider/files/process paths and actual DeepSeek workers exercised. Controlled transport failures and metadata/API support are labeled; no claim every negative is normal UI."
+    },
+    {
+      "category": "Environment/config/identity/fixture fidelity",
+      "postRepositoryPercent": 90,
+      "finalPercent": 95,
+      "reason": "Fresh exact owned roots, real model configuration, strict19-file immutable package, preserved identities and authorized test-only secrets. Setup/oracle/cleanup errors fully disclosed; user source unchanged."
+    },
+    {
+      "category": "Failure/lifecycle/recovery evidence",
+      "postRepositoryPercent": 75,
+      "finalPercent": 95,
+      "reason": "Two main restart cycles, normal Stop/Restore/continuation and readiness/retry/missing-unreadable controls complete at stated scopes; no current active roots/tasks or cleanup residue."
+    },
+    {
+      "category": "User surface/browser/shell",
+      "postRepositoryPercent": 50,
+      "finalPercent": 75,
+      "reason": "Extensive real UI evidence at1502/390/en/zh, but immediate text link fails and two prior status/navigation deviations remain user-accepted. Native shell not executed; narrow fixture overflow disclosed."
+    },
+    {
+      "category": "Durable regression quality",
+      "postRepositoryPercent": 95,
+      "finalPercent": 90,
+      "reason": "Current2708repository tests and actualApollo63 fill prior race gap; first-send native live locator promotion lacks a proven durable regression assertion. Existing3API deltas unchanged, successful proportional review pending."
+    }
+  ],
+  "broaderValidation": "Required and executed; no additional user scenario planned in this round",
+  "everyCriticalACProven": false,
+  "cleanTargetMet": false,
+  "limitingFinding": "API-FIND-040 / API38-NATIVE-LIVE-TEXT-OPEN",
+  "acceptedExceptions": "Only the two recorded status/navigation issues. Existing separate-link destination additionally accepted as baseline behavior, not404."
+}

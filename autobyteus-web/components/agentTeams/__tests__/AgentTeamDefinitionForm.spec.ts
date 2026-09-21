@@ -64,7 +64,7 @@ const {
       agentTeamDefinitions: [],
       sharedAgentTeamDefinitions: [],
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
-      getAgentTeamDefinitionById: vi.fn(() => null),
+      getCatalogAgentTeamDefinitionById: vi.fn(() => null),
       getApplicationOwnedTeamDefinitionsByOwnerApplicationId: vi.fn(() => []),
       getTeamLocalTeamDefinitionsByOwnerTeamId: vi.fn(() => []),
     },
@@ -170,7 +170,6 @@ describe('AgentTeamDefinitionForm', () => {
     expect(payload.defaultLaunchConfig).toBeNull()
     expect(payload.nodes).toHaveLength(1)
     expect(payload.nodes[0]).toMatchObject({
-      refType: 'AGENT',
       ref: 'agent-1',
     })
   })
@@ -218,14 +217,13 @@ describe('AgentTeamDefinitionForm', () => {
       nodes: [
         {
           memberName: 'local_reviewer',
-          refType: 'AGENT',
           ref: 'reviewer',
           refScope: 'TEAM_LOCAL',
         },
       ],
     })
 
-    expect(wrapper.text()).toContain('Local Agent (reviewer)')
+    expect(wrapper.text()).toContain('Local Agent reviewer')
     expect(wrapper.text()).toContain('Team-local')
 
     await wrapper.get('input#team-name').setValue('Local Review Team Updated')
@@ -242,7 +240,6 @@ describe('AgentTeamDefinitionForm', () => {
     expect(payload.nodes).toEqual([
       {
         memberName: 'local_reviewer',
-        refType: 'AGENT',
         ref: 'reviewer',
         refScope: 'TEAM_LOCAL',
       },
@@ -273,7 +270,6 @@ describe('AgentTeamDefinitionForm', () => {
     expect(payload.nodes).toEqual([
       {
         memberName: 'bundled_reviewer',
-        refType: 'AGENT',
         ref: 'reviewer',
         refScope: 'TEAM_LOCAL',
       },

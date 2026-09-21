@@ -1,0 +1,15 @@
+{
+  "name": "server-build",
+  "case": "SETUP",
+  "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "build"
+  ],
+  "started": "2026-09-13T11:33:39.810610+00:00",
+  "exit": 0,
+  "finished": "2026-09-13T11:34:10.143795+00:00",
+  "tail": "uild$ tsc -p tsconfig.build.json\nautobyteus-application-sdk-contracts build: Done\nautobyteus-ts build: [verify:runtime-deps] OK\nautobyteus-ts build: Done\nautobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json\nautobyteus-application-backend-sdk build: Done\nPrisma schema loaded from prisma/schema.prisma\n\n\u2714 Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 225ms\n\nStart by importing your Prisma Client (See: https://pris.ly/d/importing-client)\n\nTip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize\n\n\n> autobyteus-server-ts@0.1.1 build /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts\n> pnpm run build:full\n\n\n> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts\n> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs\n\nAgentFactory (Singleton) initialized.\nBuilt-in agents bootstrap smoke check passed.\nSanitized built-module/bootstrap smoke passed without DATABASE_URL.\n"
+}

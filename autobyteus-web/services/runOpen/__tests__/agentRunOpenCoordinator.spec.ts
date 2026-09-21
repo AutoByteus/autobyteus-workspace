@@ -28,6 +28,7 @@ vi.mock('~/stores/agentContextsStore', () => ({
 }));
 vi.mock('~/stores/agentSelectionStore', () => ({
   useAgentSelectionStore: () => ({
+    beginSelectionIntent: () => ({ isCurrent: () => true }),
     selectRun: mocks.selectRun, selectRunWithoutShellNavigation: mocks.selectRunWithoutShellNavigation,
   }),
 }));
@@ -123,4 +124,16 @@ describe('openAgentRun', () => {
     expect(mocks.replaceActivities).not.toHaveBeenCalled();
     expect(mocks.upsertContext).not.toHaveBeenCalled();
   });
+  it.each(['success', 'error'])('superseded Agent %s never publishes candidate or selection', async (completion) => {
+    mocks.getRun.mockReturnValue(undefined);
+    let current = true, resolve!: (value: unknown) => void, reject!: (error: Error) => void;
+    mocks.loadCandidate.mockReturnValue(new Promise((yes, no) => { resolve = yes; reject = no; }));
+    const pending = openAgentRun({ runId: 'old', fallbackAgentName: null, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() });
+    current = false;
+    if (completion === 'success') resolve(candidate('old', false)); else reject(new Error('old failure'));
+    expect(await pending).toEqual({ disposition: 'superseded' });
+    expect(mocks.replaceActivities).not.toHaveBeenCalled(); expect(mocks.upsertContext).not.toHaveBeenCalled();
+    expect(mocks.selectRun).not.toHaveBeenCalled(); expect(mocks.clearAgentConfig).not.toHaveBeenCalled();
+  });
+
 });

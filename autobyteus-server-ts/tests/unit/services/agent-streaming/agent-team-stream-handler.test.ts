@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -13,20 +14,30 @@ import { createTeamAgentStatusDetails } from "../../../../src/agent-team-executi
 
 const scenarioDir = path.resolve(
   process.cwd(),
+  "tests/fixtures/current-team-run-v2/case-001-nested-task-team",
+);
+const recordsDir = path.resolve(
+  process.cwd(),
   "tests/fixtures/app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team",
 );
-const json = (name: string) => JSON.parse(fs.readFileSync(path.join(scenarioDir, name), "utf8")) as unknown;
-const tree = validateTeamRunExecutionTreePayload(json("team_run_execution_tree.json"), "team-run-root");
-const tasks = validateTaskDelegationRecordsV1Payload(json("task_delegation_records.json"), "team-run-root");
-const messages = validateTeamCommunicationMessagesV1Payload(json("team_communication_messages.json"), "team-run-root");
+const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as unknown;
+const tree = validateTeamRunExecutionTreePayload(json(scenarioDir, "team_run_execution_tree.json"), "team-run-root");
+const tasks = validateTaskDelegationRecordsV1Payload(json(recordsDir, "task_delegation_records.json"), "team-run-root");
+const messages = validateTeamCommunicationMessagesV1Payload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
 
 const sent = (connection: { send: ReturnType<typeof vi.fn> }) =>
   connection.send.mock.calls.map(([raw]) => JSON.parse(String(raw)) as { type: string; payload: Record<string, unknown> });
 
-const createHarness = (input: { commandResult?: { accepted: boolean; code?: string; message?: string } } = {}) => {
+const createHarness = (input: {
+  commandResult?: { accepted: boolean; code?: string; message?: string };
+  commandError?: Error;
+} = {}) => {
   let eventListener: ((event: unknown) => void) | null = null;
   const closeSnapshot = vi.fn();
-  const executeAgentCommand = vi.fn(async () => input.commandResult ?? ({ accepted: true }));
+  const executeAgentCommand = vi.fn(async () => {
+    if (input.commandError) throw input.commandError;
+    return input.commandResult ?? ({ accepted: true });
+  });
   const root = {
     teamRunId: "team-run-root",
     openPackageSnapshotConnection: vi.fn(async () => ({
@@ -91,7 +102,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
     sessions.push({ handler: harness.handler, id: sessionId! });
     const execution = createTeamAgentExecutionBinding({
-      rootTeamRunId: "team-run-root",
+      root: createTeamRootExecutionIdentity("team-run-root"),
       memberAddress: "/qa/automation/tester",
       agentRunId: "nested-task-agent-run-001",
     });
@@ -176,7 +187,53 @@ describe("AgentTeamStreamHandler current root stream", () => {
     expect(harness.executeAgentCommand).toHaveBeenCalledWith("stale-agent-run", expect.anything());
     expect(sent(harness.connection).at(-1)).toMatchObject({
       type: "ERROR",
-      payload: { code: "INVALID_TARGET", message: "missing task run" },
+      payload: {
+        code: "INVALID_TARGET", message: "missing task run", agent_run_id: "stale-agent-run",
+      },
+    });
+    expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
+  });
+
+  it("returns a target-correlated failure when the exact AgentRun rejects message admission", async () => {
+    const harness = createHarness({
+      commandResult: { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "runtime is stopping" },
+    });
+    const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+    sessions.push({ handler: harness.handler, id: sessionId! });
+    await harness.handler.handleMessage(sessionId!, JSON.stringify({
+      type: "SEND_MESSAGE",
+      payload: {
+        content: "keep this prompt", context_file_paths: [], image_urls: [],
+        agent_run_id: "nested-task-agent-run-001", message_id: "message-user-3", dedupe_key: "user:3",
+      },
+    }));
+    expect(sent(harness.connection).at(-1)).toMatchObject({
+      type: "ERROR",
+      payload: {
+        code: "TEAM_SEND_MESSAGE_REJECTED", message: "runtime is stopping",
+        details: "AGENT_RUN_NOT_ACCEPTING_INPUT", agent_run_id: "nested-task-agent-run-001",
+      },
+    });
+    expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
+  });
+
+  it("returns a target-correlated failure when message execution throws", async () => {
+    const harness = createHarness({ commandError: new Error("provider activation failed") });
+    const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+    sessions.push({ handler: harness.handler, id: sessionId! });
+    await harness.handler.handleMessage(sessionId!, JSON.stringify({
+      type: "SEND_MESSAGE",
+      payload: {
+        content: "keep this prompt", context_file_paths: [], image_urls: [],
+        agent_run_id: "nested-task-agent-run-001", message_id: "message-user-4", dedupe_key: "user:4",
+      },
+    }));
+    expect(sent(harness.connection).at(-1)).toMatchObject({
+      type: "ERROR",
+      payload: {
+        code: "TEAM_SEND_MESSAGE_FAILED", message: "provider activation failed",
+        agent_run_id: "nested-task-agent-run-001",
+      },
     });
     expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
   });

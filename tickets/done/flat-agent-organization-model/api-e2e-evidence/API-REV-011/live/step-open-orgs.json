@@ -1,0 +1,356 @@
+{
+  "url": "http://127.0.0.1:3590/agent-orgs?view=org-list",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nworkspace-team\nworkspace-default\nSettings\nAgent Orgs\nSearch Agent Orgs\nReload\nCreate Agent Org\nFeatured organizations\nAE\nAORG E2E Direct Agents Org\n\nCoordinator-free AgentOrg containing only two direct Agents.\n\nRun\nView Details\n→\nAORG E2E Lead\nAORG E2E Verifier\nAE\nAORG E2E Mixed Org\n\nDirect Agent plus two reusable flat Teams for real AgentOrg validation.\n\nRun\nView Details\n→\nAORG E2E Concierge\nAORG E2E Research Squad\nAORG E2E Support Pair\nA组\nAPIREV8 组织 Ω\n\nAPIREV8 mixed Org description exact\n\nRun\nView Details\n→\nAORG E2E Concierge\nAPIREV8 本地化 Team β",
+  "controls": [
+    {
+      "i": 0,
+      "tag": "BUTTON",
+      "text": "Agents",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 1,
+      "tag": "BUTTON",
+      "text": "",
+      "value": "",
+      "aria": null,
+      "title": "Collapse left panel",
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 2,
+      "tag": "BUTTON",
+      "text": "Agent Teams",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 3,
+      "tag": "BUTTON",
+      "text": "Agent Orgs",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 4,
+      "tag": "BUTTON",
+      "text": "Skills",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 5,
+      "tag": "BUTTON",
+      "text": "Memory",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 6,
+      "tag": "BUTTON",
+      "text": "Nodes",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 7,
+      "tag": "BUTTON",
+      "text": "",
+      "value": "",
+      "aria": null,
+      "title": "Add workspace",
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 8,
+      "tag": "BUTTON",
+      "text": "Temp Workspace",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 9,
+      "tag": "BUTTON",
+      "text": "workspace",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 10,
+      "tag": "BUTTON",
+      "text": "",
+      "value": "",
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 11,
+      "tag": "BUTTON",
+      "text": "workspace-team",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 12,
+      "tag": "BUTTON",
+      "text": "",
+      "value": "",
+      "aria": "Remove from Workspaces",
+      "title": "Remove from Workspaces",
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 13,
+      "tag": "BUTTON",
+      "text": "workspace-default",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 14,
+      "tag": "BUTTON",
+      "text": "Settings",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 15,
+      "tag": "INPUT",
+      "text": "",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": "Search organizations by name",
+      "disabled": false
+    },
+    {
+      "i": 16,
+      "tag": "BUTTON",
+      "text": "Reload",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 17,
+      "tag": "BUTTON",
+      "text": "Create Agent Org",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": "create-org",
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 18,
+      "tag": "BUTTON",
+      "text": "Run",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 19,
+      "tag": "BUTTON",
+      "text": "View Details →",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 20,
+      "tag": "BUTTON",
+      "text": "Run",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 21,
+      "tag": "BUTTON",
+      "text": "View Details →",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 22,
+      "tag": "BUTTON",
+      "text": "Run",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    },
+    {
+      "i": 23,
+      "tag": "BUTTON",
+      "text": "View Details →",
+      "value": "",
+      "aria": null,
+      "title": null,
+      "test": null,
+      "placeholder": null,
+      "disabled": false
+    }
+  ],
+  "tests": [
+    {
+      "test": "app-left-panel-shell",
+      "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspaceworkspace-teamworkspace-defaultSettings"
+    },
+    {
+      "test": "app-left-panel-sections",
+      "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp Workspaceworkspaceworkspace-teamworkspace-default"
+    },
+    {
+      "test": "app-left-panel-primary-nav",
+      "text": "AgentsAgent TeamsAgent OrgsSkillsMemoryNodes"
+    },
+    {
+      "test": "app-left-panel-section-resize-handle",
+      "text": ""
+    },
+    {
+      "test": "app-left-panel-run-history",
+      "text": "WorkspacesTemp Workspaceworkspaceworkspace-teamworkspace-default"
+    },
+    {
+      "test": "workspace-row",
+      "text": "Temp Workspace"
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace"
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-team"
+    },
+    {
+      "test": "workspace-row",
+      "text": "workspace-default"
+    },
+    {
+      "test": "agent-org-experience",
+      "text": "Agent OrgsSearch Agent Orgs ReloadCreate Agent OrgFeatured organizationsAEAORG E2E Direct Agents OrgCoordinator-free AgentOrg containing only two direct Agents.RunView Details →AORG E2E LeadAORG E2E VerifierAEAORG E2E Mixed OrgDirect Agent plus two reusable flat Teams for real AgentOrg validation.RunView Details →AORG E2E ConciergeAORG E2E Research SquadAORG E2E Support PairA组APIREV8 组织 ΩAPIREV8 mixed Org description exactRunView Details →AORG E2E ConciergeAPIREV8 本地化 Team β"
+    },
+    {
+      "test": "create-org",
+      "text": "Create Agent Org"
+    },
+    {
+      "test": "org-card-aorg-direct-agents-org",
+      "text": "AEAORG E2E Direct Agents OrgCoordinator-free AgentOrg containing only two direct Agents.RunView Details →AORG E2E LeadAORG E2E Verifier"
+    },
+    {
+      "test": "org-member-agent-aorg-lead",
+      "text": "AORG E2E Lead"
+    },
+    {
+      "test": "org-member-agent-aorg-verifier",
+      "text": "AORG E2E Verifier"
+    },
+    {
+      "test": "org-card-aorg-mixed-org",
+      "text": "AEAORG E2E Mixed OrgDirect Agent plus two reusable flat Teams for real AgentOrg validation.RunView Details →AORG E2E ConciergeAORG E2E Research SquadAORG E2E Support Pair"
+    },
+    {
+      "test": "org-member-agent-aorg-concierge",
+      "text": "AORG E2E Concierge"
+    },
+    {
+      "test": "org-member-team-aorg-research-squad",
+      "text": "AORG E2E Research Squad"
+    },
+    {
+      "test": "org-member-team-aorg-support-pair",
+      "text": "AORG E2E Support Pair"
+    },
+    {
+      "test": "org-card-apirev8",
+      "text": "A组APIREV8 组织 ΩAPIREV8 mixed Org description exactRunView Details →AORG E2E ConciergeAPIREV8 本地化 Team β"
+    },
+    {
+      "test": "org-member-agent-aorg-concierge",
+      "text": "AORG E2E Concierge"
+    },
+    {
+      "test": "org-member-team-apirev8-team",
+      "text": "APIREV8 本地化 Team β"
+    }
+  ]
+}

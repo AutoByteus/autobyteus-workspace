@@ -1,0 +1,162 @@
+[
+  {
+    "at": "2026-09-16T09:29:16.960Z",
+    "id": 196,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"shared-agent\",\"name\":\"Common Researcher\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"SHARED\",\"ownerOrgId\":null,\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:16.961Z",
+    "id": 194,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:names-beta:guide\",\"name\":\"Beta Director\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-beta\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:16.977Z",
+    "id": 193,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:names-beta:squad\",\"name\":\"Beta Research-Team\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\\n\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"2313aeaac291bb19cc78d0a61698d0a908946c22e7746e4ba90bfd4af4582e9a\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-beta\",\"ownerOrgName\":\"Catalog Beta\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:16.978Z",
+    "id": 195,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"shared-team\",\"name\":\"Shared Delivery Team Renamed\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"ed78ab652365689b589062660f890a9a102f20f6f0a6d2315c20dbf3e1e3b6c0\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerOrgId\":null,\"ownerOrgName\":null,\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:25.795Z",
+    "id": 206,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:names-alpha:guide\",\"name\":\"Alpha Director\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-alpha\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:25.808Z",
+    "id": 205,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:names-alpha:squad\",\"name\":\"Alpha Research-Team\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\\n\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"746d958a8259ffc9d9eb215d1020f13da3989ce26ccdf652069eb896e679bf62\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-alpha\",\"ownerOrgName\":\"Catalog Alpha\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:50.008Z",
+    "id": 230,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:names-alpha:guide\",\"name\":\"Alpha Director\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-alpha\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:50.010Z",
+    "id": 232,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"shared-agent\",\"name\":\"Common Researcher\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"SHARED\",\"ownerOrgId\":null,\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:50.023Z",
+    "id": 229,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:names-alpha:squad\",\"name\":\"Alpha Research-Team\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\\n\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"746d958a8259ffc9d9eb215d1020f13da3989ce26ccdf652069eb896e679bf62\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-alpha\",\"ownerOrgName\":\"Catalog Alpha\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:50.023Z",
+    "id": 231,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"shared-team\",\"name\":\"Shared Delivery Team Renamed\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"ed78ab652365689b589062660f890a9a102f20f6f0a6d2315c20dbf3e1e3b6c0\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerOrgId\":null,\"ownerOrgName\":null,\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:50.212Z",
+    "id": 234,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:names-beta:guide\",\"name\":\"Beta Director\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-beta\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:29:50.234Z",
+    "id": 233,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:names-beta:squad\",\"name\":\"Beta Research-Team\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\\n\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"2313aeaac291bb19cc78d0a61698d0a908946c22e7746e4ba90bfd4af4582e9a\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-beta\",\"ownerOrgName\":\"Catalog Beta\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "delayMs": 12000
+    }
+  },
+  {
+    "at": "2026-09-16T09:30:16.320Z",
+    "id": 258,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"shared-agent\",\"name\":\"Common Researcher\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"SHARED\",\"ownerOrgId\":null,\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "fail": true
+    }
+  },
+  {
+    "at": "2026-09-16T09:30:16.321Z",
+    "id": 256,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentDefinition\":{\"id\":\"agent-org-owned-agent:names-beta:guide\",\"name\":\"Beta Director\",\"description\":\"Synthetic catalog-name validation\",\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-beta\",\"ownerTeamId\":null,\"__typename\":\"AgentDefinition\"}}}",
+    "edge": {
+      "fail": true
+    }
+  },
+  {
+    "at": "2026-09-16T09:30:16.340Z",
+    "id": 255,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"agent-org-owned-team:names-beta:squad\",\"name\":\"Beta Research-Team\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\\n\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"2313aeaac291bb19cc78d0a61698d0a908946c22e7746e4ba90bfd4af4582e9a\",\"handoffs\":[],\"ownershipScope\":\"AGENT_ORG_OWNED\",\"ownerOrgId\":\"names-beta\",\"ownerOrgName\":\"Catalog Beta\",\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "fail": true
+    }
+  },
+  {
+    "at": "2026-09-16T09:30:16.340Z",
+    "id": 257,
+    "type": "response",
+    "status": 200,
+    "body": "{\"data\":{\"agentTeamDefinition\":{\"id\":\"shared-team\",\"name\":\"Shared Delivery Team Renamed\",\"description\":\"Synthetic catalog-name validation\",\"instructions\":\"Synthetic instructions; never launched in this test.\",\"category\":\"testing\",\"avatarUrl\":null,\"revision\":\"ed78ab652365689b589062660f890a9a102f20f6f0a6d2315c20dbf3e1e3b6c0\",\"handoffs\":[],\"ownershipScope\":\"SHARED\",\"ownerOrgId\":null,\"ownerOrgName\":null,\"coordinatorMemberName\":\"lead\",\"ownerTeamId\":null,\"ownerTeamName\":null,\"ownerApplicationId\":null,\"ownerApplicationName\":null,\"ownerPackageId\":null,\"ownerLocalApplicationId\":null,\"defaultLaunchConfig\":null,\"nodes\":[{\"memberName\":\"lead\",\"ref\":\"worker\",\"refScope\":\"TEAM_LOCAL\",\"__typename\":\"TeamMember\"}],\"__typename\":\"AgentTeamDefinition\"}}}",
+    "edge": {
+      "fail": true
+    }
+  }
+]

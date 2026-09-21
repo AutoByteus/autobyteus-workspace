@@ -1,0 +1,44 @@
+{
+  "at": "2026-09-13T11:55:21.384Z",
+  "draftId": "temp-1789300518033-1",
+  "requests": [
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "temp_ws_default",
+        "folderPath": ""
+      },
+      "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+    },
+    {
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+        }
+      },
+      "query": "mutation CreateWorkspace($input: CreateWorkspaceInput!) {\n  createWorkspace(input: $input) {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_6581ad1449a00efe015766ed616f3a86c6da709a669f17ded1ae4e3b8df4f8f8",
+        "folderPath": ""
+      },
+      "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    }
+  ],
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nFA\nFollowup Assistant\n(1)\nNew - Followup Assistant\nnow\nTEAMS\nFF\nFollowup Flat Team\n(1)\nSend one ordinary message to /lead using send_message_to: \"Reply exactly COLLAB-API01-TEAM-LEAD-R...\n16m\nC\ncoordinator\n16m\nL\nlead\n16m\nR\nreviewer\n16m\nORGS\nFollowup Organization\n(1)\nUse send_message_to exactly twice, sequentially. First recipient_address /receiver, content \"Repl...\n8m\nD\ndirector\nR\nreceiver\nresearch team\nC\ncoordinator\nL\nlead\nR\nreviewer\nTask: research team · c60c28\ncoordinator · 3a9d7e\nlead · a68902\nreviewer · 23060c\nSettings\nFA\nNew - Followup Assistant\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nLoading workspace…\nNo file selected\n\nSelect a file from the explorer to view or edit its content."
+}

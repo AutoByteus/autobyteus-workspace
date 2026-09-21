@@ -50,7 +50,7 @@ describe('MemoryManager', () => {
       const manager = new MemoryManager({ store });
 
       const turnId = manager.startTurn();
-      manager.ingestUserMessage(new LLMUserMessage({ content: 'hello' }), turnId, 'LLMUserMessageReadyEvent');
+      manager.ingestUserMessage(new LLMUserMessage({ content: 'hello' }), turnId, 'LLMUserMessageReadyEvent', []);
       manager.ingestAssistantResponse({ content: 'hi', reasoning: null } as any, turnId, 'LLMCompleteResponseReceivedEvent');
 
       const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
@@ -184,7 +184,7 @@ describe('MemoryManager', () => {
       const store = new FileMemoryStore(tempDir, 'agent_mem_atomic_assistant_tools');
       const manager = new MemoryManager({ store });
       const turnId = manager.startTurn();
-      manager.ingestUserMessage(new LLMUserMessage({ content: 'existing input' }), turnId, 'TestEvent');
+      manager.ingestUserMessage(new LLMUserMessage({ content: 'existing input' }), turnId, 'TestEvent', []);
       manager.appendWorkingContextUserMessage('existing input', { turnId });
       const rawPath = path.join(store.agentDir, 'raw_traces_active.jsonl');
       const rawBefore = fs.readFileSync(rawPath, 'utf-8');
@@ -484,7 +484,7 @@ describe('MemoryManager', () => {
         new Message(MessageRole.SYSTEM, { content: 'stable system prompt' }),
         new Message(MessageRole.USER, { content: 'interrupted user input' }),
       ]));
-      manager.ingestUserMessage(new LLMUserMessage({ content: 'interrupted user input' }), turnId, 'LLMUserMessageReadyEvent');
+      manager.ingestUserMessage(new LLMUserMessage({ content: 'interrupted user input' }), turnId, 'LLMUserMessageReadyEvent', []);
       manager.ingestToolIntent(new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-interrupt', turnId), turnId);
 
       manager.finalizePendingToolCallsForTurn(turnId, 'user_interrupt', { appendToWorkingContext: false });

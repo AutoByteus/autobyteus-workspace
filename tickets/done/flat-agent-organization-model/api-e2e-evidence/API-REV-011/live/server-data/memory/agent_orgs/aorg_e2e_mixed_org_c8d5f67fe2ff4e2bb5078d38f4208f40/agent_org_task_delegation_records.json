@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_c8d5f67fe2ff4e2bb5078d38f4208f40",
+  "records": [
+    {
+      "taskId": "task_433f08ac7738461990c25303e5ad6784",
+      "delegatorAgentRunId": "aorg_e2e_lead_992acea3a34c427494ae932041c7341a",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_76d083849b6e40258bbbc88cb985e7f7"
+      },
+      "description": "Call submit_task_result with exactly APIREV11-TASK-SUBMITTED-001 and do not call review_task_result.",
+      "referenceFiles": [],
+      "status": "awaiting_review",
+      "updates": [
+        {
+          "submissionId": "submission_4ebaa6aa1a9242299cb482668feb8301",
+          "message": "APIREV11-TASK-SUBMITTED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T00:06:28.922Z"
+        }
+      ],
+      "createdAt": "2026-09-06T00:06:14.864Z"
+    }
+  ]
+}

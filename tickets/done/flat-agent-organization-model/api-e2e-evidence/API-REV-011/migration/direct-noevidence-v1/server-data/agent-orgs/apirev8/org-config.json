@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    {
+      "memberName": "aorg_e2e_concierge",
+      "ref": "aorg-concierge",
+      "refType": "agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "apirev8_team",
+      "ref": "apirev8-team",
+      "refType": "agent_team",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/aorg_e2e_concierge",
+      "to": "/apirev8_team",
+      "rules": [
+        "When escalation Ω requires 团队 intake, preserve this exact prose."
+      ]
+    }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

@@ -1,0 +1,7 @@
+migrationId=20260814_team_run_execution_tree_v1
+displayName=TeamRun execution-tree V1 migration
+statusSummary={"scannedCount":2,"migratedCount":0,"skippedCount":2,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage:root-update-transaction","status":"SKIPPED","message":"Token runtime root schema/index are current; no row root update was required."}
+{"itemId":"team-history-index","backupPath":null,"status":"SKIPPED","message":"TeamRun history index already matches 0 admitted root(s)."}

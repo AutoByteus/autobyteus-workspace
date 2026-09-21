@@ -1,0 +1,31 @@
+{
+  "request": {
+    "operationName": "PrepareAgentRun",
+    "variables": {
+      "input": {
+        "agentDefinitionId": "followup-assistant",
+        "workspaceId": "agent_ws_6581ad1449a00efe015766ed616f3a86c6da709a669f17ded1ae4e3b8df4f8f8",
+        "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "autoExecuteTools": false,
+        "llmConfig": null,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools."
+      }
+    },
+    "query": "mutation PrepareAgentRun($input: CreateAgentRunInput!) {\n  prepareAgentRun(input: $input) {\n    success\n    message\n    runId\n    activationState\n    preparedExpiresAt\n    __typename\n  }\n}"
+  },
+  "response": {
+    "data": {
+      "prepareAgentRun": {
+        "success": true,
+        "message": "Agent run prepared successfully.",
+        "runId": "followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286",
+        "activationState": "PREPARED",
+        "preparedExpiresAt": "2026-09-14T11:55:32.391Z",
+        "__typename": "PrepareAgentRunResult"
+      }
+    }
+  }
+}

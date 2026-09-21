@@ -1,0 +1,35 @@
+{
+  "case": "LIVE-005",
+  "surface": "AutoByteus open_tab 8, production renderer 3487 -> real GraphQL backend 8487",
+  "rootInvalid": {
+    "action": "Changed Org runtime from Claude/default back to Codex while the prior provider model identity was unavailable, before selecting a valid Codex model",
+    "observedError": "Model configuration for /concierge is not ready: The selected model is unavailable for the current runtime.",
+    "runDisabled": true,
+    "evidence": "screenshots/LIVE-005-root-invalid.png"
+  },
+  "rootRecovered": {
+    "action": "Selected OpenAI / GPT-5.6-Sol",
+    "errors": [],
+    "runDisabled": false
+  },
+  "teamInvalid": {
+    "scope": "/research-team",
+    "action": "Changed exact mounted Team runtime from Codex/GPT-5.6-Sol to Claude before selecting a compatible model",
+    "observedError": "Model configuration for /research-team is not ready: The selected model is unavailable for the current runtime.",
+    "runDisabled": true,
+    "evidence": "screenshots/LIVE-005-team-invalid.png"
+  },
+  "teamRecovered": {
+    "action": "Selected Anthropic / Default (recommended) at /research-team",
+    "errors": [],
+    "runDisabled": false,
+    "evidence": "screenshots/LIVE-005-valid-ready.png"
+  },
+  "agentEvidence": {
+    "reusedFrom": "LIVE-003",
+    "scope": "/support-team/specialist",
+    "invalid": "Claude runtime plus unavailable inherited GPT-5.6-Sol named exact address and disabled Run",
+    "valid": "Anthropic / Default resolved readiness and enabled Run",
+    "evidence": ["runtime-retry-observations.json", "screenshots/LIVE-003-runtime-retry-resolved.png"]
+  }
+}

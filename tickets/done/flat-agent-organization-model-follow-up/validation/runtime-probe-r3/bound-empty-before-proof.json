@@ -1,0 +1,10 @@
+{
+  "agentRunId": "aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588",
+  "rawTraceExists": true,
+  "rawTraceBytes": 6424,
+  "fixture": "real no-input preparation from API-REV-002; ordinary frontend first Send now",
+  "traceKinds": [
+    "system_instruction"
+  ],
+  "userTraceCount": 0
+}

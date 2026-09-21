@@ -1,0 +1,98 @@
+timestamp=2026-09-02T20:01:35Z
+worktree=/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model
+artifact=5bfc54c11ef82e4fec217c84dc66887965cf98ac
+source_commit=5300fd7ac3c6061dfd6e88feb69edd9931ef326e
+source_is_ancestor=yes
+--- instructions ---
+36ce08f5c256733dbc2ddd1bc57275b8862d1405ac96e9538e1ab6204a64a1f1  autobyteus-web/AGENTS.md
+e641ea74f36bf96753253dc164cd7816426b040e664374a1f046f523a5c2623e  autobyteus-server-ts/AGENTS.md
+8d74791499993ea90eaa69df5c5983b2b06e2bf6ea4c6fbe9e9264273e37bab7  autobyteus-web/README.md
+b1da397a24655d90aebdf0884eb9e4c0a1bbe823f5248e54f93ee25af8a3543f  autobyteus-server-ts/README.md
+--- fixture manifest ---
+./README.md: OK
+./TEST-MANIFEST.md: OK
+./agent-orgs/aorg-direct-agents-org/org-config.json: OK
+./agent-orgs/aorg-direct-agents-org/org.md: OK
+./agent-orgs/aorg-mixed-org/org-config.json: OK
+./agent-orgs/aorg-mixed-org/org.md: OK
+./agent-teams/aorg-research-squad/team-config.json: OK
+./agent-teams/aorg-research-squad/team.md: OK
+./agent-teams/aorg-support-pair/team-config.json: OK
+./agent-teams/aorg-support-pair/team.md: OK
+./agents/aorg-analyst/agent-config.json: OK
+./agents/aorg-analyst/agent.md: OK
+./agents/aorg-concierge/agent-config.json: OK
+./agents/aorg-concierge/agent.md: OK
+./agents/aorg-lead/agent-config.json: OK
+./agents/aorg-lead/agent.md: OK
+./agents/aorg-verifier/agent-config.json: OK
+./agents/aorg-verifier/agent.md: OK
+fixture_file_count=19
+--- candidate ports 8587/3587 ---
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+--- owned-name process scan ---
+12383 /bin/bash -lc set -o pipefail E=tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/repository F=tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package {   echo "timestamp=$(date -u +%FT%TZ)"   echo "worktree=$PWD"   echo "artifact=$(git rev-parse HEAD)"   echo "source_commit=5300fd7ac3c6061dfd6e88feb69edd9931ef326e"   git merge-base --is-ancestor 5300fd7ac3c6061dfd6e88feb69edd9931ef326e HEAD && echo source_is_ancestor=yes   echo '--- instructions ---'; for f in autobyteus-web/AGENTS.md autobyteus-server-ts/AGENTS.md autobyteus-web/README.md autobyteus-server-ts/README.md; do test -f "$f" && sha256sum "$f"; done   echo '--- fixture manifest ---'; (cd "$F" && sha256sum -c PACKAGE.sha256)   echo "fixture_file_count=$(find "$F" -type f | wc -l)"   echo '--- candidate ports 8587/3587 ---'; ss -ltnp '( sport = :8587 or sport = :3587 )' || true   echo '--- owned-name process scan ---'; pgrep -af 'API-REV-007|AUTOBYTEUS_SERVER_PORT=8587|--port 3587' || true   echo '--- working tree (pre-existing changes preserved) ---'; git status --short   echo '--- diff check ---'; git diff --check && echo diff_check=pass   echo '--- exact changed production paths since API-REV-006 artifact c969 ---'; git diff --name-status c969b480a2aaabf7ae68cd2b576110f2de513ad6..HEAD -- autobyteus-web autobyteus-server-ts } | tee "$E/preflight.log" printf '{"tabs":[]}\n' > "$E/preflight-tabs.json"
+12386 /bin/bash -lc set -o pipefail E=tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/repository F=tickets/in-progress/flat-agent-organization-model/api-e2e-fixtures/aorg-api-rev-002-agent-package {   echo "timestamp=$(date -u +%FT%TZ)"   echo "worktree=$PWD"   echo "artifact=$(git rev-parse HEAD)"   echo "source_commit=5300fd7ac3c6061dfd6e88feb69edd9931ef326e"   git merge-base --is-ancestor 5300fd7ac3c6061dfd6e88feb69edd9931ef326e HEAD && echo source_is_ancestor=yes   echo '--- instructions ---'; for f in autobyteus-web/AGENTS.md autobyteus-server-ts/AGENTS.md autobyteus-web/README.md autobyteus-server-ts/README.md; do test -f "$f" && sha256sum "$f"; done   echo '--- fixture manifest ---'; (cd "$F" && sha256sum -c PACKAGE.sha256)   echo "fixture_file_count=$(find "$F" -type f | wc -l)"   echo '--- candidate ports 8587/3587 ---'; ss -ltnp '( sport = :8587 or sport = :3587 )' || true   echo '--- owned-name process scan ---'; pgrep -af 'API-REV-007|AUTOBYTEUS_SERVER_PORT=8587|--port 3587' || true   echo '--- working tree (pre-existing changes preserved) ---'; git status --short   echo '--- diff check ---'; git diff --check && echo diff_check=pass   echo '--- exact changed production paths since API-REV-006 artifact c969 ---'; git diff --name-status c969b480a2aaabf7ae68cd2b576110f2de513ad6..HEAD -- autobyteus-web autobyteus-server-ts } | tee "$E/preflight.log" printf '{"tabs":[]}\n' > "$E/preflight-tabs.json"
+12387 tee tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/repository/preflight.log
+--- working tree (pre-existing changes preserved) ---
+ M README.md
+ M autobyteus-server-ts/docs/PROJECT_OVERVIEW.md
+ M autobyteus-server-ts/docs/README.md
+ M autobyteus-server-ts/docs/modules/README.md
+ M autobyteus-server-ts/docs/modules/agent_team_definition.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-web/AGENTS.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-coverage-investigation.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-revision-record.md
+ M tickets/in-progress/flat-agent-organization-model/api-e2e-test-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-report.md
+ M tickets/in-progress/flat-agent-organization-model/code-review-revision-record.md
+?? autobyteus-server-ts/docs/modules/agent_orgs.md
+?? autobyteus-web/docs/agent_orgs.md
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-005/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-006/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/
+?? tickets/in-progress/flat-agent-organization-model/api-e2e-test-case-ledger.md
+?? tickets/in-progress/flat-agent-organization-model/delivery-evidence/
+?? tickets/in-progress/flat-agent-organization-model/delivery-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model/docs-sync-report.md
+?? tickets/in-progress/flat-agent-organization-model/handoff-summary.md
+?? tickets/in-progress/flat-agent-organization-model/release-deployment-report.md
+?? tickets/in-progress/flat-agent-organization-model/release-notes.md
+--- diff check ---
+diff_check=pass
+--- exact changed production paths since API-REV-006 artifact c969 ---
+M	autobyteus-web/components/agentOrgs/AgentOrgExperience.vue
+M	autobyteus-web/components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+M	autobyteus-web/components/agentTeams/AgentTeamDefinitionForm.vue
+M	autobyteus-web/components/agentTeams/AgentTeamDetail.vue
+M	autobyteus-web/components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+A	autobyteus-web/components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+M	autobyteus-web/components/agentTeams/form/AgentTeamLibraryPanel.vue
+M	autobyteus-web/components/collaboration/handoffs/HandoffManager.vue
+M	autobyteus-web/components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+M	autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue
+M	autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+M	autobyteus-web/components/workspace/history/AgentOrgRunHistoryPanel.vue
+M	autobyteus-web/components/workspace/history/__tests__/AgentOrgRunHistoryPanel.spec.ts
+M	autobyteus-web/components/workspace/org/AgentOrgWorkspaceView.vue
+M	autobyteus-web/docs/localization.md
+M	autobyteus-web/localization/audit/migrationScopes.ts
+A	autobyteus-web/localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+A	autobyteus-web/localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+A	autobyteus-web/localization/messages/en/agentOrgs.ts
+M	autobyteus-web/localization/messages/en/agentTeams.ts
+A	autobyteus-web/localization/messages/en/handoffs.ts
+M	autobyteus-web/localization/messages/en/index.ts
+M	autobyteus-web/localization/messages/en/workspace.ts
+A	autobyteus-web/localization/messages/zh-CN/agentOrgs.ts
+M	autobyteus-web/localization/messages/zh-CN/agentTeams.ts
+A	autobyteus-web/localization/messages/zh-CN/handoffs.ts
+M	autobyteus-web/localization/messages/zh-CN/index.ts
+M	autobyteus-web/localization/messages/zh-CN/workspace.ts
+M	autobyteus-web/scripts/__tests__/localizationLiteralAudit.spec.ts
+M	autobyteus-web/scripts/lib/localizationLiteralAudit.mjs

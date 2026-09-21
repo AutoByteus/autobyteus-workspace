@@ -1,0 +1,1224 @@
+{
+  "states": [
+    {
+      "name": "desktop-inactive-direct",
+      "overflow": false,
+      "access": "continuable",
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "desktop-inactive-mounted",
+      "overflow": false,
+      "access": "continuable",
+      "textarea": "",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-continuation-pending",
+      "overflow": false,
+      "access": "read_only",
+      "textarea": "new draft during restore",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "new draft during restore",
+          "attachments": [],
+          "pending": true,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.507Z",
+              "contextFilePaths": [],
+              "messageId": "402a87aa-1f50-482a-980f-edddd7bfa5b3",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:402a87aa-1f50-482a-980f-edddd7bfa5b3"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-readiness-draft",
+      "overflow": false,
+      "access": "read_only",
+      "textarea": "latest draft during readiness",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": true,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.507Z",
+              "contextFilePaths": [],
+              "messageId": "402a87aa-1f50-482a-980f-edddd7bfa5b3",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:402a87aa-1f50-482a-980f-edddd7bfa5b3"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-continued-same-context",
+      "overflow": false,
+      "access": "live",
+      "textarea": "latest draft during readiness",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.657Z",
+              "contextFilePaths": [],
+              "messageId": "402a87aa-1f50-482a-980f-edddd7bfa5b3",
+              "dedupeKey": "member_input:org-run:agent-team-worker-configured:402a87aa-1f50-482a-980f-edddd7bfa5b3"
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-stopped-retained",
+      "overflow": false,
+      "access": "continuable",
+      "textarea": "latest draft during readiness",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.657Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "desktop-stopped-retained",
+      "overflow": false,
+      "access": "continuable",
+      "textarea": "latest draft during readiness",
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.657Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "desktop-stopped-task-readonly",
+      "overflow": false,
+      "access": "read_only",
+      "textarea": null,
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.657Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-stopped-task-readonly",
+      "overflow": false,
+      "access": "read_only",
+      "textarea": null,
+      "contexts": {
+        "agent-director": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.657Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    },
+    {
+      "name": "narrow-failed-restore-draft",
+      "overflow": false,
+      "access": "continuable",
+      "textarea": "preserve failed continuation",
+      "contexts": {
+        "agent-director": {
+          "draft": "preserve failed continuation",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "preserve failed continuation",
+              "timestamp": "2026-09-11T23:59:38.423Z",
+              "contextFilePaths": [],
+              "messageId": "84aee1d8-75e9-4913-9a57-cbaf8bd5262e",
+              "dedupeKey": "member_input:org-run:agent-director:84aee1d8-75e9-4913-9a57-cbaf8bd5262e"
+            },
+            {
+              "type": "ai",
+              "text": "Error Occurred",
+              "timestamp": "2026-09-11T23:59:38.436Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "error",
+                  "code": "LOCAL_SUBMISSION_ERROR",
+                  "message": "Restore was rejected",
+                  "details": "Error: Restore was rejected"
+                }
+              ]
+            }
+          ]
+        },
+        "agent-worker-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-lead-configured": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-team-worker-configured": {
+          "draft": "latest draft during readiness",
+          "attachments": [],
+          "pending": false,
+          "messages": [
+            {
+              "type": "user",
+              "text": "Earlier saved message",
+              "timestamp": "2026-09-10T00:26:40.000Z",
+              "contextFilePaths": []
+            },
+            {
+              "type": "ai",
+              "text": "Previously completed work remains available for inspection.",
+              "timestamp": "2026-09-10T00:26:41.000Z",
+              "isComplete": true,
+              "segments": [
+                {
+                  "type": "text",
+                  "content": "Previously completed work remains available for inspection."
+                }
+              ],
+              "reasoning": null
+            },
+            {
+              "type": "user",
+              "text": "resume exact mounted Agent",
+              "timestamp": "2026-09-11T23:59:37.657Z",
+              "contextFilePaths": []
+            }
+          ]
+        },
+        "agent-worker-task": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-lead": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        },
+        "agent-task-worker": {
+          "draft": "",
+          "attachments": [],
+          "pending": false,
+          "messages": []
+        }
+      }
+    }
+  ],
+  "pageErrors": [],
+  "commands": [
+    {
+      "type": "SEND_MESSAGE",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-run",
+        "target_agent_run_id": "agent-team-worker-configured",
+        "command_id": "059a9381-c27e-40cf-b456-f1bfc265696d",
+        "content": "resume exact mounted Agent",
+        "context_file_paths": [],
+        "image_urls": [],
+        "message_id": "402a87aa-1f50-482a-980f-edddd7bfa5b3",
+        "dedupe_key": "member_input:org-run:agent-team-worker-configured:402a87aa-1f50-482a-980f-edddd7bfa5b3"
+      }
+    }
+  ],
+  "mutations": [
+    "RestoreAgentOrgRun",
+    "TerminateAgentOrgRun",
+    "RestoreAgentOrgRun"
+  ],
+  "queries": [
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "RestoreAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "TerminateAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      }
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      }
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operation": "RestoreAgentOrgRun",
+      "variables": {
+        "agentOrgRunId": "org-run"
+      }
+    }
+  ],
+  "limits": "Implementation renderer only; real shared surfaces, input, Pinia/context/submission/inspection/stream, strict synthetic external I/O. Header selection/stop diagnostic controls; route mode behavior separately component/action tested. No native/provider/API/Delivery claim.",
+  "passed": true
+}

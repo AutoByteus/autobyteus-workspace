@@ -1,0 +1,30 @@
+### autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+-- ticket-side commits since merge base --
+cbb4364d3 fix: fence rooted task shutdown and defer active settlement
+37d05c7f7 feat: add flat agent organizations
+-- base-side commits since merge base --
+
+### autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+-- ticket-side commits since merge base --
+37d05c7f7 feat: add flat agent organizations
+-- base-side commits since merge base --
+
+### autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+-- ticket-side commits since merge base --
+3d59992a4 feat: restore agent org workspace presentation
+-- base-side commits since merge base --
+9ba13698f fix(web): hydrate exact task monitor projections
+
+### autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+-- ticket-side commits since merge base --
+3d59992a4 feat: restore agent org workspace presentation
+-- base-side commits since merge base --
+9ba13698f fix(web): hydrate exact task monitor projections
+
+### autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+-- ticket-side commits since merge base --
+3e38be965 fix: confirm team sends and clear stopped org routes
+37d05c7f7 feat: add flat agent organizations
+-- base-side commits since merge base --
+9ba13698f fix(web): hydrate exact task monitor projections
+

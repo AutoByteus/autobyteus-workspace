@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-08-14T10:00:00.000Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "team-def-software-engineering",
+    "teamDefinitionName": "Software Engineering",
+    "teamRunId": "team-run-root",
+    "coordinatorAddress": "/product_manager",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/workspace/software-engineering"
+    },
+    "members": [
+      {
+        "address": "/product_manager",
+        "agentDefinitionId": "agent-def-product-manager",
+        "role": "Product manager",
+        "description": null,
+        "agentRunId": "agent-run-product-manager",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/workspace/software-engineering"
+        }
+      }
+    ],
+    "taskExecutions": [
+      {
+        "address": "/qa",
+        "teamRunId": "task-team-run-qa-001",
+        "members": [
+          {
+            "address": "/qa/qa_lead",
+            "agentRunId": "task-team-agent-run-qa-lead-001",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/qa/tester",
+            "agentRunId": "task-team-agent-run-tester-001",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/qa/automation",
+            "teamRunId": "task-team-run-automation-001",
+            "members": [
+              {
+                "address": "/qa/automation/automation_lead",
+                "agentRunId": "task-team-agent-run-automation-lead-001",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/qa/automation/tester",
+                "agentRunId": "task-team-agent-run-automation-tester-001",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [
+              {
+                "address": "/qa/automation/tester",
+                "agentRunId": "nested-task-agent-run-001",
+                "platformAgentRunId": null,
+                "startedAt": "2026-08-14T10:22:00.000Z",
+                "settledAt": null
+              }
+            ]
+          }
+        ],
+        "taskExecutions": [],
+        "startedAt": "2026-08-14T10:20:00.000Z",
+        "settledAt": null
+      }
+    ]
+  }
+}

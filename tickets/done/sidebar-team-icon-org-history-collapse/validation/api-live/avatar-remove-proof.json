@@ -1,0 +1,141 @@
+{
+  "updates": [
+    {
+      "at": "2026-09-15T23:18:30.034Z",
+      "kind": "request",
+      "id": 467,
+      "method": "POST",
+      "url": "/graphql",
+      "bytes": 1409,
+      "operation": "UpdateAgentOrgDefinition",
+      "variables": {
+        "input": {
+          "id": "sidebar-edit-org",
+          "expectedRevision": "f07706cf8a5f00ee4a2bc81a59d1f794e8e2a0d9d75de5c2af38c0e0000d2a62",
+          "name": "Sidebar Authoring Org",
+          "description": "Disposable current-schema fixture.",
+          "members": [
+            {
+              "memberName": "direct",
+              "ref": "sidebar-shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "team",
+              "ref": "sidebar-team-image",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "owned",
+              "ref": "agent-org-owned-agent:sidebar-edit-org:owned-worker",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "ownedteam",
+              "ref": "agent-org-owned-team:sidebar-edit-org:owned-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            }
+          ],
+          "handoffs": [],
+          "avatarUrl": "/rest/files/images/3b398165-cb4e-414d-b4a0-37c5d318c6d8.png"
+        }
+      }
+    },
+    {
+      "at": "2026-09-15T23:19:11.614Z",
+      "kind": "request",
+      "id": 511,
+      "method": "POST",
+      "url": "/graphql",
+      "bytes": 1350,
+      "operation": "UpdateAgentOrgDefinition",
+      "variables": {
+        "input": {
+          "id": "sidebar-edit-org",
+          "expectedRevision": "379f51bdb57352b268b1ba9e22faf706628371bf1c1b9adef1d8e9450fa242d0",
+          "name": "Sidebar Authoring Org",
+          "description": "Disposable current-schema fixture.",
+          "members": [
+            {
+              "memberName": "direct",
+              "ref": "sidebar-shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "team",
+              "ref": "sidebar-team-image",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "owned",
+              "ref": "agent-org-owned-agent:sidebar-edit-org:owned-worker",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "ownedteam",
+              "ref": "agent-org-owned-team:sidebar-edit-org:owned-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            }
+          ],
+          "handoffs": [],
+          "avatarUrl": ""
+        }
+      }
+    },
+    {
+      "at": "2026-09-15T23:19:18.141Z",
+      "kind": "request",
+      "id": 517,
+      "method": "POST",
+      "url": "/graphql",
+      "bytes": 1350,
+      "operation": "UpdateAgentOrgDefinition",
+      "variables": {
+        "input": {
+          "id": "sidebar-edit-org",
+          "expectedRevision": "379f51bdb57352b268b1ba9e22faf706628371bf1c1b9adef1d8e9450fa242d0",
+          "name": "Sidebar Authoring Org",
+          "description": "Disposable current-schema fixture.",
+          "members": [
+            {
+              "memberName": "direct",
+              "ref": "sidebar-shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "team",
+              "ref": "sidebar-team-image",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "owned",
+              "ref": "agent-org-owned-agent:sidebar-edit-org:owned-worker",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "ownedteam",
+              "ref": "agent-org-owned-team:sidebar-edit-org:owned-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            }
+          ],
+          "handoffs": [],
+          "avatarUrl": ""
+        }
+      }
+    }
+  ],
+  "stored_avatar": null,
+  "uploaded_asset_preserved": true
+}

@@ -1,0 +1,240 @@
+{
+  "base_change_sequence": 8,
+  "is_active": true,
+  "execution_tree": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "org-definition",
+      "orgDefinitionName": "Restored Org",
+      "orgRunId": "org-run",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": null,
+        "autoExecuteTools": false,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": null
+      },
+      "members": [
+        {
+          "address": "/director",
+          "agentDefinitionId": "definition-agent-director",
+          "role": null,
+          "description": null,
+          "agentRunId": "agent-director",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": null
+          }
+        },
+        {
+          "address": "/worker",
+          "agentDefinitionId": "definition-agent-worker-configured",
+          "role": null,
+          "description": null,
+          "agentRunId": "agent-worker-configured",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": null
+          }
+        },
+        {
+          "address": "/team",
+          "teamDefinitionId": "team-definition",
+          "role": null,
+          "description": null,
+          "teamRunId": "team-configured",
+          "coordinatorAddress": "/team/lead",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": null
+          },
+          "members": [
+            {
+              "address": "/team/lead",
+              "agentDefinitionId": "definition-agent-lead-configured",
+              "role": null,
+              "description": null,
+              "agentRunId": "agent-lead-configured",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": null
+              }
+            },
+            {
+              "address": "/team/worker",
+              "agentDefinitionId": "definition-agent-team-worker-configured",
+              "role": null,
+              "description": null,
+              "agentRunId": "agent-team-worker-configured",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": null
+              }
+            }
+          ],
+          "taskExecutions": []
+        }
+      ],
+      "taskExecutions": [
+        {
+          "address": "/worker",
+          "agentRunId": "agent-worker-task",
+          "platformAgentRunId": null,
+          "startedAt": "2026-09-01T00:00:01.000Z",
+          "settledAt": null
+        },
+        {
+          "address": "/team",
+          "teamRunId": "team-task",
+          "members": [
+            {
+              "address": "/team/lead",
+              "agentRunId": "agent-task-lead",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/team/worker",
+              "agentRunId": "agent-task-worker",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "startedAt": "2026-09-01T00:00:02.000Z",
+          "settledAt": "2026-09-01T00:05:00.000Z"
+        }
+      ]
+    }
+  },
+  "task_records": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "org-run",
+    "records": [
+      {
+        "taskId": "task-agent",
+        "delegatorAgentRunId": "agent-director",
+        "recipientAddress": "/worker",
+        "taskExecution": {
+          "agentRunId": "agent-worker-task"
+        },
+        "description": "Task task-agent",
+        "referenceFiles": [],
+        "status": "active",
+        "updates": [],
+        "createdAt": "2026-09-01T00:00:01.000Z"
+      },
+      {
+        "taskId": "task-team",
+        "delegatorAgentRunId": "agent-director",
+        "recipientAddress": "/team",
+        "taskExecution": {
+          "teamRunId": "team-task"
+        },
+        "description": "Task task-team",
+        "referenceFiles": [],
+        "status": "accepted",
+        "updates": [
+          {
+            "submissionId": "result",
+            "message": "Verified result.",
+            "referenceFiles": [],
+            "createdAt": "2026-09-01T00:03:00.000Z"
+          },
+          {
+            "reviewId": "accept",
+            "reviewedSubmissionId": "result",
+            "decision": "accept",
+            "comment": null,
+            "referenceFiles": [],
+            "createdAt": "2026-09-01T00:04:00.000Z"
+          }
+        ],
+        "createdAt": "2026-09-01T00:00:01.000Z"
+      }
+    ]
+  },
+  "communication_messages": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "orgRunId": "org-run",
+    "messages": []
+  },
+  "agent_statuses": [
+    {
+      "member_address": "/director",
+      "agent_run_id": "agent-director",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/worker",
+      "agent_run_id": "agent-worker-configured",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/team/lead",
+      "agent_run_id": "agent-lead-configured",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/team/worker",
+      "agent_run_id": "agent-team-worker-configured",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    },
+    {
+      "member_address": "/worker",
+      "agent_run_id": "agent-worker-task",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null
+    }
+  ]
+}

@@ -40,6 +40,7 @@ import {
   pathExists,
 } from "./agent-definition-source-paths.js";
 import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";
+import { findAgentOrgOwnedDefinitionSource } from "../../agent-org-definition/providers/agent-org-owned-definition-source-index.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -97,6 +98,10 @@ export class FileAgentDefinitionProvider {
     return roots;
   }
 
+  private getReadOrgRoots(): string[] {
+    return [this.appConfig.getAgentOrgsDir(), ...this.appConfig.getAdditionalAgentPackageRoots().map((root) => path.join(root, "agent-orgs"))];
+  }
+
   private async readAgentFromPaths(
     mdPath: string,
     configPath: string,
@@ -105,6 +110,8 @@ export class FileAgentDefinitionProvider {
       ownershipScope: AgentDefinitionOwnershipScope;
       ownerTeamId?: string | null;
       ownerTeamName?: string | null;
+      ownerOrgId?: string | null;
+      ownerOrgName?: string | null;
       ownerApplicationId?: string | null;
       ownerApplicationName?: string | null;
       ownerPackageId?: string | null;
@@ -136,6 +143,8 @@ export class FileAgentDefinitionProvider {
         ownershipScope: ownership.ownershipScope,
         ownerTeamId: ownership.ownerTeamId ?? null,
         ownerTeamName: ownership.ownerTeamName ?? null,
+        ownerOrgId: ownership.ownerOrgId ?? null,
+        ownerOrgName: ownership.ownerOrgName ?? null,
         ownerApplicationId: ownership.ownerApplicationId ?? null,
         ownerApplicationName: ownership.ownerApplicationName ?? null,
         ownerPackageId: ownership.ownerPackageId ?? null,
@@ -182,6 +191,7 @@ export class FileAgentDefinitionProvider {
       teamId,
       this.getReadTeamRoots(),
       this.applicationBundleService,
+      this.getReadOrgRoots(),
     );
     if (!teamSourcePaths) {
       return null;
@@ -249,6 +259,15 @@ export class FileAgentDefinitionProvider {
   async getById(id: string): Promise<AgentDefinition | null> {
     if (id.startsWith("_")) {
       return null;
+    }
+    const orgSource = await findAgentOrgOwnedDefinitionSource({ definitionId: id, subject: "agent", orgRoots: this.getReadOrgRoots() });
+    if (orgSource) {
+      return this.readAgentFromPaths(orgSource.mdPath, orgSource.configPath, id, {
+        ownershipScope: "agent_org_owned",
+        ownerOrgId: orgSource.orgDefinitionId,
+        ownerOrgName: orgSource.orgDefinitionName,
+        sourceInfo: { agentDirPath: orgSource.definitionDir },
+      });
     }
     const parsedTeamLocalId = parseTeamLocalDefinitionId(id);
     if (parsedTeamLocalId?.subject === "agent") {
@@ -381,6 +400,9 @@ export class FileAgentDefinitionProvider {
     if (!domainObj.id) {
       throw new Error("Agent definition id is required for update.");
     }
+    if (await findAgentOrgOwnedDefinitionSource({ definitionId: domainObj.id, subject: "agent", orgRoots: this.getReadOrgRoots() })) {
+      throw new Error("AgentOrg-owned Agent definitions can only be changed through their atomic parent AgentOrg save.");
+    }
     const sourcePaths = await findAgentSourcePaths({
       agentId: domainObj.id,
       readAgentRoots: this.getReadAgentRoots(),
@@ -419,6 +441,9 @@ export class FileAgentDefinitionProvider {
   }
 
   async delete(id: string): Promise<boolean> {
+    if (await findAgentOrgOwnedDefinitionSource({ definitionId: id, subject: "agent", orgRoots: this.getReadOrgRoots() })) {
+      throw new Error("AgentOrg-owned Agent definitions can only be deleted through their atomic parent AgentOrg save.");
+    }
     if (parseCanonicalApplicationOwnedAgentId(id)) {
       throw new Error("Application-owned agent definitions cannot be deleted from the shared agent provider.");
     }

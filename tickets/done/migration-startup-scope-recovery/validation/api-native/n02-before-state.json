@@ -1,0 +1,30 @@
+{
+  "at": "2026-09-15T11:05:01.753Z",
+  "mainPid": 42714,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus",
+  "childCount": 2,
+  "pid": 43003,
+  "generation": 2,
+  "ready": false,
+  "pending": true,
+  "polls": 974,
+  "snapshot": {
+    "status": "restarting",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "Healthy",
+    "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details."
+  },
+  "windowId": 1,
+  "dom": "Restarting Server...\n\nStartup is taking longer than usual. Waiting for the backend; see logs for details.\n\nBackend service initializing...\n\nhttp://127.0.0.1:29695/graphql\n\nHealth check: Server is starting up...\n\nLogs available at: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus/logs/app.log\n\nHide technical details\nRun health check"
+}

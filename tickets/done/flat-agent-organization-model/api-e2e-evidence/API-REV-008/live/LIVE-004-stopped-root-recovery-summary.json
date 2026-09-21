@@ -1,0 +1,58 @@
+{
+  "webSocketsCreated": 6,
+  "validErrorFrames": 6,
+  "closeCalls": [
+    {
+      "at": "2026-09-02T21:48:09.814Z",
+      "url": "ws://127.0.0.1:8588/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-02T21:48:09.825Z",
+      "url": "ws://127.0.0.1:8588/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-02T21:48:10.847Z",
+      "url": "ws://127.0.0.1:8588/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-02T21:48:12.858Z",
+      "url": "ws://127.0.0.1:8588/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-02T21:48:16.881Z",
+      "url": "ws://127.0.0.1:8588/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    },
+    {
+      "at": "2026-09-02T21:48:24.897Z",
+      "url": "ws://127.0.0.1:8588/ws/agent-org/apirev8_613529cf063144d0a9e6cd6e385d58ba",
+      "readyState": 1,
+      "code": 4000,
+      "reason": "Invalid AgentOrg stream"
+    }
+  ],
+  "allCloseCodesLegal4000": true,
+  "runtimeExceptions": 0,
+  "invalidAccessErrorPresent": false,
+  "unhandledRejections": [],
+  "windowErrors": [],
+  "permanentConnecting": false,
+  "notices": [
+    "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation."
+  ],
+  "noticeCount": 1
+}

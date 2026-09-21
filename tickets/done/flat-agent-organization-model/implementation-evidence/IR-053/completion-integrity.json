@@ -1,0 +1,29 @@
+{
+  "entryHead": "e99c429317f7e2c14ad6cb4f305413c005c624d4",
+  "sourceCheckpoint": "dcc0419dd2dea54ea1ee4d0dca27b48521e68745",
+  "baselineRegularFiles": 18355,
+  "unchanged": 18355,
+  "changedOrMissing": [],
+  "unexpectedUntrackedOutsideEvidence": [],
+  "priorSourcePreservation": {
+    "IR-050": {
+      "checked": 27,
+      "changed": []
+    },
+    "IR-051": {
+      "checked": 8,
+      "changed": []
+    },
+    "IR-052": {
+      "checked": 3,
+      "changed": []
+    }
+  },
+  "initiallyAbsentSDKPrerequisitesRemoved": [
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-application-backend-sdk/dist"
+  ],
+  "dr009ProcessStillPresent": true,
+  "noLiveDataMutation": true,
+  "disposableTestDatabase": "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+}

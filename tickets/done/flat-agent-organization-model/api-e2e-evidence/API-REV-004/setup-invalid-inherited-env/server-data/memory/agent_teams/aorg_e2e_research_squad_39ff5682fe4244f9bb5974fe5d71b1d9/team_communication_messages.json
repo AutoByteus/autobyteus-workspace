@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9",
+  "messages": [
+    {
+      "messageId": "collabmsg__LDIFBBQzfMgmBGPyvSpBZaNK51snxN9",
+      "senderAgentRunId": "aorg_e2e_lead_86e05f24590f475f94d70d8ef2d2301e",
+      "receiverAgentRunId": "aorg_e2e_analyst_a0d8bfc486ab45639824689ca550366c",
+      "content": "AORG4-TEAM-MESSAGE-001",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-02T06:37:41.606Z"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { partitionRawTraceAttachments } from "autobyteus-ts/memory/models/raw-trace-attachments.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import type { ContextFileLocalPathResolver } from "../../context-files/services/context-file-local-path-resolver.js";
@@ -19,6 +20,7 @@ export class AgentRunProviderInputNormalizer {
     dispatch: AgentRunBackendInputDispatch,
   ): AgentRunBackendInputDispatch {
     const message = dispatch.message;
+    const recordingFileAttachments = partitionRawTraceAttachments(message.contextFiles ?? []).fileAttachments;
     const contextFiles = message.contextFiles === null
       ? null
       : message.contextFiles.map((source) => {
@@ -43,6 +45,7 @@ export class AgentRunProviderInputNormalizer {
       message.senderType,
       contextFiles,
       { ...message.metadata },
+      recordingFileAttachments,
     );
     return dispatch.kind === "start_turn"
       ? { kind: dispatch.kind, message: copiedMessage }

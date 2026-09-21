@@ -13,58 +13,42 @@ const createBinding = (transport: ExternalChannelTransport): ChannelBinding => (
   peerId: "peer-1",
   threadId: null,
   targetType: "AGENT",
+  agentDefinitionId: "agent-definition-1",
+  launchPreset: null,
   agentRunId: "agent-1",
+  teamDefinitionId: null,
+  teamLaunchPreset: null,
   teamRunId: null,
-  targetMemberRouteKey: null,
-  targetMemberPath: null,
+  targetMemberAddress: null,
   allowTransportFallback: false,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
   updatedAt: new Date("2026-02-08T00:00:00.000Z"),
 });
 
-const createTeamBinding = (targetMemberRouteKey: string | null): ChannelBinding => ({
+const createTeamBinding = (targetMemberAddress: string | null): ChannelBinding => ({
   ...createBinding(ExternalChannelTransport.PERSONAL_SESSION),
-  id: `binding-team-${targetMemberRouteKey ?? "default"}`,
+  id: `binding-team-${targetMemberAddress ?? "default"}`,
   targetType: "TEAM",
+  agentDefinitionId: null,
   agentRunId: null,
+  teamDefinitionId: "team-definition-1",
   teamRunId: "team-1",
-  targetMemberRouteKey,
-  targetMemberPath: targetMemberRouteKey ? [targetMemberRouteKey] : null,
+  targetMemberAddress,
 });
 
 const createTeamRun = () => {
-  const runtimeContext = {
-    memberContexts: [
-      {
-        memberName: "coordinator",
-        memberPath: ["coordinator"],
-        memberRouteKey: "coordinator",
-        memberRunId: "run-coordinator",
-      },
-      {
-        memberName: "worker",
-        memberPath: ["worker"],
-        memberRouteKey: "worker",
-        memberRunId: "run-worker",
-      },
-    ],
-  };
   return {
-    runId: "team-1",
-    context: {
-      coordinatorMemberName: "coordinator",
-      coordinatorMemberRouteKey: "coordinator",
-      runtimeContext,
-    },
-    config: {
-      coordinatorMemberName: "coordinator",
-      coordinatorMemberRouteKey: "coordinator",
-      memberConfigs: [
-        { memberName: "coordinator", memberRouteKey: "coordinator" },
-        { memberName: "worker", memberRouteKey: "worker" },
-      ],
-    },
-    getRuntimeContext: () => runtimeContext,
+    teamRunId: "team-1",
+    getCoordinatorAgentRunId: () => "run-coordinator",
+    resolveRecipient: (address: string) => ({ kind: "agent", address }),
+    getExecutionTreeSnapshot: () => ({
+      rootTeam: {
+        members: [
+          { address: "/coordinator", agentRunId: "run-coordinator" },
+          { address: "/worker", agentRunId: "run-worker" },
+        ],
+      },
+    }),
   };
 };
 
@@ -306,25 +290,16 @@ describe("ChannelBindingService", () => {
     const coordinatorTarget = {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
-      entryMemberRunId: "run-coordinator",
-      entryMemberRouteKey: "coordinator",
+      entryAgentRunId: "run-coordinator",
     };
     const workerTarget = {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
-      entryMemberRunId: "run-worker",
-      entryMemberRouteKey: "worker",
-    };
-    const workerRunIdOnlyTarget = {
-      targetType: "TEAM" as const,
-      teamRunId: "team-1",
-      entryMemberRunId: "run-worker",
-      entryMemberRouteKey: null,
+      entryAgentRunId: "run-worker",
     };
 
-    vi.mocked(provider.findBinding).mockResolvedValue(createTeamBinding("worker"));
+    vi.mocked(provider.findBinding).mockResolvedValue(createTeamBinding("/worker"));
     await expect(service.isRouteBoundToTarget(route, workerTarget)).resolves.toBe(true);
-    await expect(service.isRouteBoundToTarget(route, workerRunIdOnlyTarget)).resolves.toBe(true);
     await expect(service.isRouteBoundToTarget(route, coordinatorTarget)).resolves.toBe(false);
 
     vi.mocked(provider.findBinding).mockResolvedValue(createTeamBinding(null));

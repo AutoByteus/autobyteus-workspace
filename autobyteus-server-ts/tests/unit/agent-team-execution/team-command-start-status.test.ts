@@ -1,3 +1,4 @@
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it } from "vitest";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import {
@@ -8,12 +9,12 @@ import type { TeamRunEvent } from "../../../src/agent-team-execution/domain/team
 import { MemberCommandStatusOverlayStore } from "../../../src/agent-team-execution/services/member-command-status-overlay-store.js";
 
 const persistentBinding = createTeamAgentExecutionBinding({
-  rootTeamRunId: "team-run-1",
+  root: createTeamRootExecutionIdentity("team-run-1"),
   memberAddress: "/Worker",
   agentRunId: "member-run-1",
 });
 const taskBinding = createTeamAgentExecutionBinding({
-  rootTeamRunId: "team-run-1",
+  root: createTeamRootExecutionIdentity("team-run-1"),
   memberAddress: "/Worker",
   agentRunId: "task-agent-run-1",
 });

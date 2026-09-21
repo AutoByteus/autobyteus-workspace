@@ -1,0 +1,107 @@
+{
+  "at": "2026-09-06T13:10:08.204Z",
+  "orgRunId": "aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051",
+  "beforeCount": 1,
+  "afterCount": 2,
+  "approved": true,
+  "concierge": {
+    "address": "/concierge",
+    "agentDefinitionId": "aorg-concierge",
+    "role": null,
+    "description": null,
+    "agentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+    "platformAgentRunId": "01a076cc-60b5-7081-bee9-024aaf6115fd",
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/workspace-default"
+    }
+  },
+  "record": {
+    "taskId": "task_949b4aa38fb545f7b5692a8a084ae7b7",
+    "delegatorAgentRunId": "aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77",
+    "recipientAddress": "/research-team",
+    "taskExecution": {
+      "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+    },
+    "description": "As the root-hosted research Team coordinator, remain active. Do not call submit_task_result until a later user message explicitly requests settlement. Reply exactly APIREV15-ROOT-TASK-TEAM-READY-001 and wait.",
+    "referenceFiles": [],
+    "status": "active",
+    "updates": [],
+    "createdAt": "2026-09-06T13:09:59.374Z"
+  },
+  "rootTaskNode": {
+    "address": "/research-team",
+    "teamRunId": "aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99",
+    "members": [
+      {
+        "address": "/research-team/lead",
+        "agentRunId": "aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f",
+        "platformAgentRunId": "01a076d7-09ee-7b82-ba71-7b9c9e1c3e63"
+      },
+      {
+        "address": "/research-team/analyst",
+        "agentRunId": "aorg_e2e_analyst_6c17af031e2b483d9022f333d79d0e08",
+        "platformAgentRunId": "01a076d7-0a47-7ed0-a249-7bb5227df011"
+      },
+      {
+        "address": "/research-team/verifier",
+        "agentRunId": "aorg_e2e_verifier_3652aaf812714e49857fc8f0b8c34f23",
+        "platformAgentRunId": "01a076d7-0abb-7183-ab52-877d93e85567"
+      }
+    ],
+    "taskExecutions": [],
+    "startedAt": "2026-09-06T13:09:59.374Z",
+    "settledAt": null
+  },
+  "ready": [
+    {
+      "file": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-015/runtime/server-data/memory/agent_orgs/aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051/aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99/aorg_e2e_lead_64bd749a3b9b4607b454050822890b6f/raw_traces_active.jsonl",
+      "trace": {
+        "id": "rt_1788700207976_4d354893-0758-4bec-b773-1ef883aaefd6",
+        "ts": 1788700207.976,
+        "turn_id": "01a076d7-0b1a-7cf1-9aa2-97def7bd22f8",
+        "seq": 2,
+        "trace_type": "assistant",
+        "content": "APIREV15-ROOT-TASK-TEAM-READY-001",
+        "source_event": "SEGMENT_END"
+      }
+    }
+  ],
+  "view": {
+    "url": "http://127.0.0.1:3596/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_acbc118f7ff844c28d9c46945ad9a051&mode=active",
+    "selected": [
+      "agent-org-agent-row-aorg_e2e_concierge_6daf4666967f4f63b0f6e2dae048ce77"
+    ],
+    "taskRows": [
+      "agent-org-task-team-row-aorg_support_pair_2abf806c33e8430796844d4e95efb9b2",
+      "agent-org-task-team-row-aorg_research_squad_df72dc63dbc2491daae91ab8ed54fc99"
+    ],
+    "markerCount": 3,
+    "alerts": [],
+    "scroll": {
+      "width": 1510,
+      "client": 1510
+    }
+  },
+  "errors": [],
+  "responses": [],
+  "assertions": {
+    "oneAdded": true,
+    "approvedIfRequired": true,
+    "exactDelegator": true,
+    "exactRecipient": true,
+    "activeTeam": true,
+    "structuralRootTaskTeam": true,
+    "readyExactlyOnce": true,
+    "conciergeSelected": true,
+    "noNotice": true,
+    "noOverflow": true,
+    "noErrors": true
+  }
+}

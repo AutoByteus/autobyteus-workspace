@@ -1,0 +1,457 @@
+[
+  {
+    "at": "2026-09-15T11:00:15.996Z",
+    "kind": "bootstrap",
+    "mainPid": 42714,
+    "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home",
+    "version": "42.4.1"
+  },
+  {
+    "at": "2026-09-15T11:00:16.167Z",
+    "kind": "window-created",
+    "windowId": 1
+  },
+  {
+    "at": "2026-09-15T11:00:16.180Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T11:00:16.194Z",
+    "kind": "child-spawn",
+    "pid": 42722,
+    "generation": 1,
+    "childCount": 1
+  },
+  {
+    "at": "2026-09-15T11:00:16.194Z",
+    "kind": "child-held",
+    "pid": 42722,
+    "generation": 1
+  },
+  {
+    "at": "2026-09-15T11:00:16.637Z",
+    "kind": "window-load",
+    "windowId": 1,
+    "url": "http://127.0.0.1:50572/"
+  },
+  {
+    "at": "2026-09-15T11:01:56.196Z",
+    "kind": "manager-startup-delayed",
+    "generation": 1,
+    "pid": 42722,
+    "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details."
+  },
+  {
+    "at": "2026-09-15T11:01:56.197Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details.",
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:12.791Z",
+    "kind": "child-released",
+    "pid": 42722,
+    "generation": 1
+  },
+  {
+    "at": "2026-09-15T11:02:17.828Z",
+    "kind": "manager-ready",
+    "generation": 1,
+    "pid": 42722
+  },
+  {
+    "at": "2026-09-15T11:02:17.828Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:18.310Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:18.372Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:23.381Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:28.378Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:33.378Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:38.376Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:46.592Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:55.487Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:58.800Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "restarting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:02:58.849Z",
+    "kind": "manager-stopped",
+    "generation": 1,
+    "pid": null
+  },
+  {
+    "at": "2026-09-15T11:02:58.850Z",
+    "kind": "child-close",
+    "pid": 42722,
+    "code": 0,
+    "signal": null
+  },
+  {
+    "at": "2026-09-15T11:02:58.851Z",
+    "kind": "child-spawn",
+    "pid": 43003,
+    "generation": 2,
+    "childCount": 2
+  },
+  {
+    "at": "2026-09-15T11:02:58.851Z",
+    "kind": "child-held",
+    "pid": 43003,
+    "generation": 2
+  },
+  {
+    "at": "2026-09-15T11:04:38.851Z",
+    "kind": "manager-startup-delayed",
+    "generation": 2,
+    "pid": 43003,
+    "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details."
+  },
+  {
+    "at": "2026-09-15T11:04:38.851Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "restarting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details.",
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:05:02.254Z",
+    "kind": "child-released",
+    "pid": 43003,
+    "generation": 2
+  },
+  {
+    "at": "2026-09-15T11:05:03.765Z",
+    "kind": "manager-ready",
+    "generation": 2,
+    "pid": 43003
+  },
+  {
+    "at": "2026-09-15T11:05:03.766Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:05:24.612Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:05:31.741Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "running",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:05:36.038Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "restarting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:05:36.067Z",
+    "kind": "manager-stopped",
+    "generation": 2,
+    "pid": null
+  },
+  {
+    "at": "2026-09-15T11:05:36.068Z",
+    "kind": "child-close",
+    "pid": 43003,
+    "code": 0,
+    "signal": null
+  },
+  {
+    "at": "2026-09-15T11:05:36.069Z",
+    "kind": "child-spawn",
+    "pid": 43137,
+    "generation": 3,
+    "childCount": 3
+  },
+  {
+    "at": "2026-09-15T11:05:36.070Z",
+    "kind": "child-held",
+    "pid": 43137,
+    "generation": 3
+  },
+  {
+    "at": "2026-09-15T11:05:41.344Z",
+    "kind": "failure-injected-process-exit",
+    "pid": 43137
+  },
+  {
+    "at": "2026-09-15T11:05:41.344Z",
+    "kind": "manager-error",
+    "generation": 3,
+    "pid": null,
+    "message": "Server process exited before health was available (code unknown)"
+  },
+  {
+    "at": "2026-09-15T11:05:41.345Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "error",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Server process exited before health was available (code unknown)",
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  {
+    "at": "2026-09-15T11:05:41.345Z",
+    "kind": "manager-stopped",
+    "generation": 3,
+    "pid": null
+  },
+  {
+    "at": "2026-09-15T11:05:41.345Z",
+    "kind": "child-close",
+    "pid": 43137,
+    "code": null,
+    "signal": "SIGTERM"
+  }
+]

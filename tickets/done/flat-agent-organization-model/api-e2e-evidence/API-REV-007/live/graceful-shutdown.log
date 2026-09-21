@@ -1,0 +1,162 @@
+sending SIGTERM to 15793
+exited after 2s
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-02T20:09:23.638Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T20:09:23.639Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1788379763648,"pid":15793,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:35123"}
+{"level":30,"time":1788379763691,"pid":15793,"hostname":"1da6e6043ac7","msg":"Server listening at http://127.0.0.1:8587"}
+[2026-09-02T20:09:23.692Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8587
+[2026-09-02T20:09:23.695Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8587
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1788379765153,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1","method":"GET","url":"/health","statusCode":404,"elapsedMs":3.430166006088257,"msg":"http request completed"}
+{"level":40,"time":1788379766171,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-2","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6519170105457306,"msg":"http request completed"}
+{"level":40,"time":1788379767179,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-3","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5684589892625809,"msg":"http request completed"}
+{"level":40,"time":1788379768194,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-4","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.42912499606609344,"msg":"http request completed"}
+{"level":40,"time":1788379769202,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5246669948101044,"msg":"http request completed"}
+{"level":40,"time":1788379770221,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-6","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31424999237060547,"msg":"http request completed"}
+{"level":40,"time":1788379771232,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-7","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5375829935073853,"msg":"http request completed"}
+{"level":40,"time":1788379772246,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-8","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.8509999960660934,"msg":"http request completed"}
+{"level":40,"time":1788379773267,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-9","method":"GET","url":"/health","statusCode":404,"elapsedMs":2.9491669982671738,"msg":"http request completed"}
+{"level":40,"time":1788379774273,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6779170036315918,"msg":"http request completed"}
+{"level":40,"time":1788379775289,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4917920082807541,"msg":"http request completed"}
+{"level":40,"time":1788379776311,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5702080130577087,"msg":"http request completed"}
+{"level":40,"time":1788379777319,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32145899534225464,"msg":"http request completed"}
+{"level":40,"time":1788379778337,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.49483300745487213,"msg":"http request completed"}
+{"level":40,"time":1788379779355,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31583400070667267,"msg":"http request completed"}
+{"level":40,"time":1788379780364,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3008340001106262,"msg":"http request completed"}
+{"level":40,"time":1788379781381,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.290582999587059,"msg":"http request completed"}
+{"level":40,"time":1788379782388,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2845420092344284,"msg":"http request completed"}
+{"level":40,"time":1788379783398,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.28504200279712677,"msg":"http request completed"}
+{"level":40,"time":1788379784409,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5432080030441284,"msg":"http request completed"}
+{"level":40,"time":1788379785427,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3137910068035126,"msg":"http request completed"}
+{"level":40,"time":1788379786443,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3147909939289093,"msg":"http request completed"}
+{"level":40,"time":1788379787454,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.39454200863838196,"msg":"http request completed"}
+{"level":40,"time":1788379788462,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4895839989185333,"msg":"http request completed"}
+{"level":40,"time":1788379789480,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2715829908847809,"msg":"http request completed"}
+{"level":40,"time":1788379790490,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-q","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3502499908208847,"msg":"http request completed"}
+{"level":40,"time":1788379791503,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3005409985780716,"msg":"http request completed"}
+{"level":40,"time":1788379792520,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-s","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3565420061349869,"msg":"http request completed"}
+{"level":40,"time":1788379793531,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.34062498807907104,"msg":"http request completed"}
+{"level":40,"time":1788379794545,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-u","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4650839865207672,"msg":"http request completed"}
+{"level":40,"time":1788379795574,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33583399653434753,"msg":"http request completed"}
+{"level":40,"time":1788379796586,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-w","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31075000762939453,"msg":"http request completed"}
+{"level":40,"time":1788379797596,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.453792005777359,"msg":"http request completed"}
+{"level":40,"time":1788379798609,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-y","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7416249960660934,"msg":"http request completed"}
+{"level":40,"time":1788379799616,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3092079907655716,"msg":"http request completed"}
+{"level":40,"time":1788379800628,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-10","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.325874999165535,"msg":"http request completed"}
+{"level":40,"time":1788379801639,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-11","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33241601288318634,"msg":"http request completed"}
+{"level":40,"time":1788379802649,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-12","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4963330030441284,"msg":"http request completed"}
+{"level":40,"time":1788379803657,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-13","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.36124999821186066,"msg":"http request completed"}
+{"level":40,"time":1788379804675,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-14","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32987500727176666,"msg":"http request completed"}
+{"level":40,"time":1788379805683,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-15","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3007909953594208,"msg":"http request completed"}
+{"level":40,"time":1788379806697,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-16","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2952499985694885,"msg":"http request completed"}
+{"level":40,"time":1788379807712,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-17","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2824999988079071,"msg":"http request completed"}
+{"level":40,"time":1788379808720,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-18","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4613330066204071,"msg":"http request completed"}
+{"level":40,"time":1788379809727,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-19","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.33408398926258087,"msg":"http request completed"}
+{"level":40,"time":1788379810746,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1a","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.27458301186561584,"msg":"http request completed"}
+{"level":40,"time":1788379811756,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3098749965429306,"msg":"http request completed"}
+{"level":40,"time":1788379812764,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1c","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4374160021543503,"msg":"http request completed"}
+{"level":40,"time":1788379813774,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.32691600918769836,"msg":"http request completed"}
+{"level":40,"time":1788379814786,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1e","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.37537500262260437,"msg":"http request completed"}
+{"level":40,"time":1788379815810,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30058299005031586,"msg":"http request completed"}
+{"level":40,"time":1788379816821,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1g","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30250000953674316,"msg":"http request completed"}
+{"level":40,"time":1788379817827,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5699589997529984,"msg":"http request completed"}
+{"level":40,"time":1788379818840,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.30991700291633606,"msg":"http request completed"}
+{"level":40,"time":1788379819862,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.31529100239276886,"msg":"http request completed"}
+{"level":40,"time":1788379820871,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1k","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3320409953594208,"msg":"http request completed"}
+{"level":40,"time":1788379821883,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.391292005777359,"msg":"http request completed"}
+{"level":40,"time":1788379822902,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1m","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3333750069141388,"msg":"http request completed"}
+{"level":40,"time":1788379823921,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2817080020904541,"msg":"http request completed"}
+{"level":40,"time":1788379824934,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1o","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3181670010089874,"msg":"http request completed"}
+{"level":40,"time":1788379839197,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-1t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.452333003282547,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+[2026-09-02T20:11:35.540Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T20:11:35.546Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+{"level":40,"time":1788379979898,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-2i","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.37929099798202515,"msg":"http request completed"}
+Discovering LM Studio models from host: http://192.168.2.158:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://192.168.2.158:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-09-02T20:14:19.396Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID apirev7-team.
+Agent Team Definition created successfully with ID: apirev7-team
+[2026-09-02T20:16:43.020Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID apirev7-team.
+Agent Team Definition with ID apirev7-team updated successfully.
+{"level":40,"time":1788380247741,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-3b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4005829989910126,"msg":"http request completed"}
+{"level":40,"time":1788380353466,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-3x","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.145916998386383,"msg":"http request completed"}
+Created terminal session 88534801-e5b1-4a26-b2e5-aa4970d9f5ed using backend PtySession for target /root
+Terminal WebSocket connected: 88534801-e5b1-4a26-b2e5-aa4970d9f5ed
+Terminal websocket attached for cwd /root
+Closed PTY session 88534801-e5b1-4a26-b2e5-aa4970d9f5ed
+Terminal WebSocket disconnected: 88534801-e5b1-4a26-b2e5-aa4970d9f5ed
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 9d86042f-f4f4-4815-b43d-042680b1a695 for workspace temp_ws_default
+Created file explorer session 9d86042f-f4f4-4815-b43d-042680b1a695 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 9d86042f-f4f4-4815-b43d-042680b1a695 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_lead_95fd646f356a4926b4e59a181191332d'.
+Published codex_app_server agent run 'aorg_e2e_analyst_7dd11406c12243eaa3152a577fc80c34'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+FileExplorerSession closed: 9d86042f-f4f4-4815-b43d-042680b1a695
+Closed file explorer session 9d86042f-f4f4-4815-b43d-042680b1a695. Active sessions: 0
+File explorer WebSocket disconnected: 9d86042f-f4f4-4815-b43d-042680b1a695
+Agent team websocket attached for team run apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Created agent session 7aba1f3b-36de-4e8d-bfe8-3002956c34da for run apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Agent Team WebSocket connected: session=7aba1f3b-36de-4e8d-bfe8-3002956c34da, run=apirev7_team_d98179477a974a8eb15d53b24d4652d5
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 84e5dce8-9e96-4cb4-9b5d-e581118b364a for workspace temp_ws_default
+Created file explorer session 84e5dce8-9e96-4cb4-9b5d-e581118b364a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 84e5dce8-9e96-4cb4-9b5d-e581118b364a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_concierge_b224638c5b3a4b438036692742b9fa3b'.
+Published codex_app_server agent run 'aorg_e2e_lead_e75954da730244339fe2a12a718d6868'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b90974e0a1194cdf949523953c40e817'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-007/live/workspace
+FileExplorerSession closed: 84e5dce8-9e96-4cb4-9b5d-e581118b364a
+Closed file explorer session 84e5dce8-9e96-4cb4-9b5d-e581118b364a. Active sessions: 0
+File explorer WebSocket disconnected: 84e5dce8-9e96-4cb4-9b5d-e581118b364a
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_e2e_analyst_716b5f0d28af4faeab9c91287054c210'.
+{"level":30,"time":1788381149252,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-5t","err":{"type":"GraphQLError","message":"Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found.","stack":"Error: Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found.\n    at TaskDelegationProjectionService.read (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:73:19)\n    at async TaskDelegationProjectionService.list (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:46:26)\n    at async TaskDelegationResolver.getTaskDelegationRecords (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/task-delegation.js:152:17)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTaskDelegationRecords"],"locations":[{"line":1,"column":40}],"extensions":{}},"msg":"Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found."}
+[2026-09-02T20:33:26.214Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 7aba1f3b-36de-4e8d-bfe8-3002956c34da
+[2026-09-02T20:33:26.430Z] [INFO] [server.runtime] Server closed cleanly.

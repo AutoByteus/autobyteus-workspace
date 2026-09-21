@@ -27,6 +27,18 @@ export class MemoryMessage {
 }
 
 @ObjectType()
+export class MemoryFileAttachment {
+  @Field(() => String)
+  uri!: string;
+
+  @Field(() => String)
+  fileType!: string;
+
+  @Field(() => String, { nullable: true })
+  fileName!: string | null;
+}
+
+@ObjectType()
 export class MemoryTraceEvent {
   @Field(() => String)
   scope!: string;
@@ -60,6 +72,9 @@ export class MemoryTraceEvent {
 
   @Field(() => GraphQLJSON, { nullable: true })
   media?: Record<string, string[]> | null;
+
+  @Field(() => [MemoryFileAttachment], { nullable: true })
+  fileAttachments?: readonly MemoryFileAttachment[];
 
   @Field(() => String, { nullable: true })
   turnId!: string | null;

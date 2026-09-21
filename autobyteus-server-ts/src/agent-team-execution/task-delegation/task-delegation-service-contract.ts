@@ -1,7 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
-import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
+import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
@@ -48,7 +48,7 @@ export type TaskDelegationServiceOptions = Readonly<{
   getTree(): TeamRunExecutionTreeSnapshot;
   getIndex(): TeamExecutionIndex;
   isRootOpen(): boolean;
-  authorize(identity: TeamMemberExecutionIdentity): void;
+  authorize(identity: CollaborationMemberExecutionIdentity): void;
   requireTeamRun(teamRunId: string): Promise<TeamRun>;
   teamRunResolver: TeamRunResolver;
   commitTaskMutation(command: PreparedTaskMutationCommit): Promise<TaskMutationCommitResult>;

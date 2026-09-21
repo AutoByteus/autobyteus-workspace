@@ -67,7 +67,9 @@ const authorableTeamDifference = (
     override.workspace = workspaceFromResolved(child)
   }
   if (child.llmModelIdentifier !== parent.llmModelIdentifier) override.llmModelIdentifier = child.llmModelIdentifier
-  if (!modelConfigsEqual(child.llmConfig, parent.llmConfig)) override.llmConfig = normalizeModelConfig(child.llmConfig)
+  // An explicit model/runtime override clears inherited parameters unless the seed carries them.
+  if (child.runtimeKind !== parent.runtimeKind || child.llmModelIdentifier !== parent.llmModelIdentifier
+    || !modelConfigsEqual(child.llmConfig, parent.llmConfig)) override.llmConfig = normalizeModelConfig(child.llmConfig)
   if (child.autoExecuteTools !== parent.autoExecuteTools) override.autoExecuteTools = child.autoExecuteTools
   return Object.keys(override).length ? override : null
 }
@@ -78,7 +80,9 @@ const authorableAgentDifference = (
   const override: AgentConfigOverride = {}
   if (child.runtimeKind !== parent.runtimeKind) override.runtimeKind = child.runtimeKind
   if (child.llmModelIdentifier !== parent.llmModelIdentifier) override.llmModelIdentifier = child.llmModelIdentifier
-  if (!modelConfigsEqual(child.llmConfig, parent.llmConfig)) override.llmConfig = normalizeModelConfig(child.llmConfig)
+  // An explicit model/runtime override clears inherited parameters unless the seed carries them.
+  if (child.runtimeKind !== parent.runtimeKind || child.llmModelIdentifier !== parent.llmModelIdentifier
+    || !modelConfigsEqual(child.llmConfig, parent.llmConfig)) override.llmConfig = normalizeModelConfig(child.llmConfig)
   if (child.autoExecuteTools !== parent.autoExecuteTools) override.autoExecuteTools = child.autoExecuteTools
   return Object.keys(override).length ? override : null
 }

@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-13T11:34:28.717902+00:00",
+  "repository": {
+    "files": 30,
+    "tests": 223,
+    "server": {
+      "files": 11,
+      "tests": 56
+    },
+    "web": {
+      "files": 19,
+      "tests": 167
+    }
+  },
+  "scores": {
+    "requirements": 50,
+    "directness": 90,
+    "realism": 75,
+    "environment": 85,
+    "lifecycle": 95,
+    "userSurface": 75,
+    "durable": 95
+  },
+  "overall": 80.7,
+  "broaderValidation": "Required",
+  "reason": "Critical normal GUI/provider/lifecycle, original publication-only and actual native first-chip evidence not yet executed. Controlled owning tests cannot close these gaps. No product failure from this absence; progress state only."
+}

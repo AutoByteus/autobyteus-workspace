@@ -1,0 +1,286 @@
+{
+  "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-direct-agents-org&orgRunId=aorg_e2e_direct_agents_org_81a6edffd0c94545b9406c2ef21a4f60&mode=active",
+  "tree": [
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "Temp Workspace",
+      "expanded": "true",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-agent-orgs",
+      "text": "AGENT ORGS AORG E2E Direct Agents Org (1) New - AORG E2E Direct Agents Org now L lead V verifier",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_lead_3563a536a9e448cdbed4ec6e0f85eecb",
+      "text": "L lead",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_verifier_f731ee20c3984e4fa3e78d128b0f9acf",
+      "text": "V verifier",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "workspace",
+      "expanded": "false",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "workspace-team",
+      "expanded": "false",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "workspace-default",
+      "expanded": "false",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-adaptive-layout",
+      "text": "Choose an Agent or Team Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first. Files Terminal Activity Token Artifacts VNC Viewer ➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-center-right-flow",
+      "text": "Choose an Agent or Team Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first. Files Terminal Activity Token Artifacts VNC Viewer ➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-center-pane",
+      "text": "Choose an Agent or Team Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-center-content-shell",
+      "text": "Choose an Agent or Team Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "agent-org-workspace-view",
+      "text": "Choose an Agent or Team Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "agent-org-active-unfocused",
+      "text": "Choose an Agent or Team Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-right-resize-handle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-right-panel",
+      "text": "Files Terminal Activity Token Artifacts VNC Viewer ➜ Terminal initialized ~ $",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    }
+  ],
+  "buttons": [
+    {
+      "text": "Agents",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Agent Teams",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Agent Orgs",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Skills",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Memory",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Nodes",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Temp Workspace",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "AORG E2E Direct Agents Org (1)",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "New - AORG E2E Direct Agents Org",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "L lead",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_lead_3563a536a9e448cdbed4ec6e0f85eecb",
+      "visible": true
+    },
+    {
+      "text": "V verifier",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_verifier_f731ee20c3984e4fa3e78d128b0f9acf",
+      "visible": true
+    },
+    {
+      "text": "workspace",
+      "expanded": "false",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "workspace-team",
+      "expanded": "false",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "workspace-default",
+      "expanded": "false",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Settings",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Files",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Terminal",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Activity",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Token",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Artifacts",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "VNC Viewer",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    }
+  ]
+}

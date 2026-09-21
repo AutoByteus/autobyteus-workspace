@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col h-full bg-white">
+    <p v-if="copyPending || copyError" :role="copyError ? 'alert' : 'status'" class="px-3 py-2 text-sm" :class="copyError ? 'text-red-700' : 'text-slate-600'" data-test="team-copy-status">{{ copyError || t('workspace.teamCopy.loading') }}</p>
     <div class="flex-1 overflow-y-auto border-t border-gray-200">
       <div v-if="agentGroups.length === 0 && teamGroups.length === 0" class="p-6 text-center text-sm text-gray-500">{{ $t('workspace.components.workspace.running.RunningAgentsPanel.no_agents_or_teams_running') }}</div>
 
@@ -41,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -52,7 +53,9 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
-import { buildEditableAgentRunSeed, buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
+import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
+import { loadTeamRunLaunchSeed } from '~/services/runConfigEditing/teamRunLaunchSeed';
+import { useLocalization } from '~/composables/useLocalization';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import RunningAgentGroup from './RunningAgentGroup.vue';
@@ -156,6 +159,7 @@ const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => 
 };
 
 const createAgentRun = (definitionId: string) => {
+  selectionStore.beginSelectionIntent();
   const definition = agentDefinitionStore.getAgentDefinitionById(definitionId);
   if (!definition) return;
 
@@ -176,8 +180,18 @@ const createAgentRun = (definitionId: string) => {
   emit('run-created', { type: 'agent', definitionId });
 };
 
-const createTeamRun = (definitionId: string) => {
-  const definition = teamDefinitionStore.getAgentTeamDefinitionById(definitionId);
+const { t } = useLocalization();
+const copyPending = ref(false);
+const copyError = ref<string | null>(null);
+let mounted = true;
+onBeforeUnmount(() => { mounted = false; });
+watch(() => selectionStore.subject, () => { copyError.value = null; });
+const createTeamRun = async (definitionId: string) => {
+  if (copyPending.value) return;
+  const intent = selectionStore.beginSelectionIntent();
+  const selected = selectionStore.subject;
+  copyError.value = null;
+  const definition = teamDefinitionStore.getCatalogAgentTeamDefinitionById(definitionId);
   if (!definition) return;
 
   const group = teamGroups.value.find(g => g.definitionId === definitionId);
@@ -187,7 +201,22 @@ const createTeamRun = (definitionId: string) => {
       : null);
 
   if (sourceTeam) {
-    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.view.getConfigurationView()));
+    const sourceId = sourceTeam.view.getRootTeamRunId();
+    const focus = sourceTeam.view.getFocusedAgentRunId();
+    const configuration = sourceTeam.view.getConfigurationView();
+    const current = () => mounted && intent.isCurrent() && selectionStore.subject === selected
+      && teamContextsStore.getTeamContextById(sourceId) === sourceTeam && sourceTeam.view.getFocusedAgentRunId() === focus;
+    copyPending.value = true;
+    try {
+      const seed = await loadTeamRunLaunchSeed({ teamRunId: sourceId, expectedDefinitionId: definitionId,
+        workspaceMetadata: Object.values(configuration.teamsByAddress).flatMap(team => team.effectiveConfig.workspaceMetadata ? [team.effectiveConfig.workspaceMetadata] : []),
+      });
+      if (!current()) return;
+      teamRunConfigStore.setConfig(seed);
+    } catch (cause) {
+      if (current()) copyError.value = t('workspace.teamCopy.failed', { error: cause instanceof Error ? cause.message : String(cause) });
+      return;
+    } finally { if (mounted) copyPending.value = false; }
   } else {
     teamRunConfigStore.setTemplate(definition);
   }
@@ -198,11 +227,13 @@ const createTeamRun = (definitionId: string) => {
 };
 
 const selectAgentRun = (runId: string) => {
+  selectionStore.beginSelectionIntent();
   selectionStore.selectRun(runId, 'agent');
   emit('run-selected', { type: 'agent', runId });
 };
 
 const selectTeamRun = (runId: string) => {
+  selectionStore.beginSelectionIntent();
   selectionStore.selectRun(runId, 'team');
   emit('run-selected', { type: 'team', runId });
 };

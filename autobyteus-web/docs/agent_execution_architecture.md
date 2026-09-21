@@ -48,7 +48,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators are reconciled onto the already-visible local message rather than appended as a duplicate. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators reconcile onto the same canonical reactive UserMessage retained by the submission handle and visible conversation, updating its mounted chip rather than a raw alias or duplicate row. The current first text Send/Open scope is recorded below; storage and opener behavior are unchanged. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
   - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
@@ -88,8 +88,8 @@ The Pinia stores act as the primary interface for the UI components to interact 
     view to an exact attachment location (`containingTeamRunId` plus rooted
     `memberAddress`) before local admission. Draft attachment ownership remains
     launch/root scoped, while the `team_member_final` owner uses that containing
-    TeamRun; a configured or task-Team Agent nested below the root must not
-    substitute the root TeamRun id. It then begins one local submission,
+    TeamRun; a task-Team Agent below the flat configured root must not substitute the
+    root TeamRun id. It then begins one local submission,
     finalizes attachments, and emits `SEND_MESSAGE` with `execution_address`,
     required `message_id`, and required `dedupe_key`. Missing execution location
     and invalid, stale, non-Agent, or cross-root identity fail closed; there is
@@ -104,6 +104,106 @@ The Pinia stores act as the primary interface for the UI components to interact 
     from current focus or invocation-id/display aliases.
   - `terminateTeamRun()`: calls backend termination before local teardown for a
     persisted TeamRun and preserves the active local state on failure.
+
+### `agentOrgRunStore.ts`, `agentOrgContextsStore.ts`, And `agentOrgRunConfigStore.ts`
+
+- **Role**: Keep AgentOrg definition/configuration, root lifecycle/history, and
+  live execution context separate from the standalone Team store.
+- `agentOrgRunConfigStore` owns the root choices, sparse mounted-Team and exact-
+  Agent overrides, workspace operations, and exact schema-readiness states. The
+  Run action is admitted only when every registered root/Team/Agent scope is
+  ready; unavailable or invalid scope state remains address-specific.
+- A deliberate new-launch draft epoch selects the real
+  `Temp Workspace (Default)` catalog record when available. The root selection
+  flows through the existing Org inheritance resolver; descendants do not
+  independently default themselves. Once the user chooses an existing or new
+  Workspace, later catalog changes cannot overwrite that choice. Missing or
+  failed inventory leaves an actionable unset state rather than fabricating a
+  path.
+- `agentOrgRunStore.launch()` sends one complete projected payload and records
+  only the returned `agentOrgRunId`. `restore()`, `terminate()`, and
+  `fetchHistory()` use the AgentOrg GraphQL operations and the
+  `root_subject_kind: "agent_org"` history projection.
+- `agentOrgContextsStore` owns one `AgentOrgStreamingService` per active Org.
+  Launch establishes the full coordinator-free scope without focus; `select()`
+  later focuses an exact Agent or mounted Team. A mounted Team selection resolves
+  to its direct coordinator but does not create a standalone Team lifecycle.
+- `AgentOrgStreamingService` fails closed on current-generation correlation,
+  schema, root, sequence, snapshot-barrier, or acknowledgement violations. It
+  retires that exact generation, schedules transparent recovery before asking
+  the browser to close the retired socket, and uses application close code
+  `4000` (`1002` is reserved and is never sent by the browser client). A stale
+  socket cannot reacquire ownership or mutate the replacement context.
+- Transparent recovery is private and automatic-only; no public/manual
+  **Reconnect** control is exposed. It checkpoint-verifies and hydrates a
+  replacement candidate, atomically publishes the verified context while
+  preserving exact focus, and clears any prior notice only after success. The
+  service makes at most five attempts; exhaustion produces one localized notice
+  and a terminal offline state rather than a permanent connecting state.
+- These stores never import the Team draft/config store as configuration
+  authority, synthesize an Org coordinator, or convert AgentOrg persistence into
+  Team V2 state.
+
+### AgentOrg Workspace Subject And Current-Member Configuration
+
+Standalone Agent/Team selection and AgentOrg selection are mutually exclusive
+center subjects. `AppLeftPanel.isPlainWorkspaceRoute()` accepts only an exact
+query-free `/workspace` as the canonical standalone route; selecting or creating
+a standalone run therefore removes any stale AgentOrg query before the existing
+standalone selection owns the center. In the reverse direction,
+`useWorkspaceHistorySubjectActions` clears the standalone selection before it
+connects/selects the exact Org context and publishes the typed AgentOrg route.
+URL, center content, and one highlighted history row consequently describe the
+same root/member for active, inactive/Restore, and return transitions.
+
+`AgentOrgWorkspaceView` keeps **Edit config** and **New** separate. Gear on any
+configured direct or mounted-Team Agent normalizes immediately to the enclosing
+`{ kind: 'agent_org', orgRunId }` existing-run subject. `ExistingRunConfigEditor`
+loads the stopped canonical tree and renders the shared AgentOrg configuration
+form with runtime, Workspace and tool policy locked while allowing compatible
+model/settings edits across root, Team and Agent scopes. One Save submits all
+changed scopes atomically. The center store's **Back** action returns to
+chat/Event Monitor without changing focus. **New** remains a fresh AgentOrg
+launch route and never reuses the stopped editor's persistence path.
+
+### Org Observational Inspection And Deliberate Continuation
+
+History selection reads the exact retained package without Restore or provider
+activation. `agentOrgContextsStore.accessFor` distinguishes live, continuable
+inactive configured Agents, and read-only retained tasks. Deliberate configured
+Send alone performs exact-root Restore and strict stream readiness, preserving
+captured AgentContext/AgentRun/owner and newer drafts across failure. Existing
+reopen-required copy takes priority over generic historical recovery text.
+Successful Stop keeps the same monitor, immediately publishes inactive activity,
+then stages final retained content. Exact Org history, inspection and member
+projection queries use scoped `queryDeduplication: false`; logical generation
+checks alone do not prove a response was acquired after Stop. Staged activity
+replacement remains guarded by current generation and activity revision, with
+no global client switch or new persistence/lifecycle owner.
+
+### Retained Activity After Termination
+
+Runtime termination and Activity disposal are separate responsibilities. Successful
+Team termination retires the stream and applies existing Offline/terminal cleanup
+without clearing any retained member's Activity. Standalone Agent termination
+also keeps its Activity; Org termination retains the monitor and uses its existing
+staged inspection owner. Do not replace these distinct lifecycle paths with a
+shared stop-time cache or a provider restart merely to display history.
+
+Completed tool arguments/results and System instructions remain inspectable for
+the same selected run without Send, reload or refocus. Activity remains keyed by
+exact AgentRun identity: another member's entries must not fill an empty member's
+panel. Existing recent-window and projection-source limits still apply; this is
+not a new unlimited event journal or a promise to freeze all final event updates.
+A rejected/failed Stop preserves retained content and existing uncertainty/error
+handling; failure alone must not be presented as confirmed Offline.
+
+Historical cards do not authorize execution. Existing Team inline conversation
+approval buttons can still look enabled after Stop, but the retired stream and
+cleared approval targets prevent an old decision from dispatching or starting a
+runtime. Later deliberate Send uses normal recovery/hydration and manual policy.
+Compare exact Activity identities to detect duplication: a legitimately new
+System capture or tool event is new Activity, not a duplicate of an old card.
 
 ### Stopped-Run Follow-Up Recovery
 
@@ -237,24 +337,22 @@ definition field. Representative ordering, leaf-agent status, socket
 subscription, and Stop/pending state must not influence either the exact-run
 cue or the group projection.
 
-Stable configured nested-Team rows inside one concrete TeamRun may also render a
-presentation-only five-state summary in the Workspaces history tree. The
-summary folds the exact Agent statuses already present in that Team's flattened
-`executionRows` descendant scope with the precedence `running > initializing >
-error > idle > offline`. Configured descendants, task Agents, and task-Team
-children inside the nested Team contribute; the parent container itself,
-ancestors, adjacent siblings, and rows after the nested subtree do not. Unknown,
-missing, or empty status input normalizes to `offline`. The dot remains visible
-when the nested Team is collapsed and reacts to the existing execution-row
-projection, so it performs no request or polling of its own.
+A direct mounted-Team row inside one AgentOrg may render a presentation-only
+five-state summary in `WorkspaceAgentOrgHistoryCollection`. The summary folds exact Agent
+statuses in that mounted Team branch with precedence `running > initializing >
+error > idle > offline`. Direct Team Agents plus task Agents and task-Team
+Agents beneath that mounted placement contribute; the Team container itself,
+direct Org Agents, sibling Teams, and other branches do not. Missing or empty
+input normalizes to `offline`. The dot remains visible when the Team is
+collapsed and reacts to the existing Org execution context without requesting
+or polling.
 
-This nested-row summary does not change status authority. It is neither a Team
-status model nor a replacement for exact leaf `AGENT_STATUS` or binary root
-`TEAM_RUN_LIFECYCLE`. It is not persisted or transported and must not influence
-TeamRun liveness, focus, readiness, command admission, interrupt/Stop, archive,
-delete, or lifecycle decisions. Root TeamRun rows and definition groups retain
-the binary activity cues described above; transient task-Team rows do not gain
-the aggregate dot.
+This mounted-Team summary does not change status authority. It is neither a
+Team-root lifecycle nor a replacement for exact leaf `AGENT_STATUS` or the
+AgentOrg root lifecycle. It is not persisted or transported and cannot affect
+focus, readiness, command admission, interrupt/Stop, archive, delete, or
+lifecycle decisions. Standalone TeamRun rows retain their binary activity cue;
+task-Team rows do not gain the configured mounted-Team aggregate.
 
 Delegated task executions are task-scoped execution projections rather than
 structural topology. Every Team Agent event carries one `agent_execution`
@@ -263,7 +361,7 @@ that execution owns an Agent runtime. A task-Agent address keeps the rooted
 logical member and sets `taskAgentRunId`; a task-Team child appends the concrete
 child TeamRun id to ordered `taskTeamRunIds` and carries the rooted child Agent
 address. The strict contract contains no task instance ids, execution-kind
-aliases, member/source path or route-key fallbacks, represented-subteam fields,
+aliases, member/source path or route-key fallbacks, represented-Team compatibility fields,
 or generated-run-id inference. Complete task snapshots and live events reconcile
 through the same execution model and exact serialized address.
 
@@ -272,9 +370,8 @@ global Workspaces/run-history tree owns live execution identity and hierarchy:
 it composes stable history rows with pure renderer-only transient display rows
 from the V2 execution view in `AgentTeamContext.view`, keeps durable members
 visually solid, and renders task-agent, task-team root, and task-team child
-executions inline with explicit transient row kinds. Stable configured Team
-rows use an unboxed filled user-group icon and semibold name, while stable Agent
-rows retain their circular avatar. A transient task-Team row uses one dashed
+executions inline with explicit transient row kinds. AgentOrg mounted-Team rows use an unboxed filled user-group icon and semibold
+name, while configured Agent rows retain their circular avatar. A transient task-Team row uses one dashed
 indigo row treatment plus a bordered bolt icon; a transient task-Agent keeps the
 eight-dot `StatusDot` variant so its exact status color remains visible. Neither
 role adds visible `Temp` / `Temporary` copy to the row body.
@@ -346,27 +443,40 @@ keyboard focus. Selected execution rows keep a straight 2px indigo inset rule,
 `#eef2ff` background, and zero corner radius so selection does not erase the
 tree grammar or node role.
 
-`TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
-remains the default for a selected team run with no delegated task entries, but
-the panel opens Tasks automatically when the selected team run already has
-persisted delegated task entries or when a new delegated-task identity appears
-while the same run is mounted. The auto-open signature is derived from the same
-`deriveDelegatedTaskEntries(...)` entries consumed by
-`TeamDelegatedTasksSection`, keyed by persisted task id and live execution
-identity when available, so unrelated messages or refreshes do not open Tasks. A
-user may still collapse Tasks for the same task set; the panel reopens only for
-a different delegated-task signature or a selected-run change to a run that has
-delegated tasks. When the selected team run changes and there are no delegated
-tasks, the panel opens Messages.
+`CollaborationOverviewPanel` owns local Messages/Tasks accordion state through
+independent `CollaborationMessagesContextView` and
+`CollaborationTasksContextView` facets. The adapters supply exact root and focused
+AgentRun identity, projections, and reference routes; the panel does not infer
+identity from component placement or require a Team context for a direct Org
+Agent. Messages is the default when no relevant tasks exist. Tasks opens when the
+selected exact root/member has tasks or a different delegated-task identity set
+arrives. The signature uses the same entries rendered by
+`CollaborationDelegatedTasksSection`, including task and execution identity.
+Unrelated message refreshes do not reopen Tasks, and the user may collapse it
+for the same task set.
 
-`TeamDelegatedTasksSection` derives entries from persisted task-delegation
-records in `taskDelegationStore`, filtered by the focused sender/receiver
-address perspective. Live task-agent/task-team projection nodes in
-`AgentTeamContext` are optional enrichment for matching records and provisional
-visibility for not-yet-refreshed live tasks; they are not the durable display
-source. Opening or reloading active and historical team runs hydrates records via
-`getTaskDelegationRecords(teamRunId)`, and live task-delegation websocket events
-schedule a debounced records refresh.
+`CollaborationDelegatedTasksSection` owns shared layout and local task/reference
+selection, not record loading. Its Team adapter projects persisted records from
+`taskDelegationStore`; Team live execution nodes remain optional enrichment and
+provisional visibility, not the durable display source. Active/history Team
+hydration uses `getTaskDelegationRecords(teamRunId)` with debounced live-event
+refresh. Its Org adapter instead projects the strict root view through
+`agentOrgTaskPresentation.ts` and `AgentOrgExecutionViewIndex`, with relevance to
+the exact delegator, task Agent, or assigned task-Team roster. Independently
+delegated descendants are not roster members merely by ancestry. Both adapters
+provide root-owned reference routes and exact participant navigation.
+
+The Org index retains configured and task executions after settlement, including
+actual host/task binding and captured launch configuration. Participant links
+select the exact AgentRun, never another run at the same address. Read-only
+`getAgentOrgRunInspection` uses the existing root transition lane and strict
+package families without activating, restoring, or repairing them. Missing
+history is not replaced with fabricated emptiness. Inactive/settled contexts
+retain monitor history, Messages, Tasks, and locked configuration without live
+command authority. Fresh root events publish reactive context changes without
+refocus; settlement retires the live row but preserves retained inspection.
+The unified Workspaces collection is the history owner; the parallel
+`AgentOrgRunHistoryPanel.vue` was removed.
 
 Inside that section, `deriveDelegatedTaskEntries(...)` projects every current-
 schema task record into one ordered conversation: the assignment root followed
@@ -391,18 +501,27 @@ selection keys. A live full-record replacement retains the selected item or
 reference while its stable identity still exists; otherwise selection falls
 back to that task's assignment. These actions must not focus the center
 conversation/composer, replace it with a task team card, or repeat the Workspaces
-execution hierarchy. The Tasks UI does not render raw task/run ids, routing JSON,
-target-kind metadata, raw arguments, a Technical details disclosure, responsible
-actor/member hierarchy rows, `Focus agent` / `Focus team` controls, or approval
-controls. Exact ids remain internal selection and reference-routing keys only.
+execution hierarchy. The Tasks UI does not add permanent raw-ID strips, routing JSON, raw arguments,
+actor hierarchy rows, `Focus agent` / `Focus team` controls, or approval controls.
+Readable Agent names in the selected item's direction line are exact navigation
+links. Task-Team names disclose all actual assigned participant links, not only
+the coordinator. A collapsed-by-default identity control reveals exact address
+and AgentRun/TeamRun facts; system rows use assignment participants without a
+fabricated named sender. Item/reference/scope changes reset disclosure state.
+Exact IDs remain authoritative navigation/reference keys, never display-name
+inference. The detail emits the selected exact link through its pane; the shared
+section uses existing root-specific navigation actions, not a new data owner.
 
 `TeamDelegatedTaskDetailPane` renders exactly one selected assignment/update
 detail or one selected task-owned reference preview. Item detail uses a readable
 localized title, direction, timestamp, Markdown content, and the assignment's
 current human status when the assignment is selected. The right pane does not
-duplicate the lifecycle timeline, reference navigation, actor roster, focus
-controls, or removed technical metadata. Messages remains an independent,
-unchanged message-owned surface.
+duplicate the lifecycle timeline or reference navigation and has no extra top
+participant strip. Messages remains an independent message-owned surface with
+compact type, counterpart, direction, time and content. Its identity disclosure
+contains exact address/AgentRun and applicable task/host/execution facts instead
+of permanent address or Task/ID badges; reference routing and task-inclusive
+eligibility are unchanged.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
 surface for workspaces, runs, teams, durable members, and task execution
@@ -416,11 +535,17 @@ workspace, but the cached projection is never an independent focus authority.
 root liveness. `LIVE_EXECUTION` excludes settled task subtrees and applies the
 existing focus-repair behavior. `HISTORICAL_INSPECTION` retains settled task
 Agents, task Teams, their members, and deeper task executions already persisted
-in the V1 tree/context so a cold-reopened exact AgentRun remains selectable. This
+in the retained tree/context so a cold-reopened exact AgentRun remains selectable. This
 historical discoverability does not recreate contexts, change task status,
-connect streams, resume work, or add the row to live execution membership. If a
-historical view becomes active again, focus is repaired after the purpose change
-when the focused settled execution is no longer live-eligible.
+connect streams, resume work, or add the row to live execution membership. Ordinary live selection
+still repairs to a live member after settlement. Deliberate retained inspection
+is separate view-owned intent: `focusAgentForInspection` admits the retained
+execution after authoritative projection hydration, then commits exact focus.
+The retained target is read-only with no interaction port even when its Team
+root remains active. This deliberate selection survives later task events,
+active/inactive hydration and existing verified stream-replacement snapshots as
+long as exact retained placement remains valid. No second selection owner, live
+row resurrection or task activation is introduced.
 
 The projection may reuse the shared status-dot presentation for workspace rows
 and stable member rows, but task executions remain navigation-only rows rather
@@ -672,6 +797,19 @@ backend-provided history summary. Team row title behavior remains owned by the
 team-history path and is not reinterpreted by the standalone live-context
 overlay.
 
+AgentOrg rows use the same stable first-accepted-message presentation while
+retaining separate family ownership. A new row keeps an empty backend summary
+and renders `New - <AgentOrg name>` until one successfully accepted non-empty
+external `SEND_MESSAGE` reaches an exact configured direct Agent or an Agent in
+a directly mounted Team. After that acknowledgement,
+`AgentOrgStreamingService` invokes its accepted-message callback and the
+existing mixed history owner performs one `network-only` AgentOrg-family read.
+The submitted text is never applied optimistically; the durable server winner
+is the only title source. Full and focused Org reads share a monotonic request
+generation so a stale response cannot replace the newest slice, while a failed
+refresh preserves the last good Org rows and family-scoped error. Later or
+task-scoped messages and non-user command traffic never become title sources.
+
 ### Workspace History Progressive Disclosure
 
 The Workspaces sidebar history tree uses progressive disclosure for its
@@ -716,49 +854,47 @@ current expansion state.
   standalone chevron size, shape, and gray color. The row button remains the
   single interaction boundary, and team-run rows expose `aria-expanded` so
   visual, keyboard, and assistive-technology state stay in sync.
-- Manual workspace, agent-group, team-definition-group, team-run, and nested
-  team-member/subteam expansion choices are kept in component-local tree state
-  and are not reset by quiet history refreshes while the history panel remains
-  mounted.
+- Manual workspace, definition-group, root-run, mounted-Team, and task-execution
+  expansion choices are kept in component-local tree state and are not reset by
+  quiet history refreshes while the relevant history panel remains mounted.
 - Newly added workspaces are explicitly opened after creation so the add flow
   still lands the user in the workspace they just created.
 
-When an existing run or team run is selected before its history ancestry is
-visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
-reveal. The reveal expands only the selected run/team's workspace and containing
-agent or team-definition group, and for selected team runs opens the matching
-team-run row. After the selected path has been revealed for the stable selection
-key, later quiet refreshes must not reopen the same path if the user manually
-collapses it. When a user opens/selects a team run that has a focused nested
-member, or selects a nested member row directly,
-`useWorkspaceHistorySelectionActions(...)` asks
-`useWorkspaceHistoryTreeState(...)` to expand only the subteam ancestors
-needed to keep that nested focus visible.
+When an existing standalone run or TeamRun is selected before its history
+ancestry is visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot
+selected-path reveal. It expands only the selected root's workspace, containing
+definition group, root row, and task ancestors needed for an exact task Agent.
+After the stable selection key has been revealed, quiet refreshes do not reopen
+branches that the user manually collapsed.
 
-For Team execution rows, selection state derives from the same exact
+Standalone Team execution-row selection derives from the same exact
 `TeamExecutionViewState` focus used by the workspace and command surfaces; there
-is no separate roster/history visual-focus authority. The current-row predicate
-is scoped to the authoritative selected TeamRun plus the view's focused exact
-AgentRun. Clearing the Team selection or having no valid target leaves no member
-row current. The cached run-history projection mirrors that focus only after
-successful exact inspection. The Workspace history tree renders recursive
-`team.rootTeam.members` structure from the V2 history projection. Nested
-configured-Team member rows appear as
-semibold subteam rows with an unboxed filled user-group icon and their own
-disclosure control; they are collapsed by default and expand children through
-the continuous-rail/right-elbow printed-tree grammar described above.
-Disclosure-bearing configured subteam row-body activation toggles children and
-selects only when that structural row has a concrete Agent run. The explicit
-disclosure control remains visible and toggles children without selecting the
-row or bubbling into the row-body handler. Leaf member rows without children
-remain select-only. Clicking a member or subteam row whose canonical address
-exists in the Team's V2 tree requests inspection of its exact AgentRun and keeps
-the previous row current until required projection authority succeeds. An
-offline AgentRun may still be focused when its retained projection is
-authoritative; a structural row without an executable AgentRun cannot become the
-workspace focus. Live/hydrated Team-context merges must preserve the persisted
-history row's workspace grouping while deriving selected-row highlighting from
-the execution view.
+is no separate roster/history visual-focus authority. Team V2 projects a flat
+configured-Agent roster plus task-scoped execution rows. Direct Agent rows are
+select-only; task-Team disclosure rows expand their runtime children but do not
+become configured focus targets. Exact Agent selection waits for authoritative
+projection before changing the current-row state, and an offline Agent may be
+focused when retained projection is authoritative.
+
+Cold Org participant links resolve a missing history row through the existing
+`refreshAgentOrgHistory` read owner before navigation. Family errors and missing
+exact roots fail explicitly; no drawer mount, live-context inference or Restore
+fallback is required. Emitted-route Back/Refresh can therefore retain the exact
+read-only task at narrow widths without reactivation.
+
+The same always-mounted Workspaces panel also projects the AgentOrg family.
+Inside each Workspace, existing Agent groups remain first, **Teams** remains its
+existing category, and **Orgs** (**组织** in zh-CN) is a distinct sibling
+immediately below Teams. Only this history heading changes; main navigation
+continues to say Agent Orgs, with unchanged root kinds and category membership. The Org collection renders the coordinator-free root, direct Agents, and
+direct mounted Teams from the Org V1 projection. Mounted Teams start collapsed
+and disclose their direct Agents and task rows. Selecting a mounted Team focuses
+its exact direct coordinator through the active Org context; it does not create
+or replace a standalone TeamRun. Stable normalized Workspace/root/member keys
+preserve expansion, scroll, and exact selection across catalog, configuration,
+active, and history routes. Workspace-history and AgentOrg-history fetches
+commit independent slices and errors, so one family failure retains the other
+family and the last good data instead of replacing the tree.
 
 Topology operations build and index the complete run-history navigation
 projection once, retaining equal workspace/team branches by reference. The
@@ -772,6 +908,27 @@ The task router reports that result on every outcome, `TeamStreamingService`
 commits it before returning, and member resolution is read-only. Selection
 reveal consumes ancestry indexes, while labels that depend on elapsed time use
 a minute clock rather than background stream traffic.
+
+### Explicit User Selection Ownership
+
+`agentSelectionStore` owns one ephemeral `WorkspaceSelectionIntent`, represented
+by a token with an `isCurrent()` guard. Explicit Agent, Team, Org, history, draft
+and participant-link selection begins the intent at the selecting ingress.
+Selecting hydration/focus, recovery and candidate commits carry that guard;
+outer shell navigation, loading and error completion also obey their current
+attempt. Superseded work returns without reclaiming the newer selection.
+
+Background publication and temporary-ID promotion do not begin a user intent.
+They can update real messages, task state and statuses without becoming an
+implicit navigation command. Existing exact-identity, activity-revision and
+request-generation guards remain independent protections; this adds no global
+queue/router owner, persisted intent, publication suppression or polling.
+
+Controlled delayed explicit-selection regression tests and current real
+publication/leave-return journeys cover different boundaries. The latter passed
+repeatedly without a selecting writer; they do not identify the writer of the
+historical single mounted-publication redirect or prove this guard repaired that
+original incident. Its cause remains unassigned.
 
 ### Workspace History Archive And Delete Actions
 
@@ -797,15 +954,48 @@ affordance remains separate and continues to use the existing permanent-delete
 confirmation path for users who intend to remove stored memory. There is
 currently no archived-history browser or unarchive UI in this frontend slice.
 
+## Recorded Non-Media Attachment Lifetime
+
+Core `RawTraceItem.file_attachments` retains immutable non-media URI/type/name
+facts on the existing user trace. External observer/FIFO input and native
+triggering-message recording use the original accepted input, not a provider's
+working-context copy or a fabricated second user row. Media and TOOL semantics
+are unchanged. Conversation, replay and typed active-page projections share
+these facts through hydration and identity-aware recent-event witnesses.
+Complete raw-trace archive segments preserve the same associations; historical
+missing associations are not synthesized on read or repaired by backfill.
+
+Org draft/final owners include exact root plus AgentRun identity; the shared
+chooser captures ownership before awaiting preparation/upload and captured Send
+finalizes only that pair. Saved attachments are not rebound to the current
+viewer. Friendly recognized-upload labels preserve raw storage names and genuine
+custom names. Unsupported local metadata remains separate from admitted
+recorded non-media attachments.
+
+**Canonical local-message ownership:** `beginLocalUserSubmission` creates a
+Vue `reactive<UserMessage>` before appending it to the conversation and returns
+that same proxy in the submission handle. `finalizeLocalSubmissionAttachments`
+updates its descriptors through the existing presentation effect; the rendered
+chip observes the new final locator without remounting or creating a second
+message. The former raw-handle alias is not another message owner.
+
+Current follow-up evidence includes an actual AutoByteus/DeepSeek standalone
+first text Send, reply and immediate sent-chip Open with final200/original bytes,
+plus narrow and ordinary same-input reopen. The archived API-FIND-040 failure
+remains a historical observation, not a current limitation declared by these
+docs or an attribution to an introducing revision. Storage, separate text/JSON
+links and backend ownership did not change. Unknown-file ingestion, additional
+media/providers and native Electron-shell validation are not inferred.
+
 ### Uploaded Context Attachment Orchestration
 
-Browser-uploaded composer files now follow the same high-level orchestration pattern across single-agent, team, and application-backed conversations:
+Browser-uploaded composer files now follow the same high-level orchestration pattern across single-agent, Team, AgentOrg, and application-backed conversations:
 
 1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. A missing exact Team location fails before local admission or finalization. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
@@ -903,16 +1093,16 @@ fails closed. The user journey is sequential: complete Stop/terminalization,
 enter Settings for a fresh read, edit, Save, then let a later message restore the
 same identity with the saved model/settings pair.
 
-For Team runs, `existingTeamModelConfigDraft.ts` projects the exact V2 configured
-topology. A parent pair edit follows only original links established by
-draft-start runtime/model/settings equality. Divergent descendants, mixed-runtime
-branches, and explicitly directly edited scopes remain stable; direct edits
+For Team runs, `existingTeamModelConfigDraft.ts` projects the exact flat V2 root
+and direct configured Agents. A root pair edit follows only original links
+established by draft-start runtime/model/settings equality. Divergent or
+mixed-runtime Agents and explicitly directly edited scopes remain stable; direct edits
 remain sticky even after later equality.
 The resulting mutation contains exact configured-Team/configured-Agent patches
 only. Task nodes and fixed launch identity are not patch targets, and no Reset is
 offered because historical snapshots do not preserve definition-override
 provenance. All intended scopes must validate against their own original saved
-baseline before the one tree write; incompatible descendants are not silently
+baseline before the one tree write; incompatible direct Agents are not silently
 removed from the patch set.
 
 `projectHistoricalModelConfigFields(...)` still owns residual safety. Explicit
@@ -992,16 +1182,21 @@ switch follows workspace selection, and no hierarchy wrapper, root `/`,
 inheritance badge, or effective-value summary is inserted around the root
 controls.
 
-The **Team Members Override** disclosure defaults collapsed and keeps a visible
-chevron and member count. When opened, Agent rows and nested Team groups render
-recursively as the existing connected, indented hierarchy. Nested Team editors
-also default collapsed; their headers retain Team identity and canonical
-placement address while adding only **Inherited**/**Customized**, a disclosure
-chevron, and conditional **Reset**. Expanding a nested Team shows its real
-effective runtime/model/configuration/workspace/auto-approve controls without a
-duplicate summary. Disclosures expose `aria-expanded`/`aria-controls`, Reset has
-a Team-specific accessible name, scoped loading/error Retry stays associated
-with its Team, and narrow layouts may wrap header content without overlap.
+A standalone Team's **Team Members Override** disclosure defaults collapsed and
+shows its direct-Agent count. Expanding it displays only direct Agent override
+rows because AgentTeam Definition V2 is flat; configured Team groups are not a
+valid Team member shape.
+
+The AgentOrg form uses **Member overrides (N)**, where `N` is the exact
+configurable-Agent count across direct Org Agents and mounted Teams. The outer
+disclosure and every mounted-Team row start independently collapsed. Each Team
+header shows Team identity, exact placement address,
+**Inherited**/**Customized**, an accessible disclosure, and conditional
+**Reset**. Only an expanded Team shows its Team-scope controls and direct Agent
+rows; only the exact coordinator Agent carries coordinator identity. Direct Org
+Agents remain direct rows. Drafts survive collapse, sibling Teams remain closed,
+and narrow layouts wrap without overlap. Loading/error/Retry and model-schema
+state stay bound to the exact root, Team, or Agent address.
 
 Explicit Team- or Agent-local runtime/model selections that resolve to an
 effective-ON model can open only that scope's **Advanced** controls. Display-only
@@ -1215,7 +1410,7 @@ Incoming events are routed based on their `type`:
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
 | `EXTERNAL_USER_MESSAGE`   | `externalUserMessageHandler.handleExternalUserMessage` | Inserts or updates a user/input row for true external-channel ingress by backend `message_id` / `dedupe_key`. It remains external-channel-specific; repeated rows with no identity remain separate. |
-| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and parent-to-subteam delivery prompts in the target leaf transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
+| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and parent-to-task-Team delivery prompts in the target leaf transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
 | `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
@@ -1318,13 +1513,24 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
-2.  **Team Communication (`TeamCommunicationStore`)**:
+2.  **Root Collaboration Communication**:
     - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
     - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
     - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
     - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
+    - AgentOrg contexts retain their own strict root-sidecar payload and build a
+      `CollaborationMessagesContextView` with
+      `agentOrgCommunicationPerspective.ts` and the retained
+      `AgentOrgExecutionViewIndex`. Every admitted ordinary configured/task pair
+      is eligible; the exact selected sender/receiver AgentRun determines
+      relevance. Unknown, duplicate, or mismatched identities fail closed.
+      Same-address tasks remain distinct and counterparts retain host/task
+      identity. Genuine accepted task-system inputs belong in the event monitor,
+      not ordinary Messages; a task record is not a notification receipt.
+      AgentOrg references open through the AgentOrg-rooted message route; no
+      Team store or second ledger is created.
 3.  **Activity (`AgentActivityStore`)**:
     - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`; exact run-scoped instruction captures are `kind: 'system_instruction'`.
     - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads, and through `systemInstructionActivityHandler.ts` for live/replayed exact instruction facts.

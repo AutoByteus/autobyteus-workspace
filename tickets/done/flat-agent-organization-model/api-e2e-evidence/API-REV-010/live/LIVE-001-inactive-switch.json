@@ -1,0 +1,207 @@
+[
+  {
+    "label": "inactive-org-direct",
+    "at": "2026-09-04T14:15:29.831Z",
+    "url": "http://127.0.0.1:3589/workspace",
+    "center": "A\naorg_e2e_lead\nOffline\nYou\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-LIVE-001\nTeam live validation acknowledged successfully.\n\nYou\nReturn exactly APIREV8-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nA\naorg_e2e_lead\n\nAPIREV8-TEAM-RESUMED-001\nTeam resumed validation acknowledged successfully.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+    "selected": [
+      {
+        "tag": "DIV",
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "Aaorg_e2e_lead1dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "tag": "BUTTON",
+        "test": null,
+        "text": "Team",
+        "selected": "true",
+        "current": null
+      }
+    ],
+    "allTests": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "Aaorg_e2e_lead1dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "test": "workspace-team-member-avatar",
+        "text": "A",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "Aaorg_e2e_analyst1dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+        "selected": "false",
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-avatar",
+        "text": "A",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-agent-orgs",
+        "text": "Agent OrgsAPIREV8 组织 Ω(1)New - APIREV8 组织 Ω1dAEaorg e2e conciergeapirev8 team",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-header-edit-config",
+        "text": "",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-header-new-run",
+        "text": "",
+        "selected": null,
+        "current": null
+      }
+    ]
+  },
+  {
+    "label": "inactive-team-analyst",
+    "at": "2026-09-04T14:15:31.475Z",
+    "url": "http://127.0.0.1:3589/workspace",
+    "center": "A\naorg_e2e_analyst\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+    "selected": [
+      {
+        "tag": "DIV",
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "Aaorg_e2e_analyst1dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "tag": "BUTTON",
+        "test": null,
+        "text": "Team",
+        "selected": "true",
+        "current": null
+      }
+    ],
+    "allTests": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "Aaorg_e2e_lead1dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+        "selected": "false",
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-avatar",
+        "text": "A",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "Aaorg_e2e_analyst1dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "test": "workspace-team-member-avatar",
+        "text": "A",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-agent-orgs",
+        "text": "Agent OrgsAPIREV8 组织 Ω(1)New - APIREV8 组织 Ω1dAEaorg e2e conciergeapirev8 team",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-header-edit-config",
+        "text": "",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-header-new-run",
+        "text": "",
+        "selected": null,
+        "current": null
+      }
+    ]
+  },
+  {
+    "label": "inactive-org-return",
+    "at": "2026-09-04T14:15:36.153Z",
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+    "center": "AE\naorg e2e concierge - C413\nIdle\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 2, 2026, 9:38:04 PM · 6118 characters\nAVAILABLE",
+    "selected": [
+      {
+        "tag": "BUTTON",
+        "test": null,
+        "text": "New - APIREV8 组织 Ω",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "tag": "BUTTON",
+        "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+        "text": "AEaorg e2e concierge",
+        "selected": "true",
+        "current": null
+      },
+      {
+        "tag": "BUTTON",
+        "test": null,
+        "text": "Activity",
+        "selected": "true",
+        "current": null
+      }
+    ],
+    "allTests": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_lead",
+        "text": "Aaorg_e2e_lead1dAgent · aorg_e2e_lead · /aorg_e2e_lead",
+        "selected": "false",
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-avatar",
+        "text": "A",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "Aaorg_e2e_analyst1dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+        "selected": "false",
+        "current": null
+      },
+      {
+        "test": "workspace-team-member-avatar",
+        "text": "A",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-agent-orgs",
+        "text": "Agent OrgsAPIREV8 组织 Ω(1)New - APIREV8 组织 Ω1dAEaorg e2e conciergeapirev8 team",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-header-edit-config",
+        "text": "",
+        "selected": null,
+        "current": null
+      },
+      {
+        "test": "workspace-header-new-run",
+        "text": "",
+        "selected": null,
+        "current": null
+      }
+    ]
+  }
+]

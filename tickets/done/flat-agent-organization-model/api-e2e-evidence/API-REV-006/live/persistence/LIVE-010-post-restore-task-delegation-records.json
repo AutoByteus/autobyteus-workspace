@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_e2e_research_squad_a91b32203cc54f48b118b9373a79cb4f",
+  "records": [
+    {
+      "taskId": "task_e625fff626294a688b146539a2a2c7d8",
+      "delegatorAgentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_566640d90b8d4b70ad58abe81c8fe4bf"
+      },
+      "description": "Send the ordinary message APIREV6-STANDALONE-TASK-MESSAGE to /lead using send_message_to, then submit exactly APIREV6-TASK-SUBMISSION-V1 using submit_task_result, and stop without attempting any review.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_a38277609c5b45a48966bb45855d73cc",
+          "message": "APIREV6-TASK-SUBMISSION-V1",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:16:51.168Z"
+        },
+        {
+          "reviewId": "review_1a763f2bc2bb42e1a0d56018643f62e0",
+          "reviewedSubmissionId": "submission_a38277609c5b45a48966bb45855d73cc",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:16:57.882Z"
+        }
+      ],
+      "createdAt": "2026-09-02T16:16:36.079Z"
+    },
+    {
+      "taskId": "task_aa15bce5c28145268b522d94d6c46b02",
+      "delegatorAgentRunId": "aorg_e2e_lead_0611fdf2e0394c6bae2f47936af17517",
+      "recipientAddress": "/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_1bdeec48d2c24aba80446ea1687cb036"
+      },
+      "description": "Submit exactly APIREV6-REVISION-SUBMISSION-V1 using submit_task_result, then end the task-agent turn and wait for a formal revision request; do not send messages, do not call any review tool, and do not settle itself.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_5fa73dc4be5d438b845e470511f12875",
+          "message": "APIREV6-REVISION-SUBMISSION-V1",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:17:53.861Z"
+        },
+        {
+          "reviewId": "review_f85aff6a1e0b410f833c30a8db2c937a",
+          "reviewedSubmissionId": "submission_5fa73dc4be5d438b845e470511f12875",
+          "decision": "request_revision",
+          "comment": "APIREV6-REVISION-REQUEST: submit exactly APIREV6-REVISION-SUBMISSION-V2 using submit_task_result, then stop and await explicit acceptance.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:19:19.010Z"
+        },
+        {
+          "submissionId": "submission_57ee6dc3801c41f39de8fdb1cca4703e",
+          "message": "APIREV6-REVISION-SUBMISSION-V2",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:19:23.497Z"
+        },
+        {
+          "reviewId": "review_086cd9d638ef4e38a22e97567b0d2481",
+          "reviewedSubmissionId": "submission_57ee6dc3801c41f39de8fdb1cca4703e",
+          "decision": "accept",
+          "comment": "APIREV6-REVISION-ACCEPTED",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T16:20:11.426Z"
+        }
+      ],
+      "createdAt": "2026-09-02T16:17:44.513Z"
+    }
+  ]
+}

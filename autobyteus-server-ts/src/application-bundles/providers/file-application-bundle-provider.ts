@@ -23,10 +23,8 @@ import {
   buildCanonicalApplicationOwnedAgentId,
   buildCanonicalApplicationOwnedTeamId,
 } from "../utils/application-bundle-identity.js";
-import {
-  readApplicationOwnedTeamDefinitionFromSource,
-} from "../../agent-team-definition/providers/application-owned-team-source.js";
-import { assertApplicationOwnedTeamIntegrity } from "../../agent-team-definition/utils/application-owned-team-integrity-validator.js";
+import { readAgentTeamDefinitionConfig } from "../../agent-team-definition/providers/agent-team-definition-config.js";
+import { parseTeamMd } from "../../agent-team-definition/utils/team-md-parser.js";
 import {
   type AgentConfigRecord,
   defaultAgentConfig,
@@ -39,7 +37,6 @@ import {
 import { parseAgentMd } from "../../agent-definition/utils/agent-md-parser.js";
 import { readJsonFile } from "../../persistence/file/store-utils.js";
 import { buildTeamLocalAgentFilePaths } from "../../agent-definition/providers/team-local-agent-discovery.js";
-import { validateApplicationOwnedLocalTeamTree } from "./application-owned-local-team-validator.js";
 
 export const BUILT_IN_APPLICATION_PACKAGE_ID = "built-in:applications";
 
@@ -316,57 +313,25 @@ export class FileApplicationBundleProvider {
         localApplicationId: record.bundle.localApplicationId,
         localTeamId,
       };
-      const definition = await readApplicationOwnedTeamDefinitionFromSource({
-        sourcePaths,
-        canonicalizeTeamRef: (localNestedTeamId) =>
-          buildCanonicalApplicationOwnedTeamId(
-            record.packageId,
-            record.bundle.localApplicationId,
-            localNestedTeamId,
-          ),
-      });
-
-      if (!definition) {
-        continue;
-      }
-
-      await assertApplicationOwnedTeamIntegrity({
-        owningApplicationId: applicationId,
-        teamId: definition.id ?? localTeamId,
-        nodes: definition.nodes,
-        resolveLocalAgentRef: async (localAgentId) => {
-          try {
-            const filePaths = buildTeamLocalAgentFilePaths(teamDir, localAgentId);
-            const mdContent = await fsPromises.readFile(filePaths.mdPath, "utf-8");
-            parseAgentMd(mdContent, filePaths.mdPath);
-            normalizeAgentConfigRecord(
-              await readJsonFile<AgentConfigRecord>(filePaths.configPath, defaultAgentConfig()),
-            );
-            return { exists: true };
-          } catch (error) {
-            if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-              return { exists: false };
-            }
-            throw error;
+      const mdContent = await fsPromises.readFile(sourcePaths.mdPath, "utf8");
+      parseTeamMd(mdContent, sourcePaths.mdPath);
+      const config = readAgentTeamDefinitionConfig(
+        JSON.parse(await fsPromises.readFile(sourcePaths.configPath, "utf8")),
+      );
+      for (const member of config.members) {
+        if (member.refScope !== "team_local") continue;
+        try {
+          const filePaths = buildTeamLocalAgentFilePaths(teamDir, member.ref);
+          const localMd = await fsPromises.readFile(filePaths.mdPath, "utf8");
+          parseAgentMd(localMd, filePaths.mdPath);
+          normalizeAgentConfigRecord(
+            await readJsonFile<AgentConfigRecord>(filePaths.configPath, defaultAgentConfig()),
+          );
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+            throw new Error(`Application-owned Team '${sourcePaths.definitionId}' member '${member.memberName}' references unavailable local Agent '${member.ref}'.`);
           }
-        },
-        resolveApplicationOwnedTeamRef: (ref) => ({
-          exists: applicationIdByTeamId.has(ref),
-          ownerApplicationId: applicationIdByTeamId.get(ref) ?? null,
-        }),
-        resolveLocalTeamRef: (localTeamId) => ({
-          exists: fs.existsSync(path.join(teamDir, "agent-teams", localTeamId, "team.md")),
-        }),
-      });
-
-      for (const node of definition.nodes) {
-        if (node.refType === "agent_team" && node.refScope === "team_local") {
-          await validateApplicationOwnedLocalTeamTree({
-            owningApplicationId: applicationId,
-            applicationIdByTeamId,
-            parentSourcePaths: sourcePaths,
-            localTeamId: node.ref,
-          });
+          throw error;
         }
       }
     }

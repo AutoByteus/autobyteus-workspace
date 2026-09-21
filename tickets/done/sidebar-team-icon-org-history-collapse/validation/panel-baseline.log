@@ -1,0 +1,2021 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  stableKey: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  stableKey: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-live',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Live Team',
+    workspaceRootPath: '/ws/a',
+    summary: 'Live team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'ACTIVE',
+    isActive: true,
+    currentStatus: 'processing',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedAddress: '/live_member',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-live-1',
+    rootTeam: {
+      teamRunId: 'team-live',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Live Team',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-live',
+      coordinatorAddress: '/live_member',
+      workspaceRootPath: '/ws/a',
+      summary: 'Live team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: true,
+      deleteLifecycle: 'CLEANUP_PENDING',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  },
+  {
+    teamRunId: 'team-history',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'History Team',
+    workspaceRootPath: '/ws/a',
+    summary: 'History team summary',
+    lastActivityAt: '2026-01-01T03:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/history_member',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-history-1',
+    rootTeam: {
+      teamRunId: 'team-history',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'History Team',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-history',
+      coordinatorAddress: '/history_member',
+      workspaceRootPath: '/ws/a',
+      summary: 'History team summary',
+      lastActivityAt: '2026-01-01T03:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests | 2 failed) 78ms
+   × WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 49ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   × WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 17ms
+     → expected false to be true // Object.is equality
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 11ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: 'coordinator',
+    members: [ [Object], [Object] ],
+    focusedAgentRunId: 'coordinator-run',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/coordinator',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: 'coordinator',
+    members: [ [Object], [Object] ],
+    focusedAgentRunId: 'coordinator-run',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/coordinator',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles a structural nested Team row without fabricating an Agent selection
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: 'coordinator',
+    members: [ [Object], [Object] ],
+    focusedAgentRunId: 'coordinator-run',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/coordinator',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: 'coordinator',
+    members: [ [Object], [Object] ],
+    focusedAgentRunId: 'coordinator-run',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/coordinator',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: 'engineering_org/implementation_engineer',
+    members: [ [Object], [Object] ],
+    focusedAgentRunId: 'implementation-run',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/coordinator',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= []  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= []  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/solution_designer',
+    members: [ [Object], [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/architect_reviewer',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'offline',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps a Team member rendered and selectable after a retryable recovery refusal
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    isActive: true,
+    currentStatus: 'running',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: true,
+      deleteLifecycle: 'CLEANUP_PENDING',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  stableKey: 'workspace:/ws/a',
+  workspaceId: 'workspace:/ws/a',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agentOrgDefinitions: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'ACTIVE',
+    isActive: true,
+    currentStatus: 'running',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedAddress: '/implementation_engineer',
+    members: [ [Object] ],
+    focusedAgentRunId: '/implementation_engineer-run',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/implementation_engineer',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: true,
+      deleteLifecycle: 'CLEANUP_PENDING',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps active Team history and Delete hidden when exact Stop fails
+Failed to terminate team 'team-active'.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps error-state history and retry actions truthful when termination fails
+Failed to terminate run 'run-1'.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > preserves the error row and restores Stop when termination throws
+Failed to terminate run: Error: network unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:2110:58
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runFiles (file:///Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1787:3)
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (62 tests | 14 failed) 614ms
+   ✓ WorkspaceAgentRunsTreePanel > loads the unified mixed history tree on mount 24ms
+   ✓ WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 14ms
+   ✓ WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 21ms
+   ✓ WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 6ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 4ms
+   ✓ WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 8ms
+   ✓ WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 12ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 7ms
+   ✓ WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 7ms
+   × WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 23ms
+     → expected 'false' to be 'true' // Object.is equality
+   × WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 12ms
+     → expected false to be true // Object.is equality
+   × WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 18ms
+     → Unable to get [data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+                      <!--v-if--><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently" aria-label="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+   × WorkspaceAgentRunsTreePanel > toggles a structural nested Team row without fabricating an Agent selection 14ms
+     → Unable to get [data-test="workspace-team-member-team-1-/engineering_org"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+                      <!--v-if--><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently" aria-label="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+   × WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 12ms
+     → Unable to get [data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+                      <!--v-if--><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently" aria-label="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+   × WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 15ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   ✓ WorkspaceAgentRunsTreePanel > refreshes the unified mixed history quietly on the background interval while mounted 5ms
+   ✓ WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 6ms
+   ✓ WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 3ms
+   × WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 10ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   × WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 8ms
+     → expected "spy" to be called with arguments: [ Array(1) ]
+
+Number of calls: 0
+
+   ✓ WorkspaceAgentRunsTreePanel > does not render run-row configuration button 4ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 8ms
+   × WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 9ms
+     → expected "spy" to be called with arguments: [ 'team-1', 'team' ]
+
+Number of calls: 0
+
+   × WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 10ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   ✓ WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 11ms
+   ✓ WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 5ms
+   × WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 11ms
+     → expected false to be true // Object.is equality
+   × WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 11ms
+     → expected false to be true // Object.is equality
+   × WorkspaceAgentRunsTreePanel > keeps a Team member rendered and selectable after a retryable recovery refusal 10ms
+     → Unable to get [data-test="workspace-team-member-team-1-/super_agent"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5" role="img" aria-label="Active team runs" title="Active team runs" data-test="team-activity-dot" data-active="true"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5" role="img" aria-label="Active team run" title="Active team run" data-test="team-activity-dot" data-active="true"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50" title="Terminate team" aria-label="Terminate team"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button>
+                      <!--v-if-->
+                      <!--v-if--><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+   × WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 9ms
+     → expected false to be true // Object.is equality
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders only Stop for an active READY Team and never opens or invokes Delete 10ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps active Team history and Delete hidden when exact Stop fails 9ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps Delete absent and disables the exact Stop while authoritative Stop is pending 8ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render team-row configuration button 8ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 11ms
+   ✓ WorkspaceAgentRunsTreePanel > cancels separately confirmed inactive Team deletion without Stop or storage mutation 9ms
+   ✓ WorkspaceAgentRunsTreePanel > retains inactive Team history and reports the singular Delete failure 9ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 12ms
+   ✓ WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 11ms
+   ✓ WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 3ms
+   ✓ WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 4ms
+   ✓ WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 6ms
+   ✓ WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 7ms
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 8ms
+   ✓ WorkspaceAgentRunsTreePanel > renders the standalone Stop state matrix without changing error or inactive presentation 9ms
+   ✓ WorkspaceAgentRunsTreePanel > dispatches the exact error-state run from its native Stop button without selecting the row 13ms
+   ✓ WorkspaceAgentRunsTreePanel > disables only the exact error-state Stop and blocks duplicate dispatch while pending 10ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps error-state history and retry actions truthful when termination fails 10ms
+   ✓ WorkspaceAgentRunsTreePanel > preserves the error row and restores Stop when termination throws 10ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the error history row and exposes only inactive actions after confirmed termination 11ms
+   ✓ WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 11ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 11ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 10ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 10ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 11ms
+   ✓ WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 10ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 10ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:424:47
+    422|     await flushPromises();
+    423| 
+    424|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    425|       expect.objectContaining({
+    426|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:502:103
+    500| 
+    501|     expect(wrapper.find('[data-test="workspace-team-member-team-live-/…
+    502|     expect(wrapper.find('[data-test="workspace-team-member-team-histor…
+       |                                                                                                       ^
+    503|   });
+    504| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron
+AssertionError: expected 'false' to be 'true' // Object.is equality
+
+Expected: "true"
+Received: "false"
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:866:49
+    864|     await flushPromises();
+    865| 
+    866|     expect(teamRow.attributes('aria-expanded')).toBe('true');
+       |                                                 ^
+    867|     expect(wrapper.get('[data-test="workspace-team-run-disclosure"]').…
+    868|       'rotate-0',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:884:94
+    882|     await flushPromises();
+    883| 
+    884|     expect(wrapper.find('[data-test="workspace-team-member-team-1-/coo…
+       |                                                                                              ^
+    885|     expect(wrapper.find('[data-test="workspace-team-member-team-1-/eng…
+    886|     expect(wrapper.find('[data-test="workspace-team-member-team-1-/eng…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member
+Error: Unable to get [data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+                      <!--v-if--><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently" aria-label="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:904:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles a structural nested Team row without fabricating an Agent selection
+Error: Unable to get [data-test="workspace-team-member-team-1-/engineering_org"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+                      <!--v-if--><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently" aria-label="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:932:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it
+Error: Unable to get [data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+                      <!--v-if--><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently" aria-label="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:955:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:983:47
+    981|     await flushPromises();
+    982| 
+    983|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    984|       expect.objectContaining({
+    985|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1059:47
+    1057|     await flushPromises();
+    1058| 
+    1059|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    1060|       expect.objectContaining({ runId: 'run-1', source: 'history' }),
+    1061|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created
+AssertionError: expected "spy" to be called with arguments: [ Array(1) ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1078:48
+    1076|     await flushPromises();
+    1077| 
+    1078|     expect(runHistoryStoreMock.createDraftRun).toHaveBeenCalledWith({
+       |                                                ^
+    1079|       workspaceRootPath: '/ws/a',
+    1080|       agentDefinitionId: 'agent-def-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked
+AssertionError: expected "spy" to be called with arguments: [ 'team-1', 'team' ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1179:42
+    1177|     await flushPromises();
+    1178| 
+    1179|     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1'…
+       |                                          ^
+    1180|     expect(wrapper.emitted('run-selected')).toContainEqual([
+    1181|       { type: 'team', runId: 'team-1' },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1281:47
+    1279|     await flushPromises();
+    1280| 
+    1281|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    1282|       expect.objectContaining({
+    1283|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1437:35
+    1435| 
+    1436|     const memberAvatar = wrapper.find('img[alt="Super Agent avatar"]');
+    1437|     expect(memberAvatar.exists()).toBe(true);
+       |                                   ^
+    1438|     expect(memberAvatar.attributes('src')).toBe('https://example.com/t…
+    1439|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1482:35
+    1480| 
+    1481|     const memberButton = wrapper.find('[data-test="workspace-team-memb…
+    1482|     expect(memberButton.exists()).toBe(true);
+       |                                   ^
+    1483|     await memberButton.trigger('click');
+    1484|     await flushPromises();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps a Team member rendered and selectable after a retryable recovery refusal
+Error: Unable to get [data-test="workspace-team-member-team-1-/super_agent"] within: <div data-v-bf027b41="" class="workspace-history-panel flex h-full flex-col bg-white">
+  <div data-v-bf027b41="" class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 data-v-bf027b41="" class="text-sm font-semibold text-gray-700">Workspaces</h3><button data-v-bf027b41="" type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg data-v-bf027b41="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div data-v-bf027b41="" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-bf027b41="" class="space-y-1">
+      <section data-v-bf027b41="" class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button><button type="button" class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Remove from workspaces" aria-label="Remove from workspaces"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(3)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5" role="img" aria-label="Active team runs" title="Active team runs" data-test="team-activity-dot" data-active="true"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5" role="img" aria-label="Active team run" title="Active team run" data-test="team-activity-dot" data-active="true"></span><span class="truncate font-medium">Team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50" title="Terminate team" aria-label="Terminate team"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button>
+                      <!--v-if-->
+                      <!--v-if--><span class="text-xs text-gray-400">4h</span>
+                    </div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1538:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/16]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1593:106
+    1591|     await flushPromises();
+    1592| 
+    1593|     expect(wrapper.find('[data-test="workspace-team-member-team-1-/imp…
+       |                                                                                                          ^
+    1594|     expect(wrapper.find('[data-test="team-delegated-task-context-tree"…
+    1595|     expect(wrapper.find('[data-test="team-delegated-task-navigator"]')…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/16]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 16 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "routes team top-row clicks through persisted member hydration instead of blind team selection". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps a previously selected team expanded when another team row is opened". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps the individual team run disclosure chevron visually consistent with the parent team chevron". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders nested team members collapsed by default with a disclosure control". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "toggles nested team member disclosure without selecting the member". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "toggles a structural nested Team row without fabricating an Agent selection". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps an expanded nested child visible after selecting it". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "expands nested ancestors when a team row opens a focused nested member". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectRun composables/useWorkspaceHistorySelectionActions.ts:56:42
+     54| 
+     55|   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
+     56|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     57|     try {
+     58|       const result = await params.runHistoryStore.selectTreeRun(run, {…
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:117:29
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "selects run via runHistoryStore.selectTreeRun and emits run-selected". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onCreateRun composables/useWorkspaceHistorySelectionActions.ts:130:42
+    128|     agentDefinitionId: string,
+    129|   ): Promise<void> => {
+    130|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+    131|     try {
+    132|       const result = await params.runHistoryStore.createDraftRun({ wor…
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:97:29
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "creates draft run from agent row plus button and emits run-created". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders grouped team rows under workspace and selects the team run when clicked". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "opens a historical team row through the coordinator-focused member instead of the first alphabetical member". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders team member avatar image when matching agent definition avatar is available". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "selects team member through runHistoryStore so persisted member history can hydrate". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps a Team member rendered and selectable after a retryable recovery refusal". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:236:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed (2)
+      Tests  16 failed | 49 passed (65)
+     Errors  16 errors
+   Start at  00:32:05
+   Duration  5.55s (transform 2.84s, setup 8.19s, collect 721ms, tests 692ms, environment 291ms, prepare 246ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

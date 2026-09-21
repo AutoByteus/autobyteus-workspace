@@ -32,13 +32,8 @@ const tree = (): TeamRunExecutionTreeDto => ({
         agent_run_id: 'linked-run', platform_agent_run_id: null, launch_configuration: launch('gpt', { effort: 'medium' }),
       },
       {
-        kind: 'configured_team', address: '/divergent', team_definition_id: 'nested-def', role: null, description: null,
-        team_run_id: 'nested-run', coordinator_address: '/divergent/child',
-        default_launch_configuration: launch('other', { effort: 'low' }), task_executions: [],
-        members: [{
-          kind: 'configured_agent', address: '/divergent/child', agent_definition_id: 'child-def', role: null, description: null,
-          agent_run_id: 'child-run', platform_agent_run_id: null, launch_configuration: launch('other', { effort: 'low' }),
-        }],
+        kind: 'configured_agent', address: '/divergent', agent_definition_id: 'divergent-def', role: null, description: null,
+        agent_run_id: 'divergent-run', platform_agent_run_id: null, launch_configuration: launch('other', { effort: 'low' }),
       },
     ],
   },
@@ -51,7 +46,6 @@ describe('existing Team model-config draft planner', () => {
     )
     expect(updated.scopesByAddress['/linked']?.draftSelection.llmConfig).toEqual({ effort: 'high' })
     expect(updated.scopesByAddress['/divergent']?.draftSelection.llmConfig).toEqual({ effort: 'low' })
-    expect(updated.scopesByAddress['/divergent/child']?.draftSelection.llmConfig).toEqual({ effort: 'low' })
     expect(planExistingTeamModelConfigPatches(updated).map((patch) => patch.scopeAddress)).toEqual(['/', '/linked'])
   })
 
@@ -75,6 +69,31 @@ describe('existing Team model-config draft planner', () => {
     draft = updateExistingTeamScopeModelConfig(draft, '/linked', { llmModelIdentifier: 'gpt', llmConfig: { effort: 'max' } })
     draft = updateExistingTeamScopeModelConfig(draft, '/', { llmModelIdentifier: 'gpt', llmConfig: { effort: 'high' } })
     expect(draft.scopesByAddress['/linked']?.draftSelection.llmConfig).toEqual({ effort: 'max' })
+  })
+
+  it('adapts nested configured Teams to the shared recursive policy without crossing a direct-edit boundary', () => {
+    const base = tree()
+    const nested: TeamRunExecutionTreeDto = { ...base, root_team: { ...base.root_team, members: [{
+      kind: 'configured_team', address: '/group', team_definition_id: 'group-def', role: null, description: null,
+      team_run_id: 'group-run', coordinator_address: '/group/member',
+      default_launch_configuration: launch('gpt', { effort: 'medium' }), task_executions: [],
+      members: [{
+        kind: 'configured_agent', address: '/group/member', agent_definition_id: 'member-def', role: null, description: null,
+        agent_run_id: 'member-run', platform_agent_run_id: null,
+        launch_configuration: launch('gpt', { effort: 'medium' }),
+      }],
+    }] } }
+    let draft = createExistingTeamModelConfigDraft(nested)
+    draft = updateExistingTeamScopeModelConfig(draft, '/group/member', {
+      llmModelIdentifier: 'member-model', llmConfig: { budget: 0, enabled: false },
+    })
+    draft = updateExistingTeamScopeModelConfig(draft, '/', {
+      llmModelIdentifier: 'root-next', llmConfig: null,
+    })
+    expect(draft.scopesByAddress['/group']?.draftSelection).toEqual({ llmModelIdentifier: 'root-next', llmConfig: null })
+    expect(draft.scopesByAddress['/group/member']?.draftSelection).toEqual({
+      llmModelIdentifier: 'member-model', llmConfig: { budget: 0, enabled: false },
+    })
   })
 })
 

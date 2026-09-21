@@ -1,0 +1,73 @@
+[
+  {
+    "label": "active-org-before",
+    "at": "2026-09-04T14:15:55.489Z",
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+    "head": [
+      "Workspaces",
+      "No file selected",
+      "To-Do",
+      "Activity"
+    ],
+    "selected": [
+      {
+        "test": null,
+        "text": "New - APIREV8 组织 Ω",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+        "text": "AEaorg e2e concierge",
+        "selected": "true",
+        "current": null
+      }
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace-default\nSettings\nAE\naorg e2e concierge - C413\nIdle\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 2, 2026, 9:38:04 PM · 6118 characters\nAVAILABLE"
+  },
+  {
+    "label": "inactive-team-after",
+    "at": "2026-09-04T14:15:55.578Z",
+    "url": "http://127.0.0.1:3589/workspace",
+    "head": [
+      "Workspaces",
+      "No file selected",
+      "Messages"
+    ],
+    "selected": [
+      {
+        "test": "workspace-team-member-apirev8_team_ccf2b4b3a83e49bbb05b522969e61e89-/aorg_e2e_analyst",
+        "text": "Aaorg_e2e_analyst1dAgent · aorg_e2e_analyst · /aorg_e2e_analyst",
+        "selected": "true",
+        "current": "true"
+      }
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace-default\nSettings\nA\naorg_e2e_analyst\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks"
+  },
+  {
+    "label": "active-org-return",
+    "at": "2026-09-04T14:15:55.783Z",
+    "url": "http://127.0.0.1:3589/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+    "head": [
+      "Workspaces",
+      "No file selected",
+      "To-Do",
+      "Activity"
+    ],
+    "selected": [
+      {
+        "test": null,
+        "text": "New - APIREV8 组织 Ω",
+        "selected": "true",
+        "current": "true"
+      },
+      {
+        "test": "agent-org-agent-row-aorg_e2e_concierge_bb57f0fd1ba34c6587fbadb33ccfc413",
+        "text": "AEaorg e2e concierge",
+        "selected": "true",
+        "current": null
+      }
+    ],
+    "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nReturn exactly APIREV8-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the seco...\n1d\nA\naorg_e2e_lead\n1d\nA\naorg_e2e_analyst\n1d\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nNew - APIREV8 组织 Ω\n1d\nAE\naorg e2e concierge\napirev8 team\nworkspace-team\nworkspace-default\nSettings\nAE\naorg e2e concierge - C413\nIdle\nYou\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-LIVE-001\nConfirmed, direct live request received.\n\nYou\nReturn exactly APIREV8-ORG-DIRECT-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e concierge\n\nAPIREV8-ORG-DIRECT-RESUMED-001\nConfirmed, resumed direct request received.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured Sep 2, 2026, 9:38:04 PM · 6118 characters\nAVAILABLE"
+  }
+]

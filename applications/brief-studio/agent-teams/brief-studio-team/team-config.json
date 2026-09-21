@@ -1,21 +1,14 @@
 {
   "coordinatorMemberName": "researcher",
   "members": [
-    {
-      "memberName": "researcher",
-      "ref": "researcher",
-      "refType": "agent",
-      "refScope": "team_local"
-    },
-    {
-      "memberName": "writer",
-      "ref": "writer",
-      "refType": "agent",
-      "refScope": "team_local"
-    }
+    { "memberName": "researcher", "ref": "researcher", "refScope": "team_local" },
+    { "memberName": "writer", "ref": "writer", "refScope": "team_local" }
   ],
+  "handoffs": [],
+  "avatarUrl": null,
   "defaultLaunchConfig": {
+    "llmModelIdentifier": "gpt-5.6-luna",
     "runtimeKind": "codex_app_server",
-    "llmModelIdentifier": "gpt-5.6-luna"
+    "llmConfig": null
   }
 }

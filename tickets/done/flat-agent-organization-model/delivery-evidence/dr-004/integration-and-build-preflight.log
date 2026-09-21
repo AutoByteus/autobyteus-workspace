@@ -1,0 +1,8 @@
+captured_at_utc=2026-09-04T23:21:37Z
+safety_checkpoint=8eacba244d4621b2a4aed43c2b3dee335f8c532d
+integrated_head=fa7693e5210d306d8216a035e93e9dc11f8efe04
+base=a32b53f6320222c9bf3c7f3a4a3c50fbd1e44f27
+merge_base=a32b53f6320222c9bf3c7f3a4a3c50fbd1e44f27
+divergence=0	113
+package_version=1.4.68
+command=PATH=/tmp/aorg-delivery-corepack-bin:$PATH pnpm -C autobyteus-web build:electron:linux:arm64

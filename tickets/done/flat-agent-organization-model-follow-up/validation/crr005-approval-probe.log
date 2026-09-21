@@ -1,0 +1,48 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/crr005-approval-probe.spec.ts services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/crr005-approval-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/crr005-approval-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts (4 tests) 11ms
+stdout | tests/crr005-approval-probe.spec.ts > diagnostic: approval arriving before first task hydration
+{"order":"before","conversationStatus":"parsed","activityStatus":"parsed","approvalTarget":null,"sameContext":true,"streamReady":true}
+
+stdout | tests/crr005-approval-probe.spec.ts > diagnostic: approval arriving after first task hydration
+{"order":"after","conversationStatus":"awaiting-approval","activityStatus":"awaiting-approval","approvalTarget":null,"sameContext":true,"streamReady":true}
+
+ ✓ tests/crr005-approval-probe.spec.ts (2 tests) 17ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (12 tests) 29ms
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  11:21:56
+   Duration  5.66s (transform 3.00s, setup 14.80s, collect 443ms, tests 57ms, environment 587ms, prepare 424ms)
+

@@ -1,0 +1,136 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "AV AORG Validation Agent (1)":
+    - generic: AV
+    - generic: AORG Validation Agent
+    - generic: (1)
+  - button "New run with this agent":
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)":
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - generic: Orgs
+  - button "AORG Validation Org (1)" [expanded]:
+    - generic: AORG Validation Org
+    - generic: (1)
+  - treeitem "Running Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-af..." [expanded]:
+    - generic "Running"
+    - generic: Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-af...
+  - button "Stop Agent Org":
+  - generic: 7m
+  - tree "AORG Validation Org execution hierarchy":
+    - treeitem "direct, offline, /direct, aorg_validation_agent_1129a188d95c45c1a3713f8ff6fb1416" [level=1]:
+      - generic: D
+      - generic: direct
+    - treeitem "later, offline, /later, aorg_validation_agent_91082a60b38d456386a4da5abc6c27bc" [level=1]:
+      - generic: L
+      - generic: later
+    - treeitem "unused, offline, /unused, aorg_validation_agent_169e643b04944332ada57bdec08b756d" [level=1]:
+      - generic: U
+      - generic: unused
+    - 'treeitem "team. Team status: Idle" [expanded] [level=1]':
+      - 'img "Team status: Idle"'
+      - generic: team
+    - treeitem "lead, offline, /team/lead, aorg_validation_agent_e154dad85a6e4305bc2496ee02cbd87f" [level=2]:
+      - generic: L
+      - generic: lead
+    - treeitem "worker, idle, /team/worker, aorg_validation_agent_c04d1a9ec42d4425ad0291000295c869" [level=2] [selected]:
+      - generic: W
+      - generic: worker
+    - treeitem "unused, offline, /team/unused, aorg_validation_agent_73ee1c95b6f9427081c7bc8f19ffbfa3" [level=2]:
+      - generic: U
+      - generic: unused
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: W
+  - heading "worker" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt. Then reply with the first line and ORG-MOUNTED-ONE. Do not use other tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - button "read_file · api-runtime/activity-note.txt":
+    - generic: read_file
+    - generic "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt": · api-runtime/activity-note.txt
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: ACTIVITY-RETAIN-ORANGE-731 ORG-MOUNTED-ONE
+  - generic: You
+  - generic: Use read_file exactly once on /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt. Reply with its first line and ORG-MOUNTED-TWO. Do not use other tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - button "read_file · api-runtime/activity-note.txt":
+    - generic: read_file
+    - generic "/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt": · api-runtime/activity-note.txt
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: ACTIVITY-RETAIN-ORANGE-731 ORG-MOUNTED-TWO
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org": Org
+    - tab "Terminal"
+    - tab "Activity" [selected]: Activity
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 3 Events
+  - article:
+    - button "System instructions. AutoByteus-supplied · Native configured system prompt. Available. Captured 14.09.2026, 16:21:35. 8607 characters." [expanded]:
+      - generic: System instructions
+      - generic: AutoByteus-supplied · Native configured system prompt
+      - generic: Captured 14.09.2026, 16:21:35 · 8607 characters
+      - generic: Available
+    - region "System instructions":
+      - paragraph: AutoByteus-supplied · Native configured system prompt · Captured 14.09.2026, 16:21:35 · 8607 characters
+      - generic: "## Agent Identity - Name: AORG Validation Agent - Description: Harmless test-owned conversation and lazy-readiness fixture. ### Responsibilities and Boundaries You are a test-owned validation responder. Follow only the exact test message. Normally reply with the supplied marker in one short sentence. Do not initiate peer messages or tasks unless explicitly asked. Never inspect unrelated user files, conversations, credentials or processes. If asked to read an attachment, read only that supplied file. If explicitly asked to send a peer message or delegate a task, use the exact supplied canonical target once; do not repeat successful calls. For a task assignment, return the requested marker and submit the result once when instructed. ## AgentTeam Addressing AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths. The root AgentTeam is represented by `/`. Its display or metadata name is not included in any address. The following example illustrates the address structure: / ├── /A (Agent) ├── /B (Agent) └── /C (nested AgentTeam) ├── /C/D (Agent) └── /C/E (Agent) In this example: - `/A` and `/B` are Agents directly under the root AgentTeam. - `/C` is an AgentTeam directly under the root AgentTeam. - `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`. - Each `/` separates one parent-to-child level. The letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context. Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients. Your Agent address is: /team/worker Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator. ## AgentTeam Collaboration Choose the collaboration mode based on your primary intent. `send_message_to` communicates with an already existing execution. `delegate_task` spawns a fresh task execution that independently owns a unit of work. These operations are not interchangeable. Never use both to deliver the same work. ### Ordinary Communication Use `send_message_to` to communicate with an already existing Agent or AgentTeam instance. - When `recipient_address` identifies an Agent, the message is delivered to that mounted Agent's existing execution. - When `recipient_address` identifies an AgentTeam, the message is delivered to that mounted Team's existing configured coordinator. - When an exact active AgentRun ID is known, `target_agent_run_id` may instead select that specific execution. A successful call returns the exact existing AgentRun that accepted the message as `target_agent_run_id`. For an AgentTeam recipient, this is its existing coordinator AgentRun. `send_message_to` does not spawn an Agent or AgentTeam, create or track a task, submit a task result, review a task result, or change task status. ### Dedicated Task Execution Use `delegate_task` to assign a new bounded unit of work that requires its own execution, ownership, and task lifecycle. The `recipient_address` identifies the mounted Agent or AgentTeam definition from which the task execution is spawned. - When `recipient_address` identifies an Agent, the system spawns a fresh task Agent instance and delivers the complete task packet to that new Agent. - When `recipient_address` identifies an AgentTeam, the system spawns a fresh task AgentTeam instance and delivers the complete task packet to that new Team's configured coordinator. The entire task Team is newly spawned; its coordinator is the initial task ingress. A successful call returns the new task's `task_id`, `status`, and exact spawned task ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly spawned Team's coordinator AgentRun. The delegation call is both the creation and assignment step. Include the complete task description and reference files in that call. Do not send the same assignment again through `send_message_to`. The original logical `recipient_address` continues to identify the mounted Agent or AgentTeam. It is not an alias for the newly spawned task execution. If delegation returns `status: \"not_started\"`, no task execution was successfully spawned. Do not use an ordinary message as an equivalent task- creation fallback. Correct the problem and delegate again, or report the failure. ### Additional Task Clarification After successful delegation, genuinely new clarification may be sent to the exact active task ingress using the returned `target_agent_run_id`. Never repeat the original task packet, and never use the original logical `recipient_address` as an alias for the spawned task execution. An additional message communicates with the active task execution; it does not create another task or change the existing task's lifecycle state. ### Task Lifecycle The spawned task assignee uses `submit_task_result` to submit its formal result. The delegator uses `review_task_result` to accept the result or request a revision. Message wording such as \"finished,\" \"accepted,\" or \"please revise\" does not change task state. ### Rule-Based Handoffs When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally. Do not claim that a message, delegation, or handoff succeeded unless the corresponding tool confirms success. ## Working Environment - Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001/temp_workspace` - Use skills from their skill package directories to work on tasks in the agent workspace. - A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace. - Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise. - Do not modify a skill package unless the task explicitly targets that skill package. - With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace. ## Bash Operating Practice - Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings. - For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery. - Prefer non-interactive, small, composable, project-native commands. ## File And Directory Practice - Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n \"term\" path`; for filename discovery, use `rg --files path | rg \"pattern\"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal. - When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement. - Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed. - Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch. - Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+  - generic: read_file
+  - generic: "#952562"
+  - generic: Success
+  - generic: Arguments
+  - generic: "{ \"path\": \"/Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/tickets/in-progress/retain-activity-after-termination/validation/api-runtime/activity-note.txt\" }"
+  - generic: Result
+  - generic: "1: ACTIVITY-RETAIN-ORANGE-731 2: Only test-owned attachment content."
+  - generic: read_file
+  - generic: "#317424"
+  - generic: Success
+  - generic: Arguments
+  - generic: Logs (3)
+  - generic: Result

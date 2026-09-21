@@ -1,0 +1,30 @@
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 test /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-collaboration-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: requires explicit family and exact matching branch
+ok 1 - requires explicit family and exact matching branch
+  ---
+  duration_ms: 5.220958
+  type: 'test'
+  ...
+# Subtest: requires sequenced events and an exact Org-root client command
+ok 2 - requires sequenced events and an exact Org-root client command
+  ---
+  duration_ms: 0.613542
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.686875

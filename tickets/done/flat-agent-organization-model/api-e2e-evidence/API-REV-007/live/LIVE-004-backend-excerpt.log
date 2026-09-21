@@ -1,0 +1,12 @@
+Successfully registered tool definition: 'submit_task_result'
+Registered required tool unit: Task Delegation Tools
+Published codex_app_server agent run 'aorg_e2e_lead_95fd646f356a4926b4e59a181191332d'.
+Published codex_app_server agent run 'aorg_e2e_analyst_7dd11406c12243eaa3152a577fc80c34'.
+Agent team websocket attached for team run apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Created agent session 7aba1f3b-36de-4e8d-bfe8-3002956c34da for run apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Agent Team WebSocket connected: session=7aba1f3b-36de-4e8d-bfe8-3002956c34da, run=apirev7_team_d98179477a974a8eb15d53b24d4652d5
+Published codex_app_server agent run 'aorg_e2e_concierge_b224638c5b3a4b438036692742b9fa3b'.
+Published codex_app_server agent run 'aorg_e2e_lead_e75954da730244339fe2a12a718d6868'.
+Published codex_app_server agent run 'aorg_e2e_analyst_b90974e0a1194cdf949523953c40e817'.
+Published codex_app_server agent run 'aorg_e2e_analyst_716b5f0d28af4faeab9c91287054c210'.
+{"level":30,"time":1788381149252,"pid":15793,"hostname":"1da6e6043ac7","reqId":"req-5t","err":{"type":"GraphQLError","message":"Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found.","stack":"Error: Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found.\n    at TaskDelegationProjectionService.read (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:73:19)\n    at async TaskDelegationProjectionService.list (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/agent-team-execution/task-delegation/task-delegation-projection-service.js:46:26)\n    at async TaskDelegationResolver.getTaskDelegationRecords (file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/autobyteus-server-ts/dist/api/graphql/types/task-delegation.js:152:17)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTaskDelegationRecords"],"locations":[{"line":1,"column":40}],"extensions":{}},"msg":"Task records for RootTeamRun 'apirev7_5bfe50658a4144928ed4046deb4e2c41' were not found."}

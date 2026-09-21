@@ -1,0 +1,6 @@
+Mon Sep 14 09:16:12 UTC 2026
+diff-check-exit=0
+Owned listeners:
+Owned process check:
+  PID  PPID COMMAND
+No process rows/listeners means stopped. Diagnostic tabs/data/SDK dist retained.

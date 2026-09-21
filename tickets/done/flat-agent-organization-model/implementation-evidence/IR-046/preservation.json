@@ -1,0 +1,20 @@
+{
+  "baseline": "/tmp/aorg-ir045-preservation.json",
+  "count": 13905,
+  "unchanged": 13902,
+  "changed": [
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/architecture-design-revision-record.md",
+      "state": "changed"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/architecture-design-self-validation.md",
+      "state": "changed"
+    },
+    {
+      "path": "tickets/in-progress/flat-agent-organization-model/design-spec.md",
+      "state": "changed"
+    }
+  ],
+  "scope": "other-owner dirty/untracked baseline; three independently committed Architecture updates; no implementation changes to these paths"
+}

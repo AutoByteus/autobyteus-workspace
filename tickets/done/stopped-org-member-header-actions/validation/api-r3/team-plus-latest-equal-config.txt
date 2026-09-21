@@ -1,0 +1,147 @@
+- navigation "智能体和团队":
+  - navigation "主要导航":
+    - list:
+      - button "智能体":
+        - generic: 智能体
+      - button "折叠左侧面板":
+      - button "智能体团队":
+        - generic: 智能体团队
+      - button "智能体组织":
+        - generic: 智能体组织
+      - button "技能":
+        - generic: 技能
+      - button "记忆":
+        - generic: 记忆
+      - button "节点":
+        - generic: 节点
+  - heading "Workspaces" [level=3]
+  - button "添加工作区":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - button "SC Standalone Control (1)":
+    - generic: SC
+    - generic: Standalone Control
+    - generic: (1)
+  - button "使用此智能体开始新的运行":
+  - generic: Teams
+  - button "无活跃团队运行 Team Control (2)" [expanded]:
+    - img "无活跃团队运行"
+    - generic: Team Control
+    - generic: (2)
+  - button "非活跃团队运行 Untitled team run":
+    - img "非活跃团队运行"
+    - generic: Untitled team run
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 48m
+  - button "非活跃团队运行 Reply exactly TEAM-CONTROL-917. Do not call tools." [expanded]:
+    - img "非活跃团队运行"
+    - generic: Reply exactly TEAM-CONTROL-917. Do not call tools.
+  - button "归档团队历史记录":
+  - button "永久删除团队历史记录":
+  - generic: 51m
+  - tree "Reply exactly TEAM-CONTROL-917. Do not call tools.组织树":
+    - treeitem "智能体，lead，第 1 级，离线，/lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 51m
+  - generic: 组织
+  - button "Config Lab (4)":
+    - generic: Config Lab
+    - generic: (4)
+  - button "设置":
+    - generic: 设置
+- main:
+  - generic: 团队定义
+  - generic: Team Control
+  - generic: Runtime
+  - combobox "Runtime":
+    - option "AutoByteus" [selected]
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - paragraph: 选择此团队运行所使用的运行时后端。
+  - generic: 默认 LLM 模型（全球）
+  - button "OpenAI / gpt-5.4-mini":
+    - generic: OpenAI / gpt-5.4-mini
+  - paragraph: 除非被覆盖，否则所有成员都将使用此模型。
+  - generic: Thinking
+  - button "使用设置":
+    - generic: 使用设置
+  - button "高级" [expanded]:
+    - generic: 高级
+  - generic "reasoning_effort": Reasoning Effort ⓘ
+  - combobox "Reasoning Effort ⓘ":
+    - option "none"
+    - option "low"
+    - option "medium" [selected]
+    - option "high"
+    - option "xhigh"
+  - generic "reasoning_summary": Reasoning Summary ⓘ
+  - combobox "Reasoning Summary ⓘ":
+    - option "none" [selected]
+    - option "auto"
+    - option "concise"
+    - option "detailed"
+  - generic: 工作区目录
+  - tablist:
+    - tab "Existing" [selected]:
+      - generic: Existing
+    - tab "New":
+      - generic: New
+  - button "📁 Temp Workspace (Default) Default temporary workspace":
+    - generic: 📁 Temp Workspace (Default)
+    - generic: Default temporary workspace
+  - paragraph: "Workspace: Temp Workspace"
+  - generic: 自动批准工具
+  - paragraph: Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。
+  - switch "自动批准工具":
+    - generic: 自动批准工具
+  - button "团队成员覆盖 (1)" [expanded]:
+    - generic: 团队成员覆盖 (1)
+  - generic: lead
+  - generic: 协调者
+  - generic: 已覆盖
+  - generic: 运行时
+  - combobox:
+    - option "全局默认" [selected]
+    - option "AutoByteus"
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - generic: LLM 模型
+  - button "OpenAI / gpt-5.4":
+    - generic: OpenAI / gpt-5.4
+  - generic: 自动批准
+  - checkbox "全局默认" [checked=mixed]
+  - text: 全局默认
+  - generic: Thinking
+  - button "使用设置":
+    - generic: 使用设置
+  - button "高级" [expanded] [active]:
+    - generic: 高级
+  - generic "reasoning_effort": Reasoning Effort ⓘ
+  - combobox "Reasoning Effort ⓘ":
+    - option "none"
+    - option "low"
+    - option "medium" [selected]
+    - option "high"
+    - option "xhigh"
+  - generic "reasoning_summary": Reasoning Summary ⓘ
+  - combobox "Reasoning Summary ⓘ":
+    - option "none" [selected]
+    - option "auto"
+    - option "concise"
+    - option "detailed"
+  - button "运行团队":
+    - generic: 运行团队
+  - tablist "工作区工具":
+    - tab "文件" [selected]: 文件
+    - tab "终端"
+    - tab "活动"
+    - tab "Token"
+    - tab "产物"
+    - tab "VNC 查看器"
+  - button "切换侧边栏":
+  - textbox "搜索..."
+  - button "Maximize view":
+  - heading "No file selected" [level=3]
+  - paragraph: Select a file from the explorer to view or edit its content.

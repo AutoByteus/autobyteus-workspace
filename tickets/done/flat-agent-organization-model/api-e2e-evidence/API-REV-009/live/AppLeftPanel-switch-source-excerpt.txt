@@ -1,0 +1,36 @@
+   140	const isSettingsActive = computed(() => route.path.startsWith('/settings'));
+   141	const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
+   142	
+   143	const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
+   144	  try {
+   145	    await router.push(target);
+   146	  } catch (error) {
+   147	    console.error('AppLeftPanel navigation error:', error);
+   148	  }
+   149	};
+   150	
+   151	const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
+   152	  await pushRoute(resolvePrimaryRoute(key));
+   153	};
+   154	
+   155	const navigateToSettings = async (): Promise<void> => {
+   156	  await pushRoute('/settings');
+   157	};
+   158	
+   159	const onRunningRunSelected = async (): Promise<void> => {
+   160	  if (route.path === '/workspace') return;
+   161	  await pushRoute('/workspace');
+   162	};
+   163	
+   164	const onRunningRunCreated = async (): Promise<void> => {
+   165	  if (route.path === '/workspace') return;
+   166	  await pushRoute('/workspace');
+   167	};
+   168	
+   169	onMounted(() => {
+   170	  void ensurePrimaryNavigationReady().catch(() => undefined);
+   171	});
+   172	</script>
+   173	
+   174	<style scoped>
+   175	.left-panel-section-resize-handle {

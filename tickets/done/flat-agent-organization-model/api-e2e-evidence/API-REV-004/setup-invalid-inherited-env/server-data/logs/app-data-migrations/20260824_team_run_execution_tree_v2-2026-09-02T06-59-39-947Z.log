@@ -1,0 +1,6 @@
+migrationId=20260824_team_run_execution_tree_v2
+displayName=Upgrade TeamRun execution trees to V2
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"SKIPPED_ALREADY_CURRENT","status":"SKIPPED","message":"The TeamRun execution tree was already exact V2. Count: 1. Examples: agent_teams/aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9/team_run_execution_tree.json."}

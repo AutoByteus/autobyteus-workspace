@@ -1,0 +1,8 @@
+import playwright from '../../../../../../autobyteus-web/node_modules/playwright-core/index.js';
+import fs from 'node:fs/promises';
+const b=await playwright.chromium.connectOverCDP('http://127.0.0.1:9222');const p=b.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('127.0.0.1:3589'));const out=new URL('./',import.meta.url);
+const prompt='Return exactly APIREV10-TEAM-ACTIVE-001 on the first line and a five-word acknowledgment on the second line.';
+const tb=p.getByRole('textbox',{name:'Type a message...'}); await tb.fill(prompt); await p.getByRole('button',{name:'Send message'}).click();
+let result='pending';try{await p.waitForFunction(()=>document.body.innerText.includes('APIREV10-TEAM-ACTIVE-001')&&document.body.innerText.match(/APIREV10-TEAM-ACTIVE-001/g).length>=2,null,{timeout:180000});result='completed';}catch(e){result='timeout';}
+const obs=await p.evaluate(({prompt,result})=>({at:new Date().toISOString(),url:location.href,prompt,result,body:document.body.innerText,selected:[...document.querySelectorAll('[aria-current="true"],[data-test^="workspace-team-member-"][aria-selected="true"]')].map(e=>({test:e.getAttribute('data-test'),text:e.textContent?.replace(/\s+/g,' ').trim(),selected:e.getAttribute('aria-selected'),current:e.getAttribute('aria-current')}))}),{prompt,result});
+await fs.writeFile(new URL('LIVE-004-team-lazy-activation.json',out),JSON.stringify(obs,null,2));await p.screenshot({path:new URL('screenshots/LIVE-004-team-lazy-active.png',out).pathname,fullPage:true});console.log(JSON.stringify({result,url:obs.url,occurrences:(obs.body.match(/APIREV10-TEAM-ACTIVE-001/g)||[]).length,selected:obs.selected,tail:obs.body.slice(-1500)},null,2));await b.close();

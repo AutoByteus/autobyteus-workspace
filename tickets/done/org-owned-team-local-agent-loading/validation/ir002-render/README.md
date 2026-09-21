@@ -1,0 +1,11 @@
+# IR-002 implementation renderer self-check
+
+Real Nuxt development renderer, isolated Playwright Chromium profile, ports50782 response replay /50783 Nuxt. No actual application backend/provider was started. Replay uses the API-REV-001 synthetic read-response corpus; this is **not API/E2E acceptance** and must not replace actual Alpha/Beta launch/Send reruns.
+
+`browser.mjs` directly opens ordinary Org configuration without visiting detail, chooses the displayed model/Temp Workspace, toggles approval, opens member disclosure, and captures pending/ready/unavailable states. Response replay is deliberately held pending or failed for error-state inspection. It never issues Create or Send. Model/workspace/approval choices survive completion; Run disabled pending/error and enabled ready. Files tab avoids the expected absent-terminal-transport notice from this renderer fixture.
+
+Inspected screenshots: loading.png, ready.png, expanded.png, unavailable.png (1280x900), unavailable-narrow.png (900x800). New status/alert spacing, wrapping, role and button affordances are consistent with existing panel controls; no visual defect requiring further production scope found. Pending model selection/approval, disclosure and error states were directly exercised, not inferred only from images. Chinese strings exercised in durable component tests, not browser.
+
+Initial exploratory browser scripts had selector mistakes (data-testid versus data-test; multiple model labels); final `browser.mjs` corrects those test-driver errors and completes successfully (`browser.log`, result.json). Existing general file/terminal behavior is outside this task and replay cannot validate it. No user browser profile/server/data used.
+
+Owned dev/replay processes stopped via their tool sessions; isolated browser closed in finally. `cleanup.json` verifies both owned ports closed. Raw Nuxt/read logs retained. Scripts require running from autobyteus-web for local playwright-core resolution; replay locates prior synthetic transport evidence relative to itself. Start replay then Nuxt with BACKEND_NODE_BASE_URL=http://127.0.0.1:50782, host127.0.0.1 port50783; do not reuse user's server or API owner's50681–50683 sessions.

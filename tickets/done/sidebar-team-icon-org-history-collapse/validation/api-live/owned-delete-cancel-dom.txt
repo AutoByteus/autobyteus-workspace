@@ -1,0 +1,72 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "Sidebar Image Org Sidebar Image Org (1)" [expanded]:
+    - img "Sidebar Image Org"
+    - generic: Sidebar Image Org
+    - generic: (1)
+  - button "Collapse Sidebar Image Org descendants" [expanded]:
+  - treeitem "Stopped New - Sidebar Image Org":
+    - generic "Stopped"
+    - generic: New - Sidebar Image Org
+  - generic: 1m
+  - tree "Sidebar Image Org execution hierarchy":
+    - treeitem "direct, offline, /direct, sidebar_shared_agent_38de388dc35b463aa510e0b641053e7d" [level=1]:
+      - generic: D
+      - generic: direct
+    - 'treeitem "team. Team status: Offline" [expanded] [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+    - treeitem "lead, offline, /team/lead, sidebar_shared_agent_474d55aa8e394a40be89fe4179510f7d" [level=2]:
+      - generic: L
+      - generic: lead
+    - treeitem "worker, offline, /team/worker, sidebar_shared_agent_afa81e90e10445ed930e5ae416601fcc" [level=2]:
+      - generic: W
+      - generic: worker
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Orgs":
+    - text: Back to Agent Orgs
+  - generic: SA
+  - heading "Sidebar Authoring Org" [level=1]
+  - button "Run"
+  - button "Edit"
+  - button "Delete"
+  - heading "Description" [level=2]
+  - paragraph: Disposable current-schema fixture.
+  - heading "Members" [level=2]
+  - heading "Agents (2)" [level=3]
+  - list:
+    - generic: SS
+    - paragraph: Sidebar Shared Agent
+    - generic: SO
+    - paragraph: Sidebar Owned Worker
+  - heading "Teams (2)" [level=3]
+  - list:
+    - paragraph: Sidebar Image Team
+    - paragraph: "Coordinator: Sidebar Shared Agent"
+    - button "View ↗"
+    - paragraph: Sidebar Owned Team
+    - paragraph: "Coordinator: Sidebar Shared Agent"
+    - button "View ↗"
+  - heading "Handoffs" [level=2]
+  - paragraph: No handoffs yet

@@ -1,0 +1,511 @@
+{
+  "url": "http://127.0.0.1:3590/workspace?rootSubjectKind=agent_org&definitionId=aorg-mixed-org&orgRunId=aorg_e2e_mixed_org_c8d5f67fe2ff4e2bb5078d38f4208f40&mode=active",
+  "tree": [
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "Temp Workspace",
+      "expanded": "true",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-agent-orgs",
+      "text": "AGENT ORGS AORG E2E Direct Agents Org (1) Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi... 6m L lead V verifier AORG E2E Mixed Org (1) Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. Th... 1m C concier",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_lead_3563a536a9e448cdbed4ec6e0f85eecb",
+      "text": "L lead",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_verifier_f731ee20c3984e4fa3e78d128b0f9acf",
+      "text": "V verifier",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_concierge_571c84c0e0904c9cb45f092f23a52f93",
+      "text": "C concierge",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-team-row-aorg_e2e_research_squad_93210a6a488647589e9d980514dfee27",
+      "text": "research team",
+      "expanded": "true",
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_lead_992acea3a34c427494ae932041c7341a",
+      "text": "L lead",
+      "expanded": null,
+      "selected": "true",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_analyst_0d24a7fc2b8f4c458632b0e49472eab5",
+      "text": "A analyst",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-agent-row-aorg_e2e_verifier_4a17369429e6417dbc08ec3445765b47",
+      "text": "V verifier",
+      "expanded": null,
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "agent-org-task-agent-row-aorg_e2e_analyst_76d083849b6e40258bbbc88cb985e7f7",
+      "text": "Task: analyst",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "agent-org-team-row-aorg_e2e_support_pair_d98e05448e61403e92fce4fd967eb169",
+      "text": "support team",
+      "expanded": "false",
+      "selected": "false",
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "SPAN",
+      "test": "workspace-hierarchy-branches",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "workspace",
+      "expanded": "false",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "workspace-team",
+      "expanded": "false",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-row",
+      "text": "workspace-default",
+      "expanded": "false",
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-adaptive-layout",
+      "text": "L lead Idle You Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. This mounted Team first accepted external message deliberately contains repeated whitespace and exceeds one hundred characters. L lead APIREV11-MOUNTED-REPLY-001 Mounted team message receiv",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-center-right-flow",
+      "text": "L lead Idle You Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. This mounted Team first accepted external message deliberately contains repeated whitespace and exceeds one hundred characters. L lead APIREV11-MOUNTED-REPLY-001 Mounted team message receiv",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-center-pane",
+      "text": "L lead Idle You Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. This mounted Team first accepted external message deliberately contains repeated whitespace and exceeds one hundred characters. L lead APIREV11-MOUNTED-REPLY-001 Mounted team message receiv",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-center-content-shell",
+      "text": "L lead Idle You Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. This mounted Team first accepted external message deliberately contains repeated whitespace and exceeds one hundred characters. L lead APIREV11-MOUNTED-REPLY-001 Mounted team message receiv",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "agent-org-workspace-view",
+      "text": "L lead Idle You Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. This mounted Team first accepted external message deliberately contains repeated whitespace and exceeds one hundred characters. L lead APIREV11-MOUNTED-REPLY-001 Mounted team message receiv",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "workspace-header-edit-config",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "BUTTON",
+      "test": "workspace-header-new-run",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-right-resize-handle",
+      "text": "",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    },
+    {
+      "tag": "DIV",
+      "test": "workspace-right-panel",
+      "text": "Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages Tasks 1 task Call submit_task_result with exactly APIREV11-TASK-SUBMITTED-001 and do not call review_task_result. Awaiting review Updated 12:06 AM lead → analyst Result submitted · Result 1 analyst → lead 12:06 AM APIREV11-T",
+      "expanded": null,
+      "selected": null,
+      "current": null,
+      "visible": true
+    }
+  ],
+  "buttons": [
+    {
+      "text": "Agents",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Agent Teams",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Agent Orgs",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Skills",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Memory",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Nodes",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Temp Workspace",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "AORG E2E Direct Agents Org (1)",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Return exactly APIREV11-DIRECT-REPLY-001 on the first line and five words on the second line. Thi...",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "L lead",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_lead_3563a536a9e448cdbed4ec6e0f85eecb",
+      "visible": true
+    },
+    {
+      "text": "V verifier",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_verifier_f731ee20c3984e4fa3e78d128b0f9acf",
+      "visible": true
+    },
+    {
+      "text": "AORG E2E Mixed Org (1)",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Return exactly APIREV11-MOUNTED-REPLY-001 on the first line and five words on the second line. Th...",
+      "expanded": "true",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "C concierge",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_concierge_571c84c0e0904c9cb45f092f23a52f93",
+      "visible": true
+    },
+    {
+      "text": "research team",
+      "expanded": "true",
+      "test": "agent-org-team-row-aorg_e2e_research_squad_93210a6a488647589e9d980514dfee27",
+      "visible": true
+    },
+    {
+      "text": "L lead",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_lead_992acea3a34c427494ae932041c7341a",
+      "visible": true
+    },
+    {
+      "text": "A analyst",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_analyst_0d24a7fc2b8f4c458632b0e49472eab5",
+      "visible": true
+    },
+    {
+      "text": "V verifier",
+      "expanded": null,
+      "test": "agent-org-agent-row-aorg_e2e_verifier_4a17369429e6417dbc08ec3445765b47",
+      "visible": true
+    },
+    {
+      "text": "support team",
+      "expanded": "false",
+      "test": "agent-org-team-row-aorg_e2e_support_pair_d98e05448e61403e92fce4fd967eb169",
+      "visible": true
+    },
+    {
+      "text": "workspace",
+      "expanded": "false",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "workspace-team",
+      "expanded": "false",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "workspace-default",
+      "expanded": "false",
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Settings",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Thinking",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Thinking",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Files",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Team",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Terminal",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Activity",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Token",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Artifacts",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "VNC Viewer",
+      "expanded": null,
+      "test": null,
+      "visible": true
+    },
+    {
+      "text": "Messages 0 Messages",
+      "expanded": "false",
+      "test": "team-messages-header",
+      "visible": true
+    },
+    {
+      "text": "Tasks 1 task",
+      "expanded": "true",
+      "test": "team-delegated-tasks-header",
+      "visible": true
+    },
+    {
+      "text": "Call submit_task_result with exactly APIREV11-TASK-SUBMITTED-001 and do not call review_task_result. Awaiting review Updated 12:06 AM lead → analyst",
+      "expanded": null,
+      "test": "team-delegated-task-summary-row",
+      "visible": true
+    },
+    {
+      "text": "Result submitted · Result 1 analyst → lead 12:06 AM APIREV11-TASK-SUBMITTED-001",
+      "expanded": null,
+      "test": "team-delegated-task-lifecycle-row",
+      "visible": true
+    }
+  ]
+}

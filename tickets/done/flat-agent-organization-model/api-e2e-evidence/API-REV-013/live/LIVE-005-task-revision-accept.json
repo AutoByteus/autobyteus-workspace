@@ -1,0 +1,800 @@
+{
+  "taskId": "task_520783d1cf8b44bf92db55a96fb87738",
+  "initial": {
+    "taskId": "task_520783d1cf8b44bf92db55a96fb87738",
+    "delegatorAgentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+    "recipientAddress": "/apirev8_team/aorg_e2e_analyst",
+    "taskExecution": {
+      "agentRunId": "aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63"
+    },
+    "description": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.",
+    "referenceFiles": [],
+    "status": "awaiting_review",
+    "updates": [
+      {
+        "submissionId": "submission_ca27a5011aa14ebe9db43b0530198e13",
+        "message": "APIREV13-TASK-INITIAL-001",
+        "referenceFiles": [],
+        "createdAt": "2026-09-06T02:15:12.256Z"
+      }
+    ],
+    "createdAt": "2026-09-06T02:14:59.378Z"
+  },
+  "revisionEvent": {
+    "label": "revised-awaiting-review",
+    "at": "2026-09-06T02:19:54.306Z",
+    "record": {
+      "taskId": "task_520783d1cf8b44bf92db55a96fb87738",
+      "delegatorAgentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "recipientAddress": "/apirev8_team/aorg_e2e_analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63"
+      },
+      "description": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.",
+      "referenceFiles": [],
+      "status": "awaiting_review",
+      "updates": [
+        {
+          "submissionId": "submission_ca27a5011aa14ebe9db43b0530198e13",
+          "message": "APIREV13-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:15:12.256Z"
+        },
+        {
+          "reviewId": "review_cb214a7b89d84f56a4d19b2828e6eb28",
+          "reviewedSubmissionId": "submission_ca27a5011aa14ebe9db43b0530198e13",
+          "decision": "request_revision",
+          "comment": "Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:19:49.812Z"
+        },
+        {
+          "submissionId": "submission_4b93ffb4fc7745e0b49d5d1d99056a80",
+          "message": "APIREV13-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:19:54.153Z"
+        }
+      ],
+      "createdAt": "2026-09-06T02:14:59.378Z"
+    },
+    "page": {
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e lead\nRunning\nYou\nReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-LIVE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. After delegate_task succeeds, reply exactly APIREV8-TASK-DELEGATED-001.\nAE\naorg e2e lead\nThinking\ndelegate_task\n\nAPIREV8-TASK-DELEGATED-001\n\nYou\nTask task_9df98cdc92da40e4ac557daceedbc99a result submitted:\nAPIREV8-TASK-PAYLOAD-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_9df98cdc92da40e4ac557daceedbc99a with decision accept. After the tool succeeds, reply exactly APIREV8-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV8-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV8-ORG-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-RESUMED-001\nAcknowledged, resumed, and ready now.\n\nYou\nReturn exactly APIREV10-ORG-TEAM-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV10-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\n\nAPIREV10-TASK-DELEGATED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-INITIAL-001\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision request_revision and feedback: Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV10-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-REVISED-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision accept. After the tool succeeds, reply exactly APIREV10-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV10-ORG-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-RESUMED-002\nAcknowledged and confirmed as requested.\n\nYou\nReturn exactly APIREV13-ORG-MOUNTED-CONTINUE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV13-ORG-MOUNTED-CONTINUE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV13-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\nAE\naorg e2e lead\n\nAPIREV13-TASK-DELEGATED-001\n\nYou\nUse review_task_result on task task_result with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nThinking\nreview_task_result\n\nreview_task_result failed: task task_result was not found.\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-INITIAL-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-REVISED-001\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n3 tasks\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.\nAccepted\nUpdated 09:39 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n09:39 PM\n\nAPIREV8-TASK-PAYLOAD-001\n\nResult 1 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n09:39 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:35 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:30 PM\n\nAPIREV10-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:34 PM\n\nSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:34 PM\n\nAPIREV10-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:35 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.\nAwaiting review\nUpdated 02:19 AM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:15 AM\n\nAPIREV13-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:19 AM\n\nSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:19 AM\n\nAPIREV13-TASK-REVISED-001\n\nTask assigned\nAccepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\nSep 2, 09:39 PM\n\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AE aorg e2e lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "taskRows": [
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+          "text": "Task: aorg e2e analyst"
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+          "text": "Task: aorg e2e analyst"
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63",
+          "text": "Task: aorg e2e analyst"
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks 3 tasks Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_res"
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks 3 tasks"
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": ""
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-tasks-split",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-tasks-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-task-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV8-TASK-PAYLOAD-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 1 accepted"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted."
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. Accepted Updated 02:35 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. Revised res"
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. Accepted Updated 02:35 PM aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:34 PM APIREV10-TASK-REVISED-001 Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:35 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:34 PM APIREV10-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:34 PM APIREV10-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:35 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:35 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted."
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. Awaiting review Updated 02:19 AM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. Revi"
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. Awaiting review Updated 02:19 AM aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Awaiting review"
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:19 AM APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:19 AM APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:19 AM APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-tasks-resize-handle",
+          "text": ""
+        },
+        {
+          "test": "delegated-task-detail-pane",
+          "text": "Task assigned Accepted aorg_e2e_lead → aorg_e2e_analyst Sep 2, 09:39 PM Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text."
+        },
+        {
+          "test": "delegated-task-item-detail",
+          "text": "Task assigned Accepted aorg_e2e_lead → aorg_e2e_analyst Sep 2, 09:39 PM Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text."
+        },
+        {
+          "test": "delegated-task-item-title",
+          "text": "Task assigned"
+        },
+        {
+          "test": "delegated-task-detail-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "delegated-task-item-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "delegated-task-item-time",
+          "text": "Sep 2, 09:39 PM"
+        },
+        {
+          "test": "delegated-task-task-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text."
+        }
+      ]
+    }
+  },
+  "acceptedEvent": {
+    "label": "accepted",
+    "at": "2026-09-06T02:20:03.789Z",
+    "record": {
+      "taskId": "task_520783d1cf8b44bf92db55a96fb87738",
+      "delegatorAgentRunId": "aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+      "recipientAddress": "/apirev8_team/aorg_e2e_analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63"
+      },
+      "description": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_ca27a5011aa14ebe9db43b0530198e13",
+          "message": "APIREV13-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:15:12.256Z"
+        },
+        {
+          "reviewId": "review_cb214a7b89d84f56a4d19b2828e6eb28",
+          "reviewedSubmissionId": "submission_ca27a5011aa14ebe9db43b0530198e13",
+          "decision": "request_revision",
+          "comment": "Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:19:49.812Z"
+        },
+        {
+          "submissionId": "submission_4b93ffb4fc7745e0b49d5d1d99056a80",
+          "message": "APIREV13-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:19:54.153Z"
+        },
+        {
+          "reviewId": "review_2f0c7d600b3c41c0aad052389bae2dd0",
+          "reviewedSubmissionId": "submission_4b93ffb4fc7745e0b49d5d1d99056a80",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-06T02:20:01.993Z"
+        }
+      ],
+      "createdAt": "2026-09-06T02:14:59.378Z"
+    },
+    "page": {
+      "url": "http://127.0.0.1:3592/workspace?rootSubjectKind=agent_org&definitionId=apirev8&orgRunId=apirev8_613529cf063144d0a9e6cd6e385d58ba&mode=active",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nA本\nAPIREV8 本地化 Team β\n(1)\nAGENT ORGS\nAPIREV8 组织 Ω\n(1)\nReturn exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th...\n3d\nAE\naorg e2e concierge\napirev8 team\nAE\naorg e2e lead\nAE\naorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nTask: aorg e2e analyst\nworkspace-team\nworkspace\nworkspace-default\nworkspace-default\nSettings\nAE\naorg e2e lead\nRunning\nYou\nReturn exactly APIREV8-ORG-TEAM-LIVE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-LIVE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. After delegate_task succeeds, reply exactly APIREV8-TASK-DELEGATED-001.\nAE\naorg e2e lead\nThinking\ndelegate_task\n\nAPIREV8-TASK-DELEGATED-001\n\nYou\nTask task_9df98cdc92da40e4ac557daceedbc99a result submitted:\nAPIREV8-TASK-PAYLOAD-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_9df98cdc92da40e4ac557daceedbc99a with decision accept. After the tool succeeds, reply exactly APIREV8-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV8-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV8-ORG-TEAM-RESUMED-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV8-ORG-TEAM-RESUMED-001\nAcknowledged, resumed, and ready now.\n\nYou\nReturn exactly APIREV10-ORG-TEAM-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV10-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\n\nAPIREV10-TASK-DELEGATED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-INITIAL-001\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision request_revision and feedback: Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV10-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_e8ac5ad7530e4a68abde501aed8d27cf result submitted:\nAPIREV10-TASK-REVISED-001\nAE\naorg e2e lead\nThinking\n\nTask result received.\n\nYou\nUse review_task_result on task task_e8ac5ad7530e4a68abde501aed8d27cf with decision accept. After the tool succeeds, reply exactly APIREV10-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV10-TASK-ACCEPTED-001\n\nYou\nReturn exactly APIREV10-ORG-TEAM-RESUMED-002 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV10-ORG-TEAM-RESUMED-002\nAcknowledged and confirmed as requested.\n\nYou\nReturn exactly APIREV13-ORG-MOUNTED-CONTINUE-001 on the first line and a five-word acknowledgment on the second line.\nAE\naorg e2e lead\n\nAPIREV13-ORG-MOUNTED-CONTINUE-001\nAcknowledged and confirmed as requested.\n\nYou\nUse delegate_task to assign a fresh formal task to exact recipient /apirev8_team/aorg_e2e_analyst. The task description must be: First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. After delegate_task succeeds, reply exactly APIREV13-TASK-DELEGATED-001.\nAE\naorg e2e lead\ndelegate_task\nAE\naorg e2e lead\n\nAPIREV13-TASK-DELEGATED-001\n\nYou\nUse review_task_result on task task_result with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nThinking\nreview_task_result\n\nreview_task_result failed: task task_result was not found.\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-INITIAL-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision request_revision and feedback: Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. After review_task_result succeeds, reply exactly APIREV13-TASK-REVISION-REQUESTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-REVISION-REQUESTED-001\n\nYou\nTask task_520783d1cf8b44bf92db55a96fb87738 result submitted:\nAPIREV13-TASK-REVISED-001\nAE\naorg e2e lead\n\nTask result received.\n\nYou\nUse review_task_result on task task_520783d1cf8b44bf92db55a96fb87738 with decision accept. After the tool succeeds, reply exactly APIREV13-TASK-ACCEPTED-001.\nAE\naorg e2e lead\nreview_task_result\n\nAPIREV13-TASK-ACCEPTED-001\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n3 tasks\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.\nAccepted\nUpdated 09:39 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n09:39 PM\n\nAPIREV8-TASK-PAYLOAD-001\n\nResult 1 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n09:39 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:35 PM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:30 PM\n\nAPIREV10-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:34 PM\n\nSubmit exactly APIREV10-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:34 PM\n\nAPIREV10-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:35 PM\n\nResult accepted.\n\nFirst call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task.\nAccepted\nUpdated 02:20 AM\naorg_e2e_lead → aorg_e2e_analyst\nResult submitted · Result 1\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:15 AM\n\nAPIREV13-TASK-INITIAL-001\n\nRevision requested · Result 1\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:19 AM\n\nSubmit exactly APIREV13-TASK-REVISED-001 using submit_task_result.\n\nRevised result submitted · Result 2\n\naorg_e2e_analyst → aorg_e2e_lead\n\n02:19 AM\n\nAPIREV13-TASK-REVISED-001\n\nResult 2 accepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\n02:20 AM\n\nResult accepted.\n\nTask assigned\nAccepted\n\naorg_e2e_lead → aorg_e2e_analyst\n\nSep 2, 09:39 PM\n\nReturn exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text.",
+      "selected": [
+        {
+          "test": null,
+          "text": "Return exactly APIREV8-ORG-DIRECT-LIVE-001 on the first line and a five-word acknowledgment on th..."
+        },
+        {
+          "test": "agent-org-agent-row-aorg_e2e_lead_edf447b6d74647d68894fea9e6f9de79",
+          "text": "AE aorg e2e lead"
+        },
+        {
+          "test": null,
+          "text": "Team"
+        }
+      ],
+      "taskRows": [
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8e4eeb0387524c2e8c6097a613be5626",
+          "text": "Task: aorg e2e analyst"
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_a364d3ea19124453aaa023a7599d1f94",
+          "text": "Task: aorg e2e analyst"
+        },
+        {
+          "test": "agent-org-task-agent-row-aorg_e2e_analyst_8d6c1206776f41e19259e02ce96c5b63",
+          "text": "Task: aorg e2e analyst"
+        },
+        {
+          "test": "team-delegated-tasks-section",
+          "text": "Tasks 3 tasks Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_res"
+        },
+        {
+          "test": "team-delegated-tasks-header",
+          "text": "Tasks 3 tasks"
+        },
+        {
+          "test": "team-delegated-tasks-disclosure",
+          "text": ""
+        },
+        {
+          "test": "team-delegated-tasks-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-tasks-split",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-tasks-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-task-navigator",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted. First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with"
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text. Accepted Updated 09:39 PM aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001 Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 09:39 PM APIREV8-TASK-PAYLOAD-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV8-TASK-PAYLOAD-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 1 accepted aorg_e2e_lead → aorg_e2e_analyst 09:39 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 1 accepted"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted."
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. Accepted Updated 02:35 PM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. Revised res"
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV10-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV10-TASK-REVISED-001. Never review this task. Accepted Updated 02:35 PM aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result. Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:34 PM APIREV10-TASK-REVISED-001 Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:35 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:30 PM APIREV10-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:34 PM Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV10-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:34 PM APIREV10-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:34 PM APIREV10-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV10-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:35 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:35 PM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted."
+        },
+        {
+          "test": "team-delegated-task-agent-entry",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. Accepted Updated 02:20 AM aorg_e2e_lead → aorg_e2e_analyst Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. Revised res"
+        },
+        {
+          "test": "team-delegated-task-summary-row",
+          "text": "First call submit_task_result with exactly APIREV13-TASK-INITIAL-001. If a revision request arrives, call submit_task_result again with exactly APIREV13-TASK-REVISED-001. Never review this task. Accepted Updated 02:20 AM aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "team-delegated-task-root-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-list",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001 Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result. Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:19 AM APIREV13-TASK-REVISED-001 Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:20 AM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result submitted · Result 1 aorg_e2e_analyst → aorg_e2e_lead 02:15 AM APIREV13-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result submitted · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-INITIAL-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revision requested · Result 1 aorg_e2e_lead → aorg_e2e_analyst 02:19 AM Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revision requested · Result 1"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Submit exactly APIREV13-TASK-REVISED-001 using submit_task_result."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:19 AM APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Revised result submitted · Result 2 aorg_e2e_analyst → aorg_e2e_lead 02:19 AM APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Revised result submitted · Result 2"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_analyst → aorg_e2e_lead"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "APIREV13-TASK-REVISED-001"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-item",
+          "text": "Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:20 AM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-row",
+          "text": "Result 2 accepted aorg_e2e_lead → aorg_e2e_analyst 02:20 AM Result accepted."
+        },
+        {
+          "test": "team-delegated-task-lifecycle-label",
+          "text": "Result 2 accepted"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "team-delegated-task-lifecycle-preview",
+          "text": "Result accepted."
+        },
+        {
+          "test": "team-delegated-tasks-resize-handle",
+          "text": ""
+        },
+        {
+          "test": "delegated-task-detail-pane",
+          "text": "Task assigned Accepted aorg_e2e_lead → aorg_e2e_analyst Sep 2, 09:39 PM Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text."
+        },
+        {
+          "test": "delegated-task-item-detail",
+          "text": "Task assigned Accepted aorg_e2e_lead → aorg_e2e_analyst Sep 2, 09:39 PM Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text."
+        },
+        {
+          "test": "delegated-task-item-title",
+          "text": "Task assigned"
+        },
+        {
+          "test": "delegated-task-detail-status",
+          "text": "Accepted"
+        },
+        {
+          "test": "delegated-task-item-direction",
+          "text": "aorg_e2e_lead → aorg_e2e_analyst"
+        },
+        {
+          "test": "delegated-task-item-time",
+          "text": "Sep 2, 09:39 PM"
+        },
+        {
+          "test": "delegated-task-task-body",
+          "text": "Return exactly APIREV8-TASK-PAYLOAD-001 as the formal task result, and explicitly call submit_task_result. Do not add any other text."
+        }
+      ]
+    }
+  },
+  "assertions": {
+    "sameTaskId": true,
+    "revisionRecorded": true,
+    "acceptedRecorded": true,
+    "browserRevisionAck": true,
+    "browserAcceptedAck": true,
+    "noBrowserErrors": true
+  },
+  "errors": []
+}

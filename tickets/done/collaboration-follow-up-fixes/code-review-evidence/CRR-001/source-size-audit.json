@@ -1,0 +1,470 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "sha256": "6bd72ed3e07ef332ed63b701d0dd26d7af22828a495888f19d7cc30da8c8e1f7",
+    "production": true,
+    "effective_nonempty_lines": 452,
+    "delta": [
+      8,
+      2
+    ],
+    "verified_sha256": "6bd72ed3e07ef332ed63b701d0dd26d7af22828a495888f19d7cc30da8c8e1f7",
+    "verified_nonempty": 452
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+    "sha256": "e36be4bf8ae6e1aab3fa6e5b3851c5f53ac206f77935700cb5987fc607f23fcc",
+    "production": true,
+    "effective_nonempty_lines": 209,
+    "delta": [
+      2,
+      2
+    ],
+    "verified_sha256": "e36be4bf8ae6e1aab3fa6e5b3851c5f53ac206f77935700cb5987fc607f23fcc",
+    "verified_nonempty": 209
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+    "sha256": "8fb887bbf68b7fd84325c879902b2d2edc5efe6e30bfac343b2827b46f6697dd",
+    "production": true,
+    "effective_nonempty_lines": 226,
+    "delta": [
+      7,
+      5
+    ],
+    "verified_sha256": "8fb887bbf68b7fd84325c879902b2d2edc5efe6e30bfac343b2827b46f6697dd",
+    "verified_nonempty": 226
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts",
+    "sha256": "7ae2b615dba6c2714ff7de3f9055e228a4115cb23fe0161c46df9e3b280ab0f1",
+    "production": true,
+    "effective_nonempty_lines": 194,
+    "delta": [
+      1,
+      1
+    ],
+    "verified_sha256": "7ae2b615dba6c2714ff7de3f9055e228a4115cb23fe0161c46df9e3b280ab0f1",
+    "verified_nonempty": 194
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+    "sha256": "fd90f3d607f96a3967e49ead8fff27ba35b33300748d3afaeb978eda349faa90",
+    "production": true,
+    "effective_nonempty_lines": 151,
+    "delta": [
+      1,
+      1
+    ],
+    "verified_sha256": "fd90f3d607f96a3967e49ead8fff27ba35b33300748d3afaeb978eda349faa90",
+    "verified_nonempty": 151
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts",
+    "sha256": "e8d331dfe55cf8522367f7f7e12dccc43c555f55326c968a6b3c0199361c2301",
+    "production": false,
+    "effective_nonempty_lines": 162,
+    "delta": [
+      166,
+      0
+    ],
+    "verified_sha256": "e8d331dfe55cf8522367f7f7e12dccc43c555f55326c968a6b3c0199361c2301",
+    "verified_nonempty": 162
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts",
+    "sha256": "b8ee3292bbd4de694550b0fdaa716c06e60eb25aea361c44eb95f0390b3f3b97",
+    "production": false,
+    "effective_nonempty_lines": 344,
+    "delta": [
+      1,
+      0
+    ],
+    "verified_sha256": "b8ee3292bbd4de694550b0fdaa716c06e60eb25aea361c44eb95f0390b3f3b97",
+    "verified_nonempty": 344
+  },
+  {
+    "path": "autobyteus-web/components/AppLeftPanel.vue",
+    "sha256": "d54b57f537a0510f6f59028ee9f52d8724f88799e153b520b6bad86b5604d81f",
+    "production": true,
+    "effective_nonempty_lines": 192,
+    "delta": [
+      3,
+      0
+    ],
+    "verified_sha256": "d54b57f537a0510f6f59028ee9f52d8724f88799e153b520b6bad86b5604d81f",
+    "verified_nonempty": 192
+  },
+  {
+    "path": "autobyteus-web/components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+    "sha256": "c67c4cf7507e8c2cd74d591df821a78593e0a703d9695b09f21a8f7b0ca84718",
+    "production": false,
+    "effective_nonempty_lines": 52,
+    "delta": [
+      55,
+      0
+    ],
+    "verified_sha256": "c67c4cf7507e8c2cd74d591df821a78593e0a703d9695b09f21a8f7b0ca84718",
+    "verified_nonempty": 52
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+    "sha256": "42ffe34322ee793e94cf42a0716f6a43f120be8cd01e2a222d2353a008a0dd6a",
+    "production": false,
+    "effective_nonempty_lines": 206,
+    "delta": [
+      2,
+      2
+    ],
+    "verified_sha256": "42ffe34322ee793e94cf42a0716f6a43f120be8cd01e2a222d2353a008a0dd6a",
+    "verified_nonempty": 206
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    "sha256": "155193b8d023da08d6a828409b4f87a6f1f744594d8adc8d8c663cc4c8f3e789",
+    "production": true,
+    "effective_nonempty_lines": 88,
+    "delta": [
+      5,
+      4
+    ],
+    "verified_sha256": "155193b8d023da08d6a828409b4f87a6f1f744594d8adc8d8c663cc4c8f3e789",
+    "verified_nonempty": 88
+  },
+  {
+    "path": "autobyteus-web/components/workspace/running/RunningAgentsPanel.vue",
+    "sha256": "97e6e7f801df180bbffdefe46f4b1ab7e7c51b826b20f9235a946496317ea591",
+    "production": true,
+    "effective_nonempty_lines": 195,
+    "delta": [
+      4,
+      0
+    ],
+    "verified_sha256": "97e6e7f801df180bbffdefe46f4b1ab7e7c51b826b20f9235a946496317ea591",
+    "verified_nonempty": 195
+  },
+  {
+    "path": "autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+    "sha256": "5a283b677d5c71b2af90640dee05539df18bfa8c5207ffc24b28b7356705eed8",
+    "production": false,
+    "effective_nonempty_lines": 115,
+    "delta": [
+      5,
+      5
+    ],
+    "verified_sha256": "5a283b677d5c71b2af90640dee05539df18bfa8c5207ffc24b28b7356705eed8",
+    "verified_nonempty": 115
+  },
+  {
+    "path": "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+    "sha256": "bd1814968cbe3fb1b8ad58accb6d16e97c397edc5cfdc923cde0d547a4bb1a0d",
+    "production": false,
+    "effective_nonempty_lines": 67,
+    "delta": [
+      3,
+      2
+    ],
+    "verified_sha256": "bd1814968cbe3fb1b8ad58accb6d16e97c397edc5cfdc923cde0d547a4bb1a0d",
+    "verified_nonempty": 67
+  },
+  {
+    "path": "autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts",
+    "sha256": "a1dd1c6d28c4ebd6698cb79f2f6f39236c66597578829a34790caaa3511ce46f",
+    "production": true,
+    "effective_nonempty_lines": 131,
+    "delta": [
+      22,
+      11
+    ],
+    "verified_sha256": "a1dd1c6d28c4ebd6698cb79f2f6f39236c66597578829a34790caaa3511ce46f",
+    "verified_nonempty": 131
+  },
+  {
+    "path": "autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts",
+    "sha256": "90a367678c489032fa6e0233258455fc070b995264cfb09b9343ca9eea3f6a20",
+    "production": true,
+    "effective_nonempty_lines": 70,
+    "delta": [
+      10,
+      4
+    ],
+    "verified_sha256": "90a367678c489032fa6e0233258455fc070b995264cfb09b9343ca9eea3f6a20",
+    "verified_nonempty": 70
+  },
+  {
+    "path": "autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts",
+    "sha256": "22b891fb105dc5b924d82808bb4026bf98fb6376e611b9fa5fc277bf2585c436",
+    "production": false,
+    "effective_nonempty_lines": 67,
+    "delta": [
+      7,
+      1
+    ],
+    "verified_sha256": "22b891fb105dc5b924d82808bb4026bf98fb6376e611b9fa5fc277bf2585c436",
+    "verified_nonempty": 67
+  },
+  {
+    "path": "autobyteus-web/composables/workspace/useWorkspaceRouteSelection.ts",
+    "sha256": "cb4a2bb19591bdb4ecf914799585540e500e8d46c43561a2a491b5bd7f323ce2",
+    "production": true,
+    "effective_nonempty_lines": 58,
+    "delta": [
+      38,
+      31
+    ],
+    "verified_sha256": "cb4a2bb19591bdb4ecf914799585540e500e8d46c43561a2a491b5bd7f323ce2",
+    "verified_nonempty": 58
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts",
+    "sha256": "08e4f47fd1c87ff9c557bbf9b6a8ec1ddcd995332705a942305217ac43aaa21e",
+    "production": true,
+    "effective_nonempty_lines": 141,
+    "delta": [
+      8,
+      4
+    ],
+    "verified_sha256": "08e4f47fd1c87ff9c557bbf9b6a8ec1ddcd995332705a942305217ac43aaa21e",
+    "verified_nonempty": 141
+  },
+  {
+    "path": "autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts",
+    "sha256": "8ed305f22efcb5213c5fe5f50bb6202f14efbbf415eacce563e4f20ea2cea596",
+    "production": false,
+    "effective_nonempty_lines": 122,
+    "delta": [
+      13,
+      0
+    ],
+    "verified_sha256": "8ed305f22efcb5213c5fe5f50bb6202f14efbbf415eacce563e4f20ea2cea596",
+    "verified_nonempty": 122
+  },
+  {
+    "path": "autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts",
+    "sha256": "0f7e8f307c6224b0f3fd5deaf264c1bce5470dc89e42e087109730682685edc4",
+    "production": false,
+    "effective_nonempty_lines": 65,
+    "delta": [
+      2,
+      0
+    ],
+    "verified_sha256": "0f7e8f307c6224b0f3fd5deaf264c1bce5470dc89e42e087109730682685edc4",
+    "verified_nonempty": 65
+  },
+  {
+    "path": "autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+    "sha256": "ce5f28e1bbb3c857ad406f9a7733fdfe8858bc8f5b8d000b6b1d6d373c409a3d",
+    "production": false,
+    "effective_nonempty_lines": 325,
+    "delta": [
+      23,
+      1
+    ],
+    "verified_sha256": "ce5f28e1bbb3c857ad406f9a7733fdfe8858bc8f5b8d000b6b1d6d373c409a3d",
+    "verified_nonempty": 325
+  },
+  {
+    "path": "autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts",
+    "sha256": "8ebb18ccd1f9252dc62abe42fd01f72290097025455e67e149ebaaa087357017",
+    "production": true,
+    "effective_nonempty_lines": 112,
+    "delta": [
+      19,
+      6
+    ],
+    "verified_sha256": "8ebb18ccd1f9252dc62abe42fd01f72290097025455e67e149ebaaa087357017",
+    "verified_nonempty": 112
+  },
+  {
+    "path": "autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts",
+    "sha256": "dd07129fed77686074c43f829e3feda9f62c84d9d75a4172fede417722928332",
+    "production": true,
+    "effective_nonempty_lines": 64,
+    "delta": [
+      8,
+      1
+    ],
+    "verified_sha256": "dd07129fed77686074c43f829e3feda9f62c84d9d75a4172fede417722928332",
+    "verified_nonempty": 64
+  },
+  {
+    "path": "autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts",
+    "sha256": "dfc8a5826516bd9a71ea9af34ca0f93e04f77e4fbcf11ebfa8c9cc2928fadb69",
+    "production": true,
+    "effective_nonempty_lines": 152,
+    "delta": [
+      52,
+      25
+    ],
+    "verified_sha256": "dfc8a5826516bd9a71ea9af34ca0f93e04f77e4fbcf11ebfa8c9cc2928fadb69",
+    "verified_nonempty": 152
+  },
+  {
+    "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+    "sha256": "07dcf4340cf8124c0191f5a2e81d83f85a903bd0ccdabb616218d121f04190c1",
+    "production": true,
+    "effective_nonempty_lines": 116,
+    "delta": [
+      3,
+      2
+    ],
+    "verified_sha256": "07dcf4340cf8124c0191f5a2e81d83f85a903bd0ccdabb616218d121f04190c1",
+    "verified_nonempty": 116
+  },
+  {
+    "path": "autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts",
+    "sha256": "9bd8aad877d54ea1f17e125a047966d7b5c1963328c24879a0f0e801c78219bd",
+    "production": false,
+    "effective_nonempty_lines": 117,
+    "delta": [
+      4,
+      2
+    ],
+    "verified_sha256": "9bd8aad877d54ea1f17e125a047966d7b5c1963328c24879a0f0e801c78219bd",
+    "verified_nonempty": 117
+  },
+  {
+    "path": "autobyteus-web/services/workspace/workspaceNavigationService.ts",
+    "sha256": "aba4f5ab85af6dc15529d8144d92121806ca31ecb4446b9f9b74231ac64c0d96",
+    "production": true,
+    "effective_nonempty_lines": 106,
+    "delta": [
+      13,
+      10
+    ],
+    "verified_sha256": "aba4f5ab85af6dc15529d8144d92121806ca31ecb4446b9f9b74231ac64c0d96",
+    "verified_nonempty": 106
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts",
+    "sha256": "55904c43acf4a4530df9b0592ad0d5f18df2ee5fb80d39e527e8b717e4bd0e1a",
+    "production": false,
+    "effective_nonempty_lines": 153,
+    "delta": [
+      7,
+      5
+    ],
+    "verified_sha256": "55904c43acf4a4530df9b0592ad0d5f18df2ee5fb80d39e527e8b717e4bd0e1a",
+    "verified_nonempty": 153
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "sha256": "13db1946b7cd0e5d22a42089a64b4fd7244308c423ec44fc14c34c9e95dec246",
+    "production": false,
+    "effective_nonempty_lines": 2435,
+    "delta": [
+      3,
+      2
+    ],
+    "verified_sha256": "13db1946b7cd0e5d22a42089a64b4fd7244308c423ec44fc14c34c9e95dec246",
+    "verified_nonempty": 2435
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts",
+    "sha256": "f0ab0ecc73c0a7cc0135c909b292878aeefadb1c812321cc673c7f730e557c2b",
+    "production": false,
+    "effective_nonempty_lines": 31,
+    "delta": [
+      2,
+      1
+    ],
+    "verified_sha256": "f0ab0ecc73c0a7cc0135c909b292878aeefadb1c812321cc673c7f730e557c2b",
+    "verified_nonempty": 31
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/workspaceSelectionComposition.spec.ts",
+    "sha256": "c30bcf63aaa452190aa728a0387163174935cd95cedbecd06e8b97733ffd7198",
+    "production": false,
+    "effective_nonempty_lines": 199,
+    "delta": [
+      202,
+      0
+    ],
+    "verified_sha256": "c30bcf63aaa452190aa728a0387163174935cd95cedbecd06e8b97733ffd7198",
+    "verified_nonempty": 199
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "sha256": "2be8477170396e0f5941286fc1b568349f5a73519540a542e8534527632d3077",
+    "production": true,
+    "effective_nonempty_lines": 242,
+    "delta": [
+      10,
+      7
+    ],
+    "verified_sha256": "2be8477170396e0f5941286fc1b568349f5a73519540a542e8534527632d3077",
+    "verified_nonempty": 242
+  },
+  {
+    "path": "autobyteus-web/stores/agentSelectionStore.ts",
+    "sha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483",
+    "production": true,
+    "effective_nonempty_lines": 79,
+    "delta": [
+      17,
+      2
+    ],
+    "verified_sha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483",
+    "verified_nonempty": 79
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryDraftActions.ts",
+    "sha256": "0c0a4640d821f7b845bb7c58ed46ad4bfe72951fd4b58b72db94687de4f14ffe",
+    "production": true,
+    "effective_nonempty_lines": 84,
+    "delta": [
+      7,
+      3
+    ],
+    "verified_sha256": "0c0a4640d821f7b845bb7c58ed46ad4bfe72951fd4b58b72db94687de4f14ffe",
+    "verified_nonempty": 84
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+    "sha256": "8187eb99678e43a6a3f32329c8eb60993efec51305cc21115f10ffc95f8e9b59",
+    "production": true,
+    "effective_nonempty_lines": 397,
+    "delta": [
+      13,
+      2
+    ],
+    "verified_sha256": "8187eb99678e43a6a3f32329c8eb60993efec51305cc21115f10ffc95f8e9b59",
+    "verified_nonempty": 397
+  },
+  {
+    "path": "autobyteus-web/stores/runHistorySelectionActions.ts",
+    "sha256": "9ca5a7f65a765c8e30674e185de1e6861b4906caa003fa2ee7fc34199becbc32",
+    "production": true,
+    "effective_nonempty_lines": 131,
+    "delta": [
+      49,
+      76
+    ],
+    "verified_sha256": "9ca5a7f65a765c8e30674e185de1e6861b4906caa003fa2ee7fc34199becbc32",
+    "verified_nonempty": 131
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryStore.ts",
+    "sha256": "e525f720e882d38adca48ec7fe347cf1e1d6b950d0e48b82d104eb3e4a8ab2f3",
+    "production": true,
+    "effective_nonempty_lines": 480,
+    "delta": [
+      17,
+      12
+    ],
+    "verified_sha256": "e525f720e882d38adca48ec7fe347cf1e1d6b950d0e48b82d104eb3e4a8ab2f3",
+    "verified_nonempty": 480
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts",
+    "sha256": "00c989cdc1894715cdbe76edd47f684ad779fdb1fbe806a3e52817831fdf136d",
+    "production": true,
+    "effective_nonempty_lines": 127,
+    "delta": [
+      26,
+      12
+    ],
+    "verified_sha256": "00c989cdc1894715cdbe76edd47f684ad779fdb1fbe806a3e52817831fdf136d",
+    "verified_nonempty": 127
+  }
+]

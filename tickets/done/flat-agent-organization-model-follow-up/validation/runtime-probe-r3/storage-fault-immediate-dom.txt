@@ -1,0 +1,93 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (2)":
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (2)
+  - generic: Orgs
+  - button "AORG Validation Org (2)" [expanded]:
+    - generic: AORG Validation Org
+    - generic: (2)
+  - treeitem "Stopped Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.":
+    - generic "Stopped"
+    - generic: Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.
+  - generic: 1h
+  - treeitem "Running Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - generic "Running"
+    - generic: Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools.
+  - button "Stop Agent Org" [disabled]:
+  - generic: 6h
+  - tree "AORG Validation Org execution hierarchy":
+    - treeitem "direct, offline, /direct, aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa" [level=1]:
+      - generic: D
+      - generic: direct
+    - treeitem "later, offline, /later, aorg_validation_agent_9423fc355378455685c5ddf75435a608" [level=1]:
+      - generic: L
+      - generic: later
+    - treeitem "unused, offline, /unused, aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588" [level=1]:
+      - generic: U
+      - generic: unused
+    - 'treeitem "team. Team status: Offline" [expanded] [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+    - treeitem "lead, offline, /team/lead, aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860" [level=2]:
+      - generic: L
+      - generic: lead
+    - treeitem "worker, offline, /team/worker, aorg_validation_agent_88444438ccbd45ebbafcee769accca27" [level=2]:
+      - generic: W
+      - generic: worker
+    - treeitem "unused, offline, /team/unused, aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9" [level=2] [selected]:
+      - generic: U
+      - generic: unused
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: U
+  - heading "unused" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - generic: You
+  - generic: Reply STORAGE-RECOVERY-R3 only. Do not use tools.
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

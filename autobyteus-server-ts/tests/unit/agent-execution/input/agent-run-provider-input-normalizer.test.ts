@@ -14,7 +14,6 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../../../src
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import {
   testAgentNode,
-  testAgentTeamNode,
   testExecutionTree,
 } from "../../../fixtures/current-team-run-fixtures.js";
 
@@ -37,20 +36,14 @@ const createNormalizer = async () => {
   const layout = new ContextFileLayout({ appDataDir, memoryDir });
   const storedFilename = "ctx_token__proof.unknown";
   const rootTeamRunId = "normalizer-root-team";
-  const childTeamRunId = "normalizer-child-team";
-  const nestedAddress = "/research/reviewer";
+  const nestedAddress = "/reviewer";
   const nestedAgentRunId = "normalizer-reviewer-run";
   const tree = testExecutionTree({
     rootTeamRunId,
     coordinatorAddress: "/coordinator",
     children: [
       testAgentNode("/coordinator"),
-      testAgentTeamNode({
-        address: "/research",
-        coordinatorAddress: nestedAddress,
-        teamRunId: childTeamRunId,
-        children: [testAgentNode(nestedAddress, { agentRunId: nestedAgentRunId })],
-      }),
+      testAgentNode(nestedAddress, { agentRunId: nestedAgentRunId }),
     ],
   });
   const memoryLayout = new AgentMemoryLayout(memoryDir);
@@ -73,7 +66,7 @@ const createNormalizer = async () => {
   const teamFinal = await writeFile(path.join(
     memoryLayout.getTeamAgentRunDirPath({
       rootTeamRunId,
-      ancestorTeamRunIds: [childTeamRunId],
+      ancestorTeamRunIds: [],
     }, nestedAgentRunId),
     "context_files",
     storedFilename,
@@ -92,9 +85,9 @@ const createNormalizer = async () => {
     normalizer,
     locators: [
       `/rest/drafts/agent-runs/agent-draft/context-files/${storedFilename}`,
-      `/rest/drafts/team-runs/team-draft/members/%2Fresearch%2Freviewer/context-files/${storedFilename}`,
+      `/rest/drafts/team-runs/team-draft/members/%2Freviewer/context-files/${storedFilename}`,
       `/rest/runs/standalone-run/context-files/${storedFilename}`,
-      `/rest/team-runs/${childTeamRunId}/members/%2Fresearch%2Freviewer/context-files/${storedFilename}`,
+      `/rest/team-runs/${rootTeamRunId}/members/%2Freviewer/context-files/${storedFilename}`,
       `http://studio.example.test:8000/rest/runs/standalone-run/context-files/${storedFilename}`,
       `http://localhost:9999/rest/runs/standalone-run/context-files/${storedFilename}`,
     ],

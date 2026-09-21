@@ -42,7 +42,7 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
       const userMessage = new LLMUserMessage({
         content: "Please write a python script named 'hello_world.py' that prints 'Hello World'."
       });
-      memoryManager.ingestUserMessage(userMessage, turnId, 'LLMUserMessageReadyEvent');
+      memoryManager.ingestUserMessage(userMessage, turnId, 'LLMUserMessageReadyEvent', []);
 
       const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
       const request = await assembler.prepareRequest(

@@ -3,7 +3,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
+import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -18,9 +18,9 @@ const createBackend = (): TeamRunBackend => ({
   teamBackendKind: TeamBackendKind.MIXED,
   getRuntimeContext: () => null,
   isActive: () => true,
+  isTerminated: () => false,
   getLeafAgentStatusSnapshots: vi.fn(() => []),
   hasOpenExecutionWork: vi.fn(() => false),
-  getOrCreateConfiguredChildTeam: vi.fn(),
   reserveDirectAgentInput: vi.fn(),
   deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
   executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
@@ -28,12 +28,16 @@ const createBackend = (): TeamRunBackend => ({
   prepareTaskTeam: vi.fn(),
   prepareDirectTaskSettlement: vi.fn(),
   prepareTermination: vi.fn(),
+  freezeForRootTermination: vi.fn(),
   terminate: vi.fn(async () => ({ accepted: true })),
 });
 
 const createRun = (backend: TeamRunBackend): TeamRun => new TeamRun(
   new TeamRunContext({
-    physicalScope: createRootTeamRunPhysicalScope("team-run-1"),
+    physicalScope: createRootExecutionPhysicalScope({
+      root: createTeamRootExecutionIdentity("team-run-1"),
+      ancestorTeamRunIds: [],
+    }),
     teamRunId: "team-run-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: config.rootTeam,

@@ -1,0 +1,35 @@
+{
+  "assertions": {
+    "teamHistoryRetained": true,
+    "teamContinuedAfterRestart": true,
+    "teamRestopped": true,
+    "orgHistoryRetained": true,
+    "orgDirectContinuedAfterRestart": true,
+    "mountedHistoryRetained": true,
+    "orgMountedContinuedAfterRestart": true,
+    "acceptedTaskRetainedInDurableTree": true,
+    "finalTerminalExact": true,
+    "noRelevantBrowserErrors": false
+  },
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "relevantErrors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "taskMonitorSelected": false
+}
+file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-005-postrestart-continuation.mjs:73
+if(Object.values(assertions).some(v=>v!==true)) throw new Error(`assertion failure ${JSON.stringify(assertions)}`);
+                                                      ^
+
+Error: assertion failure {"teamHistoryRetained":true,"teamContinuedAfterRestart":true,"teamRestopped":true,"orgHistoryRetained":true,"orgDirectContinuedAfterRestart":true,"mountedHistoryRetained":true,"orgMountedContinuedAfterRestart":true,"acceptedTaskRetainedInDurableTree":true,"finalTerminalExact":true,"noRelevantBrowserErrors":false}
+    at file:///home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-013/live/LIVE-005-postrestart-continuation.mjs:73:55
+
+Node.js v22.23.2

@@ -1,9 +1,5 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
-import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
-import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
-import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
-import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { canonicalizeRunFileChangePath } from "./run-file-change-path-identity.js";
 import { normalizeRunFileChangeProjection } from "./run-file-change-projection-normalizer.js";
@@ -31,19 +27,15 @@ type ProjectionContext = { runId: string; memoryDir: string | null; workspaceRoo
 export class RunFileChangeService {
   private readonly projectionStore: RunFileChangeProjectionStore;
   private readonly workspaceManager: WorkspaceManager;
-  private readonly teamLocations: TeamRunExecutionTreeLocationService;
   private readonly projections = new Map<string, RunFileChangeProjection>();
   private readonly queues = new Map<string, Promise<void>>();
 
   constructor(options: {
     projectionStore?: RunFileChangeProjectionStore;
     workspaceManager?: WorkspaceManager;
-    teamLocations?: TeamRunExecutionTreeLocationService;
-    memoryDir?: string;
   } = {}) {
     this.projectionStore = options.projectionStore ?? getRunFileChangeProjectionStore();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
-    this.teamLocations = options.teamLocations ?? new TeamRunExecutionTreeLocationService({ memoryDir: options.memoryDir });
   }
 
   attachToRun(run: AgentRun): () => void {
@@ -55,34 +47,18 @@ export class RunFileChangeService {
     return () => { unsubscribe(); this.clear(run.runId); };
   }
 
-  attachToTeamRun(root: RootTeamRun): () => void {
-    const runIds = new Set<string>();
-    const unsubscribe = root.subscribeToEvents(({ event }) => {
-      if (event.eventSourceType !== TeamRunEventSourceType.AGENT || event.payload.eventType !== "FILE_CHANGE") return;
-      const context = this.fromTeamEvent(root, event.execution);
-      if (!context) return;
-      runIds.add(context.runId);
-      void this.enqueue(context, {
-        eventType: AgentRunEventType.FILE_CHANGE,
-        runId: context.runId,
-        statusHint: event.payload.statusHint,
-        payload: {
-          path: event.payload.details.path, type: event.payload.details.fileType,
-          status: event.payload.details.status, sourceTool: event.payload.details.sourceTool,
-          sourceInvocationId: event.payload.details.sourceInvocationId,
-          content: event.payload.details.content, createdAt: event.payload.details.createdAt,
-          updatedAt: event.payload.details.updatedAt,
-        },
-      });
-    });
-    return () => { unsubscribe(); runIds.forEach((runId) => this.clear(runId)); };
-  }
-
   getProjectionForRun(run: AgentRun): Promise<RunFileChangeProjection> { return this.load(this.fromRun(run)); }
 
-  async getProjectionForTeamMemberRun(root: RootTeamRun, agentRunId: string): Promise<RunFileChangeProjection> {
-    const context = this.fromTeamEvent(root, root.getAgentExecution(agentRunId)?.identity ?? null);
-    return this.load(context ?? { runId: agentRunId, memoryDir: null, workspaceRootPath: null });
+  getProjectionForCollaborationMember(input: {
+    agentRunId: string;
+    memoryDir: string;
+    workspaceRootPath: string | null;
+  }): Promise<RunFileChangeProjection> {
+    return this.load({
+      runId: input.agentRunId,
+      memoryDir: input.memoryDir,
+      workspaceRootPath: input.workspaceRootPath,
+    });
   }
 
   private enqueue(context: ProjectionContext, event: AgentRunEvent): Promise<void> {
@@ -139,18 +115,6 @@ export class RunFileChangeService {
 
   private fromRun(run: AgentRun): ProjectionContext {
     return { runId: run.runId, memoryDir: run.config.memoryDir, workspaceRootPath: resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager) };
-  }
-
-  private fromTeamEvent(root: RootTeamRun, identity: TeamMemberExecutionIdentity | null): ProjectionContext | null {
-    if (!identity) return null;
-    const execution = root.getAgentExecution(identity.agentRunId);
-    if (!execution || execution.identity.memberAddress !== identity.memberAddress) return null;
-    const memoryDir = this.teamLocations.findAgentSync({ agentRunId: identity.agentRunId })?.memoryDir ?? null;
-    return {
-      runId: identity.agentRunId,
-      memoryDir,
-      workspaceRootPath: execution.launchConfiguration?.workspaceRootPath ?? null,
-    };
   }
 
   private upsert(projection: RunFileChangeProjection, incoming: RunFileChangeEntry): void {

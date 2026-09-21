@@ -1,0 +1,21 @@
+{
+  "at": "2026-09-13T11:51:00.424Z",
+  "id": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+  "sender": {
+    "address": "/research-team/lead",
+    "agentDefinitionId": "followup-assistant",
+    "role": null,
+    "description": null,
+    "agentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-sol",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+    }
+  },
+  "prompt": "Call delegate_task exactly once with recipient_address /research-team and description \"Reply exactly COLLAB-API01-TASK-READY, then end this turn. Do not use tools, submit a result, send messages, or delegate anything. Later task instructions will follow.\" After successful delegation reply exactly COLLAB-API01-TASK-CREATED. Do not send an additional message to the target."
+}

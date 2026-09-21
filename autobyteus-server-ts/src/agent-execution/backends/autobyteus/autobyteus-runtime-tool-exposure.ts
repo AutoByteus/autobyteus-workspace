@@ -1,5 +1,5 @@
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
-import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import type { MemberExecutionContext } from "../../../agent-collaboration/execution/domain/member-execution-context.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
 import {
   buildRuntimeAgentToolExposure,
@@ -20,7 +20,7 @@ export const AUTOBYTEUS_DEFAULT_TOOL_NAMES = [
  */
 export const resolveAutoByteusRuntimeAgentToolExposure = (
   agentDefinition: Pick<AgentDefinition, "id" | "toolNames"> | null,
-  memberTeamContext?: MemberTeamContext | null,
+  memberExecutionContext?: MemberExecutionContext | null,
 ): RuntimeAgentToolExposure => {
   if (agentDefinition?.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
     return buildRuntimeAgentToolExposure([], null);
@@ -30,6 +30,6 @@ export const resolveAutoByteusRuntimeAgentToolExposure = (
       ...AUTOBYTEUS_DEFAULT_TOOL_NAMES,
       ...(agentDefinition?.toolNames ?? []),
     ],
-    memberTeamContext,
+    memberExecutionContext,
   );
 };

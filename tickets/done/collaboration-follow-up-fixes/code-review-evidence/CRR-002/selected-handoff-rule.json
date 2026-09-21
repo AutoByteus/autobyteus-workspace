@@ -1,0 +1,10 @@
+{
+  "tool": "get_handoff_rules",
+  "selected": {
+    "when": "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+    "recipient_address": "/software_engineering_team/delivery_engineer"
+  },
+  "outcome": "Not Applicable \u2014 no durable test delta; successful gate per code-reviewer skill",
+  "selection": "Single most-specific successful proportional rule; no source-review or failure-origin rule applies.",
+  "transport": "Pending; this file is not a delivery receipt."
+}

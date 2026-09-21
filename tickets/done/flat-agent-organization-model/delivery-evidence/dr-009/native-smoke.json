@@ -1,0 +1,46 @@
+{
+  "at": "2026-09-11T17:48:50.074101+00:00",
+  "result": "Pass \u2014 bounded current AppImage native launch/renderer/embedded-node smoke",
+  "display": ":99",
+  "windowId": 77594628,
+  "windowSize": "1200x800",
+  "windowTitle": "AutoByteus - AORG DR-009 (current RER032 test)",
+  "mainPid": 13684,
+  "embeddedServerPid": 13734,
+  "appImageProcessGroup": 13650,
+  "launcherPid": 13639,
+  "dataRoot": "/tmp/autobyteus-dr009-user-test-20260911",
+  "healths": {
+    "31009": {
+      "status": "ok",
+      "message": "Server is running"
+    },
+    "31008": {
+      "status": "ok",
+      "message": "Server is running"
+    },
+    "29695": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  },
+  "rendererEmbeddedNode": {
+    "id": "embedded-local",
+    "name": "Embedded Node",
+    "baseUrl": "http://127.0.0.1:31009",
+    "nodeType": "embedded",
+    "capabilities": {
+      "terminal": true,
+      "fileExplorerStreaming": true
+    },
+    "capabilityProbeState": "ready",
+    "isSystem": true,
+    "createdAt": "2026-09-11T17:48:02.305Z",
+    "updatedAt": "2026-09-11T17:48:02.305Z"
+  },
+  "otherSessionsNotSignaled": true,
+  "screenshot": "native-agent-orgs.png",
+  "rendered": "Agent Orgs catalog with copied current Direct Agents/Mixed Org samples and Workspaces panel",
+  "userVerification": "Pending",
+  "limit": "Updates disabled in e2e profile. Initial Update failed toast observed and dismissed with Later; no update/release action. This is not full native-shell feature or provider-user validation."
+}

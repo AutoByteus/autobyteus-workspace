@@ -1,0 +1,89 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-org-member-header-actions/autobyteus-web
+
+stderr | components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts (11 tests | 5 failed) 153ms
+   × stopped Org real form/controller/context/transport path > saves/reopens exact '/director' with real schema and retained objects 38ms
+     → expected '' to be undefined
+   × stopped Org real form/controller/context/transport path > saves/reopens exact '/team/lead' with real schema and retained objects 20ms
+     → expected '' to be undefined
+   ✓ stopped Org real form/controller/context/transport path > locks active Org even with Offline leaf and preserves task inspection without read/save 16ms
+   × stopped Org real form/controller/context/transport path > keeps invalid draft/schema and rejected server fields without optimistic publication 12ms
+     → expected 'Agent ConfigurationAgent definitiondi…' to contain 'Invalid budget'
+   × stopped Org real form/controller/context/transport path > requires explicit canonical refresh after transport and never auto-replays 9ms
+     → expected 'Agent ConfigurationAgent definitiondi…' to contain 'must be refreshed'
+   × stopped Org real form/controller/context/transport path > requires explicit canonical refresh after indeterminate and never auto-replays 11ms
+     → expected 'Agent ConfigurationAgent definitiondi…' to contain 'must be refreshed'
+   ✓ stopped Org real form/controller/context/transport path > excludes Stop/Send and defers disposal while accepted Save is pending 3ms
+   ✓ stopped Org real form/controller/context/transport path > ignores late read/save feedback on selection change 14ms
+   ✓ stopped Org real form/controller/context/transport path > ignores late read/save feedback on owner change 16ms
+   ✓ stopped Org real form/controller/context/transport path > ignores late read/save feedback on binding change 11ms
+   ✓ stopped Org real form/controller/context/transport path > does not partially publish a canonical result that changes fixed fields 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > stopped Org real form/controller/context/transport path > saves/reopens exact '/director' with real schema and retained objects
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > stopped Org real form/controller/context/transport path > saves/reopens exact '/team/lead' with real schema and retained objects
+AssertionError: expected '' to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+""
+
+ ❯ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts:53:79
+     51|   expect(w.get('[data-test="save-org-model-config"]').attributes('disa…
+     52|   await w.get('input[type="number"]').setValue('0');await flushPromise…
+     53|   expect(w.get('[data-test="save-org-model-config"]').attributes('disa…
+       |                                                                               ^
+     54|   await w.get('[data-test="save-org-model-config"]').trigger('click');…
+     55|   expect(io.mutate).toHaveBeenCalledTimes(1);expect(io.mutate.mock.cal…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > stopped Org real form/controller/context/transport path > keeps invalid draft/schema and rejected server fields without optimistic publication
+AssertionError: expected 'Agent ConfigurationAgent definitiondi…' to contain 'Invalid budget'
+
+Expected: "Invalid budget"
+Received: "Agent ConfigurationAgent definitiondirectorRuntimeAutoByteusCodex App ServerFixed identityRuntime is not available in current capabilities.Llm modelOpenAI / gpt-5.6-solFixed identityModel options could not be loaded. Saved settings were not changed.RetryAdvancedBudget Enabled Workspace directory Existing  New Select a workspace Fixed workspaceAuto approve toolsAuto approve tools helpAuto approve tools●This run is stopped. Saved model settings will be used when it resumes.Save"
+
+ ❯ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts:71:110
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > stopped Org real form/controller/context/transport path > requires explicit canonical refresh after transport and never auto-replays
+ FAIL  components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts > stopped Org real form/controller/context/transport path > requires explicit canonical refresh after indeterminate and never auto-replays
+AssertionError: expected 'Agent ConfigurationAgent definitiondi…' to contain 'must be refreshed'
+
+Expected: "must be refreshed"
+Received: "Agent ConfigurationAgent definitiondirectorRuntimeAutoByteusCodex App ServerFixed identityRuntime is not available in current capabilities.Llm modelOpenAI / gpt-5.6-solFixed identityModel options could not be loaded. Saved settings were not changed.RetryAdvancedBudget Enabled Workspace directory Existing  New Select a workspace Fixed workspaceAuto approve toolsAuto approve tools helpAuto approve tools●This run is stopped. Saved model settings will be used when it resumes.Save"
+
+ ❯ components/workspace/org/__tests__/AgentOrgMemberRunConfigPanel.spec.ts:76:110
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 6 passed (11)
+   Start at  02:49:07
+   Duration  4.97s (transform 2.72s, setup 4.16s, collect 195ms, tests 153ms, environment 136ms, prepare 116ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

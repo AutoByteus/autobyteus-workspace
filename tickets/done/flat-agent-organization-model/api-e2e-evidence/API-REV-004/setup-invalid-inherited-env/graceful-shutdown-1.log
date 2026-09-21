@@ -1,0 +1,82 @@
+signal_at=2026-09-02T06:46:34Z pid=53311 signal=SIGTERM
+exited_at=2026-09-02T06:46:35Z poll=2
+FileExplorerSession closed: 8fee6b0e-833e-4b14-8d35-3c9f268e1d2f
+Closed file explorer session 8fee6b0e-833e-4b14-8d35-3c9f268e1d2f. Active sessions: 0
+File explorer WebSocket disconnected: 8fee6b0e-833e-4b14-8d35-3c9f268e1d2f
+Agent team websocket attached for team run aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9
+Created agent session 074c96f0-8f76-499f-9a04-d01370507657 for run aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9
+Agent Team WebSocket connected: session=074c96f0-8f76-499f-9a04-d01370507657, run=aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Published codex_app_server agent run 'aorg_e2e_analyst_cfe82433fb144958b6aeb910c251004e'.
+FileSystemWatcher initialized for '/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Acquired file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: eeea9aeb-40df-4a1f-bc6b-8ef2bae65ef9 for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Created file explorer session eeea9aeb-40df-4a1f-bc6b-8ef2bae65ef9 for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d. Active sessions: 1
+File explorer WebSocket connected: eeea9aeb-40df-4a1f-bc6b-8ef2bae65ef9 for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+File explorer websocket attached for workspace agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+[CodexAppServerClient] stderr: 2026-09-02T06:40:39.973491Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:40.199320Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:40.407170Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:40.604504Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:40.802101Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:40.999234Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:41.205238Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:41.434656Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+[CodexAppServerClient] stderr: 2026-09-02T06:40:41.623368Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 4,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 8,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Published codex_app_server agent run 'aorg_e2e_concierge_984a51e97b594ee6a430eee039a3097c'.
+Published codex_app_server agent run 'aorg_e2e_lead_fcb96f957697466ca3ce10cb5fee89f7'.
+Published codex_app_server agent run 'aorg_e2e_analyst_4f53942c7c7440b48cbb414c3cc0bcdc'.
+Published codex_app_server agent run 'aorg_e2e_verifier_44430b4a452a4df49e24705c87d91435'.
+Published codex_app_server agent run 'aorg_e2e_lead_4dd3754de96d47238573695e967ee020'.
+Published codex_app_server agent run 'aorg_e2e_verifier_987bd4359d8447f990ab4402f95367b9'.
+Released file watcher lease for /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+FileExplorerSession closed: eeea9aeb-40df-4a1f-bc6b-8ef2bae65ef9
+Closed file explorer session eeea9aeb-40df-4a1f-bc6b-8ef2bae65ef9. Active sessions: 0
+File explorer WebSocket disconnected: eeea9aeb-40df-4a1f-bc6b-8ef2bae65ef9
+Creating new workspace for rootPath: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace.
+Reusing registered workspace ID: agent_ws_aa41db0a90353659c1947e0bdd348530e3224b6dc98d0b45747c11795e62809d
+Published codex_app_server agent run 'aorg_e2e_analyst_108a459ad33d4ef2a33fed78f36c7280'.
+Watcher detected modification: /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/external-channel/gateway-callback-outbox.json
+[2026-09-02T06:46:34.702Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 074c96f0-8f76-499f-9a04-d01370507657
+[2026-09-02T06:46:34.893Z] [INFO] [server.runtime] Server closed cleanly.

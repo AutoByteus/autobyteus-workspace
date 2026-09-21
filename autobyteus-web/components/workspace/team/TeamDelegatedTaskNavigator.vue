@@ -81,7 +81,7 @@ import type {
   DelegatedTaskLifecycleItem,
   DelegatedTaskParticipant,
   DelegatedTaskReferenceLocator,
-} from '~/utils/teamDelegatedTaskEntries';
+} from '~/types/workspace/collaborationTaskPresentation';
 import {
   referenceFileIcon,
   referenceFileName,

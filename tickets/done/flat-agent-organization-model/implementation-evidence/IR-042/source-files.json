@@ -1,0 +1,4 @@
+[
+  "autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts",
+  "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts"
+]

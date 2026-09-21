@@ -11,7 +11,6 @@ import type { AgentTeamDefinitionService } from "../../agent-team-definition/ser
 import {
   buildScopedMemberResolutionContext,
   resolveScopedAgentMemberRef,
-  resolveScopedTeamMemberRef,
 } from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -286,7 +285,6 @@ export class ApplicationLaunchResourceBaselineBuilder {
         `Circular team topology includes '${input.teamDefinitionId}'.`,
       );
     }
-    const visited = new Set(input.visited).add(input.teamDefinitionId);
     const team = await this.dependencies.agentTeamDefinitionService
       .getDefinitionById(input.teamDefinitionId);
     if (!team) {
@@ -316,26 +314,13 @@ export class ApplicationLaunchResourceBaselineBuilder {
     const leaves: ApplicationResolvedLaunchBaselineLeaf[] = [];
     for (const member of team.nodes) {
       const memberPath = [...input.memberPath, member.memberName.trim()];
-      if (member.refType === "agent") {
-        leaves.push(await this.buildAgentLeaf({
-          agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, member),
-          memberAddress: createAgentTeamAddress(memberPath),
-          displayName: member.memberName.trim(),
-          parentLayers: teamLayers,
-          provenance: input.provenance,
-        }));
-      } else {
-        const nested = await this.buildTeamTopology({
-          teamDefinitionId: resolveScopedTeamMemberRef(resolutionContext, member),
-          memberPath,
-          displayName: member.memberName.trim(),
-          parentLayers: teamLayers,
-          provenance: input.provenance,
-          visited,
-        });
-        teamScopes.push(...nested.teamScopes);
-        leaves.push(...nested.leaves);
-      }
+      leaves.push(await this.buildAgentLeaf({
+        agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, member),
+        memberAddress: createAgentTeamAddress(memberPath),
+        displayName: member.memberName.trim(),
+        parentLayers: teamLayers,
+        provenance: input.provenance,
+      }));
     }
     return { teamScopes, leaves };
   }

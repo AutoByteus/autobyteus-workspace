@@ -1,0 +1,343 @@
+{
+  "at": "2026-09-13T11:47:20.170Z",
+  "url": "http://127.0.0.1:3611/workspace?rootSubjectKind=agent_org&definitionId=followup-organization&orgRunId=followup_organization_957cde061da84a70bb80c4c5f1b2debf&mode=active",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nFF\nFollowup Flat Team\n(1)\nSend one ordinary message to /lead using send_message_to: \"Reply exactly COLLAB-API01-TEAM-LEAD-R...\n8m\nC\ncoordinator\n8m\nL\nlead\n8m\nR\nreviewer\n8m\nORGS\nFollowup Organization\n(1)\nNew - Followup Organization\nnow\nD\ndirector\nR\nreceiver\nresearch team\nSettings\nChoose an Agent or Team\n\nSelect a member from the active Agent Org in the sidebar. Teams focus their coordinator first.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+  "tree": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-13T11:47:19.939Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/director",
+        "to": "/receiver",
+        "rules": [
+          "When the user requests a message to the receiver."
+        ]
+      },
+      {
+        "from": "/director",
+        "to": "/research-team",
+        "rules": [
+          "When the user requests Team-directed work."
+        ]
+      },
+      {
+        "from": "/research-team/coordinator",
+        "to": "/research-team/lead",
+        "rules": [
+          "When the user requests a message to the lead."
+        ]
+      },
+      {
+        "from": "/research-team/lead",
+        "to": "/research-team/coordinator",
+        "rules": [
+          "When the user asks to return a message to the coordinator."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "followup-organization",
+      "orgDefinitionName": "Followup Organization",
+      "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+      },
+      "members": [
+        {
+          "address": "/director",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_216e424e97ee45b9b0ed416beb8f8652",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/receiver",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_addd51e26f024892b80673b6d6c74d68",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/research-team",
+          "teamDefinitionId": "followup-flat-team",
+          "role": null,
+          "description": null,
+          "teamRunId": "followup_flat_team_2ef41ec0472f4dc0ad2b2909f6ffddac",
+          "coordinatorAddress": "/research-team/coordinator",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          },
+          "members": [
+            {
+              "address": "/research-team/coordinator",
+              "agentDefinitionId": "followup-assistant",
+              "role": null,
+              "description": null,
+              "agentRunId": "followup_assistant_3adf5e0e66f848ce9cec314516090bec",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+              }
+            },
+            {
+              "address": "/research-team/lead",
+              "agentDefinitionId": "followup-assistant",
+              "role": null,
+              "description": null,
+              "agentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+              }
+            },
+            {
+              "address": "/research-team/reviewer",
+              "agentDefinitionId": "followup-assistant",
+              "role": null,
+              "description": null,
+              "agentRunId": "followup_assistant_eaff41b332a7423686880225c488e970",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.6-sol",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "rows": [
+    {
+      "test": "agent-org-agent-row-followup_assistant_216e424e97ee45b9b0ed416beb8f8652",
+      "status": "offline",
+      "selected": "false"
+    },
+    {
+      "test": "agent-org-agent-row-followup_assistant_addd51e26f024892b80673b6d6c74d68",
+      "status": "offline",
+      "selected": "false"
+    },
+    {
+      "test": "agent-org-team-row-followup_flat_team_2ef41ec0472f4dc0ad2b2909f6ffddac",
+      "status": null,
+      "selected": "false"
+    },
+    {
+      "test": "agent-org-workspace-view",
+      "status": null,
+      "selected": null
+    },
+    {
+      "test": "agent-org-active-unfocused",
+      "status": null,
+      "selected": null
+    }
+  ],
+  "frames": [],
+  "requests": [
+    {
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+        }
+      },
+      "query": "mutation CreateWorkspace($input: CreateWorkspaceInput!) {\n  createWorkspace(input: $input) {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_6581ad1449a00efe015766ed616f3a86c6da709a669f17ded1ae4e3b8df4f8f8",
+        "folderPath": ""
+      },
+      "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+    },
+    {
+      "operationName": "CreateAgentOrgRun",
+      "variables": {
+        "input": {
+          "agentOrgDefinitionId": "followup-organization",
+          "rootConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          },
+          "teamOverrides": [],
+          "agentOverrides": []
+        }
+      },
+      "query": "mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {\n  createAgentOrgRun(input: $input) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf"
+      },
+      "query": "query GetAgentOrgRunInspection($orgRunId: String!) {\n  getAgentOrgRunInspection(orgRunId: $orgRunId)\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/director",
+        "agentRunId": "followup_assistant_216e424e97ee45b9b0ed416beb8f8652"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/receiver",
+        "agentRunId": "followup_assistant_addd51e26f024892b80673b6d6c74d68"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/research-team/coordinator",
+        "agentRunId": "followup_assistant_3adf5e0e66f848ce9cec314516090bec"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/research-team/lead",
+        "agentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/research-team/reviewer",
+        "agentRunId": "followup_assistant_eaff41b332a7423686880225c488e970"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/director",
+        "agentRunId": "followup_assistant_216e424e97ee45b9b0ed416beb8f8652"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/receiver",
+        "agentRunId": "followup_assistant_addd51e26f024892b80673b6d6c74d68"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/research-team/coordinator",
+        "agentRunId": "followup_assistant_3adf5e0e66f848ce9cec314516090bec"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/research-team/lead",
+        "agentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "followup_organization_957cde061da84a70bb80c4c5f1b2debf",
+        "memberAddress": "/research-team/reviewer",
+        "agentRunId": "followup_assistant_eaff41b332a7423686880225c488e970"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    }
+  ]
+}

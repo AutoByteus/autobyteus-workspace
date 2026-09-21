@@ -1,0 +1,12 @@
+[
+  {
+    "teamRunId": "aorg_e2e_research_squad_39ff5682fe4244f9bb5974fe5d71b1d9",
+    "teamDefinitionId": "aorg-research-squad",
+    "teamDefinitionName": "AORG E2E Research Squad",
+    "workspaceRootPath": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/in-progress/flat-agent-organization-model/api-e2e-evidence/API-REV-004/live/server-data/temp_workspace",
+    "summary": "Return exactly AORG4-TEAM-FIRST-001 on the first line and a five-word acknowledgement on the seco...",
+    "createdAt": "2026-09-02T06:36:52.473Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

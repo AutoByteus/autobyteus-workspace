@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "aorg_e2e_mixed_org_579564e6effa42eca8a910cb5f18fdea",
+  "records": [
+    {
+      "taskId": "task_540b6aeb98324958ad87f0180121a9f8",
+      "delegatorAgentRunId": "aorg_e2e_concierge_984a51e97b594ee6a430eee039a3097c",
+      "recipientAddress": "/research-team/analyst",
+      "taskExecution": {
+        "agentRunId": "aorg_e2e_analyst_108a459ad33d4ef2a33fed78f36c7280"
+      },
+      "description": "Submit exactly the marker AORG4-ORG-MOUNTED-TASK-INITIAL-001 using submit_task_result. This is the complete bounded task; do not add other deliverables.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_8e6f90b0f04548a69101a4cb9f5eccfe",
+          "message": "AORG4-ORG-MOUNTED-TASK-INITIAL-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:42:21.028Z"
+        },
+        {
+          "reviewId": "review_4cde4f0ffb7c4feab7e2630d8a7eae6b",
+          "reviewedSubmissionId": "submission_8e6f90b0f04548a69101a4cb9f5eccfe",
+          "decision": "request_revision",
+          "comment": "Revise the same task and submit exactly AORG4-ORG-MOUNTED-TASK-REVISED-001 using submit_task_result.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:42:27.712Z"
+        },
+        {
+          "submissionId": "submission_6ab69359f5de4c2b8043251579e82b49",
+          "message": "AORG4-ORG-MOUNTED-TASK-REVISED-001",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:42:32.541Z"
+        },
+        {
+          "reviewId": "review_0bd4ca6907f04ea48793b380ce2e6907",
+          "reviewedSubmissionId": "submission_6ab69359f5de4c2b8043251579e82b49",
+          "decision": "accept",
+          "comment": "Accepted revised marker AORG4-ORG-MOUNTED-TASK-REVISED-001.",
+          "referenceFiles": [],
+          "createdAt": "2026-09-02T06:42:33.732Z"
+        }
+      ],
+      "createdAt": "2026-09-02T06:42:09.064Z"
+    }
+  ]
+}

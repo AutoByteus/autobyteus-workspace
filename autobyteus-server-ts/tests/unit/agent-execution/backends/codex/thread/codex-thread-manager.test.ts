@@ -10,9 +10,10 @@ import type { CodexAppServerClient } from "../../../../../../src/runtime-managem
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { CodexClientThreadRouter } from "../../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
+import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
-import { testMemberTaskRootResolver } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (
   runId: string,
@@ -40,15 +41,15 @@ const createRunContext = (
       memoryDir: input.memoryDir ?? null,
       llmConfig: null,
       skillAccessMode: SkillAccessMode.NONE,
-      memberTeamContext: input.teamRunId
-        ? new MemberTeamContext({
+      memberExecutionContext: input.teamRunId
+        ? new MemberExecutionContext({
             identity: {
-              rootTeamRunId: input.teamRunId,
+              root: createTeamRootExecutionIdentity(input.teamRunId),
               memberAddress: `/${runId}`,
               agentRunId: runId,
             },
-            collaboration: { outgoingHandoffs: [] },
-            taskRootResolver: testMemberTaskRootResolver(),
+            collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
+            tasks: testMemberTaskCommandCapability(input.teamRunId),
           })
         : null,
     }),

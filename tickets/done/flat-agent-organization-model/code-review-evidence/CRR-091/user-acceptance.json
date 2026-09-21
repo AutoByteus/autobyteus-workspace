@@ -1,0 +1,37 @@
+{
+  "at": "2026-09-13T03:33:45.778510+00:00",
+  "ticket": "AORG-FLAT-TEAM-001",
+  "authority": "Direct user instruction in Code Reviewer conversation after API38 failure handoff",
+  "userMessages": [
+    "From my opinion, I think we can mark this as successful. The reason is that because we have noticed some small problems, but the majority of things are working, we can mark this as successful, from my opinion. And then we can address those small problems in the future in a completely new ticket.",
+    "You don't have to return to API E2U. On your side, you can mark this as successful directly."
+  ],
+  "effectiveDisposition": "Successful with user-accepted known issues; no API/E2E return or rerun required for this acceptance",
+  "acceptedDeferred": [
+    {
+      "id": "API-FIND-040",
+      "description": "Standalone native first-Send text chip uses obsolete draft URL, HTTP404; reopen obtains finalized URL200 and exact original bytes.",
+      "status": "Accepted/deferred, not fixed",
+      "origin": "Unassigned; interrupted origin investigation not completed",
+      "observedScope": "One standalone native DeepSeek desktop first Send; no narrow/Org/task failure inferred"
+    },
+    {
+      "id": "USER-pre-message-member-lifecycle",
+      "description": "Current eager pre-message Team Idle/green versus original unstarted/Offline.",
+      "status": "Previously accepted, not fixed"
+    },
+    {
+      "id": "LIVE-PUB-mounted-navigation",
+      "description": "One mounted publication navigated to a prior Team; followup did not reproduce.",
+      "status": "Previously accepted, not fixed"
+    }
+  ],
+  "separateLinkOpening": "Previously accepted original-personal behavior; not treated as new defect",
+  "limits": [
+    "Not a claim every test passed; preserve API38 original Fail85.6, failed rows, 320 receipts/37 original nonzero and all scoped evidence.",
+    "Not a blanket waiver of unknown defects, excluded native images or unexecuted native-shell/release work.",
+    "No production correction, source-origin attribution, new regression proof or new approved follow-up ticket created.",
+    "Remaining proportional durable-test review and applicable Delivery gates are not skipped."
+  ],
+  "followupOwner": "Delivery carries these candidates and evidence into Requirements handoff for separate new tickets."
+}

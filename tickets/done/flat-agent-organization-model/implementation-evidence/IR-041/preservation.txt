@@ -1,0 +1,6 @@
+9110 initial dirty/untracked paths hashed. 9109 unchanged.
+One explicitly authorized affected assertion reconciled: flatTeamAgentOrgCatalog.spec.ts.
+Pre-existing other-owner change was Agent Orgs/智能体组织 -> Org/组织; retained as preexisting-catalog.diff.
+IR-041 applies only Org -> Orgs on that line, retaining the prior Chinese correction. No other test edit.
+No source-review/API/Delivery reports, raw DB/env/key data or generated package staged/reset/edited.
+Own temporary page and dev process removed.

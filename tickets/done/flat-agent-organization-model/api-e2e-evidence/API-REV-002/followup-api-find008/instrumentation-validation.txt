@@ -1,0 +1,2 @@
+$ pnpm exec tsc -p tsconfig.build.json --noEmit
+exit_code=0

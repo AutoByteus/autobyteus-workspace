@@ -1,0 +1,39 @@
+# Solution revision record
+
+## SR-001 — 2026-09-17 — Requirements baseline
+Prior: N/A; new ORG-STOPPED-CONFIG-20260917-001, not reopening completed tickets.
+Trigger: user screenshot report of stopped Org direct/mounted missing Settings/+ versus stopped Team and active Org controls; explicit bootstrap request from origin/requirements/flat-agent-organization-model.
+Outcome: investigation confirms live-only header AND entry gates, plus read-only Org panel without stopped save integration. Requirements Ready for Approval (BEH-001–004, SCN-001–004, REQ-001–006, AC-001–006). No approved architecture yet; no source changes/tests.
+Approval: pending explicit SR-001 user approval. Previous-ticket approval does not apply. Proposed scope preserves exact focused configured-member identity, active/task restrictions and data; permits compatible model/parameter editing while stopped and existing + new Org action.
+Routing: routine requirements approval hold remains with user; no specialist handoff. Classification deferred to completed design. Remaining technical work: canonical Org save/restore and lifecycle integration investigation after approval.
+
+## SR-002 — 2026-09-17 — Explicit approval and reference request
+Prior: SR-001 Ready for Approval. Current: Approved SR-001 baseline, all existing IDs unchanged. Exact user confirmation recorded in requirements-doc.md; same-runtime model switch and same-model parameter edits explicitly affirmed. Original personal nested-Team source comparison requested; evidence-only technical reference, not added product behavior. Design may now proceed. No specialist assignment/source changes.
+
+## SR-003 — 2026-09-17 — Architecture Design Complete
+Approved basis unchanged SR-001/SR-002, BEH/REQ/AC IDs retained. User requested continuation after confirming Team policy already exists. Added source-only comparison against origin/personal5645b49d6 and post-approval evidence; completed DS-001 mapping header→canonical editor→Org-owned save→retained publication→ordinary continuation. Reuses existing model policy and root transition/store, no copying nested-Team runtime. Data Directly Usable—No Migration. Task Medium / High due new durable configuration API/lifecycle serialization, not UI evidence volume. Independent architecture review required by classification; route lookup pending in solution-handoff.md. No source edits/tests/runtime or Git finalization. No renewed approval needed: compatible same-runtime model/current settings behavior unchanged.
+
+SR-003 routing resolution: current rules select sole /software_engineering_team/architecture_reviewer for Medium/High Architecture Design Complete; no direct implementation or Product handoff.
+
+## SR-004 — 2026-09-17 — Requirement Gap / Design Impact recovery
+Trigger CRR-003 focused failure-origin Fail, F-001/B03 and separate F-002/B05; API-REV-001 Fail83.6%confidence. Prior SR-003/DS-001, ARCH-REV-001/IR-001/CRR-001 narrower source gate preserved. F-001 faithfully follows old definition-only + requirement, NOT a Settings persistence regression. User clarification recorded by API expands REQ-005/AC-004/BEH-003/SCN-002 to source-configuration-seeded NEW draft; proposed additional BEH-005/REQ-007/AC-007/SCN-005 fixes missing-selection feedback. All other approved intent unchanged.
+Current requirement status Ready for Approval (consolidated SR-004); DS-004 Needs Revision, not forward-ready. Full original Designer basis snapshotted under history/sr003. Explicit initiating user instructions are recorded paraphrases in API artifacts; no invented verbatim quote or retroactive SR-002 approval. Next: user confirms revised baseline, then revised architecture and applicable Medium/High review. Classification unchanged; F-002 alone is bounded local UI diagnostic fix, no backend expansion.
+Existing implementation hold delivered to exact run; all source/tests/evidence preserved. No source edits/tests/runtime/Git actions by Designer. Actual native Settings successes preserved; F-001 first rerun, F-002 new diagnostic acceptance and remaining B04 follow after revised source approval. Routine approval hold has no downstream outcome routing.
+
+## SR-005 — 2026-09-17 — Revised requirements approved
+User explicitly replied “confirm” to consolidated two-part scope. Approved SR-004 baseline, revised Plus inheritance REQ-005/AC-004 and missing-model feedback REQ-007/AC-007. No other intent changes. SR-004 snapshot under history/sr004. Dependent revised design/review may proceed; existing implementation hold remains until reviewed authority.
+
+## SR-006 — 2026-09-17 — Revised Architecture Design Complete
+Approved SR-004 in SR-005 (exact “confirm”), with unchanged original Settings requirements. DS-REV-002 revises DS-004 Plus→source-qualified canonical configuration read→pure authorable seed→single initialization→ordinary fresh creation and adds DS-006 missing-selection diagnostic. New full file/owner/path/representation/validation decisions in canonical design; no merely additive obsolete definition-route authority. Personal source pattern rechecked, user reiteration evidence-only. Settings IR-001/API successes preserved. Cumulative classification Medium/High; incremental F-002 remains bounded frontend local correction. Prior ARCH/CRR Pass apply only earlier narrower basis. No tests/source/data/Git edits by Designer. Current get_handoff_rules/review route pending below; implementation hold remains until applicable revised review.
+
+SR-006 routing resolution: current rules select sole /software_engineering_team/architecture_reviewer for revised Medium/High package. Rechecked all 23 IR-001 manifest entries: exact hashes, no specialist source/test edits. Designer canonical document whitespace checks pass; no executable tests rerun.
+
+
+## SR-007 — 2026-09-17 — F-003 Design Impact / Architecture Design Complete
+Trigger CRR-005 focused Fail, API-REV-002 Fail84.3%confidence. F-001/F-002 resolved actual browser; ARCH-REV-002/IR-002/CRR-004 narrower basis retained. F-003 confirmed pre-existing Team Save→Plus stale configuration, not shared-field regression. Source/read-only personal comparison exposed earlier freshness-analysis gap; source snapshot is not canonical settings authority. Existing REQ-006/AC-006/SCN-004 and approved SR-004/SR-005 intent unchanged; no renewed approval required. Requirements annotated preservation sequence, not new policy. Full prior Designer basis frozen history/sr006.
+DS-REV-003 / DS-007 selects existing canonical read→pure Team configuration/seed at BOTH production source-copy entry points. No retained adoption subsystem, new backend/cache authority or source context replacement. Cumulative Medium/High retained with bounded incremental frontend work. All34 IR-002 manifest hashes exact; source/tests/evidence preserved. Existing implementation coordination hold DELIVERED, acknowledgment not assumed. Next independent revised architecture review; API F-003-first after reviewed implementation then deferred controls. Current rules lookup pending in solution-handoff; no implementation completion/API pass or finalization claim.
+
+SR-007 routing resolution: successful current rule lookup selects sole /software_engineering_team/architecture_reviewer. Existing implementation hold is coordination only, not a second outcome handoff. Canonical Designer whitespace checks pass; no executable rerun.
+
+
+Coordination update 2026-09-17: implementation_engineer_f84b5074541a47fea830604d1bcb77c3 explicitly acknowledged CRR-005/F-003 hold. No dependent Team correction/completion forwarding pending revised authority and review; IR-001/002 and API evidence preserved, no new edits/Git actions. This is acknowledgment only, not a new assignment. DS-REV-003 review package was already DELIVERED to architecture_reviewer_2990d705f7794417ac6dcb85c8836357; no duplicate handoff or review result claimed.

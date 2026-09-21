@@ -1,0 +1,11 @@
+{
+  "task_delegation_records.json": {
+    "sha256": "cfad23a71dcc3c95bea8f22b015433fa288d6f0d7a3f97cabef712c29e7387c1",
+    "size": 1932
+  },
+  "team_run_execution_tree.json": {
+    "sha256": "80121f65742c54388793074268ee47091cdd589e2a39da8fc2c6b3d51012e11d",
+    "size": 3943
+  },
+  "capturedAt": "2026-09-06T14:34:41.498868+00:00"
+}
