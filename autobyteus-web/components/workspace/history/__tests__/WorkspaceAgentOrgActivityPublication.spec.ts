@@ -84,7 +84,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   wrapper?.unmount(); wrapper = undefined
-  useAgentOrgContextsStore().disconnect('org-run')
+  useAgentOrgContextsStore().releaseContext('org-run')
   vi.unstubAllGlobals()
 })
 
@@ -189,7 +189,7 @@ describe.each(['/director', '/team/lead'])('Org activity publication with select
     expect(socket.sent).toHaveLength(0)
   })
 
-  it('keeps active controls and exact selection/conversation when Stop is rejected', async () => {
+  it('keeps active navigation and exact selection/conversation while requiring fresh input transport when Stop is rejected', async () => {
     const { history, org, context, selection, messages, socket } = await open(address)
     const projection = history.navigationProjection
     mocks.query.mockClear()
@@ -199,7 +199,7 @@ describe.each(['/director', '/team/lead'])('Org activity publication with select
     expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(true)
     expect(stopButton().attributes('disabled')).toBeUndefined()
     expect(wrapper!.get('[role="alert"]').text()).toBe('Stop rejected')
-    expect(org.phase).toBe('live')
+    expect(org.phase).toBe('reopen_required')
     expect(org.isActive).toBe(true)
     expect(org.selection).toEqual(selection)
     expect(org.selectedTarget()!.context).toBe(context)

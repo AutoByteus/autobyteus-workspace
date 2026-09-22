@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.73 test:e2e:agent-org-draft-retention /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/autobyteus-web
+> node tests/e2e/agent-org-draft-retention-probe.mjs -- --output-dir ../tickets/in-progress/org-run-draft-input-retention/evidence/browser
+
+Agent Org draft-retention browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/tickets/in-progress/org-run-draft-input-retention/evidence/browser/evidence.json

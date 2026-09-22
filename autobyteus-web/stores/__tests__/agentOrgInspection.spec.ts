@@ -21,7 +21,7 @@ const inspection = (active = false) => {
   return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })
-afterEach(() => useAgentOrgContextsStore().disconnect('org-run'))
+afterEach(() => useAgentOrgContextsStore().releaseContext('org-run'))
 describe('same-owner read-only Org inspection', () => {
   it('publishes strict retained contexts and exact selection without creating a transport', async () => {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection())
@@ -44,7 +44,7 @@ describe('same-owner read-only Org inspection', () => {
     const pending = store.openForInspection('org-run')
     await flushPromises()
     expect(mocks.query.mock.calls.length).toBeGreaterThan(1)
-    store.disconnect('org-run')
+    store.releaseContext('org-run')
     release(); await pending
     expect(store.contextFor('org-run')).toBeNull()
     expect(store.errorFor('org-run')).toBeNull()

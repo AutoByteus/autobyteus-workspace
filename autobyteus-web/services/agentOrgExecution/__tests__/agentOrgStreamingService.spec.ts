@@ -458,7 +458,7 @@ describe('AgentOrgStreamingService', () => {
     })
     await vi.waitFor(() => expect(panelStatus.value).toBe('accepted'))
     expect(context.select).not.toHaveBeenCalled()
-    contextsStore.disconnect('org-run')
+    contextsStore.releaseContext('org-run')
   })
 
   it('completes a command only from an ACK with the exact command type and target', async () => {

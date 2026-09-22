@@ -8,7 +8,6 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 
 const state = reactive({ context: null as any, target: null as any })
 const inspect = vi.fn().mockResolvedValue(undefined)
-const disconnect = vi.fn()
 const push = vi.fn().mockResolvedValue(undefined)
 const readOrg = vi.fn()
 const saveOrg = vi.fn()
@@ -31,7 +30,6 @@ vi.mock('~/stores/activeContextStore', () => ({
     get activeWorkspaceTarget() { return state.target },
     inspectAgentOrg: inspect,
     selectAgentOrg: vi.fn(),
-    disconnectAgentOrg: disconnect,
     agentOrgContextFor: () => state.context,
     agentOrgErrorFor: () => null,
   }),

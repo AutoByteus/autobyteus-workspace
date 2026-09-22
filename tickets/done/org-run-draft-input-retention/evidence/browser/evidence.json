@@ -1,0 +1,435 @@
+{
+  "startedAt": "2026-09-22T05:28:36.487Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/autobyteus-web/tests/e2e/fixtures/agent-org-draft-retention.page.vue",
+  "scenarios": {
+    "API-E2E-003-A": {
+      "result": "Pass",
+      "description": "Delayed Org upload stays with the captured owner while another root is visible",
+      "startedAt": "2026-09-22T05:28:44.724Z",
+      "details": {
+        "upload": {
+          "sequence": 1,
+          "method": "POST",
+          "url": "/rest/context-files/upload",
+          "contentType": "multipart/form-data; boundary=----WebKitFormBoundary7U09cn6YK6JGGUsU",
+          "bodyByteLength": 382,
+          "ownerIsOrgA": true,
+          "filenamePresent": true,
+          "receivedAt": "2026-09-22T05:28:44.747Z"
+        },
+        "snapshot": {
+          "route": {
+            "probeSurface": "org",
+            "rootSubjectKind": "agent_org",
+            "mode": "history",
+            "orgRunId": "org-b",
+            "memberAddress": "/reviewer",
+            "agentRunId": "org-b-reviewer"
+          },
+          "currentSurface": "org-b:org-b-reviewer",
+          "orgA": {
+            "retainedRoot": true,
+            "director": {
+              "retainedContext": true,
+              "requirement": "Org A director exact draft",
+              "files": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__org-a-notes.txt",
+                  "locator": "/rest/drafts/agent-org-runs/org-a/agent-runs/org-a-director/context-files/ctx_probe__org-a-notes.txt",
+                  "displayName": "org-a-notes.txt",
+                  "phase": "draft"
+                }
+              ]
+            },
+            "writer": {
+              "retainedContext": true,
+              "requirement": "",
+              "files": []
+            }
+          },
+          "orgB": {
+            "retainedRoot": true,
+            "reviewer": {
+              "retainedContext": true,
+              "requirement": "Org B reviewer independent draft",
+              "files": []
+            }
+          },
+          "agents": {
+            "new": {
+              "requirement": "",
+              "files": []
+            },
+            "existing": {
+              "requirement": "",
+              "files": []
+            }
+          },
+          "teams": {
+            "new": {
+              "requirement": "",
+              "files": []
+            },
+            "existing": {
+              "requirement": "",
+              "files": []
+            }
+          }
+        }
+      }
+    },
+    "API-E2E-003-B": {
+      "result": "Pass",
+      "description": "Cross-root and same-root member navigation restore exact independent Org drafts",
+      "startedAt": "2026-09-22T05:28:44.904Z",
+      "details": {
+        "snapshot": {
+          "route": {
+            "probeSurface": "org",
+            "rootSubjectKind": "agent_org",
+            "mode": "history",
+            "orgRunId": "org-a",
+            "memberAddress": "/director",
+            "agentRunId": "org-a-director"
+          },
+          "currentSurface": "org-a:org-a-director",
+          "orgA": {
+            "retainedRoot": true,
+            "director": {
+              "retainedContext": true,
+              "requirement": "Org A director exact draft",
+              "files": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__org-a-notes.txt",
+                  "locator": "/rest/drafts/agent-org-runs/org-a/agent-runs/org-a-director/context-files/ctx_probe__org-a-notes.txt",
+                  "displayName": "org-a-notes.txt",
+                  "phase": "draft"
+                }
+              ]
+            },
+            "writer": {
+              "retainedContext": true,
+              "requirement": "Org A writer independent draft",
+              "files": []
+            }
+          },
+          "orgB": {
+            "retainedRoot": true,
+            "reviewer": {
+              "retainedContext": true,
+              "requirement": "Org B reviewer independent draft",
+              "files": []
+            }
+          },
+          "agents": {
+            "new": {
+              "requirement": "",
+              "files": []
+            },
+            "existing": {
+              "requirement": "",
+              "files": []
+            }
+          },
+          "teams": {
+            "new": {
+              "requirement": "",
+              "files": []
+            },
+            "existing": {
+              "requirement": "",
+              "files": []
+            }
+          }
+        }
+      }
+    },
+    "API-E2E-003-C": {
+      "result": "Pass",
+      "description": "Unmounting the Org view for standalone Agent navigation retains both new/existing Agent drafts",
+      "startedAt": "2026-09-22T05:28:45.372Z",
+      "details": {
+        "snapshot": {
+          "route": {
+            "probeSurface": "org",
+            "rootSubjectKind": "agent_org",
+            "mode": "history",
+            "orgRunId": "org-a",
+            "memberAddress": "/director",
+            "agentRunId": "org-a-director"
+          },
+          "currentSurface": "org-a:org-a-director",
+          "orgA": {
+            "retainedRoot": true,
+            "director": {
+              "retainedContext": true,
+              "requirement": "Org A director exact draft",
+              "files": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__org-a-notes.txt",
+                  "locator": "/rest/drafts/agent-org-runs/org-a/agent-runs/org-a-director/context-files/ctx_probe__org-a-notes.txt",
+                  "displayName": "org-a-notes.txt",
+                  "phase": "draft"
+                }
+              ]
+            },
+            "writer": {
+              "retainedContext": true,
+              "requirement": "Org A writer independent draft",
+              "files": []
+            }
+          },
+          "orgB": {
+            "retainedRoot": true,
+            "reviewer": {
+              "retainedContext": true,
+              "requirement": "Org B reviewer independent draft",
+              "files": []
+            }
+          },
+          "agents": {
+            "new": {
+              "requirement": "New Agent retained draft",
+              "files": []
+            },
+            "existing": {
+              "requirement": "Existing Agent retained draft",
+              "files": []
+            }
+          },
+          "teams": {
+            "new": {
+              "requirement": "",
+              "files": []
+            },
+            "existing": {
+              "requirement": "",
+              "files": []
+            }
+          }
+        }
+      }
+    },
+    "API-E2E-003-D": {
+      "result": "Pass",
+      "description": "New/existing Team root navigation retains independent member drafts",
+      "startedAt": "2026-09-22T05:28:45.616Z",
+      "details": {
+        "snapshot": {
+          "route": {
+            "probeSurface": "team",
+            "rootTeamRunId": "team-existing"
+          },
+          "currentSurface": "team:team-existing",
+          "orgA": {
+            "retainedRoot": true,
+            "director": {
+              "retainedContext": true,
+              "requirement": "Org A director exact draft",
+              "files": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__org-a-notes.txt",
+                  "locator": "/rest/drafts/agent-org-runs/org-a/agent-runs/org-a-director/context-files/ctx_probe__org-a-notes.txt",
+                  "displayName": "org-a-notes.txt",
+                  "phase": "draft"
+                }
+              ]
+            },
+            "writer": {
+              "retainedContext": true,
+              "requirement": "Org A writer independent draft",
+              "files": []
+            }
+          },
+          "orgB": {
+            "retainedRoot": true,
+            "reviewer": {
+              "retainedContext": true,
+              "requirement": "Org B reviewer independent draft",
+              "files": []
+            }
+          },
+          "agents": {
+            "new": {
+              "requirement": "New Agent retained draft",
+              "files": []
+            },
+            "existing": {
+              "requirement": "Existing Agent retained draft",
+              "files": []
+            }
+          },
+          "teams": {
+            "new": {
+              "requirement": "New Team retained draft",
+              "files": []
+            },
+            "existing": {
+              "requirement": "Existing Team retained draft",
+              "files": []
+            }
+          }
+        }
+      }
+    },
+    "API-E2E-003-E": {
+      "result": "Pass",
+      "description": "Final narrow Org return remains exact with no cross-surface leakage",
+      "startedAt": "2026-09-22T05:28:45.825Z",
+      "details": {
+        "snapshot": {
+          "route": {
+            "probeSurface": "org",
+            "rootSubjectKind": "agent_org",
+            "mode": "history",
+            "orgRunId": "org-a",
+            "memberAddress": "/director",
+            "agentRunId": "org-a-director"
+          },
+          "currentSurface": "org-a:org-a-director",
+          "orgA": {
+            "retainedRoot": true,
+            "director": {
+              "retainedContext": true,
+              "requirement": "Org A director exact draft",
+              "files": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__org-a-notes.txt",
+                  "locator": "/rest/drafts/agent-org-runs/org-a/agent-runs/org-a-director/context-files/ctx_probe__org-a-notes.txt",
+                  "displayName": "org-a-notes.txt",
+                  "phase": "draft"
+                }
+              ]
+            },
+            "writer": {
+              "retainedContext": true,
+              "requirement": "Org A writer independent draft",
+              "files": []
+            }
+          },
+          "orgB": {
+            "retainedRoot": true,
+            "reviewer": {
+              "retainedContext": true,
+              "requirement": "Org B reviewer independent draft",
+              "files": []
+            }
+          },
+          "agents": {
+            "new": {
+              "requirement": "New Agent retained draft",
+              "files": []
+            },
+            "existing": {
+              "requirement": "Existing Agent retained draft",
+              "files": []
+            }
+          },
+          "teams": {
+            "new": {
+              "requirement": "New Team retained draft",
+              "files": []
+            },
+            "existing": {
+              "requirement": "Existing Team retained draft",
+              "files": []
+            }
+          }
+        }
+      }
+    }
+  },
+  "uploadRequests": [
+    {
+      "sequence": 1,
+      "method": "POST",
+      "url": "/rest/context-files/upload",
+      "contentType": "multipart/form-data; boundary=----WebKitFormBoundary7U09cn6YK6JGGUsU",
+      "bodyByteLength": 382,
+      "ownerIsOrgA": true,
+      "filenamePresent": true,
+      "receivedAt": "2026-09-22T05:28:44.747Z"
+    }
+  ],
+  "otherRequests": [
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetApplicationsCapability",
+      "receivedAt": "2026-09-22T05:28:44.430Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAllWorkspaces",
+      "receivedAt": "2026-09-22T05:28:44.431Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-09-22T05:28:44.431Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-09-22T05:28:44.432Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentDefinitions",
+      "receivedAt": "2026-09-22T05:28:44.433Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentTeamDefinitions",
+      "receivedAt": "2026-09-22T05:28:44.434Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentOrgDefinitions",
+      "receivedAt": "2026-09-22T05:28:44.435Z"
+    }
+  ],
+  "browserEvents": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 25762,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "restServer": "closed",
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "restBaseUrl": "http://127.0.0.1:63106",
+  "port": 63107,
+  "baseUrl": "http://127.0.0.1:63107",
+  "result": "Pass",
+  "finishedAt": "2026-09-22T05:28:46.094Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/tickets/in-progress/org-run-draft-input-retention/evidence/browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/tickets/in-progress/org-run-draft-input-retention/evidence/browser/nuxt.log",
+    "orgScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/tickets/in-progress/org-run-draft-input-retention/evidence/browser/org-cross-root-retention.png",
+    "parityScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/tickets/in-progress/org-run-draft-input-retention/evidence/browser/agent-team-parity.png",
+    "narrowScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/tickets/in-progress/org-run-draft-input-retention/evidence/browser/org-return-narrow.png"
+  }
+}

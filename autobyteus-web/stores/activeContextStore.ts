@@ -164,7 +164,6 @@ export const useActiveContextStore = defineStore('activeContext', () => {
 
   const inspectAgentOrg = (orgRunId: string) => agentOrgContextsStore.openForInspection(orgRunId);
   const selectAgentOrg = agentOrgContextsStore.select;
-  const disconnectAgentOrg = (orgRunId: string): void => agentOrgContextsStore.disconnect(orgRunId);
   const agentOrgContextFor = (orgRunId: string) => agentOrgContextsStore.contextFor(orgRunId);
   const agentOrgErrorFor = (orgRunId: string): string | null => agentOrgContextsStore.errorFor(orgRunId);
 
@@ -293,7 +292,6 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     activeConfig,
     inspectAgentOrg,
     selectAgentOrg,
-    disconnectAgentOrg,
     agentOrgContextFor,
     agentOrgErrorFor,
     updateRequirementForContext,

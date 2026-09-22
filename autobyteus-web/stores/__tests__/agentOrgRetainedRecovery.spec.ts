@@ -67,7 +67,7 @@ beforeEach(() => {
       ? { data: { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: 8, hasOpenExecutionWork: true } } }
       : projection(variables))
 })
-afterEach(() => { wrapper?.unmount(); wrapper = undefined; store.disconnect('org-run'); vi.useRealTimers(); vi.unstubAllGlobals() })
+afterEach(() => { wrapper?.unmount(); wrapper = undefined; store.releaseContext('org-run'); vi.useRealTimers(); vi.unstubAllGlobals() })
 
 describe('retained Org disconnected recovery through real service/store/hydration', () => {
   it.each(['/team/worker', '/director'])('RET-01: reconciles %s without refocus or input', async (address) => {
@@ -166,12 +166,12 @@ it.each(['inspection', 'projection'])('RET-05: pending %s cannot publish during 
   expect(store.contextFor('org-run')!.phase).toBe('historical')
 })
 
-it.each(['disconnect', 'manual'])('RET-05: late inspection cannot overwrite %s owner', async (action) => {
+it.each(['release', 'manual'])('RET-05: late inspection cannot overwrite %s owner', async (action) => {
   const socket = await open()
   const gate = deferred<any>()
   mocks.query.mockReturnValue(gate.promise)
   socket.close(); await tick()
-  if (action === 'disconnect') store.disconnect('org-run')
+  if (action === 'release') store.releaseContext('org-run')
   else {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
     store.select('org-run', '/director')

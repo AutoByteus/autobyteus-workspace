@@ -1,0 +1,35 @@
+$ hdiutil verify AutoByteus_enterprise_macos-arm64-1.4.73.dmg
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $2F99E826
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $62756508
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $15F887E5
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $EF7EF099
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $15F887E5
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $CDBE1D1D
+Die überprüfte CRC32-Prüfsumme ist $3AF9B9C8
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.73.dmg" is VALID
+
+$ unzip -tq AutoByteus_enterprise_macos-arm64-1.4.73.zip
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.73.zip.
+
+$ file packaged executable
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+$ package version and bundle id
+1.4.73
+com.autobyteus.app
+
+$ sha256 artifacts
+bfd30d9c1f7441109a4fe0262abbcd11169bf55ecefff8852b61c616f472d996  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.73.dmg
+ad369108519e6d3cfd91b1a1cce2fb4ac4efd5ff09057d368271e283dba75e91  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.73.zip
+107a436dabd7009b633bdfd2a27d7a69421982b584cd17a48341416ed1501524  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.73.dmg.blockmap
+b57a9738bfa0cdb18e70278f3086ea2c32ffddb6904c541d2c1e8c44fe760d61  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.73.zip.blockmap
