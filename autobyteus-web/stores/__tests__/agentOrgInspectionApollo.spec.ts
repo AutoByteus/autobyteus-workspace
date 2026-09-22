@@ -52,7 +52,7 @@ beforeEach(() => {
   history.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
   expect(observedRow().isActive).toBe(true)
 })
-afterEach(() => { orgs.disconnect('org-run'); transport.client.stop(); vi.unstubAllGlobals() })
+afterEach(() => { orgs.releaseContext('org-run'); transport.client.stop(); vi.unstubAllGlobals() })
 
 describe.each(['/director', '/team/lead'])('installed Apollo final inspection %s', address => {
   it.each([false, true].flatMap(prior => [false, true].map(oldFirst => ({ prior, oldFirst }))))(
@@ -186,12 +186,12 @@ it.each(['network', 'null', 'identity'])('invalid new root %s retains the stoppe
   expect(transport.named(MEMBER)).toHaveLength(7)
 })
 
-it('invalidating an ordinary stage through disconnect cannot publish a partial candidate', async () => {
+it('invalidating an ordinary stage through explicit release cannot publish a partial candidate', async () => {
   const old = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(true))
   const batch = await requests(MEMBER, 7)
   batch[0]!.respond(memberData(batch[0]!.operation.variables, 'partial')); await flushPromises()
-  orgs.disconnect('org-run'); releaseMembers(batch.slice(1), 'obsolete'); await old
+  orgs.releaseContext('org-run'); releaseMembers(batch.slice(1), 'obsolete'); await old
   expect(orgs.contextFor('org-run')).toBeNull()
   expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
   expect(OrgTestSocket.instances).toHaveLength(0)

@@ -74,7 +74,7 @@ const cleanupStoredAgentOrgRunLocalState = (
   orgRunId: string,
 ): void => {
   store.agentOrgHistory = store.agentOrgHistory.filter((run) => run.rootRunId !== orgRunId);
-  useAgentOrgContextsStore().disconnect(orgRunId);
+  useAgentOrgContextsStore().releaseContext(orgRunId);
 };
 
 const cleanupStoredTeamRunLocalState = (

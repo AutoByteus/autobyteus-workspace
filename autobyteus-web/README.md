@@ -559,6 +559,25 @@ case. After the backend has already been built in the current worktree,
 not find Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Agent Org Draft-Retention Browser Probe
+
+The session draft-retention regression has a self-starting Chromium probe that
+mounts the production Agent Org workspace view and shared composer with
+current-format isolated contexts. It exercises cross-root and same-root member
+navigation, unmount/remount through standalone surfaces, new/existing Agent and
+Team parity, and a real browser file input whose multipart response is delayed
+until another Org is visible. The probe starts only an owned Nuxt process and
+loopback REST fixture, records semantic/store/request evidence and screenshots,
+and removes its temporary route and processes:
+
+```bash
+pnpm test:e2e:agent-org-draft-retention -- --output-dir test-results/agent-org-draft-retention
+```
+
+Use `--port <port>` to pin the Nuxt port. If automatic browser discovery does
+not find Chrome/Chromium, pass `--browser-executable <path>` or set
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:
@@ -580,6 +599,7 @@ pnpm codegen
 - `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
 - `pnpm test:e2e:task-agent-monitor-visibility`: Run the self-starting exact task hydration and settlement-fallback browser probe
 - `pnpm test:e2e:agent-org-role-labels`: Run the self-starting real-backend Agent Org role-label probe
+- `pnpm test:e2e:agent-org-draft-retention`: Run the self-starting Agent Org/Agent/Team session draft-retention browser probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

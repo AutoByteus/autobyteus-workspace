@@ -25,7 +25,7 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAcce
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }));
 let wrapper: VueWrapper | undefined;
 beforeEach(() => { setActivePinia(createPinia()); apollo = new ControlledOrgApollo(); OrgTestSocket.instances = []; vi.stubGlobal('WebSocket', OrgTestSocket); });
-afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentOrgContextsStore().disconnect('org-run'); apollo.client.stop(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentOrgContextsStore().releaseContext('org-run'); apollo.client.stop(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 const member = (id: string) => ({ teamRunId: 'prior-team', agentRunId: id, memberAddress: `/${id}` });
 const respondTeam = (request: ControlledOrgApollo['requests'][number], label = 'loaded') => request.respond({ getTeamMemberRunProjection: {
   __typename: 'TeamMemberRunProjection', agentRunId: request.operation.variables.agentRunId,
@@ -125,7 +125,7 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     s.router.forward(); await flushPromises(); expect(s.router.currentRoute.value.path).toBe('/agents');
   });
   it('supersedes a cold Org selecting candidate before publication, preserving a newer Team selection', async () => {
-    const s = await setup(); s.orgs.disconnect('org-run');
+    const s = await setup(); s.orgs.releaseContext('org-run');
     const old = s.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/director' });
     await vi.waitFor(() => expect(apollo.pending('GetAgentOrgRunInspection')).toHaveLength(1));
     apollo.pending('GetAgentOrgRunInspection')[0].respond(inspectionData(false));

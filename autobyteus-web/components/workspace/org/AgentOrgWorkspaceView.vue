@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useActiveContextStore } from '~/stores/activeContextStore'
@@ -141,10 +141,8 @@ onMounted(() => {
   center.showChat()
   open()
 })
-onBeforeUnmount(() => { if (orgRunId.value) active.disconnectAgentOrg(orgRunId.value) })
-watch(orgRunId, (nextRunId, previousRunId) => {
+watch(orgRunId, () => {
   center.showChat()
-  if (previousRunId && previousRunId !== nextRunId) active.disconnectAgentOrg(previousRunId)
   open()
 })
 watch(() => context.value?.phase, (phase) => {

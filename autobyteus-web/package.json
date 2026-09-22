@@ -54,6 +54,7 @@
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
     "test:e2e:task-agent-monitor-visibility": "node tests/e2e/task-agent-monitor-visibility-probe.mjs",
     "test:e2e:agent-org-role-labels": "node tests/e2e/agent-org-role-labels-probe.mjs",
+    "test:e2e:agent-org-draft-retention": "node tests/e2e/agent-org-draft-retention-probe.mjs",
     "test:e2e:system-instruction-activity": "node tests/e2e/system-instruction-activity-probe.mjs",
     "test:e2e:codex-command-failure-detail": "node tests/e2e/codex-command-failure-detail-probe.mjs",
     "test:e2e:standalone-agent-error-stop": "node tests/e2e/standalone-agent-error-stop-probe.mjs",
