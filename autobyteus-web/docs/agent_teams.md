@@ -57,6 +57,15 @@ Changes remain in the definition draft until the complete definition saves
 atomically. Invalid/self-resolving endpoints, duplicate pairs, empty conditions,
 and member changes that leave stale references block save visibly.
 
+Handoff cards, selected previews, and native endpoint options present readable
+member labels rather than rooted canonical addresses. Exact addresses remain the
+option values and saved routing identities; display text must never replace them.
+When two endpoints have the same readable label, the UI adds the shortest
+human-readable placement suffix that distinguishes them. Unavailable endpoints
+use a readable non-rooted address form, or the localized unknown-endpoint label
+when the stored address is malformed. Long identity labels wrap, and the
+direction layout stacks at narrow widths instead of clipping or overflowing.
+
 AgentOrg owns cross-Team and Org-level handoffs. A Team selected as an Org
 destination routes through its direct coordinator, but the Org editor never
 mutates the Team's local handoffs.

@@ -26,6 +26,13 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   conditions.
 - Handoff sources are exact Agents. Destinations may be an Agent or a mounted
   Team; a Team destination resolves through its direct coordinator.
+- Handoff cards, selected previews, and endpoint options show complete readable
+  role/Team labels without exposing rooted canonical addresses. Duplicate labels
+  receive the shortest distinguishing non-rooted placement suffix. Exact
+  canonical addresses remain the native option values and persisted routing
+  identities. Long labels wrap and narrow direction cards stack; unavailable
+  endpoints remain readable, while malformed addresses use the localized generic
+  endpoint label.
 - Save is atomic and retains a failed draft for correction.
 - Mutation members contain only `memberName`, `ref`, `refType`, and `refScope`;
   Apollo response metadata such as `__typename` is not echoed into input.
