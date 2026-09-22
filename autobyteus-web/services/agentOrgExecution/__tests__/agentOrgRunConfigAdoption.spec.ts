@@ -47,7 +47,7 @@ describe('AgentOrg whole model-only canonical adoption', () => {
       mounted.defaultLaunchConfiguration.llmModelIdentifier = 'team-next'
       mounted.defaultLaunchConfiguration.llmConfig = null
     }
-    expect(org.applyRunModelConfig(next, false)).toBe(true)
+    expect(org.applyRunConfig(next, false)).toBe(true)
     for (const item of retained) {
       expect(item.entry.context.state).toBe(item.state)
       expect(item.entry.context.conversation).toBe(item.conversation)
@@ -70,7 +70,7 @@ describe('AgentOrg whole model-only canonical adoption', () => {
     ]) {
       const view = org.view, index = org.index, next = JSON.parse(JSON.stringify(org.executionTree))
       mutate(next)
-      expect(() => org.applyRunModelConfig(next, false)).toThrow('locked fields')
+      expect(() => org.applyRunConfig(next, false)).toThrow('locked fields')
       expect(org.view).toBe(view); expect(org.index).toBe(index)
     }
   })

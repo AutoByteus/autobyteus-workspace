@@ -1,3 +1,4 @@
+import { createExistingAgentOrgWorkspaceDraft } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
@@ -8,7 +9,7 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 
 const model = () => {
   const tree = taskBearingView().execution_tree
-  return projectExistingAgentOrgRunFormModel({ tree, planner: createExistingAgentOrgModelConfigDraft(tree),
+  return projectExistingAgentOrgRunFormModel({ tree, workspaceDraft: createExistingAgentOrgWorkspaceDraft(tree, []), planner: createExistingAgentOrgModelConfigDraft(tree),
     isActive: false, modelConfigEditable: true, modelConfigReason: null, saving: false,
     modelOptionsByAddress: Object.fromEntries(['/', '/director', '/team', '/team/lead'].map(address => [address, {
       status: 'ready', options: { currentModelIdentifier: 'gpt-5.6-sol', currentContextTokens: 100,

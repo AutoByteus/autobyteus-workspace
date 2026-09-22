@@ -1,5 +1,5 @@
-import type { AgentOrgRunModelConfigPatch } from "../domain/agent-org-run-model-config.js";
-import { listAgentOrgRunModelConfigScopes } from "./agent-org-run-model-config-mutator.js";
+import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
+import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
@@ -56,12 +56,14 @@ export class AgentOrgRunService {
     history: Pick<AgentOrgRunHistoryCatalogService, "initialize" | "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
   }>) {}
 
-  getRunModelConfig(orgRunId: string) {
-    return this.dependencies.manager.getRunModelConfig(orgRunId);
+  getRunConfig(orgRunId: string) {
+    return this.dependencies.manager.getRunConfig(orgRunId);
   }
-  async runModelOptions(orgRunId: string) {
-    const canonical = await this.dependencies.manager.getRunModelConfig(orgRunId);
-    const scopes = listAgentOrgRunModelConfigScopes(canonical.executionTree);
+  async runModelOptions(orgRunId: string, teamWorkspacePatches: readonly TeamWorkspacePatch[] = []) {
+    const canonical = await this.dependencies.manager.getRunConfig(orgRunId);
+    const patches = resolveAgentOrgTeamWorkspacePatches(canonical.executionTree, teamWorkspacePatches)
+      .map(patch => ({ ...patch, workspaceRootPath: canonicalizeWorkspaceRootPath(patch.workspaceRootPath) }));
+    const scopes = listAgentOrgRunModelConfigScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
     const options = await this.dependencies.modelSelectionOptions.listOptionsMany(scopes.map(({ launchConfiguration }) => ({
       runtimeKind: launchConfiguration.runtimeKind,
       currentModelIdentifier: launchConfiguration.llmModelIdentifier,
@@ -70,8 +72,8 @@ export class AgentOrgRunService {
     if (options.length !== scopes.length) throw new Error("Model options returned an incomplete AgentOrg scope result.");
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
   }
-  updateStoppedRunModelConfigs(input: Readonly<{ orgRunId: string; patches: readonly AgentOrgRunModelConfigPatch[] }>) {
-    return this.dependencies.manager.updateStoppedRunModelConfigs(input);
+  updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig) {
+    return this.dependencies.manager.updateStoppedRunConfig(input);
   }
 
   async create(command: CreateAgentOrgRunCommand): Promise<AgentOrgRun> {

@@ -1075,7 +1075,7 @@ canonicalizing the supplied absolute path.
 
 `RunConfigPanel.vue` routes a selected persisted Agent or Team to
 `ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer. The
-editor and `existingRunModelConfigStore` own a Settings-scoped canonical network
+editor and `existingRunConfigStore` own a Settings-scoped canonical network
 load, local draft, schema readiness, mutation state, and reconciliation. Cached
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.

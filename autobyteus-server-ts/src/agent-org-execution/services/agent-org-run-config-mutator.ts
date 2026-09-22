@@ -7,15 +7,19 @@ import type {
 import type { AgentOrgRunExecutionTreeFileV1 } from "../domain/agent-org-run-execution-tree.js";
 import type {
   AgentOrgRunModelConfigPatch,
+  TeamWorkspacePatch,
   AgentOrgRunModelConfigScopeKind,
-} from "../domain/agent-org-run-model-config.js";
+} from "../domain/agent-org-run-config.js";
 
 export type AgentOrgRunModelConfigTarget = Readonly<{
   patch: AgentOrgRunModelConfigPatch;
   launchConfiguration: AgentLaunchConfiguration;
 }>;
 
-export class AgentOrgRunModelConfigNotFound extends Error {}
+export class AgentOrgRunConfigNotFound extends Error {}
+export class AgentOrgWorkspacePatchError extends Error {
+  constructor(readonly path: string, message: string) { super(message); }
+}
 
 const configuredScope = (tree: AgentOrgRunExecutionTreeFileV1, address: string): Readonly<{
   kind: AgentOrgRunModelConfigScopeKind;
@@ -53,7 +57,6 @@ export const resolveAgentOrgRunModelConfigTargets = (
   tree: AgentOrgRunExecutionTreeFileV1,
   patches: readonly AgentOrgRunModelConfigPatch[],
 ): readonly AgentOrgRunModelConfigTarget[] => {
-  if (!patches.length) throw new Error("At least one configured-scope patch is required.");
   const seen = new Set<string>();
   return patches.map((patch) => {
     const address = patch.scopeAddress?.trim();
@@ -117,4 +120,39 @@ export const applyAgentOrgRunModelConfigPatches = (
       members: tree.rootOrg.members.map((member) => patchMember(member, patches)),
     },
   };
+};
+
+/** Resolves only configured mounted Teams; never execution snapshots or direct Agents. */
+export const resolveAgentOrgTeamWorkspacePatches = (
+  tree: AgentOrgRunExecutionTreeFileV1,
+  patches: readonly TeamWorkspacePatch[],
+): readonly TeamWorkspacePatch[] => {
+  const seen = new Set<string>();
+  return patches.map((patch) => {
+    const address = patch.teamAddress?.trim();
+    if (!address || seen.has(address)) throw new AgentOrgWorkspacePatchError("teamWorkspacePatches", `Duplicate or invalid Team workspace target '${address}'.`);
+    seen.add(address);
+    const team = tree.rootOrg.members.find((member) => member.address === address && 'teamRunId' in member);
+    if (!team) throw new AgentOrgWorkspacePatchError(`teamWorkspacePatches[${address}]`, `Configured mounted Team '${address}' was not found.`);
+    if (typeof patch.workspaceRootPath !== 'string' || !patch.workspaceRootPath.trim()) {
+      throw new AgentOrgWorkspacePatchError(`teamWorkspacePatches[${address}].workspaceRootPath`, `Team '${address}' workspaceRootPath is required.`);
+    }
+    return { teamAddress: address, workspaceRootPath: patch.workspaceRootPath.trim() };
+  });
+};
+
+export const applyAgentOrgTeamWorkspacePatches = (
+  tree: AgentOrgRunExecutionTreeFileV1,
+  patches: readonly TeamWorkspacePatch[],
+): AgentOrgRunExecutionTreeFileV1 => {
+  const byAddress = new Map(patches.map((patch) => [patch.teamAddress, patch.workspaceRootPath]));
+  return { ...tree, rootOrg: { ...tree.rootOrg, members: tree.rootOrg.members.map((member) => {
+    const workspaceRootPath = byAddress.get(member.address);
+    if (!('teamRunId' in member) || workspaceRootPath === undefined) return member;
+    return { ...member,
+      defaultLaunchConfiguration: { ...member.defaultLaunchConfiguration, workspaceRootPath },
+      members: member.members.map((agent) => ({ ...agent,
+        launchConfiguration: { ...agent.launchConfiguration, workspaceRootPath } })),
+    };
+  }) } };
 };

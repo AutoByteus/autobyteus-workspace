@@ -14,7 +14,7 @@ export type AgentOrgRunModelConfigPatch = Readonly<{
   llmConfig: Readonly<Record<string, unknown>> | null;
 }>;
 
-export type AgentOrgRunModelConfig = Readonly<{
+export type AgentOrgRunConfig = Readonly<{
   orgRunId: string;
   executionTree: AgentOrgRunExecutionTreeFileV1;
   isActive: boolean;
@@ -26,4 +26,15 @@ export type AgentOrgRunModelOption = RunModelOptions & Readonly<{
   scopeAddress: string;
 }>;
 
-export type AgentOrgRunModelConfigResult = RunModelConfigUpdateResult<AgentOrgRunExecutionTreeFileV1 | null>;
+export type AgentOrgRunConfigResult = RunModelConfigUpdateResult<AgentOrgRunExecutionTreeFileV1 | null>;
+
+export type TeamWorkspacePatch = Readonly<{
+  teamAddress: string;
+  workspaceRootPath: string;
+}>;
+
+export type UpdateStoppedAgentOrgRunConfig = Readonly<{
+  orgRunId: string;
+  modelPatches: readonly AgentOrgRunModelConfigPatch[];
+  teamWorkspacePatches: readonly TeamWorkspacePatch[];
+}>;

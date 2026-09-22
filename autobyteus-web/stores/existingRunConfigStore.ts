@@ -1,3 +1,9 @@
+import { useWorkspaceStore } from '~/stores/workspace'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import { createExistingAgentOrgWorkspaceDraft, updateExistingAgentOrgWorkspaceDraft,
+  planExistingAgentOrgWorkspacePatches, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
+import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
 import { loadExistingRunModelOptions } from '~/services/runConfigEditing/existingRunModelOptionsClient'
 import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
@@ -7,7 +13,6 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import type {
-  ExistingRunModelConfigDraft,
   ExistingRunModelSelection,
   ExistingRunModelOptionsState,
   ExistingRunModelConfigFieldError,
@@ -33,12 +38,9 @@ import {
 import {
   updateStoppedAgentModelConfig,
   updateStoppedTeamModelConfigs,
-  type AgentModelConfigMutationResult,
-  type TeamModelConfigMutationResult,
-  type AgentOrgModelConfigMutationResult,
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
-import type { AgentOrgRunModelConfigRead } from '~/services/runConfigEditing/agentOrgRunModelConfigClient'
-import { existingRunModelConfigResultActions } from '~/stores/existingRunModelConfigResultActions'
+import type { AgentOrgRunConfigRead } from '~/services/runConfigEditing/agentOrgRunConfigClient'
+import { existingRunConfigResultActions } from '~/stores/existingRunConfigResultActions'
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
 const metadataSelection = (metadata: RunResumeConfigPayload['metadataConfig']): ExistingRunModelSelection => ({
@@ -64,9 +66,9 @@ const sameTarget = (left: CanonicalLoadTarget | null, right: CanonicalLoadTarget
   return left.kind === 'agent_org' && right.kind === 'agent_org' && left.orgRunId === right.orgRunId
 }
 
-export const useExistingRunModelConfigStore = defineStore('existingRunModelConfig', {
+export const useExistingRunConfigStore = defineStore('existingRunConfig', {
   state: () => ({
-    draft: null as ExistingRunModelConfigDraft | null,
+    draft: null as ExistingRunConfigDraft | null,
     modelOptionsByAddress: {} as Record<string, ExistingRunModelOptionsState>,
     optionsRequestId: 0,
     schemaStateByAddress: {} as Record<string, ExistingRunModelConfigSchemaState>,
@@ -93,7 +95,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         ? !existingRunSelectionsEqual(metadataSelection(draft.metadata), draft.draftSelection)
         : draft.kind === 'team'
           ? planExistingTeamModelConfigPatches(draft.planner).length > 0
-          : planExistingAgentOrgModelConfigPatches(draft.planner).length > 0
+          : planExistingAgentOrgModelConfigPatches(draft.planner).length > 0 || existingAgentOrgWorkspacesDirty(draft.executionTree, draft.workspaceDraft)
     },
     canSave(state): boolean {
       const draft = state.draft
@@ -109,25 +111,34 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         : planExistingAgentOrgModelConfigPatches(draft.planner)
       const allScopesReady = Object.keys(draft.planner.scopesByAddress)
         .every((address) => state.schemaStateByAddress[address]?.status === 'ready')
-      return patches.length > 0 && allScopesReady && patches.every((patch) => {
+      const workspaceDirty = draft.kind === 'agent_org' && existingAgentOrgWorkspacesDirty(draft.executionTree, draft.workspaceDraft)
+      if (draft.kind === 'agent_org' && (!existingAgentOrgWorkspacesValid(draft.executionTree, draft.workspaceDraft)
+        || (workspaceDirty && Object.keys(draft.planner.scopesByAddress).some(address => state.modelOptionsByAddress[address]?.status !== 'ready')))) return false
+      return (patches.length > 0 || workspaceDirty) && allScopesReady && patches.every((patch) => {
         const scope = draft.planner.scopesByAddress[patch.scopeAddress]!
         return scope && selectionAllowed(scope.originalSelection, scope.draftSelection, state.modelOptionsByAddress[patch.scopeAddress])
       })
     },
   },
   actions: {
-    async refreshModelOptions(): Promise<void> {
+    async refreshModelOptions(delayMs = 0): Promise<void> {
       const draft = this.draft
       if (!draft) return
-      const requestId = ++this.optionsRequestId
+      const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
       const addresses = draft.kind === 'agent' ? ['/'] : Object.keys(draft.planner.scopesByAddress)
       this.modelOptionsByAddress = Object.fromEntries(addresses.map((address) => [address, { status: 'loading', options: null }]))
+      if (draft.kind === 'agent_org' && !existingAgentOrgWorkspacesValid(draft.executionTree, draft.workspaceDraft)) {
+        this.modelOptionsByAddress = Object.fromEntries(addresses.map(address => [address, { status: 'unavailable', options: null }]))
+        return
+      }
+      if (delayMs) await new Promise(resolve => setTimeout(resolve, delayMs))
+      if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
       try {
         const options = await loadExistingRunModelOptions(draft)
-        if (requestId !== this.optionsRequestId) return
+        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.modelOptionsByAddress = options
       } catch {
-        if (requestId !== this.optionsRequestId) return
+        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.modelOptionsByAddress = Object.fromEntries(addresses.map((address) => [address, { status: 'unavailable', options: null }]))
       }
     },
@@ -199,16 +210,17 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
     },
     async loadAgentOrgCanonical(orgRunId: string): Promise<void> {
       const target = { kind: 'agent_org' as const, orgRunId }
-      const requestId = this.beginCanonicalLoad(target)
+      const requestId = this.beginCanonicalLoad(target), binding = useWindowNodeContextStore().bindingRevision
+      const current = () => this.isCurrentLoad(requestId, target) && binding === useWindowNodeContextStore().bindingRevision
       try {
-        const payload = await useAgentOrgContextsStore().readRunModelConfig(orgRunId)
-        if (this.isCurrentLoad(requestId, target)) this.syncAgentOrgCanonical(payload)
+        const payload = await useAgentOrgContextsStore().readRunConfig(orgRunId)
+        if (current()) this.syncAgentOrgCanonical(payload)
       } catch (error) {
-        if (!this.isCurrentLoad(requestId, target)) return
+        if (!current()) return
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         this.reconciliationRequired = true
       } finally {
-        if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
+        if (current()) this.loadingCanonical = false
       }
     },
     syncAgentCanonical(payload: RunResumeConfigPayload): void {
@@ -247,12 +259,13 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       void this.refreshModelOptions()
       if (!sameSubject) this.feedback = null
     },
-    syncAgentOrgCanonical(payload: AgentOrgRunModelConfigRead): void {
+    syncAgentOrgCanonical(payload: AgentOrgRunConfigRead): void {
       const sameSubject = this.draft?.kind === 'agent_org' && this.draft.orgRunId === payload.orgRunId
       const tree = parseAgentOrgExecutionTree(payload.executionTree)
       this.draft = { kind: 'agent_org', orgRunId: payload.orgRunId, isActive: payload.isActive,
         editability: { ...payload.editability }, executionTree: cloneExistingRunJsonValue(tree),
-        planner: createExistingAgentOrgModelConfigDraft(tree) }
+        planner: createExistingAgentOrgModelConfigDraft(tree),
+        workspaceDraft: createExistingAgentOrgWorkspaceDraft(tree, useWorkspaceStore().allWorkspaces) }
       this.schemaStateByAddress = Object.fromEntries(
         Object.keys(this.draft.planner.scopesByAddress).map((address) => [address, loadingSchemaState()]),
       )
@@ -329,6 +342,15 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.feedback = null
       this.fieldErrors = []
     },
+    updateAgentOrgWorkspaceSelection(address: string, selection: WorkspaceSelectionState): void {
+      if (this.draft?.kind !== 'agent_org' || !this.draft.editability.editable || this.draft.isActive
+        || this.saving || this.loadingCanonical || this.reconciling || this.reconciliationRequired) return
+      this.draft = { ...this.draft, workspaceDraft: updateExistingAgentOrgWorkspaceDraft(
+        this.draft.workspaceDraft, address, selection, useWorkspaceStore().allWorkspaces) }
+      this.feedback = null
+      this.fieldErrors = []
+      void this.refreshModelOptions(selection.mode === 'new' ? 250 : 0)
+    },
     setSchemaState(address: string, state: ExistingRunModelConfigSchemaState): void {
       if (!this.draft || (this.draft.kind === 'agent' && address !== '/') ||
           (this.draft.kind !== 'agent' && !this.draft.planner.scopesByAddress[address])) return
@@ -337,6 +359,9 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
     async save(): Promise<boolean> {
       const draft = this.draft
       if (!draft || !this.canSave) return false
+      const requestId = this.canonicalLoadRequestId
+      const binding = useWindowNodeContextStore().bindingRevision
+      const current = () => requestId === this.canonicalLoadRequestId && binding === useWindowNodeContextStore().bindingRevision
       this.saving = true
       this.feedback = null
       this.fieldErrors = []
@@ -345,6 +370,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         if (draft.kind === 'team') return await this.saveTeam(draft)
         return await this.saveAgentOrg(draft)
       } catch (error) {
+        if (!current()) return false
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         if (draft.kind === 'agent') {
           await this.reconcileAgentFailure('PERSISTENCE_INDETERMINATE', draft.runId)
@@ -355,10 +381,10 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         }
         return false
       } finally {
-        this.saving = false
+        if (current()) this.saving = false
       }
     },
-    async saveAgent(draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent' }>): Promise<boolean> {
+    async saveAgent(draft: Extract<ExistingRunConfigDraft, { kind: 'agent' }>): Promise<boolean> {
       const result = await updateStoppedAgentModelConfig({
         agentRunId: draft.runId,
         ...cloneExistingRunSelection(draft.draftSelection),
@@ -385,7 +411,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       await this.reconcileAgentFailure(result.outcome, draft.runId)
       return false
     },
-    async saveTeam(draft: Extract<ExistingRunModelConfigDraft, { kind: 'team' }>): Promise<boolean> {
+    async saveTeam(draft: Extract<ExistingRunConfigDraft, { kind: 'team' }>): Promise<boolean> {
       const result = await updateStoppedTeamModelConfigs({
         teamRunId: draft.teamRunId,
         patches: planExistingTeamModelConfigPatches(draft.planner),
@@ -411,11 +437,13 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       await this.reconcileTeamFailure(result.outcome, draft.teamRunId)
       return false
     },
-    async saveAgentOrg(draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent_org' }>): Promise<boolean> {
-      const result = await useAgentOrgContextsStore().saveRunModelConfigs(
-        draft.orgRunId,
-        planExistingAgentOrgModelConfigPatches(draft.planner),
-      )
+    async saveAgentOrg(draft: Extract<ExistingRunConfigDraft, { kind: 'agent_org' }>): Promise<boolean> {
+      const requestId = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
+      const result = await useAgentOrgContextsStore().saveRunConfig(draft.orgRunId, {
+        modelPatches: planExistingAgentOrgModelConfigPatches(draft.planner),
+        teamWorkspacePatches: planExistingAgentOrgWorkspacePatches(draft.executionTree, draft.workspaceDraft),
+      })
+      if (requestId !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false
       if (this.draft?.kind !== 'agent_org' || this.draft.orgRunId !== draft.orgRunId) return false
       if (result.success) {
         const tree = parseAgentOrgExecutionTree(result.canonicalExecutionTree)
@@ -430,65 +458,6 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       await this.reconcileAgentOrgFailure(result.outcome, draft.orgRunId)
       return false
     },
-    applyAgentFailureCanonical(
-      draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent' }>,
-      result: AgentModelConfigMutationResult,
-    ): void {
-      if (!result.canonicalSelection?.llmModelIdentifier || !Object.hasOwn(result.canonicalSelection, 'llmConfig')) {
-        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
-        return
-      }
-      const canonical = cloneExistingRunSelection(result.canonicalSelection)
-      const payload: RunResumeConfigPayload = {
-        runId: draft.runId,
-        isActive: result.isActive,
-        metadataConfig: { ...draft.metadata, ...canonical },
-        modelConfigEditability: result.editability,
-      }
-      useRunHistoryStore().resumeConfigByRunId[draft.runId] = payload
-      this.draft = {
-        ...draft,
-        metadata: payload.metadataConfig,
-        isActive: result.isActive,
-        editability: { ...result.editability },
-      }
-    },
-    applyTeamFailureCanonical(
-      draft: Extract<ExistingRunModelConfigDraft, { kind: 'team' }>,
-      result: TeamModelConfigMutationResult,
-    ): void {
-      const parsedTree = teamRunExecutionTreeDtoSchema.safeParse(result.canonicalExecutionTree)
-      if (!parsedTree.success) {
-        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
-        return
-      }
-      const payload: TeamRunResumeConfigPayload = {
-        teamRunId: draft.teamRunId,
-        isActive: result.isActive,
-        executionTree: parsedTree.data,
-        modelConfigEditability: result.editability,
-      }
-      useRunHistoryStore().teamResumeConfigByTeamRunId[draft.teamRunId] = payload
-      this.draft = {
-        ...draft,
-        isActive: result.isActive,
-        editability: { ...result.editability },
-        executionTree: cloneExistingRunJsonValue(parsedTree.data),
-      }
-    },
-    applyAgentOrgFailureCanonical(
-      draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent_org' }>,
-      result: AgentOrgModelConfigMutationResult,
-    ): void {
-      try {
-        const tree = parseAgentOrgExecutionTree(result.canonicalExecutionTree)
-        // Keep submitted planner values aligned with determinate field errors; indeterminate outcomes replace them after an explicit read.
-        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability },
-          executionTree: cloneExistingRunJsonValue(tree) }
-      } catch {
-        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
-      }
-    },
-    ...existingRunModelConfigResultActions,
+    ...existingRunConfigResultActions,
   },
 })

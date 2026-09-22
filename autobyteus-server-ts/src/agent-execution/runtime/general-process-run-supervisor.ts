@@ -209,6 +209,7 @@ export class GeneralProcessRunSupervisor {
         memberExecutionContextBuilder,
       });
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
+        workspaces: workspaceManager,
         memoryDir,
         modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({

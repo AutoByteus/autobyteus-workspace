@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
-const io = vi.hoisted(() => ({ getRunModelConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunModelConfigs: vi.fn(),
+const io = vi.hoisted(() => ({ getRunConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunConfig: vi.fn(),
   archiveStoredRun: vi.fn(), deleteStoredRun: vi.fn() }));
 vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io }));
 vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => ({}) }));
@@ -21,20 +21,20 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
     const schema = await buildSchema({ resolvers: [AgentOrgRunResolver], validate: false });
     const web = new URL('../../../../../../autobyteus-web/', import.meta.url);
     const queryText = readFileSync(new URL('graphql/queries/runModelOptionsQueries.ts', web), 'utf8');
-    const read = queryText.match(/export const AgentOrgRunModelConfig = gql`([\s\S]*?)`/)![1]!;
+    const read = queryText.match(/export const AgentOrgRunConfig = gql`([\s\S]*?)`/)![1]!;
     const options = queryText.match(/export const AgentOrgRunModelOptions = gql`([\s\S]*?)`/)![1]!;
     const mutation = readFileSync(new URL('graphql/mutations/agentOrgRunMutations.ts', web), 'utf8')
-      .match(/export const UpdateStoppedAgentOrgRunModelConfigs = gql`([\s\S]*?)`/)![1]!;
-    io.getRunModelConfig.mockResolvedValue({ orgRunId: 'org', executionTree: tree, isActive: false, editability: { editable: true, reason: null } });
+      .match(/export const UpdateStoppedAgentOrgRunConfig = gql`([\s\S]*?)`/)![1]!;
+    io.getRunConfig.mockResolvedValue({ orgRunId: 'org', executionTree: tree, isActive: false, editability: { editable: true, reason: null } });
     io.runModelOptions.mockResolvedValue([{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', currentModelIdentifier: 'model', currentContextTokens: 10, replacements: [], unavailableReason: null }]);
-    io.updateStoppedRunModelConfigs.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', canonical: tree,
+    io.updateStoppedRunConfig.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', canonical: tree,
       isActive: false, editability: { editable: true, reason: null }, fieldErrors: [] });
     expect((await graphql({ schema, source: read, variableValues: { orgRunId: 'org' } })).errors).toBeUndefined();
-    expect((await graphql({ schema, source: options, variableValues: { orgRunId: 'org' } })).errors).toBeUndefined();
-    const input = { orgRunId: 'org', patches: [{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmModelIdentifier: 'model', llmConfig: null }] };
+    expect((await graphql({ schema, source: options, variableValues: { orgRunId: 'org', teamWorkspacePatches: [] } })).errors).toBeUndefined();
+    const input = { orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmModelIdentifier: 'model', llmConfig: null }] };
     const saved = await graphql({ schema, source: mutation, variableValues: { input } });
-    expect(saved.errors).toBeUndefined(); expect(io.updateStoppedRunModelConfigs).toHaveBeenCalledWith(input);
-    expect(saved.data?.updateStoppedAgentOrgRunModelConfigs).toMatchObject({ success: true, canonical: tree });
+    expect(saved.errors).toBeUndefined(); expect(io.updateStoppedRunConfig).toHaveBeenCalledWith(input);
+    expect(saved.data?.updateStoppedAgentOrgRunConfig).toMatchObject({ success: true, canonical: tree });
   });
 
   it("exposes subject-explicit stored AgentOrg archive/delete mutations with exact result identity", async () => {

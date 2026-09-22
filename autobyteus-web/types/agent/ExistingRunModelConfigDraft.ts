@@ -1,8 +1,6 @@
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import type { RunMetadataConfigPayload, RunModelConfigEditability } from '~/stores/runHistoryTypes'
 import type { ExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
-import type { ExistingAgentOrgModelConfigDraft } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
-import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 
 export type ExistingRunModelConfigSchemaState = Readonly<{
   status: 'loading' | 'ready' | 'invalid' | 'unavailable'
@@ -31,17 +29,6 @@ export type ExistingTeamRunModelConfigDraft = Readonly<{
   executionTree: TeamRunExecutionTreeDto
   planner: ExistingTeamModelConfigDraft
 }>
-
-export type ExistingAgentOrgRunModelConfigDraft = Readonly<{
-  kind: 'agent_org'
-  orgRunId: string
-  isActive: boolean
-  editability: RunModelConfigEditability
-  executionTree: AgentOrgExecutionTree
-  planner: ExistingAgentOrgModelConfigDraft
-}>
-
-export type ExistingRunModelConfigDraft = ExistingAgentModelConfigDraft | ExistingTeamRunModelConfigDraft | ExistingAgentOrgRunModelConfigDraft
 
 export type ExistingRunModelSelection = Readonly<{
   llmModelIdentifier: string

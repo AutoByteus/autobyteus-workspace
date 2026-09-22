@@ -1013,7 +1013,7 @@ release that lease. Users must stop/terminalize the current owner, wait for the
 operation to finish, and reopen Settings before editing. Ownership recovery or
 inconsistent evidence fails closed rather than showing a false editable state.
 
-`existingRunModelConfigStore` owns one local draft. Leaving the selection or
+`existingRunConfigStore` owns one local draft. Leaving the selection or
 Settings discards unsaved values. For a Team,
 `existingTeamModelConfigDraft.ts` starts from the exact V2 execution tree: a
 Team-scope pair edit propagates only through draft-start links based on matching

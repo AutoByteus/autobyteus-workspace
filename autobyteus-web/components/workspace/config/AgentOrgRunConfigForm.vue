@@ -36,6 +36,7 @@
         :disabled="existingReadOnly"
         :model-config-field-errors-by-address="fieldErrors"
         @update-existing-model-config="forwardExisting"
+        @update:workspace-selection="(address, value) => emit('update:workspace-selection', address, value)"
         @schema-state="forwardSchema"
       />
     </MemberOverridesDisclosure>

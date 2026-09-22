@@ -65,11 +65,12 @@
       />
       <WorkspaceSelector
         v-else-if="existingScope"
-        :model="{ mode: 'stored', workspace: existingScope.storedWorkspace }"
-        :disabled="true"
+        :model="existingScope.workspaceControl"
+        :disabled="isInteractionDisabled"
         :historical-value-unavailable-message="historicalUnavailableMessage"
         :auto-select-default="false"
         control-variant="quiet"
+        @update:model-value="updateWorkspaceSelection"
       />
     </div>
 
@@ -214,11 +215,12 @@
         />
         <WorkspaceSelector
           v-else-if="existingScope"
-          :model="{ mode: 'stored', workspace: existingScope.storedWorkspace }"
-          :disabled="true"
+          :model="existingScope.workspaceControl"
+          :disabled="isInteractionDisabled"
           :historical-value-unavailable-message="historicalUnavailableMessage"
           :auto-select-default="false"
           control-variant="quiet"
+          @update:model-value="updateWorkspaceSelection"
         />
       </div>
 
@@ -336,8 +338,8 @@ const resetScope = () => {
   if (!isInteractionDisabled.value && editableScope.value) emit('reset')
 }
 const updateWorkspaceSelection = (selection: WorkspaceSelectionState) => {
-  if (!isInteractionDisabled.value && editableScope.value) {
-    emit('update:workspace-selection', editableScope.value.address, selection)
+  if (!isInteractionDisabled.value && (editableScope.value || existingScope.value?.workspaceControl.mode === 'editable')) {
+    emit('update:workspace-selection', props.scope.address, selection)
   }
 }
 const retryCatalog = () => {
