@@ -1,0 +1,91 @@
+
+> autobyteus@1.4.73 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts --run --reporter=dot
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+·······stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+··stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > retains isolated standalone Agent drafts across new and existing run selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > retains isolated Team member drafts across new and existing root selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+···············································································
+
+ Test Files  7 passed (7)
+      Tests  88 passed (88)
+   Start at  07:22:55
+   Duration  6.60s (transform 3.99s, setup 33.86s, collect 3.38s, tests 1.53s, environment 1.73s, prepare 1.13s)
