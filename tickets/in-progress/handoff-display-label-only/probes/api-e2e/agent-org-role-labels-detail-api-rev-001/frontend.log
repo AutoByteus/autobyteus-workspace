@@ -1,0 +1,89 @@
+
+> autobyteus@1.4.73 dev /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 62420
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:62420/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because vite config has changed
+✔ Vite client built in 161ms
+✔ Vite server built in 221ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 2551ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: zod, crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+
+> autobyteus@1.4.73 dev /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 62618
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:62618/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 52ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 666ms
+[nitro] ✔ Nuxt Nitro server built in 782ms
+ℹ Vite client warmed up in 1ms
+
+> autobyteus@1.4.73 dev /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 62702
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:62702/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 58ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 782ms
+[nitro] ✔ Nuxt Nitro server built in 774ms
+ℹ Vite client warmed up in 1ms
+
+> autobyteus@1.4.73 dev /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 62836
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:62836/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 37ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 521ms
+[nitro] ✔ Nuxt Nitro server built in 803ms
+ℹ Vite client warmed up in 1ms

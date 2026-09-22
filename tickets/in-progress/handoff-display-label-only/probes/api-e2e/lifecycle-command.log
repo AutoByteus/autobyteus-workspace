@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.73 test:e2e:agent-org-role-labels /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> node tests/e2e/agent-org-role-labels-probe.mjs -- --scenario lifecycle --skip-server-build --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/in-progress/handoff-display-label-only/probes/api-e2e/agent-org-role-labels-lifecycle
+
+Pass: /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/in-progress/handoff-display-label-only/probes/api-e2e/agent-org-role-labels-lifecycle/agent-org-role-labels-result.json

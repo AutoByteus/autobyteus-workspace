@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.73 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

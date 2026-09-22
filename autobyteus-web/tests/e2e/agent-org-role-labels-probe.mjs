@@ -42,6 +42,10 @@ const fixture = {
     directLabel: 'Research Lead',
     directRef: 'aorg-role-research-agent',
     directDefinitionName: 'Canonical Research Agent',
+    alternateDirectRole: 'Research_Advisor',
+    alternateDirectLabel: 'Research Advisor',
+    alternateDirectRef: 'aorg-role-research-advisor',
+    alternateDirectDefinitionName: 'Canonical Research Agent',
     teamRole: 'Delivery-Team',
     teamLabel: 'Delivery Team',
     teamRef: 'aorg-role-delivery-team',
@@ -50,6 +54,11 @@ const fixture = {
     coordinatorLabel: 'Architecture Lead',
     coordinatorLocalRef: 'architecture-agent',
     coordinatorDefinitionName: 'Canonical Architecture Agent',
+    workerRole: 'Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence',
+    workerLocalRef: 'quality-assurance-agent',
+    workerDefinitionName: 'Canonical Quality Assurance Agent',
+    staleRole: 'Retired_Review_Agent',
+    staleLabel: 'Retired Review Agent',
   },
   beta: {
     id: 'aorg-role-stability-beta',
@@ -58,6 +67,10 @@ const fixture = {
     directLabel: 'Quality Lead',
     directRef: 'aorg-role-quality-agent',
     directDefinitionName: 'Canonical Quality Agent',
+    alternateDirectRole: 'Quality_Auditor',
+    alternateDirectLabel: 'Quality Auditor',
+    alternateDirectRef: 'aorg-role-quality-auditor',
+    alternateDirectDefinitionName: 'Canonical Quality Agent',
     teamRole: 'Release-Team',
     teamLabel: 'Release Team',
     teamRef: 'aorg-role-release-team',
@@ -66,6 +79,11 @@ const fixture = {
     coordinatorLabel: 'Release Captain',
     coordinatorLocalRef: 'release-agent',
     coordinatorDefinitionName: 'Canonical Release Agent',
+    workerRole: 'Release_Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence',
+    workerLocalRef: 'release-quality-assurance-agent',
+    workerDefinitionName: 'Canonical Release Quality Assurance Agent',
+    staleRole: 'Retired_Release_Reviewer',
+    staleLabel: 'Retired Release Reviewer',
   },
 };
 
@@ -214,8 +232,10 @@ const writeAgent = async (root, id, name) => {
 const writeDefinitionFixture = async (dataRoot) => {
   for (const value of Object.values(fixture)) {
     await writeAgent(path.join(dataRoot, 'agents', value.directRef), value.directRef, value.directDefinitionName);
+    await writeAgent(path.join(dataRoot, 'agents', value.alternateDirectRef), value.alternateDirectRef, value.alternateDirectDefinitionName);
     const teamRoot = path.join(dataRoot, 'agent-teams', value.teamRef);
     await writeAgent(path.join(teamRoot, 'agents', value.coordinatorLocalRef), value.coordinatorLocalRef, value.coordinatorDefinitionName);
+    await writeAgent(path.join(teamRoot, 'agents', value.workerLocalRef), value.workerLocalRef, value.workerDefinitionName);
     await fs.writeFile(path.join(teamRoot, 'team.md'), markdown({
       name: value.teamDefinitionName,
       description: `Persisted E2E Team ${value.teamRef}`,
@@ -223,8 +243,12 @@ const writeDefinitionFixture = async (dataRoot) => {
     }));
     await writeJson(path.join(teamRoot, 'team-config.json'), {
       coordinatorMemberName: value.coordinatorRole,
-      members: [{ memberName: value.coordinatorRole, ref: value.coordinatorLocalRef, refScope: 'team_local' }],
-      handoffs: [], avatarUrl: null, defaultLaunchConfig: null,
+      members: [
+        { memberName: value.coordinatorRole, ref: value.coordinatorLocalRef, refScope: 'team_local' },
+        { memberName: value.workerRole, ref: value.workerLocalRef, refScope: 'team_local' },
+      ],
+      handoffs: [{ from: `/${value.coordinatorRole}`, to: `/${value.workerRole}`, rules: ['Review the complete browser evidence.'] }],
+      avatarUrl: null, defaultLaunchConfig: null,
     });
     const orgRoot = path.join(dataRoot, 'agent-orgs', value.id);
     await fs.mkdir(orgRoot, { recursive: true });
@@ -236,6 +260,7 @@ const writeDefinitionFixture = async (dataRoot) => {
     await writeJson(path.join(orgRoot, 'org-config.json'), {
       members: [
         { memberName: value.directRole, ref: value.directRef, refType: 'agent', refScope: 'shared' },
+        { memberName: value.alternateDirectRole, ref: value.alternateDirectRef, refType: 'agent', refScope: 'shared' },
         { memberName: value.teamRole, ref: value.teamRef, refType: 'agent_team', refScope: 'shared' },
       ],
       handoffs: [{ from: `/${value.directRole}`, to: `/${value.teamRole}`, rules: ['Delegate the approved E2E result.'] }],
@@ -317,12 +342,30 @@ const createPage = async (browser, label, locale = 'en') => {
 };
 const card = (page, id) => page.locator(`[data-test="org-card-${id}"]`);
 const cardLabels = (page, id) => card(page, id).locator('[data-test^="org-member-"]');
+const roleLabels = (value) => [value.directLabel, value.alternateDirectLabel, value.teamLabel];
 const assertNoIdentityLeak = async (page, values = Object.values(fixture)) => {
   const text = await page.locator('[data-test="agent-org-experience"]').innerText();
   const forbidden = values.flatMap((value) => [
-    value.directRef, value.teamRef, value.directDefinitionName, value.teamDefinitionName, value.coordinatorDefinitionName,
+    value.directRef, value.alternateDirectRef, value.teamRef, value.directDefinitionName, value.teamDefinitionName,
+    value.coordinatorDefinitionName, value.workerDefinitionName,
   ]).filter((value) => text.includes(value));
   assert(forbidden.length === 0, 'Browsing surface exposed definition identity instead of local role', forbidden);
+};
+const rootedAddressPattern = /(^|\s)\/[A-Za-z0-9_-]/m;
+const assertNoRootedAddressText = (text, context) => {
+  assert(!rootedAddressPattern.test(text), `${context} exposed a rooted canonical address`, text);
+};
+const fulfillOrgDefinitionsWithStaleHandoff = async (route, value) => {
+  const response = await route.fetch();
+  const body = await response.json();
+  const definitions = body?.data?.agentOrgDefinitions;
+  const definition = Array.isArray(definitions) ? definitions.find((candidate) => candidate.id === value.id) : undefined;
+  assert(definition, `Live Agent Org definition '${value.id}' was not available for stale-handoff projection`, body);
+  definition.handoffs = [
+    ...(definition.handoffs ?? []),
+    { from: `/${value.staleRole}`, to: `/${value.teamRole}`, rules: ['Recover the unavailable endpoint before saving.'] },
+  ];
+  await route.fulfill({ response, json: body });
 };
 
 const runListScenario = async (browser, frontendUrl) => {
@@ -333,8 +376,12 @@ const runListScenario = async (browser, frontendUrl) => {
     await card(page, fixture.alpha.id).waitFor({ state: 'visible', timeout: timeoutMs });
     const initialLabels = await cardLabels(page, fixture.alpha.id).allTextContents();
     const initialAria = await cardLabels(page, fixture.alpha.id).evaluateAll((nodes) => nodes.map((node) => node.getAttribute('aria-label')));
-    assert(JSON.stringify(initialLabels) === JSON.stringify([fixture.alpha.directLabel, fixture.alpha.teamLabel]), 'Initial Alpha list labels are not Org roles', initialLabels);
-    assert(JSON.stringify(initialAria) === JSON.stringify([`Agent ${fixture.alpha.directLabel}`, `Team ${fixture.alpha.teamLabel}`]), 'Initial Alpha accessible names are not role-based', initialAria);
+    assert(JSON.stringify(initialLabels) === JSON.stringify(roleLabels(fixture.alpha)), 'Initial Alpha list labels are not Org roles', initialLabels);
+    assert(JSON.stringify(initialAria) === JSON.stringify([
+      `Agent ${fixture.alpha.directLabel}`,
+      `Agent ${fixture.alpha.alternateDirectLabel}`,
+      `Team ${fixture.alpha.teamLabel}`,
+    ]), 'Initial Alpha accessible names are not role-based', initialAria);
     await sleep(600);
     await assertNoIdentityLeak(page);
 
@@ -355,12 +402,13 @@ const runListScenario = async (browser, frontendUrl) => {
     const snapshots = await page.evaluate(() => window.__agentOrgRoleLabelEvidence.snapshots);
     const fixtureTestIds = new Set(Object.values(fixture).flatMap((value) => [
       `org-member-agent-${value.directRef}`,
+      `org-member-agent-${value.alternateDirectRef}`,
       `org-member-team-${value.teamRef}`,
     ]));
     const observedTexts = snapshots.flatMap((snapshot) => snapshot.labels
       .filter((label) => fixtureTestIds.has(label.testId))
       .map((label) => label.text));
-    const allowed = new Set(Object.values(fixture).flatMap((value) => [value.directLabel, value.teamLabel]));
+    const allowed = new Set(Object.values(fixture).flatMap(roleLabels));
     assert(observedTexts.every((value) => allowed.has(value)), 'A list mutation snapshot contained a non-role label', { observedTexts, allowed: [...allowed] });
     assert(exactReadCount() === beforeExact, 'List/search/Reload issued exact Agent/Team reads', evidence.operations.filter((entry) => entry.operationName.startsWith('GetAgentOrgReferenced')));
 
@@ -383,8 +431,12 @@ const runListScenario = async (browser, frontendUrl) => {
     await card(zh.page, fixture.alpha.id).waitFor({ state: 'visible', timeout: timeoutMs });
     const labels = await cardLabels(zh.page, fixture.alpha.id).allTextContents();
     const aria = await cardLabels(zh.page, fixture.alpha.id).evaluateAll((nodes) => nodes.map((node) => node.getAttribute('aria-label')));
-    assert(JSON.stringify(labels) === JSON.stringify([fixture.alpha.directLabel, fixture.alpha.teamLabel]), 'Chinese locale changed stored role casing/content', labels);
-    assert(JSON.stringify(aria) === JSON.stringify([`智能体 ${fixture.alpha.directLabel}`, `团队 ${fixture.alpha.teamLabel}`]), 'Chinese accessible role names are incomplete', aria);
+    assert(JSON.stringify(labels) === JSON.stringify(roleLabels(fixture.alpha)), 'Chinese locale changed stored role casing/content', labels);
+    assert(JSON.stringify(aria) === JSON.stringify([
+      `智能体 ${fixture.alpha.directLabel}`,
+      `智能体 ${fixture.alpha.alternateDirectLabel}`,
+      `团队 ${fixture.alpha.teamLabel}`,
+    ]), 'Chinese accessible role names are incomplete', aria);
     evidence.scenarios['AORG-E2E-003-list-zh-CN'] = { labels, aria };
   } finally {
     await zh.context.close();
@@ -398,6 +450,7 @@ const runDetailScenario = async (browser, frontendUrl) => {
   await page.route('**/graphql', async (route) => {
     const name = operationName(route.request());
     const payload = operationPayloads(route.request())[0];
+    if (name === 'GetAgentOrgDefinitions') return fulfillOrgDefinitionsWithStaleHandoff(route, fixture.alpha);
     if (name === 'GetAgentOrgEndpointCatalog' && payload?.variables?.id === fixture.alpha.id) {
       seen.resolve();
       await gate.promise;
@@ -418,18 +471,120 @@ const runDetailScenario = async (browser, frontendUrl) => {
     await assertNoIdentityLeak(page, [fixture.alpha]);
     gate.resolve();
     await page.getByText(`Coordinator: ${fixture.alpha.coordinatorLabel}`, { exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
-    const handoffText = await page.locator('[data-test="handoff-manager-org"]').innerText();
-    for (const expected of [fixture.alpha.directLabel, fixture.alpha.teamLabel, `/${fixture.alpha.directRole}`, `/${fixture.alpha.teamRole}`]) {
+    const orgHandoffManager = page.locator('[data-test="handoff-manager-org"]');
+    const handoffText = await orgHandoffManager.innerText();
+    for (const expected of [fixture.alpha.directLabel, fixture.alpha.teamLabel, `Unavailable · ${fixture.alpha.staleLabel}`]) {
       assert(handoffText.includes(expected), `Live detail handoff omitted '${expected}'`, handoffText);
     }
+    for (const forbidden of [`/${fixture.alpha.directRole}`, `/${fixture.alpha.teamRole}`, `/${fixture.alpha.staleRole}`]) {
+      assert(!handoffText.includes(forbidden), `Live detail handoff exposed '${forbidden}'`, handoffText);
+    }
+    assertNoRootedAddressText(handoffText, 'Live Agent Org detail handoff');
+    const orgIdentityFacts = await orgHandoffManager.locator('span.whitespace-normal.break-words').evaluateAll((nodes) => nodes.map((node) => ({
+      text: node.textContent?.trim() || '',
+      whiteSpace: getComputedStyle(node).whiteSpace,
+      overflowWrap: getComputedStyle(node).overflowWrap,
+    })));
+    assert(orgIdentityFacts.length >= 2, 'Agent Org detail did not render resolved endpoint identities', orgIdentityFacts);
+    assert(orgIdentityFacts.every((fact) => fact.whiteSpace === 'normal'), 'Agent Org identity text does not allow wrapping', orgIdentityFacts);
     assert(operationCount('GetAgentOrgEndpointCatalog', 'detail-en') === 1, 'Detail did not use exactly one aggregate endpoint request', evidence.operations);
     assert(exactReadCount() === beforeExact, 'Read-only detail issued exact Agent/Team reads', evidence.operations.filter((entry) => entry.operationName.startsWith('GetAgentOrgReferenced')));
     await assertNoIdentityLeak(page, [fixture.alpha]);
     await page.screenshot({ path: path.join(outputDir, 'detail-en.png'), fullPage: true });
 
+    await page.setViewportSize({ width: 585, height: 900 });
+    await sleep(500);
+    const orgNarrowLayout = await orgHandoffManager.evaluate((element) => ({
+      innerWidth: window.innerWidth,
+      documentScrollWidth: document.documentElement.scrollWidth,
+      managerClientWidth: element.clientWidth,
+      managerScrollWidth: element.scrollWidth,
+    }));
+    assert(orgNarrowLayout.documentScrollWidth <= orgNarrowLayout.innerWidth, 'Agent Org detail introduced page-level narrow horizontal overflow', orgNarrowLayout);
+    assert(orgNarrowLayout.managerScrollWidth <= orgNarrowLayout.managerClientWidth, 'Agent Org handoff manager clips horizontally at narrow width', orgNarrowLayout);
+    assertNoRootedAddressText(await orgHandoffManager.innerText(), 'Narrow Agent Org detail handoff');
+    await page.screenshot({ path: path.join(outputDir, 'detail-org-narrow-en.png'), fullPage: true });
+    await page.setViewportSize({ width: 1440, height: 1000 });
+
     await page.getByRole('button', { name: /^View/ }).click();
     await page.waitForURL(new RegExp(`/agent-teams\\?.*id=${fixture.alpha.teamRef}.*returnToOrg=${fixture.alpha.id}`), { timeout: timeoutMs });
     await page.getByRole('heading', { name: fixture.alpha.teamDefinitionName, exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+    const teamHandoffManager = page.locator('[data-test="handoff-manager-team"]');
+    await teamHandoffManager.waitFor({ state: 'visible', timeout: timeoutMs });
+    const teamHandoffText = await teamHandoffManager.innerText();
+    for (const expected of [fixture.alpha.coordinatorRole, fixture.alpha.workerRole, 'Review the complete browser evidence.']) {
+      assert(teamHandoffText.includes(expected), `Live Team detail handoff omitted '${expected}'`, teamHandoffText);
+    }
+    for (const forbidden of [`/${fixture.alpha.coordinatorRole}`, `/${fixture.alpha.workerRole}`]) {
+      assert(!teamHandoffText.includes(forbidden), `Live Team detail handoff exposed '${forbidden}'`, teamHandoffText);
+    }
+    assertNoRootedAddressText(teamHandoffText, 'Live Agent Team detail handoff');
+    const teamWideGeometry = await teamHandoffManager.evaluate((manager) => {
+      const card = manager.querySelector('[data-test^="handoff-card-"]');
+      const directionGrid = card && Array.from(card.children).find((element) => element.classList.contains('grid'));
+      if (!card || !directionGrid) return null;
+      return {
+        managerClientWidth: manager.clientWidth,
+        managerScrollWidth: manager.scrollWidth,
+        cardClientWidth: card.clientWidth,
+        cardScrollWidth: card.scrollWidth,
+        directionGridTemplateColumns: getComputedStyle(directionGrid).gridTemplateColumns,
+      };
+    });
+    assert(teamWideGeometry, 'Agent Team handoff geometry could not resolve its card/direction grid');
+    assert(teamWideGeometry.managerScrollWidth <= teamWideGeometry.managerClientWidth, 'Agent Team handoff manager overflows at desktop width', teamWideGeometry);
+    assert(teamWideGeometry.cardScrollWidth <= teamWideGeometry.cardClientWidth, 'Agent Team handoff card overflows at desktop width', teamWideGeometry);
+    assert(teamWideGeometry.directionGridTemplateColumns.split(' ').length === 3, 'Agent Team handoff lost its desktop three-column direction layout', teamWideGeometry);
+    await page.setViewportSize({ width: 585, height: 900 });
+    await sleep(500);
+    const teamNarrowLayout = await teamHandoffManager.evaluate((element) => ({
+      innerWidth: window.innerWidth,
+      documentScrollWidth: document.documentElement.scrollWidth,
+      managerClientWidth: element.clientWidth,
+      managerScrollWidth: element.scrollWidth,
+    }));
+    const teamNarrowGeometry = await teamHandoffManager.evaluate((manager) => {
+      const metrics = (element) => ({
+        clientWidth: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+        clientHeight: element.clientHeight,
+        scrollHeight: element.scrollHeight,
+      });
+      const card = manager.querySelector('[data-test^="handoff-card-"]');
+      const directionGrid = card && Array.from(card.children).find((element) => element.classList.contains('grid'));
+      const columns = directionGrid ? Array.from(directionGrid.children).filter((element) => element.tagName === 'DIV') : [];
+      const identities = columns.map((column) => Array.from(column.children).find((element) => element.tagName === 'DIV')).filter(Boolean);
+      return {
+        card: card ? metrics(card) : null,
+        directionGrid: directionGrid ? { ...metrics(directionGrid), gridTemplateColumns: getComputedStyle(directionGrid).gridTemplateColumns } : null,
+        columns: columns.map(metrics),
+        identities: identities.map(metrics),
+      };
+    });
+    await page.screenshot({ path: path.join(outputDir, 'detail-team-narrow-en.png'), fullPage: true });
+    assert(teamNarrowLayout.documentScrollWidth <= teamNarrowLayout.innerWidth, 'Agent Team detail introduced page-level narrow horizontal overflow', teamNarrowLayout);
+    assert(teamNarrowLayout.managerScrollWidth <= teamNarrowLayout.managerClientWidth, 'Agent Team handoff manager clips horizontally at narrow width', teamNarrowLayout);
+    assert(teamNarrowGeometry.card && teamNarrowGeometry.card.scrollWidth <= teamNarrowGeometry.card.clientWidth, 'Agent Team handoff card clips horizontally at narrow width', teamNarrowGeometry);
+    assert(teamNarrowGeometry.directionGrid && teamNarrowGeometry.directionGrid.scrollWidth <= teamNarrowGeometry.directionGrid.clientWidth, 'Agent Team direction grid clips horizontally at narrow width', teamNarrowGeometry);
+    assert(teamNarrowGeometry.directionGrid.gridTemplateColumns.split(' ').length === 1, 'Agent Team narrow direction grid did not collapse to one column', teamNarrowGeometry);
+    assert(teamNarrowGeometry.columns.length === 2 && teamNarrowGeometry.columns.every((column) => column.scrollWidth <= column.clientWidth), 'Agent Team direction column clips horizontally at narrow width', teamNarrowGeometry);
+    assert(teamNarrowGeometry.identities.length === 2 && teamNarrowGeometry.identities.every((identity) => identity.scrollWidth <= identity.clientWidth), 'Agent Team endpoint identity clips horizontally at narrow width', teamNarrowGeometry);
+    const teamIdentityFacts = await teamHandoffManager.locator('span.whitespace-normal.break-words').evaluateAll((nodes) => nodes.map((node) => ({
+      text: node.textContent?.trim() || '',
+      width: node.getBoundingClientRect().width,
+      height: node.getBoundingClientRect().height,
+      clientWidth: node.clientWidth,
+      scrollWidth: node.scrollWidth,
+      clientHeight: node.clientHeight,
+      scrollHeight: node.scrollHeight,
+      whiteSpace: getComputedStyle(node).whiteSpace,
+      overflowWrap: getComputedStyle(node).overflowWrap,
+    })));
+    const longTeamIdentity = teamIdentityFacts.find((fact) => fact.text === fixture.alpha.workerRole);
+    assert(longTeamIdentity, 'Long Team endpoint label is not complete in the DOM', teamIdentityFacts);
+    assert(longTeamIdentity.whiteSpace === 'normal' && longTeamIdentity.overflowWrap === 'break-word', 'Long Team endpoint label is not configured to wrap', longTeamIdentity);
+    assert(longTeamIdentity.height > 20 || longTeamIdentity.scrollWidth <= longTeamIdentity.clientWidth, 'Long Team endpoint label is clipped instead of wrapped or fully visible', longTeamIdentity);
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await page.getByRole('button', { name: 'Back to Agent Orgs', exact: true }).click();
     await page.waitForURL(new RegExp(`/agent-orgs\\?.*view=org-detail.*id=${fixture.alpha.id}`), { timeout: timeoutMs });
     await page.getByText(`Coordinator: ${fixture.alpha.coordinatorLabel}`, { exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
@@ -437,6 +592,14 @@ const runDetailScenario = async (browser, frontendUrl) => {
       pendingDirectRoles: [fixture.alpha.directLabel, fixture.alpha.teamLabel],
       settledCoordinator: fixture.alpha.coordinatorLabel,
       handoffText,
+      orgIdentityFacts,
+      orgNarrowLayout,
+      teamHandoffText,
+      teamIdentityFacts,
+      teamWideGeometry,
+      teamNarrowLayout,
+      teamNarrowGeometry,
+      visibleRootedAddresses: [],
       endpointCatalogRequests: operationCount('GetAgentOrgEndpointCatalog', 'detail-en'),
       teamReturnUrl: page.url(),
       exactReadsBeforeTeamView: 0,
@@ -453,8 +616,8 @@ const runFailureScenario = async (browser, frontendUrl) => {
     const alert = page.getByRole('alert').filter({ hasText: 'Team role details are unavailable' });
     await alert.waitFor({ state: 'visible', timeout: timeoutMs });
     const text = await page.locator('[data-test="agent-org-experience"]').innerText();
-    assert(text.includes(fixture.alpha.directLabel) && text.includes(fixture.alpha.teamLabel), 'Unavailable topology removed direct role labels', text);
-    assert(!text.includes(fixture.alpha.directRef) && !text.includes(fixture.alpha.teamRef), 'Unavailable topology exposed an opaque ref', text);
+    assert(roleLabels(fixture.alpha).every((label) => text.includes(label)), 'Unavailable topology removed direct role labels', text);
+    assert(!text.includes(fixture.alpha.directRef) && !text.includes(fixture.alpha.alternateDirectRef) && !text.includes(fixture.alpha.teamRef), 'Unavailable topology exposed an opaque ref', text);
     assert(!text.includes(fixture.alpha.directDefinitionName) && !text.includes(fixture.alpha.teamDefinitionName), 'Unavailable topology substituted definition names', text);
     assert(exactReadCount() === exactReadsBefore, 'Unavailable read-only detail issued exact reference reads', evidence.operations);
     return alert.innerText();
@@ -516,6 +679,7 @@ const runLifecycleScenario = async (browser, frontendUrl) => {
   const alphaSeen = deferred();
   await page.route('**/graphql', async (route) => {
     const payload = operationPayloads(route.request())[0];
+    if (payload?.operationName === 'GetAgentOrgDefinitions') return fulfillOrgDefinitionsWithStaleHandoff(route, fixture.beta);
     if (payload?.operationName === 'GetAgentOrgEndpointCatalog' && payload.variables?.id === fixture.alpha.id) {
       alphaSeen.resolve();
       await alphaGate.promise;
@@ -536,7 +700,7 @@ const runLifecycleScenario = async (browser, frontendUrl) => {
     alphaGate.resolve();
     await sleep(600);
     const betaText = await page.locator('[data-test="agent-org-experience"]').innerText();
-    assert(betaText.includes(fixture.beta.directLabel) && betaText.includes(fixture.beta.teamLabel) && betaText.includes(fixture.beta.coordinatorLabel), 'Current Beta detail lost its role topology', betaText);
+    assert(roleLabels(fixture.beta).every((label) => betaText.includes(label)) && betaText.includes(fixture.beta.coordinatorLabel), 'Current Beta detail lost its role topology', betaText);
     assert(!betaText.includes(fixture.alpha.coordinatorLabel) && !betaText.includes(fixture.alpha.directLabel), 'Late Alpha result leaked into Beta detail', betaText);
     assert(exactReadCount() === exactBeforeBrowse, 'List/detail browsing issued exact reference reads before authoring', evidence.operations);
 
@@ -545,6 +709,44 @@ const runLifecycleScenario = async (browser, frontendUrl) => {
     await page.getByText(fixture.beta.directDefinitionName, { exact: true }).first().waitFor({ state: 'visible', timeout: timeoutMs });
     await page.getByText(fixture.beta.teamDefinitionName, { exact: true }).first().waitFor({ state: 'visible', timeout: timeoutMs });
     await waitFor('authoring exact reference operations', () => exactReadCount() > exactBeforeBrowse);
+
+    const handoffManager = page.locator('[data-test="handoff-manager-org"]');
+    const initialAuthoringText = await handoffManager.innerText();
+    assert(initialAuthoringText.includes(`Unavailable · ${fixture.beta.staleLabel}`), 'Org authoring did not humanize the stale endpoint', initialAuthoringText);
+    assertNoRootedAddressText(initialAuthoringText, 'Initial Agent Org authoring handoff');
+    await handoffManager.locator('[data-test^="edit-handoff-"]').first().click();
+    const fromSelect = handoffManager.locator('[data-test="handoff-from"]');
+    const toSelect = handoffManager.locator('[data-test="handoff-to"]');
+    const fromOptionFacts = await fromSelect.locator('option').evaluateAll((options) => options.map((option) => ({
+      text: option.textContent?.trim() || '',
+      value: option.value,
+      selected: option.selected,
+    })));
+    const toOptionFacts = await toSelect.locator('option').evaluateAll((options) => options.map((option) => ({
+      text: option.textContent?.trim() || '',
+      value: option.value,
+      selected: option.selected,
+    })));
+    const expectedPrimaryLabel = `${fixture.beta.directDefinitionName} (${fixture.beta.directLabel})`;
+    const expectedAlternateLabel = `${fixture.beta.alternateDirectDefinitionName} (${fixture.beta.alternateDirectLabel})`;
+    assert(fromOptionFacts.some((option) => option.text === expectedPrimaryLabel && option.value === `/${fixture.beta.directRole}`), 'Primary colliding Agent option lost its readable label or exact value', fromOptionFacts);
+    assert(fromOptionFacts.some((option) => option.text === expectedAlternateLabel && option.value === `/${fixture.beta.alternateDirectRole}`), 'Alternate colliding Agent option lost its readable label or exact value', fromOptionFacts);
+    assert(toOptionFacts.some((option) => option.text === fixture.beta.teamDefinitionName && option.value === `/${fixture.beta.teamRole}`), 'Team destination option lost its readable label or exact value', toOptionFacts);
+    assert(fromOptionFacts.every((option) => !rootedAddressPattern.test(option.text)), 'A source option exposed a rooted address in its accessible text', fromOptionFacts);
+    assert(toOptionFacts.every((option) => !rootedAddressPattern.test(option.text)), 'A destination option exposed a rooted address in its accessible text', toOptionFacts);
+    assert(await fromSelect.inputValue() === `/${fixture.beta.directRole}`, 'Existing source selection no longer uses its exact canonical value', await fromSelect.inputValue());
+    assert(await toSelect.inputValue() === `/${fixture.beta.teamRole}`, 'Existing destination selection no longer uses its exact canonical value', await toSelect.inputValue());
+    await fromSelect.focus();
+    assert(await fromSelect.evaluate((element) => document.activeElement === element), 'Native source select is not keyboard focusable');
+    const editorText = await handoffManager.locator('[data-test="handoff-editor"]').innerText();
+    assert(editorText.includes(expectedPrimaryLabel) && editorText.includes(fixture.beta.teamDefinitionName), 'Selected endpoint previews are incomplete', editorText);
+    assertNoRootedAddressText(editorText, 'Selected Agent Org handoff previews');
+    await handoffManager.locator('[data-test="apply-handoff-draft"]').click();
+    await page.getByRole('status').filter({ hasText: 'Handoff updated.' }).waitFor({ state: 'visible', timeout: timeoutMs });
+    const appliedHandoffText = await handoffManager.innerText();
+    assert(appliedHandoffText.includes(expectedPrimaryLabel) && appliedHandoffText.includes(fixture.beta.teamDefinitionName), 'Applied handoff lost its readable endpoint identities', appliedHandoffText);
+    assertNoRootedAddressText(appliedHandoffText, 'Applied Agent Org handoff');
+
     await page.locator('[data-test="open-member-picker"]').click();
     await page.locator('[data-test="org-member-picker"]').waitFor({ state: 'visible', timeout: timeoutMs });
     const pickerText = await page.locator('[data-test="org-member-picker"]').innerText();
@@ -556,6 +758,12 @@ const runLifecycleScenario = async (browser, frontendUrl) => {
       exactReadsDuringBrowse: exactBeforeBrowse,
       exactReadsAfterAuthoring: exactReadCount(),
       authoringNames: [fixture.beta.directDefinitionName, fixture.beta.teamDefinitionName, fixture.alpha.directDefinitionName],
+      fromOptionFacts,
+      toOptionFacts,
+      selectedValues: { from: `/${fixture.beta.directRole}`, to: `/${fixture.beta.teamRole}` },
+      selectedPreviewText: editorText,
+      appliedHandoffText,
+      visibleRootedAddresses: [],
     };
   } finally {
     alphaGate.resolve();

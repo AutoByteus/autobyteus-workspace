@@ -1,0 +1,93 @@
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 14 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: src/application-agent-communication.ts(99,61): error TS2304: Cannot find name 'AbortSignal'.
+autobyteus-application-sdk-contracts build: src/application-iframe-contract.ts(237,28): error TS2552: Cannot find name 'URLSearchParams'. Did you mean 'searchParams'?
+autobyteus-application-sdk-contracts build: src/application-runtime-bootstrap.ts(43,37): error TS2304: Cannot find name 'URL'.
+autobyteus-application-sdk-contracts build: src/application-runtime-bootstrap.ts(93,18): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-sdk-contracts build: src/application-websockets.ts(21,20): error TS2304: Cannot find name 'AbortSignal'.
+autobyteus-application-sdk-contracts build: Failed
+/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-application-sdk-contracts:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @autobyteus/application-sdk-contracts@0.1.0 build: `tsc -p tsconfig.build.json`
+Exit status 2
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+ ELIFECYCLE  Command failed with exit code 2.
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+ ELIFECYCLE  Command failed with exit code 2.
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 14 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: src/application-agent-target-address.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/application-agent-target-address.ts(7,52): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/application-agent-target-address.ts(59,22): error TS7006: Parameter 'member' implicitly has an 'any' type.
+autobyteus-application-backend-sdk build: src/index.ts(1,51): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/index.ts(83,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(45,53): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(60,54): error TS7006: Parameter 'scope' implicitly has an 'any' type.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(67,56): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(69,52): error TS7006: Parameter 'leaf' implicitly has an 'any' type.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(78,55): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-backend-sdk build: Failed
+/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-application-backend-sdk:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @autobyteus/application-backend-sdk@0.1.0 build: `tsc -p tsconfig.build.json`
+Exit status 2
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+ ELIFECYCLE  Command failed with exit code 2.
+ ELIFECYCLE  Command failed with exit code 2.
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 14 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../../../autobyteus-workspace-superrepo/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 133ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
