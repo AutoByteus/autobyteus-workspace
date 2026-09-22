@@ -1,0 +1,11 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-ts
+
+ ✓ tests/unit/llm/api/anthropic-llm.test.ts (32 tests) 11ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (14 tests) 6ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (9 tests) 35ms
+
+ Test Files  3 passed (3)
+      Tests  55 passed (55)
+   Start at  06:26:41
+   Duration  915ms (transform 554ms, setup 60ms, import 1.80s, tests 53ms, environment 0ms)
