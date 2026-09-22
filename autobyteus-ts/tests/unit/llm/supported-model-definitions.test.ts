@@ -129,4 +129,163 @@ describe('current supported model definitions', () => {
       ],
     });
   });
+
+  it('defines exact GPT-6 Astra metadata, direct schema, and complete Standard pricing tiers', async () => {
+    const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'gpt-6-astra');
+    expect(definitions).toHaveLength(1);
+    const [definition] = definitions;
+    expect(definition).toMatchObject({
+      name: 'gpt-6-astra',
+      value: 'gpt-6-astra',
+      canonicalName: 'gpt-6-astra',
+      provider: LLMProvider.OPENAI,
+      staticMetadata: {
+        maxContextTokens: 1_050_000,
+        maxInputTokens: null,
+        maxOutputTokens: 128_000,
+        provenance: {
+          sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-6-astra',
+          verifiedAt: '2026-09-22',
+        },
+      },
+    });
+    expect(definition?.configSchema?.toJsonSchema()).toMatchObject({
+      properties: {
+        reasoning_effort: {
+          default: 'medium',
+          enum: ['low', 'medium', 'high', 'xhigh', 'max'],
+        },
+      },
+    });
+    expect(definition?.defaultConfig.pricingConfig).toMatchObject({
+      pricingEffectiveDate: '2026-09-22',
+      inputTokenPricing: 10,
+      outputTokenPricing: 50,
+      cachedInputReadTokenPricing: 1,
+      cachedInputWriteTokenPricing: 12.5,
+    });
+
+    await expect(LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'gpt-6-astra',
+      modelProvider: LLMProvider.OPENAI,
+    })).resolves.toMatchObject({
+      pricing_status: 'trusted',
+      input_price_per_million: 10,
+      output_price_per_million: 50,
+      cached_input_read_price_per_million: 1,
+      cached_input_write_price_per_million: 12.5,
+      input_price_tiers: [
+        {
+          tier_id: 'standard_le_272k',
+          max_input_tokens: 272_000,
+          input_price_per_million: 10,
+          output_price_per_million: 50,
+          cached_input_read_price_per_million: 1,
+          cached_input_write_price_per_million: 12.5,
+        },
+        {
+          tier_id: 'long_context_gt_272k',
+          max_input_tokens: null,
+          input_price_per_million: 20,
+          output_price_per_million: 75,
+          cached_input_read_price_per_million: 2,
+          cached_input_write_price_per_million: 25,
+        },
+      ],
+    });
+  });
+
+  it.each([
+    ['gpt-5.6-sol', 5, 30, 0.5, 6.25, 10, 45, 1, 12.5],
+    ['gpt-5.6-terra', 2, 12, 0.2, 2.5, 4, 18, 0.4, 5],
+    ['gpt-5.6-luna', 0.2, 1.2, 0.02, 0.25, 0.4, 1.8, 0.04, 0.5],
+  ] as const)(
+    'preserves %s pricing while reusing the generalized long-context constructor',
+    async (modelIdentifier, input, output, cacheRead, cacheWrite, longInput, longOutput, longCacheRead, longCacheWrite) => {
+      const definition = supportedModelDefinitions.find((candidate) => candidate.name === modelIdentifier);
+      expect(definition?.defaultConfig.pricingConfig).toMatchObject({
+        pricingEffectiveDate: '2026-07-30',
+        inputTokenPricing: input,
+        outputTokenPricing: output,
+        cachedInputReadTokenPricing: cacheRead,
+        cachedInputWriteTokenPricing: cacheWrite,
+      });
+      await expect(LLMFactory.getModelPricingInfo({
+        modelIdentifier,
+        modelProvider: LLMProvider.OPENAI,
+      })).resolves.toMatchObject({
+        input_price_per_million: input,
+        output_price_per_million: output,
+        cached_input_read_price_per_million: cacheRead,
+        cached_input_write_price_per_million: cacheWrite,
+        input_price_tiers: [
+          expect.objectContaining({ tier_id: 'standard_le_272k', max_input_tokens: 272_000 }),
+          expect.objectContaining({
+            tier_id: 'long_context_gt_272k',
+            max_input_tokens: null,
+            input_price_per_million: longInput,
+            output_price_per_million: longOutput,
+            cached_input_read_price_per_million: longCacheRead,
+            cached_input_write_price_per_million: longCacheWrite,
+          }),
+        ],
+      });
+    },
+  );
+
+  it('defines exact Claude Fable 5.1 metadata and cache-aware Standard pricing without a manual thinking schema', async () => {
+    const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'claude-fable-5-1');
+    expect(definitions).toHaveLength(1);
+    const [definition] = definitions;
+    expect(definition).toMatchObject({
+      name: 'claude-fable-5-1',
+      value: 'claude-fable-5-1',
+      canonicalName: 'claude-fable-5-1',
+      provider: LLMProvider.ANTHROPIC,
+      staticMetadata: {
+        maxContextTokens: 1_000_000,
+        maxInputTokens: 1_000_000,
+        maxOutputTokens: 128_000,
+        provenance: {
+          sourceUrl: 'https://platform.claude.com/docs/en/models/fable-5-1/overview',
+          verifiedAt: '2026-09-22',
+        },
+      },
+    });
+    expect(definition?.configSchema).toBeUndefined();
+    expect(definition?.defaultConfig.pricingConfig).toMatchObject({
+      pricingEffectiveDate: '2026-09-01',
+      inputTokenPricing: 10,
+      outputTokenPricing: 50,
+      cachedInputReadTokenPricing: 0.25,
+      cachedInputWrite5mTokenPricing: 12.5,
+      cachedInputWrite1hTokenPricing: 20,
+    });
+
+    await expect(LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'claude-fable-5-1',
+      modelProvider: LLMProvider.ANTHROPIC,
+    })).resolves.toMatchObject({
+      pricing_status: 'trusted',
+      input_price_per_million: 10,
+      output_price_per_million: 50,
+      cached_input_read_price_per_million: 0.25,
+      cached_input_write_5m_price_per_million: 12.5,
+      cached_input_write_1h_price_per_million: 20,
+    });
+
+    await expect(LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'claude-fable-5',
+      modelProvider: LLMProvider.ANTHROPIC,
+    })).resolves.toMatchObject({ cached_input_read_price_per_million: 1 });
+  });
+
+  it.each([
+    [LLMProvider.OPENAI, 'gpt-6'],
+    [LLMProvider.OPENAI, 'astra'],
+    [LLMProvider.ANTHROPIC, 'claude-fable-5.1'],
+  ])('does not alias %s model identifier %s', async (provider, modelIdentifier) => {
+    await expect(LLMFactory.getModelPricingInfo({ modelIdentifier, modelProvider: provider }))
+      .resolves.toMatchObject({ pricing_status: 'missing', missing_reason: 'model_not_found' });
+  });
 });

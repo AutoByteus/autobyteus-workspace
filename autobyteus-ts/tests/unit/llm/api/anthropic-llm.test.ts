@@ -36,6 +36,7 @@ const currentAdaptiveModels = [
   ['claude-opus-4.8', 'claude-opus-4-8'],
   ['claude-sonnet-5', 'claude-sonnet-5'],
   ['claude-fable-5', 'claude-fable-5'],
+  ['claude-fable-5-1', 'claude-fable-5-1'],
 ] as const;
 
 const userMessages = [new Message(MessageRole.USER, { content: 'Hello, Claude.' })];
@@ -248,20 +249,37 @@ describe('AnthropicLLM', () => {
     expect(params).not.toHaveProperty('top_k');
   });
 
-  it('does not send disabled thinking or unsupported sampling parameters to Fable 5', async () => {
-    const fable5 = new AnthropicLLM(buildModel('claude-fable-5', 'claude-fable-5'));
+  it.each([
+    'claude-fable-5',
+    'claude-fable-5-1',
+  ])('does not send manual thinking or unsupported sampling parameters to %s', async (modelId) => {
+    const fable = new AnthropicLLM(buildModel(modelId, modelId));
 
-    await fable5.sendMessages(userMessages, null, {
+    await fable.sendMessages(userMessages, null, {
       thinking: { type: 'disabled' },
       temperature: 0,
-      top_p: 1
+      top_p: 1,
+      top_k: 40,
     });
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
-    expect(params.model).toBe('claude-fable-5');
+    expect(params.model).toBe(modelId);
     expect(params).not.toHaveProperty('thinking');
     expect(params).not.toHaveProperty('temperature');
     expect(params).not.toHaveProperty('top_p');
+    expect(params).not.toHaveProperty('top_k');
+  });
+
+  it('drops fixed-budget thinking for Fable 5.1', async () => {
+    const fable = new AnthropicLLM(buildModel('claude-fable-5-1'));
+
+    await fable.sendMessages(userMessages, null, {
+      thinking: { type: 'enabled', budget_tokens: 32_000 },
+    });
+
+    const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
+    expect(params.model).toBe('claude-fable-5-1');
+    expect(params).not.toHaveProperty('thinking');
   });
 
   it('passes invocation AbortSignal to sync message requests', async () => {

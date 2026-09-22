@@ -70,11 +70,13 @@ or credentials.
 
 | Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
 | --- | --- | --- | --- | --- | --- |
+| LLM | `gpt-6-astra` | `gpt-6-astra` | OpenAI | 2026-09-22 | Exact ID; uses the Responses path, a direct-API low/medium/high/xhigh/max reasoning schema (default medium), 1.05M context / 128k output metadata, and Standard cache-aware pricing with a full-request tier above 272k input tokens. Codex runtime capabilities remain dynamically owned. |
 | LLM | `gpt-5.6-sol` | `gpt-5.6-sol` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
 | LLM | `grok-4.6` | `grok-4.6` | xAI / Grok | 2026-08-22 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high reasoning (default high), 500k-token curated context metadata, and cache-aware pricing with a long-context tier above 200k input tokens. |
+| LLM | `claude-fable-5-1` | `claude-fable-5-1` | Anthropic | 2026-09-22 | Exact ID; uses 1M context/input / 128k output metadata and Standard cache-aware pricing effective 2026-09-01. Adaptive thinking is always on, so the catalog exposes no manual thinking toggle. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
@@ -215,16 +217,17 @@ The built-in Anthropic catalog is static. The server exposes no Reload action
 for it; new Anthropic API model IDs appear only after
 `src/llm/supported-model-definitions.ts` is updated.
 
-The active current-model rows are `claude-opus-5`, `claude-fable-5`,
-`claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and retained
-`claude-sonnet-4.6`. Opus 5 uses the exact provider API value
+The active current-model rows are `claude-opus-5`, `claude-fable-5-1`,
+`claude-fable-5`, `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and
+retained `claude-sonnet-4.6`. Opus 5 uses the exact provider API value
 `claude-opus-5`, with standard pricing effective 2026-07-24 and model limits
 verified 2026-07-31 against the [Claude models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 Do not add `claude-sonnet-4.8` unless Anthropic publishes that exact API ID.
 
-Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, and Claude Fable 5 must not
+Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, Claude Fable 5,
+and Claude Fable 5.1 must not
 reuse the older fixed-budget extended-thinking request shape. Their built-in
-schemas expose adaptive thinking:
+schemas expose adaptive thinking where the provider supports a manual toggle:
 
 - `thinking_enabled: true` maps to `thinking: { type: "adaptive" }`.
 - `thinking_display: "summarized"` adds `display: "summarized"`.
@@ -234,22 +237,36 @@ schemas expose adaptive thinking:
 - The adapter does not inject its usual default `temperature` and removes
   `temperature`, `top_p`, and `top_k` request fields for these models.
 
+Fable 5.1 is different at the catalog boundary: adaptive thinking is always on,
+so its static definition intentionally has no `thinking_enabled` or fixed-budget
+schema. The existing Fable-family request policy still removes manual
+`enabled`/`disabled` thinking shapes and unsupported sampling parameters. The
+per-message effort beta is not represented by this catalog entry.
+
 Claude Opus 5 standard pricing is input `$5`, output `$25`, cache read `$0.50`,
 5-minute cache write `$6.25`, and 1-hour cache write `$10` per million tokens.
 Anthropic Fast mode is a separate processing price (input `$10`, output `$50`)
 and remains explicitly outside this standard catalog row; the catalog does not
 infer Fast mode without a processing-mode identity.
 
-Claude Fable 5 is catalog-available only; it is not a default or fallback.
-It carries standard pricing of `$10` input / `$50` output per MTok plus
-Anthropic prompt-cache dimensions, is materially more expensive than Opus 4.8,
-and has Fable-specific caveats such as 30-day data-retention requirements and
-refusal behavior. Add fallback/UX handling only through a separate product
-decision.
+Claude Fable 5 and Fable 5.1 are catalog-available only; neither is a default
+or fallback. Fable 5 carries standard pricing of `$10` input / `$50` output per
+MTok plus Anthropic prompt-cache dimensions, is materially more expensive than
+Opus 4.8, and has Fable-specific caveats such as 30-day data-retention
+requirements and refusal behavior. Add fallback/UX handling only through a
+separate product decision.
+
+Fable 5.1 records a `1,000,000`-token context/input limit and `128,000` maximum
+output, verified 2026-09-22 against the
+[Fable 5.1 overview](https://platform.claude.com/docs/en/models/fable-5-1/overview).
+Its Standard pricing is `$10` input, `$50` output, `$0.25` cache read, `$12.50`
+5-minute cache write, and `$20` 1-hour cache write per million tokens, effective
+2026-09-01. Batch, inference-geography/data-residency, partner, subscription,
+credit, and negotiated prices are not inferred.
 
 ### OpenAI Responses Models
 
-Official OpenAI text models such as `gpt-5.5`, `gpt-5.6-sol`,
+Official OpenAI text models such as `gpt-6-astra`, `gpt-5.5`, `gpt-5.6-sol`,
 `gpt-5.6-terra`, and `gpt-5.6-luna` use the `OpenAIResponsesLLM` path and the
 Responses API input-item history format. The three GPT-5.6 rows preserve their
 exact provider IDs; do not add the unsuffixed `gpt-5.6` alias as a fourth
@@ -258,6 +275,14 @@ selectable row. Their family-specific schema exposes reasoning efforts `none`,
 without advertising `max` on older OpenAI rows. Curated metadata records a
 `1,050,000`-token context window and `128,000`-token maximum output for each of
 the three exact IDs.
+
+`gpt-6-astra` is also an exact Responses row. Its direct-API schema exposes
+`low`, `medium`, `high`, `xhigh`, and `max` reasoning efforts with `medium` as
+the default; it does not expose `none` or the Codex-only runtime-advertised
+`ultra` effort. Codex App Server remains authoritative for its own dynamic
+capabilities and availability. Static metadata records a `1,050,000`-token
+context window and `128,000` maximum output, verified 2026-09-22 against the
+[GPT-6 Astra model page](https://developers.openai.com/api/docs/models/gpt-6-astra).
 
 For native tool continuation, the adapter requests `reasoning.encrypted_content`
 when tools or prior Responses tool/reasoning items are present, merges that
@@ -563,6 +588,8 @@ remain explicit:
 
 - Fable 5: input `10`, output `50`, cache read `1`, 5-minute cache write
   `12.5`, 1-hour cache write `20`.
+- Fable 5.1 (effective 2026-09-01; verified 2026-09-22): input `10`, output
+  `50`, cache read `0.25`, 5-minute cache write `12.5`, 1-hour cache write `20`.
 - Opus 4.8: input `5`, output `25`, cache read `0.5`, 5-minute cache write
   `6.25`, 1-hour cache write `10`.
 - Opus 5 (effective 2026-07-24; verified 2026-07-31): input `5`, output `25`,
@@ -574,15 +601,22 @@ OpenAI GPT-5.6 prices are first-party standard API prices per million tokens
 effective 2026-07-30 and verified against the [GPT-5.6 Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol),
 [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra), and
 [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) model
-pages. The standard tier applies through `272,000` input tokens;
+pages. Astra pricing was verified 2026-09-22 against the
+[GPT-6 Astra model page](https://developers.openai.com/api/docs/models/gpt-6-astra).
+The standard tier applies through `272,000` input tokens;
 above that threshold the full request uses `2x` input/cache-read/cache-write and
 `1.5x` output prices:
 
 | Model | Standard Input | Standard Output | Cache Read | Cache Write | >272K Input | >272K Output | >272K Cache Read | >272K Cache Write |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `gpt-6-astra` | `10` | `50` | `1` | `12.5` | `20` | `75` | `2` | `25` |
 | `gpt-5.6-sol` | `5` | `30` | `0.5` | `6.25` | `10` | `45` | `1` | `12.5` |
 | `gpt-5.6-terra` | `2` | `12` | `0.2` | `2.5` | `4` | `18` | `0.4` | `5` |
 | `gpt-5.6-luna` | `0.2` | `1.2` | `0.02` | `0.25` | `0.4` | `1.8` | `0.04` | `0.5` |
+
+These OpenAI entries represent Standard API pricing only. Fast, Batch, and
+Flex prices are excluded because current usage identity does not prove the
+billable processing mode.
 
 ## Validation and Secret Hygiene
 
@@ -594,6 +628,9 @@ above that threshold the full request uses `2x` input/cache-read/cache-write and
   failures.
 - `.env.test` is intentionally ignored/untracked and must not be committed or
   copied into artifacts.
+- GPT-6 Astra and Claude Fable 5.1 support was validated with deterministic
+  catalog, synthetic pricing, and mocked request coverage. No paid inference
+  request to either target was run or is required for this catalog change.
 
 ## Maintenance Checklist for Future Model Additions
 

@@ -280,6 +280,33 @@ include component `unitPrices`, policy/tier identifiers, currency/status, and
 missing dimensions so the UI can explain costs without recalculating them.
 Reasoning tokens remain a visible subset of output and are not double-counted.
 
+### Exact Astra and Fable 5.1 Standard pricing
+
+The built-in catalog resolves only exact provider/model identities. Future
+`OPENAI` + `gpt-6-astra` observations use Standard USD-per-million rates of
+`10` input, `1` cache read, `12.5` cache write, and `50` output through
+272,000 accounting input tokens. Above 272,000, the full request uses `20`,
+`2`, `25`, and `75` respectively. The exact model metadata records a 1,050,000
+context and 128,000 maximum output, sourced and verified 2026-09-22 from the
+[GPT-6 Astra model page](https://developers.openai.com/api/docs/models/gpt-6-astra).
+
+Future `ANTHROPIC` + `claude-fable-5-1` observations use Standard rates of
+`10` input, `50` output, `0.25` cache read, `12.5` 5-minute cache write, and
+`20` 1-hour cache write. The exact model metadata records a 1,000,000
+context/input and 128,000 maximum output, sourced and verified 2026-09-22 from
+the [Fable 5.1 overview](https://platform.claude.com/docs/en/models/fable-5-1/overview);
+pricing is effective 2026-09-01. Existing `claude-fable-5` pricing is unchanged.
+
+These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
+partner, subscription/credit, private, and negotiated variants are not inferred
+from an identity that does not record billing mode. No aliases or family-price
+inheritance are used, so unsupported identifiers continue to produce
+`price_missing`. Pricing is captured at observation time: existing run records,
+analytical facets, policy keys, and historical missing states are never
+recalculated by a catalog update. Deterministic catalog, synthetic policy/tier,
+and mocked request tests cover these entries; no paid Astra or Fable 5.1
+inference was run for this change.
+
 ### Latest pricing schedule selection
 
 The pricing resolver always uses the latest catalog configuration. For DeepSeek

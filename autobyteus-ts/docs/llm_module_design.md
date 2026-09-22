@@ -88,8 +88,8 @@ new built-in enum value for every saved endpoint.
 1.  **Initialization:**
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
-      `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
-      current Anthropic rows such as `claude-opus-5`, `claude-fable-5`, `claude-opus-4.8`,
+      `src/llm/supported-model-definitions.ts` (for example `gpt-6-astra`, `gpt-5.5`,
+      current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`, `claude-opus-4.8`,
       and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
       the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
       `kimi-k2.7-code-highspeed` rows).
@@ -158,6 +158,12 @@ automatic retry. Raw traces and already committed tool facts are preserved.
 
 Current examples of provider-specific model rules:
 
+- `gpt-6-astra` is an exact, entitlement-neutral built-in OpenAI row on the
+  Responses path. Its direct schema accepts `low` through `max` (default
+  `medium`). Source-verified 2026-09-22 Standard prices are `10/1/12.5/50`
+  per MTok for input/cache-read/cache-write/output and `20/2/25/75` above
+  272K input tokens for the full request. Codex App Server continues to own
+  dynamic availability and runtime-only capabilities such as `ultra`.
 - `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` remain exact,
   entitlement-neutral built-in OpenAI rows on the existing Responses path.
   They share a GPT-5.6-only reasoning schema with `medium` default and `max`
@@ -173,6 +179,14 @@ Current examples of provider-specific model rules:
   `claude-sonnet-4.8` alias unless Anthropic publishes that exact API ID, and
   do not make Fable 5 a default or fallback without a separate product
   decision.
+- `claude-fable-5-1` is a separate exact row with a 1M context/input limit,
+  128k output limit, and source-verified 2026-09-22 Standard prices of `10`
+  input, `50` output, `0.25` cache read, `12.5` 5-minute write, and `20`
+  1-hour write per MTok. Because adaptive thinking is always on, it has no
+  manual thinking config schema; the existing
+  Fable-family request policy still removes fixed/disabled thinking shapes and
+  unsupported sampling fields. Fable 5 remains unchanged and no alias is
+  introduced.
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with a flat user-facing V4 thinking schema; the
   adapter maps that schema to the provider request shape.
