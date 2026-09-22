@@ -6,6 +6,7 @@
 - Stable package identifier: `astra-fable-pricing-support`
 - Current solution revision: `SR-002`
 - Classification: `task_size=Small`; `architectural_risk=Low`
+- Persisted solution package commit: `b693c1de6313319dea06b3bb4ad74a63b98eff48`
 - Handoff route: Direct implementation via `/software_engineering_team/implementation_engineer`, selected from the matching rule for `Architecture Design Complete` with `task_size=Small` and `architectural_risk=Low`.
 - Requirements owner / design owner: Solution Designer
 - Date: 2026-09-22
