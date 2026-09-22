@@ -5,16 +5,17 @@
 - Ticket: `handoff-display-label-only`
 - Classification and route: `task_size=Small`; `architectural_risk=Low`; `Direct Low-Risk → Delivery`.
 - Finalization target: `origin/personal` / `personal`.
-- Current scope: latest-base integration refresh, post-integration check, long-lived docs sync, release-note preparation, and explicit user-verification handoff.
-- User verification is complete. The user superseded the initial no-release instruction before finalization completed and authorized a new version; repository finalization and the documented tag-driven release are in progress.
+- User verification: completed.
+- User release instruction: the initial no-release statement was superseded before finalization completed by “ohh. sorry please finalize and release a new version please”.
+- Final scope: docs sync, archive, ticket-branch commit/push, latest-base merge/push to `personal`, v1.4.74 release publication and workflow verification, and safe ticket cleanup.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/done/handoff-display-label-only/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize/tickets/done/handoff-display-label-only/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/done/handoff-display-label-only/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: The summary records the integrated behavior, validation, residuals, verification checklist, finalization hold, and release choice required from the user.
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize/tickets/done/handoff-display-label-only/delivery-revision-record.md`
+- Current delivery revision ID: `DR-002`
+- Notes: The summary records final behavior, validation, user verification, two delivery integration refreshes, repository finalization, v1.4.74 publication, rollout evidence, residual risks, rollback visibility, cleanup, and the cumulative package.
 
 ## Initial Delivery Integration Refresh
 
@@ -22,93 +23,113 @@
 - Latest tracked remote base reference checked: `origin/personal@851bf4085e9167f93781d339bfb88d01e1ae0586`
 - Base advanced since bootstrap or previous refresh: `Yes` — 9 remote-base commits.
 - New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint commit result: `Completed` at `4c5954fa79ebc95c3959f99b6659c6ded93ade47` to protect the validated candidate and API/E2E evidence.
+- Local checkpoint commit result: `Completed` at `4c5954fa79ebc95c3959f99b6659c6ded93ade47`.
 - Integration method: `Merge`
 - Integration result: `Completed` without conflicts at `baf93288eb71298d7bde53e40726948e8f244cc1`.
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed` — 5 focused Vitest files / 25 tests.
-- No-rerun rationale: N/A; the base advanced, so a relevant executable rerun was required and completed.
+- No-rerun rationale: N/A.
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
+- Handoff state current with latest tracked remote base: `Yes` at verification handoff.
 - Blocker: N/A
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
-- Initial verification / acceptance reference: User said, “i have tested. lets finalize.” The later release instruction was, “ohh. sorry please finalize and release a new version please”.
-- Renewed verification required after later re-integration: `No`; 6 later base commits changed no handoff-facing implementation, merged without conflict, and the 25-test focused suite passed.
-- Renewed verification received: `Not needed`.
-- Renewed verification / acceptance reference: The post-verification re-integration produced no material user-facing change.
+- Initial verification / acceptance reference: User said, “i have tested. lets finalize.”
+- Release instruction correction: User then said, “ohh. sorry please finalize and release a new version please”. The correction arrived before final repository/release completion and became authoritative.
+- Renewed verification required after later re-integration: `No`
+- Renewed verification received: `Not needed`
+- Renewed verification / acceptance reference: After the user signal, `origin/personal` advanced by 6 commits to `1a0244206541d570e01335203e16c49af120d9f5`. Delivery protected its uncommitted edits with a named stash, merged without conflict at `1b619308f10aa63a081ef2a98e53df505d050500`, restored the edits, and reran all 25 focused tests successfully. No handoff-facing implementation or behavior changed materially.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/done/handoff-display-label-only/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize/tickets/done/handoff-display-label-only/docs-sync-report.md`
 - Docs sync result: `Updated`
-- Docs updated: `autobyteus-web/docs/agent_teams.md` and `autobyteus-web/docs/agent_orgs.md`.
-- No-impact rationale: N/A; the durable presentation-versus-routing contract required promotion.
+- Docs updated: `autobyteus-web/docs/agent_teams.md`, `autobyteus-web/docs/agent_orgs.md`.
+- No-impact rationale: N/A; the durable readable-label/exact-routing-identity contract required promotion.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/done/handoff-display-label-only`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize/tickets/done/handoff-display-label-only`
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Authorized; pending repository finalization`
-- Git tag: `Authorized; pending repository finalization`
-- Release commit: `Authorized; pending repository finalization`
-- Decision: Publish the next patch version through `pnpm release <version> -- --release-notes tickets/done/handoff-display-label-only/release-notes.md`.
+- Previous version/tag: `1.4.73` / `v1.4.73`
+- Version bump: `Completed` — web and messaging-gateway package versions are `1.4.74`.
+- Git tag: `Completed` — annotated `v1.4.74` targets `da86efe07f7f71e7455db6a866286af0bf0debd7` locally and remotely.
+- Release commit: `da86efe07f7f71e7455db6a866286af0bf0debd7` (`chore(release): bump workspace release version to 1.4.74`).
+- Curated release notes: copied from the archived ticket to `.github/release-notes/release-notes.md` by the release helper.
+- Managed messaging manifest: synchronized to `v1.4.74` by the release helper.
 
 ## Repository Finalization
 
-- Bootstrap context source: `tickets/done/handoff-display-label-only/investigation-notes.md` and `architecture-design-complete.md`.
+- Bootstrap context source: archived `investigation-notes.md` and `architecture-design-complete.md`.
 - Ticket branch: `codex/handoff-display-label-only`
-- Ticket branch commit result: `Held`; only the permitted delivery-safety checkpoint and base-merge commit exist before verification.
-- Ticket branch push result: `Held`
+- Ticket branch commit result: `Completed` at `2aa4e1e409660c6826d17717bdb724bbc4e55794`.
+- Ticket branch push result: `Completed`; the remote branch was later deleted after target containment was verified.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `Yes` — from `851bf4085e9167f93781d339bfb88d01e1ae0586` to `1a0244206541d570e01335203e16c49af120d9f5`.
-- Delivery-owned edits protected before re-integration: `Completed` with a named stash; restored successfully.
-- Re-integration before final merge result: `Completed` without conflicts at `1b619308f10aa63a081ef2a98e53df505d050500`; 5 files / 25 tests passed afterward.
-- Target branch update result: `Held`
-- Merge into target result: `Held`
-- Push target branch result: `Held`
-- Repository finalization status: `Blocked` by the intentional user-verification gate.
-- Blocker: Final ticket commit/push and target merge/push are in progress.
+- Target advanced after verification / acceptance: `Yes` — refreshed and integrated before the ticket final commit.
+- Delivery-owned edits protected before re-integration: `Completed` with a named stash; restoration succeeded.
+- Re-integration before final merge result: `Completed` at `1b619308f10aa63a081ef2a98e53df505d050500`; 5 files / 25 tests passed afterward.
+- Target branch update result: `Completed` from a clean checkout created at `origin/personal@1a0244206541d570e01335203e16c49af120d9f5`.
+- Merge into target result: `Completed` as `affefa7fbeec9b7bea83371f9395d990d4c79751` using `--no-ff`.
+- Push target branch result: `Completed` for the merge, release commit, and final delivery receipt.
+- Repository finalization status: `Completed`
+- Blocker: N/A
+- Local target-worktree safety note: the pre-existing primary `personal` worktree was not modified because it contained unrelated user-owned changes. A separate clean finalization checkout was used.
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
-- Method: `Release Script` — use the documented root `pnpm release <x.y.z> -- --release-notes tickets/done/handoff-display-label-only/release-notes.md` flow after repository finalization.
-- Method reference / command: `autobyteus-web/AGENTS.md` release guidance and root release helper.
-- Release/publication/deployment result: `Authorized; pending repository finalization`.
-- Release notes handoff result: `Prepared` at `tickets/done/handoff-display-label-only/release-notes.md`; not yet used.
-- Blocker: Repository finalization must complete before release execution.
+- Method: `Release Script`
+- Method reference / command: root `pnpm release 1.4.74 -- --release-notes tickets/done/handoff-display-label-only/release-notes.md`, using the helper's documented `--branch` and `--no-push` options from the clean auxiliary branch to protect the unrelated dirty primary `personal` worktree; the helper-created commit was then pushed to `personal`, followed by the helper-created tag.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.74`
+- Publication state: published, non-draft, non-prerelease; `21` uploaded assets.
+- Duplicate-trigger protection: no manual-dispatch release was started after the tag push.
+- Blocker: N/A
+
+### Tag-Triggered Workflow Results
+
+| Workflow | Run ID | Result | URL |
+| --- | ---: | --- | --- |
+| Desktop Release | `35697109776` | `Completed / success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35697109776` |
+| Android APK Release | `35697109754` | `Completed / success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35697109754` |
+| iOS App Store Connect Release | `35697109791` | `Completed / success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35697109791` |
+| Release Messaging Gateway | `35697109740` | `Completed / success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35697109740` |
+| Server Docker Release | `35697109728` | `Completed / success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35697109728` |
+
+Durable workflow/release JSON and ref/version evidence is stored at `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize/tickets/done/handoff-display-label-only/probes/delivery/release-v1.4.74/`.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only`
-- Worktree cleanup result: `Blocked` until safe post-finalization containment is proven.
-- Worktree prune result: `Blocked` until finalization.
-- Local ticket branch cleanup result: `Blocked` until finalization.
-- Remote branch cleanup result: `Not required` at this point; the ticket branch has not been pushed.
-- Blocker: Repository finalization has not begun.
+- Worktree cleanup result: `Completed`; Git deregistration succeeded, then ignored generated `.nuxt` residuals were deleted.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker: N/A
+- Finalization checkout: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize` retained as the clean authoritative integrated checkout and detached from its temporary finalization branch after receipt publication.
 
-## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+## Escalation / Reroute
 
-- Classification: N/A; the verification hold is a required delivery gate, not an implementation/design/requirements failure.
-- Recommended recipient: N/A while finalization/release work is progressing.
-- Why final handoff could not complete: Repository finalization, authorized release execution/verification, and cleanup are not yet complete.
+- Classification: N/A
+- Recommended recipient: N/A
+- Why final handoff could not complete: N/A; no implementation, design, requirement, validation, finalization, release, deployment, rollout, or cleanup blocker remains.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/tickets/done/handoff-display-label-only/release-notes.md`
-- Archived release notes artifact used for release/publication: `Not yet applicable`
-- Release notes status: `Updated`; authorized for the next patch release.
+- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize/tickets/done/handoff-display-label-only/release-notes.md`
+- Archived release notes artifact used for release/publication: `Yes`
+- Release notes status: `Updated and published`
 
 ## Deployment Steps
 
-No deployment step has run. The documented tag-driven release workflow will be used exactly once after repository finalization and monitored before completion is claimed. No immediate manual-dispatch duplicate will be started.
+The annotated `v1.4.74` tag triggered the five documented release workflows exactly once. All completed successfully. GitHub Release publication contains 21 uploaded desktop, Android, update-metadata, messaging-gateway, and manifest assets. The server Docker workflow also completed successfully. No separate manual deployment or manual-dispatch recovery was required.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -124,21 +145,24 @@ No deployment step has run. The documented tag-driven release workflow will be u
 - Focused repository validation passed: 5 files / 25 tests.
 - Localization boundary and literal audit passed.
 - Nuxt production build passed with 16 routes prerendered.
-- Delivery post-integration focused rerun passed: 5 files / 25 tests; evidence `probes/delivery/post-integration-focused.log`.
-- Merge of latest `origin/personal` completed without conflicts.
-- Expected non-blocking warnings: stale Browserslist data and KaTeX quirks-mode warnings in the test environment.
+- Delivery post-integration focused rerun passed: 5 files / 25 tests.
+- Post-verification re-integration focused rerun passed: 5 files / 25 tests.
+- Both latest-base merges and the target merge completed without conflicts.
+- `origin/personal`, `v1.4.74`, and both package versions resolve to the documented release state.
+- All five tag-triggered workflows completed successfully; the published GitHub Release is non-draft/non-prerelease with 21 uploaded assets.
+- Expected non-blocking test warnings remained stale Browserslist data and KaTeX quirks-mode messages.
 
 ## Rollback Criteria
 
-Before finalization, no rollback action is needed because no target merge or release has occurred. After finalization, revert the ticket merge if rooted addresses reappear in ordinary handoff UI, exact native/save values stop preserving canonical identities, duplicate endpoints become ambiguous, stale raw values leak, or responsive cards overflow. No data migration rollback is required.
+If rooted addresses reappear in ordinary handoff UI, exact native/save values stop preserving canonical identities, duplicate endpoints become ambiguous, stale raw values leak, or responsive cards overflow, revert or supersede the implementation on `personal`. Because `v1.4.74` is published, do not move or reuse the tag; publish a corrective patch version and withdraw affected release artifacts only if release policy requires it. No persisted-data rollback is needed.
 
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: Repository finalization and authorized release work are still in progress.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: N/A
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes`
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`
+- Terminal message/reference: Authoritative `Delivery Completed` terminal handoff issued immediately after publishing the final receipt checkpoint containing this report.
