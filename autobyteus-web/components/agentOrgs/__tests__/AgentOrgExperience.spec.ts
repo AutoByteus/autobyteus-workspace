@@ -113,10 +113,13 @@ describe('AgentOrgExperience', () => {
 
   it('shows same-identity Teams, their coordinator, and ordered From/To/When detail', async () => {
     const wrapper = await mountExperience('org-detail', org.id)
+    const handoffCard = wrapper.get('[data-test^="handoff-card-"]')
 
     expect(wrapper.text()).toContain('Coordinator: architecture designer')
-    expect(wrapper.text()).toContain('/requirements_engineer')
-    expect(wrapper.text()).toContain('/software_engineering')
+    expect(handoffCard.text()).toContain('requirements engineer')
+    expect(handoffCard.text()).toContain('software engineering')
+    expect(handoffCard.text()).not.toContain('/requirements_engineer')
+    expect(handoffCard.text()).not.toContain('/software_engineering')
     expect(wrapper.text().indexOf('Requirements are approved.')).toBeLessThan(wrapper.text().indexOf('Architecture may begin.'))
     expect(wrapper.text()).not.toContain('Handoff 1')
   })
