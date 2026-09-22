@@ -88,14 +88,14 @@
           <button type="button" class="rounded-md px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" :data-test="`delete-handoff-${handoff.id}`" @click="deleteHandoff(index)">{{ t('handoffs.manager.actions.delete') }}</button>
         </div>
 
-        <div class="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_2rem_minmax(0,1fr)] lg:items-start">
-          <div>
+        <div class="mt-3 grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[minmax(0,1fr)_2rem_minmax(0,1fr)] lg:items-start">
+          <div class="min-w-0">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ t('handoffs.manager.fields.from') }}</p>
             <EndpointIdentity v-if="endpointFor(handoff.fromAddress, fromOptions)" class="mt-1.5" :endpoint="endpointFor(handoff.fromAddress, fromOptions)!" :label="fromDisplayLabelFor(handoff.fromAddress)" />
             <p v-else class="mt-1.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">{{ unavailableEndpointMessage(handoff.fromAddress) }}</p>
           </div>
           <Icon icon="heroicons:arrow-right-20-solid" class="hidden h-5 w-5 text-slate-400 lg:mt-8 lg:block" />
-          <div>
+          <div class="min-w-0">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ t('handoffs.manager.fields.to') }}</p>
             <EndpointIdentity v-if="endpointFor(handoff.toAddress, toOptions)" class="mt-1.5" :endpoint="endpointFor(handoff.toAddress, toOptions)!" :label="toDisplayLabelFor(handoff.toAddress)" />
             <p v-else class="mt-1.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">{{ unavailableEndpointMessage(handoff.toAddress) }}</p>
@@ -134,7 +134,7 @@ const EndpointIdentity = defineComponent({
     compact: { type: Boolean, default: false },
   },
   setup(props) {
-    return () => h('div', { class: ['rounded-lg border border-slate-200 bg-slate-50', props.compact ? 'p-2.5' : 'p-3'] }, [
+    return () => h('div', { class: ['min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50', props.compact ? 'p-2.5' : 'p-3'] }, [
       h('div', { class: 'flex min-w-0 items-center gap-2' }, [
         h(Icon, { icon: props.endpoint.kind === 'team' ? 'heroicons:user-group-20-solid' : 'heroicons:user-20-solid', class: props.endpoint.kind === 'team' ? 'h-4 w-4 flex-none text-blue-600' : 'h-4 w-4 flex-none text-slate-500' }),
         h('span', { class: 'min-w-0 flex-1 whitespace-normal break-words text-sm font-semibold text-slate-900' }, props.label),

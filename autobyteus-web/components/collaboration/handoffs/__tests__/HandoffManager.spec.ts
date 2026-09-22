@@ -47,6 +47,15 @@ describe('HandoffManager', () => {
     expect(wrapper.find('span.whitespace-normal.break-words').exists()).toBe(true)
     expect(wrapper.find('.truncate').exists()).toBe(false)
     expect(wrapper.find('.font-mono').exists()).toBe(false)
+
+    const directionGrid = wrapper.get('[data-test="handoff-card-long"] > .grid')
+    expect(directionGrid.classes()).toContain('grid-cols-[minmax(0,1fr)]')
+    const directionColumns = Array.from(directionGrid.element.children).filter((element) => element.tagName === 'DIV')
+    expect(directionColumns).toHaveLength(2)
+    expect(directionColumns.every((element) => element.classList.contains('min-w-0'))).toBe(true)
+    expect(wrapper.findAllComponents({ name: 'EndpointIdentity' }).every((identity) => (
+      identity.classes().includes('min-w-0') && identity.classes().includes('max-w-full')
+    ))).toBe(true)
   })
 
   it('keeps exact canonical addresses as native option values and emitted draft identities', async () => {
