@@ -103,7 +103,7 @@ describe('token usage related model-list GraphQL coverage', () => {
     }
   }, 20_000);
 
-  it('surfaces current static Anthropic models through the settings-facing GraphQL model list', async () => {
+  it('surfaces exact Astra and Fable 5.1 static entries through the settings-facing GraphQL model list', async () => {
     const previousEnv = {
       OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
       LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
@@ -136,6 +136,7 @@ describe('token usage related model-list GraphQL coverage', () => {
             value
             canonicalName
             maxContextTokens
+            maxInputTokens
             maxOutputTokens
           }
         }
@@ -152,6 +153,7 @@ describe('token usage related model-list GraphQL coverage', () => {
             value: string;
             canonicalName: string;
             maxContextTokens: number | null;
+            maxInputTokens: number | null;
             maxOutputTokens: number | null;
           }>;
         }>;
@@ -159,6 +161,9 @@ describe('token usage related model-list GraphQL coverage', () => {
 
       const anthropicModels = result.providerModelCatalogSnapshots
         .filter((row) => row.ownerProvider.id === 'ANTHROPIC')
+        .flatMap((row) => row.llmModels);
+      const openaiModels = result.providerModelCatalogSnapshots
+        .filter((row) => row.ownerProvider.id === 'OPENAI')
         .flatMap((row) => row.llmModels);
       const byIdentifier = new Map(anthropicModels.map((model) => [model.modelIdentifier, model]));
       const identifiers = anthropicModels.map((model) => model.modelIdentifier);
@@ -169,10 +174,20 @@ describe('token usage related model-list GraphQL coverage', () => {
       ]);
 
       expect(identifiers).toEqual(expect.arrayContaining([
+        'claude-fable-5-1',
         'claude-fable-5',
         'claude-opus-4.8',
         'claude-sonnet-5',
       ]));
+      expect(anthropicModels.filter((model) => model.modelIdentifier === 'claude-fable-5-1')).toHaveLength(1);
+      expect(byIdentifier.get('claude-fable-5-1')).toMatchObject({
+        name: 'claude-fable-5-1',
+        value: 'claude-fable-5-1',
+        canonicalName: 'claude-fable-5-1',
+        maxContextTokens: 1_000_000,
+        maxInputTokens: 1_000_000,
+        maxOutputTokens: 128_000,
+      });
       expect(byIdentifier.get('claude-fable-5')).toMatchObject({
         value: 'claude-fable-5',
         canonicalName: 'claude-fable-5',
@@ -193,6 +208,19 @@ describe('token usage related model-list GraphQL coverage', () => {
       });
       expect(identifiers).not.toContain('claude-sonnet-4.8');
       expect(namesAndValues).not.toContain('claude-sonnet-4-8');
+      expect(anthropicModels.map((model) => model.modelIdentifier)).not.toContain('claude-fable-5.1');
+
+      expect(openaiModels.filter((model) => model.modelIdentifier === 'gpt-6-astra')).toHaveLength(1);
+      expect(openaiModels.find((model) => model.modelIdentifier === 'gpt-6-astra')).toMatchObject({
+        name: 'gpt-6-astra',
+        value: 'gpt-6-astra',
+        canonicalName: 'gpt-6-astra',
+        maxContextTokens: 1_050_000,
+        maxInputTokens: null,
+        maxOutputTokens: 128_000,
+      });
+      expect(openaiModels.map((model) => model.modelIdentifier)).not.toContain('gpt-6');
+      expect(openaiModels.map((model) => model.modelIdentifier)).not.toContain('astra');
     } finally {
       LLMFactory.resetForTests();
       for (const [key, value] of Object.entries(previousEnv)) {

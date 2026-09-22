@@ -7,6 +7,7 @@ import { LLMProvider } from '../../../src/llm/providers.js';
 import { LMStudioModelProvider } from '../../../src/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from '../../../src/llm/ollama-provider.js';
 import { OpenAILLM } from '../../../src/llm/api/openai-llm.js';
+import { AnthropicLLM } from '../../../src/llm/api/anthropic-llm.js';
 import { SecretValue } from '../../../src/secrets/secret-value.js';
 
 const ENV_KEYS = [
@@ -287,5 +288,77 @@ describe('LLMFactory metadata resolution', () => {
       });
       await llm.cleanup();
     }
+  });
+
+  it('resolves exact Astra and Fable 5.1 metadata without aliases', async () => {
+    const openaiModels = await LLMFactory.listModelsByProvider(LLMProvider.OPENAI);
+    const anthropicModels = await LLMFactory.listModelsByProvider(LLMProvider.ANTHROPIC);
+
+    expect(openaiModels.filter((model) => model.model_identifier === 'gpt-6-astra')).toHaveLength(1);
+    expect(openaiModels.find((model) => model.model_identifier === 'gpt-6-astra')).toMatchObject({
+      display_name: 'gpt-6-astra',
+      value: 'gpt-6-astra',
+      canonical_name: 'gpt-6-astra',
+      provider_type: LLMProvider.OPENAI,
+      runtime: 'api',
+      max_context_tokens: 1_050_000,
+      max_input_tokens: null,
+      max_output_tokens: 128_000,
+      config_schema: {
+        properties: {
+          reasoning_effort: {
+            default: 'medium',
+            enum: ['low', 'medium', 'high', 'xhigh', 'max'],
+          },
+        },
+      },
+    });
+    expect(openaiModels.map((model) => model.model_identifier)).not.toContain('gpt-6');
+    expect(openaiModels.map((model) => model.model_identifier)).not.toContain('astra');
+
+    expect(anthropicModels.filter((model) => model.model_identifier === 'claude-fable-5-1')).toHaveLength(1);
+    const fable = anthropicModels.find((model) => model.model_identifier === 'claude-fable-5-1');
+    expect(fable).toMatchObject({
+      display_name: 'claude-fable-5-1',
+      value: 'claude-fable-5-1',
+      canonical_name: 'claude-fable-5-1',
+      provider_type: LLMProvider.ANTHROPIC,
+      runtime: 'api',
+      max_context_tokens: 1_000_000,
+      max_input_tokens: 1_000_000,
+      max_output_tokens: 128_000,
+    });
+    expect(fable?.config_schema).toBeUndefined();
+    expect(anthropicModels.map((model) => model.model_identifier)).not.toContain('claude-fable-5.1');
+  });
+
+  it('constructs exact Astra and Fable 5.1 rows through their existing provider adapters', async () => {
+    const astra = await LLMFactory.createLLM('gpt-6-astra', {
+      authentication: {
+        kind: 'apiKey',
+        apiKey: SecretValue.fromString('synthetic-openai-construction-key'),
+      },
+    });
+    expect(astra).toBeInstanceOf(OpenAILLM);
+    expect(astra.model).toMatchObject({
+      modelIdentifier: 'gpt-6-astra',
+      value: 'gpt-6-astra',
+      canonicalName: 'gpt-6-astra',
+    });
+    await astra.cleanup();
+
+    const fable = await LLMFactory.createLLM('claude-fable-5-1', {
+      authentication: {
+        kind: 'apiKey',
+        apiKey: SecretValue.fromString('synthetic-anthropic-construction-key'),
+      },
+    });
+    expect(fable).toBeInstanceOf(AnthropicLLM);
+    expect(fable.model).toMatchObject({
+      modelIdentifier: 'claude-fable-5-1',
+      value: 'claude-fable-5-1',
+      canonicalName: 'claude-fable-5-1',
+    });
+    await fable.cleanup();
   });
 });

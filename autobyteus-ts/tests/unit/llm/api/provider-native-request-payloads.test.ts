@@ -655,6 +655,39 @@ describe('provider-native API request payloads', () => {
     expect(captured).not.toHaveProperty('reasoning_summary');
   });
 
+  it('submits exact GPT-6 Astra with a supported direct-API reasoning effort through Responses', async () => {
+    let captured: any;
+    const openAIConfig = commonConfig();
+    openAIConfig.extraParams = { reasoning_effort: 'max', reasoning_summary: 'auto' };
+    const llm = new OpenAIResponsesLLM(
+      model(LLMProvider.OPENAI, 'gpt-6-astra'),
+      'OPENAI_API_KEY',
+      'https://api.openai.com/v1',
+      openAIConfig,
+      'test-openai-key'
+    );
+    (llm as any).clientPromise = Promise.resolve({
+      responses: {
+        create: async (params: any) => {
+          captured = params;
+          return {
+            output: [{ type: 'message', content: [{ type: 'output_text', text: 'ok' }] }],
+            usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 }
+          };
+        }
+      }
+    });
+
+    await llm.sendMessages([new Message(MessageRole.USER, 'Hello')]);
+
+    expect(captured).toMatchObject({
+      model: 'gpt-6-astra',
+      reasoning: { effort: 'max', summary: 'auto' },
+    });
+    expect(captured).not.toHaveProperty('reasoning_effort');
+    expect(captured).not.toHaveProperty('reasoning_summary');
+  });
+
   it('captures OpenAI Responses streaming payload with caller include preserved and encrypted reasoning requested', async () => {
     let captured: any;
     const openAIConfig = commonConfig();

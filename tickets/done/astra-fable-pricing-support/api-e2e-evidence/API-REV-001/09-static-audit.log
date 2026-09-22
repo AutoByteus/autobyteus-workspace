@@ -1,0 +1,112 @@
+===== git status =====
+## codex/astra-fable-pricing-support...origin/personal [ahead 5]
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-coverage-investigation.md
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-evidence/
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-test-case-ledger.md
+===== committed changed paths since origin/personal =====
+M	autobyteus-server-ts/docs/modules/token_usage.md
+M	autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+M	autobyteus-server-ts/tests/unit/token-usage/pricing/token-cost-calculator.test.ts
+M	autobyteus-server-ts/tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+M	autobyteus-ts/docs/llm_module_design.md
+M	autobyteus-ts/docs/llm_module_design_nodejs.md
+M	autobyteus-ts/docs/provider_model_catalogs.md
+M	autobyteus-ts/src/llm/supported-model-definitions.ts
+M	autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts
+M	autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts
+M	autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts
+M	autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts
+A	tickets/in-progress/astra-fable-pricing-support/design-spec.md
+A	tickets/in-progress/astra-fable-pricing-support/handoff-summary.md
+A	tickets/in-progress/astra-fable-pricing-support/implementation-handoff.md
+A	tickets/in-progress/astra-fable-pricing-support/implementation-revision-record.md
+A	tickets/in-progress/astra-fable-pricing-support/investigation-notes.md
+A	tickets/in-progress/astra-fable-pricing-support/requirements-doc.md
+A	tickets/in-progress/astra-fable-pricing-support/solution-revision-record.md
+===== working-tree changed paths =====
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-coverage-investigation.md
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-evidence/
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-test-case-ledger.md
+===== committed+tracked whitespace check =====
+===== untracked API/E2E test whitespace check =====
+===== migration/frontend/provider-adapter production delta check =====
+===== production source delta check =====
+autobyteus-ts/src/llm/supported-model-definitions.ts
+===== target docs evidence =====
+autobyteus-ts/docs/llm_module_design_nodejs.md:57:`gpt-6-astra` is another exact Responses row. Its direct schema accepts
+autobyteus-ts/docs/llm_module_design_nodejs.md:67:`cachedInputTokens` maps to cache read only; cache creation stays unknown/null,
+autobyteus-ts/docs/llm_module_design_nodejs.md:247:- OpenAI `gpt-6-astra` (verified 2026-09-22), `gpt-5.6-sol`,
+autobyteus-ts/docs/llm_module_design_nodejs.md:251:  2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
+autobyteus-ts/docs/llm_module_design_nodejs.md:282:- The `claude-fable-5-1` definition exposes no manual thinking schema because
+autobyteus-server-ts/docs/modules/token_usage.md:286:`OPENAI` + `gpt-6-astra` observations use Standard USD-per-million rates of
+autobyteus-server-ts/docs/modules/token_usage.md:287:`10` input, `1` cache read, `12.5` cache write, and `50` output through
+autobyteus-server-ts/docs/modules/token_usage.md:288:272,000 accounting input tokens. Above 272,000, the full request uses `20`,
+autobyteus-server-ts/docs/modules/token_usage.md:291:[GPT-6 Astra model page](https://developers.openai.com/api/docs/models/gpt-6-astra).
+autobyteus-server-ts/docs/modules/token_usage.md:293:Future `ANTHROPIC` + `claude-fable-5-1` observations use Standard rates of
+autobyteus-server-ts/docs/modules/token_usage.md:294:`10` input, `50` output, `0.25` cache read, `12.5` 5-minute cache write, and
+autobyteus-server-ts/docs/modules/token_usage.md:295:`20` 1-hour cache write. The exact model metadata records a 1,000,000
+autobyteus-server-ts/docs/modules/token_usage.md:300:These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
+autobyteus-server-ts/docs/modules/token_usage.md:307:and mocked request tests cover these entries; no paid Astra or Fable 5.1
+autobyteus-ts/docs/llm_module_design.md:91:      `src/llm/supported-model-definitions.ts` (for example `gpt-6-astra`, `gpt-5.5`,
+autobyteus-ts/docs/llm_module_design.md:92:      current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`, `claude-opus-4.8`,
+autobyteus-ts/docs/llm_module_design.md:161:- `gpt-6-astra` is an exact, entitlement-neutral built-in OpenAI row on the
+autobyteus-ts/docs/llm_module_design.md:182:- `claude-fable-5-1` is a separate exact row with a 1M context/input limit,
+autobyteus-ts/docs/llm_module_design.md:184:  input, `50` output, `0.25` cache read, `12.5` 5-minute write, and `20`
+autobyteus-ts/docs/llm_module_design.md:247:derive gross input as base input plus cache read/write buckets. Local runtime
+autobyteus-ts/docs/llm_module_design.md:248:estimates must never be used as persisted paid-provider accounting.
+autobyteus-ts/docs/provider_model_catalogs.md:73:| LLM | `gpt-6-astra` | `gpt-6-astra` | OpenAI | 2026-09-22 | Exact ID; uses the Responses path, a direct-API low/medium/high/xhigh/max reasoning schema (default medium), 1.05M context / 128k output metadata, and Standard cache-aware pricing with a full-request tier above 272k input tokens. Codex runtime capabilities remain dynamically owned. |
+autobyteus-ts/docs/provider_model_catalogs.md:79:| LLM | `claude-fable-5-1` | `claude-fable-5-1` | Anthropic | 2026-09-22 | Exact ID; uses 1M context/input / 128k output metadata and Standard cache-aware pricing effective 2026-09-01. Adaptive thinking is always on, so the catalog exposes no manual thinking toggle. |
+autobyteus-ts/docs/provider_model_catalogs.md:96:| Image | `gemini-3.1-flash-lite-image` | `gemini-3.1-flash-lite-image` | Gemini | 2026-07-03 | Fast Gemini image generation model; registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
+autobyteus-ts/docs/provider_model_catalogs.md:220:The active current-model rows are `claude-opus-5`, `claude-fable-5-1`,
+autobyteus-ts/docs/provider_model_catalogs.md:246:Claude Opus 5 standard pricing is input `$5`, output `$25`, cache read `$0.50`,
+autobyteus-ts/docs/provider_model_catalogs.md:247:5-minute cache write `$6.25`, and 1-hour cache write `$10` per million tokens.
+autobyteus-ts/docs/provider_model_catalogs.md:248:Anthropic Fast mode is a separate processing price (input `$10`, output `$50`)
+autobyteus-ts/docs/provider_model_catalogs.md:250:infer Fast mode without a processing-mode identity.
+autobyteus-ts/docs/provider_model_catalogs.md:262:Its Standard pricing is `$10` input, `$50` output, `$0.25` cache read, `$12.50`
+autobyteus-ts/docs/provider_model_catalogs.md:263:5-minute cache write, and `$20` 1-hour cache write per million tokens, effective
+autobyteus-ts/docs/provider_model_catalogs.md:264:2026-09-01. Batch, inference-geography/data-residency, partner, subscription,
+autobyteus-ts/docs/provider_model_catalogs.md:269:Official OpenAI text models such as `gpt-6-astra`, `gpt-5.5`, `gpt-5.6-sol`,
+autobyteus-ts/docs/provider_model_catalogs.md:279:`gpt-6-astra` is also an exact Responses row. Its direct-API schema exposes
+autobyteus-ts/docs/provider_model_catalogs.md:285:[GPT-6 Astra model page](https://developers.openai.com/api/docs/models/gpt-6-astra).
+autobyteus-ts/docs/provider_model_catalogs.md:575:component tokens (`standard_input`, `cache_read_input`, cache write subtypes,
+autobyteus-ts/docs/provider_model_catalogs.md:580:than pretending a remote paid model cost is `$0`.
+autobyteus-ts/docs/provider_model_catalogs.md:583:catalog, not Batch API, Opus Fast Mode, data-residency premiums, or temporary
+autobyteus-ts/docs/provider_model_catalogs.md:589:- Fable 5: input `10`, output `50`, cache read `1`, 5-minute cache write
+autobyteus-ts/docs/provider_model_catalogs.md:590:  `12.5`, 1-hour cache write `20`.
+autobyteus-ts/docs/provider_model_catalogs.md:592:  `50`, cache read `0.25`, 5-minute cache write `12.5`, 1-hour cache write `20`.
+autobyteus-ts/docs/provider_model_catalogs.md:593:- Opus 4.8: input `5`, output `25`, cache read `0.5`, 5-minute cache write
+autobyteus-ts/docs/provider_model_catalogs.md:594:  `6.25`, 1-hour cache write `10`.
+autobyteus-ts/docs/provider_model_catalogs.md:596:  cache read `0.5`, 5-minute cache write `6.25`, 1-hour cache write `10`.
+autobyteus-ts/docs/provider_model_catalogs.md:597:- Sonnet 5: input `3`, output `15`, cache read `0.3`, 5-minute cache write
+autobyteus-ts/docs/provider_model_catalogs.md:598:  `3.75`, 1-hour cache write `6`.
+autobyteus-ts/docs/provider_model_catalogs.md:605:[GPT-6 Astra model page](https://developers.openai.com/api/docs/models/gpt-6-astra).
+autobyteus-ts/docs/provider_model_catalogs.md:606:The standard tier applies through `272,000` input tokens;
+autobyteus-ts/docs/provider_model_catalogs.md:612:| `gpt-6-astra` | `10` | `50` | `1` | `12.5` | `20` | `75` | `2` | `25` |
+autobyteus-ts/docs/provider_model_catalogs.md:617:These OpenAI entries represent Standard API pricing only. Fast, Batch, and
+autobyteus-ts/docs/provider_model_catalogs.md:618:Flex prices are excluded because current usage identity does not prove the
+autobyteus-ts/docs/provider_model_catalogs.md:632:  catalog, synthetic pricing, and mocked request coverage. No paid inference
+===== target definition evidence =====
+65:const createOpenAILongContextPricing = (input: number, output: number, pricingEffectiveDate: string): TokenPricingConfig => {
+199:    name: 'gpt-6-astra', value: 'gpt-6-astra', provider: LLMProvider.OPENAI, llmClass: OpenAILLM,
+200:    canonicalName: 'gpt-6-astra', staticMetadata: createStaticModelMetadata(1_050_000, null, 128_000, 'https://developers.openai.com/api/docs/models/gpt-6-astra', '2026-09-22'),
+201:    defaultConfig: new LLMConfig({ pricingConfig: createOpenAILongContextPricing(10, 50, '2026-09-22') }),
+214:    defaultConfig: new LLMConfig({ pricingConfig: createOpenAILongContextPricing(inputPrice, outputPrice, '2026-07-30') }),
+280:    name: 'claude-fable-5-1', value: 'claude-fable-5-1', provider: LLMProvider.ANTHROPIC, llmClass: AnthropicLLM,
+281:    canonicalName: 'claude-fable-5-1', staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/fable-5-1/overview', '2026-09-22'),
+===== no schema/migration tracked changes =====
+No schema or migration files changed.
+===== no target paid commands executed =====
+Validation command inventory contains only pnpm build, Vitest, typecheck, git, and ripgrep; no provider generation/inference command was run.
+===== cleanup =====
+Removed generated autobyteus-application-sdk-contracts/dist and autobyteus-application-backend-sdk/dist created by validation builds.
+## codex/astra-fable-pricing-support...origin/personal [ahead 5]
+?? autobyteus-server-ts/tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-coverage-investigation.md
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-evidence/
+?? tickets/in-progress/astra-fable-pricing-support/api-e2e-test-case-ledger.md
