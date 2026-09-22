@@ -1,0 +1,401 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:19826) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns expanded run/team/member summaries and settings statistics from ledger accounting fields
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 219ms
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20171) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts > token usage unit-price GraphQL hydration > exposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (2 tests) 142ms
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20175) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts > token usage ledger GraphQL provider semantics
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-DJVvof/memory
+============================================================
+AppConfig initialization completed successfully
+
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts (3 tests) 204ms
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20425) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E > reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+ ❯ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests | 2 failed) 212ms
+     × reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL 52ms
+     ✓ returns priced and fully unpriced usage days as one partial-cost GraphQL result 18ms
+     ✓ projects stored Gemini 3.7 identity and cost without current-catalog translation or repricing 12ms
+     × keeps pre-feature run rows directly usable without analytics backfill and persists honest coverage 16ms
+     ✓ rejects an aggregate beyond GraphQL SafeInt without rounding persisted BigInt values 13ms
+stdout | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20513) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts > GPT-5.6 token usage accounting and GraphQL convergence
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts (6 tests) 111ms
+stdout | tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts > Astra and Fable 5.1 token usage accounting and GraphQL convergence
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts (4 tests) 100ms
+stdout | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20848) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (2 tests) 75ms
+stdout | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts > token usage current-record process restart > reopens unchanged standalone and exact team-member records through built-server GraphQL
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts > token usage current-record process restart > reopens unchanged standalone and exact team-member records through built-server GraphQL
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts (1 test) 4922ms
+     ✓ reopens unchanged standalone and exact team-member records through built-server GraphQL  4921ms
+stdout | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:21188) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts > token usage custom-provider model-value backfill startup e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts (2 tests) 51ms
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:21193) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts > token usage related model-list GraphQL coverage > keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts (2 tests) 55ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E > reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+AssertionError: expected { grossInputTokens: 1150, …(9) } to match object { grossInputTokens: 1150, …(8) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+@@ -2,10 +2,10 @@
+    "apiCostStatus": "mixed",
+    "cacheReadInputTokens": 800,
+    "currency": null,
+    "estimatedApiTotalCost": null,
+    "grossInputTokens": 1150,
+-   "outputTokens": 230,
++   "outputTokens": 1000230,
+    "reasoningOutputTokens": 100,
+-   "totalTokens": 1380,
+-   "usageReportCount": 3,
++   "totalTokens": 1001380,
++   "usageReportCount": 4,
+  }
+
+ ❯ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts:206:38
+    204|     expect(result.coverage.status).toBe("FULL");
+    205|     expect(result.comparisonCoverage.status).toBe("FULL");
+    206|     expect(result.selectedAggregate).toMatchObject({
+       |                                      ^
+    207|       grossInputTokens: 1_150,
+    208|       cacheReadInputTokens: 800,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E > keeps pre-feature run rows directly usable without analytics backfill and persists honest coverage
+AssertionError: expected [ GraphQLError{ …(10) } ] to be undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  GraphQLError {
+    "message": "TOKEN_USAGE_SAFE_INTEGER_EXCEEDED:accounting_input_tokens",
+    "path": [
+      "tokenUsageAnalytics",
+    ],
+    "locations": [
+      {
+        "column": 7,
+        "line": 3,
+      },
+    ],
+    "extensions": {},
+  },
+]
+
+ ❯ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts:424:25
+    422|     expect(firstStart.toISOString()).toBe("2026-08-10T12:00:00.000Z");
+    423|     expect(retainedStart).toEqual(firstStart);
+    424|     expect(july.errors).toBeUndefined();
+       |                         ^
+    425|     expect(partialAugust.errors).toBeUndefined();
+    426|     expect((july.data as any).tokenUsageAnalytics).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  2 failed | 29 passed (31)
+   Start at  06:28:10
+   Duration  23.86s (transform 4.19s, setup 62ms, import 16.20s, tests 6.09s, environment 1ms)
+
+
+===== ISOLATED RETRY OF PARALLEL-CONTAMINATED FILE =====
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:22283) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E > reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 260ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  06:28:59
+   Duration  6.62s (transform 3.87s, setup 16ms, import 5.75s, tests 260ms, environment 0ms)
