@@ -149,5 +149,5 @@ If the target catalog facts are later shown to be incorrect or stale, revert the
 - Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
-- Terminal package sent to `/solution_designer`: `Pending handoff-rules evaluation immediately after final report publication`
-- Terminal message/reference: Pending
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`
+- Terminal message/reference: Authoritative `Delivery Completed` terminal handoff issued immediately after publishing the receipt checkpoint containing this update.

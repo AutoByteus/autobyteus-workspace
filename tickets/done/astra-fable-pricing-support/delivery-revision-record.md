@@ -38,8 +38,8 @@
 - Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support-finalize/tickets/done/astra-fable-pricing-support/delivery-release-deployment-report.md`
 - Integration and post-integration verification: final remote base remained `d883f5620a0abaed147209ad0e42a8960df70e68`; ticket final commit `d54341b216ded123833e6b7550eff2e6f0605344`; conflict-free target merge `7f5fbed59e5a8c90c18c1a2bc438f027f15edfbe`; `git diff --check` passed. No executable rerun was required because no new base commit entered the API/E2E-validated state.
 - User verification/finalization state: Complete. The user explicitly authorized finalization and explicitly declined a new release.
-- Terminal return to `/solution_designer`: `Pending immediate handoff-rules evaluation after the final report checkpoint is pushed`
-- Terminal return message/reference: Pending
+- Terminal return to `/software_engineering_team/solution_designer`: `Sent`
+- Terminal return message/reference: Authoritative `Delivery Completed` terminal handoff issued immediately after publishing the receipt checkpoint containing this update.
 - Why this baseline or delivery revision was recorded: Records the delta from the pre-verification hold to completed repository finalization and cleanup without rewriting `DR-001`.
-- Next recipient/action: Evaluate current handoff rules and send the authoritative terminal completion package to the single matched recipient.
+- Next recipient/action: `/software_engineering_team/solution_designer` verifies the authoritative terminal package and returns the verified engineering result through the applicable parent handoff or standalone caller.
 - Remaining blockers, rollback concerns, or untested scope: No delivery blocker. Provider facts may drift after 2026-09-22; account entitlement and non-Standard variants remain external/out of scope. Unrelated Gemini/TS6059/shared-database baselines remain documented. No paid target inference was run.
