@@ -34,7 +34,7 @@ import { TreeNode } from '~/utils/fileExplorer/TreeNode'
 // Only the external editor renderer is replaced; both Files consumers, target fallback,
 // global workspace getter, launch draft, History selection and config publication are real.
 const EditorRenderer = defineComponent({
-  name: 'FileViewer', props: ['file'], emits: ['save'],
+  name: 'FileViewer', props: ['file'], emits: ['save', 'update:modelValue'],
   setup(props, { emit }) {
     const key = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 's') { event.preventDefault(); emit('save') }
@@ -60,8 +60,8 @@ const register = (id: string) => {
   const state = files._getOrCreateWorkspaceState(id)
   state.tree.children = [new TreeNode(`${id}.txt`, `${id}.txt`, true, [], `${id}-file`)]
 }
-const mountPanel = () => {
-  const wrapper = mount(RightSideTabs, { global: { stubs: {
+const mountPanel = (errors: unknown[]) => {
+  const wrapper = mount(RightSideTabs, { global: { config: { errorHandler: error => { errors.push(error) } }, stubs: {
     FileViewer: EditorRenderer, ProgressPanel: true, TerminalPanel: { props: ['workspaceMetadata'], template: '<div />' },
     BrowserPanel: true, VncViewer: true, ArtifactsTab: true, CollaborationOverviewPanel: true,
   } } })
@@ -73,7 +73,11 @@ for (const previouslyMounted of [false, true]) {
     const workspace = useWorkspaceStore(), files = useFileExplorerStore(), history = useRunHistoryStore()
     register('A'); register('C')
     const released = vi.fn()
-    const acquire = vi.spyOn(workspace, 'acquireFileExplorerLiveSession').mockReturnValue(released)
+    const acquire = vi.spyOn(workspace, 'acquireFileExplorerLiveSession').mockImplementation(id => {
+      // Stand in for external tree-stream I/O only, never workspace registration.
+      files._getOrCreateWorkspaceState(id).tree.children = [new TreeNode(`${id}.txt`, `${id}.txt`, true, [], `${id}-file`)]
+      return released
+    })
     const readFile = vi.spyOn(files, 'fetchFileContent')
     const search = vi.spyOn(files, 'searchFiles').mockResolvedValue(undefined)
     const write = vi.spyOn(files, 'saveFileContentFromEditor')
@@ -86,12 +90,17 @@ for (const previouslyMounted of [false, true]) {
     team.members.forEach((agent: any) => { agent.launchConfiguration.workspaceRootPath = '/workspace/C' })
     let canonical = view.execution_tree
     let metadataAvailable = false
-    const resolve = vi.spyOn(workspace, 'resolveWorkspaceMetadataByRootPath').mockImplementation(async root => {
-      if (root === '/workspace/B' && !metadataAvailable) throw new Error('B metadata unavailable')
-      return root ? metadata(root.split('/').at(-1)!) : null
-    })
+    const resolve = vi.spyOn(workspace, 'resolveWorkspaceMetadataByRootPath') // Actual metadata/cache owner.
+    const registration = vi.spyOn(workspace, 'ensureWorkspaceMetadata')
+    let completeRegistration!: (value: unknown) => void
+    const pendingRegistration = new Promise(resolve => { completeRegistration = resolve })
+    const errors: unknown[] = []
     io.query.mockImplementation(async ({ query, variables }: any) => {
       const name = query.definitions.find((entry: any) => entry.kind === 'OperationDefinition')?.name?.value
+      if (name === 'GetWorkspaceMetadata') {
+        if (variables.rootPath === '/workspace/B' && !metadataAvailable) throw new Error('B metadata unavailable')
+        return { data: { workspaceMetadata: metadata(variables.rootPath.split('/').at(-1)) } }
+      }
       if (name === 'AgentOrgRunConfig') return { data: { getAgentOrgRunConfig: { orgRunId: 'org-run', executionTree: canonical,
         isActive: false, editability: { editable: true, reason: null } } } }
       if (variables.agentRunId) return { data: { getAgentOrgMemberRunProjection: { ...variables,
@@ -100,6 +109,7 @@ for (const previouslyMounted of [false, true]) {
       return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
     })
     io.mutate.mockImplementation(async ({ variables }: any) => {
+      if (variables.input?.rootPath) return pendingRegistration
       if (!variables.input?.orgRunId) return { data: { writeFileContent: JSON.stringify({ changes: [] }) } }
       canonical = JSON.parse(JSON.stringify(canonical))
       const changed = canonical.rootOrg.members.find((member: any) => 'teamRunId' in member)
@@ -124,12 +134,16 @@ for (const previouslyMounted of [false, true]) {
     expect(workspace.activeWorkspace?.workspaceId).toBe('A') // real fallback remains intentionally A
     await files.openFile('C.txt', 'C')
     useRightSideTabs().setActiveTab(previouslyMounted ? 'files' : 'progress')
-    const wrapper = mountPanel(); await flush()
+    const wrapper = mountPanel(errors); await flush()
     if (previouslyMounted) { useRightSideTabs().setActiveTab('files'); await flush() }
     if (previouslyMounted) {
       expect(wrapper.getComponent(FileExplorer).props('workspaceId')).toBe('C')
       expect(wrapper.text()).toContain('editable-C')
       expect(acquire).toHaveBeenCalledWith('C', expect.any(String))
+      wrapper.getComponent(EditorRenderer).vm.$emit('update:modelValue', 'dirty-C-not-saved')
+      await flush()
+      expect((wrapper.getComponent(FileExplorerTabs).vm as any).fileContent).toBe('dirty-C-not-saved')
+      expect(write).not.toHaveBeenCalled()
       await wrapper.getComponent(FileExplorer).find('input').setValue('pending search')
     } else expect(wrapper.findComponent(FileExplorer).exists()).toBe(false)
     const saved = await orgStore.saveRunConfig('org-run', { modelPatches: [],
@@ -157,14 +171,32 @@ for (const previouslyMounted of [false, true]) {
     expect(wrapper.text()).not.toContain('editable-A')
     expect(acquire).not.toHaveBeenCalled(); expect(readFile).not.toHaveBeenCalled()
     expect(search).not.toHaveBeenCalled(); expect(write).not.toHaveBeenCalled()
-    // Canonical read retries B; it must not resend a committed Save.
-    const saves = io.mutate.mock.calls.length
-    metadataAvailable = true; register('B')
+    // First canonical read retries B with metadata only, never pre-register B.
+    const configSaveCount = () => io.mutate.mock.calls.filter(([call]) => call.variables.input?.orgRunId).length
+    const saves = configSaveCount()
+    metadataAvailable = true
+    expect(workspace.workspaces.B).toBeUndefined()
     await orgStore.readRunConfig('org-run'); await flush()
-    expect(io.mutate).toHaveBeenCalledTimes(saves)
+    expect(configSaveCount()).toBe(saves)
     expect(member.config.workspaceId).toBe('B'); expect(resolve).toHaveBeenCalledWith('/workspace/B')
     expect(wrapper.getComponent(FileExplorer).props('workspaceId')).toBe('B')
     expect(wrapper.getComponent(FileExplorerTabs).props('workspaceId')).toBe('B')
+    expect(wrapper.text()).toContain('Loading workspace')
+    expect(workspace.workspaces.B).toBeUndefined()
+    expect(registration.mock.calls.filter(([target]) => target.workspaceId === 'B')).toHaveLength(1)
+    expect(io.mutate.mock.calls.filter(([call]) => call.variables.input?.rootPath === '/workspace/B')).toHaveLength(1)
+    completeRegistration({ data: { createWorkspace: { workspaceId: 'B', name: 'B', absolutePath: '/workspace/B',
+      workspaceRootPath: '/workspace/B', config: { rootPath: '/workspace/B' }, kind: 'filesystem' } } })
+    await flush()
+    expect(errors).toEqual([])
+    expect(wrapper.text()).not.toContain('Loading workspace')
+    expect(wrapper.text()).toContain('B.txt')
+    expect(acquire.mock.calls.map(([id]) => id)).toEqual(['B'])
+    expect(configSaveCount()).toBe(saves)
+    expect(write).not.toHaveBeenCalled()
+    expect(wrapper.text()).not.toContain('editable-C')
+    expect(member.state).toBe(state); expect(member.conversation).toBe(conversation)
+    expect(member.contextFilePaths).toBe(attachments); expect(member.requirement).toBe('retained composer')
     await files.openFile('B.txt', 'B'); await flush(); await pressSave()
     expect(write).toHaveBeenCalledWith('B', 'B.txt', 'editable-B')
     expect(files.getSaveContentError('B.txt', 'B')).toBeNull()
