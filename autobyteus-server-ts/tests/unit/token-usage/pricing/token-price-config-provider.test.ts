@@ -42,6 +42,7 @@ describe('TokenPriceConfigProvider catalog policies', () => {
   });
 
   it.each([
+    ['claude-fable-5-1', 10, 50, 0.25, 12.5, 20],
     ['claude-fable-5', 10, 50, 1, 12.5, 20],
     ['claude-opus-4.8', 5, 25, 0.5, 6.25, 10],
     ['claude-opus-5', 5, 25, 0.5, 6.25, 10],
@@ -80,6 +81,77 @@ describe('TokenPriceConfigProvider catalog policies', () => {
       });
     },
   );
+
+  it('exposes exact GPT-6 Astra Standard and long-context policy dimensions', async () => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({
+      runtime_kind: 'codex_app_server',
+      model_provider: 'OPENAI',
+      model_identifier: 'gpt-6-astra',
+      model_value: 'gpt-6-astra',
+      observed_at: '2026-09-22T00:00:00.000Z',
+    });
+
+    expect(policy).toMatchObject({
+      pricing_policy_key: 'autobyteus_model_catalog:OPENAI:gpt-6-astra',
+      price_config_id: 'autobyteus_model_catalog:OPENAI:gpt-6-astra',
+      model_provider: 'OPENAI',
+      model_identifier: 'gpt-6-astra',
+      model_value: 'gpt-6-astra',
+      canonical_name: 'gpt-6-astra',
+      currency: 'USD',
+      pricing_status: 'trusted',
+      input_price_per_million: 10,
+      output_price_per_million: 50,
+      cached_input_read_price_per_million: 1,
+      cached_input_write_price_per_million: 12.5,
+      input_price_tiers: [
+        {
+          tier_id: 'standard_le_272k',
+          max_input_tokens: 272_000,
+          input_price_per_million: 10,
+          output_price_per_million: 50,
+          cached_input_read_price_per_million: 1,
+          cached_input_write_price_per_million: 12.5,
+        },
+        {
+          tier_id: 'long_context_gt_272k',
+          max_input_tokens: null,
+          input_price_per_million: 20,
+          output_price_per_million: 75,
+          cached_input_read_price_per_million: 2,
+          cached_input_write_price_per_million: 25,
+        },
+      ],
+      trusted_dimensions: {
+        input: true,
+        output: true,
+        cached_input_read: true,
+        cached_input_write: true,
+      },
+    });
+  });
+
+  it.each([
+    ['OPENAI', 'gpt-6'],
+    ['OPENAI', 'astra'],
+    ['ANTHROPIC', 'claude-fable-5.1'],
+  ] as const)('keeps unsupported alias %s/%s unpriced', async (modelProvider, modelIdentifier) => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({
+      runtime_kind: 'autobyteus',
+      model_provider: modelProvider,
+      model_identifier: modelIdentifier,
+      model_value: null,
+      observed_at: '2026-09-22T00:00:00.000Z',
+    });
+
+    expect(policy).toMatchObject({
+      pricing_status: 'missing',
+      missing_reason: 'model_not_found',
+      pricing_policy_key: `autobyteus_model_catalog:${modelProvider}:${modelIdentifier}`,
+      input_price_per_million: null,
+      output_price_per_million: null,
+    });
+  });
 
   it('does not guess Gemini 3.8 pricing when the observation time is invalid', async () => {
     const policy = await new TokenPriceConfigProvider().resolvePolicy({

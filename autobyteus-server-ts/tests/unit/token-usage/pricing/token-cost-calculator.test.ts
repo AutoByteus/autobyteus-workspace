@@ -34,6 +34,65 @@ const basePrice: ResolvedTokenPricingPolicy = {
   version: null,
 };
 
+const astraPrice: ResolvedTokenPricingPolicy = {
+  ...basePrice,
+  pricing_policy_key: 'autobyteus_model_catalog:OPENAI:gpt-6-astra',
+  price_config_id: 'autobyteus_model_catalog:OPENAI:gpt-6-astra',
+  model_identifier: 'gpt-6-astra',
+  model_value: 'gpt-6-astra',
+  canonical_name: 'gpt-6-astra',
+  input_price_per_million: 10,
+  output_price_per_million: 50,
+  cached_input_read_price_per_million: 1,
+  cached_input_write_price_per_million: 12.5,
+  trusted_dimensions: {
+    input: true,
+    output: true,
+    cached_input_read: true,
+    cached_input_write: true,
+    cached_input_write_5m: false,
+    cached_input_write_1h: false,
+  },
+  input_price_tiers: [
+    {
+      tier_id: 'standard_le_272k',
+      max_input_tokens: 272_000,
+      input_price_per_million: 10,
+      output_price_per_million: 50,
+      cached_input_read_price_per_million: 1,
+      cached_input_write_price_per_million: 12.5,
+      cached_input_write_5m_price_per_million: null,
+      cached_input_write_1h_price_per_million: null,
+      trusted_dimensions: {
+        input: true,
+        output: true,
+        cached_input_read: true,
+        cached_input_write: true,
+        cached_input_write_5m: false,
+        cached_input_write_1h: false,
+      },
+    },
+    {
+      tier_id: 'long_context_gt_272k',
+      max_input_tokens: null,
+      input_price_per_million: 20,
+      output_price_per_million: 75,
+      cached_input_read_price_per_million: 2,
+      cached_input_write_price_per_million: 25,
+      cached_input_write_5m_price_per_million: null,
+      cached_input_write_1h_price_per_million: null,
+      trusted_dimensions: {
+        input: true,
+        output: true,
+        cached_input_read: true,
+        cached_input_write: true,
+        cached_input_write_5m: false,
+        cached_input_write_1h: false,
+      },
+    },
+  ],
+};
+
 const buildPayload = (overrides: Record<string, unknown> = {}) => createTokenUsageUpdatedPayload({
   runId: 'run-cost-test',
   payload: {
@@ -243,5 +302,33 @@ describe('TokenCostCalculator', () => {
     expect(enriched.estimated_api_input_cost).toBe(0.36);
     expect(enriched.estimated_api_output_cost).toBe(0.0024);
   });
+
+  it.each([
+    [272_000, 72_000, 'standard_le_272k', 10, 1, 12.5, 50, 2, 0.05, 2.05],
+    [272_001, 72_001, 'long_context_gt_272k', 20, 2, 25, 75, 4.000025, 0.075, 4.075025],
+  ] as const)(
+    'applies Astra full-request pricing at %i accounting input tokens',
+    (accountingInput, cacheCreationInput, tierId, inputPrice, cacheReadPrice, cacheWritePrice, outputPrice, inputCost, outputCost, totalCost) => {
+      const enriched = calculator.applyPolicy(buildPayload({
+        model_identifier: 'gpt-6-astra',
+        accounting_input_tokens: accountingInput,
+        accounting_output_tokens: 1_000,
+        accounting_total_tokens: accountingInput + 1_000,
+        standard_input_tokens: 100_000,
+        cache_read_input_tokens: 100_000,
+        cache_creation_input_tokens: cacheCreationInput,
+      }), astraPrice);
+
+      expect(enriched.api_cost_status).toBe('estimated');
+      expect(enriched.input_price_per_million).toBe(inputPrice);
+      expect(enriched.cached_input_read_price_per_million).toBe(cacheReadPrice);
+      expect(enriched.cached_input_write_price_per_million).toBe(cacheWritePrice);
+      expect(enriched.output_price_per_million).toBe(outputPrice);
+      expect(enriched.pricing_snapshot_json).toMatchObject({ selected_tier_id: tierId });
+      expect(enriched.estimated_api_input_cost).toBeCloseTo(inputCost);
+      expect(enriched.estimated_api_output_cost).toBeCloseTo(outputCost);
+      expect(enriched.estimated_api_total_cost).toBeCloseTo(totalCost);
+    },
+  );
 
 });

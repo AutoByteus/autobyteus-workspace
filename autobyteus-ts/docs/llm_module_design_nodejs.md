@@ -54,6 +54,13 @@ not need a provider-specific branch. Catalog registration is independent of the
 configured account's limited-preview entitlement; do not add an unsuffixed
 `gpt-5.6` alias or substitute another model when invocation is rejected.
 
+`gpt-6-astra` is another exact Responses row. Its direct schema accepts
+`low`/`medium`/`high`/`xhigh`/`max` with `medium` as the default; Codex-only
+runtime capability values such as `ultra` remain dynamically owned by Codex
+App Server. The static row records a 1.05M context and 128k output limit plus
+Standard `10/1/12.5/50` input/cache-read/cache-write/output prices and
+`20/2/25/75` full-request prices above 272k input tokens, verified 2026-09-22.
+
 This direct API usage contract must not be projected onto Codex app-server
 events. The Codex protocol verified on 2026-07-10 exposes total, input,
 cached-input, output, and reasoning counts but no cache-write count.
@@ -237,11 +244,12 @@ fallback model, and it preserves raw traces and already committed tool facts.
 The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
 
-- OpenAI `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` (verified
-  2026-07-30), plus retained `gpt-5.5`. GPT-5.6 uses exact provider IDs with no
-  separate unsuffixed alias.
+- OpenAI `gpt-6-astra` (verified 2026-09-22), `gpt-5.6-sol`,
+  `gpt-5.6-terra`, and `gpt-5.6-luna` (verified 2026-07-30), plus retained
+  `gpt-5.5`. GPT-5.6 uses exact provider IDs with no separate unsuffixed alias.
 - Anthropic `claude-opus-5` (verified 2026-07-31; standard pricing effective
-  2026-07-24), `claude-fable-5`, `claude-opus-4.8`, and `claude-sonnet-5`
+  2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
+  `claude-opus-4.8`, and `claude-sonnet-5`
   with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
   or fallback.
@@ -262,8 +270,8 @@ The current latest-model support set is summarized in
 
 Provider adapters own request-shape differences:
 
-- `OpenAILLM` keeps GPT-5.6 on the official Responses path. The shared OpenAI
-  usage normalizer preserves gross input while mapping documented
+- `OpenAILLM` keeps Astra and GPT-5.6 on the official Responses path. The
+  shared OpenAI usage normalizer preserves gross input while mapping documented
   `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
   Opus 4.8, Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
@@ -271,6 +279,12 @@ Provider adapters own request-shape differences:
   `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
   before Anthropic Messages API calls. Older Claude rows keep the legacy
   fixed-budget path unless a separate provider migration changes them.
+- The `claude-fable-5-1` definition exposes no manual thinking schema because
+  adaptive thinking is always on. Its exact 1M context/input and 128k output
+  limits plus Standard `10/50/0.25/12.5/20`
+  input/output/cache-read/5-minute-write/1-hour-write prices are static catalog
+  metadata; the existing Fable-family request policy still rejects manual
+  enabled/disabled thinking and unsupported sampling fields.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
   maps the flat user-facing `thinking_type` config to
   top-level `thinking.type` before the shared request builder runs, dropping

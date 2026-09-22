@@ -58,14 +58,15 @@ const openaiGpt56ReasoningSchema = createOpenAIReasoningSchema(
   ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
   'medium',
 );
+const openaiAstraReasoningSchema = createOpenAIReasoningSchema(['low', 'medium', 'high', 'xhigh', 'max'], 'medium');
 
 const roundCatalogPrice = (value: number): number => Number(value.toFixed(10));
 
-const createOpenAIGpt56Pricing = (input: number, output: number): TokenPricingConfig => {
+const createOpenAILongContextPricing = (input: number, output: number, pricingEffectiveDate: string): TokenPricingConfig => {
   const cacheRead = roundCatalogPrice(input * 0.1);
   const cacheWrite = roundCatalogPrice(input * 1.25);
   return pricing(input, output, {
-    pricingEffectiveDate: '2026-07-30',
+    pricingEffectiveDate,
     cachedInputReadTokenPricing: cacheRead,
     cachedInputWriteTokenPricing: cacheWrite,
     inputTokenPricingTiers: [
@@ -194,6 +195,12 @@ const grokReasoningSchema = new ParameterSchema([
 
 
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
+  {
+    name: 'gpt-6-astra', value: 'gpt-6-astra', provider: LLMProvider.OPENAI, llmClass: OpenAILLM,
+    canonicalName: 'gpt-6-astra', staticMetadata: createStaticModelMetadata(1_050_000, null, 128_000, 'https://developers.openai.com/api/docs/models/gpt-6-astra', '2026-09-22'),
+    defaultConfig: new LLMConfig({ pricingConfig: createOpenAILongContextPricing(10, 50, '2026-09-22') }),
+    configSchema: openaiAstraReasoningSchema,
+  },
   ...([
     ['gpt-5.6-sol', 5.0, 30.0],
     ['gpt-5.6-terra', 2.0, 12.0],
@@ -204,7 +211,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
     canonicalName: modelId, staticMetadata: createStaticModelMetadata(1050000, null, 128000, `https://developers.openai.com/api/docs/models/${modelId}`, '2026-07-10'),
-    defaultConfig: new LLMConfig({ pricingConfig: createOpenAIGpt56Pricing(inputPrice, outputPrice) }),
+    defaultConfig: new LLMConfig({ pricingConfig: createOpenAILongContextPricing(inputPrice, outputPrice, '2026-07-30') }),
     configSchema: openaiGpt56ReasoningSchema,
   })),
   {
@@ -268,6 +275,14 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
       }),
     }),
     configSchema: grokReasoningSchema,
+  },
+  {
+    name: 'claude-fable-5-1', value: 'claude-fable-5-1', provider: LLMProvider.ANTHROPIC, llmClass: AnthropicLLM,
+    canonicalName: 'claude-fable-5-1', staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/fable-5-1/overview', '2026-09-22'),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(10, 50, {
+      pricingEffectiveDate: '2026-09-01',
+      cachedInputReadTokenPricing: 0.25, cachedInputWrite5mTokenPricing: 12.5, cachedInputWrite1hTokenPricing: 20,
+    }) }),
   },
   {
     name: 'claude-fable-5',
