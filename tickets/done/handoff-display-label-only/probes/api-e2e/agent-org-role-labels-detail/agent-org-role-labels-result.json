@@ -1,0 +1,670 @@
+{
+  "startedAt": "2026-09-22T06:09:18.388Z",
+  "scenario": "detail",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "playwright-default",
+  "workspaceDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only",
+  "operations": [
+    {
+      "label": "detail-en",
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.959Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.962Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "aorg-role-stability-alpha",
+            "name": "Alpha Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-alpha",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "725633a29d29458af682dcf667268519b381cb3d7a10dc8385336188cc1a3f5e",
+            "handoffs": [
+              {
+                "from": "/Research_Lead",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              },
+              {
+                "from": "/Retired_Review_Agent",
+                "to": "/Delivery-Team",
+                "rules": [
+                  "Recover the unavailable endpoint before saving."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Research_Lead",
+                "ref": "aorg-role-research-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Research_Advisor",
+                "ref": "aorg-role-research-advisor",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Delivery-Team",
+                "ref": "aorg-role-delivery-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          },
+          {
+            "id": "aorg-role-stability-beta",
+            "name": "Beta Stable Roles Org",
+            "description": "Persisted E2E Org aorg-role-stability-beta",
+            "instructions": "Keep authored membership roles stable throughout browsing.\n",
+            "category": "e2e",
+            "avatarUrl": null,
+            "revision": "81bd381661ef3ee23627b1a9eb7bb492b15f40b76b1f879eaff39734f8a6b83a",
+            "handoffs": [
+              {
+                "from": "/Quality_Lead",
+                "to": "/Release-Team",
+                "rules": [
+                  "Delegate the approved E2E result."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "Quality_Lead",
+                "ref": "aorg-role-quality-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Quality_Auditor",
+                "ref": "aorg-role-quality-auditor",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "Release-Team",
+                "ref": "aorg-role-release-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "__typename": "AgentOrgDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.962Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.963Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.963Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.964Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:27.964Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentOrgEndpointCatalog",
+      "variables": {
+        "id": "aorg-role-stability-alpha"
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:28.341Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgEndpointCatalog": {
+          "from": [
+            {
+              "kind": "agent",
+              "address": "/Research_Lead",
+              "memberName": "Research_Lead",
+              "definitionId": "aorg-role-research-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Research_Advisor",
+              "memberName": "Research_Advisor",
+              "definitionId": "aorg-role-research-advisor",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Architecture_Lead",
+              "memberName": "Architecture_Lead",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:architecture-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "memberName": "Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:quality-assurance-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            }
+          ],
+          "to": [
+            {
+              "kind": "agent",
+              "address": "/Research_Lead",
+              "memberName": "Research_Lead",
+              "definitionId": "aorg-role-research-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Research_Advisor",
+              "memberName": "Research_Advisor",
+              "definitionId": "aorg-role-research-advisor",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Architecture_Lead",
+              "memberName": "Architecture_Lead",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:architecture-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "memberName": "Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:quality-assurance-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent_team",
+              "address": "/Delivery-Team",
+              "memberName": "Delivery-Team",
+              "definitionId": "aorg-role-delivery-team",
+              "coordinatorAddress": "/Delivery-Team/Architecture_Lead",
+              "coordinatorMemberName": "Architecture_Lead",
+              "__typename": "DefinitionEndpoint"
+            }
+          ],
+          "__typename": "DefinitionEndpointCatalog"
+        }
+      }
+    },
+    {
+      "label": "detail-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.020Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.021Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:aorg-role-delivery-team:architecture-agent"
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.222Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:aorg-role-delivery-team:quality-assurance-agent"
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.223Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.828Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.829Z",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "label": "detail-en",
+      "operationName": "GetAgentOrgEndpointCatalog",
+      "variables": {
+        "id": "aorg-role-stability-alpha"
+      },
+      "url": "http://127.0.0.1:65254/graphql",
+      "requestedAt": "2026-09-22T06:09:29.839Z",
+      "status": 200,
+      "errors": [],
+      "data": {
+        "agentOrgEndpointCatalog": {
+          "from": [
+            {
+              "kind": "agent",
+              "address": "/Research_Lead",
+              "memberName": "Research_Lead",
+              "definitionId": "aorg-role-research-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Research_Advisor",
+              "memberName": "Research_Advisor",
+              "definitionId": "aorg-role-research-advisor",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Architecture_Lead",
+              "memberName": "Architecture_Lead",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:architecture-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "memberName": "Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:quality-assurance-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            }
+          ],
+          "to": [
+            {
+              "kind": "agent",
+              "address": "/Research_Lead",
+              "memberName": "Research_Lead",
+              "definitionId": "aorg-role-research-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Research_Advisor",
+              "memberName": "Research_Advisor",
+              "definitionId": "aorg-role-research-advisor",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Architecture_Lead",
+              "memberName": "Architecture_Lead",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:architecture-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent",
+              "address": "/Delivery-Team/Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "memberName": "Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+              "definitionId": "team-local-agent:aorg-role-delivery-team:quality-assurance-agent",
+              "coordinatorAddress": null,
+              "coordinatorMemberName": null,
+              "__typename": "DefinitionEndpoint"
+            },
+            {
+              "kind": "agent_team",
+              "address": "/Delivery-Team",
+              "memberName": "Delivery-Team",
+              "definitionId": "aorg-role-delivery-team",
+              "coordinatorAddress": "/Delivery-Team/Architecture_Lead",
+              "coordinatorMemberName": "Architecture_Lead",
+              "__typename": "DefinitionEndpoint"
+            }
+          ],
+          "__typename": "DefinitionEndpointCatalog"
+        }
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "label": "detail-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "detail-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "detail-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "detail-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "detail-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "detail-en",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "scenarios": {
+    "AORG-E2E-004-detail": {
+      "pendingDirectRoles": [
+        "Research Lead",
+        "Delivery Team"
+      ],
+      "settledCoordinator": "Architecture Lead",
+      "handoffText": "Handoffs\n\nFROM\n\nResearch Lead\n\nTO\n\nDelivery Team\n\nWHEN\n\nDelegate the approved E2E result.\n\nFROM\n\nUnavailable · Retired Review Agent\n\nTO\n\nDelivery Team\n\nWHEN\n\nRecover the unavailable endpoint before saving.",
+      "orgIdentityFacts": [
+        {
+          "text": "Research Lead",
+          "whiteSpace": "normal",
+          "overflowWrap": "break-word"
+        },
+        {
+          "text": "Delivery Team",
+          "whiteSpace": "normal",
+          "overflowWrap": "break-word"
+        },
+        {
+          "text": "Delivery Team",
+          "whiteSpace": "normal",
+          "overflowWrap": "break-word"
+        }
+      ],
+      "orgNarrowLayout": {
+        "innerWidth": 585,
+        "documentScrollWidth": 585,
+        "managerClientWidth": 501,
+        "managerScrollWidth": 501
+      },
+      "teamHandoffText": "Handoffs\n\nFROM\n\nArchitecture_Lead\n\nTO\n\nQuality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence\n\nWHEN\n\nReview the complete browser evidence.",
+      "teamIdentityFacts": [
+        {
+          "text": "Architecture_Lead",
+          "width": 377,
+          "height": 20,
+          "clientWidth": 377,
+          "scrollWidth": 377,
+          "clientHeight": 20,
+          "scrollHeight": 20,
+          "whiteSpace": "normal",
+          "overflowWrap": "break-word"
+        },
+        {
+          "text": "Quality_Assurance_Specialist_With_Extended_Review_Context_For_Cross_Functional_Accessibility_And_Localization_Evidence",
+          "width": 377,
+          "height": 60,
+          "clientWidth": 377,
+          "scrollWidth": 377,
+          "clientHeight": 60,
+          "scrollHeight": 60,
+          "whiteSpace": "normal",
+          "overflowWrap": "break-word"
+        }
+      ],
+      "teamWideGeometry": {
+        "managerClientWidth": 1051,
+        "managerScrollWidth": 1051,
+        "cardClientWidth": 1009,
+        "cardScrollWidth": 1009,
+        "directionGridTemplateColumns": "460.5px 32px 460.5px"
+      },
+      "teamNarrowLayout": {
+        "innerWidth": 585,
+        "documentScrollWidth": 585,
+        "managerClientWidth": 501,
+        "managerScrollWidth": 501
+      },
+      "teamNarrowGeometry": {
+        "card": {
+          "clientWidth": 459,
+          "scrollWidth": 459,
+          "clientHeight": 305,
+          "scrollHeight": 305
+        },
+        "directionGrid": {
+          "clientWidth": 427,
+          "scrollWidth": 427,
+          "clientHeight": 188,
+          "scrollHeight": 188,
+          "gridTemplateColumns": "427px"
+        },
+        "columns": [
+          {
+            "clientWidth": 427,
+            "scrollWidth": 427,
+            "clientHeight": 68,
+            "scrollHeight": 68
+          },
+          {
+            "clientWidth": 427,
+            "scrollWidth": 427,
+            "clientHeight": 108,
+            "scrollHeight": 108
+          }
+        ],
+        "identities": [
+          {
+            "clientWidth": 425,
+            "scrollWidth": 425,
+            "clientHeight": 44,
+            "scrollHeight": 44
+          },
+          {
+            "clientWidth": 425,
+            "scrollWidth": 425,
+            "clientHeight": 84,
+            "scrollHeight": 84
+          }
+        ]
+      },
+      "visibleRootedAddresses": [],
+      "endpointCatalogRequests": 2,
+      "teamReturnUrl": "http://127.0.0.1:65255/agent-orgs?view=org-detail&id=aorg-role-stability-alpha",
+      "exactReadsBeforeTeamView": 0,
+      "exactReadsAfterTeamView": 2
+    }
+  },
+  "fixture": {
+    "beforeHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-quality-auditor/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-auditor/agent.md": "a2ae5c1f55d0ac7062b842ee88fba57c193e9d47c1444bd47116495fdb4000e2",
+      "agents/aorg-role-research-advisor/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-advisor/agent.md": "fb6acec0c01724c66c48eaccaaa9dd7db215361a5c4431931d6d711227fe65e6",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/agents/quality-assurance-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/quality-assurance-agent/agent.md": "2c8d13f85e0bcbe2f24279475ef439645bf832bda36c13270d79ec00929a66f9",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "e812906990fc066b52cfb89ad9acf998a2499ca2711584db9200d5eb3ed37c92",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/agents/release-quality-assurance-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-quality-assurance-agent/agent.md": "96237892cea97f51636f9d711390bf22dc0fec178a1af701318caf8faae78683",
+      "agent-teams/aorg-role-release-team/team-config.json": "305cd2d94db155d3c06c65b7e3c9b2e4b5d463216ce2239ff6bf5b0486454eba",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "95b40acb767754d60e977abe35392f48d30ed1bfa514f018d53f27bf09b13622",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "646f416354d3e04bbb53a4c84375c7b5130d8611bed5c5f87296bd3a3a60bd65",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    },
+    "definitionFileCount": 24,
+    "afterHashes": {
+      "agents/aorg-role-quality-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-agent/agent.md": "aadc72f0835369a0f4abf18d82d9882d0c394b279dce1f66d19949099c97173a",
+      "agents/aorg-role-quality-auditor/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-quality-auditor/agent.md": "a2ae5c1f55d0ac7062b842ee88fba57c193e9d47c1444bd47116495fdb4000e2",
+      "agents/aorg-role-research-advisor/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-advisor/agent.md": "fb6acec0c01724c66c48eaccaaa9dd7db215361a5c4431931d6d711227fe65e6",
+      "agents/aorg-role-research-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agents/aorg-role-research-agent/agent.md": "1416c30f51eb2adb108190f211c5048fe901f25a89ce2542fe839d424c0533e6",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/architecture-agent/agent.md": "a544802fb8d5cef1c836ed2d25ac63dbefa9f02577daeea8c1fb9ef4b4b78681",
+      "agent-teams/aorg-role-delivery-team/agents/quality-assurance-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-delivery-team/agents/quality-assurance-agent/agent.md": "2c8d13f85e0bcbe2f24279475ef439645bf832bda36c13270d79ec00929a66f9",
+      "agent-teams/aorg-role-delivery-team/team-config.json": "e812906990fc066b52cfb89ad9acf998a2499ca2711584db9200d5eb3ed37c92",
+      "agent-teams/aorg-role-delivery-team/team.md": "7c04f7c5b6a6c741e125686a8cc8013f0ee5b1284b0b78b1fbaec617379afa64",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-agent/agent.md": "6138710cdb621daeb90abc64abeb716fcdd63cd082bbcaf2e97fe90f2a252695",
+      "agent-teams/aorg-role-release-team/agents/release-quality-assurance-agent/agent-config.json": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "agent-teams/aorg-role-release-team/agents/release-quality-assurance-agent/agent.md": "96237892cea97f51636f9d711390bf22dc0fec178a1af701318caf8faae78683",
+      "agent-teams/aorg-role-release-team/team-config.json": "305cd2d94db155d3c06c65b7e3c9b2e4b5d463216ce2239ff6bf5b0486454eba",
+      "agent-teams/aorg-role-release-team/team.md": "1476d5dffc736b26b180febd609185bda5ae131196a935bb0864797d39da7c35",
+      "agent-orgs/aorg-role-stability-alpha/org-config.json": "95b40acb767754d60e977abe35392f48d30ed1bfa514f018d53f27bf09b13622",
+      "agent-orgs/aorg-role-stability-alpha/org.md": "f25e69defa43bff4e26495b4ea4417732dfb714219cdc16d0ae2c7a06c6657a4",
+      "agent-orgs/aorg-role-stability-beta/org-config.json": "646f416354d3e04bbb53a4c84375c7b5130d8611bed5c5f87296bd3a3a60bd65",
+      "agent-orgs/aorg-role-stability-beta/org.md": "be90320bec86823807e1497241072c12f38b20dccdfe8319e05bf2b67db43df2"
+    },
+    "serverAddedDefinitionFileCount": 8
+  },
+  "cleanup": {
+    "frontend": {
+      "status": "terminated",
+      "pid": 58625,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "backend": {
+      "status": "terminated",
+      "pid": 58598,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "ownedRoot": {
+      "status": "removed",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agent-org-role-labels-0UlkJv"
+    }
+  },
+  "failures": [],
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:65254",
+    "frontendUrl": "http://127.0.0.1:65255"
+  },
+  "completedAt": "2026-09-22T06:09:30.182Z",
+  "result": "Pass"
+}

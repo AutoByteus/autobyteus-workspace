@@ -83,11 +83,16 @@ describe('AgentTeamDetail flat Team experience', () => {
 
   it('renders only direct Agent members, the exact coordinator, and ordered handoffs', async () => {
     const wrapper = await mountDetail()
+    const handoffCard = wrapper.get('[data-test^="handoff-card-"]')
 
     expect(wrapper.text()).toContain('Software Engineering')
     expect(wrapper.text()).toContain('Architecture Designer')
     expect(wrapper.text()).toContain('Implementation Engineer')
     expect(wrapper.text()).toContain('Coordinator')
+    expect(handoffCard.text()).toContain('architecture_designer')
+    expect(handoffCard.text()).toContain('implementation_engineer')
+    expect(handoffCard.text()).not.toContain('/architecture_designer')
+    expect(handoffCard.text()).not.toContain('/implementation_engineer')
     expect(wrapper.text()).toContain('The design is approved.')
     expect(wrapper.text().indexOf('The design is approved.')).toBeLessThan(wrapper.text().indexOf('Implementation can begin.'))
     expect(wrapper.text()).not.toContain('Nested Team')

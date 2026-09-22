@@ -22,11 +22,11 @@
           <select v-model="draft.fromAddress" class="mt-1.5 w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:ring-2" :class="draftErrors.fromAddress ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-500/20'" data-test="handoff-from">
             <option value="">{{ t('handoffs.manager.fields.selectSource') }}</option>
             <optgroup v-for="group in groupedFromOptions" :key="group.label" :label="group.label">
-              <option v-for="option in group.options" :key="option.address" :value="option.address">{{ option.label }} · {{ option.address }}</option>
+              <option v-for="option in group.options" :key="option.address" :value="option.address">{{ fromDisplayLabelFor(option.address) }}</option>
             </optgroup>
           </select>
           <span v-if="draftErrors.fromAddress" class="mt-1 block text-xs font-medium text-red-600" role="alert">{{ draftErrors.fromAddress }}</span>
-          <EndpointIdentity v-else-if="selectedDraftFrom" class="mt-2" :endpoint="selectedDraftFrom" compact />
+          <EndpointIdentity v-else-if="selectedDraftFrom" class="mt-2" :endpoint="selectedDraftFrom" :label="fromDisplayLabelFor(selectedDraftFrom.address)" compact />
         </label>
 
         <label class="block">
@@ -34,12 +34,12 @@
           <select v-model="draft.toAddress" class="mt-1.5 w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:ring-2" :class="draftErrors.toAddress || draftErrors.pair ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-500/20'" data-test="handoff-to">
             <option value="">{{ t('handoffs.manager.fields.selectDestination') }}</option>
             <optgroup v-for="group in groupedToOptions" :key="group.label" :label="group.label">
-              <option v-for="option in group.options" :key="option.address" :value="option.address">{{ option.label }} · {{ option.address }}</option>
+              <option v-for="option in group.options" :key="option.address" :value="option.address">{{ toDisplayLabelFor(option.address) }}</option>
             </optgroup>
           </select>
           <span v-if="draftErrors.toAddress" class="mt-1 block text-xs font-medium text-red-600" role="alert">{{ draftErrors.toAddress }}</span>
           <span v-else-if="draftErrors.pair" class="mt-1 block text-xs font-medium text-red-600" role="alert">{{ draftErrors.pair }}</span>
-          <EndpointIdentity v-else-if="selectedDraftTo" class="mt-2" :endpoint="selectedDraftTo" compact />
+          <EndpointIdentity v-else-if="selectedDraftTo" class="mt-2" :endpoint="selectedDraftTo" :label="toDisplayLabelFor(selectedDraftTo.address)" compact />
         </label>
       </div>
 
@@ -88,17 +88,17 @@
           <button type="button" class="rounded-md px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" :data-test="`delete-handoff-${handoff.id}`" @click="deleteHandoff(index)">{{ t('handoffs.manager.actions.delete') }}</button>
         </div>
 
-        <div class="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_2rem_minmax(0,1fr)] lg:items-start">
-          <div>
+        <div class="mt-3 grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[minmax(0,1fr)_2rem_minmax(0,1fr)] lg:items-start">
+          <div class="min-w-0">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ t('handoffs.manager.fields.from') }}</p>
-            <EndpointIdentity v-if="endpointFor(handoff.fromAddress, fromOptions)" class="mt-1.5" :endpoint="endpointFor(handoff.fromAddress, fromOptions)!" />
-            <p v-else class="mt-1.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">{{ t('handoffs.manager.endpoint.unavailable', { address: handoff.fromAddress }) }}</p>
+            <EndpointIdentity v-if="endpointFor(handoff.fromAddress, fromOptions)" class="mt-1.5" :endpoint="endpointFor(handoff.fromAddress, fromOptions)!" :label="fromDisplayLabelFor(handoff.fromAddress)" />
+            <p v-else class="mt-1.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">{{ unavailableEndpointMessage(handoff.fromAddress) }}</p>
           </div>
           <Icon icon="heroicons:arrow-right-20-solid" class="hidden h-5 w-5 text-slate-400 lg:mt-8 lg:block" />
-          <div>
+          <div class="min-w-0">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ t('handoffs.manager.fields.to') }}</p>
-            <EndpointIdentity v-if="endpointFor(handoff.toAddress, toOptions)" class="mt-1.5" :endpoint="endpointFor(handoff.toAddress, toOptions)!" />
-            <p v-else class="mt-1.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">{{ t('handoffs.manager.endpoint.unavailable', { address: handoff.toAddress }) }}</p>
+            <EndpointIdentity v-if="endpointFor(handoff.toAddress, toOptions)" class="mt-1.5" :endpoint="endpointFor(handoff.toAddress, toOptions)!" :label="toDisplayLabelFor(handoff.toAddress)" />
+            <p v-else class="mt-1.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">{{ unavailableEndpointMessage(handoff.toAddress) }}</p>
           </div>
         </div>
 
@@ -130,15 +130,15 @@ const EndpointIdentity = defineComponent({
   name: 'EndpointIdentity',
   props: {
     endpoint: { type: Object as PropType<HandoffEndpointOption>, required: true },
+    label: { type: String, required: true },
     compact: { type: Boolean, default: false },
   },
   setup(props) {
-    return () => h('div', { class: ['rounded-lg border border-slate-200 bg-slate-50', props.compact ? 'p-2.5' : 'p-3'] }, [
+    return () => h('div', { class: ['min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50', props.compact ? 'p-2.5' : 'p-3'] }, [
       h('div', { class: 'flex min-w-0 items-center gap-2' }, [
         h(Icon, { icon: props.endpoint.kind === 'team' ? 'heroicons:user-group-20-solid' : 'heroicons:user-20-solid', class: props.endpoint.kind === 'team' ? 'h-4 w-4 flex-none text-blue-600' : 'h-4 w-4 flex-none text-slate-500' }),
-        h('span', { class: 'min-w-0 flex-1 truncate text-sm font-semibold text-slate-900' }, props.endpoint.label),
+        h('span', { class: 'min-w-0 flex-1 whitespace-normal break-words text-sm font-semibold text-slate-900' }, props.label),
       ]),
-      h('p', { class: 'mt-1 break-all font-mono text-xs text-slate-500' }, props.endpoint.address),
     ]);
   },
 });
@@ -165,6 +165,58 @@ const collectionMessage = ref('');
 const statusMessage = ref('');
 
 const endpointFor = (address: string, options: HandoffEndpointOption[]): HandoffEndpointOption | undefined => options.find((option) => option.address === address);
+const normalizeDisplayText = (value: string): string => value.trim().replace(/\s+/g, ' ').toLowerCase();
+const addressSegments = (address: string): string[] => {
+  if (!address.startsWith('/') || address === '/' || address.endsWith('/') || address.includes('//') || address.includes('\\')) return [];
+  const segments = address.slice(1).split('/');
+  return segments.every((segment) => segment && segment === segment.trim() && segment !== '.' && segment !== '..'
+    && !/[\u0000-\u001f\u007f]/.test(segment)) ? segments : [];
+};
+const humanizeSegment = (segment: string): string => segment.replace(/[_-]+/g, ' ').trim();
+const suffixFor = (segments: string[], depth: number, humanize: boolean): string => segments
+  .slice(-depth)
+  .map((segment) => humanize ? humanizeSegment(segment) : segment)
+  .filter(Boolean)
+  .join(' / ');
+const uniqueSuffixes = (segmentsByOption: string[][], humanize: boolean): string[] | null => {
+  const maxDepth = Math.max(0, ...segmentsByOption.map((segments) => segments.length));
+  for (let depth = 1; depth <= maxDepth; depth += 1) {
+    const suffixes = segmentsByOption.map((segments) => suffixFor(segments, depth, humanize));
+    const normalized = suffixes.map(normalizeDisplayText);
+    if (suffixes.every(Boolean) && new Set(normalized).size === suffixes.length) return suffixes;
+  }
+  return null;
+};
+const displayLabelsFor = (options: HandoffEndpointOption[]): ReadonlyMap<string, string> => {
+  const labelGroups = new Map<string, HandoffEndpointOption[]>();
+  options.forEach((option) => {
+    const normalizedLabel = normalizeDisplayText(option.label);
+    labelGroups.set(normalizedLabel, [...(labelGroups.get(normalizedLabel) ?? []), option]);
+  });
+
+  const labels = new Map<string, string>();
+  labelGroups.forEach((group) => {
+    if (group.length === 1) {
+      labels.set(group[0].address, group[0].label);
+      return;
+    }
+    const segmentsByOption = group.map((option) => addressSegments(option.address));
+    const qualifiers = uniqueSuffixes(segmentsByOption, true) ?? uniqueSuffixes(segmentsByOption, false);
+    group.forEach((option, index) => {
+      const qualifier = qualifiers?.[index];
+      labels.set(option.address, qualifier ? `${option.label} (${qualifier})` : option.label);
+    });
+  });
+  return labels;
+};
+const fromDisplayLabels = computed(() => displayLabelsFor(props.fromOptions));
+const toDisplayLabels = computed(() => displayLabelsFor(props.toOptions));
+const fromDisplayLabelFor = (address: string): string => fromDisplayLabels.value.get(address) ?? '';
+const toDisplayLabelFor = (address: string): string => toDisplayLabels.value.get(address) ?? '';
+const readableAddress = (address: string): string => addressSegments(address).map(humanizeSegment).filter(Boolean).join(' / ');
+const unavailableEndpointMessage = (address: string): string => t('handoffs.manager.endpoint.unavailable', {
+  label: readableAddress(address) || t('handoffs.manager.endpoint.unknown'),
+});
 const whenKey = (index: number): string => `when-${index}`;
 const selectedDraftFrom = computed(() => draft.value ? endpointFor(draft.value.fromAddress, props.fromOptions) : undefined);
 const selectedDraftTo = computed(() => draft.value ? endpointFor(draft.value.toAddress, props.toOptions) : undefined);

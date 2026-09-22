@@ -1,0 +1,80 @@
+Command: pnpm test:nuxt components/collaboration/handoffs/__tests__/HandoffManager.spec.ts components/agentTeams/__tests__/AgentTeamDetail.spec.ts components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts components/agentOrgs/__tests__/AgentOrgExperience.spec.ts --run --reporter=verbose
+
+
+> autobyteus@1.4.73 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/collaboration/handoffs/__tests__/HandoffManager.spec.ts components/agentTeams/__tests__/AgentTeamDetail.spec.ts components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts components/agentOrgs/__tests__/AgentOrgExperience.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+
+stderr | components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > shows complete readable identities without rooted addresses in team view mode 14ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > shows complete readable identities without rooted addresses in org view mode 4ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > keeps exact canonical addresses as native option values and emitted draft identities 17ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > adds the shortest human-readable placement suffix only when labels collide 7ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > uses literal non-rooted suffixes only when humanization cannot distinguish placements 8ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > preserves card and When order while exposing position-aware reorder controls 5ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > supports inline add/apply without an overlay and rejects self-resolving Team delivery 7ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > keeps a stale endpoint visible and blocks atomic definition save 6ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > uses a localized generic identity for a malformed stale address without exposing the raw value 3ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > localizes view, edit, and validation chrome in Simplified Chinese without translating user-authored rules 48ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts > AgentTeamDefinitionForm handoff localization > renders both native handoff endpoint groups from the zh-CN catalog 45ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > renders only direct Agent members, the exact coordinator, and ordered handoffs 20ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > routes a Team-local Agent through its canonical definition identity 6ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > launches the independent Team through the accepted run action 17ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > returns to the owning Agent Org detail without inferring a parent Team 6ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > keeps direct roles stable while the aggregate Team topology settles 30ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > retains direct roles and shows ID-free unavailable feedback when topology fails 13ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > uses localized unavailable feedback when the topology response is incomplete 18ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > retires late topology after route and backend-binding changes 16ms
+ ✓ components/agentOrgs/__tests__/AgentOrgDetailRoleLabels.spec.ts > Agent Org detail role labels > does not load endpoint topology for a direct-Agent-only detail 9ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > renders the baseline-native catalog with Run, member chips, and no fabricated run facts 21ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > uses an in-flow Agent/Team member chooser and exposes the Team coordinator 21ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > shows same-identity Teams, their coordinator, and ordered From/To/When detail 21ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > saves a visible edit while preserving hidden durable fields and rule order by omission 23ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > renders list, detail, create, and edit presentation through the Simplified Chinese catalog 66ms
+
+ Test Files  5 passed (5)
+      Tests  25 passed (25)
+   Start at  08:26:09
+   Duration  5.87s (transform 3.50s, setup 23.95s, collect 1.70s, tests 455ms, environment 841ms, prepare 740ms)
+

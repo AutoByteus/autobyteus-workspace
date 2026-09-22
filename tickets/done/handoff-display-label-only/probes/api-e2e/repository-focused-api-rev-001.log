@@ -1,0 +1,66 @@
+
+> autobyteus@1.4.73 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/collaboration/handoffs/__tests__/HandoffManager.spec.ts components/agentTeams/__tests__/AgentTeamDetail.spec.ts components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts components/agentOrgs/__tests__/AgentOrgExperience.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only/autobyteus-web
+
+stderr | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentOrgs/__tests__/AgentOrgExperience.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > shows complete readable identities without rooted addresses in team view mode 13ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > shows complete readable identities without rooted addresses in org view mode 4ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > keeps exact canonical addresses as native option values and emitted draft identities 14ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > adds the shortest human-readable placement suffix only when labels collide 8ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > uses literal non-rooted suffixes only when humanization cannot distinguish placements 4ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > preserves card and When order while exposing position-aware reorder controls 5ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > supports inline add/apply without an overlay and rejects self-resolving Team delivery 6ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > keeps a stale endpoint visible and blocks atomic definition save 4ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > uses a localized generic identity for a malformed stale address without exposing the raw value 3ms
+ ✓ components/collaboration/handoffs/__tests__/HandoffManager.spec.ts > HandoffManager > localizes view, edit, and validation chrome in Simplified Chinese without translating user-authored rules 33ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts > AgentTeamDefinitionForm handoff localization > renders both native handoff endpoint groups from the zh-CN catalog 66ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > renders only direct Agent members, the exact coordinator, and ordered handoffs 27ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > routes a Team-local Agent through its canonical definition identity 24ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > launches the independent Team through the accepted run action 22ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > returns to the owning Agent Org detail without inferring a parent Team 3ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > renders the baseline-native catalog with Run, member chips, and no fabricated run facts 25ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > uses an in-flow Agent/Team member chooser and exposes the Team coordinator 34ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > shows same-identity Teams, their coordinator, and ordered From/To/When detail 25ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > saves a visible edit while preserving hidden durable fields and rule order by omission 28ms
+ ✓ components/agentOrgs/__tests__/AgentOrgExperience.spec.ts > AgentOrgExperience > renders list, detail, create, and edit presentation through the Simplified Chinese catalog 69ms
+
+ Test Files  4 passed (4)
+      Tests  20 passed (20)
+   Start at  07:10:02
+   Duration  7.32s (transform 3.85s, setup 23.38s, collect 1.22s, tests 422ms, environment 1.12s, prepare 772ms)
+
