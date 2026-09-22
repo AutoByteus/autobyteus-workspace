@@ -40,7 +40,7 @@ beforeEach(() => {
   })
   io.mutate.mockImplementation(async () => { active = false; return { data: { terminateAgentOrgRun: { success: true } } } })
 })
-afterEach(() => { wrapper?.unmount(); useAgentOrgContextsStore().disconnect('org-run'); vi.useRealTimers(); vi.unstubAllGlobals() })
+afterEach(() => { wrapper?.unmount(); useAgentOrgContextsStore().releaseContext('org-run'); vi.useRealTimers(); vi.unstubAllGlobals() })
 const open = async (address: string) => {
   const store = useAgentOrgContextsStore()
   await store.openForInspection('org-run'); store.select('org-run', address)

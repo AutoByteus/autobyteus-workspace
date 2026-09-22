@@ -50,7 +50,7 @@ beforeEach(() => {
   setActivePinia(createPinia()); mocks.query.mockReset(); mocks.mutate.mockReset(); mocks.ready.mockResolvedValue(true)
   mocks.instances.length = 0
 })
-afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentOrgContextsStore().disconnect('org-run') })
+afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentOrgContextsStore().releaseContext('org-run') })
 
 const setup = async (active = true) => {
   const view = retainedView(active)

@@ -84,7 +84,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   wrapper?.unmount(); wrapper = undefined
-  useAgentOrgContextsStore().disconnect('org-run')
+  useAgentOrgContextsStore().releaseContext('org-run')
   vi.unstubAllGlobals()
 })
 

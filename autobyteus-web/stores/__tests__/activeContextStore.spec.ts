@@ -254,4 +254,78 @@ describe('activeContextStore interrupt routing', () => {
     standalone.requirement = '';
     expect(activeContextStore.currentRequirement).toBe('');
   });
+
+  it('retains isolated standalone Agent drafts across new and existing run selection', () => {
+    const selectionStore = useAgentSelectionStore();
+    const agentContextsStore = useAgentContextsStore();
+    const activeContextStore = useActiveContextStore();
+    const newRun = createAgentContext('temp-agent-new');
+    const existingRun = createAgentContext('agent-existing');
+    agentContextsStore.runs.set(newRun.state.runId, newRun);
+    agentContextsStore.runs.set(existingRun.state.runId, existingRun);
+
+    selectionStore.selectRun(newRun.state.runId, 'agent');
+    activeContextStore.updateRequirement('New Agent draft');
+    activeContextStore.addContextFilePath({
+      kind: 'workspace_path', id: 'new-agent-file', locator: '/tmp/new-agent.txt',
+      displayName: 'new-agent.txt', type: 'Text',
+    });
+    selectionStore.selectRun(existingRun.state.runId, 'agent');
+    activeContextStore.updateRequirement('Existing Agent draft');
+    activeContextStore.addContextFilePath({
+      kind: 'workspace_path', id: 'existing-agent-file', locator: '/tmp/existing-agent.txt',
+      displayName: 'existing-agent.txt', type: 'Text',
+    });
+
+    selectionStore.selectRun(newRun.state.runId, 'agent');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe(newRun.state.runId);
+    expect(activeContextStore.currentRequirement).toBe('New Agent draft');
+    expect(activeContextStore.currentContextPaths.map((file) => file.id)).toEqual(['new-agent-file']);
+    selectionStore.selectRun(existingRun.state.runId, 'agent');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe(existingRun.state.runId);
+    expect(activeContextStore.currentRequirement).toBe('Existing Agent draft');
+    expect(activeContextStore.currentContextPaths.map((file) => file.id)).toEqual(['existing-agent-file']);
+  });
+
+  it('retains isolated Team member drafts across new and existing root selection', () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const activeContextStore = useActiveContextStore();
+    const newMember = createAgentContext('temp-team-new::coordinator');
+    const existingMember = createAgentContext('team-existing::coordinator');
+    const newTeam = buildTestTeamContext({
+      teamRunId: 'temp-team-new', coordinatorAddress: '/coordinator',
+      rootChildren: [testAgentNode('/coordinator', { agentRunId: newMember.state.runId })],
+      contexts: [{ agentRunId: newMember.state.runId, context: newMember }],
+    });
+    const existingTeam = buildTestTeamContext({
+      teamRunId: 'team-existing', coordinatorAddress: '/coordinator',
+      rootChildren: [testAgentNode('/coordinator', { agentRunId: existingMember.state.runId })],
+      contexts: [{ agentRunId: existingMember.state.runId, context: existingMember }],
+    });
+    teamContextsStore.addTeamContext(newTeam);
+    teamContextsStore.addTeamContext(existingTeam);
+
+    selectionStore.selectRun('temp-team-new', 'team');
+    activeContextStore.updateRequirement('New Team draft');
+    activeContextStore.addContextFilePath({
+      kind: 'workspace_path', id: 'new-team-file', locator: '/tmp/new-team.txt',
+      displayName: 'new-team.txt', type: 'Text',
+    });
+    selectionStore.selectRun('team-existing', 'team');
+    activeContextStore.updateRequirement('Existing Team draft');
+    activeContextStore.addContextFilePath({
+      kind: 'workspace_path', id: 'existing-team-file', locator: '/tmp/existing-team.txt',
+      displayName: 'existing-team.txt', type: 'Text',
+    });
+
+    selectionStore.selectRun('temp-team-new', 'team');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe(newMember.state.runId);
+    expect(activeContextStore.currentRequirement).toBe('New Team draft');
+    expect(activeContextStore.currentContextPaths.map((file) => file.id)).toEqual(['new-team-file']);
+    selectionStore.selectRun('team-existing', 'team');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe(existingMember.state.runId);
+    expect(activeContextStore.currentRequirement).toBe('Existing Team draft');
+    expect(activeContextStore.currentContextPaths.map((file) => file.id)).toEqual(['existing-team-file']);
+  });
 });

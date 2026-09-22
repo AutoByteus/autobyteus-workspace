@@ -31,7 +31,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const inspections = new Map<string, Promise<void>>()
   const generations = new Map<string, symbol>()
   const submissions = new Map<string, LocalUserSubmissionHandle>()
-  const deferredDisposals = new Set<string>()
+  const deferredReleases = new Set<string>()
   const keyFor = (root: string, agent: string) => `${root}\0${agent}`
   const report = (id: string, cause: unknown) => {
     errors.value = { ...errors.value, [id]: cause instanceof Error ? cause.message : String(cause) }
@@ -96,9 +96,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     return service
   }
 
-  const disconnect = (id: string): void => {
+  const releaseContext = (id: string): void => {
     if (operations.value[id] || [...submissions.keys()].some((key) => key.startsWith(`${id}\0`))) {
-      deferredDisposals.add(id)
+      deferredReleases.add(id)
       return
     }
     generations.delete(id)
@@ -107,11 +107,11 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const next = { ...contexts.value }; delete next[id]; contexts.value = next
     const nextErrors = { ...errors.value }; delete nextErrors[id]; errors.value = nextErrors
     const nextFocus = { ...pendingFocus.value }; delete nextFocus[id]; pendingFocus.value = nextFocus
-    deferredDisposals.delete(id)
+    deferredReleases.delete(id)
   }
   const finishOperation = (id: string) => {
     const next = { ...operations.value }; delete next[id]; operations.value = next
-    if (deferredDisposals.has(id)) disconnect(id)
+    if (deferredReleases.has(id)) releaseContext(id)
   }
   const select = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
     pendingFocus.value = { ...pendingFocus.value, [id]: selection }
@@ -144,7 +144,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const openForInspection = (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
     if (intent && !intent.isCurrent()) return Promise.resolve()
-    deferredDisposals.delete(id)
+    deferredReleases.delete(id)
     if (operations.value[id]) return Promise.resolve()
     const context = contexts.value[id]
     if (context?.phase === 'historical' || (context?.phase === 'live' && services.get(id)?.isReady())) return Promise.resolve()
@@ -225,7 +225,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       stopWatching()
       submissions.delete(key)
       if (access === 'continuable') finishOperation(id)
-      else if (deferredDisposals.has(id)) disconnect(id)
+      else if (deferredReleases.has(id)) releaseContext(id)
     }
   }
 
@@ -302,5 +302,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { readRunModelConfig, saveRunModelConfigs, contexts, errors, operations, reconcileRetainedHistory, openForInspection, disconnect, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readRunModelConfig, saveRunModelConfigs, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })

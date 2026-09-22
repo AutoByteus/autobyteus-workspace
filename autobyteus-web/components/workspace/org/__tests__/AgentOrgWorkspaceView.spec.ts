@@ -10,7 +10,6 @@ const state = reactive({
   target: null as any,
 })
 const inspect = vi.fn().mockResolvedValue(undefined)
-const disconnect = vi.fn()
 const push = vi.fn().mockResolvedValue(undefined)
 const center = reactive({
   mode: 'chat' as 'chat' | 'config',
@@ -31,7 +30,6 @@ vi.mock('~/stores/activeContextStore', () => ({
     get activeWorkspaceTarget() { return state.target },
     inspectAgentOrg: inspect,
     selectAgentOrg: vi.fn(),
-    disconnectAgentOrg: disconnect,
     agentOrgContextFor: () => state.context,
     agentOrgErrorFor: () => state.error,
   }),
@@ -85,6 +83,7 @@ describe('AgentOrgWorkspaceView', () => {
     state.context = context()
     state.error = null
     state.target = directTarget
+    route.query.orgRunId = 'org-run'
     route.query.mode = 'active'
     center.mode = 'chat'
   })
@@ -132,7 +131,6 @@ describe('AgentOrgWorkspaceView', () => {
       query: { rootSubjectKind: 'agent_org', definitionId: 'org-def', sourceOrgRunId: 'org-run', mode: 'configuration' },
     })
     wrapper.unmount()
-    expect(disconnect).toHaveBeenCalledWith('org-run')
   })
 
   it('opens the same enclosing whole-Org configuration from a mounted-Team Agent without changing Org focus', async () => {
@@ -211,8 +209,19 @@ describe('AgentOrgWorkspaceView', () => {
     expect(push).toHaveBeenCalledWith({ path: '/workspace', query: { ...route.query, mode: 'history' } })
     route.query.mode = 'history'
     await wrapper.vm.$nextTick()
-    expect(disconnect).not.toHaveBeenCalled()
     expect(inspect).toHaveBeenCalledTimes(1)
+    wrapper.unmount()
+  })
+
+  it('opens each selected root without giving presentation a destructive release boundary', async () => {
+    const wrapper = mountSubject()
+    await vi.waitFor(() => expect(inspect).toHaveBeenCalledWith('org-run'))
+
+    inspect.mockClear()
+    route.query.orgRunId = 'org-run-next'
+    await vi.waitFor(() => expect(inspect).toHaveBeenCalledWith('org-run-next'))
+
+    expect(inspect.mock.calls.every(([orgRunId]) => orgRunId === 'org-run-next')).toBe(true)
     wrapper.unmount()
   })
 

@@ -122,7 +122,7 @@ afterEach(async () => {
   await localizationRuntime.setPreference('en')
   wrapper?.unmount()
   wrapper = undefined
-  useAgentOrgContextsStore().disconnect('org-run')
+  useAgentOrgContextsStore().releaseContext('org-run')
   vi.unstubAllGlobals()
 })
 
@@ -352,7 +352,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     org.select({ kind: 'agent_execution', agentRunId: 'agent-team-worker-configured' })
     const other = active.activeAgentContext!
     other.requirement = 'other'
-    useAgentOrgContextsStore().disconnect('org-run')
+    useAgentOrgContextsStore().releaseContext('org-run')
     expect(useAgentOrgContextsStore().contextFor('org-run')).toBe(org)
     expect(socket.readyState).toBe(Socket.OPEN)
     ack('rejected')
@@ -470,7 +470,7 @@ describe('observational Org history, exact deliberate continuation and retained 
     mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
     context.requirement = 'continue after leaving'
     const sent = active.send()
-    store.disconnect('org-run')
+    store.releaseContext('org-run')
     expect(store.contextFor('org-run')?.getAgentContext('agent-director')).toBe(context)
     await readyRestored(); ack(); await sent
     expect(socket.sent).toHaveLength(1); expect(socket.readyState).toBe(3)

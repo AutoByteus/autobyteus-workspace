@@ -106,7 +106,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   for (const wrapper of mounted.splice(0)) wrapper.unmount()
-  store?.disconnect('org-run'); vi.unstubAllGlobals(); vi.restoreAllMocks()
+  store?.releaseContext('org-run'); vi.unstubAllGlobals(); vi.restoreAllMocks()
 })
 
 describe('actual shared Org file input -> active target -> attachment upload owner', () => {
