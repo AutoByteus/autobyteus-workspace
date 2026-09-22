@@ -2,14 +2,14 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current solution revision ID: `SR-001`
+- Status: `Approved`
+- Current solution revision ID: `SR-002` (requirements baseline remains approved at `SR-001`)
 - Package identifier: `astra-fable-pricing-support`
 - Request / ticket: User request of 2026-09-22
 - Requirements owner: Solution Designer
 - Date: 2026-09-22
-- Approval state and reference: Explicit user approval pending.
-- Exact approved requirements baseline / solution revision: N/A until the user approves `SR-001`.
+- Approval state and reference: Explicitly approved by the user's message `approve` on 2026-09-22, in direct response to the SR-001 summary and approval request.
+- Exact approved requirements baseline / solution revision: `SR-001` as committed in `4fda6c4377491ab5401c029a6302d9ca78a4f7cc` and summarized immediately before the approval message.
 - Behavior-defining supplements and their approved versions: None.
 
 ## Problem And Desired Outcome
@@ -116,7 +116,7 @@
 | SCN-002 | User/System | User selects Fable 5.1; Claude runtime governs available models | Run Fable 5.1 and see correct cache-aware estimates | Installed/authenticated Claude runtime exposes exact `claude-fable-5-1`; run emits usage | Claude runtime is available and account may use the model | Select exact model → run normally → SDK reports exact model and component usage → server resolves trusted policy → existing views consume summary | Base/cache component prices and calculated costs are present | Runtime may legitimately not list the model for a given installation/account; unknown IDs remain unpriced | Supported Normal Scenario for the target contract; runtime availability is conditional and external | Official Claude model contract; current dynamic catalog and usage code | REQ-003, REQ-005, REQ-010 / AC-003, AC-005, AC-010 |
 | SCN-003 | Contract | Shared model/catalog and pricing consumers | Resolve exact source-backed model data consistently | Exact target ID is queried through existing catalog/factory/policy APIs | Updated catalog is loaded | Enumerate/query exact entry → read limits/config/pricing → pass through current response shapes | One exact entry with trusted provenance and no alias | Misspelling or unsupported variant stays missing | Supported Normal Scenario | Existing factory/pricing tests and contracts | REQ-001–REQ-006, REQ-009 / AC-001–AC-006, AC-009 |
 | SCN-004 | Operational | Engineer/release validation and existing persisted data | Validate cheaply and preserve historical truth | Targeted non-live suites run; service starts with existing data | No target paid API key is required | Run static/unit/synthetic/mocked tests → inspect diff/docs → confirm no migration → preserve old rows | Evidence proves catalog/policy/request compatibility without paid inference or historical rewrite | External live availability is not claimed | Supported Explicit Edge Scenario | Explicit user constraint; prior Fable validation precedent; token-usage persistence contract | REQ-007–REQ-009 / AC-007–AC-009 |
-| SCN-005 | Contract | A caller requests Fast/Batch/Flex/regional/private pricing | Obtain a variant-specific price | Variant identity would need to be captured and governed | Current token-usage pricing input lacks a complete variant contract | Mechanical selection may be possible in a runtime, but this package does not alter pricing by unrecorded mode | No new variant price is promised; Standard estimate behavior remains | Separate requirements/design are needed before mode-specific billing estimates | Technically Possible but Unsupported/Contrived for this package | Provider docs; current price-policy input shape; scope decision pending approval | Out of scope |
+| SCN-005 | Contract | A caller requests Fast/Batch/Flex/regional/private pricing | Obtain a variant-specific price | Variant identity would need to be captured and governed | Current token-usage pricing input lacks a complete variant contract | Mechanical selection may be possible in a runtime, but this package does not alter pricing by unrecorded mode | No new variant price is promised; Standard estimate behavior remains | Separate requirements/design are needed before mode-specific billing estimates | Technically Possible but Unsupported/Contrived for this package | Provider docs; current price-policy input shape; SR-001 approved scope boundary | Out of scope |
 
 ## UI, Interaction, And Experience Requirements
 
@@ -163,22 +163,23 @@
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/tickets/in-progress/astra-fable-pricing-support/investigation-notes.md` | Evidence authority and technical facts | All | Current for SR-001 | Evidence supports, but does not replace, user approval |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/tickets/in-progress/astra-fable-pricing-support/solution-revision-record.md` | Revision/approval index | All | Current for SR-001 | Approval reference pending |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/tickets/in-progress/astra-fable-pricing-support/design-spec.md` | Technical design for the approved behavior | All | Ready at SR-002 | No new intended behavior; governed by approved SR-001 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support/tickets/in-progress/astra-fable-pricing-support/solution-revision-record.md` | Revision/approval index | All | Current for SR-002 | SR-001 approval reference and SR-002 design result recorded |
 
 ## Assumptions
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | First-party Standard API prices are the intended estimate basis for both external runtimes, consistent with existing catalog behavior | Runtime/subscription billing can differ, but the user asked to restore the existing price display rather than introduce invoice reconciliation | User approval of SR-001 | Proposed; awaiting approval |
-| ASM-002 | Fable 5 remains supported alongside Fable 5.1 rather than being removed or aliased | Official pricing still lists both; user requested additive 5.1 support | User approval of SR-001; implementation regression | Proposed; awaiting approval |
+| ASM-001 | First-party Standard API prices are the intended estimate basis for both external runtimes, consistent with existing catalog behavior | Runtime/subscription billing can differ, but the user asked to restore the existing price display rather than introduce invoice reconciliation | User approval of SR-001 | Approved 2026-09-22 |
+| ASM-002 | Fable 5 remains supported alongside Fable 5.1 rather than being removed or aliased | Official pricing still lists both; user requested additive 5.1 support | User approval of SR-001; implementation regression | Approved 2026-09-22 |
 
 ## Open Decisions And Questions
 
 | Decision / Question ID | Question | Why It Matters | Options / Evidence | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Approve Standard-only pricing and exclude unrecorded Fast/Batch/Flex/regional/private variants? | Prevents misleading price precision and scope expansion | Recommended: Standard-only, matching existing catalog and exact available evidence | User | Proposed in SR-001 |
-| DEC-002 | Approve additive Fable 5.1 support while retaining Fable 5? | Defines compatibility boundary | Recommended: retain both; official provider still lists both | User | Proposed in SR-001 |
-| DEC-003 | Keep the adjacent Claude Sonnet 5 price correction outside this package? | Current official price differs from repository docs, but it was not requested | Recommended: record a separate-ticket candidate rather than silently expand scope | User | Proposed in SR-001 |
+| DEC-001 | Approve Standard-only pricing and exclude unrecorded Fast/Batch/Flex/regional/private variants? | Prevents misleading price precision and scope expansion | Recommended: Standard-only, matching existing catalog and exact available evidence | User | Approved in SR-001 on 2026-09-22 |
+| DEC-002 | Approve additive Fable 5.1 support while retaining Fable 5? | Defines compatibility boundary | Recommended: retain both; official provider still lists both | User | Approved in SR-001 on 2026-09-22 |
+| DEC-003 | Keep the adjacent Claude Sonnet 5 price correction outside this package? | Current official price differs from repository docs, but it was not requested | Recommended: record a separate-ticket candidate rather than silently expand scope | User | Approved in SR-001 on 2026-09-22 |
 
 ## Traceability
 
@@ -197,7 +198,7 @@
 
 ## Architecture Phase Input
 
-- Approved scenario IDs and product-level behavior paths architecture must map: Pending approval of `SCN-001`–`SCN-004`; `SCN-005` is explicitly unsupported in this package.
+- Approved scenario IDs and product-level behavior paths architecture must map: `SCN-001`–`SCN-004`; `SCN-005` is explicitly unsupported in this package.
 - Product and system constraints architecture must preserve: Exact runtime IDs; dynamic runtime capability ownership; Standard-only trusted pricing; cache/tier dimensions; fail-closed unknown behavior; prospective persistence; no new UI/transport/schema; no paid target-model inference.
 - Decisions intentionally deferred to architecture design: Exact file set; whether to generalize/rename the GPT-5.6 long-context pricing helper; proportionate direct-adapter test additions; exact documentation sections.
 - Technical facts architecture should verify: Shared row effects on AutoByteus direct model listing; current OpenAI response adapter suitability for Astra; Fable-family prefix policy coverage; targeted test commands in the worktree.
@@ -216,11 +217,11 @@
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and open decisions are visible: `Yes`
 - Content ready for user approval: `Yes`
-- Remaining content blocker: None; explicit user approval is required.
+- Remaining content blocker: None; SR-001 was approved on 2026-09-22.
 
 ### Approved Basis Ready For Design
 
-- User approval received: `No`
-- Exact requirements and supplement approval basis recorded: `No`
-- Approved requirements package ready for architecture design: `No`
-- Remaining blocker: User must explicitly approve SR-001, including the Standard-only pricing boundary, retaining Fable 5, excluding the adjacent Sonnet 5 correction, and the no-paid-inference validation plan.
+- User approval received: `Yes`
+- Exact requirements and supplement approval basis recorded: `Yes`
+- Approved requirements package ready for architecture design: `Yes`
+- Remaining blocker: None.
