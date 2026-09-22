@@ -1,11 +1,13 @@
 # Implementation Revision Record
 
-Current code and `implementation-handoff.md` are authoritative. This record locates the completed implementation baseline; it is not independent review evidence.
+Current code and `implementation-handoff.md` are authoritative. This record locates the baseline and later implementation deltas; it is not independent review evidence.
 
 ## Revision index
 | Revision | Trigger / round | Finding IDs | Classification | Related revisions | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / design-review-report.md / ARCH-REV-002 | N/A — initial baseline (AR-F001 design context) | Initial Baseline; Medium / High | SR-002 approval, SR-004 cumulative design; ARCH-REV-001/002; CRR/API-REV/DR N/A | Implementation Ready for Code Review |
+| IR-002 | code_reviewer / code-review-report.md / CRR-002 failure-origin review | API-F001 (C09/C09-R1) | Design Impact — correction file-scope authorization; Medium / High | SR-002/SR-004, ARCH-REV-001/002, CRR-001/002, API-REV-001, DR N/A | Scope decision required; no corrective code delta |
+| IR-003 | architecture_reviewer / ARCH-REV-003 authorization after CRR-002 and IR-002 | API-F001 (C09/C09-R1) | Local Fix; Medium / High | SR-002/SR-005, ARCH-REV-001–003, CRR-001/002, API-REV-001, DR N/A | Local Fix complete; Ready for Source Re-review; independent closure pending |
 
 ## IR-001 — Stopped-Org Team workspace configuration
 - Date: 2026-09-22.
@@ -24,3 +26,35 @@ Current code and `implementation-handoff.md` are authoritative. This record loca
 - Size/transition: maximum changed production file 458 nonempty lines; failure handling kept in the result owner to contain orchestration pressure. Schema v1 directly usable, no migration or project/history movement. No compatibility aliases.
 - Next route: **Code Review**, exact recipient **`/code_reviewer`** from `get_handoff_rules`, initial implementation complete / High-risk rule. No other outcome notification is selected.
 - Remaining risks: native/Codex/Claude retained-identity actual B cwd/file-operation continuation unexecuted; actual Save/reopen browser and fresh-delegation journey unexecuted; native picker/responsive rendering unverified. No provider credential availability assumption, no downstream pass, no release authorization.
+
+
+## IR-002 — Confirmed activation defect requires narrow design-scope amendment
+- Date: 2026-09-22. Triggering owner/report: **code_reviewer**, canonical `code-review-report.md`, **CRR-002 Fail / Local Fix, implementation-owned**, confirmed **API-F001 / C09/C09-R1**. This is failure-origin review, not successful API test-code review.
+- Current classification: **Design Impact**, narrowly the explicit lower-consumer file-scope restriction. Defect ownership remains implementation; intended behavior is clear, not Requirement Gap. `task_size=Medium`, `architectural_risk=High`, Reviewed unchanged.
+- Prior authoritative implementation result: **IR-001 Implementation Ready** at `3a52e67ba72ee53497f5d9492f406289f23f28f3`; followed by historical CRR-001 Pass, then API-REV-001 Fail and current CRR-002 Fail. No prior result inferred from missing artifacts.
+- Current authoritative result: **Scope authorization required; API-F001 open**, current source unchanged plus updated `implementation-handoff.md`. No repaired implementation or downstream Pass claimed.
+- Related solution: **SR-002 approved / SR-004 design**. Architecture review: **ARCH-REV-001/002**. Code review: **CRR-001/002**. API/E2E: **API-REV-001**. Delivery: **N/A**.
+- Approved IDs: **REQ-005,007 / AC-005 / BEH-004 / DS-002 / AR-P001**. AR-F001 null-target safety not reopened.
+- Why: real recovery exposes FileExplorer's self-triggering metadata activation and non-settling registered fast path. SR-004 line 183 explicitly prohibits editing that owner, while layout remains display-only. The clean bounded fix requires a scope amendment; no upstream pre-registration or forced-remount workaround is appropriate.
+- Actual delta: **No production/test edits**. Updated implementation handoff and this cumulative revision record; added `evidence/implementation-ir002-scope-assessment.md`, `implementation-ir002-metadata-reproduction.log`, `implementation-ir002-source-provenance.json`. Existing API/reviewer artifacts and tests retained unmodified/uncommitted.
+- Focused validation: unchanged API `FileExplorer.metadataActivation.spec.ts` run via `test:nuxt --run` → **exit 1, one failed test, one unhandled rejection**, identical recursive-update error. Four origin files byte-identical base/reviewed/current; HEAD unchanged. No browser/provider/live-app work in this round.
+- Proposed bounded change, not implemented: authorize FileExplorer-only semantic activation input comparison and current loading/error settlement, including late metadata readiness and stale-async/active/unmount guards; preserve registration owner, fallback and null gate. No global workspace policy, schema, Save or runtime changes.
+- Next route: **Solution Designer**, exact **`/solution_designer`** from fresh `get_handoff_rules` Design Impact condition; after authoritative correction, implement then source re-review and API/E2E again. No duplicate source-review/API outcome notification now.
+- Remaining evidence/limits: API-REV-001 positive sampled real provider/browser/HTTP/task evidence remains API-owned. C09 recovery failure still blocks; base frontend parser issues and unexecuted actual native picker remain. No commit/push/merge/release/deploy, provider reset, draft clearing or Save replay.
+
+
+## IR-003 — Convergent metadata-only Files activation and first recovery
+- Date: 2026-09-22. Trigger: architecture_reviewer **ARCH-REV-003 Pass** in `design-review-report.md` / `architecture-review-revision-record.md`, authorizing SR-005's bounded correction after **CRR-002 / API-F001 / C09/C09-R1** and IR-002. Architecture Pass authorizes correction, not source/API acceptance.
+- Classification: **Local Fix**; **Medium / High / Reviewed confirmed**. No new requirement/design gap; no risk downgrade.
+- Prior authoritative implementation result: **IR-002 Design Impact — scope authorization required**, no correction; source baseline IR-001 `3a52e67ba72ee53497f5d9492f406289f23f28f3`.
+- Current authoritative implementation result: **Local Fix complete — Ready for Source Re-review**; source/test commit **`cb139904c68b65e3af9f6b07de0e8e5275ed8169`** plus current handoff. API-F001 corrected locally, **independent closure pending**. CRR-002 and API-REV-001 remain latest independent Fail; CRR-001 Pass historical.
+- Related solution: **SR-002 approved / SR-005 cumulative**, including SR-004 null gate. Architecture review **ARCH-REV-001–003**; code review **CRR-001/002**; API/E2E **API-REV-001**; delivery **N/A**.
+- Approved IDs: **REQ-005,007 / AC-005 / BEH-004 / DS-002 / AR-P001**. Preserve AR-F001 explicit-null whole-consumer gate; no intended-behavior change.
+- Why: SR-005 resolves the sole correction-scope conflict. Correct the actual consumer's metadata-feedback and loading-settlement defect without moving registration or requiring Save replay/remount/tab toggle.
+- Production delta: only `autobyteus-web/components/fileExplorer/FileExplorer.vue`, **16 additions / 2 removals**, 331 effective nonempty lines. Individually compared primitive activation inputs include same-ID metadata readiness and registered readiness; current terminal branches clear loading/obsolete errors; pending activation releases prior target; ID/active lease inputs remain stable. Existing async sequence, inactive/unmount and cleanup guards retained.
+- Test delta: retain original API `FileExplorer.metadataActivation.spec.ts` delayed real registration test, expand to **14 tests** covering readiness, convergence, settlement/Retry and stale/lease branches. Strengthen both `RightSideTabs.workspaceTarget.spec.ts` recovery cases without `register('B')`, including real metadata/ensure/registration, delayed transport, dirty prior editor, first-completion usable B, no stale writes/Save replay, retained draft A/composer and omitted-target default.
+- Scope evidence: `evidence/implementation-ir003-source-scope.json` fingerprints protected owners unchanged. No metadata-action/global fallback/layout/composable/tab/Org-facade/server/provider/schema/Resume edits, new framework, dependency change, session reset or migration.
+- Local validation: original C09-R1 **1/1 Pass**; expanded focused **6 files/49 tests Pass**; cumulative focused frontend **28 files/275 tests Pass** (includes 49), no unhandled errors. Existing contracts build and web production build **Pass**. Full vue-tsc **Blocked** by same two baseline parser diagnostics. Diff/source-size checks Pass. Exact commands and evidence in `evidence/implementation-ir003-local-checks.md` and accompanying logs.
+- Rendered self-check: own Nuxt/Chrome fixture with real Files tree/tabs/Monaco and registration, external I/O substituted; first metadata-only success, usable editor, failure/Retry, unavailable and registered return states inspected. No new visual defect observed. Own tab/process closed; temporary page removed; fixture retained in evidence. Not API/E2E sign-off.
+- Next route: **Code Review**; fresh `get_handoff_rules` selected the most-specific completed implementation-owned Local Fix / High-risk source-review condition, exact **`/code_reviewer`** (single outcome recipient). Then API/E2E C09/C09-R1 revalidation, not Delivery.
+- Remaining limitations: independent closure required; baseline typecheck blocker/native picker remain. API-positive sampled real provider/core-browser/HTTP/task evidence remains attributed/carried, not rerun here. API server HTTP test unchanged/uncommitted and not granted successful test-code review. Incoming reviewer/designer/API artifacts retained outside implementation commits. No push/merge/release/deployment.
