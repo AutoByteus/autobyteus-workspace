@@ -182,6 +182,18 @@ can activate another member. Assigned task preparation/release remains separate.
 collaboration frames. Each command carries the exact root and member execution
 identity.
 
+Opened Org roots and their exact member contexts are retained for the current
+application session. Switching to another Org, Agent, Team, configuration view,
+or other supported workspace surface—and unmounting the Org view while doing
+so—does not release the root. Returning to the exact member therefore restores
+its independent unsent composer text and selected context files, including a
+delayed upload captured before navigation. Successful send keeps its existing
+clear/finalize behavior; rejected send keeps its existing untouched-draft
+recovery and newer-edit precedence; Stop also retains the draft. Only successful
+archive/delete cleanup (or session teardown) releases this local state.
+Unsent drafts are not persisted across reload/restart, and the existing draft-file
+TTL is unchanged.
+
 Supported commands are message, interrupt, tool approval, and tool denial.
 Context attachments use exact Org-root plus AgentRun-owned URLs. Message/task
 references keep their separate AgentOrg-rooted reference routes.

@@ -128,6 +128,13 @@ The Pinia stores act as the primary interface for the UI components to interact 
   Launch establishes the full coordinator-free scope without focus; `select()`
   later focuses an exact Agent or mounted Team. A mounted Team selection resolves
   to its direct coordinator but does not create a standalone Team lifecycle.
+- The store also owns the session lifetime of every opened Org root and its exact
+  member `AgentContext` objects. Ordinary workspace navigation, a root change, or
+  `AgentOrgWorkspaceView` unmount changes presentation only; it must not release
+  that retained state. Full `releaseContext(orgRunId)` cleanup is reserved for an
+  authoritative successful archive/delete boundary (or application-session
+  teardown), and it remains deferred while an owned operation or submission is
+  completing.
 - `AgentOrgStreamingService` fails closed on current-generation correlation,
   schema, root, sequence, snapshot-barrier, or acknowledgement violations. It
   retires that exact generation, schedules transparent recovery before asking
@@ -155,6 +162,18 @@ standalone selection owns the center. In the reverse direction,
 connects/selects the exact Org context and publishes the typed AgentOrg route.
 URL, center content, and one highlighted history row consequently describe the
 same root/member for active, inactive/Restore, and return transitions.
+
+Composer text and selected context files are local fields on the exact
+`AgentContext`. Standalone Agent, standalone Team-member, and AgentOrg-member
+contexts therefore retain independent unsent drafts across supported navigation
+for the current application session, for both new and existing runs. AgentOrg
+retention is keyed by exact Org root plus AgentRun identity; a same-root member,
+another Org, Agent, or Team cannot receive the draft or a delayed upload that was
+captured for another owner. A successful send still clears the admitted draft,
+and rejection still restores only an untouched draft while newer edits win.
+Stopping a run does not discard the draft. A successful archive/delete releases
+the owning local context; reload/restart persistence and a longer draft-file TTL
+are not part of this frontend lifecycle contract.
 
 `AgentOrgWorkspaceView` keeps **Edit config** and **New** separate. Gear on any
 configured direct or mounted-Team Agent normalizes immediately to the enclosing
