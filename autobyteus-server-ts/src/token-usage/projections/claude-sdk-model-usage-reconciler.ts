@@ -155,7 +155,8 @@ export const reconcileClaudeSdkResult = (input: {
     const current: Checkpoint = { ...row, canonicalModel: row.canonicalModel ?? previous?.canonicalModel ?? null, sessionId };
     const regressed = Boolean(previous && fields.some((field) => row[field] < previous[field]));
     const mayContribute = !regressed && Boolean(previous || zeroOrigin);
-    if (index >= 0 && !regressed) next.checkpoints[index] = current;
+    // A regression is a reset baseline: suppress this row, then advance from it once.
+    if (index >= 0) next.checkpoints[index] = current;
     else next.checkpoints.push(current);
     if (row.rawModelId !== payload.selected_resolved_raw_model_id || payload.selected_match_state !== 'matched') continue;
     if (!mayContribute) {

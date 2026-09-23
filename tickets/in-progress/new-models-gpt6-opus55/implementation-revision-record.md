@@ -9,6 +9,7 @@ Current code and `implementation-handoff.md` are authoritative. This record inde
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 Pass | N/A — initial baseline; ARCH-F-001/002 were resolved upstream | Initial Baseline | SR-002/SR-004; ARCH-REV-002; CRR/API-REV/DR N/A | Implementation Complete — Code Review requested |
 | IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 Fail; revised design ARCH-REV-003 Pass | CR-F-001 | Local Fix under SR-005 | SR-002/SR-004/SR-005; ARCH-REV-002/003; CRR-001; API-REV/DR N/A | Implementation rework complete — renewed Code Review requested |
 | IR-003 | API/E2E Engineer / API-REV-004 Design Impact; Solution Designer SR-007–013; Architecture Reviewer ARCH-REV-008 Pass | Token Meter mixed/selected identity and money attribution | Approved design implementation | SR-006/009/011 requirements; SR-007/008/010/012/013 design/evidence; ARCH-REV-004–008; API-REV-004; CRR current N/A; DR current N/A | Implementation complete — renewed Code Review requested |
+| IR-004 | Code Reviewer / `code-review-report.md` / CRR-006 Fail on IR-003 | CR-F-002 | Local Fix under unchanged SR-011/SR-012 | SR-011/012/013; ARCH-REV-008; CRR-006; API-REV-004 historical trigger; DR N/A | Reset checkpoint rework complete — renewed Code Review requested |
 
 ## Revision Entries
 
@@ -62,3 +63,16 @@ Current code and `implementation-handoff.md` are authoritative. This record inde
 - Source-size audit: changed source max 495 effective lines; event parser replacement has a 326-line changed delta, deliberately split into parser and 92-line emitter; no source exceeds 500.
 - Next recipient: exact recipient returned by `get_handoff_rules` for Large/High implementation complete; expected renewed independent source review, not direct API/E2E.
 - Remaining limitations: browser visual/live run not self-verified; API/E2E must verify current event→SQL→GraphQL/stream→Token Meter and guarded tiny live SDK path after source review, plus command-safety probe caveat I-44.
+
+### IR-004 — Reset baseline keeps one active Claude SDK series checkpoint
+
+- Triggering role/report/round: Code Reviewer, `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/code-review-report.md`, CRR-006 Fail on IR-003 commit `3e8972524`; `code-review-revision-record.md` is the associated review history.
+- Finding: CR-F-002 (regressed row appended a duplicate checkpoint, future lookup read stale first). CR-F-001 remains resolved.
+- Classification: implementation-owned Local Fix; cumulative `task_size=Large`, `architectural_risk=High` confirmed. No requirements/design change.
+- Prior result: IR-003 rejected at renewed source review; no current-scope API/E2E sign-off. Current result: corrected source/test committed for renewed independent source review; CR-F-002 remains open until reviewer acceptance.
+- Related revisions: Approved SR-011 / design SR-012 / evidence-only SR-013; ARCH-REV-008; CRR-006; API-REV-004 is historical diagnostic trigger; current delivery DR N/A.
+- Why/affected behavior: Approved BEH-008 / REQ-009 / AC-013 explicitly requires reset→subsequent selected advance without double/negative/missing usage. A stale checkpoint undercounted valid post-reset tokens and configured cost.
+- Source/test delta: `autobyteus-server-ts/src/token-usage/projections/claude-sdk-model-usage-reconciler.ts` now replaces rather than appends the same session/provider/raw checkpoint on regression, suppressing the reset row as a conservative baseline. Decoder rejects duplicate same-series persisted state as invalid instead of selecting a stale first entry. `tests/unit/token-usage/projections/claude-sdk-model-usage-reconciler.test.ts` asserts selected cumulative 100→reset 90→95→105 produces null reset contribution, then +5/+10 tokens and configured price, one checkpoint throughout, cumulative 115 selected standard input, and duplicate result suppression.
+- Local validation: server build-target TypeScript passed; 3 focused Claude SDK/fold/SQL files, 14 tests passed. `git diff --check` passed. Reconciler 197 effective nonempty lines; no changed source exceeds 500 or introduces a >220 delta. No frontend or schema source changed in IR-004; prior focused web checks remain relevant, but whole-web typecheck and browser/live SDK remain unclaimed.
+- Next route: `get_handoff_rules` for Large/High implementation-owned Local Fix; renewed `/code_reviewer` source review.
+- Remaining limits: No live paid API call, direct credential read, or current-scope API/E2E pass. I-44 command safety caveat remains.

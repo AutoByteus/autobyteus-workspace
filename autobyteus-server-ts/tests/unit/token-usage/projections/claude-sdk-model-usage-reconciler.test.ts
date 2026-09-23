@@ -118,11 +118,31 @@ describe('Claude SDK selected-only configured-price fold', () => {
     expect(result.authoritativePayload.quality_flags).toContain('claude_sdk_cache_write_1h_assumed');
   });
 
-  it('keeps unknown canonical and regressed selected cumulative values unpriced', () => {
+  it('baselines a reset in one checkpoint, then prices each selected post-reset advance once', () => {
     const first = fold(null, observation({ resultId: 'base', queryKind: 'create', rows: { [opus]: opusRow(100) } }));
     const regressed = fold(first.record, observation({ resultId: 'regress', rows: { [opus]: opusRow(90) } }));
     expect(regressed.authoritativePayload.accounting_input_tokens).toBeNull();
+    expect(regressed.authoritativePayload.estimated_api_total_cost).toBeNull();
     expect(regressed.authoritativePayload.quality_flags).toContain('claude_sdk_selected_regressed');
+    const resetState = JSON.parse(regressed.record!.claudeSdkUsageStateJson!);
+    expect(resetState.checkpoints).toHaveLength(1);
+    expect(resetState.checkpoints[0].inputTokens).toBe(90);
+    const afterReset = fold(regressed.record, observation({ resultId: 'post-reset-95', rows: { [opus]: opusRow(95) } }));
+    expect(afterReset.authoritativePayload.standard_input_tokens).toBe(5);
+    expect(afterReset.authoritativePayload.estimated_api_total_cost).toBeCloseTo(5 * 10 / 1e6, 9);
+    expect(JSON.parse(afterReset.record!.claudeSdkUsageStateJson!).checkpoints).toHaveLength(1);
+    const next = fold(afterReset.record, observation({ resultId: 'post-reset-105', rows: { [opus]: opusRow(105) } }));
+    expect(next.authoritativePayload.standard_input_tokens).toBe(10);
+    expect(next.authoritativePayload.estimated_api_total_cost).toBeCloseTo(10 * 10 / 1e6, 9);
+    expect(next.record!.tokenTotals.standard_input_tokens).toBe(115n);
+    expect(next.record!.costTotals.estimated_api_total_cost).toBeCloseTo(
+      first.authoritativePayload.estimated_api_total_cost! + 15 * 10 / 1e6, 9);
+    expect(JSON.parse(next.record!.claudeSdkUsageStateJson!).checkpoints).toHaveLength(1);
+    expect(fold(next.record, observation({ resultId: 'post-reset-105', rows: { [opus]: opusRow(105) } })).kind)
+      .toBe('SUPPRESSED');
+  });
+
+  it('leaves a selected row with unknown canonical price missing', () => {
     const unknown = fold(null, observation({ resultId: 'canonical', queryKind: 'create', rows: { [opus]: row(100) } }), null);
     expect(unknown.authoritativePayload.standard_input_tokens).toBe(100);
     expect(unknown.authoritativePayload.estimated_api_total_cost).toBeNull();
