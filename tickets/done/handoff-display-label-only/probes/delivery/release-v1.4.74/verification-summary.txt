@@ -1,0 +1,10 @@
+target_base_before_ticket_merge=1a0244206541d570e01335203e16c49af120d9f5
+ticket_final_commit=2aa4e1e409660c6826d17717bdb724bbc4e55794
+target_merge_commit=affefa7fbeec9b7bea83371f9395d990d4c79751
+release_commit=da86efe07f7f71e7455db6a866286af0bf0debd7
+origin_personal=da86efe07f7f71e7455db6a866286af0bf0debd7
+tag_target=da86efe07f7f71e7455db6a866286af0bf0debd7
+web_version=1.4.74
+gateway_version=1.4.74
+github_release=https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.74
+manual_dispatch_started=no
