@@ -132,6 +132,66 @@ describe('TokenPriceConfigProvider catalog policies', () => {
   });
 
   it.each([
+    ['gpt-6-sol', 2, 10, 0.2, 2.5],
+    ['gpt-6-luna', 0.1, 0.5, 0.01, 0.125],
+  ] as const)(
+    'resolves exact %s Standard and whole-request long-context rates for direct API usage',
+    async (modelIdentifier, input, output, cacheRead, cacheWrite) => {
+      const policy = await new TokenPriceConfigProvider().resolvePolicy({
+        runtime_kind: 'autobyteus',
+        model_provider: 'OPENAI',
+        model_identifier: modelIdentifier,
+        model_value: null,
+        observed_at: '2026-09-23T00:00:00.000Z',
+      });
+
+      expect(policy).toMatchObject({
+        pricing_policy_key: `autobyteus_model_catalog:OPENAI:${modelIdentifier}`,
+        pricing_status: 'trusted',
+        input_price_per_million: input,
+        output_price_per_million: output,
+        cached_input_read_price_per_million: cacheRead,
+        cached_input_write_price_per_million: cacheWrite,
+        input_price_tiers: [
+          { tier_id: 'standard_le_272k', max_input_tokens: 272_000,
+            input_price_per_million: input, output_price_per_million: output,
+            cached_input_read_price_per_million: cacheRead,
+            cached_input_write_price_per_million: cacheWrite },
+          { tier_id: 'long_context_gt_272k', max_input_tokens: null,
+            input_price_per_million: input * 2, output_price_per_million: output * 1.5,
+            cached_input_read_price_per_million: cacheRead * 2,
+            cached_input_write_price_per_million: cacheWrite * 2 },
+        ],
+        trusted_dimensions: { input: true, output: true, cached_input_read: true, cached_input_write: true },
+      });
+    },
+  );
+
+  it('resolves exact Opus 5.5 Standard and cache-write-duration rates for direct API usage', async () => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({
+      runtime_kind: 'autobyteus',
+      model_provider: 'ANTHROPIC',
+      model_identifier: 'claude-opus-5-5',
+      model_value: null,
+      observed_at: '2026-09-23T00:00:00.000Z',
+    });
+
+    expect(policy).toMatchObject({
+      pricing_policy_key: 'autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5',
+      pricing_status: 'trusted',
+      input_price_per_million: 4,
+      output_price_per_million: 20,
+      cached_input_read_price_per_million: 0.2,
+      cached_input_write_5m_price_per_million: 5,
+      cached_input_write_1h_price_per_million: 8,
+      trusted_dimensions: {
+        input: true, output: true, cached_input_read: true,
+        cached_input_write_5m: true, cached_input_write_1h: true,
+      },
+    });
+  });
+
+  it.each([
     ['OPENAI', 'gpt-6'],
     ['OPENAI', 'astra'],
     ['ANTHROPIC', 'claude-fable-5.1'],
