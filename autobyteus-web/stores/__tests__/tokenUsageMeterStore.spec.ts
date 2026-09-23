@@ -436,6 +436,32 @@ describe('tokenUsageMeterStore', () => {
     expect(store.getTeamRunSummaryState('team-run-1')).toBe('record_backed');
   });
 
+  it('preserves selected Claude SDK identity and cache assumption from stream DTO to record-backed meter', () => {
+    const dto = buildSummaryDto({
+      latest_runtime_kind: 'claude_agent_sdk',
+      latest_model_provider: 'ANTHROPIC',
+      latest_model_identifier: 'claude-opus-5-5',
+      latest_selected_raw_model_id: 'claude-opus-5-5[1m]',
+      has_cache_write_rate_assumption: true,
+      latest_prompt_tokens: 22_135,
+      effective_context_window_tokens: 1_000_000,
+      context_window_usage_percent: 2.2135,
+    });
+    const summary = mapTokenUsageRunSummaryDto(dto, { runId: 'run-1' });
+    const store = useTokenUsageMeterStore();
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary });
+    expect(store.getRunSummary('run-1')).toMatchObject({
+      latestModelIdentifier: 'claude-opus-5-5',
+      latestSelectedRawModelId: 'claude-opus-5-5[1m]',
+      hasCacheWriteRateAssumption: true,
+      estimatedApiTotalCost: 0.005,
+      latestPromptTokens: 22_135,
+      effectiveContextWindowTokens: 1_000_000,
+      contextWindowUsagePercent: 2.2135,
+    });
+    expect(JSON.stringify(store.getRunSummary('run-1'))).not.toContain('haiku');
+  });
+
   it('rejects unsafe report generations at the wire and GraphQL admission boundaries', () => {
     expect(() => mapTokenUsageRunSummaryDto({
       ...buildSummaryDto(),

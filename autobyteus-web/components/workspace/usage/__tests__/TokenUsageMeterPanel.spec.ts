@@ -397,6 +397,26 @@ describe('TokenUsageMeterPanel', () => {
     expect(primary).not.toContain('2 reports');
   });
 
+  it('renders the selected Claude known prompt/capacity and derived progress without changing cost', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
+    upsertAgentSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+      latestModelIdentifier: 'claude-opus-5-5', latestPromptTokens: 22_135,
+      effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 2.2135 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    const primary = wrapper.get('[data-test="token-usage-primary"]');
+    expect(primary.text()).toContain('22,135 / 1,000,000');
+    expect(primary.text()).toContain('2.2%'); // Existing display rounds the authoritative 2.2135% to one decimal.
+    expect(primary.find('[data-test="context-limit-unavailable"]').exists()).toBe(false);
+    expect(primary.get('.bg-blue-500').attributes('style')).toContain('width: 2.2135%');
+    expect(primary.text()).toContain('claude-opus-5-5');
+    expect(primary.text()).toContain('$0.0032');
+  });
+
   it('shows prompt usage and an explicit unavailable context limit without a fake denominator', () => {
     const agentContextsStore = useAgentContextsStore();
     const selectionStore = useAgentSelectionStore();

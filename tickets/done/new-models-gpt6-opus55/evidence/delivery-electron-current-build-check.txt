@@ -1,0 +1,25 @@
+2026-09-23 UTC — historical first Linux ARM64 personal Electron rebuild after second base integration (artifact later replaced by DR-005 below)
+Integrated branch: requirements/new-models-gpt6-opus55@fc13ccf5d7483fa7f18f09c86217b0830f5886f4
+Base: origin/personal@0f54978ba34165c476dcba67ce1d31ab27257108
+Workspace package version: 1.4.76. This is a local test package, not a release tag.
+First build attempt: nested pnpm spawn ENOENT because this shell lacked a pnpm shim; no build source failure.
+Corrected build: temporary /tmp/new-models-build-bin/pnpm shim invokes corepack pnpm; PATH=/tmp/new-models-build-bin:$PATH AUTOBYTEUS_BUILD_FLAVOR=personal corepack pnpm -C autobyteus-web build:electron:linux:arm64.
+Build result: exit 0. Local log: /tmp/new-models-electron-arm64-current-build.log.
+AppImage path at that time (same-name file later replaced): /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.4.76.AppImage
+Historical SHA-256: 64803ddc880a363468f901193458245bac8f8f13cd4ae8c0368ae1d5fd2b9527
+Unpacked executable: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Smoke command: runuser -u vncuser -- env HOME=/home/vncuser DISPLAY=:99 node <worktree>/autobyteus-web/scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable <unpacked executable>
+Smoke result: exit 0, electron-e2e-ready, isolated port 37133, bundled backend /rest/health ready, owned temporary data root cleaned. Local log: /tmp/new-models-electron-arm64-current-smoke.log.
+Direct AppImage launch was not repeated; this container previously lacked unversioned libz.so and FUSE. The tested unpacked executable is the hands-on path in this environment. Earlier 1.4.75 artifact is superseded.
+No user acceptance, final push, merge, tag, publication or deployment is implied by this local build/smoke.
+
+2026-09-23 UTC — user-requested fresh rebuild on same integrated base (DR-005)
+README re-read: root README.md packaged Electron E2E instructions and autobyteus-web/README.md Linux ARM64 integrated-backend build instructions.
+Refetched origin/personal remained 0f54978ba34165c476dcba67ce1d31ab27257108; HEAD remained fc13ccf5d7483fa7f18f09c86217b0830f5886f4. No source/durable test or base change.
+Command: PATH=/tmp/new-models-build-bin:$PATH AUTOBYTEUS_BUILD_FLAVOR=personal corepack pnpm -C autobyteus-web build:electron:linux:arm64
+Result: exit 0. Local log: /tmp/new-models-electron-arm64-user-rebuild.log.
+Current AppImage (replacing previous same-name file): /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.4.76.AppImage
+Current SHA-256: 1b93b85f39fb14ea86ab307bfdedb5cd3225a8d5d534d187ec49e21b075c16a4
+Smoke: runuser -u vncuser -- env HOME=/home/vncuser DISPLAY=:99 node <worktree>/autobyteus-web/scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable <worktree>/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Result: exit 0; electron-e2e-ready on isolated port 40071; bundled backend health became ready; owned temporary root removed. Local log: /tmp/new-models-electron-user-rebuild-smoke.log.
+No user acceptance, final push/merge/tag/release/deployment is implied.

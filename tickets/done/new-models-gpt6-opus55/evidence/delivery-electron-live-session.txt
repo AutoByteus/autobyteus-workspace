@@ -1,0 +1,9 @@
+2026-09-23 UTC — DR-006 user-requested live Electron test session
+Current tested executable: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Package source: current integrated HEAD fc13ccf5d7483fa7f18f09c86217b0830f5886f4, origin/personal@0f54978ba34165c476dcba67ce1d31ab27257108; Linux ARM64 personal v1.4.76 local build.
+Launcher: runuser -u vncuser -- env HOME=/home/vncuser DISPLAY=:99 node <worktree>/autobyteus-web/scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable <current unpacked executable> --hold-ms 43200000
+Launcher reported: electron-e2e-ready; selected port 42077; owned temporary root /tmp/autobyteus-e2e-I510Nc; client base URL http://127.0.0.1:42077.
+Independent check: curl http://127.0.0.1:42077/rest/health -> {"status":"ok","message":"Server is running"}.
+X11 check: xwininfo on DISPLAY=:99 showed visible 1200x800 "autobyteus" window (plus small helper window).
+At start, launcher PID 8685, app main PID 8696, backend child PID 8750; inspect live processes before any manual stop because PIDs are ephemeral.
+The documented E2E launch profile uses an isolated data root and non-default port; no normal app state or existing provider credentials were imported. The launcher holds for 12 hours and owns cleanup of its process tree and temporary root. This is a local user-testing session, not repository finalization, release, deployment or user acceptance.

@@ -452,6 +452,18 @@ continues to call one `query({ prompt: string, options })` per AgentRun
 provider-owned input queue. The intrinsic Agent Tools MCP descriptor alone is
 marked `alwaysLoad: true` so required Team tools are ready on the first turn.
 
+For token accounting, the active Claude SDK query resolves the selected model
+value to one raw id through that query's supported-model metadata. Terminal
+result `modelUsage` is reconciled by the server token-usage fold per session and
+raw model; auxiliary-model usage is not charged to the selected-model meter.
+The meter reports an AutoByteus-configured API-equivalent estimate, not the
+Claude subscription's actual charge. See [Token Usage](token_usage.md) for
+checkpoint, cache-write approximation, and migration details.
+The same selected raw result row supplies a context-window capacity only when
+it is positive and safe; a safe full prompt sum then yields the latest prompt
+percentage. Older valid rows with null percentage are repaired by the
+run-summary read projection, not by a data backfill.
+
 Claude active-turn closure is owned by the session, not by WebSocket, GraphQL,
 or frontend button state. Each active Claude turn is tracked with its own
 `AbortController`, and that controller is passed into the SDK query options.

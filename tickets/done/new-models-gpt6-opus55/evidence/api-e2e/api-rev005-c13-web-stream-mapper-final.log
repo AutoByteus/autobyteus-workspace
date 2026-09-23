@@ -1,0 +1,25 @@
+
+> autobyteus@1.4.76 test:nuxt /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/tokenUsageMeterStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (10 tests) 30ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  16:57:41
+   Duration  8.62s (transform 5.21s, setup 7.48s, collect 52ms, tests 30ms, environment 344ms, prepare 359ms)

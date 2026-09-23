@@ -46,6 +46,8 @@ store.
   - lifetime domain record: `domain/token-usage-run-record.ts`
   - analytics domain/result contracts: `domain/token-usage-analytics.ts`
   - deterministic lifetime fold: `projections/token-usage-run-fold.ts`
+  - selected Claude SDK cumulative-model reconciliation:
+    `projections/claude-sdk-model-usage-reconciler.ts`
   - admitted-contribution projection: `projections/token-usage-analytics-contribution.ts`
   - accumulator and atomic write coordinator: `services/token-usage-run-accumulator.ts`
   - analytics projection writer: `services/token-usage-analytics-projection-writer.ts`
@@ -63,6 +65,7 @@ store.
     `TokenUsageAnalyticsCoverage`, and `TokenUsageAnalyticsDailyFacet`
   - `prisma/migrations/20260819090000_add_token_usage_run_records/`
   - `prisma/migrations/20260822090000_add_token_usage_analytics/`
+  - `prisma/migrations/20260923130000_add_claude_sdk_usage_state/`
 - Migration-only legacy owners:
   - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
   - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
@@ -242,16 +245,45 @@ turn map.
 
 ### Claude Agent SDK
 
-Claude accounting is terminal-result based. Thinking/text stream chunks are
-content events, not token contributions. `buildClaudeTokenUsageEvent(...)`
-emits one `per_turn` observation from terminal `result.usage` and/or
-`modelUsage`.
+Claude SDK accounting starts at terminal `result` events; thinking/text stream
+chunks are content, not token contributions. The selected SDK model value is
+resolved against the active query's `supportedModels()` metadata to one raw
+model id. The result sanitizer retains safe per-model counters privately for
+the fold. A missing or ambiguous selected-model match must not substitute
+main-loop totals or another model (for example, auxiliary Haiku) in the public
+meter. The public summary keeps the selected canonical and raw identities.
+
+`claude-sdk-model-usage-reconciler.ts` differences cumulative `modelUsage`
+counters against bounded, session-and-raw-model checkpoints. Duplicate or
+regressed observations do not double-count; a regression becomes a new
+baseline before later growth. Legacy/unknown resume history is baselined rather
+than guessed. Only the selected model's admitted delta reaches the lifetime
+run, daily analytics, GraphQL, and live `run_summary_after_event` projections;
+all-source checkpoints remain private in the nullable
+`claude_sdk_usage_state_json` run-record column. The 2026-09-23 Prisma migration
+adds this column without backfilling or repricing older records. Apply the
+normal production migration/startup-readiness flow before running this server.
+
+For the latest Claude SDK prompt context, the terminal result's selected raw
+model row supplies the capacity. Only a positive safe-integer `contextWindow`
+and a safe full prompt sum (base input plus cache read plus cache creation)
+produce `context_window_usage_percent = 100 × prompt / capacity`. A missing,
+zero, or unsafe capacity leaves the percentage unavailable; the model name is
+not a fallback capacity. For an older run row with valid latest prompt and
+capacity but null percentage, the run-summary read projection derives the
+percentage from that same latest row without mutating SQL or repricing. A
+previously stored finite percentage and non-Claude runtime behavior remain
+unchanged.
 
 Claude/Anthropic input uses `base_excludes_cache`: gross input is base input
-plus cache-read and cache-creation buckets. Numeric thinking details map to
-`reasoning_output_tokens`; absent numeric detail remains null even when thinking
-content exists. Divergence between comparable `usage` and `modelUsage` facts is
-flagged rather than changing Claude into cumulative accounting.
+plus cache-read and cache-creation buckets. A cache-write 5-minute/1-hour split
+is exact only when the terminal main-loop usage fully reconciles with the
+selected-model delta in every token dimension. Otherwise cache writes use the
+configured 1-hour rate as a visibly flagged approximation. Cost is an
+AutoByteus-configured Standard API-equivalent estimate, not the SDK's reported
+dollars or a subscription charge. Missing trusted prices remain missing rather
+than zero. Numeric thinking details map to `reasoning_output_tokens`; absent
+numeric detail remains null even when thinking content exists.
 
 ## Token And Pricing Semantics
 
@@ -323,10 +355,10 @@ inheritance are used, so unsupported identifiers continue to produce
 analytical facets, policy keys, and historical missing states are never
 recalculated by a catalog update. Deterministic catalog, synthetic policy/tier,
 and mocked request tests cover these entries. The new-model validation also
-completed three real Codex Astra/Sol/Luna turns and one small direct Anthropic
-SDK Opus 5.5 request, but those are separate runtime evidence, not a provider
-invoice or live proof of every pricing dimension. Direct OpenAI API and a full
-paid Anthropic signed tool cycle were not exercised.
+completed three real Codex Astra/Sol/Luna turns and a bounded real Anthropic
+signed active tool-turn replay, but those are separate runtime evidence, not a
+provider invoice or live proof of every pricing dimension. Direct OpenAI live
+API and independent-turn signed reset or compaction were not exercised.
 
 ### Latest pricing schedule selection
 
