@@ -244,10 +244,12 @@ fallback model, and it preserves raw traces and already committed tool facts.
 The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
 
-- OpenAI `gpt-6-astra` (verified 2026-09-22), `gpt-5.6-sol`,
+- OpenAI `gpt-6-astra` (verified 2026-09-22), `gpt-6-sol` and `gpt-6-luna`
+  (verified 2026-09-23), `gpt-5.6-sol`,
   `gpt-5.6-terra`, and `gpt-5.6-luna` (verified 2026-07-30), plus retained
   `gpt-5.5`. GPT-5.6 uses exact provider IDs with no separate unsuffixed alias.
-- Anthropic `claude-opus-5` (verified 2026-07-31; standard pricing effective
+- Anthropic `claude-opus-5-5` (verified 2026-09-23),
+  `claude-opus-5` (verified 2026-07-31; standard pricing effective
   2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
   `claude-opus-4.8`, and `claude-sonnet-5`
   with exact Claude API values and no
@@ -270,7 +272,7 @@ The current latest-model support set is summarized in
 
 Provider adapters own request-shape differences:
 
-- `OpenAILLM` keeps Astra and GPT-5.6 on the official Responses path. The
+- `OpenAILLM` keeps Astra, Sol, Luna and GPT-5.6 on the official Responses path. The
   shared OpenAI usage normalizer preserves gross input while mapping documented
   `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
@@ -279,6 +281,12 @@ Provider adapters own request-shape differences:
   `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
   before Anthropic Messages API calls. Older Claude rows keep the legacy
   fixed-budget path unless a separate provider migration changes them.
+- Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking and
+  unsupported sampling parameters are rejected before the Messages SDK call.
+  Its streaming adapter assembles the complete ordered native assistant turn,
+  including signed or redacted thinking and tool-use blocks, and retains it
+  privately for an active tool continuation rather than exposing it as an
+  outward assistant event.
 - The `claude-fable-5-1` definition exposes no manual thinking schema because
   adaptive thinking is always on. Its exact 1M context/input and 128k output
   limits plus Standard `10/50/0.25/12.5/20`
@@ -386,7 +394,7 @@ entries to the provider's wire format at the request boundary:
 | DeepSeek OpenAI-compatible path | OpenAI-compatible `assistant.tool_calls` followed by matching `role: "tool"` messages; assistant messages with preserved `Message.reasoning_content` also render DeepSeek `reasoning_content`. |
 | Gemini | model turns with `functionCall` parts followed by user `functionResponse` parts, preserving the function-call `id` when present. |
 | Ollama | assistant messages with `tool_calls` followed by `role: "tool"` result messages containing `tool_name`. |
-| Anthropic | assistant `tool_use` blocks followed immediately by user `tool_result` blocks, with result blocks first in that user message. |
+| Anthropic | Ordered assistant text/thinking/redacted-thinking/`tool_use` blocks are preserved as one native turn when available, followed immediately by user `tool_result` blocks, with result blocks first in that user message. The native signed blocks are private working-context data. |
 | Mistral | assistant `tool_calls` followed by `role: "tool"` messages containing `name`, `content`, and `tool_call_id`. |
 | OpenAI Responses | Captured `response.output` input items replayed once when available, including required `reasoning` items before `function_call` items, followed by `function_call_output` items keyed by `call_id`. Matching function calls keep provider item metadata but use final normalized `ToolCallSpec` id/name/arguments. |
 

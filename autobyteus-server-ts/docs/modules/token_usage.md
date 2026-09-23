@@ -280,7 +280,7 @@ include component `unitPrices`, policy/tier identifiers, currency/status, and
 missing dimensions so the UI can explain costs without recalculating them.
 Reasoning tokens remain a visible subset of output and are not double-counted.
 
-### Exact Astra and Fable 5.1 Standard pricing
+### Exact current-model Standard pricing
 
 The built-in catalog resolves only exact provider/model identities. Future
 `OPENAI` + `gpt-6-astra` observations use Standard USD-per-million rates of
@@ -297,6 +297,24 @@ context/input and 128,000 maximum output, sourced and verified 2026-09-22 from
 the [Fable 5.1 overview](https://platform.claude.com/docs/en/models/fable-5-1/overview);
 pricing is effective 2026-09-01. Existing `claude-fable-5` pricing is unchanged.
 
+Future exact `OPENAI` + `gpt-6-sol` and `gpt-6-luna` observations use the
+existing full-request tier boundary at 272,000 accounting input tokens. Rates
+below are USD per million tokens; cache write is the general OpenAI cache-write
+dimension, not an Anthropic TTL bucket.
+
+| Exact model | Tier | Input | Output | Cache read | Cache write |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `gpt-6-sol` | at or below 272k | 2 | 10 | 0.20 | 2.50 |
+| `gpt-6-sol` | above 272k, entire request | 4 | 15 | 0.40 | 5 |
+| `gpt-6-luna` | at or below 272k | 0.10 | 0.50 | 0.01 | 0.125 |
+| `gpt-6-luna` | above 272k, entire request | 0.20 | 0.75 | 0.02 | 0.25 |
+
+Future exact `ANTHROPIC` + `claude-opus-5-5` observations use Standard rates
+of `4` input, `20` output, `0.20` cache read, `5` five-minute cache write,
+and `8` one-hour cache write per million tokens. It has no inferred Fast,
+Batch, regional, or subscription tariff. The added exact-policy server tests
+exercise all three model identities and the OpenAI long-context/cache tiers.
+
 These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
 partner, subscription/credit, private, and negotiated variants are not inferred
 from an identity that does not record billing mode. No aliases or family-price
@@ -304,8 +322,11 @@ inheritance are used, so unsupported identifiers continue to produce
 `price_missing`. Pricing is captured at observation time: existing run records,
 analytical facets, policy keys, and historical missing states are never
 recalculated by a catalog update. Deterministic catalog, synthetic policy/tier,
-and mocked request tests cover these entries; no paid Astra or Fable 5.1
-inference was run for this change.
+and mocked request tests cover these entries. The new-model validation also
+completed three real Codex Astra/Sol/Luna turns and one small direct Anthropic
+SDK Opus 5.5 request, but those are separate runtime evidence, not a provider
+invoice or live proof of every pricing dimension. Direct OpenAI API and a full
+paid Anthropic signed tool cycle were not exercised.
 
 ### Latest pricing schedule selection
 

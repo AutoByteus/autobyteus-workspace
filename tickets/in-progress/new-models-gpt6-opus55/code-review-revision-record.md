@@ -9,6 +9,8 @@ Current `code-review-report.md` is the authoritative latest source-review result
 | CRR-001 | `code-review-report.md` | Initial implementation source review, IR-001 / `704e2108e` | N/A | Fail — Design Impact | CR-F-001 |
 | CRR-002 | `code-review-report.md` | Renewed source review, IR-002 / `42ba8549b` | Fail — Design Impact | Pass | CR-F-001 resolved |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API-REV-001 Pass | N/A — first test review | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | API-REV-002 Pass; no durable test delta | Pass (CRR-003) | Not Applicable; prior Pass retained | None |
+| CRR-005 | `api-e2e-test-review-report.md` | API-REV-003 Pass; no durable test delta | N/A (CRR-004); prior Pass retained | Not Applicable; prior Pass retained | None |
 
 ## Revision Entries
 
@@ -74,3 +76,41 @@ None.
 - Material score/classification changes: N/A — proportional test review has no implementation source scorecard; Pass.
 - Recommended recipient: `/delivery_engineer` with cumulative passed package.
 - Remaining risks: API-REV-001 accurately discloses OpenAI live and paid full Anthropic signed tool-cycle not tested under approved constraints. No test-code issue is inferred from that disclosure.
+
+### CRR-004 — API-REV-002 live extension has no durable test-code delta
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/api-e2e-test-review-report.md`. The CRR-002 source-review report was not reopened.
+- Review entry point and round: Successful API/E2E proportional test-code review, round 2.
+- Triggering role/report: API/E2E Engineer; `api-e2e-execution-coverage-report.md` API-REV-002 Pass / 96%, superseding API-REV-001 after the user-requested cost-limited live AnthropicLLM check.
+- Relevant solution revisions: SR-002/SR-004/SR-005. Architecture reviews: ARCH-REV-002/003. Implementation revisions: IR-001/002. API/E2E revisions: API-REV-001/002. Delivery revision: in progress after earlier CRR-003 handoff.
+- Prior authoritative test-review result: CRR-003 Pass on the two API-REV-001 durable edits. Current result: **Not Applicable** for API-REV-002, with CRR-003 Pass retained.
+- What changed and why: API-C07 added a temporary live AnthropicLLM probe as ticket evidence, not a durable test. No source or durable test file changed in API-REV-002; both previously reviewed server test paths are identical to checkpoint `77fd91fc6`. Therefore a repeat test-code audit is unnecessary.
+- Supported product scenario/material premise basis changes: None; SCN-002 is the approved product tool-continuation path. API-C07 proves live continuation without an emitted signed block; signed replay remains no-key contract evidence, not falsely claimed live.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None.
+- Material score/classification: N/A — no implementation-source scorecard or new durable test-code score. Current test-review result Not Applicable, cumulative durable test-review Pass retained.
+- Recommended recipient: `/delivery_engineer` with API-REV-002 as the latest executable result.
+- Remaining risks: OpenAI live and live signed Anthropic replay remain untested under approved constraints; initial temporary-probe signature assertion was corrected, not a product defect.
+
+### CRR-005 — API-REV-003 signed live extension has no durable test-code delta
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/api-e2e-test-review-report.md`. The CRR-002 source-review report was not reopened.
+- Review entry point and round: Successful API/E2E proportional test-code review, round 3.
+- Triggering role/report: API/E2E Engineer; `api-e2e-execution-coverage-report.md` API-REV-003 Pass / 97%, superseding API-REV-002 after a user-requested bounded complex live AnthropicLLM check.
+- Relevant solution revisions: SR-002/SR-004/SR-005. Architecture reviews: ARCH-REV-002/003. Implementation revisions: IR-001/002. API/E2E revisions: API-REV-001/002/003. Delivery revision: in progress; explicit user acceptance not received at this review.
+- Prior authoritative test-review result: CRR-004 Not Applicable for the API-REV-002 delta; CRR-003 Pass on the two API-REV-001 durable edits. Current result: **Not Applicable** for API-REV-003, with CRR-003 Pass retained.
+- What changed and why: API-C08 added only a temporary evidence probe for the real signed/multiple-tool turn. No production source or durable test path changed in API-REV-003, so repeat test-code audit is unnecessary. The latest executable evidence now includes live signed thinking, two native tool uses and accepted exact active-turn replay through product AnthropicLLM in two cost-limited requests.
+- Supported product scenario/material premise basis changes: None; SCN-002 remains the approved Anthropic agent/tool continuation path. The game prompt is a test stimulus, not gameplay or visual-quality acceptance.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None.
+- Material score/classification: N/A — no implementation-source scorecard or new durable test-code score. Current test-review result Not Applicable; cumulative durable test-review Pass retained.
+- Recommended recipient: `/delivery_engineer` with API-REV-003 as latest executable result.
+- Remaining risks: OpenAI live exact-model access and live independent-turn reset/compaction remain untested under approved constraints. Browser gameplay quality of the generated HTML was not tested or claimed.

@@ -1,4 +1,4 @@
-# API/E2E Test-Case Ledger — API-REV-001
+# API/E2E Test-Case Ledger — API-REV-003
 
 Worktree: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55`. Investigation: `api-e2e-coverage-investigation.md`. Report: `api-e2e-execution-coverage-report.md` (pending). Revision record: `api-e2e-revision-record.md` (pending). Initialized before execution 2026-09-23. Required for independent multi-case checks.
 
@@ -16,7 +16,7 @@ Worktree: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55`. 
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Reconciliation
-Last completed case: API-C06 Pass (plus API-C03 pricing follow-up Pass). All planned cases complete. Report reconciliation: Yes.
+Last completed case: API-C08 Pass (live signed native turn and two tools, accepted replay). All planned cases complete. Report reconciliation: Yes, API-REV-003.
 | 1 | API-C01 | Started | Shared focused no-key contracts | Tests pass | Running | N/A | — |
 | 2 | API-C01 | Completed | `pnpm -C autobyteus-ts exec vitest run` four focused files | 64 pass | 64/64 pass | Pass | `/tmp/new-models-api-c01.log`; next C02 |
 | 3 | API-C02 | Started | Shared signed lifecycle suites | Tests pass | Running | N/A | — |
@@ -37,3 +37,21 @@ Last completed case: API-C06 Pass (plus API-C03 pricing follow-up Pass). All pla
 | 18 | API-C06 | Checkpoint | First existing Claude Agent SDK live test | Live model/query | Harness failed before provider query: missing current sessionBinding; updated durable test to current API | N/A | `/tmp/new-models-api-c06-claude-sdk.log`; rerun one low-cost case only |
 | 19 | API-C06 | Completed | One tiny direct Anthropic SDK request and one subscription-backed Claude Agent SDK query after harness fix | Exact Opus response; SDK model/query/history | Both passed; OpenAI key absent; no further paid tests | Pass | `/tmp/new-models-api-c06-anthropic.log`, `/tmp/new-models-api-c06-claude-sdk-rerun.log` |
 | 20 | API-C03 | Checkpoint | Added exact new-model server pricing-policy tests | 3 new cases pass | 21/21 provider tests passed | Pass | `/tmp/new-models-api-c03-added-pricing.log` |
+
+## API-REV-002 planned extension
+| Case ID | Case / AC | Planned surface | Status |
+| --- | --- | --- | --- |
+| API-C07 | One real Opus 5.5 AnthropicLLM streamed tool use and signed continuation, AC-003/004/007 | product adapter / Anthropic Messages API; max two requests | Completed (qualified) |
+
+| 21 | API-C07 | Started | Secret-safe temporary product AnthropicLLM probe; max two calls | Signed streamed tool turn and accepted native continuation | Running | N/A | Probe code in ticket evidence after run; no secret/output text logged |
+| 22 | API-C07 | Checkpoint | First real product `AnthropicLLM.streamMessages` request | Native signed tool turn | Provider returned one tool_use and usage, but no visible signed thinking block on trivial task; assertion stopped before continuation. Real first call, not a mock. | N/A | `/tmp/new-models-api-c07-live.log`; relax signature expectation and continue only once, still cost-limited. |
+| 23 | API-C07 | Completed | `AnthropicLLM.streamMessages` plus `sendMessages` current adapter; one two-request rerun | Native tool use and accepted real continuation | One tool-use/native turn and usage; second real continuation returned content and usage; no live signed thinking block emitted | Pass (tool continuation); signed replay remains no-key only | `/tmp/new-models-api-c07-rerun.log`, `evidence/api-e2e/anthropic-opus55-live.probe.test.ts` |
+
+## API-REV-003 planned extension
+| Case ID | Case / AC | Planned surface | Status |
+| --- | --- | --- | --- |
+| API-C08 | Complex single-file platform-game task, signed thinking plus multiple real tool calls and exact native replay, AC-003/004/007 | product AnthropicLLM / Messages API; max four paid requests | Pass (two requests) |
+
+| 24 | API-C08 | Started | Temporary product AnthropicLLM game-task probe; xhigh adaptive thinking, max four requests | Signed tool turn and accepted real replay; >=2 tools | Running | N/A | Only safe metadata, token counts and structural game checks logged |
+| 25 | API-C08 | Checkpoint | Complex xhigh game task still running after first wait | <=4 requests | In progress; no final result inferred | N/A | `/tmp/new-models-api-c08-game.log` |
+| 26 | API-C08 | Completed | Two real AnthropicLLM streamed requests; xhigh adaptive, constant tools/system, signed native replay | Signed tool turn and accepted continuation; >=2 tools | First response had signed thinking and write_html+inspect_html; second request accepted exact native assistant/tool results and completed. 4,259-byte HTML passed six structural checks; 3,733 input/4,211 output tokens. No browser gameplay claim. | Pass | `/tmp/new-models-api-c08-game.log`, `evidence/api-e2e/anthropic-opus55-game-live.probe.test.ts` |

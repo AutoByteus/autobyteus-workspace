@@ -445,8 +445,8 @@ AutoByteus still expects. AutoByteus MCP tools continue to be supplied through
 `mcpServers` and pre-approved through `allowedTools` according to the configured
 tool exposure.
 
-Claude Agent SDK `0.3.231` is used with exact direct peers
-`@anthropic-ai/sdk@0.116.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter
+Claude Agent SDK `0.3.280` is used with exact direct peers
+`@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter
 continues to call one `query({ prompt: string, options })` per AgentRun
 `start_turn`; it does not use SDK `streamInput`, priority scheduling, or a
 provider-owned input queue. The intrinsic Agent Tools MCP descriptor alone is
