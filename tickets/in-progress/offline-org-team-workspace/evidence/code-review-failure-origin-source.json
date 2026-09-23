@@ -1,0 +1,34 @@
+{
+  "reviewRevision": "CRR-002",
+  "head": "3a52e67ba72ee53497f5d9492f406289f23f28f3",
+  "source": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorer.vue",
+      "baseBlob": "87bac55c8003bc8117f1e893db845d2e4f94e823",
+      "reviewedBlob": "87bac55c8003bc8117f1e893db845d2e4f94e823",
+      "currentBlob": "87bac55c8003bc8117f1e893db845d2e4f94e823",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceMetadataActions.ts",
+      "baseBlob": "18f9ae7deebbcbdd58d413a009f132b34c8566ce",
+      "reviewedBlob": "18f9ae7deebbcbdd58d413a009f132b34c8566ce",
+      "currentBlob": "18f9ae7deebbcbdd58d413a009f132b34c8566ce",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspace.ts",
+      "baseBlob": "d5429f54a1544fa8472831869c6869038d22fd42",
+      "reviewedBlob": "d5429f54a1544fa8472831869c6869038d22fd42",
+      "currentBlob": "d5429f54a1544fa8472831869c6869038d22fd42",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/utils/workspaceMetadata.ts",
+      "baseBlob": "6dbd3268f2240d2a775e3d4beb8302cf9ac46f21",
+      "reviewedBlob": "6dbd3268f2240d2a775e3d4beb8302cf9ac46f21",
+      "currentBlob": "6dbd3268f2240d2a775e3d4beb8302cf9ac46f21",
+      "unchanged": true
+    }
+  ]
+}

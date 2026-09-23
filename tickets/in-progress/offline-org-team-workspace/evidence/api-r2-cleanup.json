@@ -1,0 +1,42 @@
+{
+  "round": 2,
+  "recordedAt": "2026-09-23T03:32:54.833Z",
+  "ownedProcessesRemaining": [],
+  "ownedPortsListening": [],
+  "paths": {
+    "runtime": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782",
+      "exists": false
+    },
+    "database": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-r2-79622-1790075019782.db",
+      "exists": false
+    },
+    "key": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-r2-79622-1790075019782.db.secret.key",
+      "exists": false
+    },
+    "backendSdkDist": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-application-backend-sdk/dist",
+      "exists": false
+    },
+    "contractsDist": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-application-sdk-contracts/dist",
+      "exists": false
+    }
+  },
+  "browser": {
+    "activeTab1211482146Closed": true,
+    "stalePreInterruptionTab1211482084": "still listed but debugger-unattached; unmarked/inert local page with all backing services stopped; browser session automatic cleanup requested",
+    "userTabsTouched": false
+  },
+  "productionApp": {
+    "expectedPid": 19026,
+    "running": true,
+    "process": "19026 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data",
+    "port": 29695,
+    "touched": false
+  },
+  "credentialsOrProviderSessionsReset": false,
+  "commitPushMergeReleaseDeploy": false
+}

@@ -1,0 +1,191 @@
+{
+  "stage": "unopened-recovered",
+  "config": {
+    "orgRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e",
+    "executionTree": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-22T11:04:26.584Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+        "orgDefinitionName": "api-r2-workspace-claude_agent_sdk-1790075062670",
+        "orgRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A"
+        },
+        "members": [
+          {
+            "address": "/direct",
+            "agentDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+            "role": null,
+            "description": null,
+            "agentRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_a4b0f7398f1b4aa687eb1ac63ddf862b",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A"
+            }
+          },
+          {
+            "address": "/team",
+            "teamDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+            "role": null,
+            "description": null,
+            "teamRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_2a92954015b5459fa11d99f6ad327ba0",
+            "coordinatorAddress": "/team/lead",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B"
+            },
+            "members": [
+              {
+                "address": "/team/lead",
+                "agentDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_b93f625424a9455c846817d234bbb6de",
+                "platformAgentRunId": "1de68c1c-253e-4367-9199-a1fcdebc97fd",
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B"
+                }
+              },
+              {
+                "address": "/team/unused",
+                "agentDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_095f43500c7c45adbc88a9e95a2f1692",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B"
+                }
+              }
+            ],
+            "taskExecutions": []
+          },
+          {
+            "address": "/sibling",
+            "teamDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+            "role": null,
+            "description": null,
+            "teamRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_6fa3e80718d6477988b20797e93398ab",
+            "coordinatorAddress": "/sibling/lead",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A"
+            },
+            "members": [
+              {
+                "address": "/sibling/lead",
+                "agentDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_e072d1df25714c7cadf36b70830bb6e6",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A"
+                }
+              },
+              {
+                "address": "/sibling/unused",
+                "agentDefinitionId": "api-r2-workspace-claude-agent-sdk-1790075062670",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_96eea3afc2fa43948c787ac44b5ba29d",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A"
+                }
+              }
+            ],
+            "taskExecutions": []
+          }
+        ],
+        "taskExecutions": []
+      }
+    },
+    "isActive": false,
+    "editability": {
+      "editable": true,
+      "reason": null
+    }
+  },
+  "files": {
+    "a": "Original project file stays at A.\n",
+    "b": "B explicitly saved after FIRST recovery\n",
+    "c": "C original content\n",
+    "d": "D original content\n"
+  },
+  "saveCount": 1,
+  "createWorkspace": [
+    {
+      "time": "2026-09-22T11:06:44.254Z",
+      "operation": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B"
+        }
+      }
+    }
+  ],
+  "writes": [
+    {
+      "time": "2026-09-22T11:07:19.043Z",
+      "operation": "WriteFileContent",
+      "variables": {
+        "workspaceId": "agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835",
+        "filePath": "target.txt",
+        "content": "B explicitly saved after FIRST recovery\n"
+      }
+    }
+  ],
+  "metadataFaults": [
+    {
+      "time": "2026-09-22T11:05:50.841Z",
+      "operation": "GetWorkspaceMetadata",
+      "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+      "fault": true
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "case": "API-C09",
+  "round": 2,
+  "result": "Pass",
+  "priorFailure": "API-F001",
+  "sourceHead": "66213bd539ed422d39d101bdd218d73760a4100f",
+  "correctionCommit": "cb139904c68b65e3af9f6b07de0e8e5275ed8169",
+  "orgRunId": "api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e",
+  "selectedMember": "/team/lead",
+  "platformAgentRunId": "1de68c1c-253e-4367-9199-a1fcdebc97fd",
+  "branches": {
+    "initiallyUnopened": {
+      "target": "B",
+      "metadataFaultObserved": true,
+      "unavailableState": "tree and editor absent; keyboard save suppressed",
+      "recoveryTrigger": "clear only metadata fault, then one Edit Config/canonical read",
+      "workaroundUsed": false,
+      "preRegistrationUsed": false,
+      "saveReplayUsed": false,
+      "firstCompletion": "target.txt rendered; Loading absent; browser console errors empty",
+      "explicitDestinationWrite": "B explicitly saved after FIRST recovery\n",
+      "retained": "APRICOT-R2 conversation and unsent composer; unrelated launch draft A",
+      "unavailableAudit": {
+        "stage": "unopened-unavailable",
+        "rootSchemaVersion": 1,
+        "orgInactive": true,
+        "teamWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+        "leadWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+        "unusedWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+        "rootWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "siblingWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "saveCount": 1,
+        "createWorkspaceCount": 0,
+        "writeCount": 0,
+        "metadataFaultCount": 1,
+        "files": {
+          "a": "Original project file stays at A.\n",
+          "b": "B original content\n",
+          "c": "C original content\n",
+          "d": "D original content\n"
+        }
+      },
+      "recoveredAudit": {
+        "stage": "unopened-recovered",
+        "rootSchemaVersion": 1,
+        "orgInactive": true,
+        "teamWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+        "leadWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+        "unusedWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B",
+        "rootWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "siblingWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "saveCount": 1,
+        "createWorkspaceCount": 1,
+        "writeCount": 1,
+        "metadataFaultCount": 1,
+        "files": {
+          "a": "Original project file stays at A.\n",
+          "b": "B explicitly saved after FIRST recovery\n",
+          "c": "C original content\n",
+          "d": "D original content\n"
+        }
+      }
+    },
+    "priorMountedDirty": {
+      "priorTarget": "B",
+      "dirtyUnsavedEditor": "DIRTY B MUST NEVER WRITE AFTER TARGET SWITCH\n",
+      "target": "D",
+      "metadataFaultObserved": true,
+      "unavailableState": "prior dirty editor and tree absent; keyboard save suppressed; dirty B not written",
+      "recoveryTrigger": "clear only metadata fault, then one Edit Config/canonical read while Files stayed selected",
+      "workaroundUsed": false,
+      "preRegistrationUsed": false,
+      "saveReplayUsed": false,
+      "firstCompletion": "target.txt rendered; Loading absent; browser console errors empty",
+      "explicitDestinationWrite": "D explicitly saved after FIRST dirty recovery\n",
+      "retained": "APRICOT-R2 conversation, UNSENT-R2-DIRTY-PRESERVE composer, unrelated launch draft A",
+      "unavailableAudit": {
+        "stage": "dirty-unavailable",
+        "rootSchemaVersion": 1,
+        "orgInactive": true,
+        "teamWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D",
+        "leadWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D",
+        "unusedWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D",
+        "rootWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "siblingWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "saveCount": 2,
+        "createWorkspaceCount": 1,
+        "writeCount": 1,
+        "metadataFaultCount": 2,
+        "files": {
+          "a": "Original project file stays at A.\n",
+          "b": "B explicitly saved after FIRST recovery\n",
+          "c": "C original content\n",
+          "d": "D original content\n"
+        }
+      },
+      "recoveredAudit": {
+        "stage": "dirty-recovered",
+        "rootSchemaVersion": 1,
+        "orgInactive": true,
+        "teamWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D",
+        "leadWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D",
+        "unusedWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D",
+        "rootWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "siblingWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A",
+        "saveCount": 2,
+        "createWorkspaceCount": 2,
+        "writeCount": 2,
+        "metadataFaultCount": 2,
+        "files": {
+          "a": "Original project file stays at A.\n",
+          "b": "B explicitly saved after FIRST recovery\n",
+          "c": "C original content\n",
+          "d": "D explicitly saved after FIRST dirty recovery\n"
+        }
+      }
+    }
+  },
+  "invariants": {
+    "saveCount": 2,
+    "metadataFaultCount": 2,
+    "createWorkspaceCount": 2,
+    "writeCount": 2,
+    "wholeOrgInactive": true,
+    "schemaVersion": 1,
+    "files": {
+      "a": "Original project file stays at A.\n",
+      "b": "B explicitly saved after FIRST recovery\n",
+      "c": "C original content\n",
+      "d": "D explicitly saved after FIRST dirty recovery\n"
+    },
+    "consoleErrors": [],
+    "maximumRecursiveUpdatesObserved": false
+  },
+  "evidence": [
+    "api-r2-unopened-unavailable.json",
+    "api-r2-unopened-recovered.json",
+    "api-r2-dirty-unavailable.json",
+    "api-r2-dirty-recovered.json",
+    "api-r2-requests.jsonl",
+    "api-r2-backend-resumed.log"
+  ],
+  "interruptions": "Owned services/tab were lost during an execution interruption. The same isolated database/runtime and fixture identity were resumed; no configuration Save or provider/session reset was replayed. The prior-mounted branch completed in a fresh owned browser tab.",
+  "desktopScope": "Web-equivalent renderer exercised in Chrome. Unchanged Electron native picker not executed; focused bridge coverage carried.",
+  "recordedAt": "2026-09-23T03:30:16.553Z"
+}

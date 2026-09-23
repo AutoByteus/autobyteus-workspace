@@ -1,79 +1,181 @@
-# Solution Handoff — Offline Org Team Workspace
+# Solution Result — Offline Org Team Workspace
 
-## Classification and requested next responsibility
-- Package identifier: `OFFLINE-ORG-TEAM-WORKSPACE-20260922`.
-- Current cumulative revision: **SR-004**; requirements approval baseline **SR-002**.
-- Result: **Architecture Design Complete — revised after Design Impact**.
-- `task_size=Medium`; `architectural_risk=High`.
-- Next responsibility: independent architecture **re-review** of SR-004 against approved SR-002 and explicit disposition of ARCH-REV-001 / AR-F001. Prior authoritative review is Fail on SR-003; this revision is not an independent closure. No implementation, review pass, validation or delivery completion is claimed.
+## Current result
+- Package: `OFFLINE-ORG-TEAM-WORKSPACE-20260922`; cumulative **SR-006**; requirements approval **SR-002 / USER-20260922-SCOPE**, unchanged.
+- Result: **Evidence-only design-principles audit complete**. The technical design remains SR-005; **ARCH-REV-003 Pass remains applicable**. This is not a new Architecture Design Complete package, Requirement Gap, Design Impact, implementation review or delivery receipt.
+- `task_size=Medium`; `architectural_risk=High`, unchanged for the cumulative solution.
+- User request: ensure the design follows the canonical design principles after clarifying that the prior unchanged-FileExplorer restriction was a technical decision, not user intent.
 
-## Original request and user approval
-User initially requested analysis: after starting an AgentOrg using its global workspace, let the user change one internal Team's workspace while the Org is offline; Team children should inherit the change and subsequent messages should use it, with no migration expected.
+## Original approved outcome
+Enable the Workspace Directory selector for one configured mounted Team while its enclosing AgentOrg is stopped. One explicit Save updates that Team default and all configured Agents in the Team. Root Org, direct Agents, sibling Teams and historical task snapshots remain unchanged. Existing Resume/ordinary Send consumes the saved child configuration with retained conversation/provider identity; no Resume redesign, project-file/history migration or session reset.
 
-After receiving the proposed mounted-Team/all-configured-children scope, user supplied a screenshot of the existing expanded `/marketing_team` card and wrote: “just as ine this picture, it should allow me to update the workspace of the subteam when its stopped right? when the team global workspace is updated, the agents inside agent team will be udpated as well.in this way, it allows the user to update the agent team workspace in one agent org”. After the screenshot-reading turn was interrupted, user said “continue please”.
+Approval is SR-002 / USER-20260922-SCOPE: the user identified the existing mounted-Team control, confirmed all Agents in the Team update, and asked to continue. SR-006 changes no intended behavior or behavior-defining supplement, so renewed approval is not required.
 
-Approval reference: `USER-20260922-SCOPE`, captured in requirements SR-002 and revision record. It confirms the presented behavior and existing selector location. No review bypass, repository merge/release or completed implementation is inferred. Product Design was not requested.
+## Audit performed and result
+Read the canonical Solution Designer skill, `design-principles.md`, architecture-design standards/template, approved requirements, E01–E43 investigation, SR-005 design/history/handoff, and current reviewer/implementation/code/API artifacts. No executable test, source edit, browser/provider action, release or outside-owned artifact edit was performed by Solution Designer.
 
-## Approved behavior and constraints
-- Whole Org must be authoritatively stopped/inactive and eligible; a merely offline/idle child inside a managed Org is insufficient.
-- Edit the Workspace Directory control of a configured mounted Team in existing whole-Org Settings. Team default and **all its configured Agents**, including coordinator and those with independent model/runtime settings, receive the chosen path.
-- Root Org, direct Org Agents, sibling Team paths and historical task execution snapshots remain unchanged. Fresh delegation after restore derives updated configured-source paths.
-- One explicit Save; saved canonical values reopen correctly and ordinary Send continues same run/history in new directory. No Agent/conversation startup just from inspect/Save.
-- Preserve models unless explicitly changed through existing editing, runtime family, tool/skill policy, identities, history/Activity, attachments/composer state, provider bindings, handoffs/tasks and unrelated metadata.
-- No project-file move/copy/delete, history relocation, historical-reference rewriting, session reset or live editing.
-- Exact normative basis: requirements REQ-001–007, AC-001–006, SCN-001–004, BEH-001–006. No unresolved behavior-defining supplement.
+The audit confirms:
+1. **Approved behavior and scenario first:** BEH/REQ/AC mapping and supported SCN-001/004 plus AR-P001 precede structural choices. Tests reproduce an independently supported History→stopped Settings→Save→read/reopen path; they do not invent scope.
+2. **Complete spines:** DS-001 runs selector→canonical store, DS-002 canonical result→usable Files/unavailable state, DS-003 ordinary Send→next provider turn, DS-005 delegation→new task, with DS-004 and FileExplorer activation as bounded local spines.
+3. **Clear owners/no bypass:** Org manager owns the only stopped-config write; context facade owns guarded publication; layout owns target availability; FileExplorer owns local activation; workspace store/action owns registration. No facade/layout pre-registration workaround or mixed-level dependency.
+4. **Capability reuse and proportionality:** existing validator, registry/metadata, writer, restore/provider and task owners are reused. The local recovery repair creates no new service/framework or general refactor.
+5. **Clean contracts/removal:** explicit Org/Team identities, separate model/workspace intents and tri-state layout target; old model-only aggregate names, unwanted fallback and identity-based reactive watcher behavior are removed rather than wrapped or duplicated.
+6. **Persisted data:** schema-v1 paths are already readable/writable with required semantics; **Directly Usable — No Migration** remains supported. No dual schema, file move or history rewrite.
+7. **File/folder health:** responsibilities remain within existing subsystem/file owners; colocated tests are appropriate. Splitting a small local activation repair into a new module would be artificial fragmentation.
+8. **Classification:** cumulative shared contract/persistence/targeting effects justify Medium / High. The recovery correction itself is one existing component plus focused tests, not a new subsystem.
 
-## Design summary and evidence
-- Existing schema v1 already persists workspaceRootPath on Team and configured Agents; no application-data migration is needed. Identity-based memory storage is separate from workspace.
-- Launch inheritance is materialized, not recomputed on restore. Current-owner in-memory probe shows Team-only `/new` produces child `/old`; therefore server must expand the selected Team into all configured child path updates.
-- Generalize the Org-specific model-only read/save contract into one config command with separate `modelPatches` and `teamWorkspacePatches`. Reuse the same inactive-root manager gate, immutable projection, model validation, one tree write and strict readback. Remove old Org aggregate endpoint aliases/client path.
-- Compose an independent workspace draft into the existing editor/save owner. Reuse current selector, enabling only approved Org Team scopes. Do not use model-link flags for workspace inheritance.
-- Validate final selection in destination cwd, preview destination-aware options, and safely adopt new workspaceId/metadata into retained Agent contexts. Missing metadata must not keep the old filesystem target **or fall back to an unrelated launch draft**: selected Org target uses explicit null at RightSideTabs, consumed by a FileExplorerLayout gate covering both tree and editor. Omitted-target defaults elsewhere remain intact. Conversation/composer objects and launch drafts remain intact.
-- Existing native/Codex/Claude restore wiring already reads new saved cwd and exact provider identity. Do not add fallback new sessions. Real cross-directory continuation is an explicit downstream validation gate.
-- Evidence E01–E36, sources/commands/limitations in canonical investigation. Representative schema fixtures plus current exact readers/writers support no migration; no real user-data bulk inventory performed.
+Authoritative design corrections were explanatory only:
+- changed the ad hoc phrase “Local Reactive Lifecycle Defect” to canonical **`Local Implementation Defect`**;
+- explicitly recorded **Refactor needed now for SR-005: No** because the existing owner and boundaries are correct;
+- separated layout availability from FileExplorer/store activation in interface and off-spine mappings;
+- added the design-principles conformance matrix.
 
-## Review correction and exact re-review request
-- Incoming ARCH-REV-001 (round 1) reviewed SR-003 / approved SR-002: **Fail — Design Impact**, one Medium blocking **AR-F001**, REQ-005 / AC-005 / BEH-004. Its independent AR-P001 source trace showed normal History selection retains a launch draft A; clearing B context metadata alone let missing Files IDs fall back to A. No live reproduction was claimed by review or this correction.
-- SR-004 keeps approved behavior unchanged; no renewed approval or Product handoff required. Server-owned propagation, one stopped-root Save/readback, no application-data migration and retained continuation are preserved.
+No production path, interface, affected file permission, test obligation or preserved behavior changed. No known design smell remains that requires more machinery, broader scope or renewed review.
 
-| AR-F001 requirement | SR-004 authoritative design change |
-| --- | --- |
-| Extend DS-002 through meaningful Files effect | Canonical result → guarded retained context → RightSideTabs explicit Org ID/null → FileExplorerLayout gate → both consumers at B or unavailable placeholder |
-| Explicit unavailable contract and owners | Layout `workspaceId?: string \| null`: null prevents both child mounts; undefined retains intentional defaulting. RightSideTabs uses existing Org kind discriminants. Terminal already safe and unchanged. |
-| Suppress stale fallback, not drafts | Remove selected-Org null→undefined coercion and unconditional descendants for null; use v-if, not v-show/active=false. Reuse listener/session cleanup; no global getter, History, launch-draft or lower-consumer fallback rewrite. |
-| Concrete file and test ownership | RightSideTabs.vue, FileExplorerLayout.vue, localization; layout tri-state tests, parent-prop tests, composed RightSideTabs.workspaceTarget.spec.ts regression with real fallback getter/consumers. |
-| Retained different workspace regression | A launch draft remains; normal History selects stopped Org; Team Save B + metadata failure; neither tree nor editor displays/initiates work in A, including Cmd/Ctrl+S. Cover already-mounted C cleanup, tab reactivation, read/reopen retry to B and unchanged A draft/context identity. |
+## Current downstream context (at audit observation)
+- Architecture: **ARCH-REV-003 Pass** on SR-005; AR-F001 remains resolved.
+- Implementation: IR-003 local API-F001 correction at `cb139904c68b65e3af9f6b07de0e8e5275ed8169`.
+- Source review: **CRR-003 Pass** for API/E2E revalidation.
+- API/E2E owns current revalidation and acceptance; Solution Designer does not independently claim it complete.
+- Observed worktree HEAD during audit: `66213bd539ed422d39d101bdd218d73760a4100f`. Original base: `da86efe07f7f71e7455db6a866286af0bf0debd7`; branch `codex/offline-org-team-workspace`; worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace`.
+- Potential finalization target remains `origin/personal`, subject to Delivery/user gates. No push/merge/tag/release/deployment authorized or performed by this audit.
 
-Re-review AR-F001 using the revised DS-002 contract, owners/interfaces/file mapping, removal rules, concrete example and validation section. Do not infer a test pass from these plans. Only the independent reviewer may close the finding. Do not clear launch drafts globally or broaden scope.
-
-## Risk and classification rationale
-Medium: bounded changes to existing Org configuration/API and frontend edit/publication owners, reusable workspace capability and focused tests, not a new runtime subsystem. Mechanical naming/import changes are included. The correction adds two existing presentation owners and focused tests/text, not a new subsystem.
-High: material stopped-config contract and mutable persisted-field invariant changes, child propagation, concurrency/readback preservation, filesystem-target UI publication and unverified external provider cross-directory resume. No low-risk shortcut based on apparently simple UI control.
-
-Risks are validation work, not claimed passes: live provider cross-directory resume (especially retained external session lookup), workspace-contextual options/schema availability, async metadata/stale-response publication. No workspace prerequisite or requirements decision blocks independent review. If evidence requires history migration/reset, different active-edit policy, global/root editing or broad runtime/capability changes, return a Design Impact/Requirement Gap to Solution Designer before expanding scope.
-
-## Workspace, base and finalization
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace`
-- Branch: `codex/offline-org-team-workspace`
-- Refreshed base remote/branch/revision: `origin/personal`, `da86efe07f7f71e7455db6a866286af0bf0debd7` (fetched before creation).
-- Potential finalization target: `origin/personal`, controlled by later Delivery/user gates; no merge or release done/requested here.
-- Source unchanged. Package files are persisted untracked in the isolated worktree, not committed; no main checkout changes. Main checkout's pre-existing unrelated edits were left untouched.
-
-## Canonical absolute artifact paths
+## Canonical owned artifacts
 - Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/requirements-doc.md`
 - Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/investigation-notes.md`
 - Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-spec.md`
-- Cumulative revision index: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-revision-record.md`
-- User screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/user-subteam-workspace-control.png`
-- Feasibility probe: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/current-owner-probe.json`
-- Historical initial analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/analysis-result.md`
-- This handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-handoff.md`
-- Prior independent architecture report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-review-report.md` — ARCH-REV-001 Fail on SR-003, not a review of current SR-004.
-- Architecture review history: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/architecture-review-revision-record.md` — reviewer owned; unchanged.
-- Independent code review, implementation, executable validation, delivery and Product-owned artifacts: **N/A — not applicable**.
+- Solution history: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-revision-record.md`
+- This full result: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-handoff.md`
 
-## Expected output and authority boundary
-Re-review approved SR-002 behavior against SR-004 design and disposition AR-F001, including preservation, server-owned child propagation, one Save/readback, no-migration proof, metadata publication **through both Files consumers**, retained launch-draft regression and real-provider test gates. Apply independent review workflow and handoff rules. Findings that change intent require renewed user approval through Solution Designer. Informational reviewer pass should not ask Solution Designer to duplicate forwarding.
+## Expected next action and handoff status
+This evidence-only audit does not reopen or replace the already-passed SR-005 architecture and does not interrupt the existing downstream validation workflow. Fresh `get_handoff_rules` was called after persistence. **No rule matches**: SR-006 is an evidence-only audit, not a new/revised Architecture Design Complete package, not a Small/Medium-Low direct implementation package, and not a Delivery receipt gap. Therefore no duplicate message is sent to Architecture Reviewer, Implementation Engineer or Delivery Engineer; the result returns to the user while the already-routed downstream workflow continues.
 
-## Handoff rule decision and delivery
-SR-003 was previously delivered to Architecture Reviewer and returned as ARCH-REV-001 Fail / Design Impact. After persisting and checking SR-004, called `get_handoff_rules`; selected the single most-specific matching rule: revised Architecture Design Complete with architectural_risk=High and approved requirements → `/architecture_reviewer`. The Medium/Low direct route and delivery-receipt rule do not match. Ordinary re-review message to that exact recipient follows; no delegation or duplicate implementation notification. Delivery success is established only by the send tool confirmation.
+## Complete current artifact inventory
+The following paths are references, not a claim that Solution Designer owns or revalidated each artifact. Reviewer, implementation, API/E2E and evidence ownership remains as recorded in investigation/history.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/analysis-result.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/api-e2e-test-case-ledger.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/architecture-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/code-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/code-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-browser-after-save.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-browser-fixture.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-browser-port.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-browser-recovery-failure.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-browser-result.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-c09-checkpoints.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-claude-continuation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-cleanup.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-codex-continuation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-continuation-autobyteus.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-continuation-claude_agent_sdk.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-continuation-codex_app_server.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-events-autobyteus.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-files-activation-regression.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-final-fixture-audit.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-fresh-tasks.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-fresh-tasks.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-fresh-tasks.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-lifecycle-units.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-live-backend-resumed.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-live-backend.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-live-fixture.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-live-stack.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-live-stack.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-live-utils.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-local-checks.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-metadata-fault.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-metadata-proxy.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-native-continuation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-native-local-preflight.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-native-resumed.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-nuxt-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-nuxt-proxy.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-nuxt-resumed.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-nuxt.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-org-http.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-prepare-shared.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-provider-continuation.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-provider-preflight.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-proxy-requests.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-proxy-url.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-audit.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-backend-resumed.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-browser-port.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-c09r1.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-dirty-unavailable.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-events.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-fault.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-fixture.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-fixture.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-http.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-nuxt-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-nuxt.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-proxy-url.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-proxy.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-requests.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-seed.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-seed.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-source-scope.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-stack.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-stack.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-unopened-recovered.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-unopened-unavailable.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-utils.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-web.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-r2-ws.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-server-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-server-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-task-events.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-task-ws.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/api-web-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-crr003-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-crr003-local-checks.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-crr003-source-scope.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-failure-origin-source.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-local-checks.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-metadata-activation-failure.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-prepare-shared.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-server-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-server-typecheck-prepared.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-server-typecheck.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-source-audit.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/code-review-web-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/current-owner-probe.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir002-metadata-reproduction.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir002-scope-assessment.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir002-source-provenance.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-c09r1-initial.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-contracts-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-local-checks.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-preview.vue`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-source-scope.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-web-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-web-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-ir003-web-typecheck.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-local-checks.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-preview.vue`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-runtime-owner-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-server-config-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-server-typecheck.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-source-sizes.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-web-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-web-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/implementation-web-typecheck.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/user-subteam-workspace-control.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/implementation-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/implementation-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/requirements-doc.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-revision-record.md`

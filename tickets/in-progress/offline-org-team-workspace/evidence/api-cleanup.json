@@ -1,0 +1,18 @@
+{
+  "gone": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-live-4425-1790068197090.db": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-live-4425-1790068197090.db.secret.key": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO": true
+  },
+  "stoppedPids": [
+    29549,
+    28912,
+    20467,
+    20774
+  ],
+  "browserTabClosed": "1211481973",
+  "viewportReset": true,
+  "generatedSdkDistRemoved": true,
+  "userProductionAppUntouched": true
+}

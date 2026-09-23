@@ -1,0 +1,36 @@
+{
+  "reviewRevision": "CRR-004",
+  "apiRevision": "API-REV-002",
+  "head": "66213bd539ed422d39d101bdd218d73760a4100f",
+  "priorApiBaseline": "3a52e67ba72ee53497f5d9492f406289f23f28f3",
+  "durableTests": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts",
+      "change": "Added",
+      "sha1": "3356d5365117014d7773666b2e79e8c1dda0f8cb",
+      "lines": 171
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts",
+      "change": "Added then expanded",
+      "sha1": "b11a49521b87084c654936a716f74a2b15e581bb",
+      "lines": 216
+    },
+    {
+      "path": "autobyteus-web/components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts",
+      "change": "Updated",
+      "sha1": "6f362d0aed7f7f532b215de08b45a7679fb8e8e8",
+      "lines": 211
+    }
+  ],
+  "removedDurableTests": [],
+  "apiOwnerRound2DurableEdits": false,
+  "executionEvidence": {
+    "server": "evidence/api-r2-http.log \u2014 1 file / 1 test Pass",
+    "metadata": "evidence/api-r2-c09r1.log \u2014 1 file / 14 tests Pass",
+    "focused": "evidence/api-r2-focused.log \u2014 6 files / 49 tests Pass",
+    "broader": "evidence/api-r2-web.log \u2014 28 files / 275 tests Pass (overlaps focused)",
+    "browser": "evidence/api-r2-browser-result.json \u2014 both recovery variants Pass"
+  },
+  "reviewerRerun": "None; successful workflow was not rerun. CRR-003 independently ran the two web durable paths within 6 files / 49 tests before API-REV-002."
+}

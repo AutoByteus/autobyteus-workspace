@@ -1,0 +1,158 @@
+{
+  "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO",
+  "c": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C",
+  "d": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D",
+  "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+  "before": {
+    "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+    "executionTree": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-09-22T09:13:31.131Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+        "orgDefinitionName": "api-workspace-claude_agent_sdk-1790068406277",
+        "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+        },
+        "members": [
+          {
+            "address": "/direct",
+            "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+            "role": null,
+            "description": null,
+            "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+            }
+          },
+          {
+            "address": "/team",
+            "teamDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+            "role": null,
+            "description": null,
+            "teamRunId": "api_workspace_claude_agent_sdk_1790068406277_c73b222a93ea43d787f0d6cdc3e52a5c",
+            "coordinatorAddress": "/team/lead",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+            },
+            "members": [
+              {
+                "address": "/team/lead",
+                "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+                "platformAgentRunId": "69bbb2a0-21d9-4f9f-bcfb-dcb45cdcad3b",
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                }
+              },
+              {
+                "address": "/team/unused",
+                "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+                "platformAgentRunId": "d7c91e88-59ec-41fd-9ead-f40c3358ff5d",
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                }
+              }
+            ],
+            "taskExecutions": []
+          },
+          {
+            "address": "/sibling",
+            "teamDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+            "role": null,
+            "description": null,
+            "teamRunId": "api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85",
+            "coordinatorAddress": "/sibling/lead",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+            },
+            "members": [
+              {
+                "address": "/sibling/lead",
+                "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                }
+              },
+              {
+                "address": "/sibling/unused",
+                "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                "role": null,
+                "description": null,
+                "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                }
+              }
+            ],
+            "taskExecutions": []
+          }
+        ],
+        "taskExecutions": []
+      }
+    },
+    "isActive": false,
+    "editability": {
+      "editable": true,
+      "reason": null
+    }
+  },
+  "e": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E"
+}

@@ -3,7 +3,7 @@
 ## Document Status
 - Package: `OFFLINE-ORG-TEAM-WORKSPACE-20260922`
 - Status: **Approved**; requirements approval baseline `SR-002` (SR-001 behavior confirmed; screenshot identifies the existing control).
-- Current cumulative solution revision: `SR-004`; approved behavior baseline remains `SR-002`.
+- Current cumulative solution revision: `SR-006`; approved behavior baseline remains `SR-002`.
 - Owner: Solution Designer; date: 2026-09-22.
 - Original request: analyze changing an internal Team's workspace in an offline AgentOrg, inherited by children and used on subsequent messages, preferably without migration.
 - Approval reference `USER-20260922-SCOPE`: in response to the proposed scope, user supplied the mounted-Team screenshot and confirmed “when the team global workspace is updated, the agents inside agent team will be udpated as well”, followed after interruption by “continue please”. This approves the presented mounted-Team/all-configured-children scope and continuation into design; no implementation completion, independent-review bypass, merge or release is authorized by this record.
