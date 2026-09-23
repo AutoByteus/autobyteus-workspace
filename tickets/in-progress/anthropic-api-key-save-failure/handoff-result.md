@@ -39,4 +39,4 @@ The approved local design keeps the existing owners/interfaces and value-free Gr
 - Behavior-defining supplements, Product artifacts, independent review artifacts: `N/A — not applicable`.
 
 ## Handoff Route
-Pending `get_handoff_rules` decision for the completed Small/Low architecture package. Expected output from the next specialist is implementation with scoped self-checks and a cumulative implementation handoff, followed by executable validation under configured team routing.
+`get_handoff_rules` selected the Small/Low Architecture Design Complete rule with exact recipient `/implementation_engineer` (direct implementation; independent architecture review N/A). Notify only that recipient using `send_message_to` with this handoff file attached. Expected output is scoped implementation with self-checks and a cumulative implementation handoff, followed by executable validation under configured team routing.
