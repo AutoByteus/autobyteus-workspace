@@ -1,18 +1,17 @@
-# Release Notes — Stopped AgentOrg Team Workspace Editing
+# Release Notes — New models and Claude SDK Token Meter
 
-## What's New
+## What's new and improved
 
-- An eligible stopped AgentOrg can now change the Workspace Directory of a mounted Team from the existing configuration screen.
-- One Save applies the selected directory to the Team and every configured Agent inside it while preserving model/runtime overrides.
+- Added exact direct-API GPT-6 Sol, GPT-6 Luna and Claude Opus 5.5 model choices, limits and Standard token-price estimates; Claude Opus 5.5 supports adaptive thinking and signed active tool-turn continuation.
+- Claude Agent SDK Token Meter shows selected canonical/raw identity and selected-only cumulative usage. Cost is an AutoByteus-configured Anthropic Standard API-equivalent estimate, **not** SDK dollars or a subscription charge. An unattributable cache-write duration uses the configured 1-hour rate with a visible assumption notice.
+- Fixed the Claude SDK latest-prompt context meter: when the selected result supplies a valid prompt and positive context window, it shows count/capacity and percent/progress instead of “context limit unavailable.” Older records with those values but null percentage display the derived value without SQL backfill. Invalid or absent capacity remains unavailable.
 
-## Improvements
+## Upgrade note
 
-- Existing conversations, provider identities, Org/Team/Agent identities, composer state, history, attachments, sibling scopes, and historical task snapshots are retained.
-- The next normal message and fresh delegated work use the saved configured workspace without moving project files or requiring a persisted-data migration.
-- Model choices are validated in the destination workspace context, and model plus workspace edits are committed as one canonical configuration result.
-- Files now fails closed while canonical workspace metadata is unavailable and recovers on the first metadata retry without showing or writing through a stale workspace.
+- **Cumulative database migration required:** included Prisma migration adds nullable `claude_sdk_usage_state_json` before new token-usage writes. Existing records remain readable without backfill or historical repricing. The context-percent correction itself adds no further migration.
+- Anthropic API and Claude Agent SDK integrations use updated pinned versions. Existing direct Messages and Codex accounting paths are preserved.
 
-## Fixes
+## Validation boundary
 
-- Fixed metadata-only File Explorer activation repeatedly entering Loading or failing to settle after same-workspace metadata registration.
-- Fixed scoped AgentOrg Files views falling back to an unrelated active workspace or retained launch draft while the saved workspace was unavailable.
+- Focused server/SQL/GraphQL/stream/web tests, a small real Claude Agent SDK selected Opus query and generic browser Token Statistics journeys passed. The selected meter has not been verified as one combined live SDK→browser journey or explicitly accepted by the user in a rebuilt current Electron app. Whole-web typecheck and I-44 command guard are not claimed. No new direct paid API call was made in the AC-015 validation; direct OpenAI live remains untested.
+- Earlier real signed Opus active tool-turn replay passed; independent-turn reset/compaction was not live-tested. A generated game file received structural checks only, not gameplay/visual-quality verification.
