@@ -11,7 +11,7 @@ Current code and `implementation-handoff.md` are authoritative. This record loca
 
 ## IR-001 — Stopped-Org Team workspace configuration
 - Date: 2026-09-22.
-- Trigger: architecture_reviewer ARCH-REV-002 Pass, `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-review-report.md` and companion `architecture-review-revision-record.md`.
+- Trigger: architecture_reviewer ARCH-REV-002 Pass, `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/design-review-report.md` and companion `architecture-review-revision-record.md`.
 - Triggering implementation findings: **N/A**, initial implementation baseline. Prior design finding AR-F001 is covered by the required implementation regression; independent implementation review has not occurred.
 - Classification: **Initial Baseline**. `task_size=Medium`, `architectural_risk=High`, confirmed unchanged.
 - Prior authoritative implementation result: **N/A**. No prior implementation result is inferred.

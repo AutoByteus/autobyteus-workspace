@@ -179,11 +179,28 @@ are not part of this frontend lifecycle contract.
 configured direct or mounted-Team Agent normalizes immediately to the enclosing
 `{ kind: 'agent_org', orgRunId }` existing-run subject. `ExistingRunConfigEditor`
 loads the stopped canonical tree and renders the shared AgentOrg configuration
-form with runtime, Workspace and tool policy locked while allowing compatible
-model/settings edits across root, Team and Agent scopes. One Save submits all
-changed scopes atomically. The center store's **Back** action returns to
-chat/Event Monitor without changing focus. **New** remains a fresh AgentOrg
-launch route and never reuses the stopped editor's persistence path.
+form. Runtime and tool policy remain locked. Workspace remains locked for the
+Org root, direct Org Agents, and individual Team Agents; an eligible stopped
+Org exposes the mounted Team's existing Workspace Directory selector. One Save
+submits compatible model/settings patches plus mounted-Team workspace patches
+as one aggregate command. A Team workspace patch updates that Team default and
+every configured child without changing siblings, historical task snapshots,
+run identities, provider bindings, or existing launch drafts. The center store's
+**Back** action returns to chat/Event Monitor without changing focus. **New**
+remains a fresh AgentOrg launch route and never reuses the stopped editor's
+persistence path.
+
+After canonical publication, an AgentOrg member's Files target is explicit. A
+known workspace id is passed normally; an unresolved saved target is represented
+as `null`, causing `FileExplorerLayout` to omit both the tree and editor instead
+of falling back to an unrelated active workspace or retained launch draft.
+`FileExplorer` registers metadata on demand and observes target identity,
+metadata readiness, canonical root and panel visibility as separate reactive
+inputs. Same-id metadata arrival must therefore retry activation. Every current
+attempt settles loading or error state, stale async completions cannot reacquire
+the target, and inactive/unmounted consumers release their live-session lease.
+Reopening Settings may refresh canonical metadata, but Files recovery never
+replays the configuration mutation.
 
 ### Org Observational Inspection And Deliberate Continuation
 

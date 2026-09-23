@@ -8,7 +8,7 @@
 - Current code and this handoff are authoritative. The cumulative revision record locates changes; it is not independent proof of correctness.
 
 ## Upstream artifact package
-All ticket-relative paths below are under `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/`:
+All ticket-relative paths below are under `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/`:
 - `requirements-doc.md`: **SR-002** approved intended behavior, exact `USER-20260922-SCOPE` approval; unchanged by SR-005.
 - `investigation-notes.md`, `design-spec.md`, `solution-revision-record.md`: **SR-005** cumulative design, superseding only the FileExplorer unchanged-file restriction from SR-004. `solution-handoff.md` indexes the approved package.
 - `design-review-report.md`, `architecture-review-revision-record.md`: **ARCH-REV-003 Pass** on SR-005; independent architecture review applicable. ARCH-REV-001/002 history retained; AR-F001 null-target safety remains resolved in design, not reopened.

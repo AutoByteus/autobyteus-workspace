@@ -14,7 +14,7 @@ The latest canonical report is authoritative; this record indexes completed revi
 
 ### CRR-001 — Independent initial implementation baseline
 - Date: 2026-09-22; package OFFLINE-ORG-TEAM-WORKSPACE-20260922.
-- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/code-review-report.md`.
+- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/code-review-report.md`.
 - Entry point/round: **Implementation Review / 1**.
 - Triggering role/report: implementation_engineer, sibling `implementation-handoff.md` and `implementation-revision-record.md`, IR-001 Implementation Ready. Initial code-finding IDs N/A; AR-F001 is upstream architecture context.
 - Relevant solution revisions: **SR-002** approved requirements; **SR-004** cumulative design; SR-001–004 history read.
@@ -38,7 +38,7 @@ None — first code-review result. Upstream AR-F001 is already resolved in desig
 
 
 ### CRR-002 — Metadata-only activation defect confirmed
-- Date: 2026-09-22; canonical report updated at `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/code-review-report.md`.
+- Date: 2026-09-22; canonical report updated at `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/code-review-report.md`.
 - Review entry point/round: **API/E2E Failure-Origin Review / 2**, not successful-test-code review; no full audit/scorecard repeated.
 - Trigger: api_e2e_engineer, `api-e2e-execution-coverage-report.md`, **API-REV-001 Fail / 75.0%**, C09/C09-R1, API-F001.
 - Relevant solution revisions: **SR-002 approved behavior / SR-004 design**. Architecture review: **ARCH-REV-001/002** (latest architecture Pass). Implementation: **IR-001**. API/E2E: **API-REV-001**. Delivery: **N/A**.
@@ -61,7 +61,7 @@ None — CRR-001 had no open code finding. **API-F001** is carried from API-REV-
 
 
 ### CRR-003 — Metadata activation correction passes source re-review
-- Date: 2026-09-22; canonical report `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/code-review-report.md`.
+- Date: 2026-09-22; canonical report `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/code-review-report.md`.
 - Entry point/round: **Implementation Review / 3**, corrective return, not successful API test-code review.
 - Trigger: Implementation Engineer **IR-003 Local Fix complete**, after IR-002 scope reroute and **SR-005 / ARCH-REV-003** authorization. Approved SR-002 requirements unchanged. Related histories SR-002–005, ARCH-REV-001–003, IR-001–003, CRR-001/002, API-REV-001; Delivery N/A.
 - Source/test correction **cb139904c68b65e3af9f6b07de0e8e5275ed8169**, artifact-only HEAD **66213bd539ed422d39d101bdd218d73760a4100f**, prior source **3a52e67ba72ee53497f5d9492f406289f23f28f3**; original base **da86efe07f7f71e7455db6a866286af0bf0debd7**.
@@ -84,7 +84,7 @@ None — CRR-001 had no open code finding. **API-F001** is carried from API-REV-
 
 
 ### CRR-004 — Proportional successful API/E2E durable-test review
-- Date: 2026-09-23; canonical test-review report `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/api-e2e-test-review-report.md`.
+- Date: 2026-09-23; canonical test-review report `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/api-e2e-test-review-report.md`.
 - Entry point/round: **Successful API/E2E Test-Code Review / 1**. This does not reopen the CRR-003 source report or scorecard.
 - Trigger: api_e2e_engineer **API-REV-002 Pass / 95.0%**, after CRR-003 source Pass revalidated IR-003/API-F001. Prior API-REV-001 Fail / 75.0% and CRR-002 failure-origin history remain preserved.
 - Relevant authority: approved requirements **SR-002**, solution/design **SR-005**, architecture **ARCH-REV-003**, implementation **IR-003**, source review **CRR-003**, API/E2E **API-REV-002**. Delivery revision N/A.

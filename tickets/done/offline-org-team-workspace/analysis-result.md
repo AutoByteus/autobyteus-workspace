@@ -39,11 +39,11 @@ Approval focus: confirm all configured children versus preserving distinct child
 - Refreshed base remote/branch/revision: `origin/personal` at `da86efe07f7f71e7455db6a866286af0bf0debd7`.
 - Potential finalization target: `origin/personal`; no finalization requested.
 - Shared main checkout and its pre-existing dirty/untracked files left untouched.
-- Canonical requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/requirements-doc.md`
-- Canonical investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/investigation-notes.md`
-- Revision index: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-revision-record.md`
-- Probe: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/evidence/current-owner-probe.json`
-- This result: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/analysis-result.md`
+- Canonical requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/requirements-doc.md`
+- Canonical investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/investigation-notes.md`
+- Revision index: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/solution-revision-record.md`
+- Probe: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/evidence/current-owner-probe.json`
+- This result: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/analysis-result.md`
 - Design, architecture/code review, implementation, validation and delivery artifacts: N/A — not applicable yet.
 - Product Design artifacts: N/A — not requested.
 

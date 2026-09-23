@@ -2,13 +2,13 @@
 
 ## Review Round Meta
 - Package: `OFFLINE-ORG-TEAM-WORKSPACE-20260922`; date: 2026-09-22.
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/requirements-doc.md`.
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/investigation-notes.md`.
-- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-revision-record.md`.
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-spec.md`.
-- Supplemental Task Artifacts Reviewed: `evidence/user-subteam-workspace-control.png` (visually inspected), `evidence/current-owner-probe.json`, historical `analysis-result.md`, and current `solution-handoff.md`, all under `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace`.
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/requirements-doc.md`.
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/investigation-notes.md`.
+- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/solution-revision-record.md`.
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/design-spec.md`.
+- Supplemental Task Artifacts Reviewed: `evidence/user-subteam-workspace-control.png` (visually inspected), `evidence/current-owner-probe.json`, historical `analysis-result.md`, and current `solution-handoff.md`, all under `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace`.
 - Relevant Solution Revision IDs: approved requirements **SR-002**; reviewed architecture **SR-005**; prior SR-004 / ARCH-REV-002; triggering IR-002, CRR-002 and API-REV-001 / API-F001. Earlier solution/review entries remain historical.
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/architecture-review-revision-record.md`.
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/architecture-review-revision-record.md`.
 - Current Architecture Review Revision ID: **ARCH-REV-003**.
 - Current Review Round / Latest Authoritative Round: **3 / 3**.
 - Trigger: Solution Designer's SR-005 narrow amendment removes the conflicting unchanged-FileExplorer restriction after IR-002; API-F001 remains an implementation-owned defect per CRR-002.

@@ -12,9 +12,9 @@ The latest `design-review-report.md` is authoritative. This record indexes revie
 ## Revision Entries
 
 ### ARCH-REV-001 — Initial independent architecture baseline
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-review-report.md`.
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/design-review-report.md`.
 - Review round and trigger: Round 1, 2026-09-22; Solution Designer requested review of OFFLINE-ORG-TEAM-WORKSPACE-20260922.
-- Triggering role/report/finding IDs: Solution Designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-handoff.md`; upstream finding IDs N/A.
+- Triggering role/report/finding IDs: Solution Designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/solution-handoff.md`; upstream finding IDs N/A.
 - Relevant solution revisions: SR-002 approved requirements; SR-003 completed design; SR-001 historical context.
 - Prior authoritative decision: **N/A**; no earlier review report/record existed, and no prior Pass inferred.
 - Current authoritative decision: **Fail / Design Impact**.
@@ -31,9 +31,9 @@ None.
 
 
 ### ARCH-REV-002 — Files consumer boundary completed
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-review-report.md`.
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/design-review-report.md`.
 - Review round and trigger: Round 2, 2026-09-22; Solution Designer returned cumulative SR-004 for independent disposition of AR-F001.
-- Triggering role/report/finding: Solution Designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-handoff.md`; prior ARCH-REV-001 / AR-F001 / AR-P001 in this review history and canonical report.
+- Triggering role/report/finding: Solution Designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/solution-handoff.md`; prior ARCH-REV-001 / AR-F001 / AR-P001 in this review history and canonical report.
 - Relevant solution revision IDs: approved SR-002 unchanged; SR-004 correction to SR-003.
 - Prior authoritative decision: **Fail / Design Impact**, ARCH-REV-001.
 - Current authoritative decision: **Pass**, architecture readiness only.
@@ -51,9 +51,9 @@ None.
 
 
 ### ARCH-REV-003 — Permit local metadata-only Files activation repair
-- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/design-review-report.md`.
+- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/design-review-report.md`.
 - Review round and trigger: Round 3, 2026-09-22; Solution Designer returns SR-005 after IR-002 found that the prior design prohibited edits to the implementation-defect owner.
-- Triggering roles/reports/IDs: Solution Designer `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/in-progress/offline-org-team-workspace/solution-handoff.md`; Implementation Engineer IR-002 `implementation-handoff.md` and `evidence/implementation-ir002-scope-assessment.md`; Code Reviewer CRR-002 `code-review-report.md`; API-REV-001 `api-e2e-execution-coverage-report.md`; **API-F001, C09/C09-R1**. Relative artifacts are under the canonical report directory.
+- Triggering roles/reports/IDs: Solution Designer `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/tickets/done/offline-org-team-workspace/solution-handoff.md`; Implementation Engineer IR-002 `implementation-handoff.md` and `evidence/implementation-ir002-scope-assessment.md`; Code Reviewer CRR-002 `code-review-report.md`; API-REV-001 `api-e2e-execution-coverage-report.md`; **API-F001, C09/C09-R1**. Relative artifacts are under the canonical report directory.
 - Relevant solution revisions: unchanged approved SR-002; SR-004 prior Pass; SR-005 narrow amendment.
 - Prior authoritative architecture decision: **Pass**, ARCH-REV-002 on SR-004. Current authoritative architecture decision: **Pass on SR-005 amendment**. CRR-002 / API-REV-001 remain **Fail**, not superseded.
 - Review delta: independently confirmed current metadata-only activation/source path and gate, read durable regression and attributed reproductions, and verified coherent owner/dependency/file/removal/test changes in core SR-005. Current implemented HEAD is `3a52e67ba72ee53497f5d9492f406289f23f28f3`; original base `da86efe07f7f71e7455db6a866286af0bf0debd7`. FileExplorer/metadata actions unchanged across base→HEAD; no new source/test edit or execution by architecture reviewer. Unaffected design verdicts retained, not a full source re-audit.
