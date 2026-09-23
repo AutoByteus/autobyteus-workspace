@@ -1,137 +1,96 @@
-# Delivery / Release / Deployment Report — Anthropic API key save failure, DR-001
+# Delivery / Release / Deployment Report — Anthropic API key save failure, DR-002
 
 ## Release / Publication / Deployment Scope
 
-- Ticket: `anthropic-api-key-save-failure`; `task_size=Small`; `architectural_risk=Low`; selected route **Direct Low-Risk → API/E2E → Delivery**. Independent architecture/source review: N/A — not applicable; proportional test-code review: Not Required — direct low-risk route.
-- Production delta: frontend credential-list ownership/update only. Backend, encrypted vault, GraphQL response schema, persisted data, Electron shell and deployment configuration unchanged.
-- Normal repository policy has a versioned desktop release path after merge to `personal`; user verification is complete and publication is pending repository finalization. No migration is applicable.
+- Ticket: `anthropic-api-key-save-failure`; `task_size=Small`; `architectural_risk=Low`; **Direct Low-Risk → API/E2E → Delivery**. Independent architecture/source reviews: N/A — not applicable. Proportional test-code review: Not Required — direct low-risk route.
+- Production delta: frontend credential-list ownership/update only. Backend, GraphQL, encrypted vault, persisted data and Electron shell contracts unchanged. Normal versioned release applied after explicit user verification and repository finalization.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/done/anthropic-api-key-save-failure/handoff-summary.md`.
-- Handoff summary status: `Updated`; user accepted and ticket archived, finalization in progress.
-- Delivery revision record: `tickets/done/anthropic-api-key-save-failure/delivery-revision-record.md`.
-- Current delivery revision ID: `DR-001`.
-- Notes: cumulative direct-route package is the approved requirements, investigation, SR-004 design, IR-001 implementation, API-REV-001 Pass, evidence and delivery artifacts in this ticket. Independent review artifacts and Product behavior supplement: N/A — not applicable.
+- Handoff summary artifact: `tickets/done/anthropic-api-key-save-failure/handoff-summary.md`; status: `Updated — final`.
+- Delivery revision record: `tickets/done/anthropic-api-key-save-failure/delivery-revision-record.md`; current revision: `DR-002`.
+- Cumulative package: approved `requirements-doc.md`, `investigation-notes.md`, SR-004 `solution-revision-record.md` and `design-spec.md`, `handoff-result.md`, IR-001 `implementation-handoff.md` and `implementation-revision-record.md`, API-REV-001 coverage investigation/report/revision/ledger and evidence, then delivery docs sync/handoff/release artifacts. Independent review artifacts and Product behavior supplement: N/A — not applicable.
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal@467c1bc12d439ee79243d124402c2f65f25c3cd2`.
-- Latest tracked remote base reference checked: `git fetch origin personal` on 2026-09-23; `origin/personal@467c1bc12d439ee79243d124402c2f65f25c3cd2`.
-- Base advanced since bootstrap or previous refresh: `No`.
-- New base commits integrated into the ticket branch: `No`.
-- Local checkpoint commit result: `Not needed`; validated candidate was clean and no merge was required.
-- Integration method: `Already current` (`origin/personal` is an ancestor of `9645f993514945574ed80287bbcee8a55acd26ac`).
-- Integration result: `Completed`.
-- Post-integration executable checks rerun: `No`.
-- Post-integration verification result: `Passed — existing API/E2E checks apply to unchanged candidate; no new base commits to verify`.
-- No-rerun rationale: API/E2E's focused tests, real isolated browser/API probe, guards, backend/Nuxt builds and diff check all passed on this exact candidate after the unchanged bootstrap base. Delivery also ran `git diff --check` after docs sync.
-- Delivery edits started only after integrated state was current: `Yes`.
-- Handoff state current with latest tracked remote base: `Yes`, as checked 2026-09-23; a new target refresh is required after user acceptance.
-- Blocker: none at integration gate.
+- Bootstrap base: `origin/personal@467c1bc12d439ee79243d124402c2f65f25c3cd2`.
+- `git fetch origin personal` at initial delivery found the same tracked base, already ancestor of validated candidate `9645f993514945574ed80287bbcee8a55acd26ac`. Base advanced: `No`; new base commits integrated: `No`; local checkpoint: `Not needed`; integration method/result: `Already current / Completed`.
+- Post-integration rerun: `No`; no-rerun rationale: API/E2E's 35 focused tests, isolated browser/API recheck, guards and builds ran on this same validated candidate with no new base commits. `git diff --check` passed after docs edits.
+- Delivery-owned docs/handoff edits began only after that check; handoff was current with the latest tracked base.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `Yes`.
-- Initial verification / acceptance reference: user message on 2026-09-23: “the ticket is done. lets finalize and release a new version”. This is distinct from the earlier requirements approval.
-- Renewed verification required after later re-integration: `No`; post-acceptance `git fetch origin personal --tags` found `origin/personal` unchanged at `467c1bc12d439ee79243d124402c2f65f25c3cd2`.
-- Renewed verification received: `Not needed`.
-- Renewed verification / acceptance reference: N/A.
+- Initial explicit user completion/verification: `Yes`. User message, 2026-09-23: **“the ticket is done. lets finalize and release a new version”**. This is not the earlier requirements approval.
+- After that signal, `git fetch origin personal --tags` again found `origin/personal@467c1bc12d439ee79243d124402c2f65f25c3cd2`, unchanged. Target advanced: `No`; delivery-owned edit protection and re-integration: `Not needed`; renewed user verification: `Not needed` because the user-facing candidate did not change.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `tickets/done/anthropic-api-key-save-failure/docs-sync-report.md`.
-- Docs sync result: `Updated`.
-- Docs updated: `autobyteus-web/docs/settings.md` — copied Apollo credential-query rows and replacement publication invariant. `autobyteus-server-ts/docs/modules/secret_management.md` reviewed, no change.
-- No-impact rationale: N/A.
+- `docs-sync-report.md`: `Pass / Updated` on the current validated branch. `autobyteus-web/docs/settings.md` now documents copied Apollo credential-query rows and replacement publication; `autobyteus-server-ts/docs/modules/secret_management.md` was reviewed and needed no change. In-place fetched/published array mutation is no longer described as valid behavior.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/anthropic-api-key-save-failure`: `Yes`, after the explicit user signal.
-- Archived ticket path: `tickets/done/anthropic-api-key-save-failure/`.
-
-## Version / Tag / Release Commit
-
-- Current web package version and latest normal release tag at initial refresh: `1.4.74` / `v1.4.74`.
-- Next version: not selected; reassess at finalization after refreshing `personal` and existing tags. No version bump, release commit or tag has been created.
+- Moved to `tickets/done/anthropic-api-key-save-failure/` after user verification, before ticket finalization commit: `Completed`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `investigation-notes.md` / `design-spec.md` (dedicated worktree and `origin/personal` target).
-- Ticket branch: `requirements/anthropic-api-key-save-failure` at validated commit `9645f993514945574ed80287bbcee8a55acd26ac`, with local uncommitted delivery-owned edits.
-- Ticket branch commit result: `Pending`; archive and delivery-owned edits are ready to commit.
-- Ticket branch push result: `Pending`.
-- Finalization target remote: `origin`.
-- Finalization target branch: `personal`.
-- Target advanced after verification / acceptance: `No`; refreshed after user acceptance at `467c1bc12d439ee79243d124402c2f65f25c3cd2`.
-- Delivery-owned edits protected before re-integration: `Not needed` in initial refresh; required if target later advances while edits remain uncommitted.
-- Re-integration before final merge result: `Not needed`; target unchanged.
-- Target branch update result: `Pending`.
-- Merge into target result: `Pending`.
-- Push target branch result: `Pending`.
-- Repository finalization status: `In progress`.
-- Blocker: none; commit/push/merge sequence remains.
+- Bootstrap context: `investigation-notes.md` / `design-spec.md`; finalization target `origin/personal`.
+- Ticket branch `requirements/anthropic-api-key-save-failure`: archive/docs commit `4813e35e8aa8de32b8fbf43c3db28e767a54f9ee`, pushed to `origin` before merge.
+- Local `personal` updated from unchanged `origin/personal` (`Already up to date`), then merged the pushed ticket branch with `--no-ff`. Merge commit `148f668751730abed4e340f4db21f2ae2482845a`, parents `467c1bc12d439ee79243d124402c2f65f25c3cd2` and `4813e35e8aa8de32b8fbf43c3db28e767a54f9ee`; `personal` push completed.
+- No force push. Release commit and later delivery-record commit follow this merge on `personal`. Repository finalization: `Completed`.
+
+## Version / Tag / Release Commit
+
+- Prior version/tag: `1.4.74` / `v1.4.74`. Selected new version: `1.4.75`; no `v1.4.75` tag existed before release.
+- Canonical command: `pnpm release 1.4.75 -- --release-notes tickets/done/anthropic-api-key-save-failure/release-notes.md`; result `Pass`, evidence `evidence/delivery/release-command.log`.
+- Release commit `8e8f343551bb2813f02deee15f9fad24aa3a40fc` pushed to `origin/personal`; annotated tag object `c0e8473f1cea2273d2f671c4fc2bcdf58d894f2b` points to that commit and was pushed as `v1.4.75`. Web and Messaging Gateway package versions both `1.4.75`; managed Gateway manifest matches `v1.4.75`. No manual dispatch or second release job was started.
 
 ## Release / Publication / Deployment
 
-- Applicable: `Yes — user explicitly requested a new version after finalization`.
-- Method: `Release Script` (root `pnpm release <x.y.z>` on merged `personal`, with archived release notes; follow `autobyteus-web/AGENTS.md`). Do not run `release:manual-dispatch` after a fresh tag push.
-- Method reference / command: `autobyteus-web/AGENTS.md`, root `scripts/desktop-release.sh`; exact version and command to be recorded in a later DR entry.
-- Release/publication/deployment result: `Pending; not started`.
-- Release notes handoff result: `Prepared before verification; archived copy available`.
-- Blocker: repository finalization gate.
+- Applicable: `Yes`, explicitly requested by user. Method: documented root Release Script after merge to `personal`, then five tag-push workflows. Release notes handoff: `Used` from archived `release-notes.md`; public body matches it.
+- Public release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.75 ; published `2026-09-23T05:16:41Z`; non-draft, non-prerelease; 21 assets, all nonempty.
+- Tag-push workflows, all `Completed / success` at release SHA `8e8f34355`:
+
+| Workflow | Result / reference |
+| --- | --- |
+| Desktop Release (Linux x64/arm64, macOS x64/arm64, Windows x64, publish) | [Success](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563870) |
+| Android APK Release | [Success](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563883) |
+| iOS App Store Connect Release | [Success](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563809) |
+| Release Messaging Gateway | [Success](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563849) |
+| Server Docker Release | [Success](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563857) |
+
+- Publication/rollout checks: all four desktop updater metadata files declare `1.4.75`; their seven referenced assets exist, and every declared size matches GitHub release metadata. Downloaded Android APK and Gateway archive each passed its published SHA-256 sidecar; Gateway metadata declares `1.4.75` and published manifest exactly matches the tagged repo manifest. Docker Hub `autobyteus/autobyteus-server:1.4.75` and `:latest` both resolve to `sha256:b64a2d5104381b8ffed7473ed6ef8dbeb5f3f9ea38c07948ae0fa8fe0be34a76`, with active Linux amd64/arm64 images. The workflow's `zh` image step is intentionally skipped on normal tag push and is not a release requirement.
+- Evidence: `evidence/delivery/release-workflows.json`, `public-release.json`, `release-publication-verification.log`, updater metadata and sidecars. iOS workflow/upload success is verified; Apple review and storefront availability are external states and are **not** claimed.
+- Server Docker workflow succeeded despite a non-fatal post-build runner warning while removing its temporary Buildx builder; published tags and both architectures were independently verified.
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure`.
-- Worktree cleanup result: `Pending safe finalization`.
-- Worktree prune result: `Pending safe finalization`.
-- Local ticket branch cleanup result: `Pending safe finalization`.
-- Remote branch cleanup result: `Not yet applicable`; branch has not been pushed.
-- Blocker: do not remove the user-verification candidate or authoritative ticket files before finalization and release verification.
-
-## Escalation / Reroute
-
-- Classification: N/A — no code/design/docs failure found.
-- Recommended recipient: N/A while finalization proceeds.
-- Why final handoff cannot complete: repository finalization, release publication/rollout and safe cleanup are not complete yet.
+- Dedicated worktree `/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure` removed after merge and release success; worktree registry pruned.
+- Local `requirements/anthropic-api-key-save-failure` branch deleted with `git branch -d` after ancestry verification; remote ticket branch deleted and remote refs pruned. Both absence checks passed. Finalization target `personal` and published tag remain intact.
+- Cleanup result: `Completed`; no task-owned processes, isolated DB/root key or user credential were left by API/E2E per its cleanup evidence.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `Yes`, originally `tickets/in-progress/anthropic-api-key-save-failure/release-notes.md`.
-- Archived release notes artifact used for release/publication: `Pending`; archived at `tickets/done/anthropic-api-key-save-failure/release-notes.md`, not yet published.
-- Release notes status: `Updated`, pending archive/publication.
-
-## Deployment Steps
-
-- None at this stage. The versioned release workflow is conditional after repository finalization. No frontend-specific deployment, server migration or live credential operation was run.
+- `release-notes.md` created before user verification, archived with the ticket, and used by the release script. Public release body matches archived notes. Status: `Completed`.
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: `Not Affected` by the fix. Existing user vault credential must be preserved; the test used an isolated synthetic key and database.
-- Delivery action required: `None`.
-- Result and evidence: no schema/vault changes in `git diff origin/personal...9645f9935`; API/E2E probe cleaned its owned temporary SQLite and key files. User's live key was neither read nor overwritten.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: N/A.
+- Approved decision: `Not Affected`; delivery action `None`. No schema/vault migration, credential rewrite, server cutover or live Anthropic validation was performed. API/E2E used and removed an isolated SQLite database and synthetic key.
 
-## Verification Checks
+## Verification Checks And Residuals
 
-- API/E2E report: `API-REV-001` Pass, 95.0% confidence; 35 focused tests, isolated backend/SQLite/vault + Nuxt/Chromium journey, repeated save/refresh, value-free response, unaffected OpenAI row and injected rejection branch.
-- Build/guards: both web boundary guards, Nuxt production build, server build and named E2E recheck passed per upstream report. No new base commit was introduced during delivery.
-- Delivery: fetched latest `origin/personal`, confirmed ancestor relation; `git diff --check` passed after the docs edit.
-- Residual: broad standalone `tsc` remains previously non-green (913 repository errors in IR-001), actual Anthropic key validity was not tested, unchanged Electron shell was not launched, and rejection was injected rather than a real vault outage.
+- API-REV-001 `Pass`, 95.0% final confidence; AC-001–004 proven by 35 focused tests, a real isolated backend/vault + Nuxt/Chromium save/repeat/refresh journey, value-free responses, unchanged OpenAI row and injected rejected-GraphQL branch. Both web guards, Nuxt production build, worktree server build and self-contained named E2E recheck passed.
+- Release CI: all five tag-push workflows succeeded and public assets/metadata/checksums/image tags verified as above. No further code behavior changed after the user-verified merge; the release commit changed versions, curated notes and managed Gateway manifest.
+- Residual: rejected browser branch simulated GraphQL rejection rather than inducing a real vault outage; live key identity/validity and unchanged Electron shell were intentionally untested. Broad standalone `tsc` remains pre-existing non-green (913 repository errors per IR-001), not claimed passed. Apple storefront approval is external.
 
 ## Rollback Criteria
 
-- Before release: stop finalization if user reports false failure, incorrect configured status, credential exposure, or unrelated provider regression; return precise evidence to implementation. Preserve the validated ticket state for repair.
-- After release: do not move a published version tag; use a forward fix/release. No persisted-data rollback or migration is expected for this frontend-only correction.
+- If the public client shows a false failure, wrong configured state, credential disclosure or another provider regression, stop further promotion and repair on a new branch. Do **not** move or reuse published `v1.4.75`; issue a forward corrective release. This frontend-only fix has no persisted-data rollback.
 
-## Final Status
+## Final Status And Handoff
 
-- Explicit user testing/verification complete: `Yes`.
-- Repository finalization complete: `No`.
-- Applicable release/deployment/rollout complete or not required: `No`.
-- Applicable safe cleanup complete or not required: `No`.
-- Unresolved blocker: none identified; finalization/release/cleanup pending.
-- Successful terminal package eligible for return: `No`.
-- Terminal package sent to `/solution_designer`: `No`.
-- Terminal message/reference: N/A; send only after every completion gate is satisfied and handoff rules are consulted.
+- Explicit user testing/verification: `Completed`.
+- Repository finalization and ticket archive: `Completed`.
+- Applicable release/publication/rollout: `Completed` (Apple storefront availability not claimed).
+- Applicable safe cleanup: `Completed`.
+- Unresolved blocker: none. Successful terminal package: `Eligible — Delivery Completed`.
+- Terminal return to Solution Designer: pending handoff-rule dispatch after this authoritative report/revision/handoff update is committed and pushed. The handoff message itself is the terminal receipt reference.

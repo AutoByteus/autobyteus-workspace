@@ -42,5 +42,5 @@
 ## Delivery Continuation
 
 - Result: `Pass` — docs synchronized against the current validated branch.
-- Next delivery action: user explicitly accepted on 2026-09-23 (“the ticket is done. lets finalize and release a new version”); archive and proceed through repository finalization and documented release gates. Post-acceptance `origin/personal` refresh found no advancement or need for renewed verification.
+- Next delivery action: completed after the user's explicit 2026-09-23 acceptance (“the ticket is done. lets finalize and release a new version”); the ticket was archived, merged to `personal` and released as `v1.4.75`. Post-acceptance `origin/personal` refresh found no advancement or need for renewed verification. See `release-deployment-report.md` for finalization and publication evidence.
 - Notes: the live user's key and unchanged Electron shell were not tested. The negative browser path used an injected GraphQL rejection, not a vault outage. Broad standalone TypeScript checking remains previously non-green (913 repository errors in `IR-001`), and is not claimed passed.
