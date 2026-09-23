@@ -238,6 +238,29 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     expect(store.reloadProvider).not.toHaveBeenCalled()
   })
 
+  it('reports a genuine credential rejection without claiming success or clearing the editor', async () => {
+    const { wrapper, store } = mountRuntime({ settings: [setting('OPENAI', false, 'STATIC')] })
+    store.setLLMProviderApiKey = vi.fn().mockRejectedValue(new Error('save rejected'))
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const runtime = wrapper.vm as never as {
+      saveProviderApiKey: (providerId: string, apiKey: string) => Promise<boolean>
+      saving: boolean
+      notification: { type: string; message: string } | null
+      providerEditorResetVersion: number
+      selectedProviderConfigured: boolean
+    }
+
+    try {
+      await expect(runtime.saveProviderApiKey('OPENAI', 'synthetic-key')).resolves.toBe(false)
+      expect(runtime.notification).toEqual({ type: 'error', message: 'OpenAI save failed' })
+      expect(runtime.saving).toBe(false)
+      expect(runtime.providerEditorResetVersion).toBe(0)
+      expect(runtime.selectedProviderConfigured).toBe(false)
+    } finally {
+      consoleError.mockRestore()
+    }
+  })
+
   it('classifies current LLM rows plus cold media failures as partial, not stale', async () => {
     const { wrapper } = mountRuntime({
       settings: [setting('AUTOBYTEUS', false, 'DISCOVERED')],

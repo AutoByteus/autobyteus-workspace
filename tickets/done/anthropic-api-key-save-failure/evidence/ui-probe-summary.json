@@ -1,0 +1,36 @@
+{
+  "startedAt": "2026-09-23T04:16:17.254Z",
+  "backendPort": 38515,
+  "frontendPort": 40479,
+  "safeIsolation": "Fresh temporary SQLite database; synthetic key only. No live credential mutation.",
+  "ui": {
+    "beforeText": "API Key Management\n\nManage provider keys and provider-specific model discovery\n\nPROVIDERS\nAnthropic\n7\nAutoByteus\n—\nDeepSeek\n2\nGemini\n11\nGLM\n1\nGrok\n1\nKimi\n1\nLM Studio\n—\nMiniMax\n1\nMistral\n2\nOllama\n—\nOpenAI\n10\nQwen\n6\nNew Provider\n—\nAnthropic\nNot Configured\nSave Key\nModels\nLLM MODELS\nclaude-fable-5\nclaude-fable-5-1\nclaude-opus-4.7\nclaude-opus-4.8\nclaude-opus-5\nclaude-sonnet-4.6\nclaude-sonnet-5",
+    "afterText": "API Key Management\n\nManage provider keys and provider-specific model discovery\n\nPROVIDERS\nAnthropic\n7\nAutoByteus\n—\nDeepSeek\n2\nGemini\n11\nGLM\n1\nGrok\n1\nKimi\n1\nLM Studio\n—\nMiniMax\n1\nMistral\n2\nOllama\n—\nOpenAI\n10\nQwen\n6\nNew Provider\n—\nAnthropic\nNot Configured\nSave Key\nModels\nLLM MODELS\nclaude-fable-5\nclaude-fable-5-1\nclaude-opus-4.7\nclaude-opus-4.8\nclaude-opus-5\nclaude-sonnet-4.6\nclaude-sonnet-5\nFailed to save API key for Anthropic",
+    "inputCleared": false,
+    "afterReloadText": "API Key Management\n\nManage provider keys and provider-specific model discovery\n\nPROVIDERS\nAnthropic\n7\nAutoByteus\n—\nDeepSeek\n2\nGemini\n11\nGLM\n1\nGrok\n1\nKimi\n1\nLM Studio\n—\nMiniMax\n1\nMistral\n2\nOllama\n—\nOpenAI\n10\nQwen\n6\nNew Provider\n—\nAnthropic\nConfigured\nSave Key\nModels\nLLM MODELS\nclaude-fable-5\nclaude-fable-5-1\nclaude-opus-4.7\nclaude-opus-4.8\nclaude-opus-5\nclaude-sonnet-4.6\nclaude-sonnet-5"
+  },
+  "graphql": {
+    "saveResponse": {
+      "httpStatus": 200,
+      "url": "http://127.0.0.1:38515/graphql",
+      "errors": [],
+      "configured": true,
+      "providerId": "ANTHROPIC"
+    },
+    "afterRead": {
+      "httpStatus": 200,
+      "configured": true,
+      "errors": []
+    }
+  },
+  "browserErrors": [
+    "Failed to save API key: TypeError: Cannot assign to read only property '0' of object '[object Array]'\n    at Proxy.applyCredentialSetting (http://127.0.0.1:40479/_nuxt/stores/llmProviderConfig.ts:431:51)\n    at Proxy.wrappedAction (http://127.0.0.1:40479/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e07a064b:1067:18)\n    at store.<computed> (http://127.0.0.1:40479/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=e07a064b:745:44)\n    at Proxy.setLLMProviderApiKey (http://127.0.0.1:40479/_nuxt/stores/llmProviderConfig.ts:354:12)\n    at async Proxy.saveProviderApiKey (http://127.0.0.1:40479/_nuxt/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts:216:7)"
+  ],
+  "frontendErrors": [],
+  "screenshotPaths": [
+    "/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/tickets/in-progress/anthropic-api-key-save-failure/evidence/before-save.png",
+    "/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/tickets/in-progress/anthropic-api-key-save-failure/evidence/after-save.png"
+  ],
+  "cleanup": "Temporary backend, database, root key and frontend processes removed.",
+  "finishedAt": "2026-09-23T04:16:46.135Z"
+}

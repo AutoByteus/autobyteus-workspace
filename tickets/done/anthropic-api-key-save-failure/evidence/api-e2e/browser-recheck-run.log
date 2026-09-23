@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.74 test:e2e:provider-api-key-save /home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/autobyteus-web
+> node tests/e2e/provider-api-key-save-probe.mjs --output-dir=/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/tickets/in-progress/anthropic-api-key-save-failure/evidence/api-e2e/browser-recheck
+
+Pass: /home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/tickets/in-progress/anthropic-api-key-save-failure/evidence/api-e2e/browser-recheck/result.json

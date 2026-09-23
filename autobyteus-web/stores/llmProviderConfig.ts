@@ -396,7 +396,8 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
           ...(networkOnly ? { fetchPolicy: 'network-only' as const } : {}),
         })
         throwGraphqlErrors(errors)
-        this.providerCredentialSettings = (data?.providerCredentialSettings ?? []) as ProviderCredentialSetting[]
+        const settings = (data?.providerCredentialSettings ?? []) as readonly ProviderCredentialSetting[]
+        this.providerCredentialSettings = [...settings]
         this.hasFetchedProviderCredentialSettings = true
         return this.providerCredentialSettings
       } catch (error) {
@@ -489,11 +490,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       return result.setup
     },
     applyCredentialSetting(setting: ProviderCredentialSetting): void {
-      const index = this.providerCredentialSettings.findIndex(entry => entry.provider.id === setting.provider.id)
-      if (index === -1) this.providerCredentialSettings.push(setting)
-      else this.providerCredentialSettings[index] = setting
-      this.providerCredentialSettings.sort((left, right) =>
+      const next = this.providerCredentialSettings.filter(entry => entry.provider.id !== setting.provider.id)
+      next.push(setting)
+      next.sort((left, right) =>
         left.provider.name.localeCompare(right.provider.name) || left.provider.id.localeCompare(right.provider.id))
+      this.providerCredentialSettings = next
     },
   },
 })
