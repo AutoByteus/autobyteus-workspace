@@ -13,5 +13,5 @@
 
 ## Validation boundary
 
-- Focused server/SQL/GraphQL/stream/web tests, a small real Claude Agent SDK selected Opus query and generic browser Token Statistics journeys passed. The selected meter has not been verified as one combined live SDK→browser journey or explicitly accepted by the user in a rebuilt current Electron app. Whole-web typecheck and I-44 command guard are not claimed. No new direct paid API call was made in the AC-015 validation; direct OpenAI live remains untested.
+- Focused server/SQL/GraphQL/stream/web tests, a small real Claude Agent SDK selected Opus query and generic browser Token Statistics journeys passed. The user explicitly verified the rebuilt current Electron app. An instrumented combined live SDK→browser selected-meter journey was not run. Whole-web typecheck and I-44 command guard are not claimed. No new direct paid API call was made in the AC-015 validation; direct OpenAI live remains untested.
 - Earlier real signed Opus active tool-turn replay passed; independent-turn reset/compaction was not live-tested. A generated game file received structural checks only, not gameplay/visual-quality verification.

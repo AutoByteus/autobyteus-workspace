@@ -1,6 +1,6 @@
 # Delivery Revision Record
 
-DR-009 records explicit user verification and unchanged-target finalization readiness after the DR-008 current build. DR-001–007 document earlier model-catalog, selected-price, and Electron delivery stages whose local packages have been superseded. Explicit user verification has now been received; finalization and release are underway.
+DR-010 records completed repository finalization, v1.4.77 publication and safe cleanup after explicit user verification. DR-001–009 preserve earlier stage results and superseded local packages.
 
 ## Revision Index
 
@@ -15,6 +15,7 @@ DR-009 records explicit user verification and unchanged-target finalization read
 | DR-007 | API-REV-005 Pass / CRR-008 Pass for approved SR-011/SR-012 Claude SDK selected Token Meter | DR-006 (earlier-scope test artifact now stale) | Latest-base-current docs sync, new Linux ARM64 Electron build and VNC smoke Pass; migration required; explicit user verification pending | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, three current-scope long-lived docs, `evidence/delivery-api005-current-electron-check.txt` |
 | DR-008 | API-REV-006 Pass / CRR-010 Pass for approved SR-014/AC-015 context meter correction | DR-007 (AC-015-defective package now stale) | Same-base docs sync, fresh Linux ARM64 Electron build and VNC smoke Pass; explicit selected-meter user verification pending | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, three long-lived docs, `evidence/delivery-api006-current-electron-check.txt` |
 | DR-009 | User explicitly verified the rebuilt AC-015 Electron app and requested finalization/new release | DR-008 | Acceptance captured; finalization target refreshed and unchanged; repository/release work in progress | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
+| DR-010 | Finalize user-verified ticket and release v1.4.77 | DR-009 | Target merge/push, version/tag, five release workflows, rollout checks and repository cleanup Completed | `handoff-summary.md`, `release-deployment-report.md`, `evidence/delivery-release-v1.4.77.txt` |
 
 ## Revision Entries
 
@@ -143,3 +144,17 @@ DR-009 records explicit user verification and unchanged-target finalization read
 - After-acceptance target refresh: `git fetch origin personal --tags`; `origin/personal@0f54978ba34165c476dcba67ce1d31ab27257108` remains ancestor of `HEAD=f04c4389cd3ec7eb5d78bdf8a08b8327e2b90c68`, with no new target commits. No new integration, post-integration rerun or renewed user verification required.
 - Docs/handoff: current reports updated with the exact acceptance reference; long-lived docs remain synchronized.
 - Next action: archive ticket before final commit; commit/push ticket, merge/push `personal`, release next patch version via documented helper, verify workflow state, record actual outcomes and clean safely. No successful terminal handoff until those gates pass.
+
+### DR-010 — Repository finalization, v1.4.77 release and cleanup
+
+- Trigger: complete the user-approved finalization and new-version release requested in DR-009.
+- Prior result: DR-009 acceptance and unchanged-target refresh; finalization/release pending.
+- Current result: **Delivery Completed**, subject only to committing/pushing this completion record and successful rule-based terminal receipt. No source/API/user-verification gate remains open.
+- Repository sequence: archived ticket to `tickets/done/new-models-gpt6-opus55` before commit; committed `3f0865c23dd92842934eb63b77e0774c917534e6`, pushed ticket branch; fast-forwarded local `personal` to unchanged `origin/personal@0f54978ba`, merged ticket at `71b3fe3a9`, pushed `personal`. Repository artifact hygiene and merge diff checks passed.
+- Release sequence: documented `corepack pnpm release 1.4.77 -- --release-notes tickets/done/new-models-gpt6-opus55/release-notes.md` created version/manifest/curated-notes commit `239c31a43397986721b6661b1fba6117bab8c048`, pushed `personal`, and pushed annotated `v1.4.77` tag. Web and messaging-gateway versions both `1.4.77`. Stable [GitHub Release](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.77) is published with 21 assets.
+- Release-note correction: the tagged curated note still had pre-acceptance wording; after publication the GitHub Release body was edited to the accurate acceptance statement and verified, and the current `personal` curated notes/archived ticket notes were synchronized without rewriting the published tag. A future manual republish from that immutable tag must not restore the stale body.
+- Rollout verification: Desktop, Android APK, iOS App Store Connect upload, server Docker and messaging-gateway release workflows all completed successfully. Public Docker Hub `autobyteus/autobyteus-server:1.4.77` returned HTTP 200 and exposes `linux/amd64` plus `linux/arm64`. iOS public App Store review/TestFlight processing and environment-specific server deployment are not claimed or required by this release action. Exact run URLs and public checks: `evidence/delivery-release-v1.4.77.txt`, `release-deployment-report.md`.
+- Cleanup: stopped the current VNC app process tree; removed/pruned ticket worktree; deleted local and remote ticket branches after confirming ancestry in `personal`. Retained the reused caller-supplied isolated test root `/tmp/autobyteus-e2e-2aBucz` because it may contain user-entered test state. Cleanup gate **Completed**.
+- User-verification reference: exact message “great. its done. i verified. lets finalizea and release a new version”; this authorized finalization and release, not a claim that all residual API/E2E limits disappeared.
+- Remaining bounded test limitations: no instrumented combined live SDK→browser selected-meter journey, whole-web typecheck or I-44 command guard success; direct OpenAI live untested. No open release workflow failure. Migration required as recorded in the release report.
+- Terminal return: call `get_handoff_rules` after this record and report are committed/pushed, then send the complete authoritative package only to the returned recipient. Message/reference pending until tool confirmation; do not infer receipt from this file.
