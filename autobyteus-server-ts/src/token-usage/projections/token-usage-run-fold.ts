@@ -24,6 +24,7 @@ import {
   applyTokenUsageContribution,
   createEmptyRunRecord,
 } from "./token-usage-run-record-state.js";
+import { reconcileClaudeSdkResult } from "./claude-sdk-model-usage-reconciler.js";
 
 export type TokenUsageRunFoldResult = Readonly<{
   kind: "SUPPRESSED" | "CHANGED";
@@ -33,6 +34,9 @@ export type TokenUsageRunFoldResult = Readonly<{
 
 export const zeroTokenUsageContribution = (payload: TokenUsageUpdatedPayload): TokenUsageUpdatedPayload => ({
   ...payload,
+  ...(payload.ingestion_kind === "claude_sdk_result"
+    ? { claude_sdk_model_usage: [], claude_sdk_main_loop_usage: null, raw_event_json: null, raw_usage_json: null }
+    : {}),
   ...Object.fromEntries(cumulativeSnapshotTokenFields.map((field) => [field, null])),
   meter_delta_input_tokens: 0,
   meter_delta_output_tokens: 0,
@@ -95,7 +99,7 @@ const markerFor = (payload: TokenUsageUpdatedPayload, ordinal: bigint): Admissio
 export const foldTokenUsageObservation = (input: {
   current: TokenUsageRunRecord | null;
   payload: TokenUsageUpdatedPayload;
-  pricingPolicy: ResolvedTokenPricingPolicy;
+  pricingPolicy: ResolvedTokenPricingPolicy | null;
   componentResolver?: TokenUsageComponentBasisResolver;
   costCalculator?: TokenCostCalculator;
 }): TokenUsageRunFoldResult => {
@@ -116,7 +120,18 @@ export const foldTokenUsageObservation = (input: {
   let authoritative = payload;
   let shouldCountReport = true;
 
-  if (payload.usage_scope === "cumulative_snapshot") {
+  if (payload.runtime_kind === "claude_agent_sdk" && payload.ingestion_kind === "claude_sdk_result") {
+    record ??= createEmptyRunRecord(payload, marker);
+    const reconciled = reconcileClaudeSdkResult({ record, payload });
+    record = reconciled.record;
+    authoritative = reconciled.payload;
+    if (authoritative.accounting_total_tokens !== null && input.pricingPolicy) {
+      authoritative = costCalculator.applyPolicy(authoritative, input.pricingPolicy);
+    } else if (authoritative.accounting_total_tokens !== null) {
+      authoritative = withFlag(authoritative, "claude_sdk_selected_configured_price_missing");
+      authoritative = { ...authoritative, missing_price_dimensions: ["claude_sdk_selected_configured_price"] };
+    }
+  } else if (payload.usage_scope === "cumulative_snapshot") {
     const seriesKey = payload.snapshot_series_key?.trim();
     const rawSource = readCumulativeSnapshotSourceTokens(payload.raw_event_json);
     if (!seriesKey || !rawSource) {
@@ -144,7 +159,7 @@ export const foldTokenUsageObservation = (input: {
         } else {
           authoritative = normalizeAuthoritativeContribution(
             payloadWithSnapshotTokens(payload, advancement.delta),
-            input.pricingPolicy,
+            input.pricingPolicy!,
             componentResolver,
             costCalculator,
           );
@@ -177,7 +192,7 @@ export const foldTokenUsageObservation = (input: {
                 payload.runtime_kind === "codex_app_server" || payload.ingestion_kind === "codex_thread_token_usage"
                   ? withFlag(payload, "first_cumulative_snapshot_baselined_from_provider_delta")
                   : payload,
-                input.pricingPolicy,
+                input.pricingPolicy!,
                 componentResolver,
                 costCalculator,
               );
@@ -185,7 +200,7 @@ export const foldTokenUsageObservation = (input: {
       }
     }
   } else {
-    authoritative = normalizeAuthoritativeContribution(payload, input.pricingPolicy, componentResolver, costCalculator);
+    authoritative = normalizeAuthoritativeContribution(payload, input.pricingPolicy!, componentResolver, costCalculator);
   }
 
   if (!shouldCountReport) {

@@ -69,6 +69,9 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.priceStatusLocal': 'Local/no API bill',
   'shell.tokenUsage.priceStatusMixed': 'Mixed',
   'shell.tokenUsage.latestModel': 'Latest model:',
+  'shell.tokenUsage.claudeSdkSelectedRawModel': 'Selected SDK raw model:',
+  'shell.tokenUsage.claudeSdkConfiguredEstimateNote': 'Configured API-equivalent estimate — not a subscription charge.',
+  'shell.tokenUsage.claudeSdkCacheAssumptionNote': 'Some Claude SDK cache writes were estimated at the configured 1-hour rate because their duration could not be attributed.',
   'shell.tokenUsage.runtime': 'Runtime:',
   'shell.tokenUsage.usageReports': 'Usage reports',
   'shell.tokenUsage.usageReportsTooltip': 'Server usage reports received for this summary.',
@@ -278,6 +281,24 @@ describe('TokenUsageMeterPanel', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+  });
+
+  it('shows selected Claude model and configured estimate with a visible assumed cache rate', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
+    upsertAgentSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+      latestModelProvider: 'ANTHROPIC', latestModelIdentifier: 'claude-opus-5-5',
+      latestSelectedRawModelId: 'claude-opus-5-5[1m]', hasCacheWriteRateAssumption: true }));
+    selectionStore.setRunSelection('run-1', 'agent');
+    const wrapper = mountPanel();
+    expect(wrapper.get('[data-test="claude-sdk-configured-estimate-note"]').text())
+      .toContain('not a subscription charge');
+    expect(wrapper.get('[data-test="claude-sdk-cache-assumption-note"]').text())
+      .toContain('configured 1-hour rate');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('claude-opus-5-5[1m]');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).not.toContain('haiku');
   });
 
   it('renders the approved Token Meter hierarchy with server-owned component values', () => {

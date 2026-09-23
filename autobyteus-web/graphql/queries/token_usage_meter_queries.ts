@@ -71,6 +71,8 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
     latestModelProvider
     latestModelIdentifier
     latestRuntimeKind
+    latestSelectedRawModelId
+    hasCacheWriteRateAssumption
     usageReportCount
     updatedAt
   }

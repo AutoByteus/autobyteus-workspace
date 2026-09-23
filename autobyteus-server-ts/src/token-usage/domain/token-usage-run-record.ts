@@ -52,6 +52,7 @@ export interface TokenUsageRunRecord {
   effectiveContextWindowTokens: bigint | null;
   contextWindowUsagePercent: number | null;
   snapshotSeriesState: SnapshotSeriesCheckpoint[];
+  claudeSdkUsageStateJson: string | null;
   recentIdempotencyDigests: RecentTokenUsageIdentityDigest[];
 }
 

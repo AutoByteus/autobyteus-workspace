@@ -44,6 +44,8 @@ describe("claude-sdk-model-normalizer", () => {
     expect(descriptors).toEqual([
       {
         identifier: "default",
+        resolvedModel: null,
+        resolvedModelAmbiguous: false,
         displayName: "Default (recommended)",
         description: "Sonnet 5 · Efficient for routine tasks",
         supportsEffort: true,
@@ -52,6 +54,8 @@ describe("claude-sdk-model-normalizer", () => {
       },
       {
         identifier: "sonnet",
+        resolvedModel: null,
+        resolvedModelAmbiguous: false,
         displayName: "Sonnet",
         description: "Sonnet 5 · Efficient for routine tasks",
         supportsEffort: false,
@@ -60,6 +64,8 @@ describe("claude-sdk-model-normalizer", () => {
       },
       {
         identifier: "opus",
+        resolvedModel: null,
+        resolvedModelAmbiguous: false,
         displayName: "Opus",
         description: "Opus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
         supportsEffort: false,
@@ -68,6 +74,8 @@ describe("claude-sdk-model-normalizer", () => {
       },
       {
         identifier: "haiku",
+        resolvedModel: null,
+        resolvedModelAmbiguous: false,
         displayName: "Haiku",
         description: "Haiku 4.5 · Fastest for quick answers",
         supportsEffort: false,
@@ -80,6 +88,8 @@ describe("claude-sdk-model-normalizer", () => {
   it("exposes thinking_enabled and reasoning_effort when Claude thinking is supported", () => {
     const model = toModelInfo({
       identifier: "opus",
+      resolvedModel: null,
+      resolvedModelAmbiguous: false,
       displayName: "Opus",
       description: "Opus 4.8 · Best for everyday, complex tasks",
       supportsEffort: true,
@@ -112,6 +122,8 @@ describe("claude-sdk-model-normalizer", () => {
   it("keeps adaptive-thinking and effort capabilities independent", () => {
     const model = toModelInfo({
       identifier: "default",
+      resolvedModel: null,
+      resolvedModelAmbiguous: false,
       displayName: "Default",
       description: null,
       supportsEffort: false,
@@ -135,6 +147,8 @@ describe("claude-sdk-model-normalizer", () => {
     ])).toEqual([
       {
         identifier: "bare",
+        resolvedModel: null,
+        resolvedModelAmbiguous: false,
         displayName: "Bare",
         description: null,
         supportsEffort: false,
@@ -143,6 +157,8 @@ describe("claude-sdk-model-normalizer", () => {
       },
       {
         identifier: "string-only",
+        resolvedModel: null,
+        resolvedModelAmbiguous: false,
         displayName: null,
         description: null,
         supportsEffort: false,
@@ -150,5 +166,22 @@ describe("claude-sdk-model-normalizer", () => {
         supportsAdaptiveThinking: false,
       },
     ]);
+  });
+});
+
+describe('Claude SDK resolved-model binding', () => {
+  it('retains exact SDK alias-to-wire mapping and marks conflicting duplicate rows ambiguous', () => {
+    const rows = normalizeModelDescriptors([
+      { value: 'opus[1m]', resolvedModel: 'claude-opus-5-5[1m]' },
+      { value: 'default', resolvedModel: 'claude-sonnet-5' },
+      { value: 'opus[1m]', resolvedModel: 'claude-opus-5-5[1m]' },
+    ]);
+    expect(rows.find((row) => row.identifier === 'opus[1m]')).toMatchObject({
+      resolvedModel: 'claude-opus-5-5[1m]', resolvedModelAmbiguous: false,
+    });
+    expect(normalizeModelDescriptors([
+      { value: 'opus[1m]', resolvedModel: 'claude-opus-5-5[1m]' },
+      { value: 'opus[1m]', resolvedModel: 'different-wire-id' },
+    ])[0]).toMatchObject({ resolvedModel: null, resolvedModelAmbiguous: true });
   });
 });

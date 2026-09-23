@@ -101,6 +101,8 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
 
 export type NormalizedModelDescriptor = {
   identifier: string;
+  resolvedModel: string | null;
+  resolvedModelAmbiguous: boolean;
   displayName: string | null;
   description: string | null;
   supportsEffort: boolean;
@@ -129,6 +131,8 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
       if (!existing) {
         descriptors.set(row, {
           identifier: row,
+          resolvedModel: null,
+          resolvedModelAmbiguous: false,
           displayName: null,
           description: null,
           supportsEffort: false,
@@ -161,6 +165,7 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
       asString(payload.label) ??
       (asString(payload.name) !== identifier ? asString(payload.name) : null);
     const description = asString(payload.description);
+    const resolvedModel = asString(payload.resolvedModel ?? payload.resolved_model);
     const supportsEffort =
       asBoolean(payload.supportsEffort ?? payload.supports_effort ?? payload.effortSupported) ?? false;
     const supportedEffortLevels = toStringArray(
@@ -177,6 +182,8 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
     if (!existing) {
       descriptors.set(identifier, {
         identifier,
+        resolvedModel,
+        resolvedModelAmbiguous: false,
         displayName,
         description,
         supportsEffort,
@@ -188,6 +195,9 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
 
     descriptors.set(identifier, {
       identifier,
+      resolvedModel: existing.resolvedModelAmbiguous || (existing.resolvedModel && resolvedModel && existing.resolvedModel !== resolvedModel)
+        ? null : existing.resolvedModel ?? resolvedModel,
+      resolvedModelAmbiguous: existing.resolvedModelAmbiguous || Boolean(existing.resolvedModel && resolvedModel && existing.resolvedModel !== resolvedModel),
       displayName: existing.displayName ?? displayName,
       description: existing.description ?? description,
       supportsEffort: existing.supportsEffort || supportsEffort,

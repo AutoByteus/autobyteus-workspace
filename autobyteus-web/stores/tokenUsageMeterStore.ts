@@ -81,6 +81,8 @@ const emptyTeamAggregate = (teamRunId: string): TokenUsageRunSummary => ({
   contextWindowUsagePercent: null,
   latestModelProvider: null,
   latestModelIdentifier: null,
+  latestSelectedRawModelId: null,
+  hasCacheWriteRateAssumption: false,
   latestRuntimeKind: null,
   usageReportCount: 0,
   updatedAt: null,
@@ -202,6 +204,10 @@ const applyPersistedEventToPartialTeamAggregate = (
         })
       : mergedUnitPrices,
     usageReportCount: summary.usageReportCount + 1,
+    latestSelectedRawModelId: details.run_summary_after_event?.latest_selected_raw_model_id
+      ?? summary.latestSelectedRawModelId,
+    hasCacheWriteRateAssumption: Boolean(summary.hasCacheWriteRateAssumption
+      || details.quality_flags?.includes('claude_sdk_cache_write_1h_assumed')),
     updatedAt: details.observed_at,
   };
 };

@@ -21,6 +21,7 @@ import {
   emptyTokenUsagePricingSummary,
   mergeTokenUsagePricingSummaries,
 } from "./token-usage-pricing-summary.js";
+import { latestSelectedClaudeSdkRawIdFromState } from "./claude-sdk-model-usage-reconciler.js";
 
 export { TokenUsageSafeIntegerExceededError };
 
@@ -113,6 +114,10 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
     latest_model_provider: latest?.latestModelProvider ?? null,
     latest_model_identifier: latest?.latestModelIdentifier ?? null,
     latest_runtime_kind: latest?.latestRuntimeKind ?? null,
+    latest_selected_raw_model_id: latest?.latestRuntimeKind === "claude_agent_sdk"
+      ? latestSelectedClaudeSdkRawIdFromState(latest.claudeSdkUsageStateJson) : null,
+    has_cache_write_rate_assumption: input.records.some((record) =>
+      record.qualityFlags.includes("claude_sdk_cache_write_1h_assumed")),
   };
 };
 

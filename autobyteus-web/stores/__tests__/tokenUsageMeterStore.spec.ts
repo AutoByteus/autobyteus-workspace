@@ -66,6 +66,8 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   latestModelProvider: 'OPENAI',
   latestModelIdentifier: 'gpt-5.6-sol',
   latestRuntimeKind: 'codex_app_server',
+  latestSelectedRawModelId: null,
+  hasCacheWriteRateAssumption: false,
   usageReportCount: 3,
   updatedAt: '2026-08-20T10:05:00.000Z',
   ...overrides,

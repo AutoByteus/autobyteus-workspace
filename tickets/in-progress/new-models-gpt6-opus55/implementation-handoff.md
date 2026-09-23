@@ -2,133 +2,85 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and route: Independent architecture review selected; ARCH-REV-002 passed the runtime design and ARCH-REV-003 passed the bounded SR-005 catalog correction. Cumulative Large/High implementation requires renewed independent source review before API/E2E.
-- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/requirements-doc.md` (approved SR-002).
-- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/investigation-notes.md`.
-- Solution revision record: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/solution-revision-record.md`.
-- Design spec: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/design-spec.md` (SR-005, retaining SR-004 runtime design).
-- Solution handoff: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/solution-handoff.md`.
-- Supplemental task artifacts: None authoritative; three user screenshots are investigation evidence only.
-- Design review report: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/design-review-report.md` (ARCH-REV-003 Pass; ARCH-REV-002 runtime pass retained).
-- Architecture review revision record: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/architecture-review-revision-record.md`.
-- Triggering rework evidence: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/code-review-report.md` (CRR-001 Fail / CR-F-001) and `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/code-review-revision-record.md`. ARCH-F-001/002 remain resolved.
+- Review route: Independent architecture review selected; **ARCH-REV-008 Pass** on Approved **SR-011**, design **SR-012** and evidence-only **SR-013**. Earlier review passes and API/E2E passes do not validate this new scope.
+- Requirements: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/requirements-doc.md`.
+- Investigation: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/investigation-notes.md`.
+- Solution history: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/solution-revision-record.md`.
+- Design: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/design-spec.md` and `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/solution-handoff.md`.
+- Independent architecture report/history: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/design-review-report.md` and `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/architecture-review-revision-record.md`.
+- Trigger: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` (**API-REV-004 Design Impact**), followed by SR-007/008/009/010/011/012/013 and ARCH-REV-004–008. Probe artifacts in the ticket `evidence/` directory are supporting evidence, not implementation-generated live validation.
+- Prior independent source review: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/code-review-report.md` / `code-review-revision-record.md`; old source passes do not cover IR-003.
+- Other still-relevant validation/release history: ticket `api-e2e-coverage-investigation.md`, `api-e2e-test-case-ledger.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `handoff-summary.md`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: Rework of IR-001 commit `704e2108e` after CRR-001.
-- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/implementation-revision-record.md`.
-- Current implementation revision ID: IR-002.
-- Related solution revision IDs: SR-002, SR-004, SR-005.
-- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003.
-- Related code-review revision ID: CRR-001; API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: CR-F-001 (source-file hard limit).
+- Cycle: Rework/new approved SDK Token Meter scope after IR-002. Revision record: `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/implementation-revision-record.md` (**IR-003**).
+- Related revisions: SR-002/004/005/006/007/008/009/010/011/012/013; ARCH-REV-002–008; CRR-001/002 and prior historical CRR results, **not** current-source approval; API-REV-004 trigger; delivery DR-006 historical state, **not** current-scope delivery.
+- Finding IDs: API-REV-004 Token Meter mixed-model/price attribution design impact; ARCH-F-003/004 were resolved upstream. No new Design Impact found during IR-003.
 
-Implemented exact static direct-API GPT-6 Sol/Luna and Claude Opus 5.5 definitions and Standard prices; refreshed both Anthropic-maintained SDKs to exact stable pins. Opus 5.5 now uses adaptive-only request preflight, an ordered native assistant-turn stream assembler, single response-level native-turn transport, private working-context persistence, exact active-cycle replay, an atomic signed-thinking reset before independent turns, compaction deferral during tool continuation, and stale-thinking removal/validation at accepted client compaction. Outward assistant-completion events explicitly project safe fields rather than spreading the private response object. Existing Codex/Claude SDK discovery and runtime paths remain dynamic; no static Codex row or SDK compatibility branch was needed by build and focused tests.
+The original committed GPT-6 Sol/Luna/Opus 5.5 catalog, exact SDK pins and signed-thinking lifecycle from IR-001/002 remain. IR-003 adds one sanitized terminal Claude Agent SDK result usage shape, active-query selected model `value→resolvedModel` binding, exact selected raw result match, private all-raw-model cumulative token checkpoints, selected-only transactional deltas, configured Anthropic canonical-model price policy and existing calculator. The terminal main-loop 5m/1h split is used only after all four dimensions and split sum reconcile to selected delta; otherwise positive selected cache writes use configured 1h rate with a durable visible assumption flag. SDK USD and unselected Haiku never become money or public detail. A nullable checkpoint SQL column and fixed startup current-schema assertion protect the writer. GraphQL/stream/Vue show selected raw ID, configured API-equivalent estimate disclaimer and approximation note. No historical repricing or static `[1m]` catalog row.
 
-IR-002 applies only the SR-005 catalog file split: the eight Anthropic rows and three Claude schemas now live in `anthropic-supported-model-definitions.ts`; the unchanged cross-provider `pricing` wrapper lives in `supported-model-pricing.ts`; the original aggregate contains one provider-list spread at the original position. No signed-turn lifecycle or other runtime source changed. The full 33-row catalog projection—ordered IDs, class names, metadata, schema JSON and config/pricing dictionaries—matches the captured IR-001 build exactly.
+## Routing Classification
 
-## Routing Classification (Mandatory)
-
-- Task size: **Large**.
-- Architectural risk: **High**.
-- Design classification section/evidence: SR-005 `Task Size And Architectural Risk`, ARCH-REV-003 classification confirmation, and cumulative provider/memory/compaction/SDK scope.
-- Classification confirmed or changed: Confirmed.
-- Evidence and rationale: Signed provider data still crosses stream, response, agent loop, private persisted context, compaction and renderer; two SDK pins changed in IR-001. IR-002 is a bounded catalog-only extraction with no new migration, public API, security boundary or product behavior. Cumulative classification remains Large/High, not downgraded by the local fix.
-- Selected route: Code Review.
-- Lightweight direct-route self-review: Not Applicable — Large/High requires independent Code Reviewer.
-- New design impact or escalation trigger: CR-F-001 was returned upstream and resolved in SR-005/ARCH-REV-003 design; implementation of that design presents no new design impact. CR-F-001 remains open until renewed source review accepts this implementation.
+- `task_size=Large`; `architectural_risk=High`, **Confirmed** against SR-012 and ARCH-REV-008. Cross-runtime identity, money, SQL, stream/GraphQL and Token Meter remain high-risk.
+- Selected route: **Code Review**. Direct-route lightweight review: Not Applicable. No new design or requirement gap found.
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior ID | Approved outcome | Implemented production path / key files | Result / notes |
-| --- | --- | --- | --- |
-| BEH-001 | Exact Sol/Luna direct API IDs, metadata, Responses reasoning/tool/usage | `supported-model-definitions.ts` → existing `OpenAILLM`/Responses path | Added once each; no alias or default change. IR-002 preserves aggregate order; mocked send/stream payloads exercise exact IDs. |
-| BEH-002 | Opus 5.5 adaptive simple/tool turns with signed replay only within active cycle | `supported-model-definitions.ts` → `anthropic-supported-model-definitions.ts`; runtime: `anthropic-llm.ts` → `anthropic-assistant-turn-assembler.ts` → `response-types.ts` → `llm-phase.ts` → `memory-manager.ts` → `anthropic-prompt-renderer.ts` | Catalog extraction preserves Opus schema/config and does not edit signed-turn runtime. Explicit unsupported controls fail before request; native blocks/signatures remain ordered for tool continuation. |
-| BEH-003 | Standard rates and tier/cache accounting; historical snapshots unchanged | `supported-model-definitions.ts` + `anthropic-supported-model-definitions.ts` → shared `supported-model-pricing.ts` → existing pricing factory/calculator | The pricing wrapper and all rates/defaults are unchanged by IR-002. Sol $2/$10, Luna $0.10/$0.50 and Opus 5.5 $4/$20 remain; no historical rewrite. |
-| BEH-004 | Dynamic Codex model IDs/turns | Existing Codex model/list and thread/turn path | No product code change; live per-advertised-model attempt remains API/E2E-owned. |
-| BEH-005 | Credential-aware evidence | Focused fake-client and runtime unit tests | No direct-key/live success claimed. User subsequently supplied a possible env-file location for downstream credential-safe integration; no secret loaded here. |
-| BEH-006 | Both stable Anthropic SDKs and preserved runtime contracts | Both package manifests/lockfile → existing Claude SDK client/session/backend tests | Registry latest checked at implementation: Agent SDK 0.3.280, direct API SDK 0.128.0; exact pins resolved. Server TypeScript and 65 focused Claude SDK tests passed without product SDK-path adaptations. |
+| Behavior | Production path | Outcome |
+| --- | --- | --- |
+| BEH-001–006 / AC-001–010 | Previously committed catalog/provider, signed-turn, SDK pins and Codex routes | Retained; no static Codex row or signed-turn edits in IR-003. |
+| BEH-007 / AC-011 | `claude-sdk-client.ts` active `supportedModels()` → selected binding helper → terminal result parser/event → `TokenUsageRunAccumulator` exact canonical `ANTHROPIC` policy → fold/calculator → SQL/GraphQL/stream/Vue | Selected Opus canonical primary, exact raw ID detail, configured component estimate. SDK USD ignored; missing canonical/provider/rates fail closed. |
+| BEH-008 / AC-012/013 | `claude-sdk-model-usage-reconciler.ts` in `token-usage-run-fold.ts`; all-source private checkpoints, selected delta, reconciled split or marked 1h bucket | No Haiku contribution/detail; retry, legacy resume and regressions conservative. No assistant-frame summation. One analytics write per admitted result. |
+| BEH-009 / AC-014 | Nullable Prisma migration, SQL record codec, fixed startup schema assertion, old-null baselining | Existing records read unchanged; no backfill/repricing. Server and standalone migration gates remain before writer admission. |
 
 ## Key Files Or Areas
 
-- Catalog/prices: `autobyteus-ts/src/llm/supported-model-definitions.ts` (sole ordered aggregate), `anthropic-supported-model-definitions.ts` (provider rows/schemas), `supported-model-pricing.ts` (shared wrapper).
-- Provider capture/policy: `autobyteus-ts/src/llm/api/{anthropic-llm.ts,anthropic-assistant-turn-assembler.ts}`.
-- Private transport/replay: `autobyteus-ts/src/llm/utils/{provider-native-assistant-turn.ts,response-types.ts}`, `src/llm/prompt-renderers/anthropic-prompt-renderer.ts`, `src/agent/loop/llm-phase.ts`, `src/memory/memory-manager.ts`.
-- Lifecycle/compaction: `autobyteus-ts/src/agent/llm-request-assembler.ts`, `src/memory/compaction/{accepted-compaction-builder.ts,working-context-compaction-output-validator.ts}`. Existing executor is deferred by the request assembler without consuming pending state; no executor change was necessary.
-- Outward redaction: `autobyteus-ts/src/agent/events/notifiers.ts`.
-- Dependency pins: `autobyteus-ts/package.json`, `autobyteus-server-ts/package.json`, `pnpm-lock.yaml`.
-- Focused tests in corresponding `autobyteus-ts/tests/unit/{llm,agent,memory}` and `autobyteus-server-ts/tests/unit/{runtime-management/claude,agent-execution/backends/claude}` locations.
+- Identity/adapter: `autobyteus-server-ts/src/runtime-management/claude/client/{claude-sdk-client.ts,claude-sdk-selected-model-binding.ts,claude-sdk-model-normalizer.ts}`, `src/agent-execution/backends/claude/session/{claude-session.ts,claude-selected-model-turn-binding.ts,claude-session-token-usage.ts,claude-sdk-result-usage-parser.ts}` and `src/agent-execution/domain/claude-sdk-usage.ts`.
+- Fold/pricing/SQL: `src/agent-execution/domain/agent-run-token-usage.ts`, token-usage processors, `src/token-usage/{projections/claude-sdk-model-usage-reconciler.ts,projections/token-usage-run-fold.ts,services/token-usage-run-accumulator.ts,repositories/sql/token-usage-run-record-codec.ts}`, Prisma schema/migration, startup readiness.
+- Surface: server GraphQL token stats; agent/team stream contracts; web token usage mapper/store, GraphQL fragment and generated projection, TokenUsageMeterPanel and en/zh locale text.
 
-## Important Assumptions
+## Important Assumptions And Known Risks
 
-- The established `AgentTurn.toolInvocationBatches.length` is the supported discriminator: nonzero means an immediate tool-result continuation; a new independent turn has zero batches. Request assembly receives this fact from `LlmPhase`, rather than inferring from sender labels.
-- The direct Messages path uses client tools; current native-turn shape intentionally covers ordered `text`, `thinking`, `redacted_thinking`, and `tool_use` blocks. Unsupported/incomplete native blocks fail closed instead of being silently rebuilt.
-- Provider-native thinking/signatures remain in private v5 working-context metadata only during the active tool cycle. Display reasoning remains separate and is never used to recreate signed provider blocks.
-
-## Known Risks
-
-- Official-doc/mock contract tests cannot prove direct provider 200/400 responses. User has now identified `$HOME/.autobyteus/server-data/.env` as a possible key source; downstream API/E2E should determine whether keys are present and usable without printing or persisting them, then report actual outcomes separately. This is new validation context, not a claim of live success.
-- Local Codex may not advertise or permit all Astra/Sol/Luna IDs; no substitution is allowed. API/E2E must report a result or blocker per locally advertised model.
-- Claude Agent SDK 0.3.280 compiles and focused no-key client/session/backend tests pass, but no live Claude session was attempted in this implementation round.
+- SDK `supportedModels()` from the **active** query has the same settings, cwd and authentication as that turn; lookup failure/ambiguity stays missing, never falls back to the user-only/process-cwd catalog probe. The observed SDK provider `firstParty` is treated as the supported Anthropic runtime identity for configured price lookup, not as a catalog provider key.
+- Terminal `modelUsage` is cumulative per raw model; terminal top-level `usage` is a per-turn main-loop candidate for cache-duration attribution only. Assistant frames are non-final; their usage is never summed.
+- A configured 1h fallback may overestimate a 5m or mixed write. The durable flag and visible explanation are required; displayed money is an API-equivalent configured estimate, not a subscription charge or an SDK bill.
+- No provider secrets were inspected in IR-003; no direct paid Anthropic success or live SDK integration success is claimed. The user-supplied env-file location remains downstream validation context only after source review. The I-44 guarded tool probe did **not** verify command-level callback gating.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Feature + provider-contract bug fix + dependency maintenance.
-- Reviewed root-cause classification: Boundary Or Ownership Issue / Shared Structure Looseness.
-- Reviewed refactor decision: Refactor Needed Now (bounded).
-- Implementation matched reviewed assessment: Yes. SR-005 identifies catalog file-placement drift and prescribes a bounded provider-module/shared-helper extraction; IR-002 follows that split. SR-004 signed-turn boundaries remain unchanged.
-- If challenged, routed as Design Impact: CR-F-001 was already routed through Solution Designer; no further design challenge found.
-- Evidence: Exact 33-row catalog projection equality against IR-001, focused catalog/provider/pricing tests, shared build, and source-size audit. Prior focused signed-turn checks remain applicable because those source paths were not edited.
+- Reviewed posture: Feature + attribution/cost correctness and additive persistence transition. Root cause: selected-vs-raw SDK identity and pricing-owner boundary. Reviewed decision: **Refactor Needed Now** (bounded SDK adapter, existing calculator/fold owner).
+- Matched assessment: **Yes**. No parallel price table, raw suffix heuristic, generic SDK-dollar calculator or historical rewrite. Design Impact reroute: **N/A**.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: None. Generic rendering remains for valid historical tool turns lacking native data; no Opus 5.5 alias or dual signed path.
-- Legacy old-behavior retained in scope: No for newly captured signed turns.
-- Dead/obsolete code removed in scope: Yes — replaced the no-op `message_stop` branch and lossy new signed-turn reconstruction; retained required historical generic rendering.
-- Shared structures remain tight: Yes — one provider-discriminated response-level native turn, no per-tool duplicate native array.
-- Shared design guidance reapplied: Yes; owner and boundary decisions follow SR-004 and SR-005.
-- Source-size guardrails: IR-001's prior handoff claim was incorrect: aggregate had **538** effective nonempty lines at CRR-001. IR-002 reduces it to **382**; new Anthropic module has **158** and pricing helper **10**. Changed-source deltas are 168 lines in the aggregate, 162 in the new Anthropic module and 11 in the new pricing helper, all below the `>220` signal. All changed implementation source is safely below 500.
+- Compatibility wrapper introduced: **None**. SDK dollar WIP is removed from new public/pricing path; old persisted pricing snapshots remain readable by existing readers, without backfill.
+- Shared structures tight: one typed SDK result transport plus one private fold state; general token payload fields are optional only where needed. No duplicate provider registry or runtime cycle.
+- Source-size guard: **Passed**. Changed source max effective nonempty lines: `claude-session.ts` 495, `claude-sdk-client.ts` 482; new reconciler 196. The 326-line changed delta in `claude-session-token-usage.ts` is intentional removal of the old event implementation and was split into a 56-line parser and 92-line emitter. No changed source exceeds 500. `git diff --check` passed.
 
 ## Persisted Data Transition Check
 
-- Approved decision: Directly Usable — No Migration (SR-004 `Persisted Data / State Transition Decision`).
-- Follows decision without unapproved migration/version-specific fallback: Yes. Existing v5 `metadata` handles optional absence and current signed/stripped payloads; no historical record or price snapshot rewritten.
-- Direct-use evidence: Unit test reads old v5 data with absent native key and round-trips signed and reset new turns; retry snapshot restoration cannot reintroduce pre-turn signed blocks after the reset checkpoint.
-- Migration implementation: N/A.
-- Deviation: None.
+- Approved decision: **Migration Required** for the one nullable `claude_sdk_usage_state_json` column (SR-008 retained through SR-012); no migration for monetary revision.
+- Prisma migration `20260923130000_add_claude_sdk_usage_state`, schema/codec, fixed `RUN_COLUMNS` startup assertion implemented. Existing server/standalone startup paths run migrations and assert readiness before normal writer service. Missing-column test fails closed. SQLite unit round-trips new state and old-null row; a resumed old-null row baselines rather than inventing zero. No historical backfill.
 
-## Environment Or Dependency Notes
+## Environment And Local Implementation Checks
 
-- Registry stable tags at implementation check: `@anthropic-ai/sdk` 0.128.0; `@anthropic-ai/claude-agent-sdk` 0.3.280. Both pinned exactly; lockfile resolves one of each.
-- Isolated worktree needed its workspace contract packages built before server TypeScript resolution; after building those artifacts and running Prisma generation, server build-target TypeScript passed. An intermediate typecheck immediately after generated contract cleanup failed only because `@autobyteus/application-sdk-contracts/dist` was absent; rerun after its build passed. Generated contract `dist/` is not part of the implementation commit.
-- No provider secret was read or emitted. New user credential-location note is passed downstream; approved no-key coverage remains required.
-
-## Local Implementation Checks Run
-
-- `pnpm install --lockfile-only --ignore-scripts`, then `pnpm install --ignore-scripts --frozen-lockfile`: passed (the initial offline install lacked the new Agent SDK tarball and was retried online).
-- `pnpm --filter autobyteus-ts build`: passed, including runtime dependency verification.
-- Workspace contract builds + `pnpm -C autobyteus-server-ts exec prisma generate` + `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`: passed. Final server typecheck also passed after regenerating the application contract artifact.
-- Focused shared unit run: 11 test files / 109 tests passed, including the added pre-persist native-turn mismatch and phase transport assertions. Includes catalog, mocked Responses and Anthropic send/stream, signed replay/reset, memory snapshot, compaction, notifier and recovery checks.
-- Focused Claude Agent SDK/server run: 5 test files / 65 tests passed (client, backend and session/tool-gating/manager).
-- `git diff --check`: passed.
-- IR-002 `pnpm --filter autobyteus-ts build`: passed, including runtime-dependency verification.
-- IR-002 focused shared tests: 3 files / 61 tests passed (catalog, native provider request payloads, Anthropic adapter). Server pricing tests: 2 files / 28 tests passed.
-- IR-002 built-catalog JSON projection comparison to captured IR-001 build: all 33 ordered rows, including 8 Anthropic rows, exactly equal in class name, schema JSON, metadata and config/pricing dictionary. One ordered aggregate, no duplicate IDs; build/test imports succeed without a catalog cycle.
-- IR-002 `git diff --check` and effective-line/delta audit: passed (382 / 158 / 10 effective lines; 168 / 162 / 11 changed-source lines).
-- Logs: `/tmp/new-models-final-implementation-tests.log`, `/tmp/new-models-claude-tests.log`, `/tmp/new-models-server-final.log` (IR-001); `/tmp/new-models-ir002-build.log`, `/tmp/new-models-ir002-tests.log`, `/tmp/new-models-ir002-server-tests.log` (IR-002). Local, non-authoritative convenience logs.
+- `pnpm -C autobyteus-server-ts exec prisma generate` previously passed; both changed shared contracts built; server `tsc -p tsconfig.build.json --noEmit` passed.
+- Focused server checks: 10 files / 73 tests passed (SDK client/normalizer/event/enrichment, selected fold and SQL accumulator, pricing provider/calculator, startup readiness, team event transport). Server and standalone startup tests: 2 files / 18 tests passed. Web Token Meter/store component tests: 2 files / 21 tests passed. GraphQL schema built locally; codegen ran from the generated local schema, then unrelated stale-schema regeneration churn was pruned to the relevant token-summary type/operation/fragment additions.
+- Whole-web TypeScript check was attempted twice but exceeded Node's default 4 GiB heap; a 6 GiB attempt was stopped under host memory pressure. It is **not** reported as passed. Server build-target typecheck and focused web tests passed.
+- These are implementation-scoped checks only, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable — no rendered frontend or interaction surface was changed. Existing selectors consume the catalog; no UI component or visual behavior was modified.
+- Affected surface: focused Token Meter primary summary/pricing details and team member aggregate. The existing Vue/Tailwind panel and adjacent cards/disclosure were preserved; no layout or style redesign.
+- Vue Test Utils rendered the component and interacted with the calculation disclosure in focused tests; the new selected raw model, no-Haiku content, configured-estimate and 1h-assumption notes were observed in rendered DOM. No standalone browser preview with an authenticated SDK run or screenshot was completed in this implementation round. Visual viewport/accessibility and live application states remain for API/E2E/browser validation; no claim of visual sign-off from DOM tests alone.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Independently inspect Opus 5.5 request preflight, fragmented signature/redacted/multi-tool stream assembly, exact assistant/tool-result replay, all-block independent-turn reset, retry/snapshot restore, and compaction deferral/reset with protected tool protocol.
-- Verify native signed material cannot escape through outward events, logs or GraphQL projections; notifier now explicitly excludes it.
-- Verify Standard price trust/tier/cache behavior with the server calculator; existing price snapshots must remain unchanged.
-- Observe Codex `model/list` and attempt an authenticated minimal turn for each advertised Astra/Sol/Luna using its exact ID; report per-model absence/access failures.
-- If downstream elects to use the user-supplied env-file location, load credentials only through established secret-safe mechanisms and report direct OpenAI/Anthropic live results separately from the no-key contracts. Do not print keys.
+- Review malformed/unavailable active-query selected metadata, mixed/reversed `modelUsage`, create→resume delta, selected switch, regression/retry, invalid or mismatching terminal split, zero writes and missing 1h rate. Check exact selected canonical price request under `ANTHROPIC` when SDK says `firstParty`; ensure SDK USD changes do not affect cost.
+- Verify SQLite rollback/restart and missing-column startup admission in both server/standalone, old-null snapshots, one analytics contribution, GraphQL/stream/Token Meter safe projection and no raw Haiku/secret leak. Preserve direct Messages/Codex regression coverage.
+- API/E2E must revalidate the **current** SR-011 scope after renewed source review. Any tiny locally authenticated Claude Agent SDK run should be guarded, cost-limited and separately reported; no direct paid Anthropic call or unverified command safety. Explicit user verification and delivery gates remain downstream.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-API/E2E Engineer owns broader executable coverage and live environment validation after independent source review. This handoff is implementation-scoped only; it does not claim API/E2E completion.
+**Yes.** IR-003 implementation checks are not independent source or API/E2E acceptance. Prior API-REV-001–003 and delivery rounds do not cover SR-011/SR-012.
