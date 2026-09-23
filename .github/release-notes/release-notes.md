@@ -1,10 +1,11 @@
-## What's New
-- Team and Agent Org handoff cards and authoring controls now show readable endpoint names without exposing internal rooted addresses.
-
-## Improvements
-- Duplicate endpoint names receive the shortest readable placement qualifier while exact canonical values continue to drive routing and saves.
-- Long handoff labels wrap cleanly, and narrow Team/Org cards stack without horizontal overflow while desktop keeps its three-column direction layout.
-- Unavailable endpoints show safe readable feedback, including a localized generic label for malformed identities.
+# Release Notes — Anthropic API Key Save
 
 ## Fixes
-- Fixed narrow Team handoff cards overflowing their container and hiding parts of long endpoint identities.
+
+- Saving an Anthropic API key no longer shows a false failure after the server has successfully stored it. Settings immediately shows **Configured**, reports success, and clears the key input.
+- The configured state remains correct after refresh or a later save; other provider rows are preserved. Genuine rejected saves still show an error and do not claim a new configured state.
+
+## Security And Scope
+
+- API keys remain write-only and are not returned in status or save responses. The encrypted vault and server credential contract are unchanged.
+- This repair changes the frontend credential-list update, not the user's stored credential or the Anthropic API itself.
