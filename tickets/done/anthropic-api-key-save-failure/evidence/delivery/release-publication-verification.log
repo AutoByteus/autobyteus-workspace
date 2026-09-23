@@ -1,0 +1,17 @@
+## GitHub release
+v1.4.75	false	false	2026-09-23T05:16:41Z	https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.75	21
+## Workflows
+Server Docker Release	completed	success	push	8e8f343551bb2813f02deee15f9fad24aa3a40fc	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563857
+Android APK Release	completed	success	push	8e8f343551bb2813f02deee15f9fad24aa3a40fc	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563883
+Release Messaging Gateway	completed	success	push	8e8f343551bb2813f02deee15f9fad24aa3a40fc	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563849
+Desktop Release	completed	success	push	8e8f343551bb2813f02deee15f9fad24aa3a40fc	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563870
+iOS App Store Connect Release	completed	success	push	8e8f343551bb2813f02deee15f9fad24aa3a40fc	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35821563809
+## Docker Hub
+1.4.75 sha256:b64a2d5104381b8ffed7473ed6ef8dbeb5f3f9ea38c07948ae0fa8fe0be34a76 [('amd64', 'linux', 'active'), ('arm64', 'linux', 'active')]
+latest sha256:b64a2d5104381b8ffed7473ed6ef8dbeb5f3f9ea38c07948ae0fa8fe0be34a76 [('amd64', 'linux', 'active'), ('arm64', 'linux', 'active')]
+## Downloaded checksums and metadata
+Android APK SHA-256 sidecar: OK
+Gateway archive SHA-256 sidecar: OK
+Gateway metadata version: 1.4.75
+Gateway release manifest: matches tagged repo manifest
+Desktop updater metadata: latest-linux-arm64.yml, latest-linux.yml, latest-mac.yml, latest.yml all version 1.4.75; seven URLs map to release assets; all six declared sizes equal release asset metadata

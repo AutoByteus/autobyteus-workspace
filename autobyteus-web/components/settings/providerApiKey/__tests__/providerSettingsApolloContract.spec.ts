@@ -14,6 +14,7 @@ import {
 } from '~/graphql/mutations/llm_provider_mutations'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { getApolloClient } from '~/utils/apolloClient'
+import ProviderAPIKeyManager from '../../ProviderAPIKeyManager.vue'
 import { useProviderApiKeySectionRuntime } from '../useProviderApiKeySectionRuntime'
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
@@ -118,6 +119,51 @@ describe('split provider credential/catalog Apollo contract', () => {
       .resolves.toMatchObject({ apiKeyConfigured: true })
     expect(client.mutate).toHaveBeenCalledTimes(1)
     expect(client.query).not.toHaveBeenCalled()
+  })
+
+  it('renders truthful failure and success feedback after a read-only credential load', async () => {
+    const initial = Object.freeze([{
+      provider: provider('ANTHROPIC'), apiKeyConfigured: false,
+    }])
+    const query = vi.fn().mockImplementation(({ query }: { query: unknown }) => Promise.resolve({ data: query === GET_PROVIDER_CREDENTIAL_SETTINGS
+      ? { providerCredentialSettings: initial }
+      : { providerModelCatalogSnapshots: [] },
+    }))
+    const mutate = vi.fn()
+      .mockRejectedValueOnce(new Error('save rejected'))
+      .mockResolvedValueOnce({ data: { saveProviderApiKey: {
+        provider: provider('ANTHROPIC'), apiKeyConfigured: true,
+      } } })
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const wrapper = mount(ProviderAPIKeyManager, {
+      global: { plugins: [pinia], mocks: { $t: (key: string) => key } },
+    })
+
+    try {
+      await vi.waitFor(() => expect(wrapper.find('input[type="password"]').exists()).toBe(true))
+      const input = wrapper.get('input[type="password"]')
+      const save = wrapper.findAll('button').find(button => button.text().includes('save_key'))!
+      await input.setValue('synthetic-key')
+      await save.trigger('click')
+      await vi.waitFor(() => expect(wrapper.find('.fixed.bg-red-100').exists()).toBe(true))
+      expect((input.element as HTMLInputElement).value).toBe('synthetic-key')
+      expect(wrapper.find('span.border-gray-100.bg-gray-50').exists()).toBe(true)
+
+      await save.trigger('click')
+      await vi.waitFor(() => expect(wrapper.find('.fixed.bg-green-100').exists()).toBe(true))
+      expect((input.element as HTMLInputElement).value).toBe('')
+      expect(wrapper.find('span.border-green-100.bg-green-50').exists()).toBe(true)
+      expect(JSON.stringify(useLLMProviderConfigStore().providerCredentialSettings)).not.toContain('synthetic-key')
+      expect(mutate).toHaveBeenCalledTimes(2)
+      expect(query).toHaveBeenCalledTimes(2)
+      expect(consoleError).toHaveBeenCalledTimes(1)
+    } finally {
+      wrapper.unmount()
+      consoleError.mockRestore()
+    }
   })
 
   it('keeps credentials out of local snapshot and targeted catalog documents', () => {

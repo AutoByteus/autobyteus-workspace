@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.4.74",
+  "version": "1.4.75",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "Apache-2.0",
@@ -50,6 +50,7 @@
     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
     "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",
+    "test:e2e:provider-api-key-save": "node tests/e2e/provider-api-key-save-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
     "test:e2e:task-agent-monitor-visibility": "node tests/e2e/task-agent-monitor-visibility-probe.mjs",
