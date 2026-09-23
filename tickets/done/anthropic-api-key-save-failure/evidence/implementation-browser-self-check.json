@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-23",
+  "scope": "Implementation-owned rendered frontend self-check, not API/E2E sign-off",
+  "isolation": "Nuxt dev renderer at port 40480 with BACKEND_NODE_BASE_URL set to unreachable localhost port 1; Playwright intercepted GraphQL with synthetic, value-free responses. No live backend or credential was contacted or modified.",
+  "viewport": "1440x900 Chromium",
+  "states": {
+    "initial": "Anthropic Not Configured; editor enabled",
+    "genuineRejection": "Failure toast shown; Not Configured retained; editor input retained",
+    "subsequentSuccess": "Configured badge and success toast shown immediately; editor input cleared; no false failure toast"
+  },
+  "graphqlOperations": [
+    "GetProviderModelCatalogSnapshots",
+    "GetProviderCredentialSettings",
+    "SaveProviderApiKey (synthetic rejection)",
+    "SaveProviderApiKey (value-free configured=true response)"
+  ],
+  "readOnlyMutationConsoleErrors": 0,
+  "screenshots": [
+    "implementation-before.png",
+    "implementation-after.png"
+  ],
+  "limitations": "Catalog response was intentionally empty in this UI-only probe; persistence across refresh and real backend behavior require independent isolated API/E2E validation. An unreachable /rest/health request produced an expected proxy warning in an earlier visual inspection but did not affect the later GraphQL-mocked interaction probe."
+}

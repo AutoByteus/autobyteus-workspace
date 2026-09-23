@@ -38,7 +38,12 @@ server's centralized encrypted vault:
   authoritative setup state and remain accurate after a Settings reload; and
 - successful credential/setup commands return the updated value-free setting
   (and specialized Gemini/Qwen setup state) so the client applies committed
-  state directly without refetching or awaiting a catalog operation.
+  state directly without refetching or awaiting a catalog operation. The
+  frontend credential store copies credential-query rows into a store-owned
+  array and publishes a replacement array for each returned setting; it must
+  not mutate Apollo's read-only result or an earlier published array. This
+  keeps successful saves from being mislabeled as failures after the server
+  has committed, while rejected saves leave the prior configured status intact.
 
 API Keys starts the credential read and local catalog snapshot independently,
 but it awaits only the credential read before rendering provider navigation and

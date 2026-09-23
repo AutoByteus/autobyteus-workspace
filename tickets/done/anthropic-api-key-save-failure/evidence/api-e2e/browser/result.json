@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-09-23T04:49:08.642Z",
+  "result": "Pass",
+  "platform": "linux-arm64",
+  "node": "v22.23.2",
+  "browserExecutable": "/usr/bin/chromium",
+  "cases": {
+    "API-CASE-003": {
+      "result": "Pass",
+      "rejected": true,
+      "inputRetained": true,
+      "statusUnchanged": true,
+      "backendUnchanged": true
+    },
+    "API-CASE-002": {
+      "result": "Pass",
+      "initialAnthropic": false,
+      "firstAndRepeatSave": true,
+      "refreshConfigured": true,
+      "unrelatedOpenAIUnchanged": true,
+      "valueFreeResponse": true,
+      "noReadOnlyError": true
+    }
+  },
+  "graphql": [
+    {
+      "operation": "GetProviderCredentialSettings",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": null,
+      "configured": null,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "SaveProviderApiKey",
+      "httpStatus": 200,
+      "errorCount": 1,
+      "providerId": null,
+      "configured": null,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "SaveProviderApiKey",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": "ANTHROPIC",
+      "configured": true,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "SaveProviderApiKey",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": "ANTHROPIC",
+      "configured": true,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "GetProviderCredentialSettings",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": null,
+      "configured": null,
+      "responseHasApiKey": false
+    }
+  ],
+  "browserErrors": [
+    "console: Failed to save API key: ApolloError: Synthetic rejected save\n    at new ApolloError (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=d1781578:59:28)\n    at http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=d1781578:129:47\n    at both (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=d1781578:35:31)\n    at http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=d1781578:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=d1781578:24:24)\n    at Object.next (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=d1781578:37:49)\n    at notifySubscription (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=d1781578:132:18)\n    at onNotify (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=d1781578:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:35203/_nuxt/@fs/home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=d1781578:225:5)"
+  ],
+  "cleanup": {
+    "frontend": "terminated:53083",
+    "backend": "terminated:53002",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/tmp/autobyteus-provider-key-e2e-wjM9tH",
+    "backendPort": 34969,
+    "frontendPort": 35203,
+    "liveCredentialTouched": false
+  },
+  "finishedAt": "2026-09-23T04:49:35.696Z"
+}
