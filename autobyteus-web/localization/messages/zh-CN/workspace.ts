@@ -1,6 +1,7 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.teamCopy.failed": "无法复制此团队配置：{error}。请点击新建（+）重试。" ,
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
@@ -24,8 +25,8 @@ const messages = {
   "workspace.runModelConfig.agentStopped": "此运行已停止。下次恢复时将使用已保存的模型设置。",
   "workspace.runModelConfig.agentActive": "请先停止此运行，再更改模型设置。",
   "workspace.runModelConfig.teamStopped": "此团队已停止。下次恢复时将使用已保存的模型设置。",
-  "workspace.runModelConfig.orgStopped": "此智能体组织已停止。下次恢复时将使用已保存的模型设置。",
-  "workspace.runModelConfig.orgActive": "此智能体组织处于活动状态或由其他流程管理。请先停止后再更改模型设置。",
+  "workspace.runModelConfig.orgStopped": "此组织已停止。保存模型设置和挂载团队的工作目录后，下次继续运行时生效。团队工作目录适用于其所有配置智能体；现有文件和历史记录不会移动。",
+  "workspace.runModelConfig.orgActive": "请先停止整个组织，再更改其设置。",
   "workspace.runModelConfig.teamActive": "请先停止此团队，再更改模型设置。",
   "workspace.runModelConfig.fixedIdentity": "运行时固定。替换模型的上下文容量不得小于已保存模型。",
   "workspace.runModelConfig.loadingCapacity": "正在检查替换模型的上下文容量…",

@@ -1,3 +1,4 @@
+import type { WorkspaceSelectorModel } from '~/types/workspace/WorkspaceSelectorModel'
 import type { ExistingRunModelOptionsState } from './ExistingRunModelConfigDraft'
 import type { AgentTeamAddress } from './AgentTeamAddress'
 import type { TeamAgentDisplayFields, TeamScopeDisplayFields } from './TeamRunFormDisplay'
@@ -13,7 +14,7 @@ export type ExistingTeamScopeFormModel = TeamScopeDisplayFields & Readonly<{
   mode: 'existing'
   originalModelIdentifier: string
   modelOptions?: ExistingRunModelOptionsState
-  storedWorkspace: ExistingWorkspaceDisplay | null
+  workspaceControl: WorkspaceSelectorModel
   directlyEdited: boolean
 }>
 

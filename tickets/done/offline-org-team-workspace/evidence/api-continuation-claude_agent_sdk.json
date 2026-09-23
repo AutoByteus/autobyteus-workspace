@@ -1,0 +1,2721 @@
+{
+  "runtime": "claude_agent_sdk",
+  "checkpoints": [
+    {
+      "label": "created",
+      "data": {
+        "runtimeKind": "claude_agent_sdk",
+        "model": "haiku",
+        "a": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A",
+        "b": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B",
+        "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+        "label": "api-workspace-claude_agent_sdk-1790068406277"
+      }
+    },
+    {
+      "label": "first-turn",
+      "data": [
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 1,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "initializing",
+                  "trigger": "member_command",
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 2,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "initializing",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 3,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "MEMBER_INPUT_MESSAGE",
+                "payload": {
+                  "message_id": "ff830890-3885-4387-9d39-c62b16f7431b",
+                  "dedupe_key": "d8bc07ab-df85-4193-8217-7bd93841d210",
+                  "content": "Remember continuity token CITRUS-c47aed28. Use run_bash to run pwd and create before.txt containing INITIAL in the current working directory, without cd or an absolute file path. Reply briefly with the pwd and token.",
+                  "input_origin": "user_message",
+                  "received_at": "2026-09-22T09:13:31.454Z",
+                  "context_file_paths": [],
+                  "sender_agent_run_id": null,
+                  "parent_communication_message_id": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 4,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 5,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TURN_STARTED",
+                "payload": {
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 6,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 7,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 8,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+                "payload": {
+                  "trace_id": "rt_1790068411454_c7303eb8-f3b7-4e24-8137-7210e507a690",
+                  "content": "## Agent Identity\n\n- Name: api-workspace-claude_agent_sdk-1790068406277\n- Description: Owned temporary API/E2E fixture\n\n### Responsibilities and Boundaries\n\nFollow the user validation steps exactly. Keep replies very brief. Use run_bash for requested cwd/file actions. Do not change directories or act on any unrelated paths. No autonomous work.\n\n## Team Instruction\n\nFollow user validation steps.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/team/lead\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+                  "ts": 1790068411.454
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "command_id": "fb2f6c54-fec8-4d81-bbdb-9a669af2f053",
+            "command_type": "SEND_MESSAGE",
+            "target_agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+            "state": "accepted",
+            "code": null,
+            "message": null
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 9,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 10,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_START",
+                "payload": {
+                  "segment_id": "call_00_GNZtebrXtZwCMZGVJb8j0139",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "segment_type": "tool_call",
+                  "metadata": {
+                    "tool_name": "Bash",
+                    "arguments": {
+                      "command": "pwd; printf 'INITIAL\\n' > before.txt; ls -l before.txt",
+                      "description": "Print cwd and create before.txt"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 11,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 12,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOOL_EXECUTION_STARTED",
+                "payload": {
+                  "invocation_id": "call_00_GNZtebrXtZwCMZGVJb8j0139",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "arguments": {
+                    "command": "pwd; printf 'INITIAL\\n' > before.txt; ls -l before.txt",
+                    "description": "Print cwd and create before.txt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 13,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 14,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOOL_APPROVED",
+                "payload": {
+                  "invocation_id": "call_00_GNZtebrXtZwCMZGVJb8j0139",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "reason": "auto_execute_tools_enabled"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 15,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 16,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_END",
+                "payload": {
+                  "segment_id": "call_00_GNZtebrXtZwCMZGVJb8j0139",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "metadata": {
+                    "tool_name": "Bash",
+                    "arguments": {
+                      "command": "pwd; printf 'INITIAL\\n' > before.txt; ls -l before.txt",
+                      "description": "Print cwd and create before.txt"
+                    },
+                    "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A\n-rw-r--r--@ 1 normy  staff  8 Sep 22 11:13 before.txt"
+                  },
+                  "interrupted": false,
+                  "reason": null,
+                  "failed": false,
+                  "error": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 17,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 18,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOOL_EXECUTION_SUCCEEDED",
+                "payload": {
+                  "invocation_id": "call_00_GNZtebrXtZwCMZGVJb8j0139",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "arguments": {
+                    "command": "pwd; printf 'INITIAL\\n' > before.txt; ls -l before.txt",
+                    "description": "Print cwd and create before.txt"
+                  },
+                  "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A\n-rw-r--r--@ 1 normy  staff  8 Sep 22 11:13 before.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 19,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 20,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_START",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453:claude-text:e9574fef-f65e-488d-af19-25c25103bc2c:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "segment_type": "text",
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 21,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 22,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_CONTENT",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453:claude-text:e9574fef-f65e-488d-af19-25c25103bc2c:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "segment_type": "text",
+                  "delta": "pwd: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A`\n\nToken: CITRUS-c47aed28 — before.txt created with `INITIAL`."
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 23,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 24,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_END",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453:claude-text:e9574fef-f65e-488d-af19-25c25103bc2c:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "metadata": null,
+                  "interrupted": false,
+                  "reason": null,
+                  "failed": false,
+                  "error": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 25,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 26,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOKEN_USAGE_UPDATED",
+                "payload": {
+                  "usage_event_id": "ba984b47-a60d-4de0-b6aa-7a8c79ee739b",
+                  "idempotency_key": "claude_sdk_usage:api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:69bbb2a0-21d9-4f9f-bcfb-dcb45cdcad3b:api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453:deepseek-v4-flash:25205:342:25547",
+                  "observed_at": "2026-09-22T09:13:36.972Z",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "llm_call_id": null,
+                  "model_provider": "ANTHROPIC",
+                  "model_identifier": "deepseek-v4-flash",
+                  "model_value": "deepseek-v4-flash",
+                  "usage_scope": "per_turn",
+                  "input_token_semantic": "base_excludes_cache",
+                  "standard_input_tokens": 25205,
+                  "cache_miss_input_tokens": 25205,
+                  "cache_read_input_tokens": 25088,
+                  "cache_creation_input_tokens": 0,
+                  "cache_creation_5m_input_tokens": null,
+                  "cache_creation_1h_input_tokens": null,
+                  "cache_state": "positive",
+                  "reasoning_output_tokens": 0,
+                  "billable_output_tokens": 342,
+                  "meter_delta_input_tokens": 50293,
+                  "meter_delta_output_tokens": 342,
+                  "meter_delta_total_tokens": 50635,
+                  "input_price_per_million": null,
+                  "output_price_per_million": null,
+                  "cached_input_read_price_per_million": null,
+                  "cached_input_write_price_per_million": null,
+                  "cached_input_write_5m_price_per_million": null,
+                  "cached_input_write_1h_price_per_million": null,
+                  "estimated_api_input_cost": null,
+                  "estimated_api_standard_input_cost": null,
+                  "estimated_api_cache_read_input_cost": null,
+                  "estimated_api_cache_creation_input_cost": null,
+                  "estimated_api_cache_creation_5m_input_cost": null,
+                  "estimated_api_cache_creation_1h_input_cost": null,
+                  "estimated_api_output_cost": null,
+                  "estimated_api_reasoning_output_cost": null,
+                  "estimated_api_total_cost": null,
+                  "currency": null,
+                  "api_cost_status": "price_missing",
+                  "missing_price_dimensions": [
+                    "model_not_found"
+                  ],
+                  "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+                  "selected_pricing_tier_id": null,
+                  "latest_prompt_tokens": 50293,
+                  "effective_context_window_tokens": 200000,
+                  "context_window_usage_percent": 25.1465,
+                  "run_summary_after_event": {
+                    "run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+                    "agent_definition_id": "api-workspace-claude-agent-sdk-1790068406277",
+                    "workspace_id": "agent_ws_8e75e6cc71c336c741ae95ac3d4852b20a2a5af4ecdd486918a15f1988facc09",
+                    "gross_input_tokens": 50293,
+                    "standard_input_tokens": 25205,
+                    "cache_miss_input_tokens": 25205,
+                    "cache_read_input_tokens": 25088,
+                    "cache_creation_input_tokens": 0,
+                    "cache_creation_5m_input_tokens": 0,
+                    "cache_creation_1h_input_tokens": 0,
+                    "output_tokens": 342,
+                    "reasoning_output_tokens": 0,
+                    "billable_output_tokens": 342,
+                    "total_tokens": 50635,
+                    "cache_read_input_token_rate": 0.49883681625673554,
+                    "standard_input_token_rate": 0.5011631837432645,
+                    "cache_creation_input_token_rate": 0,
+                    "cache_state": "positive",
+                    "estimated_api_input_cost": null,
+                    "estimated_api_standard_input_cost": null,
+                    "estimated_api_cache_read_input_cost": null,
+                    "estimated_api_cache_creation_input_cost": null,
+                    "estimated_api_cache_creation_5m_input_cost": null,
+                    "estimated_api_cache_creation_1h_input_cost": null,
+                    "estimated_api_output_cost": null,
+                    "estimated_api_reasoning_output_cost": null,
+                    "estimated_api_total_cost": null,
+                    "currency": null,
+                    "api_cost_status": "price_missing",
+                    "missing_price_dimensions": [
+                      "model_not_found"
+                    ],
+                    "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+                    "selected_pricing_tier_id": null,
+                    "unit_prices": {
+                      "standard_input": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "cache_read_input": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "cache_creation_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "cache_creation_5m_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "cache_creation_1h_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "output": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "reasoning_output": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      }
+                    },
+                    "latest_prompt_tokens": 50293,
+                    "effective_context_window_tokens": 200000,
+                    "context_window_usage_percent": 25.1465,
+                    "latest_model_provider": "ANTHROPIC",
+                    "latest_model_identifier": "deepseek-v4-flash",
+                    "latest_runtime_kind": "claude_agent_sdk",
+                    "usage_report_count": 1,
+                    "updated_at": "2026-09-22T09:13:36.972Z"
+                  },
+                  "quality_flags": [
+                    "claude_usage_model_usage_mismatch",
+                    "model_identifier_differs_from_run_context"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 27,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TURN_COMPLETED",
+                "payload": {
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068411453",
+                  "reason": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 28,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "idle",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "stopped-save-reopen-no-activation",
+      "data": {
+        "saved": {
+          "success": true,
+          "outcome": "UPDATED",
+          "message": "AgentOrg settings saved.",
+          "canonical": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "createdAt": "2026-09-22T09:13:31.131Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+              "orgDefinitionName": "api-workspace-claude_agent_sdk-1790068406277",
+              "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "haiku",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+              },
+              "members": [
+                {
+                  "address": "/direct",
+                  "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                  }
+                },
+                {
+                  "address": "/team",
+                  "teamDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "api_workspace_claude_agent_sdk_1790068406277_c73b222a93ea43d787f0d6cdc3e52a5c",
+                  "coordinatorAddress": "/team/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                  },
+                  "members": [
+                    {
+                      "address": "/team/lead",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+                      "platformAgentRunId": "69bbb2a0-21d9-4f9f-bcfb-dcb45cdcad3b",
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                      }
+                    },
+                    {
+                      "address": "/team/unused",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                },
+                {
+                  "address": "/sibling",
+                  "teamDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85",
+                  "coordinatorAddress": "/sibling/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                  },
+                  "members": [
+                    {
+                      "address": "/sibling/lead",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                      }
+                    },
+                    {
+                      "address": "/sibling/unused",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                }
+              ],
+              "taskExecutions": []
+            }
+          },
+          "isActive": false,
+          "fieldErrors": []
+        },
+        "read": {
+          "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+          "executionTree": {
+            "schemaVersion": 1,
+            "subjectKind": "agent_org",
+            "createdAt": "2026-09-22T09:13:31.131Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+              "orgDefinitionName": "api-workspace-claude_agent_sdk-1790068406277",
+              "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "haiku",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+              },
+              "members": [
+                {
+                  "address": "/direct",
+                  "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                  }
+                },
+                {
+                  "address": "/team",
+                  "teamDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "api_workspace_claude_agent_sdk_1790068406277_c73b222a93ea43d787f0d6cdc3e52a5c",
+                  "coordinatorAddress": "/team/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                  },
+                  "members": [
+                    {
+                      "address": "/team/lead",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+                      "platformAgentRunId": "69bbb2a0-21d9-4f9f-bcfb-dcb45cdcad3b",
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                      }
+                    },
+                    {
+                      "address": "/team/unused",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                },
+                {
+                  "address": "/sibling",
+                  "teamDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85",
+                  "coordinatorAddress": "/sibling/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "skillAccessMode": "PRELOADED_ONLY",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                  },
+                  "members": [
+                    {
+                      "address": "/sibling/lead",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                      }
+                    },
+                    {
+                      "address": "/sibling/unused",
+                      "agentDefinitionId": "api-workspace-claude-agent-sdk-1790068406277",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "claude_agent_sdk",
+                        "llmModelIdentifier": "haiku",
+                        "llmConfig": null,
+                        "autoExecuteTools": true,
+                        "skillAccessMode": "PRELOADED_ONLY",
+                        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                }
+              ],
+              "taskExecutions": []
+            }
+          },
+          "isActive": false,
+          "editability": {
+            "editable": true,
+            "reason": null
+          }
+        }
+      }
+    },
+    {
+      "label": "continued-turn",
+      "data": [
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 1,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "initializing",
+                  "trigger": "member_command",
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 2,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "initializing",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 3,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "MEMBER_INPUT_MESSAGE",
+                "payload": {
+                  "message_id": "3646270a-0299-4f81-bd17-34edffcf85b3",
+                  "dedupe_key": "15f58e16-f0e8-4dae-a0db-c857cdf44db5",
+                  "content": "Use run_bash to run pwd and write the exact continuity token from our previous turn into continued.txt in the current working directory, without cd or an absolute file path. Reply briefly with pwd and that token.",
+                  "input_origin": "user_message",
+                  "received_at": "2026-09-22T09:13:39.835Z",
+                  "context_file_paths": [],
+                  "sender_agent_run_id": null,
+                  "parent_communication_message_id": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 4,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 5,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TURN_STARTED",
+                "payload": {
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 6,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "command_id": "924a882f-3a8a-4d29-ae1d-fd0d1102c81d",
+            "command_type": "SEND_MESSAGE",
+            "target_agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+            "state": "accepted",
+            "code": null,
+            "message": null
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 7,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 8,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+                "payload": {
+                  "trace_id": "rt_1790068419835_87022adb-3f6a-476e-aaea-24dafb27bc27",
+                  "content": "## Agent Identity\n\n- Name: api-workspace-claude_agent_sdk-1790068406277\n- Description: Owned temporary API/E2E fixture\n\n### Responsibilities and Boundaries\n\nFollow the user validation steps exactly. Keep replies very brief. Use run_bash for requested cwd/file actions. Do not change directories or act on any unrelated paths. No autonomous work.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/team/lead\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+                  "ts": 1790068419.835
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 9,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 10,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_START",
+                "payload": {
+                  "segment_id": "call_00_ET_xrAz5Lqy5umEgYgfwWgH9352",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "segment_type": "tool_call",
+                  "metadata": {
+                    "tool_name": "Bash",
+                    "arguments": {
+                      "command": "pwd; printf 'CITRUS-c47aed28\\n' > continued.txt; cat continued.txt",
+                      "description": "Print cwd and write token to continued.txt"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 11,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 12,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOOL_EXECUTION_STARTED",
+                "payload": {
+                  "invocation_id": "call_00_ET_xrAz5Lqy5umEgYgfwWgH9352",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "arguments": {
+                    "command": "pwd; printf 'CITRUS-c47aed28\\n' > continued.txt; cat continued.txt",
+                    "description": "Print cwd and write token to continued.txt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 13,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 14,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOOL_APPROVED",
+                "payload": {
+                  "invocation_id": "call_00_ET_xrAz5Lqy5umEgYgfwWgH9352",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "reason": "auto_execute_tools_enabled"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 15,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 16,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_END",
+                "payload": {
+                  "segment_id": "call_00_ET_xrAz5Lqy5umEgYgfwWgH9352",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "metadata": {
+                    "tool_name": "Bash",
+                    "arguments": {
+                      "command": "pwd; printf 'CITRUS-c47aed28\\n' > continued.txt; cat continued.txt",
+                      "description": "Print cwd and write token to continued.txt"
+                    },
+                    "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B\nCITRUS-c47aed28"
+                  },
+                  "interrupted": false,
+                  "reason": null,
+                  "failed": false,
+                  "error": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 17,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 18,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOOL_EXECUTION_SUCCEEDED",
+                "payload": {
+                  "invocation_id": "call_00_ET_xrAz5Lqy5umEgYgfwWgH9352",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "arguments": {
+                    "command": "pwd; printf 'CITRUS-c47aed28\\n' > continued.txt; cat continued.txt",
+                    "description": "Print cwd and write token to continued.txt"
+                  },
+                  "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B\nCITRUS-c47aed28"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 19,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 20,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_START",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835:claude-text:6a23949a-8221-4892-994b-7b86eb690081:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "segment_type": "text",
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 21,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 22,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_CONTENT",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835:claude-text:6a23949a-8221-4892-994b-7b86eb690081:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "segment_type": "text",
+                  "delta": "pwd: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B`\n\nToken: CITRUS-c47aed28 — written to continued.txt.\n\nNote: cwd differs from the previous turn (…/A → …/B); no `cd` was used here."
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 23,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 24,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "SEGMENT_END",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835:claude-text:6a23949a-8221-4892-994b-7b86eb690081:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "metadata": null,
+                  "interrupted": false,
+                  "reason": null,
+                  "failed": false,
+                  "error": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 25,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 26,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TOKEN_USAGE_UPDATED",
+                "payload": {
+                  "usage_event_id": "af94d7c5-2c8e-41ce-9d22-aca790fae3d5",
+                  "idempotency_key": "claude_sdk_usage:api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:69bbb2a0-21d9-4f9f-bcfb-dcb45cdcad3b:api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835:deepseek-v4-flash:25629:242:25871",
+                  "observed_at": "2026-09-22T09:13:47.135Z",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "llm_call_id": null,
+                  "model_provider": "ANTHROPIC",
+                  "model_identifier": "deepseek-v4-flash",
+                  "model_value": "deepseek-v4-flash",
+                  "usage_scope": "per_turn",
+                  "input_token_semantic": "base_excludes_cache",
+                  "standard_input_tokens": 25629,
+                  "cache_miss_input_tokens": 25629,
+                  "cache_read_input_tokens": 25472,
+                  "cache_creation_input_tokens": 0,
+                  "cache_creation_5m_input_tokens": null,
+                  "cache_creation_1h_input_tokens": null,
+                  "cache_state": "positive",
+                  "reasoning_output_tokens": 0,
+                  "billable_output_tokens": 242,
+                  "meter_delta_input_tokens": 51101,
+                  "meter_delta_output_tokens": 242,
+                  "meter_delta_total_tokens": 51343,
+                  "input_price_per_million": null,
+                  "output_price_per_million": null,
+                  "cached_input_read_price_per_million": null,
+                  "cached_input_write_price_per_million": null,
+                  "cached_input_write_5m_price_per_million": null,
+                  "cached_input_write_1h_price_per_million": null,
+                  "estimated_api_input_cost": null,
+                  "estimated_api_standard_input_cost": null,
+                  "estimated_api_cache_read_input_cost": null,
+                  "estimated_api_cache_creation_input_cost": null,
+                  "estimated_api_cache_creation_5m_input_cost": null,
+                  "estimated_api_cache_creation_1h_input_cost": null,
+                  "estimated_api_output_cost": null,
+                  "estimated_api_reasoning_output_cost": null,
+                  "estimated_api_total_cost": null,
+                  "currency": null,
+                  "api_cost_status": "price_missing",
+                  "missing_price_dimensions": [
+                    "model_not_found"
+                  ],
+                  "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+                  "selected_pricing_tier_id": null,
+                  "latest_prompt_tokens": 51101,
+                  "effective_context_window_tokens": 200000,
+                  "context_window_usage_percent": 25.5505,
+                  "run_summary_after_event": {
+                    "run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+                    "agent_definition_id": "api-workspace-claude-agent-sdk-1790068406277",
+                    "workspace_id": "agent_ws_8e75e6cc71c336c741ae95ac3d4852b20a2a5af4ecdd486918a15f1988facc09",
+                    "gross_input_tokens": 101394,
+                    "standard_input_tokens": 50834,
+                    "cache_miss_input_tokens": 50834,
+                    "cache_read_input_tokens": 50560,
+                    "cache_creation_input_tokens": 0,
+                    "cache_creation_5m_input_tokens": 0,
+                    "cache_creation_1h_input_tokens": 0,
+                    "output_tokens": 584,
+                    "reasoning_output_tokens": 0,
+                    "billable_output_tokens": 584,
+                    "total_tokens": 101978,
+                    "cache_read_input_token_rate": 0.49864883523679904,
+                    "standard_input_token_rate": 0.501351164763201,
+                    "cache_creation_input_token_rate": 0,
+                    "cache_state": "positive",
+                    "estimated_api_input_cost": null,
+                    "estimated_api_standard_input_cost": null,
+                    "estimated_api_cache_read_input_cost": null,
+                    "estimated_api_cache_creation_input_cost": null,
+                    "estimated_api_cache_creation_5m_input_cost": null,
+                    "estimated_api_cache_creation_1h_input_cost": null,
+                    "estimated_api_output_cost": null,
+                    "estimated_api_reasoning_output_cost": null,
+                    "estimated_api_total_cost": null,
+                    "currency": null,
+                    "api_cost_status": "price_missing",
+                    "missing_price_dimensions": [
+                      "model_not_found"
+                    ],
+                    "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+                    "selected_pricing_tier_id": null,
+                    "unit_prices": {
+                      "standard_input": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "cache_read_input": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "cache_creation_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "cache_creation_5m_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "cache_creation_1h_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "output": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "reasoning_output": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      }
+                    },
+                    "latest_prompt_tokens": 51101,
+                    "effective_context_window_tokens": 200000,
+                    "context_window_usage_percent": 25.5505,
+                    "latest_model_provider": "ANTHROPIC",
+                    "latest_model_identifier": "deepseek-v4-flash",
+                    "latest_runtime_kind": "claude_agent_sdk",
+                    "usage_report_count": 2,
+                    "updated_at": "2026-09-22T09:13:47.135Z"
+                  },
+                  "quality_flags": [
+                    "model_identifier_differs_from_run_context"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 27,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "TURN_COMPLETED",
+                "payload": {
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc:turn:1790068419835",
+                  "reason": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 28,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/lead",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "idle",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "never-started-child",
+      "data": [
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 29,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "initializing",
+                  "trigger": "member_command",
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 30,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "initializing",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 31,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "MEMBER_INPUT_MESSAGE",
+                "payload": {
+                  "message_id": "58c22315-68d4-4993-85ed-3cc5326c4c14",
+                  "dedupe_key": "a29d1d49-8b79-4b74-af7d-4a608c7994cf",
+                  "content": "Use run_bash to run pwd and write UNUSED into unused.txt in the current working directory, without cd or an absolute file path. Reply briefly with pwd.",
+                  "input_origin": "user_message",
+                  "received_at": "2026-09-22T09:13:49.074Z",
+                  "context_file_paths": [],
+                  "sender_agent_run_id": null,
+                  "parent_communication_message_id": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 32,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 33,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "TURN_STARTED",
+                "payload": {
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 34,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "command_id": "971a3a6f-721b-4ee7-a89d-82c1968bb3ae",
+            "command_type": "SEND_MESSAGE",
+            "target_agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+            "state": "accepted",
+            "code": null,
+            "message": null
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 35,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 36,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+                "payload": {
+                  "trace_id": "rt_1790068429074_d9b17c12-01e7-4897-85a4-25fe85994504",
+                  "content": "## Agent Identity\n\n- Name: api-workspace-claude_agent_sdk-1790068406277\n- Description: Owned temporary API/E2E fixture\n\n### Responsibilities and Boundaries\n\nFollow the user validation steps exactly. Keep replies very brief. Use run_bash for requested cwd/file actions. Do not change directories or act on any unrelated paths. No autonomous work.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/team/unused\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+                  "ts": 1790068429.074
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 37,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 38,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "SEGMENT_START",
+                "payload": {
+                  "segment_id": "call_00_ET_toTCDhzVYJrkA33kP1gu8604",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "segment_type": "tool_call",
+                  "metadata": {
+                    "tool_name": "Bash",
+                    "arguments": {
+                      "command": "pwd && echo UNUSED > unused.txt",
+                      "description": "Print cwd and write unused.txt"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 39,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 40,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "TOOL_EXECUTION_STARTED",
+                "payload": {
+                  "invocation_id": "call_00_ET_toTCDhzVYJrkA33kP1gu8604",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "arguments": {
+                    "command": "pwd && echo UNUSED > unused.txt",
+                    "description": "Print cwd and write unused.txt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 41,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 42,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "TOOL_APPROVED",
+                "payload": {
+                  "invocation_id": "call_00_ET_toTCDhzVYJrkA33kP1gu8604",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "reason": "auto_execute_tools_enabled"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 43,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 44,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "SEGMENT_END",
+                "payload": {
+                  "segment_id": "call_00_ET_toTCDhzVYJrkA33kP1gu8604",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "metadata": {
+                    "tool_name": "Bash",
+                    "arguments": {
+                      "command": "pwd && echo UNUSED > unused.txt",
+                      "description": "Print cwd and write unused.txt"
+                    },
+                    "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                  },
+                  "interrupted": false,
+                  "reason": null,
+                  "failed": false,
+                  "error": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 45,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 46,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "TOOL_EXECUTION_SUCCEEDED",
+                "payload": {
+                  "invocation_id": "call_00_ET_toTCDhzVYJrkA33kP1gu8604",
+                  "tool_name": "Bash",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "arguments": {
+                    "command": "pwd && echo UNUSED > unused.txt",
+                    "description": "Print cwd and write unused.txt"
+                  },
+                  "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 47,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 48,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "SEGMENT_START",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073:claude-text:602866d1-1136-49ef-b023-f6cae6e7223c:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "segment_type": "text",
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 49,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 50,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "SEGMENT_CONTENT",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073:claude-text:602866d1-1136-49ef-b023-f6cae6e7223c:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "segment_type": "text",
+                  "delta": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B\n\nWrote `unused.txt` there with `UNUSED`."
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 51,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 52,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "SEGMENT_END",
+                "payload": {
+                  "segment_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073:claude-text:602866d1-1136-49ef-b023-f6cae6e7223c:0",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "metadata": null,
+                  "interrupted": false,
+                  "reason": null,
+                  "failed": false,
+                  "error": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 53,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "running",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 54,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "TOKEN_USAGE_UPDATED",
+                "payload": {
+                  "usage_event_id": "a1ce5ef6-c9e6-4d33-8b41-f85bda5d2c01",
+                  "idempotency_key": "claude_sdk_usage:api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:d7c91e88-59ec-41fd-9ead-f40c3358ff5d:api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073:deepseek-v4-flash:25088:411:25499",
+                  "observed_at": "2026-09-22T09:13:58.392Z",
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "llm_call_id": null,
+                  "model_provider": "ANTHROPIC",
+                  "model_identifier": "deepseek-v4-flash",
+                  "model_value": "deepseek-v4-flash",
+                  "usage_scope": "per_turn",
+                  "input_token_semantic": "base_excludes_cache",
+                  "standard_input_tokens": 25088,
+                  "cache_miss_input_tokens": 25088,
+                  "cache_read_input_tokens": 24960,
+                  "cache_creation_input_tokens": 0,
+                  "cache_creation_5m_input_tokens": null,
+                  "cache_creation_1h_input_tokens": null,
+                  "cache_state": "positive",
+                  "reasoning_output_tokens": 0,
+                  "billable_output_tokens": 411,
+                  "meter_delta_input_tokens": 50048,
+                  "meter_delta_output_tokens": 411,
+                  "meter_delta_total_tokens": 50459,
+                  "input_price_per_million": null,
+                  "output_price_per_million": null,
+                  "cached_input_read_price_per_million": null,
+                  "cached_input_write_price_per_million": null,
+                  "cached_input_write_5m_price_per_million": null,
+                  "cached_input_write_1h_price_per_million": null,
+                  "estimated_api_input_cost": null,
+                  "estimated_api_standard_input_cost": null,
+                  "estimated_api_cache_read_input_cost": null,
+                  "estimated_api_cache_creation_input_cost": null,
+                  "estimated_api_cache_creation_5m_input_cost": null,
+                  "estimated_api_cache_creation_1h_input_cost": null,
+                  "estimated_api_output_cost": null,
+                  "estimated_api_reasoning_output_cost": null,
+                  "estimated_api_total_cost": null,
+                  "currency": null,
+                  "api_cost_status": "price_missing",
+                  "missing_price_dimensions": [
+                    "model_not_found"
+                  ],
+                  "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+                  "selected_pricing_tier_id": null,
+                  "latest_prompt_tokens": 50048,
+                  "effective_context_window_tokens": 200000,
+                  "context_window_usage_percent": 25.024,
+                  "run_summary_after_event": {
+                    "run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+                    "agent_definition_id": "api-workspace-claude-agent-sdk-1790068406277",
+                    "workspace_id": "agent_ws_cc1a526a24a991e0a14893c94ddc21f3267169da355fa7b54c78a04852970c18",
+                    "gross_input_tokens": 50048,
+                    "standard_input_tokens": 25088,
+                    "cache_miss_input_tokens": 25088,
+                    "cache_read_input_tokens": 24960,
+                    "cache_creation_input_tokens": 0,
+                    "cache_creation_5m_input_tokens": 0,
+                    "cache_creation_1h_input_tokens": 0,
+                    "output_tokens": 411,
+                    "reasoning_output_tokens": 0,
+                    "billable_output_tokens": 411,
+                    "total_tokens": 50459,
+                    "cache_read_input_token_rate": 0.49872122762148335,
+                    "standard_input_token_rate": 0.5012787723785166,
+                    "cache_creation_input_token_rate": 0,
+                    "cache_state": "positive",
+                    "estimated_api_input_cost": null,
+                    "estimated_api_standard_input_cost": null,
+                    "estimated_api_cache_read_input_cost": null,
+                    "estimated_api_cache_creation_input_cost": null,
+                    "estimated_api_cache_creation_5m_input_cost": null,
+                    "estimated_api_cache_creation_1h_input_cost": null,
+                    "estimated_api_output_cost": null,
+                    "estimated_api_reasoning_output_cost": null,
+                    "estimated_api_total_cost": null,
+                    "currency": null,
+                    "api_cost_status": "price_missing",
+                    "missing_price_dimensions": [
+                      "model_not_found"
+                    ],
+                    "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+                    "selected_pricing_tier_id": null,
+                    "unit_prices": {
+                      "standard_input": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "cache_read_input": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "cache_creation_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "cache_creation_5m_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "cache_creation_1h_input": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      },
+                      "output": {
+                        "status": "missing",
+                        "price_per_million": null
+                      },
+                      "reasoning_output": {
+                        "status": "not_applicable",
+                        "price_per_million": null
+                      }
+                    },
+                    "latest_prompt_tokens": 50048,
+                    "effective_context_window_tokens": 200000,
+                    "context_window_usage_percent": 25.024,
+                    "latest_model_provider": "ANTHROPIC",
+                    "latest_model_identifier": "deepseek-v4-flash",
+                    "latest_runtime_kind": "claude_agent_sdk",
+                    "usage_report_count": 1,
+                    "updated_at": "2026-09-22T09:13:58.392Z"
+                  },
+                  "quality_flags": [
+                    "claude_usage_model_usage_mismatch",
+                    "model_identifier_differs_from_run_context"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 55,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "TURN_COMPLETED",
+                "payload": {
+                  "turn_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b:turn:1790068429073",
+                  "reason": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "ROOT_EXECUTION_EVENT",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+            "change_sequence": 56,
+            "event": {
+              "kind": "agent_presentation",
+              "member_address": "/team/unused",
+              "agent_run_id": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b",
+              "message": {
+                "type": "AGENT_STATUS",
+                "payload": {
+                  "status": "idle",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "result": "Pass",
+  "fixture": {
+    "runtimeKind": "claude_agent_sdk",
+    "model": "haiku",
+    "a": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A",
+    "b": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B",
+    "orgRunId": "api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089",
+    "label": "api-workspace-claude_agent_sdk-1790068406277"
+  },
+  "identities": {
+    "lead": "api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc",
+    "unused": "api_workspace_claude_agent_sdk_1790068406277_9dc63cf503604e8cbc6810cba1ea722b"
+  },
+  "token": "CITRUS-c47aed28",
+  "stop": {
+    "success": true,
+    "message": "Agent organization run terminated successfully."
+  }
+}

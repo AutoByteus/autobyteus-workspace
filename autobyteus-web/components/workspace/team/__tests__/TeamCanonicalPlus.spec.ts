@@ -12,7 +12,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import { useExistingRunModelConfigStore } from '~/stores/existingRunModelConfigStore'
+import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService'
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
@@ -80,7 +80,7 @@ async function saveAndBack(differentMemberModel = false) {
   const source = await hydrate(), panel = mounted(RunPanel); await flushPromises()
   await panel.get('input[type="number"]').setValue('0'); await flushPromises()
   if (differentMemberModel) {
-    useExistingRunModelConfigStore().updateTeamScopeModelConfig('/lead', { llmModelIdentifier: 'replacement-model', llmConfig: { budget: 0 } })
+    useExistingRunConfigStore().updateTeamScopeModelConfig('/lead', { llmModelIdentifier: 'replacement-model', llmConfig: { budget: 0 } })
     await flushPromises()
   }
   expect(panel.get('[data-test="save-existing-model-config"]').attributes('disabled')).toBeUndefined()

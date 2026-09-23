@@ -1,0 +1,13 @@
+{
+  "head": "66213bd539ed422d39d101bdd218d73760a4100f",
+  "changedPathsFromApiRev001": [
+    "autobyteus-web/components/fileExplorer/FileExplorer.vue",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts",
+    "autobyteus-web/components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts"
+  ],
+  "hashes": {
+    "autobyteus-web/components/fileExplorer/FileExplorer.vue": "bc608580292f84b04e4a5d0df462417955d563f2a25136079a9425a5c3368cf3",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts": "fd5eafdf329bf61b08027325eccd7e3340078fb4bb114a70fd410fe303e609ea",
+    "autobyteus-web/components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts": "e3eca35391d81038d99e41cdebfc33d0302656b4ebbaa197b334d505f9c39e51"
+  }
+}

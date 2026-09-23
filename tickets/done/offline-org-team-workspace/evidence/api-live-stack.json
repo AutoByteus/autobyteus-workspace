@@ -1,0 +1,10 @@
+{
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090",
+  "database": {
+    "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-live-4425-1790068197090.db",
+    "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-live-4425-1790068197090.db",
+    "rootKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-live-4425-1790068197090.db.secret.key"
+  },
+  "serverUrl": "http://127.0.0.1:55566",
+  "pid": 20774
+}

@@ -289,9 +289,21 @@ about that incident or a guarantee against every future timing interleaving.
 For a focused configured direct Agent or Agent inside a mounted Team, the header
 gear opens the enclosing AgentOrg's complete canonical run configuration. The
 shared launch/existing form shows the Org root, direct Agents, mounted Teams and
-their configured Agents in the familiar hierarchy. Runtime, Workspace, tool
-approval and skill policy remain locked. While the enclosing Org is stopped,
-explicit **Save** can change compatible same-runtime models (verified
+their configured Agents in the familiar hierarchy. Runtime, tool approval and
+skill policy remain locked. Workspace stays locked on the Org root, direct Agents
+and individual Team Agents. In an eligible stopped Org, the mounted Team's
+**Workspace Directory** selector supports Existing or New directories. One explicit
+**Save** updates that Team's default and every configured child, including Agents
+with custom model/runtime settings or a previously distinct workspace. Sibling
+Teams, direct Agents and historical task snapshots are unchanged. Model and
+workspace edits are saved together; a Team workspace draft never resets models.
+No project files, conversation history or provider sessions are moved or reset.
+Fresh delegation uses the updated configured source. If the saved workspace's
+metadata cannot be loaded, Files shows unavailable feedback rather than the old
+workspace or an unrelated launch draft; reopening Settings retries canonical
+metadata without repeating Save. Existing launch drafts are preserved.
+While the enclosing Org is stopped, explicit **Save** can also change compatible
+same-runtime models (verified
 equal/larger context capacity) and schema-valid parameters across configured
 scopes. Parent-linked scopes follow root or Team edits until directly edited;
 pre-existing and directly edited overrides stay independent.

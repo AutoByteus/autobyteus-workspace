@@ -1,0 +1,34 @@
+{
+  "head": "3a52e67ba72ee53497f5d9492f406289f23f28f3",
+  "production_or_test_edits_this_round": false,
+  "files": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorer.vue",
+      "base_sha256": "65320c567c3b25bcc1690c82c143a135cc724953e0a537120d904942abd2d9a6",
+      "reviewed_sha256": "65320c567c3b25bcc1690c82c143a135cc724953e0a537120d904942abd2d9a6",
+      "working_sha256": "65320c567c3b25bcc1690c82c143a135cc724953e0a537120d904942abd2d9a6",
+      "all_equal": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceMetadataActions.ts",
+      "base_sha256": "c197be9ee902e6bff6b8fbbf76ab9856e12aa4080c90363f410c4874b6d0984c",
+      "reviewed_sha256": "c197be9ee902e6bff6b8fbbf76ab9856e12aa4080c90363f410c4874b6d0984c",
+      "working_sha256": "c197be9ee902e6bff6b8fbbf76ab9856e12aa4080c90363f410c4874b6d0984c",
+      "all_equal": true
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "base_sha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9",
+      "reviewed_sha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9",
+      "working_sha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9",
+      "all_equal": true
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceFileExplorer.ts",
+      "base_sha256": "0933d26006b8ab89a76597a71045c50bd41b97dfef15133a3ab351a3e4fc09e3",
+      "reviewed_sha256": "0933d26006b8ab89a76597a71045c50bd41b97dfef15133a3ab351a3e4fc09e3",
+      "working_sha256": "0933d26006b8ab89a76597a71045c50bd41b97dfef15133a3ab351a3e4fc09e3",
+      "all_equal": true
+    }
+  ]
+}

@@ -86,12 +86,18 @@ export class AgentOrgRunModelConfigPatchInput {
   @Field(() => GraphQLJSON, { nullable: true }) llmConfig!: Record<string, unknown> | null;
 }
 @InputType()
-export class UpdateStoppedAgentOrgRunModelConfigsInput {
+export class AgentOrgTeamWorkspacePatchInput {
+  @Field(() => String) teamAddress!: string;
+  @Field(() => String) workspaceRootPath!: string;
+}
+@InputType()
+export class UpdateStoppedAgentOrgRunConfigInput {
   @Field(() => String) orgRunId!: string;
-  @Field(() => [AgentOrgRunModelConfigPatchInput]) patches!: AgentOrgRunModelConfigPatchInput[];
+  @Field(() => [AgentOrgRunModelConfigPatchInput]) modelPatches!: AgentOrgRunModelConfigPatchInput[];
+  @Field(() => [AgentOrgTeamWorkspacePatchInput]) teamWorkspacePatches!: AgentOrgTeamWorkspacePatchInput[];
 }
 @ObjectType()
-export class AgentOrgRunModelConfigObject {
+export class AgentOrgRunConfigObject {
   @Field(() => String) orgRunId!: string;
   @Field(() => GraphQLJSON) executionTree!: Record<string, unknown>;
   @Field(() => Boolean) isActive!: boolean;
@@ -103,7 +109,7 @@ export class AgentOrgRunModelOptionObject extends RunModelOptionsObject {
   @Field(() => String) scopeAddress!: string;
 }
 @ObjectType()
-export class AgentOrgRunModelConfigUpdateResult {
+export class AgentOrgRunConfigUpdateResult {
   @Field(() => Boolean) success!: boolean;
   @Field(() => String) outcome!: string;
   @Field(() => String) message!: string;
@@ -118,20 +124,24 @@ export class AgentOrgRunResolver {
   private readonly service = getStudioAgentOrgRunService();
   private readonly memberViews = getAgentOrgMemberRunViewProjectionService();
 
-  @Query(() => AgentOrgRunModelConfigObject)
-  getAgentOrgRunModelConfig(@Arg("orgRunId", () => String) orgRunId: string) {
-    return this.service.getRunModelConfig(orgRunId);
+  @Query(() => AgentOrgRunConfigObject)
+  getAgentOrgRunConfig(@Arg("orgRunId", () => String) orgRunId: string) {
+    return this.service.getRunConfig(orgRunId);
   }
   @Query(() => [AgentOrgRunModelOptionObject])
-  agentOrgRunModelOptions(@Arg("orgRunId", () => String) orgRunId: string) {
-    return this.service.runModelOptions(orgRunId);
-  }
-  @Mutation(() => AgentOrgRunModelConfigUpdateResult)
-  updateStoppedAgentOrgRunModelConfigs(
-    @Arg("input", () => UpdateStoppedAgentOrgRunModelConfigsInput) input: UpdateStoppedAgentOrgRunModelConfigsInput,
+  agentOrgRunModelOptions(
+    @Arg("orgRunId", () => String) orgRunId: string,
+    @Arg("teamWorkspacePatches", () => [AgentOrgTeamWorkspacePatchInput], { defaultValue: [] }) teamWorkspacePatches: AgentOrgTeamWorkspacePatchInput[],
   ) {
-    return this.service.updateStoppedRunModelConfigs({ orgRunId: input.orgRunId,
-      patches: input.patches.map((patch) => ({ ...patch, llmConfig: patch.llmConfig })) });
+    return this.service.runModelOptions(orgRunId, teamWorkspacePatches);
+  }
+  @Mutation(() => AgentOrgRunConfigUpdateResult)
+  updateStoppedAgentOrgRunConfig(
+    @Arg("input", () => UpdateStoppedAgentOrgRunConfigInput) input: UpdateStoppedAgentOrgRunConfigInput,
+  ) {
+    return this.service.updateStoppedRunConfig({ orgRunId: input.orgRunId,
+      modelPatches: input.modelPatches.map((patch) => ({ ...patch, llmConfig: patch.llmConfig })),
+      teamWorkspacePatches: input.teamWorkspacePatches });
   }
 
   @Query(() => GraphQLJSON)

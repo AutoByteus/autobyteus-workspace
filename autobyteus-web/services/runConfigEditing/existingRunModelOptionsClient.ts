@@ -1,7 +1,9 @@
+import { planExistingAgentOrgWorkspacePatches } from './existingAgentOrgWorkspaceDraft'
+import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
 import { getApolloClient } from '~/utils/apolloClient'
 import { AgentOrgRunModelOptions, AgentRunModelOptions, TeamRunModelOptions } from '~/graphql/queries/runModelOptionsQueries'
-import type { ExistingRunModelConfigDraft, ExistingRunModelOptions, ExistingRunModelOptionsState } from '~/types/agent/ExistingRunModelConfigDraft'
-export async function loadExistingRunModelOptions(draft: ExistingRunModelConfigDraft): Promise<Record<string, ExistingRunModelOptionsState>> {
+import type { ExistingRunModelOptions, ExistingRunModelOptionsState } from '~/types/agent/ExistingRunModelConfigDraft'
+export async function loadExistingRunModelOptions(draft: ExistingRunConfigDraft): Promise<Record<string, ExistingRunModelOptionsState>> {
   const { data, errors } = await getApolloClient().query<{
     agentRunModelOptions?: ExistingRunModelOptions
     teamRunModelOptions?: (ExistingRunModelOptions & { scopeAddress: string })[]
@@ -9,7 +11,7 @@ export async function loadExistingRunModelOptions(draft: ExistingRunModelConfigD
   }>({ query: draft.kind === 'agent' ? AgentRunModelOptions
       : draft.kind === 'team' ? TeamRunModelOptions : AgentOrgRunModelOptions,
     variables: draft.kind === 'agent' ? { agentRunId: draft.runId }
-      : draft.kind === 'team' ? { teamRunId: draft.teamRunId } : { orgRunId: draft.orgRunId }, fetchPolicy: 'network-only' })
+      : draft.kind === 'team' ? { teamRunId: draft.teamRunId } : { orgRunId: draft.orgRunId, teamWorkspacePatches: planExistingAgentOrgWorkspacePatches(draft.executionTree, draft.workspaceDraft) }, fetchPolicy: 'network-only' })
   if (errors?.length || !data) throw new Error('Model options unavailable.')
   const rows: (ExistingRunModelOptions & { scopeAddress: string })[] | undefined = draft.kind === 'agent' && data.agentRunModelOptions
     ? [{ ...data.agentRunModelOptions, scopeAddress: '/' }]

@@ -1,5 +1,7 @@
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
-import type { AgentOrgConfiguredAgentNode, AgentOrgConfiguredMember } from '~/types/collaboration/agentOrgExecution'
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+import { assertAgentOrgRunConfigChange } from './agentOrgRunConfigAdoption'
+import { existingRunModelConfigsEqual } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { reactive, shallowReactive } from 'vue'
 import type {
   AgentOrgExecutionEventDto,
@@ -149,37 +151,35 @@ export class AgentOrgExecutionContext {
     this.select(previous.selection)
   }
 
-  applyRunModelConfig(executionTree: AgentOrgExecutionViewDto['execution_tree'], isActive: boolean): boolean {
+  applyRunConfig(executionTree: AgentOrgExecutionViewDto['execution_tree'], isActive: boolean,
+    metadataByRootPath: ReadonlyMap<string, WorkspaceMetadata | null> = new Map()): boolean {
     if (this.phase !== 'historical' || this.isActive || isActive
       || executionTree.rootOrg.orgRunId !== this.orgRunId) return false
-    const withoutModels = (tree: AgentOrgExecutionViewDto['execution_tree']) => {
-      const launch = <T extends { llmModelIdentifier: string; llmConfig: unknown }>(value: T): T => ({
-        ...value, llmModelIdentifier: '__MODEL__', llmConfig: null,
-      })
-      return { ...tree, rootOrg: { ...tree.rootOrg,
-        defaultLaunchConfiguration: launch(tree.rootOrg.defaultLaunchConfiguration),
-        members: tree.rootOrg.members.map((member: AgentOrgConfiguredMember) => 'agentRunId' in member
-          ? { ...member, launchConfiguration: launch(member.launchConfiguration) }
-          : { ...member, defaultLaunchConfiguration: launch(member.defaultLaunchConfiguration),
-              members: member.members.map((agent: AgentOrgConfiguredAgentNode) => ({ ...agent, launchConfiguration: launch(agent.launchConfiguration) })) }) } }
-    }
-    if (JSON.stringify(withoutModels(this.view.execution_tree)) !== JSON.stringify(withoutModels(executionTree))) {
-      throw new Error('Org configuration changed topology, identity, or locked fields.')
-    }
+    assertAgentOrgRunConfigChange(this.view.execution_tree, executionTree)
     const view = { ...this.view, execution_tree: cloneExistingRunJsonValue(executionTree) }
     const index = new AgentOrgExecutionViewIndex(view)
     const updates = [...index.agents.values()].flatMap((agent) => {
       if (agent.task || agent.kind !== 'configured') return []
       const context = this.getAgentContext(agent.agentRunId)
       if (!context) throw new Error(`Org configured context '${agent.agentRunId}' is unavailable.`)
-      return [{ context, launch: agent.source.launchConfiguration }]
+      const launch = agent.source.launchConfiguration
+      const oldRoot = this.index.requireAgent(agent.agentRunId).source.launchConfiguration.workspaceRootPath
+      const workspaceChanged = oldRoot !== launch.workspaceRootPath
+      const metadata = launch.workspaceRootPath ? metadataByRootPath.get(launch.workspaceRootPath) : null
+      if (metadata && metadata.workspaceRootPath !== launch.workspaceRootPath) throw new Error('Workspace metadata root mismatch.')
+      const resolveWorkspace = workspaceChanged || !context.config.workspaceId || !context.config.workspaceMetadata
+      const modelChanged = context.config.llmModelIdentifier !== launch.llmModelIdentifier
+        || !existingRunModelConfigsEqual(context.config.llmConfig, launch.llmConfig)
+      return [{ context, launch, resolveWorkspace, metadata, modelChanged }]
     })
     // All validation, clone, index and context planning precedes synchronous publication.
     this.view = view
     this.index = index
-    for (const { context, launch } of updates) {
+    for (const { context, launch, resolveWorkspace, metadata, modelChanged } of updates) {
+      if (!modelChanged && !resolveWorkspace) continue
       context.config = { ...context.config, llmModelIdentifier: launch.llmModelIdentifier,
-        llmConfig: cloneExistingRunJsonValue(launch.llmConfig) }
+        llmConfig: cloneExistingRunJsonValue(launch.llmConfig),
+        ...(resolveWorkspace ? { workspaceId: metadata?.workspaceId ?? null, workspaceMetadata: metadata ?? null } : {}) }
       context.conversation.llmModelIdentifier = launch.llmModelIdentifier
     }
     return true

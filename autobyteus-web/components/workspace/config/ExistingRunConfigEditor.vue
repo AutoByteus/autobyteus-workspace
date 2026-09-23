@@ -47,6 +47,7 @@
         :existing-model="agentOrgFormModel"
         :model-config-field-errors-by-address="teamModelConfigFieldErrorsByAddress"
         @update-existing-model-config="draftStore.updateAgentOrgScopeModelConfig"
+        @update:workspace-selection="draftStore.updateAgentOrgWorkspaceSelection"
         @schema-state="draftStore.setSchemaState"
       />
 
@@ -102,7 +103,7 @@ import { computed, onBeforeUnmount, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
-import { useExistingRunModelConfigStore } from '~/stores/existingRunModelConfigStore'
+import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import type { AgentRunConfig, SkillAccessMode } from '~/types/agent/AgentRunConfig'
@@ -116,7 +117,7 @@ import { useLocalization } from '~/composables/useLocalization'
 
 const selection = useAgentSelectionStore()
 const history = useRunHistoryStore()
-const draftStore = useExistingRunModelConfigStore()
+const draftStore = useExistingRunConfigStore()
 const contexts = useAgentContextsStore()
 const definitions = useAgentDefinitionStore()
 const { t } = useLocalization()
@@ -198,7 +199,7 @@ const agentModelConfigFieldErrors = computed<Record<string, string>>(() => Objec
 const teamModelConfigFieldErrorsByAddress = computed<Record<string, Record<string, string>>>(() => {
   const byAddress: Record<string, Record<string, string>> = {}
   for (const error of draftStore.fieldErrors) {
-    const match = /^patches\[(.+)]\.llmConfig\.([^.[]+)/.exec(error.path)
+    const match = /^(?:patches|modelPatches)\[(.+)]\.llmConfig\.([^.[]+)/.exec(error.path)
     if (!match) continue
     const addressErrors = byAddress[match[1]!] ??= {}
     addressErrors[match[2]!] = error.message
@@ -222,6 +223,7 @@ const agentOrgFormModel = computed(() => {
   const current = draft.value
   if (current?.kind !== 'agent_org') throw new Error('Existing AgentOrg form requires an AgentOrg draft.')
   return projectExistingAgentOrgRunFormModel({
+    workspaceDraft: current.workspaceDraft,
     tree: current.executionTree,
     planner: current.planner,
     isActive: current.isActive,

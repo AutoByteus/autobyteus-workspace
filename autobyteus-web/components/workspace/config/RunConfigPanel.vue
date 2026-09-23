@@ -81,7 +81,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import { useExistingRunModelConfigStore } from '~/stores/existingRunModelConfigStore'
+import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useRightSideTabs } from '~/composables/useRightSideTabs'
 import AgentRunConfigForm from './AgentRunConfigForm.vue'
@@ -104,7 +104,7 @@ const teamRunStore = useAgentTeamRunStore()
 const definitionStore = useAgentDefinitionStore()
 const teamDefinitionStore = useAgentTeamDefinitionStore()
 const workspaceStore = useWorkspaceStore()
-const existingRunModelConfigStore = useExistingRunModelConfigStore()
+const existingRunConfigStore = useExistingRunConfigStore()
 const workspaceCenterViewStore = useWorkspaceCenterViewStore()
 const { setActiveTab } = useRightSideTabs()
 const { t: $t } = useLocalization()
@@ -384,7 +384,7 @@ const handleRun = async () => {
 }
 
 const showConversationView = () => {
-  existingRunModelConfigStore.clear()
+  existingRunConfigStore.clear()
   workspaceCenterViewStore.showChat()
 }
 

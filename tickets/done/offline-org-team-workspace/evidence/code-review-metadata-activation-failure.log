@@ -1,0 +1,51 @@
+
+> autobyteus@1.4.74 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts > FileExplorer metadata-only target activation (AC-004/005) > registers the recovered target once and leaves Loading without recursive updates
+[Vue warn]: Unhandled error during execution of app errorHandler
+[Vue warn]: Unhandled error during execution of app errorHandler
+
+ ❯ components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts (1 test | 1 failed) 16ms
+   × FileExplorer metadata-only target activation (AC-004/005) > registers the recovered target once and leaves Loading without recursive updates 15ms
+     → Maximum recursive updates exceeded in component <FileExplorer>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts > FileExplorer metadata-only target activation (AC-004/005) > registers the recovered target once and leaves Loading without recursive updates
+Unknown Error: Maximum recursive updates exceeded in component <FileExplorer>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Unknown Error: Maximum recursive updates exceeded in component <FileExplorer>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+This error originated in "components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+     Errors  1 error
+   Start at  12:14:28
+   Duration  6.81s (transform 3.52s, setup 5.84s, collect 222ms, tests 16ms, environment 258ms, prepare 174ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

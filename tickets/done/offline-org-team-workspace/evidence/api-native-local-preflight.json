@@ -1,0 +1,93 @@
+{
+  "LMSTUDIO": {
+    "ensureProviderModelCatalog": {
+      "ownerProvider": {
+        "id": "LMSTUDIO"
+      },
+      "sources": [
+        {
+          "state": "READY",
+          "modelCount": 15,
+          "safeMessage": null
+        }
+      ],
+      "llmModels": [
+        {
+          "modelIdentifier": "deepseek-ocr:lmstudio@localhost:1234",
+          "canonicalName": "deepseek-ocr"
+        },
+        {
+          "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+          "canonicalName": "google/gemma-4-26b-a4b"
+        },
+        {
+          "modelIdentifier": "google/gemma-4-31b:lmstudio@localhost:1234",
+          "canonicalName": "google/gemma-4-31b"
+        },
+        {
+          "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234",
+          "canonicalName": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled"
+        },
+        {
+          "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@localhost:1234",
+          "canonicalName": "qwen/qwen3.6-27b"
+        },
+        {
+          "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "canonicalName": "qwen/qwen3.6-35b-a3b"
+        },
+        {
+          "modelIdentifier": "qwen/qwen3.8-27b:lmstudio@localhost:1234",
+          "canonicalName": "qwen/qwen3.8-27b"
+        },
+        {
+          "modelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+          "canonicalName": "qwen3.5-27b"
+        },
+        {
+          "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@localhost:1234",
+          "canonicalName": "qwen3.5-27b-claude-4.6-opus-distilled-mlx"
+        },
+        {
+          "modelIdentifier": "qwen3.6-27b:lmstudio@localhost:1234",
+          "canonicalName": "qwen3.6-27b"
+        },
+        {
+          "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@localhost:1234",
+          "canonicalName": "qwen3.6-27b-mtplx-optimized-speed"
+        },
+        {
+          "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@localhost:1234",
+          "canonicalName": "qwen3.6-27b-ud-mlx"
+        },
+        {
+          "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234",
+          "canonicalName": "text-embedding-nomic-embed-text-v1.5"
+        },
+        {
+          "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@localhost:1234",
+          "canonicalName": "unsloth/gemma-4-26b-a4b-it"
+        },
+        {
+          "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@localhost:1234",
+          "canonicalName": "unsloth/gemma-4-31b-it"
+        }
+      ]
+    }
+  },
+  "OLLAMA": {
+    "ensureProviderModelCatalog": {
+      "ownerProvider": {
+        "id": "OLLAMA"
+      },
+      "sources": [
+        {
+          "state": "ERROR",
+          "modelCount": 0,
+          "safeMessage": "OLLAMA_MODEL_DISCOVERY_UNAVAILABLE"
+        }
+      ],
+      "llmModels": []
+    }
+  }
+}

@@ -1,0 +1,166 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/.env
+[dotenv@17.3.1] injecting env (6) from tests/.tmp/offline-org-r2-79622-1790075019782/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:49613
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:49613
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "offline-org-r2-79622-1790075019782.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-r2-79622-1790075019782.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:62827) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-23T03:21:08.241Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-23T03:21:08.366Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-23T03:21:08.366Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1790133668372,"pid":62827,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49619"}
+{"level":30,"time":1790133668397,"pid":62827,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49613"}
+[2026-09-23T03:21:08.397Z] [INFO] [server.runtime] Server listening on 127.0.0.1:49613
+[2026-09-23T03:21:08.399Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:49613
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 30 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session 967f94cf-4a49-4647-b5ce-6b8255356b72 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 967f94cf-4a49-4647-b5ce-6b8255356b72
+Terminal websocket attached for cwd /Users/normy
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/C.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/memory/agent_orgs/api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e/api_r2_workspace_claude_agent_sdk_1790075062670_a4b0f7398f1b4aa687eb1ac63ddf862b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/memory/agent_orgs/api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e/api_r2_workspace_claude_agent_sdk_1790075062670_2a92954015b5459fa11d99f6ad327ba0/api_r2_workspace_claude_agent_sdk_1790075062670_095f43500c7c45adbc88a9e95a2f1692/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/memory/agent_orgs/api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e/api_r2_workspace_claude_agent_sdk_1790075062670_6fa3e80718d6477988b20797e93398ab/api_r2_workspace_claude_agent_sdk_1790075062670_e072d1df25714c7cadf36b70830bb6e6/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/memory/agent_orgs/api_r2_workspace_claude_agent_sdk_1790075062670_78d480e2141c462f95abbca86800b09e/api_r2_workspace_claude_agent_sdk_1790075062670_6fa3e80718d6477988b20797e93398ab/api_r2_workspace_claude_agent_sdk_1790075062670_96eea3afc2fa43948c787ac44b5ba29d/raw_traces_active.jsonl
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B.
+Created and registered workspace ID: agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835
+Created WorkspaceFileExplorer for agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835 (file-explorer-websocket).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f47d6182-4c60-4216-b2ad-38b015d31a48 for workspace agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835
+Created file explorer session f47d6182-4c60-4216-b2ad-38b015d31a48 for workspace agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835. Active sessions: 1
+File explorer WebSocket connected: f47d6182-4c60-4216-b2ad-38b015d31a48 for workspace agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835
+File explorer websocket attached for workspace agent_ws_5d7a973ab79dbc36c11537249a01e043113adec0da6afd0da95c96855ad74835
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D.
+Created and registered workspace ID: agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/B
+FileExplorerSession closed: f47d6182-4c60-4216-b2ad-38b015d31a48
+Closed file explorer session f47d6182-4c60-4216-b2ad-38b015d31a48. Active sessions: 0
+File explorer WebSocket disconnected: f47d6182-4c60-4216-b2ad-38b015d31a48
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D.
+Reusing registered workspace ID: agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946
+Created WorkspaceFileExplorer for agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946 (file-explorer-websocket).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D (file-explorer-websocket); active leases: 1
+FileExplorerSession created: bc6853e4-a304-472e-85a6-79db76a57ce6 for workspace agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946
+Created file explorer session bc6853e4-a304-472e-85a6-79db76a57ce6 for workspace agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946. Active sessions: 1
+File explorer WebSocket connected: bc6853e4-a304-472e-85a6-79db76a57ce6 for workspace agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946
+File explorer websocket attached for workspace agent_ws_d1afffe3e267301cedb509e859cbfc0be58f104cead531bbda6f6fd1de146946
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D/target.txt
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-r2-79622-1790075019782/api-r2-workspace-claude_agent_sdk-1790075062670/D
+FileExplorerSession closed: bc6853e4-a304-472e-85a6-79db76a57ce6
+Closed file explorer session bc6853e4-a304-472e-85a6-79db76a57ce6. Active sessions: 0
+File explorer WebSocket disconnected: bc6853e4-a304-472e-85a6-79db76a57ce6
+Closed PTY session 967f94cf-4a49-4647-b5ce-6b8255356b72
+Terminal WebSocket disconnected: 967f94cf-4a49-4647-b5ce-6b8255356b72
+[2026-09-23T03:31:15.388Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-09-23T03:31:15.476Z] [INFO] [server.runtime] Server closed cleanly.
