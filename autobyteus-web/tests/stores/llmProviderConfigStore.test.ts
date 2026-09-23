@@ -1,4 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia'
+import { toRaw } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   GET_PROVIDER_CREDENTIAL_SETTINGS,
@@ -395,5 +396,53 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ mutation: SAVE_PROVIDER_API_KEY }))
     expect(mutate).toHaveBeenCalledTimes(1)
     expect(query).not.toHaveBeenCalled()
+  })
+
+  it('publishes repeated credential saves after a read-only query without mutating other rows', async () => {
+    const queriedSettings = Object.freeze([
+      setting('OPENAI', true),
+      setting('MISTRAL', true),
+      setting('ANTHROPIC', false),
+    ])
+    const firstSave = setting('ANTHROPIC', true)
+    const secondSave = setting('ANTHROPIC', true)
+    const query = vi.fn().mockResolvedValue({ data: { providerCredentialSettings: queriedSettings } })
+    const mutate = vi.fn()
+      .mockResolvedValueOnce({ data: { saveProviderApiKey: firstSave } })
+      .mockResolvedValueOnce({ data: { saveProviderApiKey: secondSave } })
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const store = useLLMProviderConfigStore()
+
+    await store.fetchProviderCredentialSettings()
+    const beforeSave = store.providerCredentialSettings
+    expect(toRaw(beforeSave)).not.toBe(queriedSettings)
+    await expect(store.setLLMProviderApiKey('ANTHROPIC', 'synthetic-key')).resolves.toEqual(firstSave)
+    const afterFirstSave = store.providerCredentialSettings
+    await expect(store.setLLMProviderApiKey('ANTHROPIC', 'synthetic-replacement')).resolves.toEqual(secondSave)
+
+    expect(store.providerCredentialSettings.map(row => [row.provider.id, row.apiKeyConfigured])).toEqual([
+      ['ANTHROPIC', true], ['MISTRAL', true], ['OPENAI', true],
+    ])
+    expect(beforeSave).not.toBe(afterFirstSave)
+    expect(afterFirstSave).not.toBe(store.providerCredentialSettings)
+    expect(queriedSettings.map(row => [row.provider.id, row.apiKeyConfigured])).toEqual([
+      ['OPENAI', true], ['MISTRAL', true], ['ANTHROPIC', false],
+    ])
+    expect(JSON.stringify(store.providerCredentialSettings)).not.toContain('synthetic-')
+    expect(query).toHaveBeenCalledTimes(1)
+    expect(mutate).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps credential status unchanged when the save mutation rejects', async () => {
+    const query = vi.fn().mockResolvedValue({
+      data: { providerCredentialSettings: Object.freeze([setting('ANTHROPIC', false)]) },
+    })
+    const mutate = vi.fn().mockRejectedValue(new Error('save rejected'))
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const store = useLLMProviderConfigStore()
+
+    await store.fetchProviderCredentialSettings()
+    await expect(store.setLLMProviderApiKey('ANTHROPIC', 'synthetic-key')).rejects.toThrow('save rejected')
+    expect(store.providerCredentialSettings).toEqual([setting('ANTHROPIC', false)])
   })
 })
