@@ -1,0 +1,47 @@
+{
+  "comparison_base": "3a52e67ba72ee53497f5d9492f406289f23f28f3",
+  "tracked_web_server_delta": [
+    "autobyteus-web/components/fileExplorer/FileExplorer.vue",
+    "autobyteus-web/components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts"
+  ],
+  "added_or_expanded_API_regression": "autobyteus-web/components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts",
+  "protected_production_files": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerLayout.vue",
+      "unchanged_from_IR001": true,
+      "sha256": "30647f2ec337d5f52a5f8082637540128067de6a087d17ba510ac1477be6c65f"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "unchanged_from_IR001": true,
+      "sha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9"
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceFileExplorer.ts",
+      "unchanged_from_IR001": true,
+      "sha256": "0933d26006b8ab89a76597a71045c50bd41b97dfef15133a3ab351a3e4fc09e3"
+    },
+    {
+      "path": "autobyteus-web/stores/workspace.ts",
+      "unchanged_from_IR001": true,
+      "sha256": "c3694f2da07d09b95683bcecabebea54de075992091f6edeea2ea0c38d0b15a5"
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceMetadataActions.ts",
+      "unchanged_from_IR001": true,
+      "sha256": "c197be9ee902e6bff6b8fbbf76ab9856e12aa4080c90363f410c4874b6d0984c"
+    },
+    {
+      "path": "autobyteus-web/components/layout/RightSideTabs.vue",
+      "unchanged_from_IR001": true,
+      "sha256": "d1b8f6fc6bc051b636ecd8723e6e4e03e317c3351c9ada7b78cc060c5f95a246"
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "unchanged_from_IR001": true,
+      "sha256": "2fa1d574f0d7b197fe0351edc1640b355019494d23e053f336bd16e7c2de06dc"
+    }
+  ],
+  "FileExplorer_effective_nonempty_lines": 331,
+  "server_tracked_diff_empty": true
+}

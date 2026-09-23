@@ -1,0 +1,249 @@
+{
+  "reviewRevision": "CRR-003",
+  "head": "66213bd539ed422d39d101bdd218d73760a4100f",
+  "sourceTestCommit": "cb139904c68b65e3af9f6b07de0e8e5275ed8169",
+  "priorReviewedSource": "3a52e67ba72ee53497f5d9492f406289f23f28f3",
+  "trackedWebServerDelta": [
+    "autobyteus-web/components/fileExplorer/FileExplorer.vue",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts",
+    "autobyteus-web/components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts"
+  ],
+  "correctiveSource": {
+    "path": "autobyteus-web/components/fileExplorer/FileExplorer.vue",
+    "physicalLines": 373,
+    "nonemptyLines": 331,
+    "numstat": "16\t2\tautobyteus-web/components/fileExplorer/FileExplorer.vue",
+    "currentBlob": "de99d3bc89786f89d2ef9f64ec42bf693f13c2fc"
+  },
+  "preservedSource": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "ir001Blob": "15b2ed5727fd5d749924a3baba5dae0c2288e19f",
+      "currentBlob": "15b2ed5727fd5d749924a3baba5dae0c2288e19f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-config.ts",
+      "ir001Blob": "69be93a393fff3bc1251ad718a632b1be3dc9403",
+      "currentBlob": "69be93a393fff3bc1251ad718a632b1be3dc9403",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-config-mutator.ts",
+      "ir001Blob": "d27005c781930b1e9b8c17981fab4de6909aaeca",
+      "currentBlob": "d27005c781930b1e9b8c17981fab4de6909aaeca",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "ir001Blob": "7b1693372d7b1dbca8ba7c8358357f63a86f77b8",
+      "currentBlob": "7b1693372d7b1dbca8ba7c8358357f63a86f77b8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "ir001Blob": "944ae25e690c2103364e1936eafd3e06a31575bf",
+      "currentBlob": "944ae25e690c2103364e1936eafd3e06a31575bf",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "ir001Blob": "e7410aecddd4ad8fe66c9fba8f7e405fe50087ea",
+      "currentBlob": "e7410aecddd4ad8fe66c9fba8f7e405fe50087ea",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerLayout.vue",
+      "ir001Blob": "890a443a229759caf941669a93853a7ab9188ed3",
+      "currentBlob": "890a443a229759caf941669a93853a7ab9188ed3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/layout/RightSideTabs.vue",
+      "ir001Blob": "1f3f7aee5db655333a54d1ab19a3583e3c912024",
+      "currentBlob": "1f3f7aee5db655333a54d1ab19a3583e3c912024",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigForm.vue",
+      "ir001Blob": "5a451a613da67715cd10a63ecfa7e8f09476be45",
+      "currentBlob": "5a451a613da67715cd10a63ecfa7e8f09476be45",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "ir001Blob": "f074cb761877468cfcf8ffcd4579db9d8043bf7d",
+      "currentBlob": "f074cb761877468cfcf8ffcd4579db9d8043bf7d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/RunConfigPanel.vue",
+      "ir001Blob": "f7a67827aad35e1e5f23d2e9181068348c50a476",
+      "currentBlob": "f7a67827aad35e1e5f23d2e9181068348c50a476",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue",
+      "ir001Blob": "4ea95b2727e7faaa91f5c75c60e9fd12825059a4",
+      "currentBlob": "4ea95b2727e7faaa91f5c75c60e9fd12825059a4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/WorkspaceSelector.vue",
+      "ir001Blob": "c4ba27a20a166ef0bd8a4ae1ba81bdacc02383c3",
+      "currentBlob": "c4ba27a20a166ef0bd8a4ae1ba81bdacc02383c3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/graphql/mutations/agentOrgRunMutations.ts",
+      "ir001Blob": "37a24f215fe0b4c823ba47096e1a2e0b1cf9f867",
+      "currentBlob": "37a24f215fe0b4c823ba47096e1a2e0b1cf9f867",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runModelOptionsQueries.ts",
+      "ir001Blob": "827bbb15beae4912d6e1732b5a1e7135d778b8ae",
+      "currentBlob": "827bbb15beae4912d6e1732b5a1e7135d778b8ae",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.ts",
+      "ir001Blob": "9f08fd4afed31ebb8d407a19bc91b08a60afc031",
+      "currentBlob": "9f08fd4afed31ebb8d407a19bc91b08a60afc031",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "ir001Blob": "1c117131bde7f48845039095a7af06833e6f9046",
+      "currentBlob": "1c117131bde7f48845039095a7af06833e6f9046",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "ir001Blob": "4d34737aa734344d925eb79f2483f22bd2416034",
+      "currentBlob": "4d34737aa734344d925eb79f2483f22bd2416034",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgRunConfigAdoption.ts",
+      "ir001Blob": "91788a497af38e32d1df85dd86c4bb325ba94bfe",
+      "currentBlob": "91788a497af38e32d1df85dd86c4bb325ba94bfe",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/agentOrgRunConfigClient.ts",
+      "ir001Blob": "2d6240a24d621208fc2ee11005b8fdbaa7522e7a",
+      "currentBlob": "2d6240a24d621208fc2ee11005b8fdbaa7522e7a",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingAgentOrgRunFormModel.ts",
+      "ir001Blob": "6ccaa9372a8441392600a92e21c5f5f6e6a20762",
+      "currentBlob": "6ccaa9372a8441392600a92e21c5f5f6e6a20762",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingAgentOrgWorkspaceDraft.ts",
+      "ir001Blob": "5384f05c810a0e2e1af72daf440c465407d045fa",
+      "currentBlob": "5384f05c810a0e2e1af72daf440c465407d045fa",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts",
+      "ir001Blob": "ec4ee101505cf4b94efade1922286aef5c0d662d",
+      "currentBlob": "ec4ee101505cf4b94efade1922286aef5c0d662d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingRunModelOptionsClient.ts",
+      "ir001Blob": "82a0be8f76125a699963d6f626370320b1d9836d",
+      "currentBlob": "82a0be8f76125a699963d6f626370320b1d9836d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts",
+      "ir001Blob": "d45eb8b87011ffdf116af414a62d9f9a50608ca5",
+      "currentBlob": "d45eb8b87011ffdf116af414a62d9f9a50608ca5",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "ir001Blob": "d6b43c24b64a82fd5069355d3afd3c588162d283",
+      "currentBlob": "d6b43c24b64a82fd5069355d3afd3c588162d283",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigResultActions.ts",
+      "ir001Blob": "38039a511026425b1917d8a171897bbed6f46b97",
+      "currentBlob": "38039a511026425b1917d8a171897bbed6f46b97",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigStore.ts",
+      "ir001Blob": "bfce7471a7139d86b7afec118a181b8b02645467",
+      "currentBlob": "bfce7471a7139d86b7afec118a181b8b02645467",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/ExistingRunConfigDraft.ts",
+      "ir001Blob": "67170de7b15902f064292f2cdee33b0ad32905a9",
+      "currentBlob": "67170de7b15902f064292f2cdee33b0ad32905a9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts",
+      "ir001Blob": "e1ef350f8a7a30d06ec67a766dde59fdd7730642",
+      "currentBlob": "e1ef350f8a7a30d06ec67a766dde59fdd7730642",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/ExistingTeamRunFormModel.ts",
+      "ir001Blob": "6b2fd28d193a6a322854b0f66877d28ed820abf2",
+      "currentBlob": "6b2fd28d193a6a322854b0f66877d28ed820abf2",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/types/workspace/WorkspaceSelectorModel.ts",
+      "ir001Blob": "1925b7dec09d8f9a1dcc3aa6dd322ee9404ffa96",
+      "currentBlob": "1925b7dec09d8f9a1dcc3aa6dd322ee9404ffa96",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "ir001Blob": "f5420085ac1e540864e29474a88cfe0f443e4498",
+      "currentBlob": "f5420085ac1e540864e29474a88cfe0f443e4498",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceFileExplorer.ts",
+      "ir001Blob": "34006d21e92f6268423deddb77a0c9377ba2e561",
+      "currentBlob": "34006d21e92f6268423deddb77a0c9377ba2e561",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspace.ts",
+      "ir001Blob": "d5429f54a1544fa8472831869c6869038d22fd42",
+      "currentBlob": "d5429f54a1544fa8472831869c6869038d22fd42",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceMetadataActions.ts",
+      "ir001Blob": "18f9ae7deebbcbdd58d413a009f132b34c8566ce",
+      "currentBlob": "18f9ae7deebbcbdd58d413a009f132b34c8566ce",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/components/agentTeams/form/AgentTeamLibraryPanel.vue",
+      "ir001Blob": "9c0956f25eb1c506ae125a18286a5ae3e91539cf",
+      "currentBlob": "9c0956f25eb1c506ae125a18286a5ae3e91539cf",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-web/pages/agent-orgs.vue",
+      "ir001Blob": "05d7745be8198731e52548b47b686f96fcd28821",
+      "currentBlob": "05d7745be8198731e52548b47b686f96fcd28821",
+      "unchanged": true
+    }
+  ],
+  "note": "Untracked API server HTTP test is carried separately, not a tracked production delta. Upstream design/review documents are modified/uncommitted; no clean-worktree claim."
+}

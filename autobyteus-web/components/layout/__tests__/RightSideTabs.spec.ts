@@ -102,13 +102,13 @@ describe('RightSideTabs', () => {
         },
         TerminalPanel: {
           name: 'TerminalPanel',
-          props: ['active'],
+          props: ['active', 'workspaceMetadata'],
           template: '<div class="terminal-panel-stub" />',
         },
         VncViewer: { template: '<div class="vnc-stub" />' },
         FileExplorerLayout: {
           name: 'FileExplorerLayout',
-          props: ['active', 'layout'],
+          props: ['active', 'layout', 'workspaceId'],
           template: '<div class="file-layout-stub" />',
         },
         ArtifactsTab: { template: '<div class="artifacts-stub" />' },
@@ -117,6 +117,24 @@ describe('RightSideTabs', () => {
       },
     },
   });
+
+  it.each(['agent_org_direct_agent', 'agent_org_team_member', 'agent_org_task_agent', 'agent_org_task_team_member'])(
+    'preserves explicit unavailable Files target for %s without changing Terminal null', async (kind) => {
+      activeTab.value = 'files';
+      activeWorkspaceTarget.value = { kind, context: { config: { workspaceId: null } } };
+      const wrapper = mountSubject();
+      expect(wrapper.getComponent({ name: 'FileExplorerLayout' }).props('workspaceId')).toBeNull();
+      activeTab.value = 'terminal'; await nextTick();
+      expect(wrapper.getComponent({ name: 'TerminalPanel' }).props('workspaceMetadata')).toBeNull();
+      activeTab.value = 'files'; await nextTick();
+      activeWorkspaceTarget.value.context.config.workspaceId = 'B'; await nextTick();
+      expect(wrapper.getComponent({ name: 'FileExplorerLayout' }).props('workspaceId')).toBe('B');
+      activeWorkspaceTarget.value.kind = 'standalone_agent';
+      activeWorkspaceTarget.value.context.config.workspaceId = null; await nextTick();
+      expect(wrapper.getComponent({ name: 'FileExplorerLayout' }).props('workspaceId')).toBeUndefined();
+      wrapper.unmount();
+    },
+  );
 
   it('keeps the shared tab shell clipped instead of scrollable', () => {
     const wrapper = mountSubject();

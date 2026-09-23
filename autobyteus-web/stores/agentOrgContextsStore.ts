@@ -1,6 +1,9 @@
+import type { TeamWorkspacePatch } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
+import { assertAgentOrgRunConfigChange } from '~/services/agentOrgExecution/agentOrgRunConfigAdoption'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import { readAgentOrgRunModelConfig } from '~/services/runConfigEditing/agentOrgRunModelConfigClient'
-import { updateStoppedAgentOrgRunModelConfigs } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
+import { readAgentOrgRunConfig, updateStoppedAgentOrgRunConfig } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import type { ExistingAgentOrgModelConfigPatch } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore'
 import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
@@ -274,27 +277,60 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (operations.value[orgRunId] || inspections.has(orgRunId)) throw new Error('Org operation is already pending.')
     return org
   }
-  const readRunModelConfig = async (orgRunId: string) => {
+  const prepareConfigWorkspaces = async (org: AgentOrgExecutionContext, tree: AgentOrgExecutionTree,
+    isCurrent: () => boolean): Promise<ReadonlyMap<string, WorkspaceMetadata | null>> => {
+    assertAgentOrgRunConfigChange(org.executionTree, tree)
+    const roots = new Set<string>()
+    for (const member of tree.rootOrg.members) {
+      const agents = 'agentRunId' in member ? [member] : member.members
+      for (const agent of agents) {
+        const old = org.index.requireAgent(agent.agentRunId).source.launchConfiguration.workspaceRootPath
+        const config = org.getAgentContext(agent.agentRunId)?.config
+        const root = agent.launchConfiguration.workspaceRootPath
+        if (root && (root !== old || !config?.workspaceId || !config.workspaceMetadata)) roots.add(root)
+      }
+    }
+    const metadata = new Map<string, WorkspaceMetadata | null>()
+    for (const root of roots) {
+      const resolved = await useRunHistoryStore().resolveWorkspaceMetadataByRootPath(root).catch(() => null)
+      if (!isCurrent()) return metadata
+      metadata.set(root, resolved)
+    }
+    return metadata
+  }
+  const readRunConfig = async (orgRunId: string) => {
     const org = requireConfigOwner(orgRunId), view = org.view
     const binding = useWindowNodeContextStore().bindingRevision
-    const canonical = await readAgentOrgRunModelConfig(orgRunId)
-    if (contexts.value[orgRunId] === org && org.view === view && !operations.value[orgRunId]
-      && binding === useWindowNodeContextStore().bindingRevision) {
-      org.applyRunModelConfig(canonical.executionTree, canonical.isActive)
+    const current = () => contexts.value[orgRunId] === org && org.view === view && !operations.value[orgRunId]
+      && org.phase === 'historical' && !org.isActive && binding === useWindowNodeContextStore().bindingRevision
+    const canonical = await readAgentOrgRunConfig(orgRunId)
+    if (contexts.value[orgRunId] !== org || org.view !== view || operations.value[orgRunId]
+      || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Org configuration read is stale; refresh required.')
+    if (!canonical.isActive && current()) {
+      const metadata = await prepareConfigWorkspaces(org, canonical.executionTree, current)
+      if (!current()) throw new Error('Org configuration read is stale; refresh required.')
+      org.applyRunConfig(canonical.executionTree, canonical.isActive, metadata)
     }
     return canonical
   }
-  const saveRunModelConfigs = async (orgRunId: string, patches: readonly ExistingAgentOrgModelConfigPatch[]) => {
+  const saveRunConfig = async (orgRunId: string, patches: Readonly<{
+    modelPatches: readonly ExistingAgentOrgModelConfigPatch[]; teamWorkspacePatches: readonly TeamWorkspacePatch[]
+  }>) => {
     const org = requireConfigOwner(orgRunId), id = orgRunId, view = org.view
     if (org.isActive || org.phase !== 'historical'
       || [...submissions.keys()].some(key => key.startsWith(`${id}\0`))) throw new Error('Org must be stopped before configuration Save.')
     const binding = useWindowNodeContextStore().bindingRevision
     operations.value = { ...operations.value, [id]: 'configuration' }
     try {
-      const result = await updateStoppedAgentOrgRunModelConfigs({ orgRunId, patches })
-      if (result.canonicalExecutionTree && contexts.value[id] === org && org.view === view
-        && binding === useWindowNodeContextStore().bindingRevision) {
-        org.applyRunModelConfig(parseAgentOrgExecutionTree(result.canonicalExecutionTree), result.isActive)
+      const current = () => contexts.value[id] === org && org.view === view && operations.value[id] === 'configuration'
+        && org.phase === 'historical' && !org.isActive && binding === useWindowNodeContextStore().bindingRevision
+      const result = await updateStoppedAgentOrgRunConfig({ orgRunId, ...patches })
+      if (!current()) throw new Error('Org configuration Save target changed; refresh canonical configuration.')
+      if (result.canonicalExecutionTree && !result.isActive) {
+        const tree = parseAgentOrgExecutionTree(result.canonicalExecutionTree)
+        const metadata = await prepareConfigWorkspaces(org, tree, current)
+        if (!current()) throw new Error('Org configuration Save target changed; refresh canonical configuration.')
+        org.applyRunConfig(tree, result.isActive, metadata)
       }
       return result
     } finally { finishOperation(id) }
@@ -302,5 +338,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { readRunModelConfig, saveRunModelConfigs, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })

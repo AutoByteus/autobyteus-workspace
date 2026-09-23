@@ -1,0 +1,36 @@
+=== artifacts ===
+electron-dist/AutoByteus_enterprise_macos-arm64-1.4.74.dmg | 468198198 bytes
+electron-dist/AutoByteus_enterprise_macos-arm64-1.4.74.zip | 462775291 bytes
+=== sha256 ===
+0dde93847fd4a0c3736ecee54d96aa8dcc90ad82404986ef187e19f3009b0434  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.74.dmg
+ddec0a6bb3df7cc5d2b6787a4230d34ce35a4b7b1dffb8c468cca53ba7e3970f  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.74.zip
+=== app executable architecture ===
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+=== staged terminal runtime ===
+
+> autobyteus@1.4.74 verify-packaged-terminal-runtime /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web
+> node ./scripts/verify-packaged-terminal-runtime.mjs --server-root resources/server --platform darwin --arch arm64 --spawn-probe
+
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+=== packaged terminal runtime ===
+
+> autobyteus@1.4.74 verify-packaged-terminal-runtime /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web
+> node ./scripts/verify-packaged-terminal-runtime.mjs --server-root electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server --platform darwin --arch arm64 --spawn-probe
+
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+=== DMG verification ===
+Prüfsumme für GPT Header (Backup GPT Header : 8) berechnen …
+  GPT Header (Backup GPT Header : 8): Die überprüfte CRC32-Prüfsumme ist $E8AF8A7C
+Die überprüfte CRC32-Prüfsumme ist $6431FA97
+hdiutil: verify: checksum of "electron-dist/AutoByteus_enterprise_macos-arm64-1.4.74.dmg" is VALID
+=== ZIP integrity ===
+    testing: AutoByteus.app/Contents/Resources/zh_CN.lproj/   OK
+    testing: AutoByteus.app/Contents/Resources/zh_TW.lproj/   OK
+No errors detected in compressed data of electron-dist/AutoByteus_enterprise_macos-arm64-1.4.74.zip.
+EXIT_CODE=0

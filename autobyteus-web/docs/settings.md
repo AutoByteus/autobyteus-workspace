@@ -977,7 +977,7 @@ no run, and surface the error at the owning scope; there is no hidden fallback.
 Duplicate launch/preparation is blocked. The bound server remains authoritative
 for interpreting and canonicalizing an absolute path.
 
-### Existing Run Model Configuration
+### Existing Run Configuration
 
 `components/workspace/config/RunConfigPanel.vue` separates editable new-run
 launch configuration from persisted configuration for a selected existing run.
@@ -986,14 +986,18 @@ canonical Agent or Team resume configuration whenever Settings is entered. A
 cached history response may relock an in-flight view when activity appears, but
 it cannot unlock a run or replace the Settings-owned network read.
 
-The existing-run surface keeps runtime, workspace, automatic-tool policy,
-definition identity, provider binding, concrete run IDs, Team topology, and
-addresses fixed. A same-runtime model selector and current-schema `llmConfig`
-controls can become editable,
-and only when the canonical response says the run is present, unarchived, and
-inactive. Agent and Team disclosures remain usable while locked so users can
-inspect the persisted hierarchy and model fields. There is no existing-run
-runtime selector, workspace editor, launch button, or Reset action.
+The existing-run surface keeps runtime, automatic-tool policy, definition
+identity, provider binding, concrete run IDs, Team topology, and addresses
+fixed. Standalone Agent and Team workspaces remain fixed. For an eligible
+stopped AgentOrg only, the Org root, direct Org Agents, and individual Team
+Agents remain workspace-locked while each mounted Team exposes the established
+Workspace Directory selector. A Team workspace change applies to that Team
+default and all its configured children. A same-runtime model selector and
+current-schema `llmConfig` controls can become editable only when the canonical
+response says the run is present, unarchived, and inactive. Agent and Team
+disclosures remain usable while locked so users can inspect the persisted
+hierarchy and fields. There is no existing-run runtime selector, launch button,
+per-Agent workspace editor, or Reset action.
 
 Replacement choices come from server-owned options for the saved run/scope:
 both current and target context capacities must be verified, and the target
@@ -1018,7 +1022,7 @@ release that lease. Users must stop/terminalize the current owner, wait for the
 operation to finish, and reopen Settings before editing. Ownership recovery or
 inconsistent evidence fails closed rather than showing a false editable state.
 
-`existingRunModelConfigStore` owns one local draft. Leaving the selection or
+`existingRunConfigStore` owns one local draft. Leaving the selection or
 Settings discards unsaved values. For a Team,
 `existingTeamModelConfigDraft.ts` starts from the exact V2 execution tree: a
 Team-scope pair edit propagates only through draft-start links based on matching
@@ -1032,6 +1036,15 @@ than disappearing from the patch set. Historical Team
 snapshots do not retain override provenance, so stopped-run editing deliberately
 has no Reset-to-definition behavior.
 
+For an AgentOrg, `existingAgentOrgWorkspaceDraft.ts` owns mounted-Team workspace
+selections independently from model inheritance. A draft is dirty only when its
+resolved canonical root differs from the saved Team default. Save plans one
+workspace patch per changed mounted Team; server canonicalization then applies
+that path to the Team and every configured child. Model-option loading and final
+validation use the effective draft workspace so availability is not evaluated
+against the old root. Changing workspace never clears model/settings edits, and
+changing a model never discards the workspace draft.
+
 Current schemas control safe editing. Exactly representable persisted values use
 the normal controls. Unsupported, stale, or otherwise unrepresentable explicit
 values remain visible as historical residuals instead of being normalized,
@@ -1042,11 +1055,14 @@ scope against its fixed runtime and selected model, returning field-addressed
 validation errors when applicable.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
-revision-free mutations are `updateStoppedAgentRunModelConfig` and
-`updateStoppedTeamRunModelConfigs`. Each command/patch requires both
-`llmModelIdentifier` and explicitly present nullable `llmConfig`; a whole-pair
-no-op produces no write. Agent results return `canonicalSelection`; Team
-results retain `canonicalExecutionTree`. Determinate responses replace the
+revision-free mutations are `updateStoppedAgentRunModelConfig`,
+`updateStoppedTeamRunModelConfigs`, and `updateStoppedAgentOrgRunConfig`. The
+AgentOrg command carries independent model and mounted-Team workspace patch
+lists so one validated tree write publishes their aggregate result. Each model
+command/patch requires both `llmModelIdentifier` and explicitly present nullable
+`llmConfig`; a whole-pair no-op produces no write. Agent results return
+`canonicalSelection`; Team results retain `canonicalExecutionTree`; AgentOrg
+results return the canonical execution tree. Determinate responses replace the
 cached canonical state. If another supported workflow
 restores the run first, the response relocks as `RUN_ACTIVE`. A physically
 uncertain result triggers canonical verification and blocks another Save until
@@ -1056,12 +1072,15 @@ feedback. Verification retries the read, not the write or a rollback. There is
 no optimistic configuration revision,
 retained-draft rebase, or multi-client merge policy.
 
-A successful Save changes only the persisted model/settings pair. It does not
-start or hot-mutate a backend, create a conversation, compact history, or reset
-retained compaction state. The next normal message/eligible restore of the same
-Agent/Team/provider identity consumes that pair; runtime adapters apply their
-supported fields at bootstrap/session construction. Ordinary later compaction
-uses the existing algorithm, without promising identical timing across models.
+A successful Save changes only the requested persisted model/settings pairs and,
+for an AgentOrg, requested mounted-Team workspace values. It does not start or
+hot-mutate a backend, create a conversation, compact history, move project
+files, rewrite historical task snapshots, or reset provider/compaction state.
+The next normal message or eligible restore of the same Agent/Team/provider
+identity consumes the saved configuration; runtime adapters apply their
+supported fields and workspace at bootstrap/session construction. Ordinary
+later compaction uses the existing algorithm, without promising identical
+timing across models.
 Status, error,
 validation, success, saving, verification, and retry messages use the existing
 accessible announcement and focus boundaries.

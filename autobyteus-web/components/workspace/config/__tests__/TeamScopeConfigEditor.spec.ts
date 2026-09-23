@@ -322,12 +322,12 @@ describe('TeamScopeConfigEditor presentation', () => {
         effectiveConfig: { ...inheritedConfig, autoExecuteTools: true },
         isCustomized: true,
         directlyEdited: false,
-        storedWorkspace: {
+        workspaceControl: { mode: 'stored', workspace: {
           workspaceId: 'temp-workspace',
           displayName: 'Temp Workspace',
           rootPath: '/tmp/autobyteus',
           availability: 'available',
-        },
+        } },
       },
     })
     const disclosure = wrapper.get('button[aria-controls="team-scope-StudentStudyGroup-panel"]')

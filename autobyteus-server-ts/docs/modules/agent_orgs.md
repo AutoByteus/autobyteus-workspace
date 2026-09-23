@@ -492,25 +492,43 @@ Reference-content REST routes are rooted below
 - `src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1`
 - `@autobyteus/collaboration-stream-contracts`
 
-## Stopped AgentOrg Model Settings
+## Stopped AgentOrg Run Configuration
 
-`AgentOrgRunService.getRunModelConfig`, `runModelOptions`, and
-`updateStoppedRunModelConfigs` use one exact `orgRunId` subject. The manager owns
-the same root transition lane as restore and resolves explicit Org, mounted-Team,
-and configured-Agent scope addresses before validating any selection. Managed
-roots (including fail-stopped), archived/unadmitted roots and application
-bindings cannot be edited. Runtime, workspace, topology, handoffs, tasks,
-application/archive metadata and identities are not patched.
+`AgentOrgRunService.getRunConfig`, `runModelOptions`, and
+`updateStoppedRunConfig` use one exact `orgRunId` subject. The GraphQL mutation
+`updateStoppedAgentOrgRunConfig` carries independent `modelPatches` and
+`teamWorkspacePatches` in one command. The manager owns the same root transition
+lane as restore and resolves explicit Org, mounted-Team, and configured-Agent
+scope addresses before validating any selection. Managed roots (including
+fail-stopped), archived/unadmitted roots and application bindings cannot be
+edited. Runtime, topology, handoffs, tasks, application/archive metadata and
+identities are not patched.
 
-The injected RunModelSelectionService enforces same-runtime verified equal/larger
-replacement capacity and schema-valid settings. Same-model settings need no
-replacement-capacity comparison. No Agent/provider activation or workspace
-provisioning occurs during read/save. Every requested scope is validated through
-one request-local `validateMany` operation before one immutable tree is written.
+A workspace patch may target only an exact configured mounted-Team address. Its
+path is canonicalized and admitted through the workspace service, then applied
+to the Team default and every directly configured child, including a child with
+a previously distinct path or model/runtime override. The Org root, direct Org
+Agents, sibling Teams, historical task snapshots and project files remain
+unchanged. Workspace registration is a non-destructive registry side effect
+outside the execution-tree commit: a descriptor admitted before a later failed
+tree write may remain registered, but that does not represent partial run
+configuration success and never moves or deletes files.
+
+The injected `RunModelSelectionService` enforces same-runtime verified
+equal/larger replacement capacity and schema-valid settings. Model options and
+save validation use each scope's effective workspace after the submitted Team
+workspace patches, so workspace-contextual catalogs cannot be validated against
+the old path. Same-model settings need no replacement-capacity comparison. No
+Agent/provider activation occurs during read/save. Every requested model scope
+is validated through one request-local `validateMany` operation before the
+workspace and model changes are composed into one immutable tree and written
+once.
+
 The strict execution-tree writer is unchanged: no-op writes are skipped,
 not-renamed failure remains failed, and post-rename/unreadable/mismatched
-readback remains indeterminate. UPDATED requires strict readback equal to the
+readback remains indeterminate. `UPDATED` requires strict readback equal to the
 expected whole tree; unknown canonical values are null, never echoed request
-values. No migration, repair, mutation replay or separate standalone Agent/Team
-writer is introduced. Ordinary restore reads the updated canonical root under
-the same lane.
+values. No persisted-schema migration, repair, mutation replay, provider-session
+reset or separate standalone Agent/Team writer is introduced. Ordinary restore
+reads the updated canonical root under the same lane and retains the existing
+run and provider identities while using the saved child workspace.

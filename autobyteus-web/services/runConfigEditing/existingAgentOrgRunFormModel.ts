@@ -1,3 +1,4 @@
+import { previewExistingAgentOrgWorkspaces, type ExistingAgentOrgWorkspaceDraft } from './existingAgentOrgWorkspaceDraft'
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ExistingRunModelOptionsState, ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
@@ -32,6 +33,7 @@ const resolved = (launch: Launch, selection: ExistingRunModelSelection): Readonl
 
 export const projectExistingAgentOrgRunFormModel = (input: {
   tree: AgentOrgExecutionTree
+  workspaceDraft: ExistingAgentOrgWorkspaceDraft
   planner: ExistingAgentOrgModelConfigDraft
   isActive: boolean
   modelConfigEditable: boolean
@@ -39,13 +41,16 @@ export const projectExistingAgentOrgRunFormModel = (input: {
   modelOptionsByAddress?: Readonly<Record<string, ExistingRunModelOptionsState>>
   saving: boolean
 }): ExistingTeamRunFormModel => {
+  const tree = previewExistingAgentOrgWorkspaces(input.tree, input.workspaceDraft)
   const scope = (address: AgentTeamAddress, displayName: string, launch: Launch): ExistingTeamScopeFormModel => {
     const draft = input.planner.scopesByAddress[address]
     if (!draft) throw new Error(`Existing AgentOrg draft is missing configured scope '${address}'.`)
     return { mode: 'existing', address, displayName, effectiveConfig: resolved(launch, draft.draftSelection),
-      isCustomized: address !== '/' && (!draft.linkedToParentAtDraftStart || draft.directlyEdited),
+      isCustomized: address !== '/' && (!draft.linkedToParentAtDraftStart || draft.directlyEdited || launch.workspaceRootPath !== tree.rootOrg.defaultLaunchConfiguration.workspaceRootPath),
       directlyEdited: draft.directlyEdited, originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
-      modelOptions: input.modelOptionsByAddress?.[address], storedWorkspace: workspace(launch) }
+      modelOptions: input.modelOptionsByAddress?.[address], workspaceControl: input.workspaceDraft[address]
+        ? { mode: 'editable', selection: input.workspaceDraft[address]!.selection, isLoading: false, error: null }
+        : { mode: 'stored', workspace: workspace(launch) } }
   }
   const agent = (node: AgentOrgConfiguredAgentNode,
     coordinatorAddress: string | null): ExistingTeamFormAgentNode => {
@@ -58,7 +63,7 @@ export const projectExistingAgentOrgRunFormModel = (input: {
       originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
       modelOptions: input.modelOptionsByAddress?.[node.address], storedWorkspace: workspace(node.launchConfiguration) }
   }
-  const members: ExistingTeamFormMemberNode[] = input.tree.rootOrg.members.map((member: AgentOrgConfiguredMember) => {
+  const members: ExistingTeamFormMemberNode[] = tree.rootOrg.members.map((member: AgentOrgConfiguredMember) => {
     if ('agentRunId' in member) return agent(member, null)
     const team: ExistingTeamFormTeamNode = { mode: 'existing', kind: 'agent_team',
       address: member.address as AgentTeamAddress,
@@ -66,8 +71,8 @@ export const projectExistingAgentOrgRunFormModel = (input: {
       children: member.members.map((child: AgentOrgConfiguredAgentNode) => agent(child, member.coordinatorAddress)) }
     return team
   })
-  return { mode: 'existing', definitionLabel: input.tree.rootOrg.orgDefinitionName,
-    root: scope('/', input.tree.rootOrg.orgDefinitionName, input.tree.rootOrg.defaultLaunchConfiguration),
+  return { mode: 'existing', definitionLabel: tree.rootOrg.orgDefinitionName,
+    root: scope('/', tree.rootOrg.orgDefinitionName, tree.rootOrg.defaultLaunchConfiguration),
     members, isActive: input.isActive, modelConfigEditable: input.modelConfigEditable,
     modelConfigReason: input.modelConfigReason, saving: input.saving }
 }

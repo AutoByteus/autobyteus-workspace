@@ -13,13 +13,13 @@ export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: Str
   }
 }`
 
-export const AgentOrgRunModelConfig = gql`query AgentOrgRunModelConfig($orgRunId: String!) {
-  getAgentOrgRunModelConfig(orgRunId: $orgRunId) {
+export const AgentOrgRunConfig = gql`query AgentOrgRunConfig($orgRunId: String!) {
+  getAgentOrgRunConfig(orgRunId: $orgRunId) {
     orgRunId executionTree isActive editability { editable reason }
   }
 }`
-export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRunId: String!) {
-  agentOrgRunModelOptions(orgRunId: $orgRunId) {
+export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRunId: String!, $teamWorkspacePatches: [AgentOrgTeamWorkspacePatchInput!]!) {
+  agentOrgRunModelOptions(orgRunId: $orgRunId, teamWorkspacePatches: $teamWorkspacePatches) {
     scopeKind scopeAddress currentModelIdentifier currentContextTokens unavailableReason
     replacements { llmModelIdentifier contextTokens }
   }

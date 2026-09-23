@@ -155,6 +155,7 @@ const clearPendingSearch = () => {
 const suspendInactiveWork = () => {
   ++activationSequence;
   isActivatingWorkspace.value = false;
+  activationError.value = null;
   releaseCurrentLiveSession();
   clearPendingSearch();
   if (activatedWorkspaceId.value) {
@@ -170,6 +171,8 @@ const activateCurrentWorkspace = async () => {
 
   const sequence = ++activationSequence;
   activationError.value = null;
+  // Every current terminal path owns settlement, including superseding fast paths.
+  isActivatingWorkspace.value = false;
 
   if (explicitWorkspace.value) {
     activatedWorkspaceId.value = explicitWorkspace.value.workspaceId;
@@ -182,6 +185,8 @@ const activateCurrentWorkspace = async () => {
     return;
   }
 
+  // Do not retain the previous target while this target registers.
+  activatedWorkspaceId.value = reference.workspaceId;
   isActivatingWorkspace.value = true;
   try {
     const workspace = await workspaceStore.ensureWorkspaceMetadata(reference);
@@ -201,7 +206,16 @@ const activateCurrentWorkspace = async () => {
 };
 
 watch(
-  () => [requestedWorkspaceMetadata.value?.workspaceId || props.workspaceId || '', panelActive.value] as const,
+  // Compare semantics separately: ensureWorkspaceMetadata can replace the cached
+  // descriptor without changing the target. Readiness must still trigger when
+  // metadata arrives later for an already-selected explicit ID.
+  [
+    () => requestedWorkspaceMetadata.value?.workspaceId || props.workspaceId || '',
+    () => Boolean(requestedWorkspaceMetadata.value),
+    () => requestedWorkspaceMetadata.value?.workspaceRootPath || '',
+    () => explicitWorkspace.value?.workspaceId || '',
+    panelActive,
+  ],
   () => {
     if (panelActive.value) {
       activateCurrentWorkspace();
@@ -212,7 +226,7 @@ watch(
   { immediate: true },
 );
 
-watch(() => [currentWorkspace.value?.workspaceId ?? '', panelActive.value] as const, ([workspaceId, isActive]) => {
+watch([() => currentWorkspace.value?.workspaceId ?? '', panelActive], ([workspaceId, isActive]) => {
   releaseCurrentLiveSession();
   if (workspaceId && isActive) {
     releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId);

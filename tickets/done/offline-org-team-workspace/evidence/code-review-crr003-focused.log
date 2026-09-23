@@ -1,0 +1,182 @@
+
+> autobyteus@1.4.74 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts components/fileExplorer/__tests__/FileExplorer.spec.ts components/fileExplorer/__tests__/FileExplorerLayout.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts components/layout/__tests__/RightSideTabs.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (2 tests) 19ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts (14 tests) 65ms
+ ✓ components/fileExplorer/__tests__/FileExplorerLayout.spec.ts (3 tests) 26ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (10 tests) 195ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (18 tests) 71ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+ ✓ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (2 tests) 1263ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  664ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: true  598ms
+
+ Test Files  6 passed (6)
+      Tests  49 passed (49)
+   Start at  12:55:33
+   Duration  8.24s (transform 3.73s, setup 31.79s, collect 3.50s, tests 1.64s, environment 1.75s, prepare 1.27s)
+

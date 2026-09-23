@@ -1,7 +1,11 @@
+import type { UpdateStoppedAgentOrgRunConfig } from "../domain/agent-org-run-config.js";
+import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
+import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
+import { applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches, listAgentOrgRunModelConfigScopes } from "./agent-org-run-config-mutator.js";
 import { isDeepStrictEqual } from "node:util";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import type { AgentOrgRunModelConfig, AgentOrgRunModelConfigPatch, AgentOrgRunModelConfigResult } from "../domain/agent-org-run-model-config.js";
-import { AgentOrgRunModelConfigNotFound, applyAgentOrgRunModelConfigPatches, resolveAgentOrgRunModelConfigTargets } from "./agent-org-run-model-config-mutator.js";
+import type { AgentOrgRunConfig, AgentOrgRunConfigResult } from "../domain/agent-org-run-config.js";
+import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunModelConfigPatches, resolveAgentOrgRunModelConfigTargets } from "./agent-org-run-config-mutator.js";
 import { runModelConfigEditability } from "../../run-history/domain/run-model-config.js";
 import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
@@ -24,6 +28,7 @@ import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-
 
 export type AgentOrgRunManagerOptions = Readonly<{
   modelSelectionValidator?: RunModelSelectionValidator;
+  workspaces?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   memoryDir: string;
   scopeBuilder: AgentOrgExecutionScopeBuilder;
   executionTreeStore?: AgentOrgRunExecutionTreeStore;
@@ -56,6 +61,7 @@ export class AgentOrgRunManager {
   private readonly active = new Map<string, AgentOrgRun>();
   private readonly transitions = new Map<string, Promise<void>>();
   private rootAdmissionOpen = true;
+  private readonly workspaces: AgentOrgRunManagerOptions["workspaces"];
   private readonly modelSelectionValidator: RunModelSelectionValidator | undefined;
 
   static getInstance(): AgentOrgRunManager {
@@ -73,6 +79,7 @@ export class AgentOrgRunManager {
   constructor(options: AgentOrgRunManagerOptions) {
     if (!options.scopeBuilder) throw new Error("AgentOrgExecutionScopeBuilder is required.");
     this.modelSelectionValidator = options.modelSelectionValidator;
+    this.workspaces = options.workspaces;
     this.layout = new AgentMemoryLayout(options.memoryDir);
     this.scopeBuilder = options.scopeBuilder;
     this.tokenUsageRunStore = options.tokenUsageRunStore ?? new TokenUsageRunStore();
@@ -192,103 +199,129 @@ export class AgentOrgRunManager {
     });
   }
 
-  getRunModelConfig(orgRunIdInput: string): Promise<AgentOrgRunModelConfig> {
+  getRunConfig(orgRunIdInput: string): Promise<AgentOrgRunConfig> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     return this.withTransition(orgRunId, async () => {
-      const tree = await this.readModelConfigTree(orgRunId);
+      const tree = await this.readConfigTree(orgRunId);
       const isActive = this.active.has(orgRunId);
       return Object.freeze({ orgRunId, executionTree: tree, isActive,
-        editability: this.modelConfigEditability(tree, isActive) });
+        editability: this.configEditability(tree, isActive) });
     });
   }
 
-  updateStoppedRunModelConfigs(input: Readonly<{
-    orgRunId: string;
-    patches: readonly AgentOrgRunModelConfigPatch[];
-  }>): Promise<AgentOrgRunModelConfigResult> {
+  updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig): Promise<AgentOrgRunConfigResult> {
     const orgRunId = required(input.orgRunId, "orgRunId");
     return this.withTransition(orgRunId, async () => {
       let tree: AgentOrgRunExecutionTreeFileV1 | null = null;
-      const result = (outcome: AgentOrgRunModelConfigResult["outcome"], message: string,
+      const result = (outcome: AgentOrgRunConfigResult["outcome"], message: string,
         canonical: AgentOrgRunExecutionTreeFileV1 | null = tree,
-        fieldErrors: AgentOrgRunModelConfigResult["fieldErrors"] = []): AgentOrgRunModelConfigResult => {
+        fieldErrors: AgentOrgRunConfigResult["fieldErrors"] = []): AgentOrgRunConfigResult => {
         const isActive = this.active.has(orgRunId);
         return Object.freeze({ success: outcome === "UPDATED" || outcome === "UNCHANGED", outcome, message,
           canonical, isActive, editability: canonical
-            ? this.modelConfigEditability(canonical, isActive)
+            ? this.configEditability(canonical, isActive)
             : runModelConfigEditability({ isActive, archived: false, available: false }),
           fieldErrors: Object.freeze([...fieldErrors]) });
       };
-      try { tree = await this.readModelConfigTree(orgRunId); }
-      catch (error) { return result(error instanceof AgentOrgRunModelConfigNotFound ? "NOT_FOUND" : "INTERNAL_ERROR",
+      try { tree = await this.readConfigTree(orgRunId); }
+      catch (error) { return result(error instanceof AgentOrgRunConfigNotFound ? "NOT_FOUND" : "INTERNAL_ERROR",
         error instanceof Error ? error.message : String(error), null); }
       if (this.active.has(orgRunId)) return result("RUN_ACTIVE", "The enclosing AgentOrg is managed or active.");
       if (tree.archivedAt) return result("RUN_ARCHIVED", "Archived AgentOrg runs cannot be edited.");
       if (tree.applicationBinding) return result("VALIDATION_FAILED", "Application-owned AgentOrg runs cannot be edited here.");
       if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
       if (!this.modelSelectionValidator) return result("INTERNAL_ERROR", "Model selection capability is unavailable.");
-      let targets;
-      try { targets = resolveAgentOrgRunModelConfigTargets(tree, input.patches); }
+      if (!input.modelPatches.length && !input.teamWorkspacePatches.length) {
+        return result("VALIDATION_FAILED", "At least one configuration patch is required.");
+      }
+      let modelTargets;
+      let workspacePatches;
+      try { modelTargets = resolveAgentOrgRunModelConfigTargets(tree, input.modelPatches); }
       catch (error) {
         return result("VALIDATION_FAILED", "AgentOrg model-setting targets are invalid.", tree,
-          [{ path: "patches", message: error instanceof Error ? error.message : String(error) }]);
+          [{ path: "modelPatches", message: error instanceof Error ? error.message : String(error) }]);
       }
+      try { workspacePatches = resolveAgentOrgTeamWorkspacePatches(tree, input.teamWorkspacePatches); }
+      catch (error) {
+        return result("VALIDATION_FAILED", "AgentOrg Team workspace targets are invalid.", tree,
+          [{ path: error instanceof AgentOrgWorkspacePatchError ? error.path : "teamWorkspacePatches", message: error instanceof Error ? error.message : String(error) }]);
+      }
+      const normalizedWorkspaces = [];
+      for (const patch of workspacePatches) {
+        if (!this.workspaces) return result("INTERNAL_ERROR", "Workspace capability is unavailable.");
+        try {
+          const workspace = await this.workspaces.ensureWorkspaceByRootPath(canonicalizeWorkspaceRootPath(patch.workspaceRootPath));
+          normalizedWorkspaces.push({ ...patch, workspaceRootPath: workspace.getBasePath() });
+        } catch (error) {
+          return result("VALIDATION_FAILED", "Team workspace could not be registered.", tree,
+            [{ path: `teamWorkspacePatches[${patch.teamAddress}].workspaceRootPath`,
+              message: error instanceof Error ? error.message : String(error) }]);
+        }
+      }
+      const proposed = applyAgentOrgRunModelConfigPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
+      const originals = new Map(listAgentOrgRunModelConfigScopes(tree).map(scope => [scope.scopeAddress, scope.launchConfiguration]));
+      const modelAddresses = new Set(modelTargets.map(target => target.patch.scopeAddress));
+      const workspaceAddresses = new Set<string>(normalizedWorkspaces.flatMap(patch => {
+        const team = tree!.rootOrg.members.find(member => member.address === patch.teamAddress)!;
+        return 'teamRunId' in team ? [team.address, ...team.members.map(agent => agent.address)] : [];
+      }));
+      const targets = listAgentOrgRunModelConfigScopes(proposed).filter(scope =>
+        modelAddresses.has(scope.scopeAddress) || workspaceAddresses.has(scope.scopeAddress));
       let validations;
       try {
-        validations = await this.modelSelectionValidator.validateMany(targets.map(({ patch, launchConfiguration }) => ({
+        validations = await this.modelSelectionValidator.validateMany(targets.map(({ scopeAddress, launchConfiguration }) => ({
           context: { runtimeKind: launchConfiguration.runtimeKind,
-            currentModelIdentifier: launchConfiguration.llmModelIdentifier,
+            currentModelIdentifier: originals.get(scopeAddress)!.llmModelIdentifier,
             workspaceRootPath: launchConfiguration.workspaceRootPath ?? process.cwd() },
-          selection: { llmModelIdentifier: patch.llmModelIdentifier, llmConfig: patch.llmConfig },
+          selection: { llmModelIdentifier: launchConfiguration.llmModelIdentifier, llmConfig: launchConfiguration.llmConfig },
         })));
       } catch { return result("INTERNAL_ERROR", "Model validation is unavailable."); }
       if (validations.length !== targets.length) {
         return result("INTERNAL_ERROR", "Model validation returned an incomplete aggregate result.");
       }
-      const unavailable = validations.findIndex((validation) =>
+      const unavailable = validations.findIndex(validation =>
         validation.kind === "model_unavailable" || validation.kind === "schema_unavailable");
       if (unavailable >= 0) {
         const validation = validations[unavailable]!;
         return result(validation.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE",
-          `Model options for '${targets[unavailable]!.patch.scopeAddress}' are unavailable.`);
+          `Model options for '${targets[unavailable]!.scopeAddress}' are unavailable.`);
       }
       const fieldErrors = validations.flatMap((validation, index) => validation.kind === "invalid"
-        ? validation.errors.map((error) => ({
-            path: `patches[${targets[index]!.patch.scopeAddress}].${error.path}`,
-            message: error.message,
-          }))
+        ? validation.errors.map(error => ({ path: `modelPatches[${targets[index]!.scopeAddress}].${error.path}`, message: error.message }))
         : []);
-      if (fieldErrors.length) return result("VALIDATION_FAILED", "One or more AgentOrg model settings are invalid.", tree, fieldErrors);
-      const normalized = targets.map((target, index) => ({ ...target, patch: {
-        ...target.patch,
-        ...(validations[index]!.kind === "valid" ? validations[index]!.selection : {}),
-      } }));
-      const expected = applyAgentOrgRunModelConfigPatches(tree, normalized);
-      if (isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg model settings are already up to date.");
+      if (fieldErrors.length) return result("VALIDATION_FAILED", "One or more AgentOrg settings are invalid.", tree, fieldErrors);
+      // Validation of unchanged models must not normalize those models as a side effect of a workspace edit.
+      const normalized = modelTargets.map(target => {
+        const validation = validations[targets.findIndex(scope => scope.scopeAddress === target.patch.scopeAddress)]!;
+        return { ...target, patch: { ...target.patch, ...(validation.kind === 'valid' ? validation.selection : {}) } };
+      });
+      const expected = applyAgentOrgRunModelConfigPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), normalized);
+      if (isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg settings are already up to date.");
+      if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
       let outcome: "committed" | "not_renamed" | "renamed_finalization_indeterminate";
       try { outcome = (await this.executionTreeStore.write(this.layout.getOrgDirPath(orgRunId), expected)).outcome; }
       catch { outcome = "renamed_finalization_indeterminate"; }
       const readback = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId).catch(() => null);
-      if (outcome === "not_renamed") return result("PERSISTENCE_FAILED", "AgentOrg model settings were not saved.", readback ?? tree);
+      if (outcome === "not_renamed") return result("PERSISTENCE_FAILED", "AgentOrg settings were not saved.", readback ?? tree);
       if (outcome !== "committed" || !readback || !isDeepStrictEqual(readback, expected)) {
         return result("PERSISTENCE_INDETERMINATE",
           "Save outcome is uncertain. Refresh canonical AgentOrg configuration before another Save.", readback);
       }
-      return result("UPDATED", "AgentOrg model settings saved.", readback);
+      return result("UPDATED", "AgentOrg settings saved.", readback);
     });
   }
 
-  private async readModelConfigTree(orgRunId: string) {
+  private async readConfigTree(orgRunId: string) {
     if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(orgRunId)) {
-      throw new AgentOrgRunModelConfigNotFound("AgentOrg package is not admitted.");
+      throw new AgentOrgRunConfigNotFound("AgentOrg package is not admitted.");
     }
     const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
-    if (!tree) throw new AgentOrgRunModelConfigNotFound("AgentOrg configuration is unavailable.");
-    if (tree.rootOrg.orgRunId !== orgRunId) throw new AgentOrgRunModelConfigNotFound("AgentOrg configuration identity is invalid.");
+    if (!tree) throw new AgentOrgRunConfigNotFound("AgentOrg configuration is unavailable.");
+    if (tree.rootOrg.orgRunId !== orgRunId) throw new AgentOrgRunConfigNotFound("AgentOrg configuration identity is invalid.");
     return tree;
   }
 
-  private modelConfigEditability(tree: AgentOrgRunExecutionTreeFileV1, isActive: boolean) {
+  private configEditability(tree: AgentOrgRunExecutionTreeFileV1, isActive: boolean) {
     if (tree.applicationBinding) {
       return Object.freeze({ editable: false, reason: "OWNERSHIP_UNAVAILABLE" as const });
     }

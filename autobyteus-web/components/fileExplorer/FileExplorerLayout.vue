@@ -1,40 +1,47 @@
 <template>
   <div :class="layoutClasses">
-    <!-- File Explorer Tree (Resizable) -->
-    <div 
-      :class="treePaneClasses"
-      :style="treePaneStyle"
-    >
-      <FileExplorer :active="props.active" :workspace-id="props.workspaceId" />
-    </div>
+    <template v-if="props.workspaceId !== null">
+      <!-- File Explorer Tree (Resizable) -->
+      <div
+        :class="treePaneClasses"
+        :style="treePaneStyle"
+      >
+        <FileExplorer :active="props.active" :workspace-id="props.workspaceId" />
+      </div>
 
-    <!-- Drag Handle -->
-    <div 
-      v-if="!isStacked"
-      class="w-[1px] cursor-col-resize hover:w-1 hover:bg-blue-500 bg-gray-200 flex-shrink-0 z-10 transition-all duration-75 relative group"
-      @mousedown.prevent="startResize"
-    >
-       <!-- Invisible hit area for easier grabbing -->
-       <div class="absolute inset-y-0 -left-1 -right-1 z-0 bg-transparent"></div>
-    </div>
-    <div v-else class="h-[1px] flex-shrink-0 bg-gray-200"></div>
+      <!-- Drag Handle -->
+      <div
+        v-if="!isStacked"
+        class="w-[1px] cursor-col-resize hover:w-1 hover:bg-blue-500 bg-gray-200 flex-shrink-0 z-10 transition-all duration-75 relative group"
+        @mousedown.prevent="startResize"
+      >
+         <!-- Invisible hit area for easier grabbing -->
+         <div class="absolute inset-y-0 -left-1 -right-1 z-0 bg-transparent"></div>
+      </div>
+      <div v-else class="h-[1px] flex-shrink-0 bg-gray-200"></div>
 
-    <!-- File Content Viewer -->
-    <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
-      <FileExplorerTabs :active="props.active" :workspace-id="props.workspaceId" />
+      <!-- File Content Viewer -->
+      <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
+        <FileExplorerTabs :active="props.active" :workspace-id="props.workspaceId" />
+      </div>
+    </template>
+    <div v-else role="status" data-test="workspace-unavailable" class="flex h-full w-full items-center justify-center p-6 text-center text-sm text-gray-500">
+      {{ t('fileExplorer.workspaceUnavailable') }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
+const { t } = useLocalization();
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue';
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue';
 
 const props = withDefaults(defineProps<{
   active?: boolean
   layout?: 'split' | 'stacked'
-  workspaceId?: string
+  workspaceId?: string | null
 }>(), {
   active: true,
   layout: 'split',
@@ -62,8 +69,13 @@ const treePaneStyle = computed(() =>
     : { width: `${treeWidth.value}px` },
 );
 
+let stopResize: (() => void) | null = null;
+watch(() => [props.workspaceId, props.active], () => { stopResize?.(); });
+onBeforeUnmount(() => { stopResize?.(); });
+
 const startResize = (event: MouseEvent) => {
-  if (!props.active || isStacked.value) return;
+  if (!props.active || isStacked.value || props.workspaceId === null) return;
+  stopResize?.();
 
   const startX = event.clientX;
   const startWidth = treeWidth.value;
@@ -80,7 +92,9 @@ const startResize = (event: MouseEvent) => {
     document.removeEventListener('mouseup', stopDrag);
     document.body.style.cursor = '';
     document.body.style.userSelect = '';
+    stopResize = null;
   };
+  stopResize = stopDrag;
 
   document.addEventListener('mousemove', doDrag);
   document.addEventListener('mouseup', stopDrag);

@@ -105,7 +105,13 @@ const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTa
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
-const activeWorkspaceId = computed(() => activeContextStore.activeWorkspaceTarget?.context.config.workspaceId ?? undefined);
+const activeWorkspaceId = computed(() => {
+  const target = activeContextStore.activeWorkspaceTarget;
+  const id = target?.context.config.workspaceId;
+  if (target && (target.kind === 'agent_org_direct_agent' || target.kind === 'agent_org_team_member'
+    || target.kind === 'agent_org_task_agent' || target.kind === 'agent_org_task_team_member')) return id || null;
+  return id ?? undefined;
+});
 const activeWorkspaceMetadata = computed(() => activeContextStore.activeWorkspaceTarget?.context.config.workspaceMetadata ?? null);
 const activeTasksView = computed(() => {
   const target = activeContextStore.activeWorkspaceTarget;

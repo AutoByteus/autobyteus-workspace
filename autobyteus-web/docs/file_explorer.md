@@ -760,23 +760,47 @@ Backend-enforced rules include:
 
 Real-time file synchronization is **visibility-driven**. Snapshot APIs such as workspace create/fetch, folder lazy-load, file content reads, file mutations, and search are request/response flows and do **not** keep a backend filesystem watcher open. A live watcher exists only while at least one visible `FileExplorer.vue` consumer has acquired a live session for a workspace.
 
+An explicit Files target may be temporarily metadata-only. `FileExplorer.vue`
+observes target id, metadata availability, canonical root path, registered
+workspace presence, and panel visibility as separate reactive inputs. This is
+intentional: registration may replace a descriptor without changing its id, and
+same-id metadata arrival must still retry activation. Each current activation
+path settles loading/error state; sequence checks discard stale success or
+failure, and inactivity/unmount releases the old session. A registered target is
+a terminal ready path rather than a reason to leave an earlier attempt loading.
+
+`FileExplorerLayout` distinguishes omitted targeting from explicit
+unavailability. `workspaceId === undefined` preserves the normal active-workspace
+fallback used by ordinary unscoped Files. `workspaceId === null` is a fail-closed
+sentinel used by scoped surfaces such as an AgentOrg member whose canonical
+workspace metadata is unavailable; the layout renders feedback and mounts
+neither the tree nor editor, preventing stale reads, keyboard saves, or writes
+against another workspace.
+
 ### Visible Live Session Lifecycle
 
-`FileExplorer.vue` watches its resolved workspace (`props.workspaceId` or the active workspace), acquires a live session when the explorer is mounted for that workspace, and releases it on unmount or workspace switch:
+`FileExplorer.vue` activates the requested metadata first, then watches the
+resolved registered workspace (`props.workspaceId` or the active workspace),
+acquires a live session only while the Files panel is active, and releases it on
+inactivity, unmount, or workspace switch:
 
 ```typescript
 const liveSessionConsumerId = `file-explorer:${++fileExplorerConsumerCounter}`;
 let releaseLiveSession: (() => void) | null = null;
 
-watch(() => currentWorkspace.value?.workspaceId ?? "", (workspaceId) => {
-  releaseLiveSession?.();
-  releaseLiveSession = workspaceId
-    ? workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId)
-    : null;
-}, { immediate: true });
+watch(
+  [() => currentWorkspace.value?.workspaceId ?? "", panelActive],
+  ([workspaceId, isActive]) => {
+    releaseLiveSession?.();
+    releaseLiveSession = workspaceId && isActive
+      ? workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId)
+      : null;
+  },
+  { immediate: true },
+);
 
 onUnmounted(() => {
-  releaseLiveSession?.();
+  suspendInactiveWork();
 });
 ```
 

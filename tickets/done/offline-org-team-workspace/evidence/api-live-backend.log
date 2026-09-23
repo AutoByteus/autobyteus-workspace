@@ -1,0 +1,417 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/.env
+[dotenv@17.3.1] injecting env (6) from tests/.tmp/offline-org-live-4425-1790068197090/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55566
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55566
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "offline-org-live-4425-1790068197090.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/db/offline-org-live-4425-1790068197090.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:20774) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-22T09:46:23.210Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 5 items.
+Populating agent definition cache for the first time...
+[2026-09-22T09:46:23.395Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-22T09:46:23.397Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+Agent definition cache populated with 5 items.
+{"level":30,"time":1790070383403,"pid":20774,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55569"}
+{"level":30,"time":1790070383436,"pid":20774,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55566"}
+[2026-09-22T09:46:23.436Z] [INFO] [server.runtime] Server listening on 127.0.0.1:55566
+[2026-09-22T09:46:23.438Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:55566
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 30 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/B
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/B.
+Created and registered workspace ID: agent_ws_77ebc0b4ebe5f86d5d8d458a80b6f63843592abd802e0e00eb4c8bdaa6d83ee3
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/media
+Discovering LM Studio models from host: http://localhost:1234
+AgentRuntimeState initialized for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' with config: 'api-workspace-autobyteus-1790068359478'.
+AgentWorker initialized for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'.
+Registered AgentContext for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Context registered.
+Agent facade initialized for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' restored and stored successfully.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' requesting runtime to start.
+AgentRuntime for 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Starting worker.
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Starting...
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' asyncRun(): Starting.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Runtime init completed (event store initialized).
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Runtime init completed (status deriver initialized).
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Runtime init completed (AgentEventInbox initialized).
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' to become idle (timeout: 30s)...
+AgentEventStream (ID: 2ca49a3b-21cf-423a-938b-65e046845b8a) initialized for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Subscribed to notifier.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Bootstrapper starting direct lifecycle execution.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Executing McpServerPrewarmingStep.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Executing SystemPromptProcessingStep.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': No configured skills. Skipping skill catalog.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Final processed system prompt configured and captured. Trace ID: rt_1790068481058_970fcf09-18f8-439e-948d-94456ff9079c. Final length: 8233.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' initialized successfully. Entering main event scheduler loop.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' has become idle.
+AgentEventStream (ID: 2ca49a3b-21cf-423a-938b-65e046845b8a) for 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: b1653788-22b6-40d0-9f8e-34967df615ae) initialized for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Subscribed to notifier.
+Published autobyteus agent run 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'.
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': UserInputContextBuildingProcessor completed. Final content length: 212
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': UserInputContextBuildingProcessor completed. Final content length: 46
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Created terminal session 859d1495-4848-47d1-a2ae-354ca65f8dea using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 859d1495-4848-47d1-a2ae-354ca65f8dea
+Terminal websocket attached for cwd /Users/normy
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/B.
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/B
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/B.
+Reusing registered workspace ID: agent_ws_77ebc0b4ebe5f86d5d8d458a80b6f63843592abd802e0e00eb4c8bdaa6d83ee3
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/media
+AgentRuntimeState initialized for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' with config: 'api-workspace-autobyteus-1790068359478'.
+AgentWorker initialized for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'.
+Registered AgentContext for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Context registered.
+Agent facade initialized for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' created and stored successfully.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' requesting runtime to start.
+AgentRuntime for 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Starting worker.
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Starting...
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' asyncRun(): Starting.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Runtime init completed (event store initialized).
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Runtime init completed (status deriver initialized).
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Runtime init completed (AgentEventInbox initialized).
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' to become idle (timeout: 30s)...
+AgentEventStream (ID: 2c54162c-70a3-4ff9-ae84-931a8c8e528f) initialized for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Subscribed to notifier.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Bootstrapper starting direct lifecycle execution.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Executing McpServerPrewarmingStep.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Executing SystemPromptProcessingStep.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': No configured skills. Skipping skill catalog.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Final processed system prompt configured and captured. Trace ID: rt_1790070493899_a76735e7-e91b-4a51-a0a8-68ea1dcc41a8. Final length: 8235.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' initialized successfully. Entering main event scheduler loop.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' has become idle.
+AgentEventStream (ID: 2c54162c-70a3-4ff9-ae84-931a8c8e528f) for 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: ae0e9ff2-4af3-4cc1-929a-3d8b6695a6cd) initialized for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Subscribed to notifier.
+Published autobyteus agent run 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'.
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': UserInputContextBuildingProcessor completed. Final content length: 151
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed PTY session 859d1495-4848-47d1-a2ae-354ca65f8dea
+Terminal WebSocket disconnected: 859d1495-4848-47d1-a2ae-354ca65f8dea
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/B.
+Created terminal session 1c41892a-e28f-4d0c-93be-393cb5fc9cc3 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1c41892a-e28f-4d0c-93be-393cb5fc9cc3
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c/raw_traces_active.jsonl
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': UserInputContextBuildingProcessor completed. Final content length: 46
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: ae0e9ff2-4af3-4cc1-929a-3d8b6695a6cd) for 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'. Attempting graceful shutdown.
+Agent 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Stop requested.
+AgentExternalEventNotifier (NotifierID: f01dc6d1-d0a6-41cd-9ece-f552cd0b6b08, AgentID: api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' asyncRun() loop has finished.
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Running shutdown sequence on worker loop.
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Shutdown resource cleanup completed successfully.
+AgentWorker 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249'.
+AgentRuntime for 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249': Context unregistered.
+AgentRuntime for 'api_workspace_autobyteus_1790068359478_7a05dc88dca04c4e9859506a85e68249' stop() method completed.
+AgentEventStream (ID: b1653788-22b6-40d0-9f8e-34967df615ae) for 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'. Attempting graceful shutdown.
+Agent 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Stop requested.
+AgentExternalEventNotifier (NotifierID: 3ee22052-7671-4151-b86a-4e4606805c05, AgentID: api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' asyncRun() loop has finished.
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Running shutdown sequence on worker loop.
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Shutdown resource cleanup completed successfully.
+AgentWorker 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e'.
+AgentRuntime for 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e': Context unregistered.
+AgentRuntime for 'api_workspace_autobyteus_1790068359478_81103270d13d45ee96467c86c4e1745e' stop() method completed.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C.
+Created and registered workspace ID: agent_ws_69df9c694f772b8ae0804847ad0f5dfc43c80dfa56a359c4caac050b713f8cd3
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C.
+Reusing registered workspace ID: agent_ws_69df9c694f772b8ae0804847ad0f5dfc43c80dfa56a359c4caac050b713f8cd3
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c/raw_traces_active.jsonl
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/C.
+Reusing registered workspace ID: agent_ws_69df9c694f772b8ae0804847ad0f5dfc43c80dfa56a359c4caac050b713f8cd3
+Published claude_agent_sdk agent run 'api_workspace_claude_agent_sdk_1790068406277_d351a73699344a7a8857538bdfa16cdc'.
+(node:20774) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c/raw_traces_active.jsonl
+Closed PTY session 1c41892a-e28f-4d0c-93be-393cb5fc9cc3
+Terminal WebSocket disconnected: 1c41892a-e28f-4d0c-93be-393cb5fc9cc3
+Created terminal session 44394544-db73-45d8-901d-8fa205846628 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 44394544-db73-45d8-901d-8fa205846628
+Terminal websocket attached for cwd /Users/normy
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/B.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c/raw_traces_active.jsonl
+Closed PTY session 44394544-db73-45d8-901d-8fa205846628
+Terminal WebSocket disconnected: 44394544-db73-45d8-901d-8fa205846628
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-autobyteus-1790068359478/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790068406277/B.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/A.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-codex_app_server-1790068405183/B.
+Created terminal session d657690d-459a-40b4-bb3e-cc155deb8f7b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d657690d-459a-40b4-bb3e-cc155deb8f7b
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_bc7df997bcf44f93903cce9832061514/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_b0fd494a325c40a28645ae667fbaa535/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/memory/agent_orgs/api_workspace_claude_agent_sdk_1790068406277_2ead52ba859148b5872e4e00d3f61089/api_workspace_claude_agent_sdk_1790068406277_f3add80230b0431bb3aa4293e40a7d85/api_workspace_claude_agent_sdk_1790068406277_06674b3d7c744385a3989e74cbc5795c/raw_traces_active.jsonl
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D.
+Created and registered workspace ID: agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D.
+Reusing registered workspace ID: agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+Created WorkspaceFileExplorer for agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692 (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 4e33e2a1-811d-46dc-b3db-b87771110872 for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+Created file explorer session 4e33e2a1-811d-46dc-b3db-b87771110872 for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692. Active sessions: 1
+File explorer WebSocket connected: 4e33e2a1-811d-46dc-b3db-b87771110872 for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+File explorer websocket attached for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+In-memory cache: Added new agent definition with ID api-workspace-claude-agent-sdk-1790071197247.
+Agent Definition created successfully with ID: api-workspace-claude-agent-sdk-1790071197247
+[2026-09-22T09:59:57.312Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID api-workspace-claude-agent-sdk-1790071197247.
+Agent Team Definition created successfully with ID: api-workspace-claude-agent-sdk-1790071197247
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A.
+Created and registered workspace ID: agent_ws_c02426f53a6be4b5e96754df1fe2e9d65d83ddee57f05a88a7d8ceb264f858c5
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A.
+Reusing registered workspace ID: agent_ws_c02426f53a6be4b5e96754df1fe2e9d65d83ddee57f05a88a7d8ceb264f858c5
+Published claude_agent_sdk agent run 'api_workspace_claude_agent_sdk_1790071197247_799c28f21cfa4a79ba4db4ab224a24af'.
+(node:20774) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A.
+Reusing registered workspace ID: agent_ws_c02426f53a6be4b5e96754df1fe2e9d65d83ddee57f05a88a7d8ceb264f858c5
+Published claude_agent_sdk agent run 'api_workspace_claude_agent_sdk_1790071197247_2676249eeff14a209897e78b84ad564b'.
+(node:20774) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:20774) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/B
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/B.
+Created and registered workspace ID: agent_ws_3a0fa1ee794e8ad1b2ce490d3ed23b0bc75834d30e2cc86a27cf500d0685cfdd
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/A.
+Reusing registered workspace ID: agent_ws_c02426f53a6be4b5e96754df1fe2e9d65d83ddee57f05a88a7d8ceb264f858c5
+Published claude_agent_sdk agent run 'api_workspace_claude_agent_sdk_1790071197247_799c28f21cfa4a79ba4db4ab224a24af'.
+(node:20774) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/B
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace/autobyteus-server-ts/tests/.tmp/offline-org-live-4425-1790068197090/api-workspace-claude_agent_sdk-1790071197247/B.
+Reusing registered workspace ID: agent_ws_3a0fa1ee794e8ad1b2ce490d3ed23b0bc75834d30e2cc86a27cf500d0685cfdd
+Published claude_agent_sdk agent run 'api_workspace_claude_agent_sdk_1790071197247_017d39b08e1440a7bdd99ee184191e4e'.
+(node:20774) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D
+FileExplorerSession closed: 4e33e2a1-811d-46dc-b3db-b87771110872
+Closed file explorer session 4e33e2a1-811d-46dc-b3db-b87771110872. Active sessions: 0
+File explorer WebSocket disconnected: 4e33e2a1-811d-46dc-b3db-b87771110872
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D (file-explorer-websocket); active leases: 1
+FileExplorerSession created: d5e3e379-a62f-491c-9588-cc4a8fae69c5 for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+Created file explorer session d5e3e379-a62f-491c-9588-cc4a8fae69c5 for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692. Active sessions: 1
+File explorer WebSocket connected: d5e3e379-a62f-491c-9588-cc4a8fae69c5 for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+File explorer websocket attached for workspace agent_ws_86124c983b66a60931ac559e1a84b4e3521451fc287fdf2074e96dd9ce505692
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D/ui.txt
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E.
+Created and registered workspace ID: agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/D
+FileExplorerSession closed: d5e3e379-a62f-491c-9588-cc4a8fae69c5
+Closed file explorer session d5e3e379-a62f-491c-9588-cc4a8fae69c5. Active sessions: 0
+File explorer WebSocket disconnected: d5e3e379-a62f-491c-9588-cc4a8fae69c5
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E.
+Reusing registered workspace ID: agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be
+Created WorkspaceFileExplorer for agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 168f6211-e88f-4049-8f56-72cfb1527493 for workspace agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be
+Created file explorer session 168f6211-e88f-4049-8f56-72cfb1527493 for workspace agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be. Active sessions: 1
+File explorer WebSocket connected: 168f6211-e88f-4049-8f56-72cfb1527493 for workspace agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be
+File explorer websocket attached for workspace agent_ws_da95df2774037fa2194f9adf5bf4e7850868339eb4c5ddc327f9fd3f89f9b9be
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/offline-org-ui-kKuWuO/E
+FileExplorerSession closed: 168f6211-e88f-4049-8f56-72cfb1527493
+Closed file explorer session 168f6211-e88f-4049-8f56-72cfb1527493. Active sessions: 0
+File explorer WebSocket disconnected: 168f6211-e88f-4049-8f56-72cfb1527493
+Closed PTY session d657690d-459a-40b4-bb3e-cc155deb8f7b
+Terminal WebSocket disconnected: d657690d-459a-40b4-bb3e-cc155deb8f7b
+[2026-09-22T10:06:25.387Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-22T10:06:25.516Z] [INFO] [server.runtime] Server closed cleanly.

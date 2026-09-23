@@ -58,7 +58,7 @@ export const projectExistingTeamRunFormModel = (input: {
       directlyEdited: draft.directlyEdited,
       originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
       modelOptions: input.modelOptionsByAddress?.[address],
-      storedWorkspace: workspace(launch),
+      workspaceControl: { mode: 'stored', workspace: workspace(launch) },
     }
   }
   const visit = (

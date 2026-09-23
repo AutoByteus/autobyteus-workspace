@@ -1,0 +1,10 @@
+{
+  "kind": "synthetic feasibility probe, not end-to-end or supported user entrypoint",
+  "sourceRevision": "da86efe07f7f71e7455db6a866286af0bf0debd7",
+  "currentModelMutatorIgnoresWorkspaceChange": true,
+  "parentOnlyRuntimeProjection": {
+    "team": "/new",
+    "child": "/old"
+  },
+  "conclusion": "Current owner paths neither save workspace edits nor recompute child inheritance on restore."
+}
