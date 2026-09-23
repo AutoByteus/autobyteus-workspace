@@ -116,7 +116,13 @@ describe('AgentExternalEventNotifier', () => {
     notifier.subscribe(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, (payload) => {
       received.push(payload);
     });
-    notifier.notifyAgentDataAssistantCompleteResponse(new CompleteResponse({ content: 'ok' }));
+    notifier.notifyAgentDataAssistantCompleteResponse(new CompleteResponse({
+      content: 'ok',
+      providerNativeAssistantTurn: { provider: 'anthropic', blocks: [
+        { type: 'thinking', thinking: 'synthetic private', signature: 'synthetic-signature' },
+        { type: 'tool_use', id: 'toolu_1', name: 'search', input: {} },
+      ] },
+    }));
     notifier.notifyAgentDataAssistantCompleteResponse(
       new CompleteResponse({ content: 'provider failed' }),
       true,
@@ -125,6 +131,7 @@ describe('AgentExternalEventNotifier', () => {
       expect.objectContaining({ content: 'ok', is_error: false }),
       expect.objectContaining({ content: 'provider failed', is_error: true }),
     ]);
+    expect(JSON.stringify(received)).not.toContain('synthetic-signature');
   });
 
   it('logs streaming details only when verbose agent event logs are enabled', () => {

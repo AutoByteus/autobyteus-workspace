@@ -1,0 +1,15 @@
+Delivery Electron test build — 2026-09-23 UTC
+Host: Linux aarch64 (ARM64), Electron 42.4.1, package version 1.4.75, personal flavor.
+README paths consulted: root README.md, autobyteus-web/README.md, autobyteus-web/docs/electron_packaging.md.
+Build: PATH=/tmp/new-models-build-bin:$PATH AUTOBYTEUS_BUILD_FLAVOR=personal corepack pnpm -C autobyteus-web build:electron:linux:arm64
+Note: temporary /tmp/new-models-build-bin/pnpm shim invokes corepack pnpm for nested package scripts because this shell had no pnpm shim on PATH. No repository file was changed for the shim.
+Build result: exit 0. Full local log: /tmp/new-models-electron-arm64-build.log.
+AppImage: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.4.75.AppImage
+AppImage size: 523 MiB. SHA-256: 3aeb70bc6935738fbba4b97461d8914485e0f1aa7745553023405e60970f7d67
+Unpacked executable: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Initial root smoke: env -u ELECTRON_RUN_AS_NODE corepack pnpm -C autobyteus-web test:e2e:electron --skip-build --adapter direct --executable <unpacked executable>
+Initial smoke result: exit 1; Chromium rejected root launch without --no-sandbox. This is a container-user condition, not a product runtime result.
+Non-root smoke: runuser -u vncuser -- env HOME=/home/vncuser DISPLAY=:99 node <worktree>/autobyteus-web/scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable <unpacked executable>
+Non-root smoke result: exit 0; electron-e2e-ready; isolated port 45289 and temporary root /tmp/autobyteus-e2e-x4QSMl; bundled backend health URL http://127.0.0.1:45289/rest/health became ready. Launcher cleaned owned process tree/root afterward. Local log: /tmp/new-models-electron-arm64-smoke-vncuser.log.
+No user verification acceptance, tag, remote push, release, publication or deployment is implied by this local build/smoke.
+Direct AppImage runtime check (non-root container): initial launch failed because unversioned libz.so was absent; with a temporary /tmp symlink to system libz.so.1, --appimage-version succeeded. Full GUI launch then failed before application startup because this container lacks libfuse.so.2/FUSE. This does not affect the unpacked executable smoke above; no system libraries were installed or repository sources modified. For hands-on testing in this container, use the unpacked executable rather than the AppImage wrapper. Local logs: /tmp/new-models-appimage-version.log, /tmp/new-models-appimage-version-withlib.log, /tmp/new-models-electron-appimage-smoke.log.

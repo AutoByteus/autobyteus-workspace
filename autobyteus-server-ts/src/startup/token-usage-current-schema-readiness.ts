@@ -17,7 +17,8 @@ const RUN_COLUMNS = new Set([
   "api_cost_status", "pricing_summary_json", "quality_flags_json", "latest_runtime_kind",
   "latest_model_provider", "latest_provider_name", "latest_model_identifier", "latest_model_value",
   "identity_summary_json", "latest_prompt_tokens", "effective_context_window_tokens",
-  "context_window_usage_percent", "snapshot_series_state_json", "recent_idempotency_digests_json",
+  "context_window_usage_percent", "snapshot_series_state_json", "claude_sdk_usage_state_json",
+  "recent_idempotency_digests_json",
 ]);
 const ANALYTICS_COLUMNS = new Set([
   "id", "bucket_start", "facet_key", "identity_key", "provider_key", "model_key", "runtime_kind",

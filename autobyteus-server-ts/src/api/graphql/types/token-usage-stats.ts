@@ -41,6 +41,12 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
 
   @Field(() => String, { nullable: true })
   latestRuntimeKind?: string | null;
+
+  @Field(() => String, { nullable: true })
+  latestSelectedRawModelId?: string | null;
+
+  @Field(() => Boolean)
+  hasCacheWriteRateAssumption!: boolean;
 }
 
 @ObjectType()
@@ -216,6 +222,8 @@ export const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPaylo
   latestModelProvider: summary.latest_model_provider,
   latestModelIdentifier: summary.latest_model_identifier,
   latestRuntimeKind: summary.latest_runtime_kind,
+  latestSelectedRawModelId: summary.latest_selected_raw_model_id ?? null,
+  hasCacheWriteRateAssumption: summary.has_cache_write_rate_assumption ?? false,
 });
 
 const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRowGraphql => ({

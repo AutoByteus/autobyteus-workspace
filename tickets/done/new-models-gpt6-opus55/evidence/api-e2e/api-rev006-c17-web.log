@@ -1,0 +1,98 @@
+
+> autobyteus@1.4.76 test:nuxt /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts stores/__tests__/tokenUsageMeterStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (10 tests) 18ms
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows selected Claude model and configured estimate with a visible assumed cache rate
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > renders the approved Token Meter hierarchy with server-owned component values
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates lifetime standalone values after two post-restart events have no persisted snapshot
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > renders the selected Claude known prompt/capacity and derived progress without changing cost
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows prompt usage and an explicit unavailable context limit without a fake denominator
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > expands calculation details with server-provided unit prices and thinking included copy
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows server-provided generic cache-write tokens, price, and cost in both disclosure levels
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > omits the thinking-token subline when no reasoning tokens are present
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows varies-by-call calculation details for mixed pricing without a fake unit price
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates the exact focused team member when post-restart team events lack a persisted snapshot
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates the team aggregate when only a partial live team summary exists
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > rejects non-Agent focus without falling back to the team aggregate as primary usage
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (13 tests) 172ms
+
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+   Start at  17:45:47
+   Duration  10.59s (transform 5.67s, setup 17.35s, collect 520ms, tests 189ms, environment 1.27s, prepare 712ms)

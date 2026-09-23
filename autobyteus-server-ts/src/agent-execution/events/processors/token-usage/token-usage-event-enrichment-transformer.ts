@@ -42,6 +42,12 @@ export class TokenUsageEventEnrichmentTransformer implements AgentRunEventTransf
         runContext: input.runContext,
         payload: basePayload,
       });
+      if (withContext.ingestion_kind === "claude_sdk_result") {
+        // Per-model token counts are cumulative; only the transactional fold may admit selected deltas and price them.
+        output.push({ ...event, runId: input.runContext.runId,
+          payload: withContext as unknown as Record<string, unknown> });
+        continue;
+      }
       const withComponentBasis = this.componentBasisResolver.resolve(withContext);
       const withAccountingDelta = await this.deltaNormalizer.normalizeAccountingDelta(withComponentBasis);
       const withCost = await this.costCalculator.enrichCost(withAccountingDelta);

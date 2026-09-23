@@ -1,0 +1,11 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-ts
+
+ ✓ tests/unit/llm/api/anthropic-signed-tool-continuation.test.ts (3 tests) 16ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (16 tests) 12ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (11 tests) 21ms
+
+ Test Files  3 passed (3)
+      Tests  30 passed (30)
+   Start at  16:54:39
+   Duration  1.96s (transform 1.08s, setup 62ms, import 4.10s, tests 48ms, environment 0ms)

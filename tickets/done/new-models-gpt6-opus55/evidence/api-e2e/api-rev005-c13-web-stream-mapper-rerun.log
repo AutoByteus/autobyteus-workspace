@@ -1,0 +1,53 @@
+
+> autobyteus@1.4.76 test:nuxt /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/tokenUsageMeterStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts (10 tests | 1 failed) 21ms
+   ✓ tokenUsageMeterStore > admits only the persisted standalone snapshot and deduplicates its event identity 5ms
+   ✓ tokenUsageMeterStore > keeps standalone hydration required when a live event has no persisted snapshot 0ms
+   ✓ tokenUsageMeterStore > uses usageReportCount to reject stale/equal run snapshots across a live/fetch race 1ms
+   ✓ tokenUsageMeterStore > admits the exact cumulative team-member snapshot and keeps compound team identity 1ms
+   ✓ tokenUsageMeterStore > rejects missing and mismatched persisted team-member snapshots without creating readiness 1ms
+   ✓ tokenUsageMeterStore > rejects stale GraphQL member data after a newer live member snapshot 1ms
+   ✓ tokenUsageMeterStore > coalesces aggregate callers and serially refetches when persisted events dirty an inclusive response 3ms
+   ✓ tokenUsageMeterStore > does not blindly extend a record-backed aggregate with a later live delta 1ms
+   × tokenUsageMeterStore > preserves selected Claude SDK identity and cache assumption from stream DTO to record-backed meter 5ms
+     → store.getAgentRunSummary is not a function
+   ✓ tokenUsageMeterStore > rejects unsafe report generations at the wire and GraphQL admission boundaries 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/tokenUsageMeterStore.spec.ts > tokenUsageMeterStore > preserves selected Claude SDK identity and cache assumption from stream DTO to record-backed meter
+TypeError: store.getAgentRunSummary is not a function
+ ❯ stores/__tests__/tokenUsageMeterStore.spec.ts:450:18
+    448|     const store = useTokenUsageMeterStore();
+    449|     store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary …
+    450|     expect(store.getAgentRunSummary('run-1')).toMatchObject({
+       |                  ^
+    451|       latestModelIdentifier: 'claude-opus-5-5',
+    452|       latestSelectedRawModelId: 'claude-opus-5-5[1m]',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  16:57:18
+   Duration  8.60s (transform 5.29s, setup 7.55s, collect 56ms, tests 21ms, environment 342ms, prepare 277ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

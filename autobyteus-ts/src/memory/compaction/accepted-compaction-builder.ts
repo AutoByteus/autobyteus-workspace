@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 
 import { MessageRole } from '../../llm/utils/messages.js';
+import { withoutAnthropicThinkingInMessage } from '../../llm/utils/provider-native-assistant-turn.js';
 import { COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION } from '../lineage/compaction-lineage-record.js';
 import type { CompactionLineageScope } from '../lineage/compaction-lineage-scope.js';
 import { EpisodicItem } from '../models/episodic-item.js';
@@ -90,7 +91,7 @@ export class AcceptedCompactionBuilder {
         (message) => message.role === MessageRole.SYSTEM,
         ),
         createCompactedMemoryUserMessage(memoryContent),
-        ...this.finalizer.markNaturalUserMessagesRetained(proposal.retainedMessages),
+        ...this.finalizer.markNaturalUserMessagesRetained(proposal.retainedMessages).map(withoutAnthropicThinkingInMessage),
       ],
     });
     const derivedAt = now.toISOString();

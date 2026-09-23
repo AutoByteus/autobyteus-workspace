@@ -6,6 +6,7 @@ import {
   ToolResultPayload,
 } from '../../llm/utils/messages.js';
 import { ProviderNativeToolCallContextSchema } from '../../llm/utils/tool-call-delta.js';
+import { ANTHROPIC_ASSISTANT_TURN_KEY, parseAnthropicAssistantTurn } from '../../llm/utils/provider-native-assistant-turn.js';
 import { WorkingContext } from '../working-context.js';
 import type { AcceptedWorkingContextCompaction } from './working-context-compaction-proposal.js';
 
@@ -59,6 +60,12 @@ export class WorkingContextCompactionOutputValidator {
     }
     const nextMessages = next.buildMessages();
     assertWorkingContextMessagesStructurallyValid(nextMessages);
+    if (nextMessages.some((message) => {
+      const native = message.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY];
+      return native !== undefined && parseAnthropicAssistantTurn(native).blocks.some((block) => block.type === 'thinking' || block.type === 'redacted_thinking');
+    })) {
+      throw new WorkingContextCompactionOutputValidationError('invalid-message-shape', 'Compacted context retains stale Anthropic thinking blocks.');
+    }
 
     const requiredHead = takeLeadingSystemMessages(baselineMessages);
     const returnedHead = nextMessages.slice(0, requiredHead.length);

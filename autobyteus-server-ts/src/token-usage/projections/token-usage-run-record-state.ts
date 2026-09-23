@@ -111,6 +111,7 @@ export const createEmptyRunRecord = (
     effectiveContextWindowTokens: null,
     contextWindowUsagePercent: null,
     snapshotSeriesState: [],
+    claudeSdkUsageStateJson: null,
     recentIdempotencyDigests: [],
   };
 };

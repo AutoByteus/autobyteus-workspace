@@ -46,6 +46,8 @@ store.
   - lifetime domain record: `domain/token-usage-run-record.ts`
   - analytics domain/result contracts: `domain/token-usage-analytics.ts`
   - deterministic lifetime fold: `projections/token-usage-run-fold.ts`
+  - selected Claude SDK cumulative-model reconciliation:
+    `projections/claude-sdk-model-usage-reconciler.ts`
   - admitted-contribution projection: `projections/token-usage-analytics-contribution.ts`
   - accumulator and atomic write coordinator: `services/token-usage-run-accumulator.ts`
   - analytics projection writer: `services/token-usage-analytics-projection-writer.ts`
@@ -63,6 +65,7 @@ store.
     `TokenUsageAnalyticsCoverage`, and `TokenUsageAnalyticsDailyFacet`
   - `prisma/migrations/20260819090000_add_token_usage_run_records/`
   - `prisma/migrations/20260822090000_add_token_usage_analytics/`
+  - `prisma/migrations/20260923130000_add_claude_sdk_usage_state/`
 - Migration-only legacy owners:
   - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
   - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
@@ -242,16 +245,45 @@ turn map.
 
 ### Claude Agent SDK
 
-Claude accounting is terminal-result based. Thinking/text stream chunks are
-content events, not token contributions. `buildClaudeTokenUsageEvent(...)`
-emits one `per_turn` observation from terminal `result.usage` and/or
-`modelUsage`.
+Claude SDK accounting starts at terminal `result` events; thinking/text stream
+chunks are content, not token contributions. The selected SDK model value is
+resolved against the active query's `supportedModels()` metadata to one raw
+model id. The result sanitizer retains safe per-model counters privately for
+the fold. A missing or ambiguous selected-model match must not substitute
+main-loop totals or another model (for example, auxiliary Haiku) in the public
+meter. The public summary keeps the selected canonical and raw identities.
+
+`claude-sdk-model-usage-reconciler.ts` differences cumulative `modelUsage`
+counters against bounded, session-and-raw-model checkpoints. Duplicate or
+regressed observations do not double-count; a regression becomes a new
+baseline before later growth. Legacy/unknown resume history is baselined rather
+than guessed. Only the selected model's admitted delta reaches the lifetime
+run, daily analytics, GraphQL, and live `run_summary_after_event` projections;
+all-source checkpoints remain private in the nullable
+`claude_sdk_usage_state_json` run-record column. The 2026-09-23 Prisma migration
+adds this column without backfilling or repricing older records. Apply the
+normal production migration/startup-readiness flow before running this server.
+
+For the latest Claude SDK prompt context, the terminal result's selected raw
+model row supplies the capacity. Only a positive safe-integer `contextWindow`
+and a safe full prompt sum (base input plus cache read plus cache creation)
+produce `context_window_usage_percent = 100 × prompt / capacity`. A missing,
+zero, or unsafe capacity leaves the percentage unavailable; the model name is
+not a fallback capacity. For an older run row with valid latest prompt and
+capacity but null percentage, the run-summary read projection derives the
+percentage from that same latest row without mutating SQL or repricing. A
+previously stored finite percentage and non-Claude runtime behavior remain
+unchanged.
 
 Claude/Anthropic input uses `base_excludes_cache`: gross input is base input
-plus cache-read and cache-creation buckets. Numeric thinking details map to
-`reasoning_output_tokens`; absent numeric detail remains null even when thinking
-content exists. Divergence between comparable `usage` and `modelUsage` facts is
-flagged rather than changing Claude into cumulative accounting.
+plus cache-read and cache-creation buckets. A cache-write 5-minute/1-hour split
+is exact only when the terminal main-loop usage fully reconciles with the
+selected-model delta in every token dimension. Otherwise cache writes use the
+configured 1-hour rate as a visibly flagged approximation. Cost is an
+AutoByteus-configured Standard API-equivalent estimate, not the SDK's reported
+dollars or a subscription charge. Missing trusted prices remain missing rather
+than zero. Numeric thinking details map to `reasoning_output_tokens`; absent
+numeric detail remains null even when thinking content exists.
 
 ## Token And Pricing Semantics
 
@@ -280,7 +312,7 @@ include component `unitPrices`, policy/tier identifiers, currency/status, and
 missing dimensions so the UI can explain costs without recalculating them.
 Reasoning tokens remain a visible subset of output and are not double-counted.
 
-### Exact Astra and Fable 5.1 Standard pricing
+### Exact current-model Standard pricing
 
 The built-in catalog resolves only exact provider/model identities. Future
 `OPENAI` + `gpt-6-astra` observations use Standard USD-per-million rates of
@@ -297,6 +329,24 @@ context/input and 128,000 maximum output, sourced and verified 2026-09-22 from
 the [Fable 5.1 overview](https://platform.claude.com/docs/en/models/fable-5-1/overview);
 pricing is effective 2026-09-01. Existing `claude-fable-5` pricing is unchanged.
 
+Future exact `OPENAI` + `gpt-6-sol` and `gpt-6-luna` observations use the
+existing full-request tier boundary at 272,000 accounting input tokens. Rates
+below are USD per million tokens; cache write is the general OpenAI cache-write
+dimension, not an Anthropic TTL bucket.
+
+| Exact model | Tier | Input | Output | Cache read | Cache write |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `gpt-6-sol` | at or below 272k | 2 | 10 | 0.20 | 2.50 |
+| `gpt-6-sol` | above 272k, entire request | 4 | 15 | 0.40 | 5 |
+| `gpt-6-luna` | at or below 272k | 0.10 | 0.50 | 0.01 | 0.125 |
+| `gpt-6-luna` | above 272k, entire request | 0.20 | 0.75 | 0.02 | 0.25 |
+
+Future exact `ANTHROPIC` + `claude-opus-5-5` observations use Standard rates
+of `4` input, `20` output, `0.20` cache read, `5` five-minute cache write,
+and `8` one-hour cache write per million tokens. It has no inferred Fast,
+Batch, regional, or subscription tariff. The added exact-policy server tests
+exercise all three model identities and the OpenAI long-context/cache tiers.
+
 These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
 partner, subscription/credit, private, and negotiated variants are not inferred
 from an identity that does not record billing mode. No aliases or family-price
@@ -304,8 +354,11 @@ inheritance are used, so unsupported identifiers continue to produce
 `price_missing`. Pricing is captured at observation time: existing run records,
 analytical facets, policy keys, and historical missing states are never
 recalculated by a catalog update. Deterministic catalog, synthetic policy/tier,
-and mocked request tests cover these entries; no paid Astra or Fable 5.1
-inference was run for this change.
+and mocked request tests cover these entries. The new-model validation also
+completed three real Codex Astra/Sol/Luna turns and a bounded real Anthropic
+signed active tool-turn replay, but those are separate runtime evidence, not a
+provider invoice or live proof of every pricing dimension. Direct OpenAI live
+API and independent-turn signed reset or compaction were not exercised.
 
 ### Latest pricing schedule selection
 

@@ -1,0 +1,8 @@
+2026-09-23 UTC — delivery second latest-base refresh after API-REV-003 / CRR-005
+Previous integrated base: origin/personal@020daf6de5aaf5f31cfd3a372c4b3f4ed16b2868
+New tracked base: origin/personal@0f54978ba34165c476dcba67ce1d31ab27257108
+Pre-merge safety checkpoint: 897cf4fd6
+Merge: fc13ccf5d7483fa7f18f09c86217b0830f5886f4 (no conflicts)
+Post-merge command: corepack pnpm -C autobyteus-server-ts exec vitest run tests/unit/token-usage/pricing/token-price-config-provider.test.ts tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+Result: exit 0; 21/21 pricing tests passed; 4 gated live Claude tests skipped by default. Local log: /tmp/new-models-delivery-api003-post-merge-tests.log.
+No paid provider request was repeated for this unrelated base merge. New-model source and the two cumulative durable test paths were unchanged by the new base.

@@ -8,7 +8,7 @@ or changing provider-specific request-shaping behavior.
 
 | Surface | Catalog / Metadata Source | Runtime / Request-Shape Owner | Notes |
 | --- | --- | --- | --- |
-| LLM API models | `src/llm/supported-model-definitions.ts` | Provider adapters under `src/llm/api/` | Each definition owns static numeric limits, multimodal capabilities, and provenance; `LLMFactory` explicitly maps resolved runtime fields. |
+| LLM API models | `src/llm/supported-model-definitions.ts` (sole ordered aggregate), `src/llm/anthropic-supported-model-definitions.ts` (Anthropic rows), and `src/llm/supported-model-pricing.ts` (shared pricing constructor) | Provider adapters under `src/llm/api/` | Each definition owns static numeric limits, multimodal capabilities, and provenance; `LLMFactory` explicitly maps resolved runtime fields. The Anthropic sublist is inserted once at its original aggregate position, not registered independently. |
 | LLM static metadata | `staticMetadata` on each supported definition, with helpers in `src/llm/supported-model-static-metadata.ts` | `src/llm/metadata/model-metadata-resolver.ts` and `src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | Built-ins resolve live values over static definitions field-by-field. Custom endpoints resolve advertised live values, exact built-in-value inference, then unknown. `activeContextTokens` remains dynamic and is not resolved here. |
 | LLM media capability/recovery | `src/llm/multimodal-capabilities.ts`, `src/llm/utils/media-input-sanitizer.ts` | `LLMRequestAssembler`, `LlmPhase`, and `MemoryManager` | Capability filtering and empty-media validation happen on a provider-facing message copy; failed request preparation/streaming rolls back without automatic retry. |
 | Gemini LLM runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiLLM` | Add API-key and Vertex mappings when Gemini LLM provider values differ or need explicit identity coverage. |
@@ -71,6 +71,8 @@ or credentials.
 | Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
 | --- | --- | --- | --- | --- | --- |
 | LLM | `gpt-6-astra` | `gpt-6-astra` | OpenAI | 2026-09-22 | Exact ID; uses the Responses path, a direct-API low/medium/high/xhigh/max reasoning schema (default medium), 1.05M context / 128k output metadata, and Standard cache-aware pricing with a full-request tier above 272k input tokens. Codex runtime capabilities remain dynamically owned. |
+| LLM | `gpt-6-sol` | `gpt-6-sol` | OpenAI | 2026-09-23 | Exact Responses ID; 1.05M context / 128k output, direct-API reasoning schema, Standard $2 input / $10 output per MTok before the existing full-request long-context tier. Codex discovery and entitlement remain separate. |
+| LLM | `gpt-6-luna` | `gpt-6-luna` | OpenAI | 2026-09-23 | Exact Responses ID; 1.05M context / 128k output, direct-API reasoning schema, Standard $0.10 input / $0.50 output per MTok before the existing full-request long-context tier. Codex discovery and entitlement remain separate. |
 | LLM | `gpt-5.6-sol` | `gpt-5.6-sol` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
@@ -79,6 +81,7 @@ or credentials.
 | LLM | `claude-fable-5-1` | `claude-fable-5-1` | Anthropic | 2026-09-22 | Exact ID; uses 1M context/input / 128k output metadata and Standard cache-aware pricing effective 2026-09-01. Adaptive thinking is always on, so the catalog exposes no manual thinking toggle. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
+| LLM | `claude-opus-5-5` | `claude-opus-5-5` | Anthropic | 2026-09-23 | Exact Messages API ID; 1M context/input / 128k output, adaptive-only thinking request policy, and Standard $4 input / $20 output / $0.20 cache read / $5 five-minute write / $8 one-hour write per MTok. Signed native thinking remains private working-context material during tool continuation. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Latest Sonnet row; exact provider ID only, with no `claude-sonnet-4.8` alias. |
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
@@ -215,16 +218,17 @@ request error.
 
 The built-in Anthropic catalog is static. The server exposes no Reload action
 for it; new Anthropic API model IDs appear only after
-`src/llm/supported-model-definitions.ts` is updated.
+`src/llm/anthropic-supported-model-definitions.ts` is updated and included by
+the sole ordered aggregate in `src/llm/supported-model-definitions.ts`.
 
-The active current-model rows are `claude-opus-5`, `claude-fable-5-1`,
+The active current-model rows are `claude-opus-5-5`, `claude-opus-5`, `claude-fable-5-1`,
 `claude-fable-5`, `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and
 retained `claude-sonnet-4.6`. Opus 5 uses the exact provider API value
 `claude-opus-5`, with standard pricing effective 2026-07-24 and model limits
 verified 2026-07-31 against the [Claude models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 Do not add `claude-sonnet-4.8` unless Anthropic publishes that exact API ID.
 
-Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, Claude Fable 5,
+Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, Claude Fable 5,
 and Claude Fable 5.1 must not
 reuse the older fixed-budget extended-thinking request shape. Their built-in
 schemas expose adaptive thinking where the provider supports a manual toggle:
@@ -249,6 +253,12 @@ Anthropic Fast mode is a separate processing price (input `$10`, output `$50`)
 and remains explicitly outside this standard catalog row; the catalog does not
 infer Fast mode without a processing-mode identity.
 
+Claude Opus 5.5 uses adaptive thinking only: the request preflight rejects
+caller-supplied fixed-budget thinking and unsupported sampling controls before
+the SDK call. Its Standard rates are `$4` input, `$20` output, `$0.20` cache
+read, `$5` five-minute cache write, and `$8` one-hour cache write per million
+tokens. No Fast, Batch, regional, or subscription price is inferred.
+
 Claude Fable 5 and Fable 5.1 are catalog-available only; neither is a default
 or fallback. Fable 5 carries standard pricing of `$10` input / `$50` output per
 MTok plus Anthropic prompt-cache dimensions, is materially more expensive than
@@ -266,7 +276,7 @@ credit, and negotiated prices are not inferred.
 
 ### OpenAI Responses Models
 
-Official OpenAI text models such as `gpt-6-astra`, `gpt-5.5`, `gpt-5.6-sol`,
+Official OpenAI text models such as `gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5`, `gpt-5.6-sol`,
 `gpt-5.6-terra`, and `gpt-5.6-luna` use the `OpenAIResponsesLLM` path and the
 Responses API input-item history format. The three GPT-5.6 rows preserve their
 exact provider IDs; do not add the unsuffixed `gpt-5.6` alias as a fourth

@@ -29,6 +29,7 @@ import type { ToolInvocation } from '../tool-invocation.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 import { MissingApiKeyError } from '../../secrets/provider-api-key-error.js';
 import { extractProviderErrorEvidence } from '../../llm/errors/provider-error.js';
+import type { AnthropicAssistantTurn } from '../../llm/utils/provider-native-assistant-turn.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
@@ -77,6 +78,7 @@ export class LlmPhase {
     let completeResponseText = '';
     let completeReasoningText = '';
     let tokenUsage: LlmTokenUsageObservation | null = null;
+    let providerNativeAssistantTurn: AnthropicAssistantTurn | null = null;
     const completeImageUrls: string[] = [];
     const completeAudioUrls: string[] = [];
     const completeVideoUrls: string[] = [];
@@ -205,7 +207,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin },
+          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin, isToolContinuation: turn.toolInvocationBatches.length > 0 },
           systemPrompt ?? undefined,
         )
       );
@@ -263,6 +265,7 @@ export class LlmPhase {
         turn.executionScope.throwIfAborted({ kind: 'llm_stream_chunk' });
         if (chunkResponse.content) completeResponseText += chunkResponse.content;
         if (chunkResponse.reasoning) completeReasoningText += chunkResponse.reasoning;
+        if (chunkResponse.providerNativeAssistantTurn) providerNativeAssistantTurn = chunkResponse.providerNativeAssistantTurn;
 
         if (chunkResponse.is_complete) {
           tokenUsage = chunkResponse.usage ?? null;
@@ -300,7 +303,8 @@ export class LlmPhase {
         usage: tokenUsage,
         image_urls: completeImageUrls,
         audio_urls: completeAudioUrls,
-        video_urls: completeVideoUrls
+        video_urls: completeVideoUrls,
+        providerNativeAssistantTurn,
       });
 
       if (tokenUsage) {

@@ -82,6 +82,8 @@ export const tokenUsageRunSummaryDtoSchema = z.object({
   context_window_usage_percent: nullableFiniteNumberSchema,
   latest_model_provider: nullableNonEmptyStringSchema,
   latest_model_identifier: nullableNonEmptyStringSchema,
+  latest_selected_raw_model_id: nullableNonEmptyStringSchema.optional(),
+  has_cache_write_rate_assumption: z.boolean().optional(),
   latest_runtime_kind: nullableNonEmptyStringSchema,
   usage_report_count: nonNegativeSafeIntegerSchema,
   updated_at: nullableNonEmptyStringSchema,

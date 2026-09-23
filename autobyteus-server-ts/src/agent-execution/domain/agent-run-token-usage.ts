@@ -6,6 +6,7 @@ import {
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
 import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
+import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkMainLoopUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
 export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
@@ -63,6 +64,8 @@ export interface TokenUsageRunSummaryPayload {
   latest_model_provider: string | null;
   latest_model_identifier: string | null;
   latest_runtime_kind: string | null;
+  latest_selected_raw_model_id?: string | null;
+  has_cache_write_rate_assumption?: boolean;
   usage_report_count: number;
   updated_at: string | null;
 }
@@ -89,6 +92,13 @@ export interface TokenUsageUpdatedPayload {
   provider_name: string | null;
   model_identifier: string | null;
   model_value: string | null;
+  selected_match_state?: ClaudeSdkSelectedMatchState | null;
+  selected_model_value?: string | null;
+  selected_resolved_raw_model_id?: string | null;
+  claude_sdk_model_usage?: ClaudeSdkModelUsage[];
+  claude_sdk_session_id?: string | null;
+  claude_sdk_query_kind?: ClaudeSdkQueryKind | null;
+  claude_sdk_main_loop_usage?: ClaudeSdkMainLoopUsage | null;
   ingestion_kind: TokenUsageIngestionKind;
   usage_scope: TokenUsageScope;
   snapshot_series_key: string | null;
@@ -218,7 +228,12 @@ export const isTokenUsageUpdatedPayload = (value: unknown): value is TokenUsageU
     asString(record.run_id) &&
     asString(record.runtime_kind) &&
     asString(record.ingestion_kind) &&
-    asScope(record.usage_scope),
+    asScope(record.usage_scope) &&
+    (record.ingestion_kind !== "claude_sdk_result" || (
+      record.runtime_kind === "claude_agent_sdk" &&
+      record.selected_match_state !== undefined &&
+      isClaudeSdkResultIdentity(record)
+    )),
   );
 };
 
@@ -269,6 +284,18 @@ export const createTokenUsageUpdatedPayload = (input: {
     qualityFlags.add("provider_name_top_level_nested_conflict");
   }
   const providerName = topLevelProviderName ?? nestedProviderName;
+  const isSdk = runtimeKind === "claude_agent_sdk" && ingestionKind === "claude_sdk_result";
+  const sdkIdentityValid = isSdk && isClaudeSdkResultIdentity(source);
+  if (isSdk && !sdkIdentityValid) qualityFlags.add("claude_sdk_identity_invalid");
+  const sdkRows = sdkIdentityValid && isClaudeSdkModelUsageArray(source.claude_sdk_model_usage)
+    ? source.claude_sdk_model_usage : [];
+  const sdkMatchState: ClaudeSdkSelectedMatchState | null = isSdk
+    ? sdkIdentityValid ? source.selected_match_state as ClaudeSdkSelectedMatchState : "missing"
+    : null;
+  const sdkResolvedRawId = sdkIdentityValid ? asString(source.selected_resolved_raw_model_id) : null;
+  const sdkMatchedRow = sdkMatchState === "matched"
+    ? sdkRows.find((row) => row.rawModelId === sdkResolvedRawId) : null;
+  const sdkModelIdentifier = sdkMatchedRow ? sdkMatchedRow.canonicalModel ?? sdkMatchedRow.rawModelId : null;
   return {
     usage_event_id: usageEventId,
     idempotency_key: idempotencyKey,
@@ -289,8 +316,16 @@ export const createTokenUsageUpdatedPayload = (input: {
     runtime_kind: runtimeKind,
     model_provider: asString(source.model_provider) ?? asString(usage?.model_provider),
     provider_name: providerName,
-    model_identifier: asString(source.model_identifier) ?? asString(usage?.model_identifier),
-    model_value: asString(source.model_value) ?? asString(usage?.model_value),
+    model_identifier: isSdk ? sdkModelIdentifier : asString(source.model_identifier) ?? asString(usage?.model_identifier),
+    model_value: isSdk ? sdkModelIdentifier : asString(source.model_value) ?? asString(usage?.model_value),
+    selected_match_state: sdkMatchState,
+    selected_model_value: isSdk ? asString(source.selected_model_value) : null,
+    selected_resolved_raw_model_id: sdkResolvedRawId,
+    claude_sdk_model_usage: sdkRows,
+    claude_sdk_session_id: isSdk ? asString(source.claude_sdk_session_id) : null,
+    claude_sdk_query_kind: isSdk && (source.claude_sdk_query_kind === "create" || source.claude_sdk_query_kind === "resume")
+      ? source.claude_sdk_query_kind : isSdk ? "unknown" : null,
+    claude_sdk_main_loop_usage: isSdk && sdkIdentityValid ? source.claude_sdk_main_loop_usage as ClaudeSdkMainLoopUsage : null,
     ingestion_kind: ingestionKind,
     usage_scope: usageScope,
     snapshot_series_key: asString(source.snapshot_series_key),
@@ -344,8 +379,8 @@ export const createTokenUsageUpdatedPayload = (input: {
     latest_prompt_tokens: asNonNegativeInt(source.latest_prompt_tokens),
     effective_context_window_tokens: asNonNegativeInt(source.effective_context_window_tokens),
     context_window_usage_percent: asFiniteNumber(source.context_window_usage_percent),
-    raw_usage_json: asJsonRecord(source.raw_usage_json) ?? asJsonRecord(usage?.raw_usage_json),
-    raw_event_json: asJsonRecord(source.raw_event_json) ?? asJsonRecord(source),
+    raw_usage_json: isSdk ? null : asJsonRecord(source.raw_usage_json) ?? asJsonRecord(usage?.raw_usage_json),
+    raw_event_json: isSdk ? null : asJsonRecord(source.raw_event_json) ?? asJsonRecord(source),
     quality_flags: Array.from(qualityFlags),
   };
 };

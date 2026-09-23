@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.76 test:e2e:token-statistics-ui /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web
+> node tests/e2e/token-statistics-ui-probe.mjs --skip-server-build --output-dir ../tickets/in-progress/new-models-gpt6-opus55/evidence/api-e2e/api-rev005-browser
+
+Pass: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/evidence/api-e2e/api-rev005-browser/token-statistics-browser-result.json

@@ -63,6 +63,7 @@ export const toPrismaTokenUsageRunRecordData = (
   effectiveContextWindowTokens: record.effectiveContextWindowTokens,
   contextWindowUsagePercent: record.contextWindowUsagePercent,
   snapshotSeriesStateJson: encodeSnapshotSeriesState(record.snapshotSeriesState),
+  claudeSdkUsageStateJson: record.claudeSdkUsageStateJson,
   recentIdempotencyDigestsJson: encodeRecentIdempotencyDigests(record.recentIdempotencyDigests),
 });
 
@@ -123,6 +124,7 @@ export const fromPrismaTokenUsageRunRecord = (
     effectiveContextWindowTokens: record.effectiveContextWindowTokens,
     contextWindowUsagePercent: record.contextWindowUsagePercent,
     snapshotSeriesState: decodeSnapshotSeriesState(record.snapshotSeriesStateJson),
+    claudeSdkUsageStateJson: record.claudeSdkUsageStateJson,
     recentIdempotencyDigests: decodeRecentIdempotencyDigests(record.recentIdempotencyDigestsJson),
   };
 };

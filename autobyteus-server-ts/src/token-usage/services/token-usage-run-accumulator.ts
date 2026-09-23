@@ -1,5 +1,6 @@
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 import { TokenCostCalculator } from "../pricing/token-cost-calculator.js";
+import { isSupportedClaudeSdkPricingProvider, isClaudeSdkResultIdentity } from "../../agent-execution/domain/claude-sdk-usage.js";
 import { buildTokenUsageRunSummaryFromRecords } from "../projections/token-usage-run-aggregate.js";
 import {
   foldTokenUsageObservation,
@@ -29,7 +30,17 @@ export class TokenUsageRunAccumulator {
 
   recordObservation(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     return serializeRun(payload.run_id, async () => {
-      const pricingPolicy = await this.costCalculator.resolvePolicy(payload);
+      const sdkResult = payload.runtime_kind === "claude_agent_sdk" && payload.ingestion_kind === "claude_sdk_result";
+      const selectedRow = sdkResult && isClaudeSdkResultIdentity(payload) && payload.selected_match_state === "matched"
+        ? payload.claude_sdk_model_usage?.find((row) => row.rawModelId === payload.selected_resolved_raw_model_id)
+        : null;
+      const canonical = selectedRow?.canonicalModel ?? null;
+      const pricingPolicy = sdkResult
+        ? canonical && selectedRow && isSupportedClaudeSdkPricingProvider(selectedRow.provider)
+          ? await this.costCalculator.resolvePolicy({ ...payload, model_provider: "ANTHROPIC",
+              model_identifier: canonical, model_value: canonical })
+          : null
+        : await this.costCalculator.resolvePolicy(payload);
       const folded = await this.repository.withRunTransaction(payload.run_id, async (transaction, current) => {
         const folded = foldTokenUsageObservation({
           current,

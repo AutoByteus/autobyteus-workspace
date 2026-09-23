@@ -24,6 +24,25 @@ const createSessionBinding = () => ({
 });
 
 describe("ClaudeSdkClient", () => {
+  it('resolves selected value only from the active turn control and fails closed on missing/ambiguous metadata', async () => {
+    const client = new ClaudeSdkClient();
+    const query = createMockQuery();
+    const supportedModels = vi.fn(async () => [
+      { value: 'opus[1m]', resolvedModel: 'claude-opus-5-5[1m]' },
+      { value: 'default', resolvedModel: 'claude-sonnet-5' },
+    ]);
+    const active = { ...query, supportedModels };
+    expect(await client.resolveSelectedModelForQuery(active, 'opus[1m]')).toEqual({
+      resolvedRawModelId: 'claude-opus-5-5[1m]', resolution: 'resolved',
+    });
+    expect(await client.resolveSelectedModelForQuery(active, 'absent')).toEqual({
+      resolvedRawModelId: null, resolution: 'missing',
+    });
+    expect(supportedModels).toHaveBeenCalledTimes(2);
+    expect(await client.resolveSelectedModelForQuery({ ...query, supportedModels: async () => [
+      { value: 'opus[1m]', resolvedModel: 'a' }, { value: 'opus[1m]', resolvedModel: 'b' },
+    ] }, 'opus[1m]')).toEqual({ resolvedRawModelId: null, resolution: 'ambiguous' });
+  });
   beforeEach(() => {
     vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "cli");
   });

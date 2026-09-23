@@ -150,6 +150,7 @@ model TokenUsageRunRecord {
   effectiveContextWindowTokens         BigInt?   @map("effective_context_window_tokens")
   contextWindowUsagePercent            Float?    @map("context_window_usage_percent")
   snapshotSeriesStateJson              String    @map("snapshot_series_state_json")
+  claudeSdkUsageStateJson               String?   @map("claude_sdk_usage_state_json")
   recentIdempotencyDigestsJson         String    @map("recent_idempotency_digests_json")
 
   @@index([rootTeamRunId])

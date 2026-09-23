@@ -261,6 +261,17 @@ validation to the repaired snapshot. This ordering repairs the one approved
 incomplete-protocol shape without treating unrelated current-format corruption
 as compatible data.
 
+Anthropic Opus 5.5 native assistant-turn metadata is optional on existing v5
+messages; it does not change the snapshot version. During one active tool cycle,
+the ordered assistant blocks, including signed/redacted thinking, remain
+private in working context and replay with matching tool results. Before a new
+independent turn, the request assembler removes *all* earlier replayable
+Anthropic thinking blocks atomically while retaining text, tool-use and tool
+results. Compaction is deferred while a tool continuation needs signed history;
+an accepted client-authored compaction also removes stale thinking and validates
+the remaining tool protocol. Outward events must not project this private
+metadata.
+
 For each unmatched native call, `(turn_id, tool_call_id)` is the durable
 identity. A matching committed raw `tool_result` is reused when present.
 Otherwise `MemoryManager` first appends one canonical synthetic raw

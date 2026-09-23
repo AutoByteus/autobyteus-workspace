@@ -56,6 +56,8 @@
                 <span class="text-xs font-medium text-slate-500">{{ $t('shell.tokenUsage.tokensLabel') }}</span>
               </p>
               <p class="mt-2 text-sm text-slate-600">{{ $t('shell.tokenUsage.estimateLabel') }} <strong class="tabular-nums text-slate-900">{{ formatCost(primarySummary.estimatedApiTotalCost, primarySummary.currency, primarySummary.apiCostStatus) }}</strong></p>
+              <p v-if="primarySummary.latestRuntimeKind === 'claude_agent_sdk'" class="mt-2 text-xs text-slate-600" data-test="claude-sdk-configured-estimate-note">{{ $t('shell.tokenUsage.claudeSdkConfiguredEstimateNote') }}</p>
+              <p v-if="primarySummary.hasCacheWriteRateAssumption" class="mt-2 text-xs text-amber-700" data-test="claude-sdk-cache-assumption-note">{{ $t('shell.tokenUsage.claudeSdkCacheAssumptionNote') }}</p>
               <span :class="[statusClass(primarySummary.apiCostStatus), 'mt-2']">{{ formatStatus(primarySummary.apiCostStatus) }}</span>
             </article>
           </div>
@@ -76,6 +78,10 @@
             <dl class="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm">
               <dt class="text-slate-500">{{ trimLabel($t('shell.tokenUsage.latestModel')) }}</dt>
               <dd class="min-w-0 truncate font-medium text-slate-800" :title="primarySummary.latestModelIdentifier || t('shell.tokenUsage.unknown')">{{ primarySummary.latestModelIdentifier || t('shell.tokenUsage.unknown') }}</dd>
+              <template v-if="primarySummary.latestRuntimeKind === 'claude_agent_sdk' && primarySummary.latestSelectedRawModelId">
+                <dt class="text-slate-500">{{ trimLabel($t('shell.tokenUsage.claudeSdkSelectedRawModel')) }}</dt>
+                <dd class="min-w-0 truncate font-medium text-slate-800" :title="primarySummary.latestSelectedRawModelId">{{ primarySummary.latestSelectedRawModelId }}</dd>
+              </template>
               <dt class="text-slate-500">{{ trimLabel($t('shell.tokenUsage.runtime')) }}</dt>
               <dd class="min-w-0 truncate text-slate-800" :title="primarySummary.latestRuntimeKind || t('shell.tokenUsage.unknown')">{{ primarySummary.latestRuntimeKind || t('shell.tokenUsage.unknown') }}</dd>
               <dt class="text-slate-500">{{ $t('shell.tokenUsage.priceStatus') }}</dt>

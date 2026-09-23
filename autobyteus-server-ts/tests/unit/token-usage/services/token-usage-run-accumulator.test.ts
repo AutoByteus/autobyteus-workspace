@@ -1,3 +1,4 @@
+import { buildClaudeTokenUsageEvent } from "../../../../src/agent-execution/backends/claude/session/claude-session-token-usage.js";
 import { PrismaClient } from "@prisma/client";
 import { describe, expect, it, vi } from "vitest";
 import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
@@ -102,6 +103,66 @@ const localPayload = createTokenUsageUpdatedPayload({
 });
 
 describe("TokenUsageRunAccumulator", () => {
+  it("persists selected SDK checkpoints and resolves configured Anthropic price, not SDK money or Haiku", async () => {
+    const raw = "claude-opus-5-5[1m]";
+    const usage = (id: string, input: number, kind: "create" | "resume") => {
+      const event = buildClaudeTokenUsageEvent({
+        chunk: { type: "result", uuid: id, total_cost_usd: 777,
+          modelUsage: {
+            "claude-haiku-4-5": { provider: "firstParty", canonicalModel: "claude-haiku-4-5", inputTokens: 1000,
+              outputTokens: 0, cacheReadInputTokens: 0, cacheCreationInputTokens: 0, costUSD: 444 },
+            [raw]: { provider: "firstParty", canonicalModel: "claude-opus-5-5", inputTokens: input,
+              outputTokens: 0, cacheReadInputTokens: 0, cacheCreationInputTokens: 0, costUSD: 333 },
+          }, usage: { input_tokens: kind === "create" ? input : 5, output_tokens: 0,
+            cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } },
+        runId: "sdk-selected-sql", turnId: id, sessionId: "sdk-session", model: "opus[1m]",
+        queryKind: kind, selectedBinding: { selectedModelValue: "opus[1m]", selectedResolvedRawModelId: raw,
+          resolution: "resolved" },
+      })!;
+      return createTokenUsageUpdatedPayload({ runId: "sdk-selected-sql", payload: event.params });
+    };
+    const configured = { ...policy, model_provider: "ANTHROPIC", model_identifier: "claude-opus-5-5",
+      model_value: "claude-opus-5-5", canonical_name: "claude-opus-5-5", pricing_status: "trusted" as const,
+      currency: "USD", input_price_per_million: 10, output_price_per_million: 20,
+      trusted_dimensions: { ...emptyTrustedDimensions(), input: true, output: true }, missing_reason: null };
+    const realCalculator = new TokenCostCalculator();
+    const calculator = { resolvePolicy: vi.fn().mockResolvedValue(configured),
+      applyPolicy: vi.fn((payload, selected) => realCalculator.applyPolicy(payload, selected)) };
+    const prisma = new PrismaClient({ datasourceUrl: process.env.DATABASE_URL });
+    const repository = new SqlTokenUsageRunRepository(prisma);
+    try {
+      const accumulator = new TokenUsageRunAccumulator(repository, calculator as never);
+      const first = await accumulator.recordObservation(usage("one", 10, "create"));
+      expect(calculator.resolvePolicy).toHaveBeenCalledWith(expect.objectContaining({
+        model_provider: "ANTHROPIC", model_identifier: "claude-opus-5-5", model_value: "claude-opus-5-5" }));
+      expect(first.estimated_api_total_cost).toBeCloseTo(10 * 10 / 1e6, 9);
+      expect(JSON.stringify(first)).not.toContain("claude-haiku");
+      const second = await accumulator.recordObservation(usage("two", 15, "resume"));
+      expect(second.standard_input_tokens).toBe(5);
+      expect(second.estimated_api_total_cost).toBeCloseTo(5 * 10 / 1e6, 9);
+      expect(second.run_summary_after_event?.standard_input_tokens).toBe(15);
+      expect(second.run_summary_after_event?.latest_selected_raw_model_id).toBe(raw);
+      expect(second.run_summary_after_event?.estimated_api_total_cost).toBeCloseTo(15 * 10 / 1e6, 9);
+      const persisted = await repository.getByRunId("sdk-selected-sql");
+      expect(persisted?.claudeSdkUsageStateJson).toContain("claude-haiku");
+      expect(persisted?.usageReportCount).toBe(2n);
+      expect(await accumulator.recordObservation(usage("two", 15, "resume"))).toMatchObject({
+        meter_delta_total_tokens: 0 });
+      expect((await repository.getByRunId("sdk-selected-sql"))?.usageReportCount).toBe(2n);
+      await prisma.tokenUsageRunRecord.update({ where: { runId: "sdk-selected-sql" },
+        data: { claudeSdkUsageStateJson: null } });
+      expect((await repository.getByRunId("sdk-selected-sql"))?.claudeSdkUsageStateJson).toBeNull();
+      const legacyResume = await new TokenUsageRunAccumulator(repository, calculator as never)
+        .recordObservation(usage("three", 20, "resume"));
+      expect(legacyResume.accounting_total_tokens).toBeNull();
+      expect(legacyResume.estimated_api_total_cost).toBeNull();
+      expect(legacyResume.quality_flags).toContain("claude_sdk_prior_policy_history_unattributed");
+      expect(legacyResume.run_summary_after_event?.standard_input_tokens).toBe(15);
+    } finally {
+      await prisma.tokenUsageRunRecord.deleteMany({ where: { runId: "sdk-selected-sql" } });
+      await prisma.$disconnect();
+    }
+  });
   it("persists and publicly returns the first explicit local cache state", async () => {
     const realCalculator = new TokenCostCalculator();
     const calculator = {

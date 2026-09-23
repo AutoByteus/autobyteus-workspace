@@ -74,6 +74,44 @@ describe('AnthropicLLM', () => {
     llm = new AnthropicLLM(model);
   });
 
+  it('sends Opus 5.5 with adaptive thinking and rejects unsupported explicit controls', async () => {
+    const opus55 = new AnthropicLLM(buildModel('claude-opus-5-5'));
+    await opus55.sendMessages(userMessages);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({ model: 'claude-opus-5-5', thinking: { type: 'adaptive' } });
+    expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('temperature');
+    await expect(opus55.sendMessages(userMessages, null, { thinking: { type: 'disabled' } })).rejects.toThrow('adaptive thinking only');
+    await expect(opus55.sendMessages(userMessages, null, { thinking: { type: 'enabled', budget_tokens: 1024 } })).rejects.toThrow('adaptive thinking only');
+    await expect(opus55.sendMessages(userMessages, null, { temperature: 0.5 })).rejects.toThrow('explicit sampling');
+    await expect(opus55.sendMessages(userMessages, null, { tool_choice: { type: 'any' } })).rejects.toThrow('forced tool choice');
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+  });
+
+  it('streams one complete signed assistant turn alongside display and tool deltas', async () => {
+    async function* events() {
+      yield { type: 'message_start', message: { usage: { input_tokens: 4, output_tokens: 0 } } };
+      yield { type: 'content_block_start', index: 0, content_block: { type: 'thinking', thinking: '', signature: '' } };
+      yield { type: 'content_block_delta', index: 0, delta: { type: 'thinking_delta', thinking: 'synthetic thought' } };
+      yield { type: 'content_block_delta', index: 0, delta: { type: 'signature_delta', signature: 'signed' } };
+      yield { type: 'content_block_stop', index: 0 };
+      yield { type: 'content_block_start', index: 1, content_block: { type: 'tool_use', id: 'toolu_1', name: 'search', input: {} } };
+      yield { type: 'content_block_delta', index: 1, delta: { type: 'input_json_delta', partial_json: '{"q":"x"}' } };
+      yield { type: 'content_block_stop', index: 1 };
+      yield { type: 'message_delta', delta: { stop_reason: 'tool_use' }, usage: { output_tokens: 6 } };
+      yield { type: 'message_stop' };
+    }
+    mockCreate.mockResolvedValueOnce(events());
+    const opus55 = new AnthropicLLM(buildModel('claude-opus-5-5'));
+    const chunks = [];
+    for await (const chunk of opus55.streamMessages(userMessages)) chunks.push(chunk);
+    expect(chunks.some((chunk) => chunk.reasoning === 'synthetic thought')).toBe(true);
+    expect(chunks.some((chunk) => chunk.tool_calls?.[0]?.call_id === 'toolu_1')).toBe(true);
+    expect(chunks.find((chunk) => chunk.providerNativeAssistantTurn)?.providerNativeAssistantTurn?.blocks).toEqual([
+      { type: 'thinking', thinking: 'synthetic thought', signature: 'signed' },
+      { type: 'tool_use', id: 'toolu_1', name: 'search', input: { q: 'x' } },
+    ]);
+    expect(chunks.find((chunk) => chunk.is_complete)?.usage?.output_tokens).toBe(6);
+  });
+
   it('should initialize with API key', () => {
     expect(llm).toBeDefined();
   });

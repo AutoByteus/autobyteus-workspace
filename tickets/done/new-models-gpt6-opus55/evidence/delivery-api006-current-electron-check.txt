@@ -1,0 +1,16 @@
+Delivery AC-015 Linux ARM64 Electron rebuild and VNC smoke — 2026-09-23 18:00:37 UTC
+Source HEAD: f04c4389cd3ec7eb5d78bdf8a08b8327e2b90c68
+Tracked base: 0f54978ba34165c476dcba67ce1d31ab27257108; ancestor of HEAD: yes
+README build: PATH=/tmp/new-models-build-bin:$PATH AUTOBYTEUS_BUILD_FLAVOR=personal corepack pnpm -C autobyteus-web build:electron:linux:arm64
+Build exit 0; full local log /tmp/new-models-api006-electron-build.log
+Artifact: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.4.76.AppImage
+SHA-256: e1783d50c19c08e88115e419b68b4efe021159cae7010a138161b929280f8bd3
+Packaged executable in container: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Old c5f31df45 VNC app process group stopped before rebuild; prior package overwritten.
+README launcher: runuser -u vncuser -- env HOME=/home/vncuser DISPLAY=:99 node autobyteus-web/scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable <unpacked executable> --data-root /tmp/autobyteus-e2e-2aBucz --port 33621 --hold-ms 43200000
+Ready event: electron-e2e-ready; port 33621; dataRoot /tmp/autobyteus-e2e-2aBucz; ownsDataRoot false (existing isolated test profile reused).
+Health: {"status":"ok","message":"Server is running"}
+VNC: DISPLAY=:99 visible 1200x800 app window. A nonblocking "Update failed" toast appeared from an update check in this test environment; no main-process Error dialog. This smoke does not prove the selected Claude meter journey.
+Launcher session: exec session_id 57477; root PID 71320; vncuser PID 71324. Leave running for explicit user testing.
+No provider key was read by Delivery. The reused isolated profile may contain user-entered test configuration; it is not the normal persistent profile.
+Remaining: explicit user verification; combined live SDK→browser selected-meter journey unrun; whole-web typecheck and I-44 command safety unverified.

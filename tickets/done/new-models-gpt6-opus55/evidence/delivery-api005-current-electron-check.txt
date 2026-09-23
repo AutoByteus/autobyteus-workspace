@@ -1,0 +1,15 @@
+Delivery current-scope Linux ARM64 Electron build and VNC smoke — 2026-09-23 17:12:03 UTC
+Source HEAD: c5f31df4593470591a6b982a78bbda4c79e1ddd6
+Tracked base: 0f54978ba34165c476dcba67ce1d31ab27257108; ancestor of HEAD: yes
+README command: PATH=/tmp/new-models-build-bin:$PATH AUTOBYTEUS_BUILD_FLAVOR=personal corepack pnpm -C autobyteus-web build:electron:linux:arm64
+Build exit: 0; full local log: /tmp/new-models-api005-electron-build.log
+Artifact: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.4.76.AppImage
+SHA-256: b0f7ed2305e9eb1ca051570afea5ddfd198a46b13672cb31d2b46964f9e29ca4
+Packaged executable used in container: /home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+README launcher: runuser -u vncuser -- env HOME=/home/vncuser DISPLAY=:99 node autobyteus-web/scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable <unpacked executable> --hold-ms 43200000
+Ready event: electron-e2e-ready, port 33621, owned root /tmp/autobyteus-e2e-2aBucz
+Health: {"status":"ok","message":"Server is running"}
+VNC: DISPLAY=:99, visible 1200x800 autobyteus window, no Error dialog on current persistent launcher session.
+Launcher session: exec session_id 74677; root PID 63401; vncuser PID 63404. Keep foreground runner alive for user testing.
+Limit: isolated E2E profile, not normal persistent credentials; backend health/window display are smoke, not a live selected SDK-to-browser journey or user acceptance.
+Transient first launch: an incorrectly detached nohup runner exited, leaving app logger EPIPE dialog; its owned process group 63118 was terminated. The current foreground runner has no such dialog. First detached profile /tmp/autobyteus-e2e-be3tmJ is not current.

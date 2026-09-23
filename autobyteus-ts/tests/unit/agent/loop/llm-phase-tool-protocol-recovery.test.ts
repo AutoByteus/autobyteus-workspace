@@ -21,6 +21,7 @@ import {
   ToolCallPayload,
 } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { ANTHROPIC_ASSISTANT_TURN_KEY } from '../../../../src/llm/utils/provider-native-assistant-turn.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { WorkingContext } from '../../../../src/memory/working-context.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
@@ -167,6 +168,11 @@ class ToolCallingRecoveryLLM extends BaseLLM {
         arguments_delta: '{"path":"/tmp/context.txt"}',
       }],
     });
+    yield new ChunkResponse({ content: '', providerNativeAssistantTurn: { provider: 'anthropic', blocks: [
+      { type: 'thinking', thinking: 'synthetic private thought', signature: 'signed' },
+      { type: 'text', text: 'I will inspect the retained context.' },
+      { type: 'tool_use', id: 'call_recovery_tool', name: RECOVERY_TOOL_NAME, input: { path: '/tmp/context.txt' } },
+    ] } });
     yield new ChunkResponse({ content: '', is_complete: true });
   }
 }
@@ -310,6 +316,13 @@ describe('LlmPhase successful retained-outcome recovery settlement', () => {
         content: 'I will inspect the retained context.',
       });
       expect(retained.at(-1)?.tool_payload).toBeInstanceOf(ToolCallPayload);
+      expect(retained.at(-1)?.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).toMatchObject({
+        provider: 'anthropic', blocks: [
+          { type: 'thinking', signature: 'signed' },
+          { type: 'text', text: 'I will inspect the retained context.' },
+          { type: 'tool_use', id: 'call_recovery_tool' },
+        ],
+      });
       expect((retained.at(-1)?.tool_payload as ToolCallPayload).toolCalls).toEqual([
         expect.objectContaining({
           id: 'call_recovery_tool',

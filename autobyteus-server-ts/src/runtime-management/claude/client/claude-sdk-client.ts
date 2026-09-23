@@ -1,3 +1,4 @@
+import { resolveClaudeSdkSelectedModelForQuery } from "./claude-sdk-selected-model-binding.js";
 import fs from "node:fs";
 import { readClaudeContextCapacities } from "./claude-sdk-context-capacity.js";
 import type { RuntimeModelCapacities } from "../../../llm-management/domain/runtime-model-capacity.js";
@@ -79,6 +80,7 @@ export type ClaudeSdkStartQueryTurnOptions = {
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
   interrupt: () => Promise<void>;
   close: () => void;
+  supportedModels?: () => Promise<unknown>;
   setMcpServers?: (servers: Record<string, unknown>) => Promise<unknown>;
 };
 
@@ -285,6 +287,10 @@ export class ClaudeSdkClient {
         options: queryOptions,
       }),
     );
+  }
+
+  resolveSelectedModelForQuery(query: ClaudeSdkQueryLike, selectedValue: string) {
+    return resolveClaudeSdkSelectedModelForQuery(query, selectedValue);
   }
 
   closeQuery(query: ClaudeSdkQueryLike | null): void {

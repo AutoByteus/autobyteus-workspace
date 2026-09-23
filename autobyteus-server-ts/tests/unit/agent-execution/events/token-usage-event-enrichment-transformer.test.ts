@@ -15,6 +15,7 @@ import type { AgentRunEvent } from '../../../../src/agent-execution/domain/agent
 import type { TokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
 import type { TokenPriceConfigProvider } from '../../../../src/token-usage/pricing/token-price-config-provider.js';
 import { testMemberTaskCommandCapability } from '../../../fixtures/current-team-run-fixtures.js';
+import { buildClaudeTokenUsageEvent } from '../../../../src/agent-execution/backends/claude/session/claude-session-token-usage.js';
 
 const runContext = new AgentRunContext({
   runId: 'member-run-1',
@@ -35,6 +36,15 @@ const runContext = new AgentRunContext({
       collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
       tasks: testMemberTaskCommandCapability('team-run-1'),
     }),
+  }),
+});
+
+const claudeRunContext = new AgentRunContext({
+  runId: 'claude-run-1', runtimeContext: null,
+  config: new AgentRunConfig({
+    agentDefinitionId: 'agent-def-1', llmModelIdentifier: 'opus[1m]', autoExecuteTools: true,
+    workspaceId: 'workspace-1', skillAccessMode: SkillAccessMode.NONE,
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   }),
 });
 
@@ -72,6 +82,32 @@ const trustedPriceProvider = {
 } as unknown as TokenPriceConfigProvider;
 
 describe('TokenUsageEventEnrichmentTransformer', () => {
+  it('preserves SDK single/multiple/unknown identity through parser and actual context enrichment', async () => {
+    const transformer = new TokenUsageEventEnrichmentTransformer();
+    const row = (canonicalModel?: string) => ({ inputTokens: 10, outputTokens: 2,
+      cacheReadInputTokens: 0, cacheCreationInputTokens: 0, costUSD: 0.01, costBasis: 'list',
+      ...(canonicalModel ? { canonicalModel } : {}) });
+    for (const [modelUsage, expectedKind, expectedId] of [
+      [{ 'claude-opus-5-5[1m]': row('claude-opus-5-5') }, 'matched', 'claude-opus-5-5'],
+      [{ haiku: row(), 'claude-opus-5-5[1m]': row('claude-opus-5-5') }, 'matched', 'claude-opus-5-5'],
+      [undefined, 'missing', null],
+    ] as const) {
+      const sdkEvent = buildClaudeTokenUsageEvent({ chunk: { type: 'result', modelUsage },
+        runId: 'claude-run-1', turnId: `turn-${expectedKind}`, sessionId: 'session-1',
+        model: 'opus[1m]', queryKind: 'create',
+        selectedBinding: { selectedModelValue: 'opus[1m]', selectedResolvedRawModelId: 'claude-opus-5-5[1m]', resolution: 'resolved' } });
+      const output = await transformer.transform({ runContext: claudeRunContext, events: [{
+        eventType: AgentRunEventType.TOKEN_USAGE_UPDATED, runId: 'claude-run-1',
+        payload: sdkEvent!.params, statusHint: null,
+      }] });
+      const payload = output[0]!.payload as unknown as TokenUsageUpdatedPayload;
+      expect(payload.selected_match_state).toBe(expectedKind);
+      expect(payload.model_identifier).toBe(expectedId);
+      expect(payload.model_value).toBe(expectedId);
+      expect(payload.pricing_status).not.toBe('trusted');
+      expect(payload.quality_flags).not.toContain('claude_sdk_identity_invalid_at_context');
+    }
+  });
   it('replaces a raw token usage event with one enriched event carrying canonical team identity, deltas, and cost', async () => {
     const transformer = new TokenUsageEventEnrichmentTransformer(
       new TokenUsageContextEnricher(),

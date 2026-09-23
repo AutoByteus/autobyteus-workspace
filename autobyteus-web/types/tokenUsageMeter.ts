@@ -117,6 +117,8 @@ export interface TokenUsageRunSummary {
   contextWindowUsagePercent: number | null;
   latestModelProvider: string | null;
   latestModelIdentifier: string | null;
+  latestSelectedRawModelId?: string | null;
+  hasCacheWriteRateAssumption?: boolean;
   latestRuntimeKind: string | null;
   usageReportCount: number;
   updatedAt: string | null;

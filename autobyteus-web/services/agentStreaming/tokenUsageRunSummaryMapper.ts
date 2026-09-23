@@ -81,6 +81,8 @@ export const mapTokenUsageRunSummaryDto = (
     contextWindowUsagePercent: summary.context_window_usage_percent,
     latestModelProvider: summary.latest_model_provider,
     latestModelIdentifier: summary.latest_model_identifier,
+    latestSelectedRawModelId: summary.latest_selected_raw_model_id ?? null,
+    hasCacheWriteRateAssumption: summary.has_cache_write_rate_assumption ?? false,
     latestRuntimeKind: summary.latest_runtime_kind,
     usageReportCount: summary.usage_report_count,
     updatedAt: summary.updated_at,

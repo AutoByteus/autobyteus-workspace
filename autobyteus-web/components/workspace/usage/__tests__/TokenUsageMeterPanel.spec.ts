@@ -69,6 +69,9 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.priceStatusLocal': 'Local/no API bill',
   'shell.tokenUsage.priceStatusMixed': 'Mixed',
   'shell.tokenUsage.latestModel': 'Latest model:',
+  'shell.tokenUsage.claudeSdkSelectedRawModel': 'Selected SDK raw model:',
+  'shell.tokenUsage.claudeSdkConfiguredEstimateNote': 'Configured API-equivalent estimate — not a subscription charge.',
+  'shell.tokenUsage.claudeSdkCacheAssumptionNote': 'Some Claude SDK cache writes were estimated at the configured 1-hour rate because their duration could not be attributed.',
   'shell.tokenUsage.runtime': 'Runtime:',
   'shell.tokenUsage.usageReports': 'Usage reports',
   'shell.tokenUsage.usageReportsTooltip': 'Server usage reports received for this summary.',
@@ -280,6 +283,24 @@ describe('TokenUsageMeterPanel', () => {
     vi.clearAllMocks();
   });
 
+  it('shows selected Claude model and configured estimate with a visible assumed cache rate', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
+    upsertAgentSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+      latestModelProvider: 'ANTHROPIC', latestModelIdentifier: 'claude-opus-5-5',
+      latestSelectedRawModelId: 'claude-opus-5-5[1m]', hasCacheWriteRateAssumption: true }));
+    selectionStore.setRunSelection('run-1', 'agent');
+    const wrapper = mountPanel();
+    expect(wrapper.get('[data-test="claude-sdk-configured-estimate-note"]').text())
+      .toContain('not a subscription charge');
+    expect(wrapper.get('[data-test="claude-sdk-cache-assumption-note"]').text())
+      .toContain('configured 1-hour rate');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('claude-opus-5-5[1m]');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).not.toContain('haiku');
+  });
+
   it('renders the approved Token Meter hierarchy with server-owned component values', () => {
     const agentContextsStore = useAgentContextsStore();
     const selectionStore = useAgentSelectionStore();
@@ -374,6 +395,26 @@ describe('TokenUsageMeterPanel', () => {
     expect(primary).toContain('codex_app_server');
     expect(primary).toContain('199 reports');
     expect(primary).not.toContain('2 reports');
+  });
+
+  it('renders the selected Claude known prompt/capacity and derived progress without changing cost', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
+    upsertAgentSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+      latestModelIdentifier: 'claude-opus-5-5', latestPromptTokens: 22_135,
+      effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 2.2135 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    const primary = wrapper.get('[data-test="token-usage-primary"]');
+    expect(primary.text()).toContain('22,135 / 1,000,000');
+    expect(primary.text()).toContain('2.2%'); // Existing display rounds the authoritative 2.2135% to one decimal.
+    expect(primary.find('[data-test="context-limit-unavailable"]').exists()).toBe(false);
+    expect(primary.get('.bg-blue-500').attributes('style')).toContain('width: 2.2135%');
+    expect(primary.text()).toContain('claude-opus-5-5');
+    expect(primary.text()).toContain('$0.0032');
   });
 
   it('shows prompt usage and an explicit unavailable context limit without a fake denominator', () => {

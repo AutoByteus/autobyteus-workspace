@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { z } from "zod";
@@ -19,6 +20,8 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const createWorkspace = async (label: string): Promise<string> =>
   fs.mkdtemp(path.join(os.tmpdir(), `${label}-`));
+
+const createSessionBinding = () => ({ kind: "create" as const, sessionId: randomUUID() });
 
 const resolveHaikuModelIdentifier = async (client: ClaudeSdkClient): Promise<string> => {
   const models = await client.listModels();
@@ -97,6 +100,8 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
       const token = `CLAUDE_SDK_CLIENT_LIVE_${Date.now()}`;
 
       const query = await client.startQueryTurn({
+        systemPrompt: "",
+        sessionBinding: createSessionBinding(),
         prompt: `Reply with exactly '${token}'. Do not add any other text.`,
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
@@ -155,6 +160,8 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
       );
 
       const query = await client.startQueryTurn({
+        systemPrompt: "",
+        sessionBinding: createSessionBinding(),
         prompt: [
           `Use the project skill $${skillName} for this request.`,
           `Trigger token: ${triggerToken}`,
@@ -192,6 +199,8 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
 
       let initialSessionId: string | null = null;
       const firstQuery = await client.startQueryTurn({
+        systemPrompt: "",
+        sessionBinding: createSessionBinding(),
         prompt: `Reply with exactly '${firstToken}'. Do not add any other text.`,
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
@@ -212,8 +221,9 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
       }
 
       const resumedQuery = await client.startQueryTurn({
+        systemPrompt: "",
+        sessionBinding: { kind: "resume", sessionId: initialSessionId! },
         prompt: `Reply with exactly '${secondToken}'. Do not add any other text.`,
-        sessionId: initialSessionId!,
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
@@ -281,6 +291,8 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
       expect(mcpServer).not.toBeNull();
 
       const query = await client.startQueryTurn({
+        systemPrompt: "",
+        sessionBinding: createSessionBinding(),
         prompt: [
           "Use the custom MCP tool exactly once.",
           "The tool is exposed from MCP server 'integration_echo'.",

@@ -3,6 +3,8 @@ import { LLMFactory, CurrentModelSelectionRequiredError } from '../../../src/llm
 import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { supportedModelDefinitions } from '../../../src/llm/supported-model-definitions.js';
+import { anthropicSupportedModelDefinitions } from '../../../src/llm/anthropic-supported-model-definitions.js';
+import { pricing } from '../../../src/llm/supported-model-pricing.js';
 
 describe('current supported model definitions', () => {
   beforeAll(() => {
@@ -11,6 +13,57 @@ describe('current supported model definitions', () => {
     for (const definition of supportedModelDefinitions) {
       LLMFactory.registerModel(new LLMModel(definition));
     }
+  });
+
+  it('keeps one ordered aggregate and one contiguous Anthropic provider sublist', () => {
+    expect(supportedModelDefinitions.map(({ name }) => name)).toEqual([
+      'gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna',
+      'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini',
+      'mistral-large-3', 'devstral-2', 'grok-4.6',
+      'claude-fable-5-1', 'claude-fable-5', 'claude-opus-5', 'claude-opus-5-5',
+      'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-5', 'claude-sonnet-4.6',
+      'deepseek-v4-flash', 'deepseek-v4-pro', 'gemini-3.1-pro-preview', 'gemini-3.8-flash',
+      'kimi-k3', 'qwen3.7-max', 'qwen3.8-max', 'DeepSeek V4 Pro (Qwen)',
+      'DeepSeek V4 Flash 0731 (Qwen)', 'GLM-5.2 (Qwen)', 'qwen3-max', 'glm-5.3', 'minimax-m3',
+    ]);
+    expect(new Set(supportedModelDefinitions.map(({ name }) => name)).size).toBe(supportedModelDefinitions.length);
+    expect(supportedModelDefinitions.slice(12, 20)).toEqual(anthropicSupportedModelDefinitions);
+    expect(supportedModelDefinitions.filter(({ provider }) => provider === LLMProvider.ANTHROPIC))
+      .toEqual(anthropicSupportedModelDefinitions);
+    expect(pricing(1, 2).toDict()).toMatchObject({
+      input_token_pricing: 1, output_token_pricing: 2, currency: 'USD',
+      pricing_source: 'autobyteus_model_catalog', pricing_effective_date: '2026-06-25',
+    });
+  });
+
+  it('registers exact GPT-6 Sol/Luna and Opus 5.5 identities, schemas and Standard prices', () => {
+    for (const [id, input, output, cacheRead, cacheWrite] of [
+      ['gpt-6-sol', 2, 10, 0.2, 2.5],
+      ['gpt-6-luna', 0.1, 0.5, 0.01, 0.125],
+    ] as const) {
+      const rows = supportedModelDefinitions.filter((item) => item.value === id);
+      expect(rows).toHaveLength(1);
+      expect(rows[0]!.staticMetadata).toMatchObject({ maxContextTokens: 1_050_000, maxOutputTokens: 128_000 });
+      expect(rows[0]!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
+        reasoning_effort: { default: 'medium', enum: ['none', 'low', 'medium', 'high', 'xhigh', 'max'] },
+      } });
+      expect(rows[0]!.defaultConfig.pricingConfig).toMatchObject({
+        inputTokenPricing: input, outputTokenPricing: output,
+        cachedInputReadTokenPricing: cacheRead, cachedInputWriteTokenPricing: cacheWrite,
+      });
+      expect(rows[0]!.defaultConfig.pricingConfig?.inputTokenPricingTiers[1]).toMatchObject({
+        maxInputTokens: null, inputTokenPricing: input * 2, outputTokenPricing: output * 1.5,
+      });
+    }
+    const opus = supportedModelDefinitions.filter((item) => item.value === 'claude-opus-5-5');
+    expect(opus).toHaveLength(1);
+    expect(opus[0]!.staticMetadata).toMatchObject({ maxContextTokens: 1_000_000, maxInputTokens: 1_000_000, maxOutputTokens: 128_000 });
+    expect(opus[0]!.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 4, outputTokenPricing: 20, cachedInputReadTokenPricing: 0.2,
+      cachedInputWrite5mTokenPricing: 5, cachedInputWrite1hTokenPricing: 8,
+    });
+    expect(supportedModelDefinitions.filter((item) => item.value === 'gpt-6-astra')).toHaveLength(1);
+    expect(supportedModelDefinitions.filter((item) => item.value === 'claude-opus-5')).toHaveLength(1);
   });
 
   it('contains current named rows and removes the replaced curated identifiers', () => {

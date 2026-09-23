@@ -138,7 +138,12 @@ export class AgentExternalEventNotifier extends EventEmitter {
     isError = false,
   ): void {
     this.emitEvent(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, {
-      ...completeResponse,
+      content: completeResponse.content,
+      reasoning: completeResponse.reasoning,
+      usage: completeResponse.usage,
+      image_urls: completeResponse.image_urls,
+      audio_urls: completeResponse.audio_urls,
+      video_urls: completeResponse.video_urls,
       is_error: isError,
     });
   }
