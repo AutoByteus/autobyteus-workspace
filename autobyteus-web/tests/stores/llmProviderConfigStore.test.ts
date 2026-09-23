@@ -445,4 +445,50 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     await expect(store.setLLMProviderApiKey('ANTHROPIC', 'synthetic-key')).rejects.toThrow('save rejected')
     expect(store.providerCredentialSettings).toEqual([setting('ANTHROPIC', false)])
   })
+
+  it('publishes credential results from Qwen, Gemini, and custom-provider callers after a read-only load', async () => {
+    const queriedSettings = Object.freeze([
+      setting('OPENAI', true),
+      setting('QWEN', false),
+      setting('GEMINI', false),
+    ])
+    const qwenSetup = { effectiveBaseUrl: 'https://example.invalid', endpointSource: 'CONFIGURED' }
+    const geminiSetup = {
+      activeMode: 'AI_STUDIO', aiStudioConfigured: true,
+      vertexExpressConfigured: false, vertexProject: null,
+    }
+    const customSetting = {
+      provider: { ...provider('CUSTOM'), name: 'Custom', isCustom: true },
+      apiKeyConfigured: true,
+    }
+    const query = vi.fn().mockResolvedValue({ data: { providerCredentialSettings: queriedSettings } })
+    const mutate = vi.fn()
+      .mockResolvedValueOnce({ data: { saveQwenConfiguration: {
+        setup: qwenSetup, credentialSetting: setting('QWEN', true),
+      } } })
+      .mockResolvedValueOnce({ data: { saveGeminiAiStudio: {
+        setup: geminiSetup, credentialSetting: setting('GEMINI', true),
+      } } })
+      .mockResolvedValueOnce({ data: { createCustomProvider: customSetting } })
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const store = useLLMProviderConfigStore()
+    vi.spyOn(store, 'refreshLocalCatalog').mockResolvedValue(undefined as never)
+
+    await store.fetchProviderCredentialSettings()
+    await expect(store.saveQwenConfiguration({ baseUrl: 'https://example.invalid', apiKey: 'synthetic-qwen' }))
+      .resolves.toMatchObject({ endpointSource: 'CONFIGURED' })
+    await expect(store.saveGeminiConfigurationOption({ option: 'AI_STUDIO', apiKey: 'synthetic-gemini' }, true))
+      .resolves.toMatchObject({ aiStudioConfigured: true })
+    await expect(store.createCustomProvider({ name: 'Custom', baseUrl: 'https://example.invalid', apiKey: 'synthetic-custom' }))
+      .resolves.toMatchObject({ apiKeyConfigured: true })
+
+    expect(store.providerCredentialSettings.map(row => [row.provider.id, row.apiKeyConfigured])).toEqual([
+      ['CUSTOM', true], ['GEMINI', true], ['OPENAI', true], ['QWEN', true],
+    ])
+    expect(queriedSettings.map(row => [row.provider.id, row.apiKeyConfigured])).toEqual([
+      ['OPENAI', true], ['QWEN', false], ['GEMINI', false],
+    ])
+    expect(JSON.stringify(store.providerCredentialSettings)).not.toContain('synthetic-')
+    expect(mutate).toHaveBeenCalledTimes(3)
+  })
 })

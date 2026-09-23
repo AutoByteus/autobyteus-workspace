@@ -1,0 +1,302 @@
+
+> autobyteus@1.4.74 test:nuxt /home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/stores/llmProviderConfigStore.test.ts components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts components/settings/__tests__/ProviderAPIKeyManager.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/anthropic-api-key-save-failure/autobyteus-web
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/llmProviderConfigStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/llmProviderConfigStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/llmProviderConfigStore.test.ts (15 tests) 144ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (10 tests) 69ms
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > split provider credential/catalog Apollo contract > joins credential facts to credential-free local snapshots by provider ID
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the canonical provider group and ordinary editor
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: 'gpt-4.1',
+    name: 'GPT 4.1',
+    providerType: 'OPENAI'
+  }
+] audio-models= [] image-models= []  ... >
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the draft custom-provider path without credential-status gating
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelBrowser providers= [
+  {
+    id: '__new_custom_provider__',
+    name: 'New Provider',
+    label: 'New Provider',
+    totalModels: 1,
+    isCustom: true,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: false,
+    catalogMode: 'STATIC',
+    isDraft: true
+  }
+] selected-provider-id="__new_custom_provider__" selected-provider-label="New Provider"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: 'gpt-4.1',
+    name: 'GPT 4.1',
+    providerType: 'OPENAI'
+  }
+] audio-models= [] image-models= []  ... >
+  at <ProviderModelBrowser providers= [
+  {
+    id: '__new_custom_provider__',
+    name: 'New Provider',
+    label: 'New Provider',
+    totalModels: 1,
+    isCustom: true,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: false,
+    catalogMode: 'STATIC',
+    isDraft: true
+  }
+] selected-provider-id="__new_custom_provider__" selected-provider-label="New Provider"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders custom details and wires exact-provider delete
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="provider_gateway" selected-provider-label="Gateway"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: 'gpt-4.1',
+    name: 'GPT 4.1',
+    providerType: 'OPENAI'
+  }
+] audio-models= [] image-models= []  ... >
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="provider_gateway" selected-provider-label="Gateway"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders tight Gemini state and wires the specialized UI action
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="GEMINI" selected-provider-label="Gemini"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: 'gpt-4.1',
+    name: 'GPT 4.1',
+    providerType: 'OPENAI'
+  }
+] audio-models= [] image-models= []  ... >
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="GEMINI" selected-provider-label="Gemini"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the dedicated Qwen pair form instead of the generic key editor
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="QWEN" selected-provider-label="Qwen"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: 'gpt-4.1',
+    name: 'GPT 4.1',
+    providerType: 'OPENAI'
+  }
+] audio-models= [] image-models= []  ... >
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="QWEN" selected-provider-label="Qwen"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders post-commit refresh warnings distinctly from save failures
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: 'gpt-4.1',
+    name: 'GPT 4.1',
+    providerType: 'OPENAI'
+  }
+] audio-models= [] image-models= []  ... >
+  at <ProviderModelBrowser providers= [
+  {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    label: 'OpenAI',
+    totalModels: 1,
+    isCustom: false,
+    providerType: 'OPENAI',
+    baseUrl: null,
+    apiKeyConfigured: true,
+    catalogMode: 'STATIC'
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... >
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (6 tests) 73ms
+ ✓ components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts (4 tests) 207ms
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  04:46:13
+   Duration  14.97s (transform 7.00s, setup 46.30s, collect 1.96s, tests 493ms, environment 5.14s, prepare 2.37s)
