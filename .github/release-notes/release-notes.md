@@ -1,11 +1,18 @@
-# Release Notes — Anthropic API Key Save
+# Release Notes — Stopped AgentOrg Team Workspace Editing
+
+## What's New
+
+- An eligible stopped AgentOrg can now change the Workspace Directory of a mounted Team from the existing configuration screen.
+- One Save applies the selected directory to the Team and every configured Agent inside it while preserving model/runtime overrides.
+
+## Improvements
+
+- Existing conversations, provider identities, Org/Team/Agent identities, composer state, history, attachments, sibling scopes, and historical task snapshots are retained.
+- The next normal message and fresh delegated work use the saved configured workspace without moving project files or requiring a persisted-data migration.
+- Model choices are validated in the destination workspace context, and model plus workspace edits are committed as one canonical configuration result.
+- Files now fails closed while canonical workspace metadata is unavailable and recovers on the first metadata retry without showing or writing through a stale workspace.
 
 ## Fixes
 
-- Saving an Anthropic API key no longer shows a false failure after the server has successfully stored it. Settings immediately shows **Configured**, reports success, and clears the key input.
-- The configured state remains correct after refresh or a later save; other provider rows are preserved. Genuine rejected saves still show an error and do not claim a new configured state.
-
-## Security And Scope
-
-- API keys remain write-only and are not returned in status or save responses. The encrypted vault and server credential contract are unchanged.
-- This repair changes the frontend credential-list update, not the user's stored credential or the Anthropic API itself.
+- Fixed metadata-only File Explorer activation repeatedly entering Loading or failing to settle after same-workspace metadata registration.
+- Fixed scoped AgentOrg Files views falling back to an unrelated active workspace or retained launch draft while the saved workspace was unavailable.
