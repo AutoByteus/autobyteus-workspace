@@ -40,7 +40,15 @@ export const buildClaudeTokenUsageEvent = (input: {
   const mainLoopUsage = { inputTokens: mainInput, outputTokens: mainOutput,
     cacheReadInputTokens: cacheRead, cacheCreationInputTokens: cacheCreation,
     cacheCreation5mInputTokens: cacheCreation5m, cacheCreation1hInputTokens: cacheCreation1h };
-  const latestPromptTokens = mainInput === null ? null : mainInput + (cacheRead ?? 0) + (cacheCreation ?? 0);
+  const promptSum = mainInput === null || cacheRead === null || cacheCreation === null
+    ? null : mainInput + cacheRead + cacheCreation;
+  const latestPromptTokens = promptSum !== null && Number.isSafeInteger(promptSum) ? promptSum : null;
+  const selectedSourceRow = selectedMatchState === "matched"
+    ? asObject(asObject(result.modelUsage ?? result.model_usage)?.[selectedRawId!]) : null;
+  const reportedCapacity = countOf(selectedSourceRow?.contextWindow ?? selectedSourceRow?.context_window);
+  const contextCapacity = reportedCapacity !== null && reportedCapacity > 0 ? reportedCapacity : null;
+  const contextPercent = latestPromptTokens !== null && contextCapacity !== null
+    ? 100 * (latestPromptTokens / contextCapacity) : null;
   const resultId = asString(result.uuid) ?? asString(result.id) ?? asString(result.result_id);
   const stableIdentity = resultId ?? `${input.runId}:${input.sessionId}:${input.turnId}`;
   const qualityFlags = [...parsed.qualityFlags];
@@ -71,9 +79,8 @@ export const buildClaudeTokenUsageEvent = (input: {
       reported_output_tokens: null,
       reported_total_tokens: null,
       latest_prompt_tokens: latestPromptTokens,
-      effective_context_window_tokens: selectedMatchState === "matched"
-        ? countOf(asObject(asObject(result.modelUsage)?.[selectedRawId!])?.contextWindow)
-        : null,
+      effective_context_window_tokens: contextCapacity,
+      context_window_usage_percent: contextPercent,
       raw_usage_json: null,
       raw_event_json: null,
       quality_flags: qualityFlags,

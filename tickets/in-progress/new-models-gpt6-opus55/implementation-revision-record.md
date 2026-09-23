@@ -1,6 +1,6 @@
 # Implementation Revision Record
 
-Current code and `implementation-handoff.md` are authoritative. This record indexes the initial implementation and the subsequent SR-005 catalog rework; it does not itself prove source-review acceptance.
+Current code and `implementation-handoff.md` are authoritative. This cumulative record indexes implementation rounds; its entries do not themselves prove independent review acceptance.
 
 ## Revision Index
 
@@ -10,6 +10,7 @@ Current code and `implementation-handoff.md` are authoritative. This record inde
 | IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 Fail; revised design ARCH-REV-003 Pass | CR-F-001 | Local Fix under SR-005 | SR-002/SR-004/SR-005; ARCH-REV-002/003; CRR-001; API-REV/DR N/A | Implementation rework complete — renewed Code Review requested |
 | IR-003 | API/E2E Engineer / API-REV-004 Design Impact; Solution Designer SR-007–013; Architecture Reviewer ARCH-REV-008 Pass | Token Meter mixed/selected identity and money attribution | Approved design implementation | SR-006/009/011 requirements; SR-007/008/010/012/013 design/evidence; ARCH-REV-004–008; API-REV-004; CRR current N/A; DR current N/A | Implementation complete — renewed Code Review requested |
 | IR-004 | Code Reviewer / `code-review-report.md` / CRR-006 Fail on IR-003 | CR-F-002 | Local Fix under unchanged SR-011/SR-012 | SR-011/012/013; ARCH-REV-008; CRR-006; API-REV-004 historical trigger; DR N/A | Reset checkpoint rework complete — renewed Code Review requested |
+| IR-005 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-009 Pass on SR-014 | I-45 known-context display defect | Approved design implementation | SR-014/DS-018; ARCH-REV-009; CRR-007 / API-REV-005 / CRR-008 / DR-007 earlier-scope history | Known Claude context producer/read projection complete — renewed Code Review requested |
 
 ## Revision Entries
 
@@ -76,3 +77,13 @@ Current code and `implementation-handoff.md` are authoritative. This record inde
 - Local validation: server build-target TypeScript passed; 3 focused Claude SDK/fold/SQL files, 14 tests passed. `git diff --check` passed. Reconciler 197 effective nonempty lines; no changed source exceeds 500 or introduces a >220 delta. No frontend or schema source changed in IR-004; prior focused web checks remain relevant, but whole-web typecheck and browser/live SDK remain unclaimed.
 - Next route: `get_handoff_rules` for Large/High implementation-owned Local Fix; renewed `/code_reviewer` source review.
 - Remaining limits: No live paid API call, direct credential read, or current-scope API/E2E pass. I-44 command safety caveat remains.
+
+### IR-005 — Selected Claude SDK known-context percentage
+
+- Triggering role/report/round: Architecture Reviewer, `/home/autobyteus/workspace/.codex/worktrees/new-models-gpt6-opus55/tickets/in-progress/new-models-gpt6-opus55/design-review-report.md`, ARCH-REV-009 Pass on user Approved SR-014 / DS-018. I-45 live Electron/read-only SQL evidence established the defect.
+- Finding/behavior: I-45; BEH-010 / REQ-011 / AC-015. CR-F-002 was resolved in CRR-007; API-REV-005, CRR-008 and DR-007 passed the prior monetary scope but do not validate SR-014.
+- Classification: SR-014 change alone Small/Low; cumulative still-in-delivery package `task_size=Large`, `architectural_risk=High` confirmed. Prior result: IR-004 accepted at CRR-007 and validated at API-REV-005/CRR-008, with DR-007 awaiting user verification. Current result: SR-014 correction implemented, ready for renewed independent source review; current-scope API/E2E and delivery **N/A**.
+- Why: selected SDK prompt 22,135 and contextWindow 1,000,000 were persisted while percentage was null, making the existing Vue gate wrongly say context limit unavailable.
+- Delta: `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-token-usage.ts` checks a safe complete prompt sum (all three dimensions reported), validates positive safe selected raw `contextWindow`, and emits `context_window_usage_percent`. `autobyteus-server-ts/src/token-usage/projections/token-usage-run-aggregate.ts` derives a missing percentage only from the same latest Claude record's safe prompt/capacity and preserves a finite stored percentage; zero/unsafe/missing remains unavailable. No DB mutation, migration, Codex, selected-model accounting, pricing, frontend production or DTO change.
+- Focused tests: extended Claude event unit test and added `tests/unit/token-usage/projections/claude-sdk-context-summary.test.ts` for new/old/invalid/missing-component/latest-record/Codex and GraphQL/agent+team stream mapping. Server build-target TypeScript and four focused files/18 tests passed; existing Vue Token Meter component suite 12 passed. Full server tsconfig check is baseline-unusable due `rootDir=src` with included tests. IR-005 changed source effective lines: 99 and 141; deltas 15 and 29, below thresholds; `git diff --check` passed.
+- Next recipient: `/code_reviewer` per cumulative Large/High rule after `get_handoff_rules`. Current packaged Electron binary remains defective until downstream rebuild and user verification. No live provider secret read, direct paid API claim or current-scope API/E2E sign-off.

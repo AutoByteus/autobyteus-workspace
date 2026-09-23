@@ -16,7 +16,7 @@ describe('buildClaudeTokenUsageEvent', () => {
     expect(build({ type: 'assistant', usage: { input_tokens: 10 } })).toBeNull();
     const event = build({
       type: 'result', uuid: 'result-1', total_cost_usd: 0.04,
-      usage: { input_tokens: 100, cache_read_input_tokens: 20, output_tokens: 9, secret: 'must-not-survive' },
+      usage: { input_tokens: 100, cache_read_input_tokens: 20, cache_creation_input_tokens: 0, output_tokens: 9, secret: 'must-not-survive' },
       modelUsage: { 'claude-opus-5-5[1m]': row({ canonicalModel: 'claude-opus-5-5' }) },
       result: 'sensitive response',
     });
@@ -35,6 +35,39 @@ describe('buildClaudeTokenUsageEvent', () => {
     expect(JSON.stringify(event)).not.toContain('must-not-survive');
   });
 
+  it('derives selected known context percentage and rejects invalid capacity or unsafe prompt sums', () => {
+    const selected = row({ canonicalModel: 'claude-opus-5-5', contextWindow: 1_000_000,
+      inputTokens: 2, cacheReadInputTokens: 0, cacheCreationInputTokens: 22_133 });
+    const haiku = row({ canonicalModel: 'claude-haiku-4-5', contextWindow: 200_000 });
+    const result = build({ type: 'result', usage: { input_tokens: 2, cache_read_input_tokens: 0,
+      cache_creation_input_tokens: 22_133, output_tokens: 1 }, modelUsage: {
+      'claude-haiku-4-5': haiku, 'claude-opus-5-5[1m]': selected,
+    } });
+    expect(result?.params).toMatchObject({ model_identifier: 'claude-opus-5-5',
+      latest_prompt_tokens: 22_135, effective_context_window_tokens: 1_000_000,
+      context_window_usage_percent: 2.2135 });
+    for (const contextWindow of [0, Number.MAX_SAFE_INTEGER + 1, null]) {
+      const invalid = build({ type: 'result', usage: { input_tokens: 2,
+        cache_creation_input_tokens: 22_133 }, modelUsage: {
+        'claude-opus-5-5[1m]': row({ canonicalModel: 'claude-opus-5-5', contextWindow }),
+      } });
+      expect(invalid?.params).toMatchObject({ effective_context_window_tokens: null,
+        context_window_usage_percent: null });
+    }
+    const unsafePrompt = build({ type: 'result', usage: { input_tokens: Number.MAX_SAFE_INTEGER,
+      cache_read_input_tokens: 1, cache_creation_input_tokens: 0 }, modelUsage: { 'claude-opus-5-5[1m]': selected } });
+    expect(unsafePrompt?.params).toMatchObject({ latest_prompt_tokens: null,
+      effective_context_window_tokens: 1_000_000, context_window_usage_percent: null });
+    const missingPromptPart = build({ type: 'result', usage: { input_tokens: 2,
+      cache_creation_input_tokens: 22_133 }, modelUsage: { 'claude-opus-5-5[1m]': selected } });
+    expect(missingPromptPart?.params).toMatchObject({ latest_prompt_tokens: null,
+      effective_context_window_tokens: 1_000_000, context_window_usage_percent: null });
+    const missingSelected = build({ type: 'result', usage: { input_tokens: 2 },
+      modelUsage: { 'claude-haiku-4-5': haiku } });
+    expect(missingSelected?.params).toMatchObject({ selected_match_state: 'missing',
+      effective_context_window_tokens: null, context_window_usage_percent: null });
+  });
+
   it('sorts mixed actual models independent of SDK map order and never selects an alias', () => {
     const usage = { 'claude-opus-5-5[1m]': row({ canonicalModel: 'claude-opus-5-5' }),
       'claude-haiku-4-5': row({ costUSD: 0.01, costBasis: 'managed' }) };
@@ -49,7 +82,7 @@ describe('buildClaudeTokenUsageEvent', () => {
     const event = build({ type: 'result', usage: { input_tokens: 10, output_tokens: 2 }, total_cost_usd: 1 });
     expect(event?.params).toMatchObject({ selected_match_state: 'missing', model_identifier: null,
       claude_sdk_model_usage: [],
-      latest_prompt_tokens: 10, quality_flags: expect.arrayContaining(['claude_sdk_model_usage_missing']) });
+      latest_prompt_tokens: null, quality_flags: expect.arrayContaining(['claude_sdk_model_usage_missing']) });
   });
 
   it('rejects malformed or unsafe per-model figures instead of truncating or choosing one row', () => {

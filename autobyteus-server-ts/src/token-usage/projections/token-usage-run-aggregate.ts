@@ -53,6 +53,27 @@ const latestRecord = (records: readonly TokenUsageRunRecord[]): TokenUsageRunRec
     !latest || compareAdmissionMarkers(record.latestObservation, latest.latestObservation) > 0 ? record : latest
   ), null);
 
+const safeClaudeMetric = (value: bigint | null): number | null =>
+  value !== null && value >= 0n && value <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(value) : null;
+
+const latestContext = (record: TokenUsageRunRecord | null): {
+  prompt: number | null; capacity: number | null; percent: number | null;
+} => {
+  if (!record) return { prompt: null, capacity: null, percent: null };
+  if (record.latestRuntimeKind !== "claude_agent_sdk") return {
+    prompt: record.latestPromptTokens === null ? null : tokenUsageSafeNumber(record.latestPromptTokens, "latest_prompt_tokens"),
+    capacity: record.effectiveContextWindowTokens === null ? null
+      : tokenUsageSafeNumber(record.effectiveContextWindowTokens, "effective_context_window_tokens"),
+    percent: record.contextWindowUsagePercent,
+  };
+  const prompt = safeClaudeMetric(record.latestPromptTokens);
+  const rawCapacity = safeClaudeMetric(record.effectiveContextWindowTokens);
+  const capacity = rawCapacity !== null && rawCapacity > 0 ? rawCapacity : null;
+  const savedPercent = record.contextWindowUsagePercent;
+  return { prompt, capacity, percent: savedPercent !== null && Number.isFinite(savedPercent)
+    ? savedPercent : prompt !== null && capacity !== null ? 100 * (prompt / capacity) : null };
+};
+
 export const buildTokenUsageRunAggregate = (
   records: readonly TokenUsageRunRecord[],
 ): TokenUsageCostSummaryAggregate => ({
@@ -70,6 +91,7 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
 }): TokenUsageRunSummaryPayload => {
   const aggregate = buildTokenUsageRunAggregate(input.records);
   const latest = latestRecord(input.records);
+  const context = latestContext(latest);
   return {
     run_id: input.runId,
     root_team_run_id: latest?.rootTeamRunId ?? null,
@@ -107,10 +129,9 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
     unit_prices: aggregate.unit_prices,
     usage_report_count: aggregate.usage_report_count,
     updated_at: aggregate.updated_at,
-    latest_prompt_tokens: latest?.latestPromptTokens == null ? null : tokenUsageSafeNumber(latest.latestPromptTokens, "latest_prompt_tokens"),
-    effective_context_window_tokens: latest?.effectiveContextWindowTokens == null
-      ? null : tokenUsageSafeNumber(latest.effectiveContextWindowTokens, "effective_context_window_tokens"),
-    context_window_usage_percent: latest?.contextWindowUsagePercent ?? null,
+    latest_prompt_tokens: context.prompt,
+    effective_context_window_tokens: context.capacity,
+    context_window_usage_percent: context.percent,
     latest_model_provider: latest?.latestModelProvider ?? null,
     latest_model_identifier: latest?.latestModelIdentifier ?? null,
     latest_runtime_kind: latest?.latestRuntimeKind ?? null,
