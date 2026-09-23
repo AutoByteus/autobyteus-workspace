@@ -13,6 +13,36 @@ describe('current supported model definitions', () => {
     }
   });
 
+  it('registers exact GPT-6 Sol/Luna and Opus 5.5 identities, schemas and Standard prices', () => {
+    for (const [id, input, output, cacheRead, cacheWrite] of [
+      ['gpt-6-sol', 2, 10, 0.2, 2.5],
+      ['gpt-6-luna', 0.1, 0.5, 0.01, 0.125],
+    ] as const) {
+      const rows = supportedModelDefinitions.filter((item) => item.value === id);
+      expect(rows).toHaveLength(1);
+      expect(rows[0]!.staticMetadata).toMatchObject({ maxContextTokens: 1_050_000, maxOutputTokens: 128_000 });
+      expect(rows[0]!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
+        reasoning_effort: { default: 'medium', enum: ['none', 'low', 'medium', 'high', 'xhigh', 'max'] },
+      } });
+      expect(rows[0]!.defaultConfig.pricingConfig).toMatchObject({
+        inputTokenPricing: input, outputTokenPricing: output,
+        cachedInputReadTokenPricing: cacheRead, cachedInputWriteTokenPricing: cacheWrite,
+      });
+      expect(rows[0]!.defaultConfig.pricingConfig?.inputTokenPricingTiers[1]).toMatchObject({
+        maxInputTokens: null, inputTokenPricing: input * 2, outputTokenPricing: output * 1.5,
+      });
+    }
+    const opus = supportedModelDefinitions.filter((item) => item.value === 'claude-opus-5-5');
+    expect(opus).toHaveLength(1);
+    expect(opus[0]!.staticMetadata).toMatchObject({ maxContextTokens: 1_000_000, maxInputTokens: 1_000_000, maxOutputTokens: 128_000 });
+    expect(opus[0]!.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 4, outputTokenPricing: 20, cachedInputReadTokenPricing: 0.2,
+      cachedInputWrite5mTokenPricing: 5, cachedInputWrite1hTokenPricing: 8,
+    });
+    expect(supportedModelDefinitions.filter((item) => item.value === 'gpt-6-astra')).toHaveLength(1);
+    expect(supportedModelDefinitions.filter((item) => item.value === 'claude-opus-5')).toHaveLength(1);
+  });
+
   it('contains current named rows and removes the replaced curated identifiers', () => {
     const names = new Set(supportedModelDefinitions.map((definition) => definition.name));
     expect([...names]).toEqual(expect.arrayContaining([

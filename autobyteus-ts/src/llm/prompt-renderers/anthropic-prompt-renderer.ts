@@ -13,6 +13,7 @@ import {
   isValidMediaPath
 } from '../utils/media-payload-formatter.js';
 import { cloneJsonObject, stringifyToolResultForProvider } from './native-tool-payload-format.js';
+import { ANTHROPIC_ASSISTANT_TURN_KEY, assertAnthropicTurnMatchesToolCalls, parseAnthropicAssistantTurn } from '../utils/provider-native-assistant-turn.js';
 
 type RenderedMessage = MessageParam;
 type ValidImageMime = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
@@ -62,6 +63,12 @@ export class AnthropicPromptRenderer extends BasePromptRenderer {
   }
 
   private renderToolCallMessage(message: Message, payload: ToolCallPayload): RenderedMessage {
+    const native = message.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY];
+    if (native !== undefined) {
+      const turn = parseAnthropicAssistantTurn(native);
+      assertAnthropicTurnMatchesToolCalls(turn, payload.toolCalls);
+      return { role: 'assistant', content: structuredClone(turn.blocks) as ContentBlockParam[] };
+    }
     const content: ContentBlockParam[] = [];
     if (message.content) {
       content.push({ type: 'text', text: message.content });

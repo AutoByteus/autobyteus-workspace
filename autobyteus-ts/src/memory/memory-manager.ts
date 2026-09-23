@@ -1,6 +1,7 @@
 import { LLMUserMessage } from '../llm/user-message.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
+import { ANTHROPIC_ASSISTANT_TURN_KEY, assertAnthropicTurnMatchesToolCalls, parseAnthropicAssistantTurn, withoutAnthropicThinkingInMessage, type AnthropicAssistantTurn } from '../llm/utils/provider-native-assistant-turn.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
 
@@ -71,7 +72,7 @@ export type {
   LlmRequestRecoverySnapshot,
 } from './llm-request-recovery.js';
 
-export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
+export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null; nativeAssistantTurn?: AnthropicAssistantTurn | null };
 export type ToolResultIngestionOptions = {
   source?: string;
   appendToWorkingContext?: boolean;
@@ -280,6 +281,7 @@ export class MemoryManager {
           content: options?.assistantContent ?? null,
           reasoning_content: options?.assistantReasoning ?? null,
           tool_payload: new ToolCallPayload(accepted.map(({ toolCall }) => toolCall)),
+          metadata: options?.nativeAssistantTurn ? { [ANTHROPIC_ASSISTANT_TURN_KEY]: parseAnthropicAssistantTurn(options.nativeAssistantTurn) } : null,
         }),
         {
           turnId: accepted[0]!.identity.turnId,
@@ -295,12 +297,14 @@ export class MemoryManager {
       return;
     }
     const registrations = normalizeNativeToolCallBatch(toolInvocations, turnId);
+    if (response.providerNativeAssistantTurn) assertAnthropicTurnMatchesToolCalls(response.providerNativeAssistantTurn, registrations.map(({ toolCall }) => toolCall));
     const responseTraces = this.ingestAssistantResponse(
       response, turnId, sourceEvent, { appendToWorkingContext: false },
     );
     this.persistNormalizedToolIntents(registrations, {
       assistantContent: response.content ?? null,
       assistantReasoning: response.reasoning ?? null,
+      nativeAssistantTurn: response.providerNativeAssistantTurn,
     }, responseTraces.map((trace) => trace.id));
   }
 
@@ -495,8 +499,14 @@ export class MemoryManager {
     this.store.pruneRawTracesById(traceIds, archive);
   }
 
-  getWorkingContextMessages(): Message[] {
-    return this.workingContextController.getMessages();
+  getWorkingContextMessages(): Message[] { return this.workingContextController.getMessages(); }
+
+  resetAnthropicSignedHistory(): void {
+    const current = this.getWorkingContextMessages();
+    const reset = current.map(withoutAnthropicThinkingInMessage);
+    if (reset.some((message, index) => JSON.stringify(message.metadata) !== JSON.stringify(current[index]!.metadata))) {
+      this.replaceWorkingContext(new WorkingContext(reset));
+    }
   }
 
   getWorkingContext(): WorkingContext {

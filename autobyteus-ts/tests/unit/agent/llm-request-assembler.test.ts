@@ -21,6 +21,7 @@ class FakeRenderer extends BasePromptRenderer {
 
 class FakeMemoryManager {
   workingContext = new WorkingContext();
+  resetAnthropicSignedHistory = vi.fn();
   private recoverySequence = 0;
   ensureWorkingContextToolProtocolSafeForNextLlm = vi.fn(() => ({
     messages: this.workingContext.buildMessages(),
@@ -61,6 +62,17 @@ class FakeMemoryManager {
 }
 
 describe('LLMRequestAssembler', () => {
+  it('defers pending compaction during an active tool continuation', async () => {
+    const memoryManager = new FakeMemoryManager();
+    const executor = { executeIfAuthorized: vi.fn(async () => true) };
+    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
+    const request = await assembler.prepareRequest(null, {
+      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', turnOrigin: 'system', isToolContinuation: true,
+    });
+    expect(request.didCompact).toBe(false);
+    expect(executor.executeIfAuthorized).not.toHaveBeenCalled();
+    expect(memoryManager.resetAnthropicSignedHistory).not.toHaveBeenCalled();
+  });
   it('appends the system prompt and user message without compaction', async () => {
     const memoryManager = new FakeMemoryManager();
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer());

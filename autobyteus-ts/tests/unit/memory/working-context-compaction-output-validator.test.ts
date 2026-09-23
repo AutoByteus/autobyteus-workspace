@@ -5,6 +5,7 @@ import {
   WorkingContextCompactionOutputValidator,
 } from '../../../src/memory/compaction/working-context-compaction-output-validator.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
+import { ANTHROPIC_ASSISTANT_TURN_KEY, withoutAnthropicThinkingInMessage } from '../../../src/llm/utils/provider-native-assistant-turn.js';
 
 const validator = new WorkingContextCompactionOutputValidator();
 const system = () => new Message(MessageRole.SYSTEM, { content: 'System', metadata: { stable: { yes: true } } });
@@ -31,6 +32,19 @@ const expectCode = (action: () => void, code: string) => {
 };
 
 describe('WorkingContextCompactionOutputValidator', () => {
+  it('requires an all-block Anthropic thinking reset in a retained compacted tail', () => {
+    const current = baseline();
+    const native = new Message(MessageRole.ASSISTANT, {
+      tool_payload: new ToolCallPayload([{ id: 'a', name: 'tool', arguments: {} }]),
+      metadata: { [ANTHROPIC_ASSISTANT_TURN_KEY]: { provider: 'anthropic', blocks: [
+        { type: 'thinking', thinking: 'synthetic', signature: 'signed' },
+        { type: 'tool_use', id: 'a', name: 'tool', input: {} },
+      ] } },
+    });
+    const result = new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'tool', 'done') });
+    expectCode(() => validate(current, current.copy(), new WorkingContext([system(), native, result])), 'invalid-message-shape');
+    expect(() => validate(current, current.copy(), new WorkingContext([system(), withoutAnthropicThinkingInMessage(native), result]))).not.toThrow();
+  });
   it('accepts unchanged head and complete multi-call native tool protocol', () => {
     const current = baseline();
     const input = current.copy();

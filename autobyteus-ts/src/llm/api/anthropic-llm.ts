@@ -4,6 +4,8 @@ import { LLMModel } from '../models.js';
 import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import { AnthropicAssistantTurnAssembler } from './anthropic-assistant-turn-assembler.js';
+import { parseAnthropicAssistantTurn } from '../utils/provider-native-assistant-turn.js';
 import {
   createAnthropicTokenUsageObservation,
   createAnthropicUsageAccumulator,
@@ -135,6 +137,22 @@ const applyAnthropicRequestParams = (
   applySafeProviderRequestKwargs(request, providerExtraParams);
   applySafeProviderRequestKwargs(request, kwargs, { controlledKeys: ANTHROPIC_CONTROLLED_KWARG_KEYS });
 
+  if (modelValue === 'claude-opus-5-5') {
+    const explicitThinking = kwargs.thinking ?? providerExtraParams.thinking;
+    const internalEnabled = configExtraParams?.thinking_enabled;
+    if (internalEnabled === false || configExtraParams?.thinking_budget_tokens !== undefined ||
+        (explicitThinking !== undefined && (!isObjectRecord(explicitThinking) || explicitThinking.type !== 'adaptive'))) {
+      throw new Error('Claude Opus 5.5 supports adaptive thinking only; disabled and manual thinking are unavailable.');
+    }
+    if ([...ANTHROPIC_SAMPLING_PARAM_KEYS].some((key) => request[key] !== undefined)) {
+      throw new Error('Claude Opus 5.5 does not support explicit sampling parameters.');
+    }
+    const toolChoice = request.tool_choice;
+    if (toolChoice !== undefined && (!isObjectRecord(toolChoice) || (toolChoice.type !== 'auto' && toolChoice.type !== 'none'))) {
+      throw new Error('Claude Opus 5.5 does not support forced tool choice.');
+    }
+  }
+
   if (Array.isArray(kwargs.tools)) {
     request.tools = kwargs.tools as ToolUnion[];
   }
@@ -154,6 +172,12 @@ const applyAnthropicRequestParams = (
     if (thinkingParam) {
       request.thinking = thinkingParam;
     }
+  }
+
+  if (modelValue === 'claude-opus-5-5' && request.thinking === undefined) {
+    request.thinking = configExtraParams?.thinking_display === 'summarized'
+      ? { type: 'adaptive', display: 'summarized' }
+      : { type: 'adaptive' };
   }
 
   if (policy.rejectsSamplingParameters) {
@@ -241,7 +265,11 @@ export class AnthropicLLM extends BaseLLM {
       return new CompleteResponse({
         content: content ?? '',
         reasoning,
-usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
+        usage: createAnthropicTokenUsageObservation(response.usage, this.model),
+        providerNativeAssistantTurn: response.content?.some((block) => block.type === 'tool_use')
+          ? parseAnthropicAssistantTurn({ provider: 'anthropic', blocks: response.content })
+          : null,
+      });
     } catch (e) {
       throw new Error(`Error in Anthropic API: ${e}`);
     }
@@ -271,8 +299,13 @@ usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
       const stream = await client.messages.create(params, requestOptions as any);
       
       const usageAccumulator = createAnthropicUsageAccumulator();
+      const nativeTurnAssembler = new AnthropicAssistantTurnAssembler();
+      let sawToolUse = false;
+      let completedNativeTurn = false;
 
       for await (const event of stream as AsyncIterable<RawMessageStreamEvent>) {
+        nativeTurnAssembler.accept(event);
+        if (event.type === 'content_block_start' && event.content_block.type === 'tool_use') sawToolUse = true;
         if (event.type === 'message_start' && event.message?.usage) {
           foldAnthropicUsage(usageAccumulator, event.message.usage);
         }
@@ -292,8 +325,11 @@ usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
         }
         
         if (event.type === 'message_stop') {
-           // Usage not always in stop event? 
-           // In SDK stream, usage comes in message_delta maybe?
+          const turn = nativeTurnAssembler.complete();
+          completedNativeTurn = true;
+          if (turn?.blocks.some((block) => block.type === 'tool_use')) {
+            yield new ChunkResponse({ content: '', providerNativeAssistantTurn: turn });
+          }
         }
         
         if (event.type === 'message_delta' && event.usage) {
@@ -304,6 +340,9 @@ usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
             usage: createAnthropicTokenUsageObservationFromAccumulator(usageAccumulator, this.model)
           });
         }
+      }
+      if (sawToolUse && !completedNativeTurn) {
+        throw new Error('Anthropic tool-use stream ended before the native assistant turn was complete.');
       }
     } catch (e) {
       throw new Error(`Error in Anthropic streaming: ${e}`);

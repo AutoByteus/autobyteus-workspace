@@ -688,6 +688,33 @@ describe('provider-native API request payloads', () => {
     expect(captured).not.toHaveProperty('reasoning_summary');
   });
 
+  it.each(['gpt-6-sol', 'gpt-6-luna'])('submits exact %s send and stream tool payloads through Responses', async (modelId) => {
+    const captures: any[] = [];
+    const config = commonConfig();
+    config.extraParams = { reasoning_effort: 'medium' };
+    const llm = new OpenAIResponsesLLM(
+      model(LLMProvider.OPENAI, modelId), 'OPENAI_API_KEY', 'https://api.openai.com/v1', config,
+    );
+    (llm as any).clientPromise = Promise.resolve({ responses: { create: async (params: any) => {
+      captures.push(params);
+      const response = { output: [{ type: 'message', content: [{ type: 'output_text', text: 'ok' }] }],
+        usage: { input_tokens: 2, output_tokens: 3, total_tokens: 5 } };
+      if (!params.stream) return response;
+      async function* events() { yield { type: 'response.completed', response }; }
+      return events();
+    } } });
+    const sent = await llm.sendMessages([new Message(MessageRole.USER, 'Hello')]);
+    expect(sent.content).toBe('ok');
+    const streamed = [];
+    for await (const chunk of llm.streamMessages(messagesFor('openai_responses'), null, { tools: commonTools })) streamed.push(chunk);
+    expect(captures).toHaveLength(2);
+    for (const capture of captures) {
+      expect(capture).toMatchObject({ model: modelId, reasoning: { effort: 'medium' } });
+    }
+    expect(captures[1].input.some((item: any) => item.type === 'function_call')).toBe(true);
+    expect(streamed.some((chunk) => chunk.is_complete)).toBe(true);
+  });
+
   it('captures OpenAI Responses streaming payload with caller include preserved and encrypted reasoning requested', async () => {
     let captured: any;
     const openAIConfig = commonConfig();

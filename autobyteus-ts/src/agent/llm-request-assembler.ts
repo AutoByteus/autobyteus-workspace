@@ -18,6 +18,7 @@ export type LlmRequestAssemblyIdentity = Readonly<{
   turnId: string;
   requestId: string;
   turnOrigin: TurnStartOrigin;
+  isToolContinuation?: boolean;
 }>;
 
 export type RequestPackage = {
@@ -47,7 +48,9 @@ export class LLMRequestAssembler {
       recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
     });
 
-    const didCompact = this.pendingCompactionExecutor
+    if (!identity.isToolContinuation) this.memoryManager.resetAnthropicSignedHistory();
+
+    const didCompact = this.pendingCompactionExecutor && !identity.isToolContinuation
       ? await this.pendingCompactionExecutor.executeIfAuthorized({
           turnId: identity.turnId,
           turnOrigin: identity.turnOrigin,

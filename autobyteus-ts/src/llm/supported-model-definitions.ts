@@ -126,6 +126,17 @@ const claudeAdaptiveThinkingSchema = new ParameterSchema([
   })
 ]);
 
+const claudeOpus55Schema = new ParameterSchema([
+  new ParameterDefinition({
+    name: 'thinking_display',
+    type: ParameterType.ENUM,
+    description: 'Adaptive thinking display mode. Claude Opus 5.5 always uses adaptive thinking.',
+    required: false,
+    defaultValue: 'omitted',
+    enumValues: ['omitted', 'summarized'],
+  }),
+]);
+
 const deepseekV4Schema = new ParameterSchema([
   new ParameterDefinition({
     name: 'reasoning_effort',
@@ -201,6 +212,19 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     defaultConfig: new LLMConfig({ pricingConfig: createOpenAILongContextPricing(10, 50, '2026-09-22') }),
     configSchema: openaiAstraReasoningSchema,
   },
+  ...([
+    ['gpt-6-sol', 2, 10],
+    ['gpt-6-luna', 0.1, 0.5],
+  ] as const).map(([modelId, inputPrice, outputPrice]) => ({
+    name: modelId,
+    value: modelId,
+    provider: LLMProvider.OPENAI,
+    llmClass: OpenAILLM,
+    canonicalName: modelId,
+    staticMetadata: createStaticModelMetadata(1_050_000, null, 128_000, `https://developers.openai.com/api/docs/models/${modelId}`, '2026-09-23'),
+    defaultConfig: new LLMConfig({ pricingConfig: createOpenAILongContextPricing(inputPrice, outputPrice, '2026-09-23') }),
+    configSchema: openaiGpt56ReasoningSchema,
+  })),
   ...([
     ['gpt-5.6-sol', 5.0, 30.0],
     ['gpt-5.6-terra', 2.0, 12.0],
@@ -311,6 +335,21 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite1hTokenPricing: 10.0,
     }) }),
     configSchema: claudeAdaptiveThinkingSchema
+  },
+  {
+    name: 'claude-opus-5-5',
+    value: 'claude-opus-5-5',
+    provider: LLMProvider.ANTHROPIC,
+    llmClass: AnthropicLLM,
+    canonicalName: 'claude-opus-5-5',
+    staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/opus-5-5/overview', '2026-09-23'),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(4, 20, {
+      pricingEffectiveDate: '2026-09-23',
+      cachedInputReadTokenPricing: 0.2,
+      cachedInputWrite5mTokenPricing: 5,
+      cachedInputWrite1hTokenPricing: 8,
+    }) }),
+    configSchema: claudeOpus55Schema,
   },
   {
     name: 'claude-opus-4.8',
