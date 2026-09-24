@@ -158,6 +158,9 @@ Every capability list carries the existing provider-owned `ModelDetail`:
 
 - `modelIdentifier`, `name`, `value`, and `canonicalName`;
 - nullable `description` display metadata;
+- nullable `selectionPresentation { recommended, aliasOfModelIdentifier }`
+  picker hint (currently emitted only by the Claude Agent SDK catalog; `null`
+  for every other runtime);
 - `providerId`, `providerName`, `providerType`, and `runtime`;
 - optional host/config/token-limit fields;
 - nullable `metadataProvenance`.
@@ -245,6 +248,35 @@ account, or vendor catalog. Do not replace this path with curated model/version
 copy and do not resolve aliases into different persisted identifiers. Frontend
 runtime-model selectors may render and search the optional description as
 selection guidance; missing descriptions remain valid name-only options.
+
+### Claude Agent SDK Canonical Model IDs And Picker Hints
+
+For Claude rows, `canonicalName` is the SDK-reported `resolvedModel` for that
+row (for example `claude-opus-5-5[1m]`), owned by
+`resolveCanonicalModelId` in `claude-sdk-model-normalizer.ts`. When the SDK
+omits `resolvedModel` or reports it ambiguously, `canonicalName` falls back to
+the SDK value; it is never guessed from names. `modelIdentifier`/`value` stay
+the SDK values (`default`, `sonnet`, `opus[1m]`, …): they remain the executable
+and persisted selection, and catalog validation, launch, capacity, and
+per-turn token-usage resolution are unaffected by `canonicalName`.
+
+`deriveClaudeModelSelectionPresentation`
+(`claude-sdk-model-selection-presentation.ts`) computes each row's
+`selectionPresentation` over the full SDK row set during `listModels()`:
+
+- the `default` row folds into the first other row, in SDK order, that
+  resolves to the same canonical ID: `default` gets
+  `aliasOfModelIdentifier = <that row>` and that row gets
+  `recommended = true`;
+- when no such sibling exists (or `default` has no canonical ID), `default`
+  stays its own option with `recommended = true`;
+- every other row is `{ recommended: false, aliasOfModelIdentifier: null }`.
+
+The hint is presentation-only. `default` remains a catalog row, so saved
+configs and runs using `default` keep validating and launching unchanged; the
+frontend folds it into the aliased option and never special-cases the string
+`default` itself. If a future SDK renames `default`, the list stays correct but
+loses the badge and the fold.
 
 ### Claude Agent SDK Authentication
 

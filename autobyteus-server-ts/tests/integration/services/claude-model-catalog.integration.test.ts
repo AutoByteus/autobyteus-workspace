@@ -65,7 +65,12 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
       ),
     ).toBe(true);
     const modelsByIdentifier = new Map(models.map((model) => [model.model_identifier, model]));
-    const requiredAliases = ["default", "sonnet", "opus", "haiku"] as const;
+    // The live CLI lists Opus as `opus` or `opus[1m]` depending on version/account.
+    const opusModel = models.find(
+      (model) => model.model_identifier === "opus" || model.model_identifier.startsWith("opus["),
+    );
+    expect(opusModel, "missing live Claude Opus alias row").toBeTruthy();
+    const requiredAliases = ["default", "sonnet", "haiku", opusModel!.model_identifier];
     for (const identifier of requiredAliases) {
       const model = modelsByIdentifier.get(identifier);
       expect(model, `missing live Claude alias '${identifier}'`).toBeTruthy();
@@ -78,8 +83,10 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
     }
 
     const defaultModel = modelsByIdentifier.get("default");
-    const opusModel = modelsByIdentifier.get("opus");
     const haikuModel = modelsByIdentifier.get("haiku");
+    // Canonical name is the SDK-resolved model ID, not the alias the row is selected by.
+    expect(defaultModel?.canonical_name).not.toBe("default");
+    expect(defaultModel?.canonical_name).toMatch(/^claude-/);
 
     expect(
       (defaultModel?.config_schema as { properties?: Record<string, unknown> } | undefined)?.properties
@@ -115,6 +122,7 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
               canonicalName
               providerId
               runtime
+              selectionPresentation { recommended aliasOfModelIdentifier }
             }
           }
         }
@@ -137,6 +145,10 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
           canonicalName: string;
           providerId: string;
           runtime: string;
+          selectionPresentation: {
+            recommended: boolean;
+            aliasOfModelIdentifier: string | null;
+          } | null;
         }>;
       }>;
     }).providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels);
@@ -156,5 +168,31 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
         runtime: catalogModel.runtime,
       });
     }
+
+    // Picker presentation: every row keeps its identity; exactly one row is recommended,
+    // and `default` either is that row or folds into the listed row with the same canonical ID.
+    expect(graphQlModels.every((model) => model.selectionPresentation !== null)).toBe(true);
+    const recommendedModels = graphQlModels.filter(
+      (model) => model.selectionPresentation?.recommended,
+    );
+    expect(recommendedModels).toHaveLength(1);
+    const graphQlDefault = graphQlModelsByIdentifier.get("default")!;
+    const defaultAliasTarget = graphQlDefault.selectionPresentation?.aliasOfModelIdentifier ?? null;
+    if (defaultAliasTarget === null) {
+      expect(recommendedModels[0]!.modelIdentifier).toBe("default");
+    } else {
+      const target = graphQlModelsByIdentifier.get(defaultAliasTarget);
+      expect(target, `alias target '${defaultAliasTarget}' is not a listed row`).toBeTruthy();
+      expect(target?.canonicalName).toBe(graphQlDefault.canonicalName);
+      expect(target?.selectionPresentation).toEqual({
+        recommended: true,
+        aliasOfModelIdentifier: null,
+      });
+    }
+    expect(
+      graphQlModels
+        .filter((model) => model.modelIdentifier !== "default")
+        .every((model) => model.selectionPresentation?.aliasOfModelIdentifier === null),
+    ).toBe(true);
   });
 });
