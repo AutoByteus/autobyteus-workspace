@@ -83,7 +83,11 @@ Not applicable. The user declined a new release ("no need to release a new versi
   - server `vitest run tests/unit/runtime-management/claude tests/unit/api/graphql/types/llm-provider.test.ts`: 44/44 passed
   - server `tsc -p tsconfig.build.json --noEmit`: exit code 0
   - web focused picker specs: 33/33 passed
-- Push ticket branch, merge into `personal`, push `personal`: see "Finalization Result" below.
+- Ticket branch push result: `Completed`. `codex/claude-sdk-canonical-model-ids` was pushed at `1e20ef4bb`.
+- Target branch update result: `Completed`. I refetched `origin/personal`; it was unchanged at `73f1c5fef` and is an ancestor of the ticket branch.
+- Merge into target result: `Completed`. The `--no-ff` merge commit is `9d73f4966` ("Merge Claude SDK canonical model IDs in model pickers").
+- Push target branch result: `Completed`. `73f1c5fef..9d73f4966 HEAD -> personal`, verified with `git rev-parse origin/personal`.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -94,7 +98,12 @@ Not applicable. The user declined a new release ("no need to release a new versi
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-canonical-model-ids`
-- Cleanup: see "Finalization Result" below
+- Worktree cleanup result: `Completed`. The user first closed the tested Electron app that was running from the worktree's `electron-dist` (no process left referencing the worktree). The worktree was then removed with `git worktree remove --force`, which was needed only for untracked build output: `*/dist/`, `electron-dist/` and `resources/server/`.
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed`. `codex/claude-sdk-canonical-model-ids` was deleted after I verified it is an ancestor of `origin/personal`.
+- Remote branch cleanup result: `Completed` (`git push origin --delete codex/claude-sdk-canonical-model-ids`)
+- Temp evidence `/tmp/ccmi-e2e` and `/tmp/ccmi`: deleted.
+- Not touched: the user's other running AutoByteus app on port 29695 (pid 9972), and the superrepo `personal` checkout at `0f54978ba`, which is behind `origin/personal`. The user can fast-forward that checkout when convenient.
 - `/tmp/ccmi-e2e` and `/tmp/ccmi` hold temp evidence and are safe to delete.
 
 ## Environment Or Persisted-Data Transition Notes
@@ -108,10 +117,10 @@ To roll back, revert the ticket merge commit on `personal`. No data or migration
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None` (awaiting user verification)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `9d73f4966`, plus this delivery-record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, because the user declined a release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, sent via `send_message_to` right after this record was pushed.
