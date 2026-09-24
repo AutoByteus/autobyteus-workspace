@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  getModelSelectionOptionDescription,
   getModelSelectionOptionLabel,
   getModelSelectionSelectedLabel,
   shouldUseModelIdentifierLabel,
@@ -70,5 +71,31 @@ describe('modelSelectionLabel', () => {
     }
 
     expect(getModelSelectionOptionLabel(model, 'autobyteus')).toBe('qwen:deepseek-v4-pro')
+  })
+
+  it('labels Claude Agent SDK options by canonical model ID with Claude name leading the description', () => {
+    const model = {
+      modelIdentifier: 'opus[1m]',
+      name: 'Opus (1M context)',
+      description: 'Opus 5.5 with 1M context · Best for everyday, complex tasks',
+      canonicalName: 'claude-opus-5-5[1m]',
+      providerType: 'ANTHROPIC',
+    }
+
+    expect(getModelSelectionOptionLabel(model, 'claude_agent_sdk')).toBe('claude-opus-5-5[1m]')
+    expect(getModelSelectionSelectedLabel('Anthropic', model, 'claude_agent_sdk'))
+      .toBe('Anthropic / claude-opus-5-5[1m]')
+    expect(getModelSelectionOptionDescription(model, 'claude_agent_sdk'))
+      .toBe('Opus (1M context) · Opus 5.5 with 1M context · Best for everyday, complex tasks')
+    expect(getModelSelectionOptionDescription(model, 'codex_app_server'))
+      .toBe('Opus 5.5 with 1M context · Best for everyday, complex tasks')
+  })
+
+  it('falls back to the Claude SDK value when no canonical model ID is reported', () => {
+    const model = { modelIdentifier: 'sonnet', name: 'Sonnet', description: null, canonicalName: ' ', providerType: 'ANTHROPIC' }
+
+    expect(getModelSelectionOptionLabel(model, 'claude_agent_sdk')).toBe('sonnet')
+    expect(getModelSelectionOptionDescription(model, 'claude_agent_sdk')).toBe('Sonnet')
+    expect(getModelSelectionOptionDescription({ ...model, name: 'sonnet' }, 'claude_agent_sdk')).toBeNull()
   })
 })

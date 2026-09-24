@@ -20,6 +20,7 @@ export const PROVIDER_MODEL_CATALOG_SNAPSHOT_FIELDS = gql`
       modelIdentifier name description value canonicalName providerId providerName providerType
       runtime hostUrl configSchema maxContextTokens activeContextTokens maxInputTokens
       maxOutputTokens metadataProvenance
+      selectionPresentation { recommended aliasOfModelIdentifier }
     }
     audioModels { modelIdentifier name value canonicalName providerId providerName providerType runtime hostUrl }
     imageModels { modelIdentifier name description value canonicalName providerId providerName providerType runtime hostUrl }

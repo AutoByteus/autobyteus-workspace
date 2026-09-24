@@ -70,7 +70,8 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
       const model = modelsByIdentifier.get(identifier);
       expect(model, `missing live Claude alias '${identifier}'`).toBeTruthy();
       expect(model?.value).toBe(identifier);
-      expect(model?.canonical_name).toBe(identifier);
+      expect(model?.canonical_name).toEqual(expect.any(String));
+      expect(model?.canonical_name.length).toBeGreaterThan(0);
       expect(model?.description).toEqual(expect.any(String));
       expect(model?.description?.length).toBeGreaterThan(0);
       expect(model?.description).toBe(model?.description?.trim());
@@ -150,7 +151,7 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
         name: catalogModel.display_name,
         description: catalogModel.description,
         value: identifier,
-        canonicalName: identifier,
+        canonicalName: catalogModel.canonical_name,
         providerId: catalogModel.provider_id,
         runtime: catalogModel.runtime,
       });

@@ -76,6 +76,7 @@ const messages = {
   'agentTeams.components.agentTeams.SearchableGroupedSelect.loading': 'Loading...',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultPlaceholder': 'Select an option',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultSearchPlaceholder': 'Search...',
+  'agentTeams.components.agentTeams.SearchableGroupedSelect.recommended': 'Recommended',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.basics': 'Basics',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.removeAvatar': 'Remove',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.descriptionPlaceholder': 'Describe the team\'s purpose and goals...',
