@@ -2,31 +2,31 @@
 
 ## Review Round Meta
 
-- Review Entry Point: Implementation Review; round 1; current result `CRR-001`.
+- Review Entry Point: API/E2E Failure-Origin Review; round 3; current result `CRR-003`. Prior implementation source review: CRR-002 Pass.
 - Requirements / investigation / solution history: `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md`; approved SR-016 baseline, SR-019 workspace correction, SR-021 DONE-to-success clarification.
 - Design / review: `design-spec.md`, `investigation-result.md`, `design-review-report.md` ARCH-REV-003 Pass, `architecture-review-revision-record.md` ARCH-REV-001–003.
-- Implementation: `implementation-handoff.md`, `implementation-revision-record.md` IR-001/002; reviewed commit `d0ec1fc07` against base `40b1783f4` on `codex/antigravity-cli-runtime-redesign-20260924`.
+- Implementation: `implementation-handoff.md`, `implementation-revision-record.md` IR-001/002/003; reviewed commit `575520264` against base `40b1783f4` on `codex/antigravity-cli-runtime-redesign-20260924`.
 - Supplements: AGY CLI experiment, tool-event capture and command-outcome matrix; selected-workspace, MCP, toolset and skill probe reports; implementation local live JSON evidence. Probe artifacts are evidence, not product acceptance.
-- Code review revision record: `code-review-revision-record.md` CRR-001. Prior review: none. API/E2E and delivery artifacts: N/A — not yet applicable.
+- Code review revision record: `code-review-revision-record.md` CRR-001/002/003. Prior authoritative result: CRR-002 Pass. API/E2E inputs: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` API-REV-001, `api-e2e-test-case-ledger.md`, new durable `autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts`, final log `/tmp/agy-api-02-team-final.log`. Delivery: N/A.
 
 ## Routing Classification Review
 
-- Task size: **Large**; architectural risk: **High**; independent implementation source review required and selected. This remains warranted by provider process/identity, scoped collaboration, trace, persistence and frontend launch changes.
+- Task size: **Large**; architectural risk: **High**; current entry point: focused API/E2E failure-origin review after reviewed-route CRR-002 source Pass. The classification remains warranted by provider process/identity, scoped collaboration, trace, persistence and frontend launch changes.
 
 ## Review Scope
 
-Reviewed the complete AGY production path and relevant changed server, shared-contract and web sources at `d0ec1fc07`, rather than only the IR-002 diff. Read relevant focused tests and supplied validation evidence. Excluded downstream API/E2E acceptance, provider versions other than probed 1.2.10, and old unmerged worktree alternatives.
+Focused on API-F-001 / AGY-02 at reviewed source commit `575520264`: approved real Team/Org member launch scenario, final corrected GraphQL/WebSocket E2E, exact failure log, and the smallest production chain from UI/API launch through run-tree validation to member activation. Earlier full structural/source audit remains CRR-002 context; it was not repeated. The final denial/DONE browser evidence is accepted as bounded API/E2E evidence but not reviewed as successful test code. No source/test fix was made in this role.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-Approved behavior is clear. The SR-021 tool convention is intentionally provider-step success, not shell exit success. ARCH-REV-003 reviewed that changed basis. Behavior basis is **Contradicted in BEH-004** by the two org launch-policy paths below; remaining mapped behaviors are confirmed at source-review level, subject to API/E2E.
+Approved behavior is clear. The SR-021 tool convention is intentionally provider-step success, not shell exit success. ARCH-REV-003 reviewed that changed basis. Behavior basis is **Contradicted for BEH-002 / SCN-002 real Team launch** by API-REV-001. CR-001/002 remain resolved; the AGY runtime still cannot reach a real Team member because the current run-tree validator rejects AGY before activation.
 
 | Behavior ID | Status | Current production path and lifecycle evidence | Contradiction |
 | --- | --- | --- | --- |
 | BEH-001 | Confirmed | CLI capability/model probe → catalog/availability → factory dispatch. | — |
-| BEH-002 | Confirmed | Shared prompt composer → run capsule main-agent markdown before `init`; member context included. | — |
+| BEH-002 | **Contradicted for Team/Org launch** | Intended Team/Org path is launch editor → GraphQL → Team/Org service/planner → current execution-tree validator → member activation → shared prompt/capsule. AGY is rejected at the validator before the member identity path. | API-F-001 final Team E2E and `run-execution-tree-shared-record-schemas.ts:77-79`; Org shares validator but requires direct rerun. |
 | BEH-003 | Confirmed | `init.conversation_id` → backend context/manager candidate → persisted external binding; restore compares exact ID before input. | — |
-| BEH-004 | **Contradicted** | Web draft policy → org team/agent overrides → effective launch config → AGY permission flag. | New org Team AGY override does not default on; org Agent explicit-off edit is forced back on. |
+| BEH-004 | Confirmed | Web draft policy → Org Team/Agent overrides and pending editor batch → effective launch config → AGY permission flag. New AGY selection defaults on and later explicit-off is retained. | — |
 | BEH-005 | Confirmed | Per-run capsule, selected real workspace `--add-dir`, manifest/agent hash and restore workspace check; model-directed target caveat retained. | — |
 | BEH-006 | Confirmed | AGY stream converter → canonical event → trace sequencer/projection → web hydration/card; DONE without error is success, explicit ERROR/denial remains non-green. | Final fresh denial-label render remains downstream verification, not a demonstrated source contradiction. |
 | SCN-005 | Confirmed | AGY-specific runtime branch and draft helper; unchanged non-AGY policy paths and focused regression evidence. | — |
@@ -36,19 +36,30 @@ Approved behavior is clear. The SR-021 tool convention is intentionally provider
 | Scenario ID | Behavior / contract | Kind, initiator and coherent goal | Supported entry and forward lifecycle | Outcome / consequence | Independent evidence | Validity / use |
 | --- | --- | --- | --- | --- | --- | --- |
 | SCN-001 | BEH-001/002/003/004/006 | User starts a selected standalone AGY coding run. | Workspace launch → editable runtime/model/permission → run manager → capsule/process → canonical events. | Identity, binding, permissions and trace apply to that run. | Approved requirements SCN-001, design DS-001/003, existing launch UI. | Supported Normal Scenario / Use |
-| SCN-002 | BEH-002/004; REQ-010 | User configures an AGY Team or Org scope/member for collaboration. | Team/Org launch editors → sparse scope override → effective member config → AGY factory/CLI. | Newly selected AGY scope defaults auto-execute on, but user may explicitly turn it off. | Approved SCN-002, REQ-007/010, AC-009, design BEH-004 and actual Team/Org editor actions. | Supported Normal Scenario / Use |
+| SCN-002 | BEH-002/004; REQ-002/007/010 | User starts an AGY Team or Org to collaborate with real members. | Team/Org launch UI → GraphQL `createAgentTeamRun`/`createAgentOrgRun` → service/planner → execution-tree validation → member activation/AGY factory → WebSocket collaboration. | Real member identity and scoped inter-agent delivery; editable AGY scope defaults on and later explicit-off is honored. | Approved SCN-002/AC-002, real Team/Org launch UI and GraphQL production routes, design DS-001, API-REV-001 direct Team call. | Supported Normal Scenario / Use |
 | SCN-003 | BEH-003/005 | User reopens own AGY run. | Stored run/provider ID and capsule → restore factory → exact CLI init check. | Original ID and run-start identity retained or non-restorable. | REQ-003–005, design DS-002. | Supported Normal Scenario / Use |
 | SCN-004 | BEH-006/REQ-011 | User views a normal AGY command/tool step. | Chat input → AGY tool DONE or ERROR → converter/trace → live and reloaded cards. | DONE is green with source state/output and no fabricated exit; denial/error non-green. | SR-021 approval, command-outcome captures, design DS-003. | Supported Normal Scenario / Use |
 | SCN-005 | REQ-006 | Existing-runtime user continues a Codex/Claude/AutoByteus run. | Normal runtime selection → existing factory and event paths. | No AGY policy leakage. | Requirements SCN-005 and existing runtime registration. | Supported Normal Scenario / Use |
 
 ### Candidate Finding And Mechanism Gate
 
-| Candidate ID | Observation / mechanism | Scenario / contract | Independent trigger and forward path / consequence | Evidence | Disposition and proportionate response |
+| Candidate ID | Observation | Scenario / contract | Independent trigger and forward path / consequence | Evidence | Disposition / proportionate response |
 | --- | --- | --- | --- | --- | --- |
-| CF-001 | Org Team AGY selection lacks default-on transition. | SCN-002, REQ-010/AC-009 | User selects AGY in editable Org Team scope → `TeamScopeConfigEditor.updateField` emits runtime-only override → `AgentOrgRunConfigPanel` calls `setTeamOverride` → canonicalized patch omits auto-execute → inherits root false → AGY process lacks broad permission flag and may deny normal tool work. | `TeamScopeConfigEditor.vue:329-339`, `AgentOrgRunConfigPanel.vue:18`, `agentOrgRunConfigStore.ts:127-131`, `agentOrgLaunchPatch.ts:45-59`, factory/process mapping. | **Promote**; apply shared new-runtime policy at this Org Team transition and cover the store/effective launch config. |
-| CF-002 | Org Agent explicit-off cannot remain off after its AGY override already exists. | SCN-002, REQ-007/010 | User selects AGY for Org Agent, then deliberately toggles auto-execute off in same editable scope → `setAgentOverride` looks up the Team override at an Agent address, not the existing Agent override → helper sees no previous AGY runtime and rewrites false to true → effective config runs with `--dangerously-skip-permissions`. | `agentOrgRunConfigStore.ts:142-146`, `agentRunRuntimeDraftPolicy.ts:7-13`, `AgentOrgRunConfigPanel.vue:20`, Org member editor. | **Promote**; compare against existing Agent override and cover select-AGY-then-explicit-off flow. |
+| CF-003 | Current Team/Org run-tree launch validator rejects `antigravity_cli`. | SCN-002, BEH-002, REQ-002/AC-002, user-requested real Team parity. | User starts an AGY Team in the existing launch UI → `createAgentTeamRun` → `TeamRunService.createTeamRun` → `AgentTeamRunManager.createTeamRun` → `buildInitialTeamRunExecutionTree` → shared `validateLaunchConfiguration`; exception returns GraphQL `success=false` before member activation, so no identity, real recipient roundtrip or trace. | Final corrected AGY-02 log/test; `team-run-execution-tree-builder.ts:35-57`; `run-execution-tree-shared-record-schemas.ts:67-79`; `agent-team-run.ts:184-201`; Org schema uses same validator. | **Promote**. Bounded implementation correction to current supported-runtime validation and Team/Org regression coverage; rerun real Team E2E first, then Org and continuation. No test workaround or speculative migration. |
 
-## Structural / Design Checks
+CRR-001's CF-001/002 remain resolved by IR-003. The supported Team journey is independent of the new E2E test: it is expressly approved by SCN-002/AC-002 and exposed by the production launch UI/GraphQL path. The test reproduces, but does not establish, the product scenario.
+
+## Focused API/E2E Failure-Origin Review — CRR-003
+
+- Failing scenario / command: AGY-02, `RUN_AGY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts --no-watch`; final log `/tmp/agy-api-02-team-final.log`.
+- Expected: real AGY Team creation returns a Team run ID, then an AGY member invokes scoped `send_message_to` to another real member and return stream/trace preserve exact attribution.
+- Observed: definitions and workspace are created; `createAgentTeamRun.success=false` with `rootTeam.defaultLaunchConfiguration.runtimeKind is unsupported.` Failure occurs before member activation. The first obsolete `refType` fixture was corrected before this final run, and the final test uses AGY `call_mcp_tool` shape; that earlier fixture defect is not the present cause.
+- Production origin: `RuntimeKind.ANTIGRAVITY_CLI` is accepted by `runtimeKindFromString` and Team input normalization. The current execution-tree builder calls the shared `validateLaunchConfiguration`, whose explicit runtime list omits AGY. The GraphQL resolver converts that thrown error to `success=false`. Org uses the same current validator, but its direct launch remains untested; do not state it as an observed Org failure.
+- Classification: **implementation defect, Local Fix**, not invalid/stale test, environment failure, requirement gap or design change. The affected current validator predates the AGY diff, but the implementation had to extend this admission boundary for the approved runtime.
+- Earlier review gap: CRR-002 passed API/E2E readiness without tracing the real Team launch through the persisted execution-tree validator. The invariant that every newly supported runtime must be accepted by current Team/Org launch-tree admission should have been checked. This was reasonably detectable in source review; API-REV-001 supplies direct confirmation.
+- Scope of correction: enable AGY in current Team/Org run-tree validation and add focused regression(s) without changing approved permission or trace semantics. Because a migration-only decoder imports the shared helper, assess that call site deliberately; do not infer a production data migration or version-specific fallback from this finding. Require implementation source re-review and API/E2E rerun after repair.
+
+## Structural / Design Checks — CRR-002 source-audit context, not repeated in CRR-003
 
 | Mandatory check | Result | Evidence / action |
 | --- | --- | --- |
@@ -58,7 +69,7 @@ Approved behavior is clear. The SR-021 tool convention is intentionally provider
 | Ownership boundary clarity | Pass | Manager owns admission; AGY factory/backend own provider lifecycle. |
 | Off-spine concern clarity | Pass | Capsule owns assets, process owns I/O, converter owns events. |
 | Existing capability reuse | Pass | Shared identity composer, MCP session authority, recorder/projection reused. |
-| Reusable owned structures | Pass | Draft policy and AGY stream shapes are factored once; Org call sites need correction (CF-001/002). |
+| Reusable owned structures | Pass | Draft policy and AGY stream shapes are factored once; Org Team/Agent call sites now use the policy correctly. |
 | Shared-structure/data-model tightness | Pass | Canonical events and external provider ID reused; no parallel AGY status type. |
 | Repeated coordination ownership | Pass | One draft-policy helper; no duplicate status or trace policy. |
 | Empty indirection | Pass | Factory, capsule, process and converter own distinct work. |
@@ -72,14 +83,14 @@ Approved behavior is clear. The SR-021 tool convention is intentionally provider
 | Unjustified duplication | Pass | No second provider archive or copied trace path. |
 | Patch-on-patch complexity | Pass | IR-001 neutral branch removed rather than layered with success. |
 | Dead/obsolete cleanup | Pass | Neutral event/DTO/trace/UI path absent; no old AGY PTY path. |
-| Test scenarios/assertions | **Fail** | Org store tests omit new Team default and Agent explicit-off transitions (CF-001/002). Add focused assertions. |
+| Test scenarios/assertions | Pass | IR-003 store/effective-form, component event-batch and mounted-panel tests cover Org Team and Agent select-on/explicit-off. Reviewer reran 25/25 affected web tests. |
 | Test fixture/helper reuse | Pass | Existing focused AGY fixture matrix and Org store harness are reusable. |
 | Stale/duplicate/compatibility-only tests | Pass | None found in reviewed changed scope. |
-| API/E2E readiness | **Fail** | Correct CF-001/002 before downstream; then validate final denial label live/reloaded. |
+| API/E2E readiness | **Fail (CRR-003 update)** | API-REV-001 real Team launch stops at the shared runtime whitelist before member activation (CF-003 / CR-003). |
 
 ## Source File Size And Structure Audit
 
-Effective nonempty lines for changed implementation source only; tests, fixtures and generated files excluded. `>220` is the added-line delta check, not total file length. No changed source breaches the 500-line hard limit or 220-line added delta. Existing large owners have small localized edits.
+Effective nonempty lines for changed implementation source only; tests, fixtures and generated files excluded. `>220` is the added-line delta check, not total file length. No changed source breaches the 500-line hard limit or 220-line added delta. IR-003 changes are localized to the Org store and Team scope editor; placement and responsibility remain coherent.
 
 | Source file | Effective lines | `>500` | `>220` delta | SoC | Placement | Preliminary classification | Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
@@ -114,13 +125,13 @@ Effective nonempty lines for changed implementation source only; tests, fixtures
 | `autobyteus-web/components/mobile/MobileRunSetup.vue` | 164 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/components/progress/ToolActivityItem.vue` | 250 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/components/workspace/config/AgentRunConfigForm.vue` | 170 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue` | 340 | Pass | Pass | Pass | Pass | None | None |
+| `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue` | 345 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/composables/useDefinitionLaunchDefaults.ts` | 158 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/localization/messages/en/workspace.ts` | 431 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/localization/messages/zh-CN/workspace.ts` | 430 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 307 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/services/runHydration/runProjectionConversation.ts` | 311 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-web/stores/agentOrgRunConfigStore.ts` | 229 | Pass | Pass | Pass | Pass | Local Fix CF-001/002 | Correct Org policy |
+| `autobyteus-web/stores/agentOrgRunConfigStore.ts` | 231 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/stores/agentRunConfigStore.ts` | 186 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/stores/teamRunConfigStore.ts` | 429 | Pass | Pass | Pass | Pass | None | None |
 | `autobyteus-web/types/agent/AgentRunConfig.ts` | 62 | Pass | Pass | Pass | Pass | None | None |
@@ -148,48 +159,46 @@ Yes: delivery documentation should describe AGY provider-step green semantics, e
 
 ARCH-REV-003 MP-002 (nonzero/not-found tool DONE) and MP-003 (headless permission denial) remain confirmed by provider captures and the SR-021 conversion. ARCH-REV-002 DR-001 selected-workspace premise remains resolved at source level. No new edge/failure premise is needed for CF-001/002: both are ordinary editable Org launch actions on SCN-002.
 
-## Review Scorecard
+## Review Scorecard — affected CRR-003 rationale only
 
-- Overall: **8.8/10; 88/100** (simple mean; category gaps govern decision).
+- Overall: **8.6/10; 86/100** after updating only API/E2E readiness and runtime fidelity for confirmed API-F-001. Other categories retain the CRR-002 source-review rationale; no full structural audit was repeated.
 
 | Priority | Category | Score | Why / weakness / improvement |
 | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.0 | Launch, restore and event paths are traceable; no material spine gap found; maintain. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.0 | Existing manager/MCP/trace owners remain authoritative; no boundary bypass found; maintain. |
-| 3 | API / Interface / Query / Command Clarity | 9.0 | Explicit AGY factory/context/process contracts and exact IDs; no material weakness found; maintain. |
-| 4 | Separation of Concerns and File Placement | 9.0 | Provider leaf and capsule/stream split are coherent; no material placement gap; maintain. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.0 | Canonical events and shared policy helper avoid parallel shapes; helper must be called correctly in Org store (CF-001/002). |
-| 6 | Naming Quality and Local Readability | 9.0 | AGY roles and ID semantics are explicit; no material naming gap; maintain. |
-| 7 | API/E2E Readiness | **8.0** | CF-001/002 leave an approved Org permission flow wrong before downstream validation; fix and add focused coverage. |
-| 8 | Runtime Correctness And Behavioral Fidelity | **8.0** | CF-001/002 contradict BEH-004/REQ-007/010; correct Team default and Agent explicit-off transition. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.0 | Launch, restore and event paths remain traceable; no material spine gap; maintain. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.0 | Existing manager/MCP/trace owners remain authoritative; no boundary bypass; maintain. |
+| 3 | API / Interface / Query / Command Clarity | 9.0 | Explicit AGY factory/context/process contracts and exact IDs; no material weakness; maintain. |
+| 4 | Separation of Concerns and File Placement | 9.0 | Provider leaf, capsule/stream and Org draft owners are coherent; no placement gap; maintain. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.0 | Canonical events and shared draft-policy helper reused correctly by corrected Org paths; no parallel shape; maintain. |
+| 6 | Naming Quality and Local Readability | 9.0 | AGY roles, ID semantics and exact prior override are explicit; no material naming gap; maintain. |
+| 7 | API/E2E Readiness | **7.0** | CF-003/CR-003: real approved Team launch is rejected before member activation by current run-tree validation; fix and rerun AGY-02. |
+| 8 | Runtime Correctness And Behavioral Fidelity | **7.0** | CF-003/CR-003: AGY Team launch fails despite valid runtime selection and draft policy; restore approved Team/Org admission. |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.0 | Neutral IR-001 path removed and no migration/fallback added; maintain. |
 | 10 | Cleanup Completeness | 9.0 | No obsolete AGY production seam identified; maintain. |
 
 ## Findings
 
-### CR-001 — Org Team AGY scope does not default auto-execute on
+### CR-003 — Current Team/Org run-tree admission omits AGY
 
-- Severity: Medium; candidate CF-001; affected SCN-002/BEH-004, REQ-010/AC-009.
-- `autobyteus-web/stores/agentOrgRunConfigStore.ts:127-131` canonicalizes a new Team override without `withNewRuntimeOverridePolicy`, unlike the separate Team-run editor. A runtime-only AGY override inherits a false Org root permission value. The supported Org Team selection path therefore launches an AGY member with ordinary headless policy rather than the approved default-on behavior.
-- Required bounded fix: use the shared policy on this transition, preserving deliberate later off edits, and test the Org Team store/effective launch result.
+- Severity: High; promoted candidate CF-003; supported normal SCN-002, BEH-002, REQ-002/AC-002 and the user's real-Team parity gate.
+- `autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts:77-79` accepts only the three former runtime strings. Real AGY Team creation reaches this current-schema validator via GraphQL → Team service/manager → execution-tree builder; it throws before members can activate. API-REV-001 directly observed `success=false` and the exact unsupported-runtime message. Org current validation shares the helper, making its launch a direct follow-up check, not an observed failure in this round.
+- Required bounded correction: admit the supported AGY runtime in the current validator, retain existing-runtime behavior, add focused Team/Org current-tree regression coverage, and check the migration-only consumer proportionately without adding an unapproved migration. Return through source review, then rerun AGY-02 real GraphQL/WebSocket first and complete Org/continuation validation.
+- Review-gap attribution: CRR-002 missed this source-level path invariant when it declared API/E2E readiness. The runtime enum/factory were extended, but persisted Team/Org admission was not checked.
 
-### CR-002 — Org Agent explicit-off permission choice is overwritten
-
-- Severity: High; candidate CF-002; affected SCN-002/BEH-004, REQ-007/010 and AC-009.
-- `autobyteus-web/stores/agentOrgRunConfigStore.ts:144` passes `teamOverrides.value[address]` as the previous **Agent** override. At an Agent address this is normally absent, so every update of an AGY Agent override—including a second explicit `autoExecuteTools: false` edit—is treated as newly selected AGY and forced true by `withNewRuntimeOverridePolicy`. This can launch with `--dangerously-skip-permissions` despite the user's visible off choice.
-- Required bounded fix: use `agentOverrides.value[address]` for the previous Agent state; add the select-AGY-then-toggle-off Org Agent regression test.
+CR-001/002 remain resolved; see CRR-002.
 
 ## Classification / Recommended Recipient
 
-**Fail — Local Fix**, `/implementation_engineer`. These are bounded implementation-owned web store errors, not missing requirements or a design revision. Re-review source and then run API/E2E after correction. Do not advance this result to API/E2E.
+**Fail — Local Fix**, `/implementation_engineer`. This is implementation-owned current runtime integration, not an ambiguous product decision or stale final fixture. No API/E2E pass or test-code review is available; implementation repair must return to source review and then API/E2E.
 
 ## Residual Risks
 
-- Independently validate live/reloaded AGY denial on the final code: label should remain DENIED/non-green with source ERROR and exposed output; the earlier pre-refinement reload was FAILED/non-green. This is a downstream verification gate, not an extra source finding.
-- Validate exact restore, real workspace file/shell targets, scoped MCP/team/org, configured skills/collision, and non-AGY behavior in API/E2E. Provider 1.2.10 controls and local browser runs are not acceptance.
+- AGY-02 real recipient delivery and exact attribution, real Org execution, and Team restore/continuation remain unproven until launch is repaired and rerun. Stubbed scoped-MCP calls do not satisfy parity.
+- API-REV-001 did freshly confirm final-code live/reloaded denial **DENIED** and DONE control green/source-output/no-shell-exit behavior for standalone runs; the prior denial-label uncertainty is closed, but this does not offset the Team failure.
+- Existing AGY 1.2.10 and non-AGY checks remain bounded as described in the API/E2E report; no delivery acceptance.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**; entry point: Implementation Review; scenario gate: Pass; material-premise gate: Pass.
-- Score: 8.8/10 (88/100); classification: Local Fix; recipient: `/implementation_engineer`.
-- Current authoritative result: CRR-001 at `d0ec1fc07`. No Code Review or API/E2E acceptance is claimed.
+- Review Decision: **Fail**; entry point: API/E2E Failure-Origin Review, round 3; scenario gate: Pass; material-premise gate: Pass.
+- Score: affected-rationale update 8.6/10 (86/100); failure origin: implementation defect plus earlier source-review gap; classification: Local Fix; recipient: `/implementation_engineer`.
+- Current authoritative result: CRR-003 after API-REV-001 at source commit `575520264`; CRR-002 source Pass is superseded for the affected Team/Org admission behavior. No API/E2E or delivery acceptance.

@@ -1,0 +1,240 @@
+{
+  "base": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-team-mcp-live-hCRFnr",
+  "deliveries": [
+    {
+      "recipientAddress": "/recipient",
+      "content": "MCP-MARKER-TEAM-5127",
+      "messageType": "agent_message",
+      "referenceFiles": []
+    }
+  ],
+  "dispatch": {
+    "forwarded": true,
+    "turnId": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+    "platformAgentRunId": "296bb962-8a4d-4c31-95a9-9332befc1376"
+  },
+  "events": [
+    {
+      "eventType": "TURN_STARTED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "invocation_id": "agy-tool-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-2",
+        "tool_name": "view_file",
+        "arguments": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/send_message_to.json"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "invocation_id": "agy-tool-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-2",
+        "tool_name": "view_file",
+        "arguments": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/send_message_to.json"
+        },
+        "result": {
+          "provider_state": "DONE",
+          "output": "1 lines, 2305 bytes"
+        },
+        "provider_state": "DONE"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "invocation_id": "agy-tool-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-4",
+        "tool_name": "call_mcp_tool",
+        "arguments": {
+          "Arguments": {
+            "content": "MCP-MARKER-TEAM-5127",
+            "recipient_address": "/recipient"
+          },
+          "ServerName": "autobyteus_agent_tools",
+          "ToolName": "send_message_to"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "invocation_id": "agy-tool-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-4",
+        "tool_name": "call_mcp_tool",
+        "arguments": {
+          "Arguments": {
+            "content": "MCP-MARKER-TEAM-5127",
+            "recipient_address": "/recipient"
+          },
+          "ServerName": "autobyteus_agent_tools",
+          "ToolName": "send_message_to"
+        },
+        "result": {
+          "provider_state": "DONE",
+          "output": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /recipient.\",\"target_agent_run_id\":\"team-recipient-run\"}"
+        },
+        "provider_state": "DONE"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_START",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "segment_type": "text",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "The `send_message_to` tool executed successful"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "ly. Here is the result:\n"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "\n```json\n{\n  \"accepted\":"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": " true,\n  \"code\": \"DELIVERED\",\n  \"mes"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "sage\": \"Delivered messag"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "e to /recipi"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "ent.\",\n  \"target_agent_run_id\": \"team-recipient-run"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "delta": "\"\n}\n```"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_END",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1-5",
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOKEN_USAGE_UPDATED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "idempotency_key": "agy:296bb962-8a4d-4c31-95a9-9332befc1376:1",
+        "runtime_kind": "antigravity_cli",
+        "ingestion_kind": "agy_result",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "296bb962-8a4d-4c31-95a9-9332befc1376",
+        "model_identifier": "gemini-3.8-flash-low",
+        "model_value": "gemini-3.8-flash-low",
+        "model_provider": "GEMINI",
+        "provider_name": "Antigravity CLI",
+        "reported_input_tokens": 29115,
+        "reported_output_tokens": 231,
+        "reported_total_tokens": 29346,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_read_input_tokens": 0,
+        "cache_state": "zero_reported",
+        "reasoning_output_tokens": 0,
+        "raw_usage_json": {
+          "input_tokens": 29115,
+          "output_tokens": 231,
+          "thinking_tokens": 0,
+          "cache_read_tokens": 0,
+          "total_tokens": 29346
+        },
+        "quality_flags": [
+          "agy_provider_reported_cumulative_usage"
+        ]
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TURN_COMPLETED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "78ff1fca-ba42-4679-b7a0-8b39f5fd5dc1",
+        "provider_status": "SUCCESS"
+      },
+      "statusHint": "IDLE"
+    }
+  ]
+}
