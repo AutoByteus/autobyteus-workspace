@@ -220,7 +220,7 @@ export class AgentTeamRunManager {
 
   listManagedTeamRunIds(): string[] { return [...this.managedRoots.keys()]; }
 
-  async withUnmanagedHistoryDeletion<T>(
+  async withInactiveHistoryMutation<T>(
     rootTeamRunIdInput: string,
     operation: () => Promise<T>,
   ): Promise<{ kind: "managed" } | { kind: "completed"; value: T }> {

@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { ConfiguredAgentExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { MemoryAvailabilityBuildResult } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
@@ -16,9 +16,9 @@ export class TeamMemoryMemberTargetBuilder {
     private readonly memoryLocationService: AgentMemoryLocationService = new AgentMemoryLocationService(),
   ) {}
 
-  async build(teamRunId: string): Promise<TeamMemoryMemberTargetRecord[]> {
+  buildFromTree(teamRunId: string, tree: TeamRunExecutionTreeSnapshot): TeamMemoryMemberTargetRecord[] {
     const targets: TeamMemoryMemberTargetRecord[] = [];
-    for (const target of await this.memoryLocationService.listTeamMemberLocations({ teamRunId })) {
+    for (const target of this.memoryLocationService.listTeamMemberLocationsFromTree({ teamRunId, tree })) {
       if (!target.configuredPlacement) continue;
       const memoryStore = new MemoryFileStore(path.dirname(target.memoryDir), { runRootSubdir: "" });
       const memory = new MemoryRunSummaryBuilder(memoryStore).build(path.basename(target.memoryDir));

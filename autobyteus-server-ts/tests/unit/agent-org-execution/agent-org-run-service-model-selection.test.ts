@@ -33,7 +33,7 @@ const harness = () => {
     teamIdentities: { allocateForTeamDefinitionName: () => "team-run" },
     workspaces: { ensureWorkspaceByRootPath: async (path) => ({ getBasePath: () => path }) },
     modelSelectionValidator: new RunModelSelectionService(catalog as never, capacity),
-    history: { initialize: vi.fn(), recordCreated: vi.fn() },
+    history: { recordCreated: vi.fn() },
   } as never);
   return { service, catalog, capacity, create, allocate };
 };

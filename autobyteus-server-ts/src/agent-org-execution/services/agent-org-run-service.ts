@@ -53,7 +53,7 @@ export class AgentOrgRunService {
     admission: Pick<DefinitionAdmissionService, "requireAvailable">;
     modelSelectionValidator: RunModelSelectionValidator;
     modelSelectionOptions: Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
-    history: Pick<AgentOrgRunHistoryCatalogService, "initialize" | "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
+    history: Pick<AgentOrgRunHistoryCatalogService, "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
   }>) {}
 
   getRunConfig(orgRunId: string) {
@@ -106,10 +106,6 @@ export class AgentOrgRunService {
       agentOverrides,
       applicationBinding: command.applicationBinding ?? null,
     });
-    // Establish the derived history baseline before the new current package is
-    // published, otherwise a first-ever history read would discover that same
-    // package and misclassify recordCreated as a duplicate.
-    await this.dependencies.history.initialize();
     const run = await this.dependencies.manager.create(tree);
     try {
       await this.dependencies.history.recordCreated(run.getExecutionTreeSnapshot());

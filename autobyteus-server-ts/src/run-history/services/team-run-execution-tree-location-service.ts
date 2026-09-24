@@ -88,6 +88,11 @@ export class TeamRunExecutionTreeLocationService {
     return output;
   }
 
+  /** Project locations from an already validated root snapshot; no store or manager I/O. */
+  listAgentsInTree(tree: TeamRunExecutionTreeSnapshot): LocatedTeamAgentExecution[] {
+    return this.listInTree(tree, false);
+  }
+
   async containsRunId(runId: string): Promise<boolean> {
     const normalized = runId.trim();
     if (!normalized) throw new Error("runId is required.");

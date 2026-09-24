@@ -26,7 +26,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   let managed = false;
   const manager = {
     hasManagedTeamRun: vi.fn(() => managed),
-    withUnmanagedHistoryDeletion: vi.fn(async <T>(_teamRunId: string, operation: () => Promise<T>) =>
+    withInactiveHistoryMutation: vi.fn(async <T>(_teamRunId: string, operation: () => Promise<T>) =>
       managed ? { kind: "managed" as const } : { kind: "completed" as const, value: await operation() }),
   };
 
@@ -36,7 +36,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
     resetTeamRunHistoryCatalogState(memoryDir);
     managed = false;
     manager.hasManagedTeamRun.mockClear();
-    manager.withUnmanagedHistoryDeletion.mockClear();
+    manager.withInactiveHistoryMutation.mockClear();
   });
 
   afterEach(async () => {
@@ -49,7 +49,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
     await service.recordTeamRunCreated({ tree, summary: "initial summary" });
 
-    await expect(new TeamRunHistoryIndexStore(memoryDir).listRows()).resolves.toEqual([{
+    await expect(new TeamRunHistoryIndexStore(memoryDir).readIndexStrict()).resolves.toMatchObject({ rows: [{
       teamRunId: "team-1",
       teamDefinitionId: "team-def-1",
       teamDefinitionName: "Team One",
@@ -58,7 +58,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
       createdAt: "2026-08-15T10:00:00.000Z",
       archivedAt: null,
       terminatedAt: null,
-    }]);
+    }] });
     await expect(fs.readdir(layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] })))
       .rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -66,6 +66,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   it("records the first summary only and serializes current lifecycle updates", async () => {
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
     await service.recordTeamRunCreated({ tree: buildTree() });
+    new TeamRunPackageCatalog(memoryDir).admit("team-1");
     await Promise.all([
       service.recordTeamRunSummary({ teamRunId: "team-1", summary: "first" }),
       service.recordTeamRunSummary({ teamRunId: "team-1", summary: "second" }),
@@ -83,11 +84,29 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
     await new TeamRunExecutionTreeStore().write(rootDir, tree);
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
     await service.recordTeamRunCreated({ tree });
+    new TeamRunPackageCatalog(memoryDir).admit("team-1");
 
     await expect(service.archiveTeamRun("team-1")).resolves.toMatchObject({ success: true });
     await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1"))
       .resolves.toMatchObject({ archivedAt: expect.any(String) });
     await expect(service.getCatalogRow("team-1")).resolves.toMatchObject({ archivedAt: expect.any(String) });
+  });
+
+  it("restores the exact tree and index snapshot after an archive index failure", async () => {
+    const tree = buildTree();
+    const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
+    const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager, indexStore });
+    await service.recordTeamRunCreated({ tree });
+    new TeamRunPackageCatalog(memoryDir).admit("team-1");
+    const beforeIndex = (await indexStore.readIndexStrict()).rows;
+    vi.spyOn(indexStore, "writeIndex").mockRejectedValueOnce(new Error("archive index failed"));
+
+    await expect(service.archiveTeamRun("team-1")).resolves.toMatchObject({ success: false });
+    expect(await new TeamRunExecutionTreeStore().read(rootDir, "team-1")).toEqual(tree);
+    expect((await indexStore.readIndexStrict()).rows).toEqual(beforeIndex);
+    await expect(service.getCatalogRow("team-1")).resolves.toMatchObject({ archivedAt: null });
   });
 
   it("blocks active deletion and rejects unsafe identities before filesystem effects", async () => {
@@ -145,7 +164,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
 
     await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: false, message: expect.stringContaining("package") });
     expect(writeSpy).toHaveBeenCalledTimes(2);
-    await expect(indexStore.getRow("team-1")).resolves.toMatchObject({ teamRunId: "team-1" });
+    await expect(indexStore.readIndexStrict()).resolves.toMatchObject({ rows: [{ teamRunId: "team-1" }] });
     await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1")).resolves.toMatchObject({ rootTeam: { teamRunId: "team-1" } });
     expect(packageCatalog.isAdmitted("team-1")).toBe(true);
   });

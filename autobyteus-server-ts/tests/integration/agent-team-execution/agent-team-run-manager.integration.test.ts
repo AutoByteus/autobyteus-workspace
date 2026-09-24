@@ -18,6 +18,8 @@ import { TeamRunService } from "../../../src/agent-team-execution/services/team-
 import type { ChannelBinding } from "../../../src/external-channel/domain/models.js";
 import { ChannelBindingRunLauncher } from "../../../src/external-channel/runtime/channel-binding-run-launcher.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
@@ -382,23 +384,100 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
 
     let releaseDeletion!: () => void;
     const deletionBarrier = new Promise<void>((resolve) => { releaseDeletion = resolve; });
-    const deletion = manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => {
+    let reportMutationEntered!: () => void;
+    const mutationEntered = new Promise<void>((resolve) => { reportMutationEntered = resolve; });
+    const deletion = manager.withInactiveHistoryMutation(config.rootTeam.teamRunId, async () => {
+      reportMutationEntered();
       await deletionBarrier;
       return "deleted";
     });
+    await mutationEntered;
     let restoreSettled = false;
     const restore = manager.restoreTeamRun(config.rootTeam.teamRunId).then((root) => {
       restoreSettled = true;
       return root;
     });
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await Promise.resolve();
     expect(restoreSettled).toBe(false);
 
     releaseDeletion();
     await expect(deletion).resolves.toEqual({ kind: "completed", value: "deleted" });
     await expect(restore).resolves.toMatchObject({ teamRunId: config.rootTeam.teamRunId });
-    await expect(manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => "unexpected"))
+    await expect(manager.withInactiveHistoryMutation(config.rootTeam.teamRunId, async () => "unexpected"))
       .resolves.toEqual({ kind: "managed" });
+  });
+
+
+  it("refuses Team archive and unarchive after Restore owns the exact-root lane", async () => {
+    const memoryDir = await createMemoryDir();
+    const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(initializeTaskIdentityAllocator(memoryDir));
+    let materializations = 0;
+    let reportRestoreEntered!: () => void;
+    let releaseRestore!: () => void;
+    const restoreEntered = new Promise<void>((resolve) => { reportRestoreEntered = resolve; });
+    const restoreBarrier = new Promise<void>((resolve) => { releaseRestore = resolve; });
+    const factory = createFactory({ beforeBackendReturn: async () => {
+      if (++materializations === 2) { reportRestoreEntered(); await restoreBarrier; }
+    } });
+    const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory,
+      memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity,
+      activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
+    const catalog = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
+    await catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot() });
+    await manager.terminateTeamRun(root.teamRunId);
+    factory.state.active = true;
+    const restore = manager.restoreTeamRun(root.teamRunId);
+    await restoreEntered;
+    const archive = catalog.archiveTeamRun(root.teamRunId);
+    const unarchive = catalog.unarchiveTeamRun(root.teamRunId);
+    releaseRestore();
+    await restore;
+    await expect(archive).resolves.toMatchObject({ success: false, message: expect.stringContaining("active") });
+    await expect(unarchive).resolves.toMatchObject({ success: false, message: expect.stringContaining("active") });
+    const teamDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: root.teamRunId, ancestorTeamRunIds: [] });
+    expect((await new TeamRunExecutionTreeStore().read(teamDir, root.teamRunId))?.archivedAt).toBeNull();
+    expect((await catalog.getCatalogRow(root.teamRunId))?.archivedAt).toBeNull();
+  });
+
+  it.each(["archive", "unarchive"] as const)("holds Team %s's manager lane through tree/index commit before Restore", async (operation) => {
+    const memoryDir = await createMemoryDir();
+    const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(initializeTaskIdentityAllocator(memoryDir));
+    const factory = createFactory();
+    const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory,
+      memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity,
+      activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
+    await manager.terminateTeamRun(root.teamRunId);
+    factory.state.active = true;
+    let reportTreeWrite!: () => void;
+    let releaseTreeWrite!: () => void;
+    const treeWriteStarted = new Promise<void>((resolve) => { reportTreeWrite = resolve; });
+    const treeWriteBarrier = new Promise<void>((resolve) => { releaseTreeWrite = resolve; });
+    const treeStore = new TeamRunExecutionTreeStore();
+    const catalog = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager, executionTreeStore: treeStore });
+    await catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot() });
+    if (operation === "unarchive") await catalog.archiveTeamRun(root.teamRunId);
+    const realWrite = treeStore.write.bind(treeStore);
+    vi.spyOn(treeStore, "write").mockImplementationOnce(async (dir, tree) => {
+      reportTreeWrite();
+      await treeWriteBarrier;
+      return realWrite(dir, tree);
+    });
+    const mutation = operation === "archive"
+      ? catalog.archiveTeamRun(root.teamRunId)
+      : catalog.unarchiveTeamRun(root.teamRunId);
+    await treeWriteStarted;
+    const restore = manager.restoreTeamRun(root.teamRunId);
+    await Promise.resolve();
+    expect(factory.materialize).toHaveBeenCalledTimes(1);
+    releaseTreeWrite();
+    await expect(mutation).resolves.toMatchObject({ success: true });
+    await Promise.allSettled([restore]);
+    expect(factory.materialize).toHaveBeenCalledTimes(2);
+    expect((await catalog.getCatalogRow(root.teamRunId))?.archivedAt === null).toBe(operation === "unarchive");
   });
 
   it("rejects active updates, then persists a stopped narrow patch for the next restore", async () => {
@@ -520,7 +599,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     });
     await vi.waitFor(() => expect(validate).toHaveBeenCalledOnce());
     const externalResolve = launcher.resolveOrStartTeamRun(createTeamBinding(root.teamRunId));
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await Promise.resolve();
     expect(factory.materialize).toHaveBeenCalledTimes(1);
 
     releaseValidation();

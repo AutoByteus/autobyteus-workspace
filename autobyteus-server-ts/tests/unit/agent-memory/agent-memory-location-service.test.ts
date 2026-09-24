@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
@@ -57,6 +57,24 @@ describe("AgentMemoryLocationService current V1 tree", () => {
   });
 
   afterEach(async () => fs.rm(memoryDir, { recursive: true, force: true }));
+
+  it("projects nested/configured member paths from the already-read tree without another store read", async () => {
+    const tree = await new TeamRunExecutionTreeStore().read(
+      layout.getTeamDirPath({ rootTeamRunId: "root-team-run", ancestorTeamRunIds: [] }), "root-team-run");
+    expect(tree).not.toBeNull();
+    const service = new AgentMemoryLocationService({ memoryDir });
+    const expected = await service.listTeamMemberLocations({ teamRunId: "root-team-run" });
+    const read = vi.spyOn(TeamRunExecutionTreeStore.prototype, "read");
+    try {
+      expect(service.listTeamMemberLocationsFromTree({ teamRunId: "root-team-run", tree: tree! }))
+        .toEqual(expected);
+      expect(read).not.toHaveBeenCalled();
+      expect(() => service.listTeamMemberLocationsFromTree({ teamRunId: "other-run", tree: tree! }))
+        .toThrow("does not match");
+    } finally {
+      read.mockRestore();
+    }
+  });
 
   it("derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs", async () => {
     const service = new AgentMemoryLocationService({ memoryDir });
