@@ -1,22 +1,53 @@
 import 'reflect-metadata';
 import { buildSchema, registerEnumType } from 'type-graphql';
 import { createRequire } from 'node:module';
-const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
+import path from 'node:path';
+const require = createRequire(import.meta.url);
+const typeGraphqlRoot = path.dirname(require.resolve('type-graphql'));
+const { graphql } = require(require.resolve('graphql', { paths: [typeGraphqlRoot] })) as typeof import('graphql');
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 const io = vi.hoisted(() => ({ getRunConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunConfig: vi.fn(),
   archiveStoredRun: vi.fn(), deleteStoredRun: vi.fn() }));
+const memberViews = vi.hoisted(() => ({ getProjection: vi.fn(), getActiveTracePage: vi.fn() }));
 vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io }));
-vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => ({}) }));
+vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => memberViews }));
 import { SkillAccessMode } from 'autobyteus-ts/agent/context/skill-access-mode.js';
 registerEnumType(SkillAccessMode, { name: 'SkillAccessModeEnum' });
 import { AgentOrgRunResolver } from '../../../../../src/api/graphql/types/agent-org-run.js';
+import { buildGraphqlSchema } from '../../../../../src/api/graphql/schema.js';
 const tree = { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
   applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'definition', orgDefinitionName: 'Org',
     orgRunId: 'org', defaultLaunchConfiguration: { runtimeKind: 'autobyteus', llmModelIdentifier: 'model', llmConfig: null,
       autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace' }, members: [], taskExecutions: [] } };
 
 describe('whole AgentOrg model configuration GraphQL transport', () => {
+  it('binds distinct Org member projection and trace-page public arguments exactly', async () => {
+    // Starting the studio and then asking for a schema used to rebuild the
+    // TypeGraphQL metadata and shifted these resolver arguments by one slot.
+    const serverSchema = await buildGraphqlSchema();
+    const schema = await buildGraphqlSchema();
+    expect(schema).toBe(serverSchema);
+    const variables = { orgRunId: 'org-123', memberAddress: '/director', agentRunId: 'agent-456', beforeCursor: 'cursor-789' };
+    memberViews.getProjection.mockResolvedValue({ agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
+      conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false });
+    memberViews.getActiveTracePage.mockResolvedValue({ events: [], beforeCursor: null, hasEarlier: false,
+      loadedEarlierCount: 0, activeGeneration: 'generation', cursorStatus: 'valid' });
+    const projection = await graphql({ schema, source: `query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+      getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+        agentRunId memberAddress conversation activities hasEarlierActiveTraceEvents
+      }
+    }`, variableValues: variables });
+    expect(projection.errors).toBeUndefined();
+    expect(memberViews.getProjection).toHaveBeenCalledExactlyOnceWith('org-123', '/director', 'agent-456');
+    const trace = await graphql({ schema, source: `query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String) {
+      getAgentOrgMemberEventMonitorActiveTracePage(orgRunId: $orgRunId, memberAddress: $memberAddress,
+        agentRunId: $agentRunId, beforeCursor: $beforeCursor) { events { eventId } beforeCursor hasEarlier loadedEarlierCount activeGeneration cursorStatus }
+    }`, variableValues: variables });
+    expect(trace.errors).toBeUndefined();
+    expect(memberViews.getActiveTracePage).toHaveBeenCalledExactlyOnceWith('org-123', '/director', 'agent-456', 'cursor-789');
+  });
+
   it('executes the production web read/options/mutation documents and keeps nullable llmConfig explicit', async () => {
     const schema = await buildSchema({ resolvers: [AgentOrgRunResolver], validate: false });
     const web = new URL('../../../../../../autobyteus-web/', import.meta.url);

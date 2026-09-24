@@ -39,8 +39,13 @@ import { SecretStorageResolver } from './types/secret-storage.js';
 import { DefinitionAdmissionResolver } from './types/definition-admission.js';
 import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
 
-export async function buildGraphqlSchema() {
-  return buildSchema({
+// TypeGraphQL's global metadata cache appends parameter entries on a second
+// build, shifting multi-argument resolver calls even in the first schema.
+// A process has one public API schema; reuse it for server and local callers.
+let schemaPromise: ReturnType<typeof buildSchema> | undefined;
+
+export function buildGraphqlSchema(): ReturnType<typeof buildSchema> {
+  return schemaPromise ??= buildSchema({
     resolvers: [
       HealthResolver,
       ServerSettingsResolver,
