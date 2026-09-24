@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 
 import { GoogleGenAI } from '@google/genai';
 import { BaseAudioClient } from '../base-audio-client.js';
+import { GEMINI_TTS_VOICES } from '../gemini-tts-voices.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
 import {
   initializeGeminiClientWithRuntime,
@@ -18,93 +19,129 @@ import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
 const AUDIO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_audio');
 
-const AUDIO_MIME_EXTENSION_MAP: Record<string, string> = {
-  'audio/wav': 'wav',
-  'audio/x-wav': 'wav',
-  'audio/mpeg': 'mp3',
-  'audio/mp3': 'mp3',
-  'audio/ogg': 'ogg',
-  'audio/webm': 'webm'
-};
+type SpeechTurn = { speaker?: string; text: string; style?: string };
 
-type MimeParseResult = { base: string; params: Record<string, string> };
+type MimeInfo = { base: string; params: Record<string, string> };
 
-function parseMimeType(mimeType?: string | null): MimeParseResult {
-  if (!mimeType) {
-    return { base: '', params: {} };
-  }
-  const parts = mimeType.split(';').map((part) => part.trim()).filter(Boolean);
-  const base = parts[0]?.toLowerCase() ?? '';
+function parseMimeType(mimeType?: string | null): MimeInfo {
+  const [base = '', ...attributes] = (mimeType ?? '').split(';').map((item) => item.trim());
   const params: Record<string, string> = {};
-  for (const part of parts.slice(1)) {
-    const [key, value] = part.split('=', 2);
-    if (key && value) {
-      params[key.trim().toLowerCase()] = value.trim();
-    }
+  for (const attribute of attributes) {
+    const [key, value] = attribute.split('=', 2);
+    if (key && value) params[key.toLowerCase()] = value;
   }
-  return { base, params };
+  return { base: base.toLowerCase(), params };
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
-
-function coerceAudioBytes(data: unknown): Uint8Array {
-  if (!data) return new Uint8Array();
+function decodeAudio(data: unknown): Buffer {
   if (typeof data === 'string') {
-    return Uint8Array.from(Buffer.from(data, 'base64'));
+    if (!data || !/^[A-Za-z0-9+/]*={0,2}$/.test(data) || data.length % 4 !== 0) {
+      throw new Error('Gemini TTS returned invalid audio encoding.');
+    }
+    return Buffer.from(data, 'base64');
   }
-  if (data instanceof ArrayBuffer) {
-    return new Uint8Array(data);
-  }
-  if (ArrayBuffer.isView(data)) {
-    return new Uint8Array(data.buffer as ArrayBuffer);
-  }
-  if (Array.isArray(data)) {
-    return new Uint8Array(data);
-  }
-  return new Uint8Array();
+  if (data instanceof ArrayBuffer) return Buffer.from(data);
+  if (ArrayBuffer.isView(data)) return Buffer.from(data.buffer, data.byteOffset, data.byteLength);
+  throw new Error('Gemini TTS returned no audio data.');
 }
 
-async function saveAudioBytesToWav(
-  pcmBytes: Uint8Array,
-  channels = 1,
-  rate = 24000,
-  sampleWidth = 2
-): Promise<string> {
+function isWav(bytes: Buffer): boolean {
+  return bytes.length >= 12 && bytes.toString('ascii', 0, 4) === 'RIFF'
+    && bytes.toString('ascii', 8, 12) === 'WAVE';
+}
+
+function validateWav(bytes: Buffer): void {
+  if (!isWav(bytes) || bytes.readUInt32LE(4) + 8 !== bytes.length) {
+    throw new Error('Gemini TTS returned an invalid WAV container.');
+  }
+  let offset = 12;
+  let hasFormat = false;
+  let hasAudio = false;
+  while (offset + 8 <= bytes.length) {
+    const id = bytes.toString('ascii', offset, offset + 4);
+    const size = bytes.readUInt32LE(offset + 4);
+    const next = offset + 8 + size + (size % 2);
+    if (next > bytes.length) throw new Error('Gemini TTS returned a truncated WAV chunk.');
+    if (id === 'fmt ' && size >= 16) hasFormat = true;
+    if (id === 'data' && size > 0) hasAudio = true;
+    offset = next;
+  }
+  if (offset !== bytes.length || !hasFormat || !hasAudio) {
+    throw new Error('Gemini TTS returned a WAV file without playable audio.');
+  }
+}
+
+function pcmToWav(pcm: Buffer, params: Record<string, string>): Buffer {
+  const rate = Number(params.rate);
+  const channels = Number(params.channels);
+  if (!Number.isInteger(rate) || rate < 8000 || rate > 192000
+    || !Number.isInteger(channels) || channels < 1 || channels > 2
+    || pcm.length === 0 || pcm.length % (channels * 2) !== 0) {
+    throw new Error('Gemini TTS returned PCM with invalid sample rate, channels or data.');
+  }
+  const wav = Buffer.alloc(44 + pcm.length);
+  wav.write('RIFF', 0);
+  wav.writeUInt32LE(wav.length - 8, 4);
+  wav.write('WAVEfmt ', 8);
+  wav.writeUInt32LE(16, 16);
+  wav.writeUInt16LE(1, 20);
+  wav.writeUInt16LE(channels, 22);
+  wav.writeUInt32LE(rate, 24);
+  wav.writeUInt32LE(rate * channels * 2, 28);
+  wav.writeUInt16LE(channels * 2, 32);
+  wav.writeUInt16LE(16, 34);
+  wav.write('data', 36);
+  wav.writeUInt32LE(pcm.length, 40);
+  pcm.copy(wav, 44);
+  return wav;
+}
+
+async function saveWav(bytes: Buffer): Promise<string> {
   await fs.mkdir(AUDIO_TEMP_DIR, { recursive: true });
   const filePath = path.join(AUDIO_TEMP_DIR, `${crypto.randomUUID()}.wav`);
-
-  const blockAlign = channels * sampleWidth;
-  const byteRate = rate * blockAlign;
-  const dataSize = pcmBytes.length;
-  const headerSize = 44;
-  const buffer = Buffer.alloc(headerSize + dataSize);
-
-  buffer.write('RIFF', 0);
-  buffer.writeUInt32LE(36 + dataSize, 4);
-  buffer.write('WAVE', 8);
-  buffer.write('fmt ', 12);
-  buffer.writeUInt32LE(16, 16);
-  buffer.writeUInt16LE(1, 20); // PCM
-  buffer.writeUInt16LE(channels, 22);
-  buffer.writeUInt32LE(rate, 24);
-  buffer.writeUInt32LE(byteRate, 28);
-  buffer.writeUInt16LE(blockAlign, 32);
-  buffer.writeUInt16LE(sampleWidth * 8, 34);
-  buffer.write('data', 36);
-  buffer.writeUInt32LE(dataSize, 40);
-  Buffer.from(pcmBytes).copy(buffer, 44);
-
-  await fs.writeFile(filePath, buffer);
+  await fs.writeFile(filePath, bytes);
   return filePath;
 }
 
-async function saveAudioBytes(audioBytes: Uint8Array, extension?: string | null): Promise<string> {
-  await fs.mkdir(AUDIO_TEMP_DIR, { recursive: true });
-  const suffix = (extension ?? 'bin').replace(/^\./, '') || 'bin';
-  const filePath = path.join(AUDIO_TEMP_DIR, `${crypto.randomUUID()}.${suffix}`);
-  await fs.writeFile(filePath, Buffer.from(audioBytes));
-  return filePath;
+function speechTurns(prompt: string, mode: string, style?: string): SpeechTurn[] {
+  if (typeof prompt !== 'string' || !prompt.trim()) throw new Error('Speech transcript must not be empty.');
+  if (mode === 'single-speaker') return [{ text: prompt, ...(style ? { style } : {}) }];
+  if (mode !== 'multi-speaker') throw new Error('Unsupported Gemini TTS speech mode.');
+  return prompt.split(/\r?\n/).map((line) => {
+    const separator = line.indexOf(':');
+    if (separator < 1) throw new Error("Multi-speaker dialogue requires 'Speaker: utterance' lines.");
+    const speaker = line.slice(0, separator).trim();
+    const text = line.slice(separator + 1).trim();
+    if (!speaker || !text) throw new Error("Multi-speaker dialogue requires nonempty speaker and utterance.");
+    return { speaker, text, ...(style ? { style } : {}) };
+  });
+}
+
+function multiSpeakerConfig(rawMapping: unknown, turns: SpeechTurn[]) {
+  if (!Array.isArray(rawMapping) || rawMapping.length < 1 || rawMapping.length > 2) {
+    throw new Error('Multi-speaker mode requires one or two speaker mappings.');
+  }
+  const voices = new Map<string, string>();
+  for (const item of rawMapping) {
+    if (typeof item !== 'object' || item === null) throw new Error('Invalid speaker mapping.');
+    const { speaker, voice } = item as Record<string, unknown>;
+    if (typeof speaker !== 'string' || !speaker.trim() || speaker !== speaker.trim()
+      || typeof voice !== 'string' || !voice.trim() || voice !== voice.trim()
+      || !GEMINI_TTS_VOICES.includes(voice) || voices.has(speaker)) throw new Error('Invalid or duplicate speaker mapping.');
+    voices.set(speaker, voice);
+  }
+  if (new Set(turns.map((turn) => turn.speaker)).size > 2
+    || turns.some((turn) => !voices.has(turn.speaker!))
+    || [...voices.keys()].some((speaker) => !turns.some((turn) => turn.speaker === speaker))) {
+    throw new Error('Dialogue speakers must match one or two mapped voices.');
+  }
+  return {
+    multiSpeakerVoiceConfig: {
+      speakerVoiceConfigs: [...voices].map(([speaker, voice]) => ({
+        speaker, voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } }
+      }))
+    }
+  };
 }
 
 export class GeminiAudioClient extends BaseAudioClient {
@@ -131,108 +168,49 @@ export class GeminiAudioClient extends BaseAudioClient {
 
   async generateSpeech(prompt: string, generationConfig?: Record<string, unknown>): Promise<SpeechGenerationResponse> {
     try {
-      const { client, runtimeInfo } = await this.getClient();
       const finalConfig = { ...(this.config.toDict?.() ?? {}) } as Record<string, unknown>;
       if (generationConfig) {
         Object.assign(finalConfig, generationConfig);
       }
 
-      const styleInstructions = typeof finalConfig.style_instructions === 'string'
-        ? finalConfig.style_instructions
-        : undefined;
-      const finalPrompt = styleInstructions ? `${styleInstructions}: ${prompt}` : prompt;
-
-      let speechConfig: Record<string, unknown> | null = null;
       const mode = typeof finalConfig.mode === 'string' ? finalConfig.mode : 'single-speaker';
-
-      if (mode === 'multi-speaker') {
-        const speakerMapping = Array.isArray(finalConfig.speaker_mapping)
-          ? finalConfig.speaker_mapping
-          : [];
-        if (!Array.isArray(speakerMapping) || speakerMapping.length === 0) {
-          throw new Error("Multi-speaker mode requires a 'speaker_mapping' list in generation_config.");
-        }
-
-        const speakerVoiceConfigs = speakerMapping
-          .map((item) => {
-            if (!isRecord(item)) {
-              return null;
-            }
-            const speaker = item.speaker;
-            const voice = item.voice;
-            if (typeof speaker !== 'string' || typeof voice !== 'string') {
-              return null;
-            }
-            return {
-              speaker,
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName: voice }
-              }
-            };
-          })
-          .filter((item): item is { speaker: string; voiceConfig: { prebuiltVoiceConfig: { voiceName: string } } } => Boolean(item));
-
-        if (speakerVoiceConfigs.length === 0) {
-          throw new Error("The 'speaker_mapping' list was empty or contained no valid mappings.");
-        }
-
-        speechConfig = {
-          multiSpeakerVoiceConfig: { speakerVoiceConfigs }
-        };
-      } else {
-        const voiceName = typeof finalConfig.voice_name === 'string'
-          ? finalConfig.voice_name
-          : 'Kore';
-        speechConfig = {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName }
-          }
-        };
+      const style = typeof finalConfig.style_instructions === 'string'
+        ? finalConfig.style_instructions.trim() : undefined;
+      const turns = speechTurns(prompt, mode, style);
+      const voiceName = typeof finalConfig.voice_name === 'string' ? finalConfig.voice_name : 'Kore';
+      if (mode === 'single-speaker' && !GEMINI_TTS_VOICES.includes(voiceName)) {
+        throw new Error('Invalid Gemini TTS voice name.');
       }
-
-      const runtimeAdjustedModel = resolveModelForRuntime(
-        this.model.value,
-        'tts',
-        runtimeInfo.runtime
-      );
-
+      const speechConfig = mode === 'multi-speaker'
+        ? multiSpeakerConfig(finalConfig.speaker_mapping, turns)
+        : { voiceConfig: { voice: voiceName } };
+      const { client, runtimeInfo } = await this.getClient();
+      const runtimeAdjustedModel = resolveModelForRuntime(this.model.value, 'tts', runtimeInfo.runtime);
       const response = await client.models.generateContent({
         model: runtimeAdjustedModel,
-        contents: finalPrompt,
-        config: {
-          responseModalities: ['AUDIO'],
-          speechConfig
-        }
+        contents: [{ role: 'user', parts: turns.map((turn) => ({
+          text: turn.text,
+          ...(turn.speaker || turn.style ? { speechMetadata: {
+            ...(turn.speaker ? { speaker: turn.speaker } : {}),
+            ...(turn.style ? { style: turn.style } : {})
+          } } : {})
+        })) }],
+        config: { responseModalities: ['AUDIO'], speechConfig }
       });
-
-      const part = response?.candidates?.[0]?.content?.parts?.[0];
-      const inlineData = part?.inlineData;
-      const mimeType = inlineData?.mimeType;
-      const { base, params } = parseMimeType(mimeType);
-      const audioBytes = coerceAudioBytes(inlineData?.data);
-
-      if (!audioBytes || audioBytes.length === 0) {
-        throw new Error('Gemini TTS returned empty audio data.');
+      const inlineData = response?.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+      const audioBytes = decodeAudio(inlineData?.data);
+      if (audioBytes.length === 0) throw new Error('Gemini TTS returned empty audio data.');
+      const { base, params } = parseMimeType(inlineData?.mimeType);
+      let wav: Buffer;
+      if (isWav(audioBytes) || base === 'audio/wav' || base === 'audio/x-wav') {
+        validateWav(audioBytes);
+        wav = audioBytes;
+      } else if (base === 'audio/pcm' || base === 'audio/l16') {
+        wav = pcmToWav(audioBytes, params);
+      } else {
+        throw new Error('Gemini TTS returned an unsupported audio format.');
       }
-
-      if (!base || base.startsWith('audio/pcm') || base === 'audio/l16') {
-        let rate = 24000;
-        let channels = 1;
-        if (params.rate) {
-          const parsed = Number(params.rate);
-          if (!Number.isNaN(parsed)) rate = parsed;
-        }
-        if (params.channels) {
-          const parsed = Number(params.channels);
-          if (!Number.isNaN(parsed)) channels = parsed;
-        }
-        const audioPath = await saveAudioBytesToWav(audioBytes, channels, rate, 2);
-        return new SpeechGenerationResponse([audioPath]);
-      }
-
-      const extension = AUDIO_MIME_EXTENSION_MAP[base] ?? 'bin';
-      const audioPath = await saveAudioBytes(audioBytes, extension);
-      return new SpeechGenerationResponse([audioPath]);
+      return new SpeechGenerationResponse([await saveWav(wav)]);
     } catch (error) {
       throw new Error(`Google Gemini speech generation failed: ${error instanceof Error ? error.message : String(error)}`);
     }

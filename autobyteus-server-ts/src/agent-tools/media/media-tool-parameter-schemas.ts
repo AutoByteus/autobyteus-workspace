@@ -104,7 +104,7 @@ export const buildMediaToolParameterSchema = (toolName: MediaToolName): Paramete
       );
       break;
     case GENERATE_SPEECH_TOOL_NAME:
-      schema.addParameter(buildBasePromptParameter("The text to convert into spoken audio. For multi-speaker models, format dialogue with speaker labels that match generation_config.speaker_mapping."));
+      schema.addParameter(buildBasePromptParameter("The verbatim text to speak. For multi-speaker mode, put each turn on a separate 'Speaker: utterance' line; each speaker must match generation_config.speaker_mapping."));
       schema.addParameter(buildOutputFilePathParameter(`Required local file path where the generated audio should be saved. ${OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION}`));
       break;
     case GENERATE_VIDEO_TOOL_NAME:

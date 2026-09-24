@@ -64,7 +64,7 @@ export const liveE2eScenarios = Object.freeze({
     providerId: 'GEMINI',
     requiredSecretId: 'provider.google.vertex-express.api-key',
     geminiMode: 'VERTEX_EXPRESS',
-    model: 'gemini-3.1-flash-tts-preview',
+    model: 'gemini-3.8-flash-tts',
   }),
   'gemini.vertex-express.image': Object.freeze({
     operation: 'image',

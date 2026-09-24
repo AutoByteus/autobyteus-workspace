@@ -582,7 +582,7 @@ describe("Server settings GraphQL e2e", () => {
     const selectedModels = {
       [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: "nano-banana-pro-app-rpa@host",
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: "gpt-image-1.5",
-      [DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]: "gemini-2.5-flash-tts",
+      [DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]: "gemini-3.8-flash-tts",
     };
 
     for (const [key, value] of Object.entries(selectedModels)) {

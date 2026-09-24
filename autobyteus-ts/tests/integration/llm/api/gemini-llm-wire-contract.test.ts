@@ -74,6 +74,31 @@ const injectInstalledSdkClient = (llm: GeminiLLM, baseUrl: string): void => {
 };
 
 describe('Gemini 3.8 installed SDK wire contract', () => {
+  it('serializes a streaming request and returns provider chunks through GeminiLLM', async () => {
+    const server = await startLoopbackServer((response) => {
+      response.writeHead(200, { 'content-type': 'text/event-stream' });
+      response.end(`data: ${JSON.stringify({
+        candidates: [{ content: { role: 'model', parts: [{ text: 'stream-ok' }] } }],
+        usageMetadata: { promptTokenCount: 4, candidatesTokenCount: 2, totalTokenCount: 6 },
+      })}\n\n`);
+    });
+    try {
+      const llm = new GeminiLLM(model, new LLMConfig({ extraParams: { thinking_level: 'low' } }),
+        {} as ProviderApiKeyResolver, geminiRuntimeResolver());
+      injectInstalledSdkClient(llm, server.baseUrl);
+      const chunks = [];
+      for await (const chunk of llm.streamMessages(messages)) chunks.push(chunk);
+      expect(chunks.some((chunk) => chunk.content === 'stream-ok')).toBe(true);
+      expect(server.requests[0]).toMatchObject({
+        method: 'POST', url: '/models/gemini-3.8-flash:streamGenerateContent?alt=sse',
+      });
+      expect(JSON.parse(server.requests[0]!.body)).toMatchObject({
+        contents: [{ role: 'user', parts: [{ text: 'Hello over the installed SDK' }] }],
+        generationConfig: { thinkingConfig: { thinkingLevel: 'low' } },
+      });
+    } finally { await server.close(); }
+  });
+
   it('serializes the lower-case thinking level and final allowed fields over loopback HTTP', async () => {
     const server = await startLoopbackServer((response) => {
       response.writeHead(200, { 'content-type': 'application/json' });
