@@ -1,0 +1,18 @@
+===== apie2e-v281   (main-loop requests: 2, tool-less side requests: 0)
+init.tools : ['Bash', 'Edit', 'Glob', 'Grep', 'NotebookEdit', 'Read', 'Skill', 'WebFetch', 'WebSearch', 'Write', 'mcp__autobyteus_agent_tools__delegate_task', 'mcp__autobyteus_agent_tools__get_handoff_rules', 'mcp__autobyteus_agent_tools__send_message_to']
+API tools  : ['Bash', 'Edit', 'Glob', 'Grep', 'NotebookEdit', 'Read', 'Skill', 'WebFetch', 'WebSearch', 'Write', 'mcp__autobyteus_agent_tools__delegate_task', 'mcp__autobyteus_agent_tools__get_handoff_rules', 'mcp__autobyteus_agent_tools__send_message_to']
+skill listed in messages: True | system prompt ours only: True
+agent mentions  system: []  messages: []
+   residual in tool Bash ['Agent tool']
+   residual in tool Glob ['Agent tool']
+   residual in tool Grep ['Agent tool']
+   residual in tool Skill ['subagent']
+forced tool calls -> results:
+   {'id': 'toolu_0', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: Agent. Agent is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_1', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: Task. Task is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_2', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: Workflow. Workflow is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_3', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: SendMessage. SendMessage is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_4', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: ListAgents. ListAgents is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_5', 'is_error': False, 'text': '1\t---\n2\tname: probe-reviewer\n3\tdescription: PROBE_CUSTOM_AGENT reviewer agent for probing\n4\t---\n5\tYou review things.\n6\t'}
+   {'id': 'toolu_6', 'is_error': False, 'text': '[{"type":"text","text":"send_message_to ok"}]'}
+MCP server actually executed: ['send_message_to']

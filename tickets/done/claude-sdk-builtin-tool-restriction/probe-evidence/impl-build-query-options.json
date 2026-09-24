@@ -1,0 +1,1 @@
+{"tools":["Bash","Read","Edit","Write","Glob","Grep","NotebookEdit","WebFetch","WebSearch","Skill"],"disallowedTools":["AskUserQuestion","Agent","Task","Workflow","SendMessage","ListAgents"]}

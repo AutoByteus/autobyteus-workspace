@@ -1,0 +1,35 @@
+===== v280-current   (main-loop requests: 4, tool-less side requests: 0)
+init.tools : ['Task', 'Bash', 'CronCreate', 'CronDelete', 'CronList', 'Edit', 'EnterPlanMode', 'EnterWorktree', 'ExitPlanMode', 'ExitWorktree', 'ListAgents', 'NotebookEdit', 'Read', 'ReportFindings', 'ScheduleWakeup', 'SendMessage', 'Skill', 'TaskCreate', 'TaskGet', 'TaskList', 'TaskStop', 'TaskUpdate', 'WebFetch', 'WebSearch', 'Workflow', 'Write', 'mcp__autobyteus_agent_tools__delegate_task', 'mcp__autobyteus_agent_tools__get_handoff_rules', 'mcp__autobyteus_agent_tools__send_message_to']
+API tools  : ['Agent', 'Bash', 'CronCreate', 'CronDelete', 'CronList', 'Edit', 'EnterPlanMode', 'EnterWorktree', 'ExitPlanMode', 'ExitWorktree', 'ListAgents', 'NotebookEdit', 'Read', 'ReportFindings', 'ScheduleWakeup', 'SendMessage', 'Skill', 'TaskCreate', 'TaskGet', 'TaskList', 'TaskStop', 'TaskUpdate', 'WebFetch', 'WebSearch', 'Workflow', 'Write', 'mcp__autobyteus_agent_tools__delegate_task', 'mcp__autobyteus_agent_tools__get_handoff_rules', 'mcp__autobyteus_agent_tools__send_message_to']
+skill listed in messages: True | system prompt ours only: True
+agent mentions  system: []  messages: ['Agent tool', 'Available agent', 'General-purpose', 'PROBE_CUSTOM_AGENT', 'general-purpose', 'probe-reviewer']
+   residual in tool Agent ['Agent tool', 'Available agent', 'available agent', 'general-purpose', 'subagent']
+   residual in tool Bash ['Agent tool']
+   residual in tool EnterPlanMode ['Agent tool']
+   residual in tool EnterWorktree ['subagent']
+   residual in tool ListAgents ['subagent', 'teammate']
+   residual in tool SendMessage ['Teammate', 'subagent', 'teammate']
+   residual in tool Skill ['subagent']
+   residual in tool TaskStop ['teammate']
+   residual in tool Workflow ['Agent tool', 'subagent']
+forced tool calls -> results:
+   {'id': 'toolu_0', 'is_error': False, 'text': '[{"type":"text","text":"Async agent launched successfully. (This tool result is internal metadata — never quote or paste any part of it, including the agentId b'}
+   {'id': 'toolu_1', 'is_error': False, 'text': 'Workflow launched in background. Task ID: weppytp59\nSummary: x\nTranscript dir: /Users/normy/.claude/projects/-private-tmp-claude-tool-probe-ws/18bb6824-b401-4dc'}
+   {'id': 'toolu_2', 'is_error': False, 'text': '[{"type":"text","text":"{\\"success\\":false,\\"message\\":\\"You are the main conversation — \\\\\\"main\\\\\\" addresses you. Send to a named agent instead.\\"}"}]'}
+   {'id': 'toolu_3', 'is_error': False, 'text': '[{"type":"text","text":"send_message_to ok"}]'}
+MCP server actually executed: ['send_message_to']
+===== v280-approved   (main-loop requests: 2, tool-less side requests: 0)
+init.tools : ['Bash', 'Edit', 'Glob', 'Grep', 'NotebookEdit', 'Read', 'Skill', 'WebFetch', 'WebSearch', 'Write', 'mcp__autobyteus_agent_tools__delegate_task', 'mcp__autobyteus_agent_tools__get_handoff_rules', 'mcp__autobyteus_agent_tools__send_message_to']
+API tools  : ['Bash', 'Edit', 'Glob', 'Grep', 'NotebookEdit', 'Read', 'Skill', 'WebFetch', 'WebSearch', 'Write', 'mcp__autobyteus_agent_tools__delegate_task', 'mcp__autobyteus_agent_tools__get_handoff_rules', 'mcp__autobyteus_agent_tools__send_message_to']
+skill listed in messages: True | system prompt ours only: True
+agent mentions  system: []  messages: []
+   residual in tool Bash ['Agent tool']
+   residual in tool Glob ['Agent tool']
+   residual in tool Grep ['Agent tool']
+   residual in tool Skill ['subagent']
+forced tool calls -> results:
+   {'id': 'toolu_0', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: Agent. Agent is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_1', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: Workflow. Workflow is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_2', 'is_error': True, 'text': '<tool_use_error>Error: No such tool available: SendMessage. SendMessage is disabled for this session, in subagents as well as here.</tool_use_error>'}
+   {'id': 'toolu_3', 'is_error': False, 'text': '[{"type":"text","text":"send_message_to ok"}]'}
+MCP server actually executed: ['send_message_to']
