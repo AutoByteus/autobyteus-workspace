@@ -1,8 +1,9 @@
 # Handoff Summary — claude-sdk-canonical-model-ids
 
-- Status: **Awaiting explicit user verification** (delivery DR-001)
+- Status: **User-verified and finalized into `personal`; no release** (delivery DR-002). The user tested the local Electron build and wrote "i have tested. the task is done. lets finalize." and "no need to release a new version".
 - Classification: `task_size=Medium`, `architectural_risk=Low`, route `Direct` (architecture review, code review and API/E2E test-code review: `N/A — not applicable`)
-- Revisions: SR-003 (solution), IR-001 (implementation), API-REV-001 (API/E2E Pass, 95% confidence), DR-001 (delivery)
+- Revisions: SR-003 (solution), IR-001 (implementation), API-REV-001 (API/E2E Pass, 95% confidence), DR-001/DR-002 (delivery)
+- Final integration: `origin/personal` @ `73f1c5fef` merged into the ticket branch after verification (Claude built-in tool restriction only; picker behavior unaffected). Rechecks passed: server 44/44, server build typecheck, web 33/33.
 
 ## What changed for the user
 

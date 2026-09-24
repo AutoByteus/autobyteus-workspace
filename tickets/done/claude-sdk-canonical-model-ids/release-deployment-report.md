@@ -43,9 +43,9 @@ This is a web and server change to the Claude Agent SDK model pickers. The Graph
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: pending
-- Renewed verification required after later re-integration: `No`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: 2026-09-24. The user tested the local Electron build, then wrote "i have tested. the task is done. lets finalize." and "no need to release a new version".
+- Renewed verification required after later re-integration: `No`. The 4 base commits integrated after verification (`9267d11c8..73f1c5fef`) change only the Claude turn built-in tool lists (`tools`/`disallowedTools` in `claude-sdk-client.ts`), `agent_execution.md` and their ticket artifacts. They do not touch the model catalog, `listModels()`, GraphQL or the web pickers, so the user-verified behavior is unchanged.
 - Renewed verification received: `Not needed`
 
 ## Docs Sync Result
@@ -59,28 +59,42 @@ This is a web and server change to the Claude Agent SDK model pickers. The Graph
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/claude-sdk-canonical-model-ids`: `No` (after user verification)
+- Ticket moved to `tickets/done/claude-sdk-canonical-model-ids`: `Yes`
+- Archived ticket path: `tickets/done/claude-sdk-canonical-model-ids/`
 
 ## Version / Tag / Release Commit
 
-Pending the user's decision at verification.
+Not applicable. The user declined a new release ("no need to release a new version"). There is no version bump, tag or release commit.
 
 ## Repository Finalization
 
 - Bootstrap context source: `solution-handoff.md` (Finalization target `origin/personal`)
 - Ticket branch: `codex/claude-sdk-canonical-model-ids`
 - Finalization target: `origin` / `personal`
-- Repository finalization status: pending user verification
+- Ticket branch commits:
+  - `23e72c3fa` implementation
+  - `8c8d2df6d` docs sync, integration test and ticket archive
+  - `31ae4526d` merge of `origin/personal` @ `73f1c5fef`
+  - a final delivery-record commit
+- Target advanced after verification / acceptance: `Yes`, `9267d11c8` → `73f1c5fef` (Claude SDK built-in tool restriction)
+- Delivery-owned edits protected before re-integration: `Completed` (committed as `8c8d2df6d` before the merge)
+- Re-integration before final merge result: `Completed`. Merge was clean with no conflicts; it touched different hunks of `claude-sdk-client.ts`.
+- Post-re-integration checks:
+  - server `vitest run tests/unit/runtime-management/claude tests/unit/api/graphql/types/llm-provider.test.ts`: 44/44 passed
+  - server `tsc -p tsconfig.build.json --noEmit`: exit code 0
+  - web focused picker specs: 33/33 passed
+- Push ticket branch, merge into `personal`, push `personal`: see "Finalization Result" below.
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user at verification
-- Release notes: `.../release-notes.md` (created before verification)
+- Applicable: `No`, the user declined a new release
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required`. `release-notes.md` is kept in the archived ticket for a future release to draw on.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-canonical-model-ids`
-- Cleanup: pending finalization
+- Cleanup: see "Finalization Result" below
 - `/tmp/ccmi-e2e` and `/tmp/ccmi` hold temp evidence and are safe to delete.
 
 ## Environment Or Persisted-Data Transition Notes
