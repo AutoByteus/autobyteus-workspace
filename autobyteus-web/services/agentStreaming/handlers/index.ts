@@ -12,7 +12,6 @@ export {
   handleToolDenied,
   handleToolExecutionStarted,
   handleToolExecutionSucceeded,
-  handleToolExecutionCompleted,
   handleToolExecutionFailed,
   handleToolExecutionInterrupted,
   handleToolLog,

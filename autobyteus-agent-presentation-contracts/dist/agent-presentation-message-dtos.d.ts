@@ -340,13 +340,6 @@ export declare const agentPresentationPayloadSchemas: {
         tool_name: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
-    readonly TOOL_EXECUTION_COMPLETED: z.ZodObject<{
-        arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
-        result: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
-        invocation_id: z.ZodString;
-        tool_name: z.ZodString;
-        turn_id: z.ZodNullable<z.ZodString>;
-    }, z.core.$strict>;
     readonly TOOL_EXECUTION_FAILED: z.ZodObject<{
         arguments: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         error: z.ZodString;

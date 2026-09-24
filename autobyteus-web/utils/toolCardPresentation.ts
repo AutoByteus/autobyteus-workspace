@@ -15,7 +15,6 @@ export type ToolCardSegment = Extract<AIResponseSegment, {
 export type ToolCardStatusPresentationKey =
   | 'running'
   | 'success'
-  | 'completed'
   | 'error'
   | 'approved'
   | 'awaiting-approval'
@@ -45,7 +44,7 @@ export const getToolCardStatusPresentationKey = (
   status: ToolInvocationStatus,
 ): ToolCardStatusPresentationKey => {
   if (status === 'parsing' || status === 'executing') return 'running';
-  if (status === 'success' || status === 'completed' || status === 'error' || status === 'approved'
+  if (status === 'success' || status === 'error' || status === 'approved'
     || status === 'awaiting-approval' || status === 'denied') return status;
   return 'default';
 };

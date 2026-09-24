@@ -80,15 +80,16 @@ export class AgyStreamEventConverter {
     }
     if (state === "ACTIVE") return events;
     this.toolTerminals.add(stepIndex);
-    if (state === "DONE") {
-      events.push(this.event(AgentRunEventType.TOOL_EXECUTION_COMPLETED, {
-        ...common, result: { status: "completed_unverified", output: info?.output ?? null }, provider_state: "DONE", outcome: "unverified",
-      }));
-    } else if (state === "ERROR") {
-      const error = agyRecord(info?.error);
-      const message = agyString(error?.message) ?? agyString(info?.error) ?? "Antigravity tool failed.";
+    const explicitError = agyRecord(info?.error)?.message ?? info?.error;
+    if (state === "ERROR" || explicitError !== undefined && explicitError !== null) {
+      const message = agyString(explicitError) ?? "Antigravity tool failed.";
       events.push(this.event(denial(message) ? AgentRunEventType.TOOL_DENIED : AgentRunEventType.TOOL_EXECUTION_FAILED,
-        { ...common, error: message, reason: message, provider_state: "ERROR" }, "ERROR"));
+        { ...common, error: message, reason: message, provider_state: state,
+          result: { provider_state: state, output: info?.output ?? null } }, "ERROR"));
+    } else {
+      events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+        ...common, result: { provider_state: "DONE", output: info?.output ?? null }, provider_state: "DONE",
+      }));
     }
     return events;
   }

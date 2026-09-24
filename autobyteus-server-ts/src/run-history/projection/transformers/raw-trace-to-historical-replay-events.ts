@@ -92,7 +92,10 @@ const createToolEvent = (
     media: terminal?.media ?? anchor.media ?? null,
     ts: terminal?.ts ?? anchor.ts ?? null,
     activityType: inferActivityType(toolName, toolArgs),
-    status: interaction.status === ToolInteractionStatus.ERROR
+    status: asRecord(interaction.result)?.status === "denied" &&
+      ["ERROR", "DONE"].includes(String(asRecord(interaction.result)?.provider_state))
+      ? "denied"
+      : interaction.status === ToolInteractionStatus.ERROR
       ? "error"
       : interaction.status === ToolInteractionStatus.SUCCESS ? "success" : "parsed",
     contextText: resolveContextText(toolName, toolArgs),

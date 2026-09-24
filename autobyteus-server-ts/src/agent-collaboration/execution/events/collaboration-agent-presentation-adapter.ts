@@ -339,8 +339,6 @@ export class AgentRunPresentationAdapter {
         return correlated({ eventType: "TOOL_EXECUTION_STARTED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments) }, statusHint: hint });
       case AgentRunEventType.TOOL_EXECUTION_SUCCEEDED:
         return correlated({ eventType: "TOOL_EXECUTION_SUCCEEDED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), result: json(p.result) }, statusHint: hint });
-      case AgentRunEventType.TOOL_EXECUTION_COMPLETED:
-        return correlated({ eventType: "TOOL_EXECUTION_COMPLETED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), result: json(p.result) }, statusHint: hint });
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
         return correlated({ eventType: "TOOL_EXECUTION_FAILED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), error: required(p.error, "error") }, statusHint: hint });
       case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:

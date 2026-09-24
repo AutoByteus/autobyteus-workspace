@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/requirements-doc.md` (approved SR-016).
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/requirements-doc.md` (approved SR-016 baseline + SR-021 REQ-011/AC-010).
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/investigation-notes.md`.
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/solution-revision-record.md`.
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/design-spec.md` (revised SR-019).
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-cli-experiment-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-tool-event-capture-analysis.md` and raw captures; SR-018/019 workspace, MCP, skill and toolset probe scripts/raw results indexed in `investigation-notes.md`; superseded `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/design-direction-proposal.md` for chronology only.
-- Relevant Solution Revision IDs: SR-016, SR-017, SR-018, SR-019; SR-015 provider-event evidence.
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/design-spec.md` (revised SR-021).
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-cli-experiment-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-tool-event-capture-analysis.md` and raw captures; SR-018/019 workspace, MCP, skill and toolset probe scripts/raw results; `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe.py` and `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe/summary.json` plus raw stdout/stderr; triggering IR-001 `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/implementation-handoff.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/implementation-revision-record.md`; superseded `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/design-direction-proposal.md` for chronology only.
+- Relevant Solution Revision IDs: SR-016, SR-017, SR-018, SR-019, SR-020 (superseded), SR-021; IR-001 triggering checkpoint.
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/architecture-review-revision-record.md`.
-- Current Architecture Review Revision ID: ARCH-REV-002.
-- Current Review Round: 2.
-- Trigger: Solution Designer's revised Architecture Design Complete handoff, SR-019, resolving ARCH-REV-001/DR-001.
-- Prior Review Round Reviewed: ARCH-REV-001 Fail (DR-001).
-- Latest Authoritative Round: 2.
-- Current-State Evidence Basis: same current branch `40b1783f40c072b577ad9d0c5d8fe4f5418c6c38`; current server/web paths and SR-018/019 provider captures. The negative no-guidance capsule write from round 1 remains valid. The exact two-line generated-agent stanza produced selected-real-workspace file and shell outputs in supplied AGY 1.2.10 controls. Independent disposable reviewer repeats with that stanza and **generic** requests that did not themselves name the workspace also created `review-generic.txt` and `review-generic-shell.txt` in the selected real directory, with no same-name capsule file. These are bounded provider observations, not integrated product passes or deterministic guarantees.
+- Current Architecture Review Revision ID: ARCH-REV-003.
+- Current Review Round: 3.
+- Trigger: User-approved SR-021 AGY DONE-to-success design revision after partial IR-001 Requirement Gap; ARCH-REV-002 did not review this semantic change.
+- Prior Review Round Reviewed: ARCH-REV-002 Pass on SR-019; ARCH-REV-001/DR-001 resolution rechecked and unaffected.
+- Latest Authoritative Round: 3.
+- Current-State Evidence Basis: approved SR-021 user direction, AGY 1.2.10 exact raw outcome matrix (exit 0, exit 8, command-not-found, denial), prior exit-7 capture, current canonical event/trace/hydration consumers and partial IR-001 neutral-event implementation at `03bf9a370`. Provider probes are not product integration or rendered E2E validation.
 
 ## Routing Classification Review
 
@@ -26,13 +26,13 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: **Confirmed** for the approved, model-directed selected-workspace contract in SR-019.
-- Approved requirements / intended behavior understood: SR-016 approves first-class structured AGY runs, run-start identity, exact provider binding, AGY-only default-on auto-execute, team/org members and normalized AutoByteus traces; it does not approve a second archive, PTY route or interactive AGY approval bridge.
-- Relevant existing behavior and evidence confirmed: Codex/Claude workspace resolvers put execution cwd at the selected workspace; the shared prompt composer contains identity/team text but no workspace section. SR-017's capsule-plus-`--add-dir` alone failed a normal write. SR-019 adds a two-line selected-workspace statement to the generated **main** agent and records that path for restore. Both supplied and independent generic-prompt provider controls produced real-workspace targets while `init.cwd` remained capsule. Current activation/binding and canonical recorder paths are unchanged. Current external-backend skill materializers suppress AutoByteus-configured materialization for `NONE`, not provider-native discovery.
+- Overall Basis Status: **Confirmed**.
+- Approved requirements / intended behavior understood: SR-016's structured AGY/identity/binding/default/trace baseline and SR-019 workspace correction remain. SR-021 explicitly changes AGY tool `DONE` without explicit error to canonical success/green **as provider-step convention**, knowingly including nonzero shell exits; tool `ERROR`/explicit error remains failed/denied and no shell exit code may be invented. Other runtimes and no-archive/no-PTY/no-headless-approval boundaries remain.
+- Relevant existing behavior and evidence confirmed: current canonical `TOOL_EXECUTION_SUCCEEDED` flows through recorder/raw trace, live WebSocket, team projection and green UI; partial IR-001 added neutral `TOOL_EXECUTION_COMPLETED`/completed-unverified with AGY as its only observed production producer. Raw AGY controls show exit 0, exit 8, command-not-found all tool ACTIVE→DONE with no structured shell exit, while denied command emits ERROR and `denied_actions` despite overall SUCCESS. Current `RuntimeToolTraceSequencer` persists terminal `result` data, not arbitrary top-level event fields, so AGY source state/output must be inside the persisted result shape. Prior workspace/config design remains verified.
 - Scope guardrail confirmed: In scope SCN-001–004/BEH-001–006 and preserved SCN-005; out of scope old-branch merge/migration, global settings mutation, guessed resume and invented provider payload; technical review cannot introduce new UX or security policy.
 - Approved change, preserved behavior, and outside scope understood: Yes.
-- Every prospective blocking Design Impact finding is traceable to approved requirement, acceptance criterion, or preserved-behavior ID: **Yes — none remains; DR-001 is resolved on the revised design.**
-- Remaining material ambiguity: None requiring design rework. Model-directed path choice and AGY's nonexclusive discovery remain explicit residual risks, not a claim of filesystem isolation.
+- Every prospective blocking Design Impact finding is traceable to approved requirement, acceptance criterion, or preserved-behavior ID: **Yes — no technical blocker identified; DR-001 remains resolved.**
+- Remaining material ambiguity: No intended-behavior ambiguity. Command exit is structurally unreported in the tested AGY stream; the user knowingly chose provider-step success. Product live/reloaded behavior remains downstream validation.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -41,7 +41,7 @@
 | BEH-003 | Exact create/restore binding | Pass | Pass | Pass | Confirmed | None; idle-init reviewer control reinforces pre-input feasibility. |
 | BEH-004 | Permission/default policy | Pass | Pass | Pass | Confirmed | None. |
 | BEH-005 | Run isolation and real workspace | Pass | Pass | Pass | Confirmed | SR-019 names selected task root in the main-agent snapshot, retains config in capsule, saves path for restore and gates actual target-path validation; DR-001 resolved. |
-| BEH-006 | Canonical trace/history | Pass | Pass | Pass | Confirmed | Exhaustive neutral-event consumer tests remain required. |
+| BEH-006 | Canonical trace/history and SR-021 tool status | Pass | Pass | Pass | Confirmed | Map DONE/error priority per REQ-011; preserve source state/output in result data, and verify live/reloaded green/red parity plus neutral-seam removal. |
 | SCN-005 | Preserved runtimes | Pass | Pass | Pass | Confirmed | Regression checks remain required. |
 
 ## Supplemental Artifact Coherence Verdict
@@ -52,6 +52,8 @@
 | `agy-tool-event-capture-analysis.md` + raw stdout/stderr/capture scripts | Pass | Pass | Pass | Pass | Pass | Preserve as provider fixture evidence. |
 | `design-direction-proposal.md` | Pass | Pass | Pass | Pass | Pass | Superseded/non-authoritative; do not implement from it. |
 | SR-018/019 workspace, MCP, skill and toolset probe scripts/raw summaries | Pass | Pass | Pass | Pass | Pass | Evidence only; supplied results are bounded CLI 1.2.10 controls, not AutoByteus integration. |
+| SR-021 command-outcome matrix script/summary/raw files | Pass | Pass | Pass | Pass | Pass | Exact terminal states support the changed convention, not underlying command success or product E2E. |
+| IR-001 implementation handoff/revision record | Pass | Pass | Pass | Pass | Pass | Partial/unaccepted trigger; separate segment-lifecycle fix has no independent live confirmation. |
 
 ## Task Design Health Assessment Verdict
 
@@ -60,7 +62,7 @@
 | Assessment is present for current task posture | Pass | Design §Task Design Health Assessment. | None. |
 | Root-cause classification is explicit and evidence-backed | Pass | Boundary/ownership pressure and model-catalog fallback tied to current paths. | None. |
 | Refactor decision is explicit | Pass | Bounded provider/model/draft refactor now; unrelated internals excluded. | None. |
-| Refactor reflected in design or residual rationale | Pass | Removal plan, paths and sequence. | None. |
+| Refactor reflected in design or residual rationale | Pass | SR-021 removal plan names IR-001's AGY-only neutral event/trace/UI seam; changed converter path and live/reload test sequence are explicit. | None. |
 
 ## Spine Inventory Verdict
 
@@ -68,7 +70,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary create/selected workspace | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-002 | Primary exact restore | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Return/event trace | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-003 | Return/event trace, changed DONE mapping | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 | Bounded turn loop | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 DS-001 now distinguishes AGY's capsule project/config root from the selected task workspace and carries the latter into the main-agent snapshot, `--add-dir`, saved manifest and target-path verification. The claim is model-directed task targeting, not a provider-level cwd or sandbox guarantee.
@@ -97,6 +99,7 @@ DS-001 now distinguishes AGY's capsule project/config root from the selected tas
 | `createBackend` / `restoreBackend` | Pass | Pass | Pass | Low | Pass |
 | `dispatchUserInput` / `getPlatformAgentRunId` | Pass | Pass | Pass | Low | Pass |
 | `convert(providerEvent, turnContext)` | Pass | Pass | Pass | Medium | Pass |
+| AGY DONE/error → canonical terminal result | Pass | Pass | Pass | Medium | Pass |
 | `applyNewDraftRuntimeSelection` | Pass | Pass | Pass | Medium | Pass |
 | Selected workspace → AGY capsule/project/tool task root | Pass | Pass | Pass | Medium | Pass |
 
@@ -128,7 +131,7 @@ DS-001 now distinguishes AGY's capsule project/config root from the selected tas
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | Capsule manifest / provider ID | Pass | Pass | Pass | Pass | Pass | Provider ID remains metadata authority. Fingerprint on restore must validate saved snapshot integrity, not current edited definition. |
-| Neutral `TOOL_EXECUTION_COMPLETED` | Pass | Pass | Pass | Pass | Pass | Distinct from underlying success; test all event consumers. |
+| `TOOL_EXECUTION_SUCCEEDED` result for AGY DONE | Pass | Pass | Pass | Pass | Pass | Provider-step success is distinct from shell exit; keep `provider_state: DONE` and exposed output in `result` so raw trace/reload retains them. Never add synthetic `exit_code: 0`. |
 | Configured-skill mode/bindings | Pass | Pass | Pass | Pass | Pass | `NONE` suppresses AutoByteus-configured package materialization, not unrelated AGY skill discovery. |
 
 ## File Responsibility Mapping Verdict
@@ -136,7 +139,7 @@ DS-001 now distinguishes AGY's capsule project/config root from the selected tas
 | File | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | AGY backend/capsule/stream files | Pass | Pass | Pass | Pass | SR-019 adds task-root binding, main-agent stanza, tool frontmatter, scoped MCP and configured-skill materializer under capsule owner. |
-| Existing runtime/model/manager/web/trace files | Pass | Pass | Pass | Pass | Map is actionable, with implementation-time consumer audit. |
+| Existing runtime/model/manager/web/trace files | Pass | Pass | Pass | Pass | Reuse success/failed/denied consumers; remove AGY-only neutral branch across canonical event, DTO, trace, hydration, team projection and web rendering if no other producer remains. |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -150,13 +153,14 @@ DS-001 now distinguishes AGY's capsule project/config root from the selected tas
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Non-Claude→Codex model fallback and duplicate draft mutations | Pass | Pass | Pass | Pass | In-scope replacement identified. |
+| IR-001 neutral canonical/trace/UI branch | Pass | Pass | Pass | Pass | AGY converter is its only observed production producer; SR-021 names clean-cut deletion across consumers and tests, with local development-trace audit. |
 | Old PTY/first-user/log-ID/NDJSON archive | Pass | N/A | Pass | Pass | Not on current base; do not import. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| AGY integration | No | Pass | Pass | Single structured mode; no old AGY product runs. |
+| AGY integration/IR-001 neutral branch | No | Pass | Pass | No released old AGY population; remove the unmerged neutral path if no independent producer exists. |
 
 ## Persisted-Data Transition Verdict
 
@@ -164,11 +168,13 @@ DS-001 now distinguishes AGY's capsule project/config root from the selected tas
 | --- | --- | --- | --- | --- | --- | --- |
 | Existing run metadata/raw traces | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing shape/generic readers unchanged; zero old AGY product records. |
 | New AGY capsule | New run-owned data, not a transition | Pass | Pass | N/A | Pass | Retain while restorable; no provider-store ownership claim. |
+| IR-001 local neutral trace | Discard or Rebuild — local development artifact only | Pass | Pass | N/A | Pass | One local test run is acknowledged; audit before cleanup and do not add historical-schema logic to released runtime. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
+| AGY converter DONE/error remap → neutral-seam removal → raw-trace/web parity tests | Pass | Pass | Pass | Pass |
 | Availability → capsule/MCP/skills → stream → activation → web/trace → E2E | Pass | Pass | Pass | Pass |
 | Non-AGY regression and temporary test seams | Pass | Pass | Pass | Pass |
 
@@ -177,12 +183,37 @@ DS-001 now distinguishes AGY's capsule project/config root from the selected tas
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Identity, binding, tool outcome | Yes | Pass | Pass | Pass | Concise good/avoid examples. |
+| DONE without shell exit vs ERROR denial | Yes | Pass | Pass | Pass | Exit-8 and command-not-found green by approved convention; denial stays failed, output retained, no invented exit code. |
 | Selected-workspace task relative path with capsule cwd | Yes | Pass | Pass | Pass | Two-line agent text, positive file/shell target captures and explicit negative control distinguish provider config cwd from model-directed task root. |
 | Configured skills and MCP visibility | Yes | Pass | Pass | Pass | Capsule MCP call and skill discovery controls are bounded; design rejects exclusive provider visibility. |
 
 ## Material Premise Validation
 
-None newly needed in round 2. Prior MP-001 was a supported normal selected-workspace task under the superseded SR-017 design and drove DR-001. SR-019 addresses that path with the explicit two-line main-agent task-root snapshot, saved real-workspace binding and target-path acceptance checks. The negative no-guidance control remains true; it is not a witness that the revised prompt necessarily misroutes a task. Bounded positive controls, including independent generic-request file and shell cases, support feasibility without proving deterministic compliance. The user accepted model-directed targeting rather than a filesystem guard, so hypothetical future model misdirection does not itself authorize additional in-scope machinery.
+Prior MP-001/DR-001 remains resolved by SR-019 and is unaffected. The changed tool-status decision depends on these distinct supported initiating paths:
+
+### MP-002 — A normal AGY coding command can exit nonzero while AGY emits tool DONE
+
+- Related approved requirement or established contract: SR-021 REQ-011/AC-010 and REQ-009/AC-008; current chat-to-tool execution contract.
+- Relevant behavior IDs: BEH-006; SCN-001/002.
+- Initiating basis kind: User.
+- Independent product-supported initiating trigger or applicable governing contract: user starts an AGY run in the exposed workspace/chat surface and requests an ordinary project command (for example, running tests or a build); a command failure is a normal possible outcome of that supported task, not an invented lifecycle state.
+- Support evidence: the existing chat dispatch and AGY tool-use path; exact raw AGY 1.2.10 controls for `sh -c 'exit 8'`, command-not-found, and earlier `exit 7` reproduce the provider terminal shape. These synthetic commands demonstrate AGY's handling of a real command-failure class; they do not establish the user trigger by themselves.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: chat user input → AutoByteus run dispatch → AGY stdin user event → agent `run_command` → shell returns nonzero → AGY tool ACTIVE→DONE with no structured shell exit → SR-021 converter `TOOL_EXECUTION_SUCCEEDED` → canonical recorder/raw trace and green live/reloaded Event Monitor. Exposed output such as `command not found` remains visible.
+- Lifecycle preconditions and material consequence at the claimed point: AGY high-trust enabled run; command executes and can fail. A green AutoByteus tool state then denotes AGY provider-step DONE, **not** verified shell exit zero. This consequence is explicitly approved, not inferred to be harmless.
+- Reachability: **Reachable** for the supported user workflow and bounded provider behavior; other AGY versions/tool kinds still require validation.
+- Review consequence / proportionate response: No finding. Preserve provider state/output, never synthesize exit 0, and test the counterexample in live and reloaded product views.
+
+### MP-003 — A deliberately non-autoexecuting AGY run can receive a headless permission denial
+
+- Related approved requirement or established contract: REQ-007/008/011, AC-006/007/010; explicitly false AGY policy.
+- Relevant behavior IDs: BEH-004/006; SCN-001/002.
+- Initiating basis kind: User.
+- Independent product-supported initiating trigger or applicable governing contract: in the exposed new-run settings the user turns AGY `autoExecuteTools` off, then asks in chat for a permission-requiring command.
+- Support evidence: the approved false-path contract and the AGY outcome-matrix denial control, which emitted tool ERROR/`denied_actions` while overall turn status was SUCCESS. The control reproduces the provider state; the UI toggle/chat action independently supplies the product trigger.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: explicit-off launch config → AGY headless request-review process → chat command request → AGY tool ACTIVE→ERROR with permission error → converter `TOOL_DENIED` (or failed for nonpermission explicit error) → raw trace and red/denied live/reloaded Event Monitor. Overall turn SUCCESS must not override the terminal tool error.
+- Lifecycle preconditions and material consequence at the claimed point: no actionable per-tool approval channel exists for AGY headless; the attempted command is denied. Incorrect DONE-first or result-status-first mapping would falsely show success, violating the approved false-path behavior.
+- Reachability: **Reachable** as an explicitly supported edge workflow.
+- Review consequence / proportionate response: No finding; SR-021 explicitly prioritizes ERROR/explicit error and retains denial fixtures as a verification gate.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -190,7 +221,7 @@ None.
 
 ## Review Decision
 
-**Pass.** The approved behavior basis and revised target spines are coherent and actionable in the current codebase. DR-001 is resolved at architecture level; implementation/API-E2E must still verify production-generated identity, scoped MCP/team calls, selected-workspace targets and canonical replay.
+**Pass.** SR-021's changed intended behavior is explicitly approved, the raw provider counterexamples are acknowledged rather than hidden, and DS-003/return path maps DONE, ERROR and denial through the existing authoritative canonical event/trace/UI boundary. The clean-cut IR-001 neutral-seam removal is concrete. No implementation or product E2E pass is inferred.
 
 ## Findings
 
@@ -206,14 +237,15 @@ N/A — Pass; no blocking finding.
 
 ## Residual Risks
 
+- The SR-021 green-success convention can describe an underlying failed shell command. Preserve AGY source `DONE` and any textual error/output in the canonical `result` data so both live and raw-trace reload retain it; no shell exit code or command-success fact may be fabricated. Actual product projection and provider-version/tool-category variation remain downstream tests.
 - Model-directed selected-workspace targeting is not a filesystem sandbox or guarantee; test actual file/shell paths on the production-generated custom main agent, including generic requests, exact resume and concurrent runs. Do not report a task as safely targeted from turn `SUCCESS` alone.
 - The AGY capsule MCP/skill probes are provider-side only. A real AutoByteus scoped MCP call, team/org attribution, configured-skill positive/`NONE` checks and user-owned collision behavior remain required acceptance gates; AGY-native subagents are out of scope.
 - Custom-agent loading and eight-name tool frontmatter must be validated against each supported CLI version. `init.agent` or `init.tools` alone does not prove effective behavior.
 - On restore, validate the capsule/identity fingerprint against the saved run-start snapshot, not an edited current definition. Preserve saved workspace binding and explicit non-restorable behavior for actual mismatch.
-- Wire neutral `TOOL_EXECUTION_COMPLETED` through all canonical event consumers, including team stream/hydration and lifecycle projections; product raw-trace/frontend replay and non-AGY regressions are not yet established.
+- Remove the IR-001 neutral `TOOL_EXECUTION_COMPLETED`/completed-unverified seam across canonical event, team/WebSocket DTO, trace/hydration and web consumers if no independent producer remains. Audit its local test trace; do not add a released-data migration. Recheck the separate `AGENT_SEGMENT_LIFECYCLE_INVALID` fix in a fresh rendered run; IR-001 local tests alone are not sign-off.
 
 ## Latest Authoritative Result
 
 - Review Decision: **Pass**.
 - Material-Premise Gate: **Pass**; no current in-scope mechanism/finding depends on an unsupported premise.
-- Notes: ARCH-REV-002 / SR-016, SR-018–019; DR-001 resolved after verifying the corrected design and bounded provider evidence. Implementation has not yet occurred.
+- Notes: ARCH-REV-003 / SR-016, SR-021; prior ARCH-REV-002/DR-001 resolution remains valid. Partial IR-001 implementation exists but is unaccepted and must resume against this reviewed basis before Code Review/API-E2E.

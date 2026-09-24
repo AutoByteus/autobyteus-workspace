@@ -21,14 +21,14 @@ export const isTerminalStatus = (status: ToolInvocationStatus): boolean =>
 
 const canTransitionToNonTerminal = (
   currentStatus: ToolInvocationStatus,
-  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'completed' | 'error' | 'denied' | 'interrupted'>,
+  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied' | 'interrupted'>,
 ): boolean => {
   return canTransitionToolInvocationStatus(currentStatus, nextStatus);
 };
 
 const applyNonTerminalStatus = (
   segment: ToolLifecycleSegment,
-  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'completed' | 'error' | 'denied' | 'interrupted'>,
+  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied' | 'interrupted'>,
 ): boolean => {
   if (!canTransitionToNonTerminal(segment.status, nextStatus)) {
     return false;
@@ -50,7 +50,7 @@ export const applyExecutionSucceededState = (
   segment: ToolLifecycleSegment,
   result: any,
 ): boolean => {
-  if (segment.status === 'denied' || segment.status === 'error' || segment.status === 'completed') {
+  if (segment.status === 'denied' || segment.status === 'error') {
     return false;
   }
   const changed = segment.status !== 'success' || segment.result !== result || segment.error !== null;
@@ -61,21 +61,11 @@ export const applyExecutionSucceededState = (
   return true;
 };
 
-export const applyExecutionCompletedState = (segment: ToolLifecycleSegment, result: any): boolean => {
-  if (!canTransitionToolInvocationStatus(segment.status, 'completed')) return false;
-  const changed = segment.status !== 'completed' || segment.result !== result || segment.error !== null;
-  if (!changed) return false;
-  segment.status = 'completed';
-  segment.result = result;
-  segment.error = null;
-  return true;
-};
-
 export const applyExecutionFailedState = (
   segment: ToolLifecycleSegment,
   error: string,
 ): boolean => {
-  if (segment.status === 'denied' || segment.status === 'success' || segment.status === 'completed') {
+  if (segment.status === 'denied' || segment.status === 'success') {
     return false;
   }
   const changed = segment.status !== 'error' || segment.result !== null || segment.error !== error;
@@ -91,7 +81,7 @@ export const applyDeniedState = (
   reason: string | null,
   error: string | null,
 ): boolean => {
-  if (segment.status === 'success' || segment.status === 'error' || segment.status === 'completed') {
+  if (segment.status === 'success' || segment.status === 'error') {
     return false;
   }
   const nextError = error ?? reason;
@@ -107,7 +97,7 @@ export const applyExecutionInterruptedState = (
   segment: ToolLifecycleSegment,
   reason: string,
 ): boolean => {
-  if (segment.status === 'success' || segment.status === 'error' || segment.status === 'denied' || segment.status === 'completed') {
+  if (segment.status === 'success' || segment.status === 'error' || segment.status === 'denied') {
     return false;
   }
   const changed = segment.status !== 'interrupted' || segment.result !== null || segment.error !== reason;

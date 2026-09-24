@@ -159,6 +159,8 @@ const buildUserContextFilePaths = (entry: RunProjectionConversationEntry): Conte
 ];
 
 const inferToolStatus = (entry: RunProjectionConversationEntry): ToolInvocationStatus => {
+  const result = asRecord(entry.toolResult);
+  if (result.status === 'denied' && (result.provider_state === 'ERROR' || result.provider_state === 'DONE')) return 'denied';
   if (entry.toolError) {
     return 'error';
   }
@@ -166,7 +168,6 @@ const inferToolStatus = (entry: RunProjectionConversationEntry): ToolInvocationS
     return 'parsed';
   }
   if (entry.toolResult !== null && entry.toolResult !== undefined) {
-    if (asRecord(entry.toolResult).status === 'completed_unverified') return 'completed';
     return 'success';
   }
   return 'parsed';

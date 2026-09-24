@@ -72,7 +72,6 @@ export const agentPresentationPayloadSchemas = {
     TOOL_DENIED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nullableNonEmptyStringSchema, error: nullableNonEmptyStringSchema }).strict(),
     TOOL_EXECUTION_STARTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable() }).strict(),
     TOOL_EXECUTION_SUCCEEDED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), result: jsonValueSchema.nullable() }).strict(),
-    TOOL_EXECUTION_COMPLETED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), result: jsonValueSchema.nullable() }).strict(),
     TOOL_EXECUTION_FAILED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), error: nonEmptyStringSchema }).strict(),
     TOOL_EXECUTION_INTERRUPTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema }).strict(),
     TOOL_LOG: z.object({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId }).strict(),

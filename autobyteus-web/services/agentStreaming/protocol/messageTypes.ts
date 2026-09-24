@@ -48,7 +48,6 @@ export type ServerMessageType =
   | 'TOOL_DENIED'
   | 'TOOL_EXECUTION_STARTED'
   | 'TOOL_EXECUTION_SUCCEEDED'
-  | 'TOOL_EXECUTION_COMPLETED'
   | 'TOOL_EXECUTION_FAILED'
   | 'TOOL_EXECUTION_INTERRUPTED'
   | 'TOOL_LOG'
@@ -153,7 +152,6 @@ export interface ToolExecutionSucceededPayload {
   result?: any;
 }
 
-export type ToolExecutionCompletedPayload = ToolExecutionSucceededPayload;
 
 export interface ToolExecutionFailedPayload {
   invocation_id: string;
@@ -286,7 +284,6 @@ export type ServerMessage =
   | { type: 'TOOL_DENIED'; payload: ToolDeniedPayload }
   | { type: 'TOOL_EXECUTION_STARTED'; payload: ToolExecutionStartedPayload }
   | { type: 'TOOL_EXECUTION_SUCCEEDED'; payload: ToolExecutionSucceededPayload }
-  | { type: 'TOOL_EXECUTION_COMPLETED'; payload: ToolExecutionCompletedPayload }
   | { type: 'TOOL_EXECUTION_FAILED'; payload: ToolExecutionFailedPayload }
   | { type: 'TOOL_EXECUTION_INTERRUPTED'; payload: ToolExecutionInterruptedPayload }
   | { type: 'TOOL_LOG'; payload: ToolLogPayload }

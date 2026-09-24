@@ -2,104 +2,93 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review selected and passed (ARCH-REV-002); current implementation result is **Requirement Gap**, pending handoff-rule lookup. This is **not** an implementation acceptance or Code Review handoff.
-- Requirements doc: `requirements-doc.md` (approved SR-016; REQ-001–010, AC-001–009).
-- Investigation notes: `investigation-notes.md`.
-- Solution revision record: `solution-revision-record.md` (SR-016 and SR-019).
-- Design spec: `design-spec.md` (SR-019).
-- Supplemental task artifacts: `agy-cli-experiment-report.md`, `agy-tool-event-capture-analysis.md`, `agy-tool-event-capture/`, and the AGY workspace/MCP/toolset/skill probe scripts and result directories enumerated in the architecture-review package. These are provider evidence, not integration/E2E sign-off.
-- Design review report: `design-review-report.md` (ARCH-REV-002 Pass; DR-001 resolved at architecture level).
-- Architecture review revision record: `architecture-review-revision-record.md`.
-- Triggering evidence: user screenshot `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_e96aafafa25a423994f2ebfe2dd53ae7/implementation_engineer_2aecb94e0e3244999389307e23c382c9/context_files/ctx_3184b8a6e496__image.png`; user requests AGY command completion be green like other runtimes. Local AGY run `daily_assistant_b421bebb5fa045c1b737d1565a45a43b` also exposed a separate canonical segment lifecycle error.
+- Independent architecture review applies: `design-review-report.md` ARCH-REV-003 **Pass** on user-approved SR-021, after ARCH-REV-002/SR-019. Handoff-rule lookup remains the routing authority; this package requests source review, not implementation acceptance.
+- Authorities: `requirements-doc.md` (REQ-001–011, AC-001–010); `investigation-notes.md`; `solution-revision-record.md` (SR-016, SR-019, SR-021); `design-spec.md`; `investigation-result.md`; `architecture-review-revision-record.md`.
+- Supplements/evidence: `agy-cli-experiment-report.md`, `agy-tool-event-capture-analysis.md` and capture directory, workspace/capsule/MCP/toolset/skill probe scripts and result directories, `agy-command-outcome-matrix-probe.py` and result directory, `implementation-local-live-probe.json`, `implementation-local-mcp-team-live.json`, `implementation-local-mcp-org-live.json`, `implementation-local-skill-live.json`. Provider controls are not product integration or E2E sign-off.
+- Triggering evidence: IR-001 Requirement Gap, user screenshot of gray AGY command and `AGENT_SEGMENT_LIFECYCLE_INVALID`, and ARCH-REV-003 reviewed status decision.
 
 ## Current Implementation Summary
 
-Initial implementation exists in the worktree, but is **not ready for downstream review or acceptance** because the user-requested green status conflicts with approved neutral AGY completion semantics. The separate segment-lifecycle error seen in the screenshot was traced to an extra `segment_type` on AGY `SEGMENT_CONTENT`; that local bug is fixed and covered by a canonical-transformer regression test, but has not yet been rechecked in a fresh rendered live run. A source-size pressure split moved team launch edits into `utils/teamRunLaunchConfigEdit.ts`.
+The AGY 1.2.10 runtime is registered and production-generated through the existing run, identity, MCP, stream, trace, and UI owners. SR-021 now maps AGY tool `DONE` without explicit error to canonical `TOOL_EXECUTION_SUCCEEDED` (green), preserving `provider_state: "DONE"` and output without inventing a shell exit code. Explicit error/denial wins over `DONE` and overall turn `SUCCESS`. The unmerged IR-001 AGY-only neutral `TOOL_EXECUTION_COMPLETED` / `completed_unverified` contract and UI path were removed across server, shared DTOs, trace, hydration, and web. The separate canonical segment-lifecycle fix from IR-001 was freshly observed in a live rendered run without the error banner.
 
-- Implementation cycle: Initial
-- Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: IR-001
-- Related solution revision IDs: SR-016, SR-019
-- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: user visual/status feedback of 2026-09-24; local lifecycle diagnostic `AGENT_SEGMENT_LIFECYCLE_INVALID`
+- Cycle: Rework; current revision **IR-002** in `implementation-revision-record.md`.
+- Related revisions: SR-016/019/021; ARCH-REV-001/002/003; CRR/API-REV/DR **N/A**.
+- Trigger: REQ-011/AC-010 user-approved green-completion convention and IR-001 local lifecycle diagnostic.
+- Current result: implementation ready for **independent Code Review**, subject to routing rules. No Code Review, API/E2E, delivery, or user-acceptance sign-off is claimed.
 
 ## Routing Classification
 
-- Task size: **Large**.
-- Architecture risk: **High**.
-- Design classification: `design-spec.md` §Task Size And Architectural Risk.
-- Classification confirmed: Yes; the current code crosses external protocol, identity, MCP, persistence, UI, and trust boundaries as assessed.
-- Selected route: **Solution Designer — Requirement Gap**; not Code Review/API-E2E yet.
-- Lightweight direct-route self-review: Not Applicable.
-- Escalation: approved DS-003 and `design-spec.md` §Concrete Examples explicitly require AGY `DONE` without verified underlying outcome to render **neutral “Completed; outcome not reported”, not green success**. The user now asks for green completion like other runtimes. Changing this requires a product decision and renewed approval; implementation must not infer success from `DONE` or overall turn `SUCCESS`.
+- Task size: **Large**. Architectural risk: **High**. Source: `design-spec.md` §Task Size And Architectural Risk.
+- Classification: **Confirmed**. Implementation still spans provider protocol, run identity/restore, scoped MCP, persisted trace, shared contracts, frontend and trust boundary. No evidence to downgrade.
+- Selected route: independent Code Review, if returned by `get_handoff_rules`. Direct-route lightweight self-review: Not Applicable.
+- New design impact/escalation: None. SR-021 explicitly approves the otherwise ambiguous green convention.
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior | Current production path | Status / limitation |
+| Behavior | Approved outcome | Implemented production path / result |
 | --- | --- | --- |
-| BEH-001 / REQ-001 | `runtime-management/antigravity-cli-capability.ts`, runtime availability, dynamic model catalog, UI runtime/model selection | Implemented; local catalog/type/UI checks passed. |
-| BEH-002 / REQ-002 | AGY capsule generated main agent via shared identity composition, run-scoped config/MCP | Implemented; local live custom-agent probe passed. |
-| BEH-003 / REQ-003–004 | AGY process `init` binding, run metadata, exact resume/ID comparison | Implemented; local restore and mismatch checks passed. |
-| BEH-004 / REQ-007–008/010 | AGY-only new-draft auto-execute policy; enabled flag; denied/failed converter states | Implemented; local tests and provider controls passed. Green-vs-neutral intent now disputed. |
-| BEH-005 / REQ-005 | Per-run capsule, selected real workspace `--add-dir`, generated two-line task-root statement | Implemented; local target/collision checks passed; provider behavior remains model-directed, not static isolation. |
-| BEH-006 / REQ-009 | AGY NDJSON converter → canonical event pipeline → normal traces/history/frontend | Implemented to approved neutral semantics. Local live tool trace persisted. Screenshot found segment-content contract bug; source fixed/tested but fresh live visual recheck remains. Product status choice unresolved. |
-| SCN-005 / REQ-006 | AGY-only branches and explicit runtime selection; existing-runtime regression suite | Representative local tests passed; independent validation remains required. |
+| BEH-001 / REQ-001 | Select available AGY and dynamic model | Runtime capability, model catalog, backend factory and launch fields; implemented and locally checked. |
+| BEH-002 / REQ-002 | Generated custom main agent/toolset | Shared identity composition into durable capsule main agent before CLI init; live custom-agent/toolset probe passed. |
+| BEH-003 / REQ-003–004 | Exact early ID and restore | AGY process `init` bound to run metadata; saved snapshot/capsule and exact provider ID comparison before input; local create/restore/mismatch checks passed. |
+| BEH-004 / REQ-007–008/010 | AGY-only auto-execute default and explicit-off denial | Launch draft policy to effective CLI permission flag; explicit-off live tool denial stayed non-green; other runtime policy unchanged. |
+| BEH-005 / REQ-005 | Run capsule and selected real workspace | Distinct run capsules; real workspace persisted and passed via `--add-dir`; minimal two-line main-agent task-root statement; local file/shell target, concurrent/collision checks passed. This is model-directed targeting, not filesystem isolation. |
+| BEH-006 / REQ-009/011 | Canonical tool/assistant trace, green `DONE`, red failure/denial, reload | `agy-stream-event-converter.ts` → canonical recorder/trace → historical projection/hydration → chat and Activity cards. Live exit-0, exit-8, command-not-found all green; source `DONE` and output retained; denial non-green; segment lifecycle healthy. |
+| SCN-005 / REQ-006 | Existing runtimes preserved | AGY-specific activation/policy; representative Codex/Claude/AutoByteus manager, trace, status and UI regression tests passed. |
 
 ## Key Files Or Areas
 
-- `autobyteus-server-ts/src/agent-execution/backends/antigravity/` — capsule, backend, stream process and converter.
-- `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts`, runtime/model/availability/MCP files — activation, binding, availability and scoped tools.
-- Server event/memory/stream contracts and web streaming/hydration/tool-card files — neutral terminal event and replay.
-- Web launch config stores/components plus `utils/agentRunRuntimeDraftPolicy.ts` and `utils/teamRunLaunchConfigEdit.ts` — AGY-only launch policy.
+- `autobyteus-server-ts/src/agent-execution/backends/antigravity/` — process, capsule and NDJSON converter.
+- Server run manager/runtime capability/MCP and `agent-memory` / `run-history` — authoritative binding, scoped tools, canonical traces and replay.
+- `autobyteus-agent-presentation-contracts` and `autobyteus-team-stream-contracts` — canonical and team stream DTOs; neutral event removed.
+- `autobyteus-web` launch policy, streaming handlers, hydration, `ToolCallIndicator.vue` and `ToolActivityItem.vue` — AGY selection and live/reloaded tool presentation.
 
-## Important Assumptions And Risks
+## Important Assumptions And Known Risks
 
-- AGY 1.2.10 `tool` `DONE` reports provider step completion, but its stream does not reliably expose the underlying shell exit status. Captured `run_command_nonzero` explicitly has `DONE` and no exit field although the command exits 7; the overall result is `SUCCESS`. Codex and Claude convert their explicit terminal provider items/errors to `TOOL_EXECUTION_SUCCEEDED` or `FAILED`, hence their green state. A green AGY success state would conflate distinct evidence unless new approved semantics/source evidence is provided.
-- The user screenshot also shows a process/turn that remained running after the tool event; the provider had a model/quota stall. The source now has a bounded idle timeout, but the currently captured UI run used an older dev build. Do not claim the complete live path is validated from that screenshot.
-- AGY model-directed file/shell targeting is not filesystem isolation. Configured-skill `NONE` does not suppress provider/user workspace skills. These limits remain as approved.
+- Green means AGY **provider tool step `DONE`**, not verified shell success. Exit 8 and command-not-found are green under the approved convention because AGY reports `DONE` without a structured shell exit. Exposed output remains available; no exit 0 is fabricated.
+- The provider's selected-workspace behavior is model-directed, not a static sandbox. `NONE` configured skills does not suppress user/provider skill discovery. AGY-native subagents are out of scope.
+- AGY 1.2.10 is the tested provider version; other versions/tool kinds and user environments require independent validation.
+- The last narrow denial replay refinement (persisting AGY `provider_state` on denied tool results and restoring a denied label) passed focused tests, but browser automation became unavailable before a second *new* denied run could be rendered after that refinement. The earlier live denial was rendered DENIED and its older pre-refinement trace reloaded as FAILED (still non-green). This UI parity state is a residual verification item for Code Review/API-E2E, not represented as visually confirmed.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed posture: Feature / larger requirement; bounded integration refactor.
-- Reviewed root cause: boundary/ownership issue if runtime integration bypasses current factory, identity, binding or memory owners.
-- Refactor decision: Refactor Needed Now, bounded.
-- Implementation matched assessment: Yes so far; no architecture change discovered.
-- Design Impact routed: N/A. Current escalation is changed intended UI/status behavior, therefore Requirement Gap.
+- Reviewed posture/root cause/refactor decision: feature/larger requirement; boundary/ownership integration risk; bounded **Refactor Needed Now**.
+- Matched: **Yes**. Existing manager, identity, MCP, event and trace owners remain authoritative; no new bypass or second trace store. Design Impact: **N/A**.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms: None intended.
-- Legacy old behavior retained: No AGY legacy production path existed.
-- Obsolete replaced paths: No known in-scope dormant AGY path; final self-review remains.
-- Shared structure and boundary guidance: explicit runtime-specific owners, common canonical event and launch policy; no second trace archive.
-- Changed source-size guardrail: source files currently at or below 500 effective non-empty lines; team launch edit logic was extracted. Generated `dist` declarations are not source implementation files.
+- Backward-compatibility mechanisms introduced: **None**. Legacy old behavior retained: **No**.
+- Neutral IR-001 event/status/DTO/trace/web branches and tests were removed; repository search found no remaining canonical `TOOL_EXECUTION_COMPLETED` or `completed_unverified` producer/consumer. Codex's unrelated `LOCAL_MCP_TOOL_EXECUTION_COMPLETED` notification remains intentionally.
+- Shared structures stayed tight. Changed source implementation files are at or below 500 effective non-empty lines; no >220-line source delta was introduced in IR-002. `git diff --check` passed.
 
 ## Persisted Data Transition Check
 
-- Approved decision: **Directly Usable — No Migration**, `design-spec.md` §Persisted Data / State Transition Decision.
-- Current implementation uses existing external provider-ID metadata and generic normalized trace storage; no old AGY records or migration branch.
-- Deviation: None identified.
+- Existing run metadata/traces: **Directly Usable — No Migration**, per design spec; current generic reader and stored identity shape retained.
+- One **local development-only** IR-001 neutral trace was audited: `daily_assistant_b421bebb5fa045c1b737d1565a45a43b/raw_traces_active.jsonl`, sequence 3, `TOOL_EXECUTION_COMPLETED` with `completed_unverified` and output `AGY-UI-MARKER-8492`. No released AGY record population exists; no production migration or version-specific reader was added. That old local test artifact is not evidence of current behavior.
+- Deviation: None.
+
+## Environment Or Dependency Notes
+
+- Worktree branch: `codex/antigravity-cli-runtime-redesign-20260924`. Dev preview uses `pnpm dev`, backend `127.0.0.1:8000`, web `127.0.0.1:3000`; a separate full server build passed after final source changes. Live checks used the local development data root only; the preview was stopped cleanly.
 
 ## Local Implementation Checks Run
 
-- Server focused AGY converter/capsule/MCP tests, manager/model/supervisor tests and local TypeScript build config passed in prior local rounds; current segment-lifecycle regression passes (4 converter tests), and `tsc -p tsconfig.build.json --noEmit` passes.
-- Local production-path probes passed for generated main agent, selected real workspace file/shell targets, exact restore, scoped team/org MCP tool calls, and configured skill behavior. Evidence: `implementation-local-live-probe.json`, `implementation-local-mcp-team-live.json`, `implementation-local-mcp-org-live.json`, `implementation-local-skill-live.json`. These are **not** downstream API/E2E validation.
-- Web focused launch/tool tests passed after extraction (18 tests); prior wider focused web tests passed (33). `vue-tsc` is not installed as an executable; no web typecheck claim. `git diff --check` passed.
-- No independent Code Review/API-E2E sign-off has occurred.
+- Server: focused AGY converter/capsule, run-manager, trace-sequencer and replay suites **57 passed, 5 live tests skipped by default**; server build TypeScript check and full server build passed. Converter fixture matrix covers exit 0, exit 8, command-not-found, ERROR denial and explicit error even if DONE. Denial replay writer/server projection tests cover AGY ERROR/DONE marker, exposed output and unchanged generic error mapping.
+- Web: focused launch policy, tool card/Activity, streaming lifecycle and hydration suites **59 passed**; previous focused UI/launch suites also passed. Web `vue-tsc` is not available as an executable; no full web typecheck claim.
+- Prior IR-001 local production-path evidence files (above) cover generated custom agent/toolset, real workspace file/shell targeting, exact restore, scoped AutoByteus team/org MCP calls, configured `PRELOADED_ONLY`/`NONE` and user-owned skill collision. These are implementation probes, not downstream API/E2E sign-off.
+- Current live run `daily_assistant_09fba2c5cd2e4093bbf7f992157b144b`: raw trace tool-result sequences 3/5/7 are `TOOL_EXECUTION_SUCCEEDED`, with `provider_state: DONE` and output respectively `AGY-EXIT0-LIVE`, null (exit 8), and visible command-not-found text. No exit field. The live and reloaded chat/Activity showed three green SUCCESS cards and no lifecycle error banner. Explicit-off run `daily_assistant_b41a98b435ce40b7a1af410851d32b0c` emitted `TOOL_DENIED` despite overall turn success; live DENIED and pre-refinement reload FAILED, both non-green.
+- `git diff --check` and changed-source-size audit passed. No independent review or acceptance is inferred.
 
 ## Frontend Rendered-Result Check
 
-- Dev renderer at `127.0.0.1:3000/workspace` was used to inspect AGY runtime/model choices, auto-execute draft toggles, tool chat card and Event Monitor. The initial neutral badge layout was polished to show complete tool name and status without wrapping awkwardly.
-- User screenshot shows a remaining canonical-lifecycle error and dissatisfaction with neutral gray. Source defect was corrected with a canonical-transformer fixture test, but fresh browser recheck is pending. The status color/meaning is a requirement choice, not an implementation-owned polish change.
-- No Product Design supplement was supplied. Browser self-check is not independent E2E validation.
+- Affected journey: workspace agent run chat, tool card, Activity/Event Monitor, reload, AGY launch auto-execute switch. Reviewed adjacent other-runtime green tool presentation and existing shared components; no separate Product Design supplement.
+- The project-supported browser preview at `127.0.0.1:3000/workspace` was directly exercised. Exit-0/exit-8/command-not-found live and reloaded cards were green SUCCESS; command-not-found result text remained readable. The earlier canonical lifecycle error did not reappear and assistant response rendered. Explicit-off denial displayed non-green live and after reload. No layout/label issue observed in the green cards.
+- Limitation: browser connection ceased functioning after the final denial replay-label refinement, so a second fresh denial rendering against that exact final code was not inspected. Unit-level trace/hydration projection passed; downstream validation should check the final denied label visually. Browser self-check is not E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-After revised intended status semantics are approved: run a fresh live AGY command through chat/Event Monitor to completion; verify no lifecycle diagnostic, exact trace/reload state and agreed badge/label; exercise denied and nonzero-command fixture to prevent false success; then independent Code Review and API/E2E gates for all explicit architecture-review items.
+- Independently verify generated custom main agent/toolset, real workspace relative file and shell targets, exact saved-ID restore/mismatch, scoped MCP team/org attribution, skill `PRELOADED_ONLY`/`NONE` and collision control, AGY-only auto-execute and non-AGY regressions.
+- In the live/reloaded Event Monitor and raw traces, check exit 0, exit 8, command-not-found and explicit-off denial. Preserve `DONE`/output, never synthesize shell exit zero; confirm final denied label and no `AGENT_SEGMENT_LIFECYCLE_INVALID`.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Code Review and API/E2E remain unstarted. This Requirement Gap handoff requests only a revised authoritative decision on AGY `DONE` badge semantics (including unknown shell exit and denial), followed by any necessary design revision before implementation continues.
+Independent Code Review and API/E2E validation remain required. Provider controls and implementation-local checks do not satisfy those gates.
