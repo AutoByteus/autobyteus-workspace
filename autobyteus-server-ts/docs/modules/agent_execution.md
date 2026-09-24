@@ -435,15 +435,23 @@ streaming handlers or by `RunFileChangeService`; that service consumes
 
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
 
-Claude Agent SDK query options also carry the AutoByteus provider-policy default
-`disallowedTools: ["AskUserQuestion"]` at the `ClaudeSdkClient` boundary. This
-bare disallow entry hides the Claude Code built-in clarification-question tool
-from context; it is not an AutoByteus MCP tool preapproval rule. Do not replace
-this default with a Claude SDK `tools` allowlist, because that would require
-enumerating every desired Claude built-in and could accidentally remove tools
-AutoByteus still expects. AutoByteus MCP tools continue to be supplied through
-`mcpServers` and pre-approved through `allowedTools` according to the configured
-tool exposure.
+Claude Agent SDK turn query options carry an explicit AutoByteus built-in tool
+policy at the `ClaudeSdkClient` boundary. The SDK `tools` option enables exactly
+these Claude Code built-ins: `Bash`, `Read`, `Edit`, `Write`, `Glob`, `Grep`,
+`NotebookEdit`, `WebFetch`, `WebSearch`, and `Skill`. Every other built-in,
+including new ones added by future SDK releases, is absent from model context.
+Claude's native subagent and multi-agent tools are not exposed; AutoByteus
+`delegate_task`, `send_message_to`, and the Team tools replace them. As a safety
+net, `disallowedTools: ["AskUserQuestion", "Agent", "Task", "Workflow",
+"SendMessage", "ListAgents"]` keeps the clarification-question tool and the
+native multi-agent tools hidden and blocked even if the enabled list is widened.
+Both lists are product constants, not caller inputs, and apply only to normal
+turns; model discovery keeps its own options. These bare built-in names are not
+AutoByteus MCP tool preapproval rules. AutoByteus MCP tools are unaffected by
+`tools`. They continue to be supplied through `mcpServers` and pre-approved
+through `allowedTools` according to the configured tool exposure. Claude Code
+tool names can change between SDK releases, so re-verify both lists against the
+upgraded CLI whenever the SDK version changes.
 
 Claude Agent SDK `0.3.280` is used with exact direct peers
 `@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter
