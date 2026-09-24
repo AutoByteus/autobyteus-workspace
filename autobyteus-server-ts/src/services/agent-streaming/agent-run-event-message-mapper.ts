@@ -112,6 +112,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_STARTED, payload);
       case AgentRunEventType.TOOL_EXECUTION_SUCCEEDED:
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_SUCCEEDED, payload);
+      case AgentRunEventType.TOOL_EXECUTION_COMPLETED:
+        return new ServerMessage(ServerMessageType.TOOL_EXECUTION_COMPLETED, payload);
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_FAILED, payload);
       case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:

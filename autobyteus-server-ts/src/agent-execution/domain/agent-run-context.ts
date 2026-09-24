@@ -1,12 +1,14 @@
 import type { AgentRunConfig } from "./agent-run-config.js";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
 import type { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
+import type { AgyAgentRunContext } from "../backends/antigravity/backend/agy-agent-run-context.js";
 import type { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
 
 export type RuntimeAgentRunContext =
   | AgentContext
   | ClaudeAgentRunContext
   | CodexAgentRunContext
+  | AgyAgentRunContext
   | null;
 
 export class AgentRunContext<TRuntimeContext> {

@@ -161,6 +161,7 @@ export class GeneralProcessRunSupervisor {
         autoByteusBackendFactory: providerFactories.autoByteus,
         codexBackendFactory: providerFactories.codex,
         claudeBackendFactory: providerFactories.claude,
+        agyBackendFactory: providerFactories.antigravity,
         activationRegistry,
         memoryRecorder,
         providerInputNormalizer,

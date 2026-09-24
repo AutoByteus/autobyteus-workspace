@@ -72,7 +72,8 @@ export const toAgentPresentationProjectionMessage = (
     case 'TOOL_APPROVED': return { type: message.type, payload: { ...message.payload } };
     case 'TOOL_DENIED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
     case 'TOOL_EXECUTION_STARTED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
-    case 'TOOL_EXECUTION_SUCCEEDED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments), result: message.payload.result ?? undefined } };
+    case 'TOOL_EXECUTION_SUCCEEDED':
+    case 'TOOL_EXECUTION_COMPLETED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments), result: message.payload.result ?? undefined } };
     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
     case 'TOOL_LOG': return { type: message.type, payload: { ...message.payload } };
@@ -144,7 +145,8 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'TOOL_APPROVED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, reason: message.payload.reason } };
     case 'TOOL_DENIED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), reason: message.payload.reason, error: message.payload.error } };
     case 'TOOL_EXECUTION_STARTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments) } };
-    case 'TOOL_EXECUTION_SUCCEEDED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), result: message.payload.result ?? undefined } };
+    case 'TOOL_EXECUTION_SUCCEEDED':
+    case 'TOOL_EXECUTION_COMPLETED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), result: message.payload.result ?? undefined } };
     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), error: message.payload.error } };
     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), reason: message.payload.reason } };
     case 'TOOL_LOG': return { type: message.type, payload: { log_entry: message.payload.log_entry, tool_invocation_id: message.payload.tool_invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id } };

@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { RuntimeKind } from "./runtime-kind-enum.js";
+import { probeAntigravityCli, listAntigravityModels } from "./antigravity-cli-capability.js";
 import { resolveClaudeCodeExecutablePath } from "./claude/client/claude-sdk-executable-path.js";
 import { resolveLaunchCommand } from "./codex/client/codex-app-server-launch-config.js";
 
@@ -95,6 +96,16 @@ const createClaudeAvailabilityProvider = (): RuntimeAvailabilityProvider => ({
   },
 });
 
+const createAntigravityAvailabilityProvider = (): RuntimeAvailabilityProvider => ({
+  runtimeKind: RuntimeKind.ANTIGRAVITY_CLI,
+  getRuntimeAvailability: () => {
+    const capability = probeAntigravityCli();
+    if (!capability.available) return createCapability(RuntimeKind.ANTIGRAVITY_CLI, false, capability.reason);
+    try { listAntigravityModels(); return createCapability(RuntimeKind.ANTIGRAVITY_CLI, true); }
+    catch (error) { return createCapability(RuntimeKind.ANTIGRAVITY_CLI, false, String(error)); }
+  },
+});
+
 export class RuntimeAvailabilityService {
   private readonly providers = new Map<RuntimeKind, RuntimeAvailabilityProvider>();
 
@@ -133,6 +144,7 @@ export const getRuntimeAvailabilityService = (): RuntimeAvailabilityService => {
       createAutobyteusAvailabilityProvider(),
       createCodexAvailabilityProvider(),
       createClaudeAvailabilityProvider(),
+      createAntigravityAvailabilityProvider(),
     ]);
   }
   return cachedRuntimeAvailabilityService;

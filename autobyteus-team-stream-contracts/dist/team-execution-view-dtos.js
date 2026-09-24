@@ -17,7 +17,7 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
     member_address: agentTeamAddressDtoSchema,
 }).strict();
 const launchConfigurationSchema = z.object({
-    runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server"]),
+    runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli"]),
     llm_model_identifier: nonEmptyStringSchema,
     llm_config: z.record(z.string(), jsonValueSchema).nullable(),
     auto_execute_tools: z.boolean(),

@@ -7,6 +7,7 @@ const STATUS_RANK: Record<ToolInvocationStatus, number> = {
   approved: 3,
   executing: 4,
   success: 99,
+  completed: 99,
   error: 99,
   denied: 99,
   interrupted: 99,
@@ -14,7 +15,7 @@ const STATUS_RANK: Record<ToolInvocationStatus, number> = {
 
 export const isTerminalToolInvocationStatus = (
   status: ToolInvocationStatus,
-): boolean => status === 'success' || status === 'error' || status === 'denied' || status === 'interrupted';
+): boolean => status === 'success' || status === 'completed' || status === 'error' || status === 'denied' || status === 'interrupted';
 
 export const canTransitionToolInvocationStatus = (
   currentStatus: ToolInvocationStatus,

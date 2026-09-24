@@ -80,7 +80,9 @@
           {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}
         </label>
         <p class="mt-1 text-xs leading-relaxed text-gray-500">
-          {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
+          {{ t(scope.effectiveConfig.runtimeKind === 'antigravity_cli'
+            ? 'workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help'
+            : 'workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
         </p>
       </div>
       <AutoApproveSwitch

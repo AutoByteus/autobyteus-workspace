@@ -17,9 +17,10 @@ import type { CodexWorkspaceResolver } from "../backends/codex/codex-workspace-r
 import type { CodexThreadManager } from "../backends/codex/thread/codex-thread-manager.js";
 import type { WorkspaceSkillMaterializer } from "../backends/shared/workspace-skill-materializer.js";
 import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
+import { AgyAgentRunBackendFactory } from "../backends/antigravity/backend/agy-agent-run-backend-factory.js";
+import { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
 import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
-import type { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
 import type { ClaudeSdkClient } from "../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
@@ -52,6 +53,7 @@ export type AgentProviderFactorySet = Readonly<{
   autoByteus: AutoByteusAgentRunBackendFactory;
   codex: CodexAgentRunBackendFactory;
   claude: ClaudeAgentRunBackendFactory;
+  antigravity: AgyAgentRunBackendFactory;
 }>;
 
 export interface AgentProviderFactoryBuilder {
@@ -189,6 +191,10 @@ export const createAgentProviderFactoryBuilder = (
           process.codex.threadManager,
           codexBootstrapper,
           process.codex.threadCleanup,
+        ),
+        antigravity: new AgyAgentRunBackendFactory(
+          input.agentDefinitionService, process.skillService,
+          new ClaudeWorkspaceResolver(process.workspaceManager), input.agentToolMcpRunSessions,
         ),
         claude: new ClaudeAgentRunBackendFactory(
           claudeSessionManager,

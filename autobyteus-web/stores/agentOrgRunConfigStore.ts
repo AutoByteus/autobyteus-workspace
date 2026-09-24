@@ -1,3 +1,4 @@
+import { autoExecuteForNewRuntimeSelection, withNewRuntimeOverridePolicy } from '~/utils/agentRunRuntimeDraftPolicy'
 import type { AgentOrgRunLaunchSeed } from '~/types/agent/AgentOrgRunLaunchSeed'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -69,7 +70,7 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
     runtimeKind.value = input.runtimeKind || 'autobyteus'
     llmModelIdentifier.value = input.llmModelIdentifier || ''
     llmConfig.value = normalizeModelConfigRecord(input.llmConfig)
-    autoExecuteTools.value = false
+    autoExecuteTools.value = autoExecuteForNewRuntimeSelection(runtimeKind.value, false)
     workspaceSelection.value = emptyWorkspace()
     rootWorkspaceSelectionSource.value = 'untouched'
     teamOverrides.value = {}
@@ -96,6 +97,7 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
   const setRootRuntimeKind = (value: string): void => {
     if (runtimeKind.value === value) return
     runtimeKind.value = value
+    autoExecuteTools.value = autoExecuteForNewRuntimeSelection(value, autoExecuteTools.value)
     llmConfig.value = null
   }
   const setRootLlmModelIdentifier = (value: string): void => {
@@ -139,7 +141,7 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
   }
   const setAgentOverride = (address: AgentTeamAddress, override: AgentConfigOverride | null): void => {
     const next = { ...agentOverrides.value }
-    if (override) next[address] = canonicalizeAgentOrgPlacementLaunchPatch(override)
+    if (override) next[address] = canonicalizeAgentOrgPlacementLaunchPatch(withNewRuntimeOverridePolicy(teamOverrides.value[address], override)!)
     else delete next[address]
     agentOverrides.value = next
   }

@@ -257,6 +257,13 @@ describe("Agent Tools MCP tokenless route integration", () => {
     expect(sse.statusCode).toBe(200);
     expect(sse.body).toContain("autobyteus_agent_tools ready");
 
+    const streamableOnly = await app.inject({
+      method: "GET",
+      url: sessionUrl(enabledSessionId),
+      headers: { accept: "text/event-stream", "x-autobyteus-mcp-transport": "streamable-http" },
+    });
+    expect(streamableOnly.statusCode).toBe(405);
+
     const called = await post(enabledSessionId, {
       jsonrpc: "2.0",
       id: "call",

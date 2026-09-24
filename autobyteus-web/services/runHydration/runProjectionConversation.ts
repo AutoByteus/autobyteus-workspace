@@ -166,6 +166,7 @@ const inferToolStatus = (entry: RunProjectionConversationEntry): ToolInvocationS
     return 'parsed';
   }
   if (entry.toolResult !== null && entry.toolResult !== undefined) {
+    if (asRecord(entry.toolResult).status === 'completed_unverified') return 'completed';
     return 'success';
   }
   return 'parsed';

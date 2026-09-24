@@ -5,26 +5,27 @@
   >
     <!-- Header -->
     <div 
-      class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+      class="flex gap-2 px-4 py-3 cursor-pointer select-none"
+      :class="activity.status === 'completed' ? 'flex-col items-stretch' : 'flex-wrap items-center'"
       @click="toggleExpand"
     >
       <!-- Left: Icon + Title + ID -->
-      <div class="flex items-center gap-3">
+      <div class="flex min-w-0 flex-1 items-center gap-3">
         <!-- Icon -->
         <Icon :icon="statusIconName" class="w-5 h-5 flex-shrink-0" :class="iconColorClass" />
         
         <!-- Title & ID -->
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-gray-800 text-sm">{{ activity.toolName }}</span>
-          <span class="font-mono text-xs text-gray-600">#{{ shortId }}</span>
+        <div class="flex min-w-0 items-center gap-2">
+          <span class="truncate font-bold text-gray-800 text-sm">{{ activity.toolName }}</span>
+          <span class="shrink-0 font-mono text-xs text-gray-600">#{{ shortId }}</span>
         </div>
       </div>
 
       <!-- Right: Status Chip -->
-      <div>
+      <div class="ml-auto shrink-0">
         <span 
-          class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wide border shadow-sm"
-          :class="statusChipClasses"
+          class="inline-flex max-w-full px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wide border shadow-sm"
+          :class="[statusChipClasses, activity.status === 'completed' ? 'whitespace-normal text-center leading-tight' : 'whitespace-nowrap']"
         >
           {{ statusLabel }}
         </span>
@@ -167,6 +168,7 @@ const formatJson = (val: any) => {
 const statusIconName = computed(() => {
   switch (props.activity.status) {
     case 'success': return 'heroicons:check-circle-solid';
+    case 'completed': return 'heroicons:minus-circle-solid';
     case 'error': return 'heroicons:x-circle-solid';
     case 'approved': return 'heroicons:check-badge-solid';
     case 'parsed': return 'heroicons:document-check-solid';
@@ -181,6 +183,7 @@ const statusIconName = computed(() => {
 const iconColorClass = computed(() => {
   switch (props.activity.status) {
     case 'success': return 'text-green-500';
+    case 'completed': return 'text-slate-500';
     case 'error': return 'text-red-500';
     case 'approved': return 'text-cyan-600';
     case 'parsed': return 'text-slate-500';
@@ -248,6 +251,7 @@ const containerClasses = computed(() => {
 const statusLabel = computed(() => {
   switch (props.activity.status) {
     case 'success': return 'Success';
+    case 'completed': return 'Completed; outcome not reported';
     case 'error': return 'Failed';
     case 'approved': return 'Approved';
     case 'parsed': return 'Parsed';
@@ -262,6 +266,7 @@ const statusLabel = computed(() => {
 const statusChipClasses = computed(() => {
   switch (props.activity.status) {
     case 'success': return 'bg-green-100 text-green-700 border-green-200';
+    case 'completed': return 'bg-slate-100 text-slate-700 border-slate-200';
     case 'error': return 'bg-red-100 text-red-700 border-red-200';
     case 'approved': return 'bg-cyan-100 text-cyan-700 border-cyan-200';
     case 'parsed': return 'bg-slate-100 text-slate-700 border-slate-200';

@@ -95,6 +95,7 @@ export class RuntimeMemoryEventAccumulator {
         return;
       case AgentRunEventType.TOOL_DENIED:
       case AgentRunEventType.TOOL_EXECUTION_SUCCEEDED:
+      case AgentRunEventType.TOOL_EXECUTION_COMPLETED:
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
       case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:
         this.recordToolResult(event);

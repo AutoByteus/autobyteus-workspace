@@ -30,6 +30,7 @@ const ACTIVITY_EVENT_TYPES = new Set<AgentRunEventType>([
   AgentRunEventType.TOOL_DENIED,
   AgentRunEventType.TOOL_EXECUTION_STARTED,
   AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+  AgentRunEventType.TOOL_EXECUTION_COMPLETED,
   AgentRunEventType.TOOL_EXECUTION_FAILED,
   AgentRunEventType.TOOL_EXECUTION_INTERRUPTED,
   AgentRunEventType.TOOL_LOG,

@@ -20,6 +20,7 @@ export type ToolInvocationStatus =
   | 'approved'
   | 'executing'
   | 'success'
+  | 'completed'
   | 'error'
   | 'denied'
   | 'interrupted';

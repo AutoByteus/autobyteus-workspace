@@ -128,6 +128,7 @@ export const buildApplicationExecutionScopeKernel = (
       autoByteusBackendFactory: providerFactories.autoByteus,
       codexBackendFactory: providerFactories.codex,
       claudeBackendFactory: providerFactories.claude,
+      agyBackendFactory: providerFactories.antigravity,
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer,

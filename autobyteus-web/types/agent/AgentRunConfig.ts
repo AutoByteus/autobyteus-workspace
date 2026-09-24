@@ -8,6 +8,7 @@ const AGENT_RUNTIME_KIND_LABELS: Record<string, string> = {
   autobyteus: 'AutoByteus',
   codex_app_server: 'Codex App Server',
   claude_agent_sdk: 'Claude Agent SDK',
+  antigravity_cli: 'Antigravity CLI',
 };
 
 export const runtimeKindToLabel = (runtimeKind: string): string => {

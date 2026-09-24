@@ -383,6 +383,15 @@ export declare const teamAgentPayloadSchemas: {
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
+    readonly TOOL_EXECUTION_COMPLETED: z.ZodObject<{
+        arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
+        result: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
+        invocation_id: z.ZodString;
+        tool_name: z.ZodString;
+        turn_id: z.ZodNullable<z.ZodString>;
+        change_sequence: z.ZodNumber;
+        agent_run_id: z.ZodString;
+    }, z.core.$strict>;
     readonly TOOL_EXECUTION_FAILED: z.ZodObject<{
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         error: z.ZodString;

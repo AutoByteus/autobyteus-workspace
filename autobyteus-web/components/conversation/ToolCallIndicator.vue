@@ -12,6 +12,7 @@
       <div class="flex items-center justify-between px-3 py-2 select-none">
         <div class="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
           <div v-if="isExecuting" class="animate-spin h-5 w-5 border-[2.5px] border-blue-500 border-t-transparent rounded-full flex-shrink-0"></div>
+          <Icon v-else-if="presentation.statusKey === 'completed'" icon="heroicons:minus-circle-solid" class="w-5 h-5 text-slate-500 flex-shrink-0" title="Completed; outcome not reported" />
           <Icon v-else-if="presentation.statusKey === 'success'" icon="heroicons:check-circle-solid" class="w-5 h-5 text-green-500 flex-shrink-0" />
           <Icon v-else-if="presentation.statusKey === 'error'" icon="heroicons:exclamation-circle-solid" class="w-5 h-5 text-red-500 flex-shrink-0" />
           <Icon v-else-if="presentation.statusKey === 'approved'" icon="heroicons:check-badge-solid" class="w-5 h-5 text-cyan-500 flex-shrink-0" />

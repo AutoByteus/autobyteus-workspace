@@ -143,8 +143,12 @@ const messages = {
     "Configuration",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help":
+    "High-trust mode for Antigravity CLI: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help":
+    "High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.",
   "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
     "Team Members Override",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":

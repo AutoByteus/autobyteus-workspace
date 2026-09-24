@@ -106,6 +106,7 @@ export type TeamAgentEvent =
   | Correlated<"TOOL_DENIED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; reason: string | null; error: string | null }>
   | Correlated<"TOOL_EXECUTION_STARTED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null }>
   | Correlated<"TOOL_EXECUTION_SUCCEEDED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; result: JsonValue | null }>
+  | Correlated<"TOOL_EXECUTION_COMPLETED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; result: JsonValue | null }>
   | Correlated<"TOOL_EXECUTION_FAILED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; error: string }>
   | Correlated<"TOOL_EXECUTION_INTERRUPTED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; reason: string }>
   | Correlated<"TOOL_LOG", { logEntry: string; toolInvocationId: string; toolName: string; turnId: string | null }>

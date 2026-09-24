@@ -6,6 +6,7 @@ import {
   applyDeniedState,
   applyExecutionFailedState,
   applyExecutionStartedState,
+  applyExecutionCompletedState,
   applyExecutionSucceededState,
   isTerminalStatus,
 } from '../toolLifecycleState';
@@ -81,8 +82,20 @@ describe('toolLifecycleState', () => {
     expect(segment.status).toBe('parsed');
   });
 
+  it('keeps AGY completion outcome-neutral while preserving existing success', () => {
+    const segment = buildSegment();
+    applyExecutionStartedState(segment);
+    expect(applyExecutionCompletedState(segment, { status: 'completed_unverified' })).toBe(true);
+    expect(segment.status).toBe('completed');
+    expect(applyExecutionSucceededState(segment, { ok: true })).toBe(false);
+    const nonAgy = buildSegment();
+    expect(applyExecutionSucceededState(nonAgy, { ok: true })).toBe(true);
+    expect(nonAgy.status).toBe('success');
+  });
+
   it('exposes terminal status predicate', () => {
     expect(isTerminalStatus('success')).toBe(true);
+    expect(isTerminalStatus('completed')).toBe(true);
     expect(isTerminalStatus('error')).toBe(true);
     expect(isTerminalStatus('denied')).toBe(true);
     expect(isTerminalStatus('executing')).toBe(false);

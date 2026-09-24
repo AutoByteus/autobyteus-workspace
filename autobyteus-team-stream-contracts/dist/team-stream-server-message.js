@@ -33,6 +33,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     message("TOOL_DENIED", teamAgentPayloadSchemas.TOOL_DENIED),
     message("TOOL_EXECUTION_STARTED", teamAgentPayloadSchemas.TOOL_EXECUTION_STARTED),
     message("TOOL_EXECUTION_SUCCEEDED", teamAgentPayloadSchemas.TOOL_EXECUTION_SUCCEEDED),
+    message("TOOL_EXECUTION_COMPLETED", teamAgentPayloadSchemas.TOOL_EXECUTION_COMPLETED),
     message("TOOL_EXECUTION_FAILED", teamAgentPayloadSchemas.TOOL_EXECUTION_FAILED),
     message("TOOL_EXECUTION_INTERRUPTED", teamAgentPayloadSchemas.TOOL_EXECUTION_INTERRUPTED),
     message("TOOL_LOG", teamAgentPayloadSchemas.TOOL_LOG),

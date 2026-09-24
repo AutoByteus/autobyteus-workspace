@@ -29,6 +29,7 @@ export const teamAgentPayloadSchemas = {
     TOOL_DENIED: withExecution(agentPresentationPayloadSchemas.TOOL_DENIED),
     TOOL_EXECUTION_STARTED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_STARTED),
     TOOL_EXECUTION_SUCCEEDED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_SUCCEEDED),
+    TOOL_EXECUTION_COMPLETED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_COMPLETED),
     TOOL_EXECUTION_FAILED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_FAILED),
     TOOL_EXECUTION_INTERRUPTED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_INTERRUPTED),
     TOOL_LOG: withExecution(agentPresentationPayloadSchemas.TOOL_LOG),

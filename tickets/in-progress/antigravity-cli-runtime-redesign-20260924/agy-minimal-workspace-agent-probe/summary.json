@@ -1,0 +1,74 @@
+[
+  {
+    "case": "file",
+    "exit": 0,
+    "initCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-p0h244yk/capsule",
+    "status": "SUCCESS",
+    "response": "The file has been created.\n\n- Absolute path: [/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-p0h244yk/selected-workspace/minimal-file.txt](file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-p0h244yk/selected-workspace/minimal-file.txt)\n",
+    "workspaceFile": "MINIMAL-FILE-6829\n",
+    "capsuleFile": null,
+    "tools": [
+      {
+        "state": "ACTIVE",
+        "name": "write_to_file",
+        "parameters": {
+          "TargetFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-p0h244yk/selected-workspace/minimal-file.txt"
+        },
+        "error": null
+      },
+      {
+        "state": "DONE",
+        "name": "write_to_file",
+        "parameters": {
+          "TargetFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-p0h244yk/selected-workspace/minimal-file.txt"
+        },
+        "error": null
+      }
+    ],
+    "stderrTail": ""
+  },
+  {
+    "case": "shell",
+    "exit": 0,
+    "initCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-feyq0nb1/capsule",
+    "status": "SUCCESS",
+    "response": "The file has been created.\n\nThe absolute path is:\n[`/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-feyq0nb1/selected-workspace/minimal-shell.txt`](file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-feyq0nb1/selected-workspace/minimal-shell.txt) (canonical path: [`/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-feyq0nb1/selected-workspace/minimal-shell.txt`](file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-feyq0nb1/selected-workspace/minimal-shell.txt))\n",
+    "workspaceFile": "MINIMAL-SHELL-5307",
+    "capsuleFile": null,
+    "tools": [
+      {
+        "state": "ACTIVE",
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "printf \"MINIMAL-SHELL-5307\" > minimal-shell.txt"
+        },
+        "error": null
+      },
+      {
+        "state": "DONE",
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "printf \"MINIMAL-SHELL-5307\" > minimal-shell.txt"
+        },
+        "error": null
+      },
+      {
+        "state": "ACTIVE",
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "pwd"
+        },
+        "error": null
+      },
+      {
+        "state": "DONE",
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "pwd"
+        },
+        "error": null
+      }
+    ],
+    "stderrTail": ""
+  }
+]

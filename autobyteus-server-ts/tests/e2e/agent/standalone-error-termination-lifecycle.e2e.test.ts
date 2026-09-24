@@ -112,6 +112,7 @@ const createManager = (backend: AgentRunBackend): AgentRunManager => {
     autoByteusBackendFactory: createFactory(unusedAuto),
     codexBackendFactory: createFactory(backend),
     claudeBackendFactory: createFactory(unusedClaude),
+    agyBackendFactory: createFactory(unusedClaude),
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,

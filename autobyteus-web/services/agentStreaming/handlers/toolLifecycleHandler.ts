@@ -13,6 +13,7 @@ import type {
   ToolExecutionInterruptedPayload,
   ToolExecutionStartedPayload,
   ToolExecutionSucceededPayload,
+  ToolExecutionCompletedPayload,
   ToolLogPayload,
 } from '../protocol/messageTypes';
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
@@ -26,6 +27,7 @@ import {
   applyExecutionInterruptedState,
   applyExecutionStartedState,
   applyExecutionSucceededState,
+  applyExecutionCompletedState,
   isTerminalStatus,
   type ToolLifecycleSegment,
 } from './toolLifecycleState';
@@ -396,6 +398,30 @@ export function handleToolExecutionSucceeded(
   const transitioned = applyExecutionSucceededState(segment, parsed.result);
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'success');
+    setToolActivityResult(context, parsed.invocationId, segment.result, null);
+  }
+  return completeToolMutation({ ensured, ...before, structural: transitioned });
+}
+
+export function handleToolExecutionCompleted(
+  payload: ToolExecutionCompletedPayload,
+  context: AgentContext,
+): ToolLifecycleHandlerResult {
+  const parsed = parseToolExecutionSucceededPayload(payload);
+  if (!parsed) {
+    warnInvalidPayload('TOOL_EXECUTION_COMPLETED', payload);
+    return { conversationChanged: false, eventMonitor: 'NONE' };
+  }
+  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, parsed.arguments);
+  const before = beginToolMutation(ensured);
+  const { segment } = ensured;
+  if (isPlaceholderToolName(segment.toolName)) segment.toolName = parsed.toolName;
+  mergeArguments(segment, parsed.arguments);
+  syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
+  const transitioned = applyExecutionCompletedState(segment, parsed.result);
+  if (transitioned) {
+    updateToolActivityStatus(context, parsed.invocationId, 'completed');
     setToolActivityResult(context, parsed.invocationId, segment.result, null);
   }
   return completeToolMutation({ ensured, ...before, structural: transitioned });

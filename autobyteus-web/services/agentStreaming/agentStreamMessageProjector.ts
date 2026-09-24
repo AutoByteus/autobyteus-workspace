@@ -12,6 +12,7 @@ import {
   handleToolDenied,
   handleToolExecutionStarted,
   handleToolExecutionSucceeded,
+  handleToolExecutionCompleted,
   handleToolExecutionFailed,
   handleToolExecutionInterrupted,
   handleToolLog,
@@ -97,6 +98,7 @@ const dispatchToHandler = (
     case 'TOOL_DENIED':
     case 'TOOL_EXECUTION_STARTED':
     case 'TOOL_EXECUTION_SUCCEEDED':
+    case 'TOOL_EXECUTION_COMPLETED':
     case 'TOOL_EXECUTION_FAILED':
     case 'TOOL_EXECUTION_INTERRUPTED':
     case 'TOOL_LOG': {
@@ -110,6 +112,8 @@ const dispatchToHandler = (
               ? handleToolExecutionStarted(message.payload, context)
               : message.type === 'TOOL_EXECUTION_SUCCEEDED'
                 ? handleToolExecutionSucceeded(message.payload, context)
+                : message.type === 'TOOL_EXECUTION_COMPLETED'
+                ? handleToolExecutionCompleted(message.payload, context)
                 : message.type === 'TOOL_EXECUTION_FAILED'
                   ? handleToolExecutionFailed(message.payload, context)
                   : message.type === 'TOOL_EXECUTION_INTERRUPTED'
