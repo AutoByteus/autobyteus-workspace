@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import { createRequire } from "node:module";
 import path from "node:path";
 import os from "node:os";
 import { spawnSync } from "node:child_process";
@@ -8,8 +7,6 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
 } from "../../../src/config/server-runtime-endpoints.js";
@@ -86,8 +83,6 @@ const sendTeamMessageOverSocket = (
 describeAgyRuntime(
   "AGY Team and Org collaboration e2e (live transport)",
   () => {
-    let schema: GraphQLSchema;
-    let graphql: typeof graphqlFn;
     let testDataDir: string | null = null;
     let runtimeServerApp: FastifyInstance | null = null;
     let runtimeServerUrl: URL;
@@ -111,18 +106,9 @@ describeAgyRuntime(
         "utf-8",
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
-      const require = createRequire(import.meta.url);
-      const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
-      const graphqlPath = require.resolve("graphql", {
-        paths: [typeGraphqlRoot],
-      });
-      const graphqlModule = await import(graphqlPath);
-      graphql = graphqlModule.graphql as typeof graphqlFn;
-
       const started = await startStudioE2eRuntimeServer();
       runtimeServerApp = started.fastify;
       runtimeServerUrl = started.mainUrl;
-      schema = await buildGraphqlSchema();
     });
 
     afterAll(async () => {
@@ -146,18 +132,30 @@ describeAgyRuntime(
       }
     });
 
+    const execGraphql = async <T>(
+      query: string,
+      variables?: Record<string, unknown>,
+    ): Promise<T> => {
+      const response = await fetch(new URL("/graphql", runtimeServerUrl), {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ query, variables }),
+      });
+      const result = await response.json() as {
+        data?: T;
+        errors?: Array<{ message: string }>;
+      };
+      if (!response.ok || result.errors?.length || !result.data) {
+        throw new Error(`GraphQL HTTP ${response.status}: ${JSON.stringify(result.errors ?? result)}`);
+      }
+      return result.data;
+    };
+
     afterEach(async () => {
       const exec = async <T>(
         query: string,
         variables?: Record<string, unknown>,
-      ): Promise<T | null> => {
-        const result = await graphql({
-          schema,
-          source: query,
-          variableValues: variables,
-        });
-        return result.errors?.length ? null : (result.data as T);
-      };
+      ): Promise<T | null> => execGraphql<T>(query, variables).catch(() => null);
 
       const terminateTeamRunMutation = `
       mutation TerminateAgentTeamRun($teamRunId: String!) {
@@ -214,22 +212,6 @@ describeAgyRuntime(
       }
       createdWorkspaceRoots.clear();
     });
-
-    const execGraphql = async <T>(
-      query: string,
-      variables?: Record<string, unknown>,
-    ): Promise<T> => {
-      const result = await graphql({
-        schema,
-        source: query,
-        variableValues: variables,
-      });
-      if (result.errors?.length) {
-        throw result.errors[0];
-      }
-      return result.data as T;
-    };
-
 
     const fetchPreferredAgyToolModelIdentifier = async (): Promise<string> => {
       const result = await execGraphql<{
@@ -695,11 +677,14 @@ Rules:
       const modelIdentifier = await fetchPreferredAgyToolModelIdentifier();
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "agy-org-runtime-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
-      const instructions = "Do not use tools. On a direct user message, reply with the exact requested marker and no other text.";
+      const instructions = `On a direct user request for a marker, reply with that exact marker and do not use tools.
+On a request to relay to another Org member, use only the AutoByteus agent tools MCP call_mcp_tool with ServerName autobyteus_agent_tools and ToolName send_message_to and the exact supplied arguments; you may read the MCP schema first. Do not use shell/file tools.
+On a teammate message, do not use tools; reply with exactly ACK.`;
       const createAgent = async (name: string): Promise<string> => {
         const result = await execGraphql<{ createAgentDefinition: { id: string } }>(
           `mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }`,
-          { input: { name: `agy-org-${name}-${unique}`, role: "assistant", description: "Live AGY Org member", instructions } },
+          { input: { name: `agy-org-${name}-${unique}`, role: "assistant", description: "Live AGY Org member", instructions,
+            toolNames: ["send_message_to"] } },
         );
         createdAgentDefinitionIds.add(result.createAgentDefinition.id);
         return result.createAgentDefinition.id;
@@ -773,10 +758,12 @@ Rules:
         expect(frames.some((frame) => frame.type === "ROOT_LIFECYCLE" && frame.payload.is_active === true),
           JSON.stringify(frames)).toBe(true);
         await wait(100);
+        const memberMarkers: Array<{ address: string; runId: string; marker: string }> = [];
         for (const [address, runId] of [
           ["/director", direct?.agentRunId], ["/team/worker", nested?.agentRunId],
         ] as const) {
           const marker = `ORG-${address.replaceAll("/", "-")}-${unique}`;
+          memberMarkers.push({ address, runId: runId as string, marker });
           const commandId = randomUUID();
           const start = frames.length;
           socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
@@ -793,7 +780,8 @@ Rules:
               if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
               const event = frame.payload.event as Record<string, unknown> | undefined;
               return frame.payload.root_run_id === orgRunId && event?.kind === "agent_presentation" &&
-                event.member_address === address && event.agent_run_id === runId;
+                event.member_address === address && event.agent_run_id === runId &&
+                (event.message as Record<string, unknown> | undefined)?.type === "TURN_COMPLETED";
             });
             if (accepted && attributed) break;
             await wait(500);
@@ -805,17 +793,93 @@ Rules:
             if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
             const event = frame.payload.event as Record<string, unknown> | undefined;
             return frame.payload.root_run_id === orgRunId && event?.kind === "agent_presentation" &&
-              event.member_address === address && event.agent_run_id === runId;
+              event.member_address === address && event.agent_run_id === runId &&
+              (event.message as Record<string, unknown> | undefined)?.type === "TURN_COMPLETED";
           }), JSON.stringify(frames.slice(start).slice(-10))).toBe(true);
+        }
+
+        const relayContent = `ORG-RELAY-${unique}`;
+        const relayStart = frames.length;
+        const relayCommandId = randomUUID();
+        socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+          root_subject_kind: "agent_org", root_run_id: orgRunId,
+          target_agent_run_id: direct?.agentRunId, command_id: relayCommandId,
+          content: "Use AutoByteus call_mcp_tool ServerName autobyteus_agent_tools ToolName send_message_to " +
+            `exactly once with arguments ${JSON.stringify({ recipient_address: "/team/worker", content: relayContent,
+              message_type: "org_roundtrip" })}. Do not use unrelated tools.`,
+          context_file_paths: [], image_urls: [], message_id: randomUUID(), dedupe_key: randomUUID(),
+        } }));
+        const relayDeadline = Date.now() + 120_000;
+        while (Date.now() < relayDeadline) {
+          const receipt = frames.slice(relayStart).find((frame) => {
+            if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+            const event = frame.payload.event as Record<string, unknown> | undefined;
+            const message = event?.message as Record<string, unknown> | undefined;
+            return frame.payload.root_run_id === orgRunId && event?.kind === "communication" &&
+              message?.senderAgentRunId === direct?.agentRunId &&
+              message?.receiverAgentRunId === nested?.agentRunId && message?.content === relayContent;
+          });
+          const workerTurn = frames.slice(relayStart).some((frame) => {
+            if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+            const event = frame.payload.event as Record<string, unknown> | undefined;
+            return event?.kind === "agent_presentation" && event.member_address === "/team/worker" &&
+              event.agent_run_id === nested?.agentRunId &&
+              (event.message as Record<string, unknown> | undefined)?.type === "TURN_COMPLETED";
+          });
+          if (receipt && workerTurn) break;
+          await wait(500);
+        }
+        expect(frames.slice(relayStart).some((frame) => frame.type === "AGENT_COMMAND_ACK" &&
+          frame.payload.command_id === relayCommandId && frame.payload.state === "accepted")).toBe(true);
+        const receipt = frames.slice(relayStart).find((frame) => {
+          if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+          const event = frame.payload.event as Record<string, unknown> | undefined;
+          const message = event?.message as Record<string, unknown> | undefined;
+          return frame.payload.root_run_id === orgRunId && event?.kind === "communication" &&
+            message?.senderAgentRunId === direct?.agentRunId &&
+            message?.receiverAgentRunId === nested?.agentRunId && message?.content === relayContent;
+        });
+        expect(receipt, JSON.stringify(frames.slice(relayStart).slice(-20))).toBeDefined();
+        const findDirectorTool = (type: string, invocationId?: string) =>
+          frames.slice(relayStart).find((frame) => {
+            if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+            const event = frame.payload.event as Record<string, unknown> | undefined;
+            const message = event?.message as Record<string, unknown> | undefined;
+            const payload = message?.payload as Record<string, unknown> | undefined;
+            return event?.kind === "agent_presentation" && event.member_address === "/director" &&
+              event.agent_run_id === direct?.agentRunId && message?.type === type &&
+              payload?.tool_name === "call_mcp_tool" &&
+              (invocationId ? payload.invocation_id === invocationId :
+                JSON.stringify(payload.arguments).includes("send_message_to") &&
+                JSON.stringify(payload.arguments).includes(relayContent));
+          });
+        const toolStart = findDirectorTool("TOOL_EXECUTION_STARTED");
+        expect(toolStart, JSON.stringify(frames.slice(relayStart).slice(-20))).toBeDefined();
+        const startedEvent = toolStart?.payload.event as Record<string, unknown> | undefined;
+        const startedMessage = startedEvent?.message as Record<string, unknown> | undefined;
+        const invocationId = (startedMessage?.payload as Record<string, unknown> | undefined)?.invocation_id;
+        expect(typeof invocationId).toBe("string");
+        expect(findDirectorTool("TOOL_EXECUTION_SUCCEEDED", invocationId as string)).toBeDefined();
+        expect(frames.slice(relayStart).some((frame) => {
+          if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+          const event = frame.payload.event as Record<string, unknown> | undefined;
+          return event?.kind === "agent_presentation" && event.member_address === "/team/worker" &&
+            event.agent_run_id === nested?.agentRunId &&
+            (event.message as Record<string, unknown> | undefined)?.type === "TURN_COMPLETED";
+        }), JSON.stringify(frames.slice(relayStart).slice(-20))).toBe(true);
+
+        for (const { address, runId, marker } of memberMarkers) {
           let outputFound = false;
           for (let attempt = 0; attempt < 120; attempt++) {
-            const projection = await execGraphql<{ getAgentOrgMemberRunProjection: {
-              agentRunId: string; memberAddress: string; conversation: unknown[];
-            } }>(`query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+            const projectionQuery = `query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
               getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
                 agentRunId memberAddress conversation
               }
-            }`, { orgRunId, memberAddress: address, agentRunId: runId });
+            }`;
+            const projectionVariables = { orgRunId, memberAddress: address, agentRunId: runId };
+            const projection = await execGraphql<{ getAgentOrgMemberRunProjection: {
+              agentRunId: string; memberAddress: string; conversation: unknown[];
+            } }>(projectionQuery, projectionVariables);
             expect(projection.getAgentOrgMemberRunProjection).toMatchObject({ agentRunId: runId, memberAddress: address });
             if (JSON.stringify(projection.getAgentOrgMemberRunProjection.conversation).includes(marker)) {
               outputFound = true;
@@ -824,9 +888,98 @@ Rules:
             await wait(500);
           }
           expect(outputFound).toBe(true);
+          const trace = await execGraphql<{ getAgentOrgMemberEventMonitorActiveTracePage: {
+            events: Array<{ eventId: string; visuals: Array<{ kind: string; content?: string; text?: string }> }>;
+            cursorStatus: string; activeGeneration: string;
+          } }>(`query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+            getAgentOrgMemberEventMonitorActiveTracePage(
+              orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId
+            ) {
+              cursorStatus activeGeneration
+              events { eventId visuals {
+                ... on EventMonitorUserVisual { kind text }
+                ... on EventMonitorAssistantTextVisual { kind content }
+              } }
+            }
+          }`, { orgRunId, memberAddress: address, agentRunId: runId });
+          expect(trace.getAgentOrgMemberEventMonitorActiveTracePage.cursorStatus).toBe("VALID");
+          expect(trace.getAgentOrgMemberEventMonitorActiveTracePage.activeGeneration).toBeTruthy();
+          expect(trace.getAgentOrgMemberEventMonitorActiveTracePage.events.length).toBeGreaterThan(0);
         }
+        // A member TURN_COMPLETED can precede full root-level work settlement.
+        // Restore coverage should stop a quiescent Org, not race an in-flight turn.
+        let settled = false;
+        for (let attempt = 0; attempt < 120; attempt++) {
+          const checkpoint = await execGraphql<{ getAgentOrgExecutionCheckpoint: {
+            orgRunId: string; hasOpenExecutionWork: boolean;
+          } }>(`query($orgRunId: String!) {
+            getAgentOrgExecutionCheckpoint(orgRunId: $orgRunId) { orgRunId hasOpenExecutionWork }
+          }`, { orgRunId });
+          expect(checkpoint.getAgentOrgExecutionCheckpoint.orgRunId).toBe(orgRunId);
+          if (!checkpoint.getAgentOrgExecutionCheckpoint.hasOpenExecutionWork) {
+            settled = true;
+            break;
+          }
+          await wait(500);
+        }
+        expect(settled).toBe(true);
       } finally {
         await closeSocket(socket);
+      }
+      const beforeStop = await execGraphql<{ getAgentOrgRunConfig: { isActive: boolean } }>(
+        `query($orgRunId: String!) { getAgentOrgRunConfig(orgRunId: $orgRunId) { isActive } }`,
+        { orgRunId },
+      );
+      expect(beforeStop.getAgentOrgRunConfig.isActive).toBe(true);
+      const stopped = await execGraphql<{ terminateAgentOrgRun: { success: boolean; message: string } }>(
+        `mutation($agentOrgRunId: String!) {
+          terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message }
+        }`, { agentOrgRunId: orgRunId },
+      );
+      expect(stopped.terminateAgentOrgRun.success, stopped.terminateAgentOrgRun.message).toBe(true);
+      const restored = await execGraphql<{ restoreAgentOrgRun: {
+        success: boolean; message: string; agentOrgRunId: string | null;
+      } }>(`mutation($agentOrgRunId: String!) {
+        restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message agentOrgRunId }
+      }`, { agentOrgRunId: orgRunId });
+      expect(restored.restoreAgentOrgRun.success, restored.restoreAgentOrgRun.message).toBe(true);
+      expect(restored.restoreAgentOrgRun.agentOrgRunId).toBe(orgRunId);
+      const reloaded = await execGraphql<{ getAgentOrgRunConfig: { executionTree: Record<string, unknown> } }>(
+        `query($orgRunId: String!) { getAgentOrgRunConfig(orgRunId: $orgRunId) { executionTree } }`,
+        { orgRunId },
+      );
+      const restoredTree = reloaded.getAgentOrgRunConfig.executionTree as {
+        rootOrg: { members: Array<Record<string, unknown>> };
+      };
+      const restoredDirector = restoredTree.rootOrg.members.find((member) => member.address === "/director");
+      const restoredTeam = restoredTree.rootOrg.members.find((member) => member.address === "/team");
+      const restoredWorker = (restoredTeam?.members as Array<Record<string, unknown>> | undefined)
+        ?.find((member) => member.address === "/team/worker");
+      expect(restoredDirector?.agentRunId).toBe(direct?.agentRunId);
+      expect(restoredWorker?.agentRunId).toBe(nested?.agentRunId);
+      for (const [address, runId] of [
+        ["/director", direct?.agentRunId], ["/team/worker", nested?.agentRunId],
+      ] as const) {
+        const variables = { orgRunId, memberAddress: address, agentRunId: runId };
+        const projection = await execGraphql<{ getAgentOrgMemberRunProjection: {
+          agentRunId: string; memberAddress: string; conversation: unknown[];
+        } }>(`query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+          getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+            agentRunId memberAddress conversation
+          }
+        }`, variables);
+        expect(projection.getAgentOrgMemberRunProjection).toMatchObject({ agentRunId: runId, memberAddress: address });
+        expect(JSON.stringify(projection.getAgentOrgMemberRunProjection.conversation))
+          .toContain(`ORG-${address.replaceAll("/", "-")}-${unique}`);
+        const trace = await execGraphql<{ getAgentOrgMemberEventMonitorActiveTracePage: {
+          cursorStatus: string; events: Array<{ eventId: string }>;
+        } }>(`query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+          getAgentOrgMemberEventMonitorActiveTracePage(
+            orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId
+          ) { cursorStatus events { eventId } }
+        }`, variables);
+        expect(trace.getAgentOrgMemberEventMonitorActiveTracePage.cursorStatus).toBe("VALID");
+        expect(trace.getAgentOrgMemberEventMonitorActiveTracePage.events.length).toBeGreaterThan(0);
       }
     }, 300_000);
   });

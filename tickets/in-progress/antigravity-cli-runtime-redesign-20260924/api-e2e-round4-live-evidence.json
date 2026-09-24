@@ -1,0 +1,60 @@
+{
+  "revision": "API-REV-004",
+  "source_commit": "e23a029b2242a3453475405aa7847dd0dee477db",
+  "result": "Pass",
+  "confidence_percent": 95,
+  "origin_correction": "API-REV-003 second in-process GraphQL schema build contaminated TypeGraphQL metadata; CR-005/API-F-003 production attribution withdrawn",
+  "schema_execution": "startStudioE2eRuntimeServer one production schema build; all durable E2E GraphQL requests use live HTTP POST /graphql",
+  "agy_final": {
+    "log": "/tmp/agy-api-r4-full-final.log",
+    "tests_passed": 2,
+    "tests_failed": 0,
+    "team_seconds": 35.287,
+    "org_seconds": 27.122,
+    "team": "real AGY ping-to-pong scoped MCP with exact IDs and Team exact restore/continuation",
+    "org": "real AGY direct /director and nested /team/worker turns; actual scoped MCP delivery, exact stream attribution; clean public HTTP projection and trace for both; quiescent stop/restore exact IDs and reloaded markers/events"
+  },
+  "non_agy_real": {
+    "log": "/tmp/agy-api-r4-nonagy-team-projection.log",
+    "tests_passed": 1,
+    "tests_skipped_by_filter": 4,
+    "seconds": 290.274,
+    "provider": "LMSTUDIO qwen/qwen3.8-27b",
+    "assertions": "both AutoByteus Team members execute, project initial markers, stop/restore, continue and retain both markers"
+  },
+  "focused": {
+    "contract": {
+      "passed": 8,
+      "log": "/tmp/agy-api-r4-contract.log"
+    },
+    "server": {
+      "passed": 32,
+      "skipped_opt_in": 5,
+      "log": "/tmp/agy-api-r4-server-regression.log"
+    },
+    "org_web": {
+      "passed": 78,
+      "log": "/tmp/agy-api-r4-web-regression.log"
+    },
+    "non_agy_server": {
+      "passed": 73,
+      "log": "/tmp/agy-api-r4-nonagy-server.log"
+    },
+    "non_agy_web": {
+      "passed": 55,
+      "log": "/tmp/agy-api-r4-nonagy-web.log"
+    }
+  },
+  "carried_browser": "API-REV-001 fresh final-code DENIED live/reloaded and DONE green/output/no invented shell exit; not a round-4 browser rerun",
+  "bounded_residuals": [
+    "one earlier pre-quiescence Org termination success=false, not reproduced in three subsequent Org runs; arbitrary mid-turn termination not proven",
+    "no fresh Org browser inspector or real Codex/Claude provider run",
+    "provider-side AGY conversations and pre-existing LMStudio process/model are outside test-owned cleanup"
+  ],
+  "historical_fixture_failures": [
+    "/tmp/agy-api-r4-org-first.log lowercase cursorStatus assertion",
+    "/tmp/agy-api-r4-org-restore.log intermittent stop before root checkpoint",
+    "/tmp/agy-api-r4-nonagy-live-restore.log stale standalone Studio services fixture",
+    "/tmp/agy-api-r4-nonagy-team-live.log old cloud QWEN selection missing key"
+  ]
+}
