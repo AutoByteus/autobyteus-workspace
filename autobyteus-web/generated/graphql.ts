@@ -80,6 +80,25 @@ export type AgentMemoryView = {
   workingContext?: Maybe<Array<MemoryMessage>>;
 };
 
+export type AgentOrgWithMemoryPage = {
+  __typename?: 'AgentOrgWithMemoryPage';
+  entries: Array<AgentOrgWithMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentOrgWithMemorySummary = {
+  __typename?: 'AgentOrgWithMemorySummary';
+  latestMemoryAt?: Maybe<Scalars['String']['output']>;
+  memberMemoryCount: Scalars['Int']['output'];
+  memory: MemoryAvailabilitySummary;
+  orgDefinitionId: Scalars['String']['output'];
+  orgDefinitionName: Scalars['String']['output'];
+  orgRunCount: Scalars['Int']['output'];
+};
+
 export type AgentPackage = {
   __typename?: 'AgentPackage';
   agentTeamCount: Scalars['Int']['output'];
@@ -205,7 +224,7 @@ export type AgentTeamRunMemorySummary = {
   __typename?: 'AgentTeamRunMemorySummary';
   createdAt?: Maybe<Scalars['String']['output']>;
   lastUpdatedAt?: Maybe<Scalars['String']['output']>;
-  memberTargets: Array<TeamMemberMemoryTargetSummary>;
+  memberTargets: Array<CollaborationMemberMemoryTargetSummary>;
   memory: MemoryAvailabilitySummary;
   summary?: Maybe<Scalars['String']['output']>;
   teamDefinitionId: Scalars['String']['output'];
@@ -422,6 +441,16 @@ export type CatalogProviderObject = {
   isCustom: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   providerType: Scalars['String']['output'];
+};
+
+export type CollaborationMemberMemoryTargetSummary = {
+  __typename?: 'CollaborationMemberMemoryTargetSummary';
+  agentDefinitionId?: Maybe<Scalars['String']['output']>;
+  agentRunId: Scalars['String']['output'];
+  displayName: Scalars['String']['output'];
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memberAddress: Scalars['String']['output'];
+  memory: MemoryAvailabilitySummary;
 };
 
 export type ConfigureMcpServerResult = {
@@ -1754,6 +1783,7 @@ export type Query = {
   externalChannelTeamDefinitionOptions: Array<ExternalChannelTeamDefinitionOptionGql>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
+  getAgentOrgMemberRunMemoryView: AgentMemoryView;
   getAgentRunMemoryView: AgentMemoryView;
   getAgentRunResumeConfig: RunResumeConfigPayload;
   getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
@@ -1783,6 +1813,8 @@ export type Query = {
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getWorkingContextCompactionStrategies: Array<WorkingContextCompactionStrategyOption>;
   health: HealthStatus;
+  listAgentOrgRunsWithMemory: AgentOrgRunMemoryPage;
+  listAgentOrgsWithMemory: AgentOrgWithMemoryPage;
   listAgentRunsWithMemory: AgentRunMemoryPage;
   listAgentTeamRunsWithMemory: AgentTeamRunMemoryPage;
   listAgentTeamsWithMemory: AgentTeamWithMemoryPage;
@@ -1856,6 +1888,21 @@ export type QueryFileContentArgs = {
 export type QueryFolderChildrenArgs = {
   folderPath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgMemberRunMemoryViewArgs = {
+  agentRunId: Scalars['String']['input'];
+  includeArchive?: Scalars['Boolean']['input'];
+  includeEpisodic?: Scalars['Boolean']['input'];
+  includeRawTraceFiles?: Scalars['Boolean']['input'];
+  includeRawTraces?: Scalars['Boolean']['input'];
+  includeSemantic?: Scalars['Boolean']['input'];
+  includeWorkingContext?: Scalars['Boolean']['input'];
+  orgRunId: Scalars['String']['input'];
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
 };
 
 
@@ -1971,6 +2018,23 @@ export type QueryGetTeamRunResumeConfigArgs = {
 
 export type QueryGetTeamRunTokenUsageSummaryArgs = {
   teamRunId: Scalars['String']['input'];
+};
+
+
+export type QueryListAgentOrgRunsWithMemoryArgs = {
+  orgDefinitionId: Scalars['String']['input'];
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
+};
+
+
+export type QueryListAgentOrgsWithMemoryArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
 };
 
 
@@ -2489,16 +2553,6 @@ export type TeamMemberInput = {
   refType: TeamMemberType;
 };
 
-export type TeamMemberMemoryTargetSummary = {
-  __typename?: 'TeamMemberMemoryTargetSummary';
-  agentDefinitionId?: Maybe<Scalars['String']['output']>;
-  agentRunId: Scalars['String']['output'];
-  displayName: Scalars['String']['output'];
-  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
-  memberAddress: Scalars['String']['output'];
-  memory: MemoryAvailabilitySummary;
-};
-
 export type TeamMemberRunProjectionPayload = {
   __typename?: 'TeamMemberRunProjectionPayload';
   activities: Array<Scalars['JSON']['output']>;
@@ -2928,6 +2982,28 @@ export type UpdateStoppedAgentRunModelConfigResult = {
   message: Scalars['String']['output'];
   outcome: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgRunMemoryPage = {
+  __typename?: 'AgentOrgRunMemoryPage';
+  entries: Array<AgentOrgRunMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentOrgRunMemorySummary = {
+  __typename?: 'AgentOrgRunMemorySummary';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memberTargets: Array<CollaborationMemberMemoryTargetSummary>;
+  memory: MemoryAvailabilitySummary;
+  orgDefinitionId: Scalars['String']['output'];
+  orgDefinitionName: Scalars['String']['output'];
+  orgRunId: Scalars['String']['output'];
+  summary?: Maybe<Scalars['String']['output']>;
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
 export type UpdateStoppedTeamRunModelConfigsInput = {
@@ -3770,7 +3846,28 @@ export type ListAgentTeamRunsWithMemoryQueryVariables = Exact<{
 }>;
 
 
-export type ListAgentTeamRunsWithMemoryQuery = { __typename?: 'Query', listAgentTeamRunsWithMemory: { __typename?: 'AgentTeamRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamRunMemorySummary', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }, memberTargets: Array<{ __typename?: 'TeamMemberMemoryTargetSummary', memberAddress: string, displayName: string, agentRunId: string, agentDefinitionId?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> }> } };
+export type ListAgentTeamRunsWithMemoryQuery = { __typename?: 'Query', listAgentTeamRunsWithMemory: { __typename?: 'AgentTeamRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamRunMemorySummary', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }, memberTargets: Array<{ __typename?: 'CollaborationMemberMemoryTargetSummary', memberAddress: string, displayName: string, agentRunId: string, agentDefinitionId?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> }> } };
+
+export type ListAgentOrgsWithMemoryQueryVariables = Exact<{
+  source?: InputMaybe<MemoryExplorerSourceInput>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListAgentOrgsWithMemoryQuery = { __typename?: 'Query', listAgentOrgsWithMemory: { __typename?: 'AgentOrgWithMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentOrgWithMemorySummary', orgDefinitionId: string, orgDefinitionName: string, orgRunCount: number, memberMemoryCount: number, latestMemoryAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
+
+export type ListAgentOrgRunsWithMemoryQueryVariables = Exact<{
+  orgDefinitionId: Scalars['String']['input'];
+  source?: InputMaybe<MemoryExplorerSourceInput>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListAgentOrgRunsWithMemoryQuery = { __typename?: 'Query', listAgentOrgRunsWithMemory: { __typename?: 'AgentOrgRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentOrgRunMemorySummary', orgRunId: string, orgDefinitionId: string, orgDefinitionName: string, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }, memberTargets: Array<{ __typename?: 'CollaborationMemberMemoryTargetSummary', memberAddress: string, displayName: string, agentRunId: string, agentDefinitionId?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> }> } };
 
 export type GetMemorySyncStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3822,6 +3919,23 @@ export type GetTeamMemberRunMemoryViewQueryVariables = Exact<{
 
 
 export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, selectedRawTraceFileName?: string | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraceFiles?: Array<{ __typename?: 'RawTraceFileSummary', fileName: string, kind: string, recordCount: number, segmentIndex?: number | null, firstTimestamp?: number | null, lastTimestamp?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', scope: string, id?: string | null, traceType: string, sourceEvent?: string | null, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId?: string | null, seq?: number | null, ts: number, fileAttachments?: Array<{ __typename?: 'MemoryFileAttachment', uri: string, fileType: string, fileName?: string | null }> | null }> | null } };
+
+export type GetAgentOrgMemberRunMemoryViewQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+  source?: InputMaybe<MemoryExplorerSourceInput>;
+  includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
+  includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraceFiles?: InputMaybe<Scalars['Boolean']['input']>;
+  includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAgentOrgMemberRunMemoryViewQuery = { __typename?: 'Query', getAgentOrgMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, selectedRawTraceFileName?: string | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraceFiles?: Array<{ __typename?: 'RawTraceFileSummary', fileName: string, kind: string, recordCount: number, segmentIndex?: number | null, firstTimestamp?: number | null, lastTimestamp?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', scope: string, id?: string | null, traceType: string, sourceEvent?: string | null, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId?: string | null, seq?: number | null, ts: number, fileAttachments?: Array<{ __typename?: 'MemoryFileAttachment', uri: string, fileType: string, fileName?: string | null }> | null }> | null } };
 
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -8207,6 +8321,137 @@ export function useListAgentTeamRunsWithMemoryLazyQuery(variables?: ListAgentTea
   return VueApolloComposable.useLazyQuery<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>(ListAgentTeamRunsWithMemoryDocument, variables, options);
 }
 export type ListAgentTeamRunsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>;
+export const ListAgentOrgsWithMemoryDocument = gql`
+    query ListAgentOrgsWithMemory($source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+  listAgentOrgsWithMemory(
+    source: $source
+    search: $search
+    page: $page
+    pageSize: $pageSize
+  ) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      orgDefinitionId
+      orgDefinitionName
+      orgRunCount
+      memberMemoryCount
+      latestMemoryAt
+      memory {
+        latestMemoryAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListAgentOrgsWithMemoryQuery__
+ *
+ * To run a query within a Vue component, call `useListAgentOrgsWithMemoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAgentOrgsWithMemoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListAgentOrgsWithMemoryQuery({
+ *   source: // value for 'source'
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListAgentOrgsWithMemoryQuery(variables: ListAgentOrgsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentOrgsWithMemoryQueryVariables> | ReactiveFunction<ListAgentOrgsWithMemoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>(ListAgentOrgsWithMemoryDocument, variables, options);
+}
+export function useListAgentOrgsWithMemoryLazyQuery(variables: ListAgentOrgsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentOrgsWithMemoryQueryVariables> | ReactiveFunction<ListAgentOrgsWithMemoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>(ListAgentOrgsWithMemoryDocument, variables, options);
+}
+export type ListAgentOrgsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentOrgsWithMemoryQuery, ListAgentOrgsWithMemoryQueryVariables>;
+export const ListAgentOrgRunsWithMemoryDocument = gql`
+    query ListAgentOrgRunsWithMemory($orgDefinitionId: String!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+  listAgentOrgRunsWithMemory(
+    orgDefinitionId: $orgDefinitionId
+    source: $source
+    search: $search
+    page: $page
+    pageSize: $pageSize
+  ) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      orgRunId
+      orgDefinitionId
+      orgDefinitionName
+      summary
+      workspaceRootPath
+      createdAt
+      lastUpdatedAt
+      memory {
+        latestMemoryAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+      memberTargets {
+        memberAddress
+        displayName
+        agentRunId
+        agentDefinitionId
+        lastUpdatedAt
+        memory {
+          latestMemoryAt
+          hasWorkingContext
+          hasEpisodic
+          hasSemantic
+          hasRawTraces
+          hasRawArchive
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListAgentOrgRunsWithMemoryQuery__
+ *
+ * To run a query within a Vue component, call `useListAgentOrgRunsWithMemoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAgentOrgRunsWithMemoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListAgentOrgRunsWithMemoryQuery({
+ *   orgDefinitionId: // value for 'orgDefinitionId'
+ *   source: // value for 'source'
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListAgentOrgRunsWithMemoryQuery(variables: ListAgentOrgRunsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentOrgRunsWithMemoryQueryVariables> | ReactiveFunction<ListAgentOrgRunsWithMemoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>(ListAgentOrgRunsWithMemoryDocument, variables, options);
+}
+export function useListAgentOrgRunsWithMemoryLazyQuery(variables?: ListAgentOrgRunsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentOrgRunsWithMemoryQueryVariables> | ReactiveFunction<ListAgentOrgRunsWithMemoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>(ListAgentOrgRunsWithMemoryDocument, variables, options);
+}
+export type ListAgentOrgRunsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentOrgRunsWithMemoryQuery, ListAgentOrgRunsWithMemoryQueryVariables>;
 export const GetMemorySyncStatusDocument = gql`
     query GetMemorySyncStatus {
   getMemorySyncStatus {
@@ -8544,6 +8789,97 @@ export function useGetTeamMemberRunMemoryViewLazyQuery(variables?: GetTeamMember
   return VueApolloComposable.useLazyQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
 }
 export type GetTeamMemberRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>;
+export const GetAgentOrgMemberRunMemoryViewDocument = gql`
+    query GetAgentOrgMemberRunMemoryView($orgRunId: String!, $agentRunId: String!, $source: MemoryExplorerSourceInput, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeRawTraceFiles: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int, $rawTraceFileName: String) {
+  getAgentOrgMemberRunMemoryView(
+    orgRunId: $orgRunId
+    agentRunId: $agentRunId
+    source: $source
+    includeWorkingContext: $includeWorkingContext
+    includeEpisodic: $includeEpisodic
+    includeSemantic: $includeSemantic
+    includeRawTraces: $includeRawTraces
+    includeRawTraceFiles: $includeRawTraceFiles
+    includeArchive: $includeArchive
+    rawTraceLimit: $rawTraceLimit
+    rawTraceFileName: $rawTraceFileName
+  ) {
+    runId
+    workingContext {
+      role
+      content
+      reasoning
+      toolPayload
+      ts
+    }
+    episodic
+    semantic
+    rawTraceFiles {
+      fileName
+      kind
+      recordCount
+      segmentIndex
+      firstTimestamp
+      lastTimestamp
+    }
+    selectedRawTraceFileName
+    rawTraces {
+      scope
+      id
+      traceType
+      sourceEvent
+      content
+      toolName
+      toolCallId
+      toolArgs
+      toolResult
+      toolError
+      media
+      fileAttachments {
+        uri
+        fileType
+        fileName
+      }
+      turnId
+      seq
+      ts
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgMemberRunMemoryViewQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgMemberRunMemoryViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgMemberRunMemoryViewQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgMemberRunMemoryViewQuery({
+ *   orgRunId: // value for 'orgRunId'
+ *   agentRunId: // value for 'agentRunId'
+ *   source: // value for 'source'
+ *   includeWorkingContext: // value for 'includeWorkingContext'
+ *   includeEpisodic: // value for 'includeEpisodic'
+ *   includeSemantic: // value for 'includeSemantic'
+ *   includeRawTraces: // value for 'includeRawTraces'
+ *   includeRawTraceFiles: // value for 'includeRawTraceFiles'
+ *   includeArchive: // value for 'includeArchive'
+ *   rawTraceLimit: // value for 'rawTraceLimit'
+ *   rawTraceFileName: // value for 'rawTraceFileName'
+ * });
+ */
+export function useGetAgentOrgMemberRunMemoryViewQuery(variables: GetAgentOrgMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetAgentOrgMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>(GetAgentOrgMemberRunMemoryViewDocument, variables, options);
+}
+export function useGetAgentOrgMemberRunMemoryViewLazyQuery(variables?: GetAgentOrgMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetAgentOrgMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>(GetAgentOrgMemberRunMemoryViewDocument, variables, options);
+}
+export type GetAgentOrgMemberRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>;
 export const ListWorkspaceRunHistoryDocument = gql`
     query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {

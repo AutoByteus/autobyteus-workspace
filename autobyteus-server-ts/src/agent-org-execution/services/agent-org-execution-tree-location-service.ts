@@ -61,9 +61,14 @@ export class AgentOrgExecutionTreeLocationService {
     }
     return null;
   }
-  async listAgents(): Promise<LocatedAgentOrgAgentExecution[]> {
+  /** Lists every Agent execution of all Org roots, or of one admitted root (one tree read) when `rootRunId` is given. */
+  async listAgents(input: { rootRunId?: string | null } = {}): Promise<LocatedAgentOrgAgentExecution[]> {
     const output: LocatedAgentOrgAgentExecution[] = [];
-    for (const id of await this.listRootIds()) {
+    const requested = input.rootRunId?.trim() || null;
+    const rootIds = !requested
+      ? await this.listRootRunIds()
+      : this.manager.getActive(requested) ? [requested] : await this.lookupRootIds({ rootRunId: requested }, false);
+    for (const id of rootIds) {
       const active = this.manager.getActive(id);
       const tree = active?.getExecutionTreeSnapshot() ?? await this.readStoredTree(id);
       if (!tree) continue;
@@ -74,7 +79,7 @@ export class AgentOrgExecutionTreeLocationService {
   }
   async containsRunId(runIdInput: string): Promise<boolean> {
     const runId = required(runIdInput, "runId");
-    for (const id of await this.listRootIds()) {
+    for (const id of await this.listRootRunIds()) {
       if (id === runId) return true;
       const active = this.manager.getActive(id);
       const tree = active?.getExecutionTreeSnapshot() ?? await this.readStoredTree(id);
@@ -83,6 +88,10 @@ export class AgentOrgExecutionTreeLocationService {
       if (index.getAgent(runId) || index.getTeam(runId)) return true;
     }
     return false;
+  }
+  /** Active and admitted stored Org root run IDs, sorted. */
+  async listRootRunIds(): Promise<string[]> {
+    return [...new Set([...this.manager.listActiveOrgRunIds(), ...await this.listStoredRootIds()])].sort();
   }
   private findInActive(input: AgentLookup): LocatedAgentOrgAgentExecution | null {
     for (const id of this.lookupRootIdsSync(input, true)) {
@@ -120,9 +129,6 @@ export class AgentOrgExecutionTreeLocationService {
       tree,
       isActive: isActive && index.isLiveAgent(agentRunId),
     });
-  }
-  private async listRootIds(): Promise<string[]> {
-    return [...new Set([...this.manager.listActiveOrgRunIds(), ...await this.listStoredRootIds()])].sort();
   }
   private async lookupRootIds(input: AgentLookup, activeOnly: boolean): Promise<string[]> {
     const requested = input.rootRunId?.trim() || null;

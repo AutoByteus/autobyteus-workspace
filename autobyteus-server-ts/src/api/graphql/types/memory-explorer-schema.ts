@@ -211,7 +211,7 @@ export class AgentTeamWithMemoryPage {
 }
 
 @ObjectType()
-export class TeamMemberMemoryTargetSummary {
+export class CollaborationMemberMemoryTargetSummary {
   @Field(() => String)
   memberAddress!: string;
 
@@ -257,14 +257,101 @@ export class AgentTeamRunMemorySummary {
   @Field(() => MemoryAvailabilitySummary)
   memory!: MemoryAvailabilitySummary;
 
-  @Field(() => [TeamMemberMemoryTargetSummary])
-  memberTargets!: TeamMemberMemoryTargetSummary[];
+  @Field(() => [CollaborationMemberMemoryTargetSummary])
+  memberTargets!: CollaborationMemberMemoryTargetSummary[];
 }
 
 @ObjectType()
 export class AgentTeamRunMemoryPage {
   @Field(() => [AgentTeamRunMemorySummary])
   entries!: AgentTeamRunMemorySummary[];
+
+  @Field(() => Int)
+  total!: number;
+
+  @Field(() => Int)
+  page!: number;
+
+  @Field(() => Int)
+  pageSize!: number;
+
+  @Field(() => Int)
+  totalPages!: number;
+}
+
+@ObjectType()
+export class AgentOrgWithMemorySummary {
+  @Field(() => String)
+  orgDefinitionId!: string;
+
+  @Field(() => String)
+  orgDefinitionName!: string;
+
+  @Field(() => Int)
+  orgRunCount!: number;
+
+  @Field(() => Int)
+  memberMemoryCount!: number;
+
+  @Field(() => String, { nullable: true })
+  latestMemoryAt?: string | null;
+
+  @Field(() => MemoryAvailabilitySummary)
+  memory!: MemoryAvailabilitySummary;
+}
+
+@ObjectType()
+export class AgentOrgWithMemoryPage {
+  @Field(() => [AgentOrgWithMemorySummary])
+  entries!: AgentOrgWithMemorySummary[];
+
+  @Field(() => Int)
+  total!: number;
+
+  @Field(() => Int)
+  page!: number;
+
+  @Field(() => Int)
+  pageSize!: number;
+
+  @Field(() => Int)
+  totalPages!: number;
+}
+
+@ObjectType()
+export class AgentOrgRunMemorySummary {
+  @Field(() => String)
+  orgRunId!: string;
+
+  @Field(() => String)
+  orgDefinitionId!: string;
+
+  @Field(() => String)
+  orgDefinitionName!: string;
+
+  @Field(() => String, { nullable: true })
+  summary?: string | null;
+
+  @Field(() => String, { nullable: true })
+  workspaceRootPath?: string | null;
+
+  @Field(() => String, { nullable: true })
+  createdAt?: string | null;
+
+  @Field(() => String, { nullable: true })
+  lastUpdatedAt?: string | null;
+
+  @Field(() => MemoryAvailabilitySummary)
+  memory!: MemoryAvailabilitySummary;
+
+  @Field(() => [CollaborationMemberMemoryTargetSummary])
+  memberTargets!: CollaborationMemberMemoryTargetSummary[];
+}
+
+@ObjectType()
+export class AgentOrgRunMemoryPage {
+  @Field(() => [AgentOrgRunMemorySummary])
+  entries!: AgentOrgRunMemorySummary[];
 
   @Field(() => Int)
   total!: number;

@@ -112,7 +112,7 @@ export type AgentTeamWithMemorySummary = {
   memory: MemoryAvailabilitySummary;
 };
 
-export type TeamMemberMemoryTargetSummary = {
+export type CollaborationMemberMemoryTargetSummary = {
   memberAddress: string;
   displayName: string;
   agentRunId: string;
@@ -130,7 +130,28 @@ export type AgentTeamRunMemorySummary = {
   createdAt?: string | null;
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;
-  memberTargets: TeamMemberMemoryTargetSummary[];
+  memberTargets: CollaborationMemberMemoryTargetSummary[];
+};
+
+export type AgentOrgWithMemorySummary = {
+  orgDefinitionId: string;
+  orgDefinitionName: string;
+  orgRunCount: number;
+  memberMemoryCount: number;
+  latestMemoryAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+};
+
+export type AgentOrgRunMemorySummary = {
+  orgRunId: string;
+  orgDefinitionId: string;
+  orgDefinitionName: string;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  createdAt?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+  memberTargets: CollaborationMemberMemoryTargetSummary[];
 };
 
 export type MemoryExplorerPage<T> = {
