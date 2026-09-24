@@ -1,0 +1,2 @@
+[killed]
+bs7y0zx06.output (PATH CLI 2.1.281) and blzpfsy50.output (bundled CLI 2.1.280) both contained: \n[killed]\n

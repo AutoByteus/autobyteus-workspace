@@ -1,0 +1,138 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-background-task-lifecycle/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-background-task-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-bash-ffad412b-5915-4363-ba2e-6f27b869bfb5
+Created agent session c71b205f-531a-4718-a2a3-58be7ce82af2 for run claude-live-background-bash-ffad412b-5915-4363-ba2e-6f27b869bfb5
+Agent WebSocket connected: session=c71b205f-531a-4718-a2a3-58be7ce82af2, run=claude-live-background-bash-ffad412b-5915-4363-ba2e-6f27b869bfb5
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (path-claude)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-background-task-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-background-task-lifecycle/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (path-claude)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (path-claude)
+[22m[39m[AC-003 path-claude 2.1.281 (Claude Code)] {"turnSeconds":13.519,"markerContentAtTurnCompleted":null,"tools":[{"type":"TOOL_EXECUTION_STARTED","tool":"Bash","arguments":{"command":"sleep 40; echo late > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-live-background-bash-dGIBDm/marker","description":"Run sleep 40 then write marker file","timeout":5000}},{"type":"TOOL_APPROVED","tool":"Bash","arguments":{"command":"sleep 40; echo late > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-live-background-bash-dGIBDm/marker","timeout":5000,"description":"Run sleep 40 then write marker file"}},{"type":"TOOL_EXECUTION_FAILED","tool":"Bash","arguments":{"command":"sleep 40; echo late > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-live-background-bash-dGIBDm/marker","timeout":5000,"description":"Run sleep 40 then write marker file"},"error":"Exit code 143\nCommand timed out after 5s"}],"assistantText":"**Tool Result:**\n\nThe Bash tool returned:\n- **Exit code:** 143\n- **Error message:** \"Command timed out after 5s\"\n\nThe command timed out as expected, since the 5000 millisecond (5 second) timeout is shorter than the 40-second sleep period in the command."}
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (path-claude)
+[22m[39m[AC-003 path-claude] marker 45s after turn end: [33mfalse[39m
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (path-claude)
+[22m[39mClosed agent session c71b205f-531a-4718-a2a3-58be7ce82af2
+Agent WebSocket disconnected: c71b205f-531a-4718-a2a3-58be7ce82af2
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-bash-12c5a9bc-fa61-40ee-bfbc-39ae231dcff4
+Created agent session 0122cc45-c576-4658-a31d-5c21043f4df9 for run claude-live-background-bash-12c5a9bc-fa61-40ee-bfbc-39ae231dcff4
+Agent WebSocket connected: session=0122cc45-c576-4658-a31d-5c21043f4df9, run=claude-live-background-bash-12c5a9bc-fa61-40ee-bfbc-39ae231dcff4
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (sdk-bundled-claude)
+[22m[39m[AC-003 sdk-bundled-claude 2.1.280 (Claude Code)] {"turnSeconds":13.948,"markerContentAtTurnCompleted":null,"tools":[{"type":"TOOL_EXECUTION_STARTED","tool":"Bash","arguments":{"command":"sleep 40; echo late > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-live-background-bash-Idk4Yb/marker","timeout":5000}},{"type":"TOOL_APPROVED","tool":"Bash","arguments":{"command":"sleep 40; echo late > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-live-background-bash-Idk4Yb/marker","timeout":5000}},{"type":"TOOL_EXECUTION_FAILED","tool":"Bash","arguments":{"command":"sleep 40; echo late > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-live-background-bash-Idk4Yb/marker","timeout":5000},"error":"Exit code 143\nCommand timed out after 5s"}],"assistantText":"The Bash tool returned:\n\n**Exit code 143**\n**Command timed out after 5s**\n\nThe command was terminated due to timeout since it attempted to sleep for 40 seconds but was constrained by the 5-second timeout limit."}
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (sdk-bundled-claude)
+[22m[39m[AC-003 sdk-bundled-claude] marker 45s after turn end: [33mfalse[39m
+
+[90mstdout[2m | tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts[2m > [22m[2mClaude runtime background Bash policy (live E2E)[2m > [22m[2mruns a command requested 'in the background' in the foreground and reports it in the same turn (sdk-bundled-claude)
+[22m[39mClosed agent session 0122cc45-c576-4658-a31d-5c21043f4df9
+Agent WebSocket disconnected: 0122cc45-c576-4658-a31d-5c21043f4df9
+
+ [32m✓[39m tests/e2e/runtime/tmp-ac003-timeout-overrun-probe.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 117504[2mms[22m[39m
+     [33m[2m✓[22m[39m runs a command requested 'in the background' in the foreground and reports it in the same turn (path-claude) [33m 58546[2mms[22m[39m
+     [33m[2m✓[22m[39m runs a command requested 'in the background' in the foreground and reports it in the same turn (sdk-bundled-claude) [33m 58957[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m   Start at [22m 07:16:59
+[2m   Duration [22m 121.44s[2m (transform 2.47s, setup 15ms, import 3.47s, tests 117.50s, environment 0ms)[22m
+
