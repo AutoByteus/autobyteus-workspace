@@ -18,6 +18,10 @@ const createMockQuery = () => {
 };
 
 const RESERVED_SESSION_ID = "11111111-1111-4111-8111-111111111111";
+const CLAUDE_CLI_RUNTIME_POLICY_ENV = {
+  CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1",
+  BASH_MAX_TIMEOUT_MS: "1800000",
+};
 const createSessionBinding = () => ({
   kind: "create" as const,
   sessionId: RESERVED_SESSION_ID,
@@ -84,9 +88,42 @@ describe("ClaudeSdkClient", () => {
 
       expect(resolveApiKey).not.toHaveBeenCalled();
       const call = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } };
-      expect(call.options.env).toEqual(env);
+      expect(call.options.env).toEqual({ ...env, ...CLAUDE_CLI_RUNTIME_POLICY_ENV });
     },
   );
+
+  it("forces the Claude CLI runtime policy env over conflicting caller values on every turn query", async () => {
+    const queryFn = vi.fn(async () => createMockQuery());
+    const client = new ClaudeSdkClient(vi.fn());
+    client.setCachedModuleForTesting({ query: queryFn });
+    const env = {
+      CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
+      HOME: "/synthetic/home",
+      CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "0",
+      BASH_MAX_TIMEOUT_MS: "600000",
+    };
+
+    await client.startQueryTurn({
+      prompt: "long build",
+      sessionBinding: createSessionBinding(),
+      model: "haiku",
+      workingDirectory: "/tmp/claude-client-runtime-policy",
+      env,
+    });
+    await client.startQueryTurn({
+      prompt: "inherited process env",
+      sessionBinding: createSessionBinding(),
+      model: "haiku",
+      workingDirectory: "/tmp/claude-client-runtime-policy",
+    });
+
+    const [explicitCall, inheritedCall] = queryFn.mock.calls.map(
+      (call) => (call[0] as { options: { env: Record<string, string | undefined> } }).options.env,
+    );
+    expect(explicitCall).toEqual({ ...env, ...CLAUDE_CLI_RUNTIME_POLICY_ENV });
+    expect(inheritedCall).toEqual(expect.objectContaining(CLAUDE_CLI_RUNTIME_POLICY_ENV));
+    expect(explicitCall).not.toHaveProperty("BASH_DEFAULT_TIMEOUT_MS");
+  });
 
   it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
     const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
@@ -117,6 +154,7 @@ describe("ClaudeSdkClient", () => {
     expect(call.options.env).toEqual({
       ...env,
       ANTHROPIC_API_KEY: "synthetic-vault-key",
+      ...CLAUDE_CLI_RUNTIME_POLICY_ENV,
     });
     expect(call.options).toEqual(expect.objectContaining({
       mcpServers: { demo: { transport: "mock" } },
@@ -336,6 +374,8 @@ describe("ClaudeSdkClient", () => {
   });
 
   it("uses user settings-source policy for model discovery", async () => {
+    vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
+    vi.stubEnv("BASH_MAX_TIMEOUT_MS", undefined);
     const client = new ClaudeSdkClient();
     const control = {
       supportedModels: vi.fn(async () => ["deepseek-v4-flash"]),
@@ -359,6 +399,9 @@ describe("ClaudeSdkClient", () => {
         settingSources: ["user"],
       }),
     });
+    const discoveryCall = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string | undefined> } };
+    expect(discoveryCall.options.env).not.toHaveProperty("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS");
+    expect(discoveryCall.options.env).not.toHaveProperty("BASH_MAX_TIMEOUT_MS");
   });
 
   it("prefers an explicit canUseTool callback and otherwise injects auto-exec tool approval", async () => {

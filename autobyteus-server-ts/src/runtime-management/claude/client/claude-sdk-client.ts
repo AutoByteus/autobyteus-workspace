@@ -100,6 +100,13 @@ const allowToolUseWithoutPrompt: ClaudeSdkCanUseTool = async (
 });
 
 const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = ["AskUserQuestion"] as const;
+// Each turn closes its one-string query on `result`, so the Claude CLI exits and kills any
+// CLI-owned background task (explicit or auto-backgrounded at timeout). Force foreground-only
+// Bash with a 30 min ceiling. Remove with the streaming-input session migration.
+const CLAUDE_CLI_RUNTIME_POLICY_ENV = Object.freeze({
+  CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1",
+  BASH_MAX_TIMEOUT_MS: "1800000",
+});
 const CLAUDE_API_KEY_UNAVAILABLE = "CLAUDE_RUNTIME_API_KEY_UNAVAILABLE";
 
 const resolveClaudeApiKeyFromVault: ClaudeApiKeyResolver = () =>
@@ -420,7 +427,7 @@ export class ClaudeSdkClient {
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
-      env: spawnEnvironment,
+      env: { ...spawnEnvironment, ...CLAUDE_CLI_RUNTIME_POLICY_ENV },
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionBinding.kind === "create"
