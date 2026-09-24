@@ -126,7 +126,9 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
   }
   const setTeamOverride = (address: AgentTeamAddress, override: TeamScopeConfigOverride | null): void => {
     const next = { ...teamOverrides.value }
-    if (override) next[address] = cloneTeamOverride(canonicalizeAgentOrgPlacementLaunchPatch(override))
+    if (override) next[address] = cloneTeamOverride(canonicalizeAgentOrgPlacementLaunchPatch(
+      withNewRuntimeOverridePolicy(teamOverrides.value[address], override)!,
+    ))
     else delete next[address]
     teamOverrides.value = next
   }
@@ -141,7 +143,7 @@ export const useAgentOrgRunConfigStore = defineStore('agentOrgRunConfig', () => 
   }
   const setAgentOverride = (address: AgentTeamAddress, override: AgentConfigOverride | null): void => {
     const next = { ...agentOverrides.value }
-    if (override) next[address] = canonicalizeAgentOrgPlacementLaunchPatch(withNewRuntimeOverridePolicy(teamOverrides.value[address], override)!)
+    if (override) next[address] = canonicalizeAgentOrgPlacementLaunchPatch(withNewRuntimeOverridePolicy(agentOverrides.value[address], override)!)
     else delete next[address]
     agentOverrides.value = next
   }

@@ -8,6 +8,7 @@ Current code and `implementation-handoff.md` are authoritative; this record inde
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer ARCH-REV-002 Pass; initial implementation; user visual feedback 2026-09-24 | User green-completion request; `AGENT_SEGMENT_LIFECYCLE_INVALID` | Requirement Gap | SR-016, SR-019; ARCH-REV-001/002; CRR/API-REV/DR N/A | Partial implementation with local segment fix; product status decision required before downstream handoff. |
 | IR-002 | Architecture Reviewer `design-review-report.md` ARCH-REV-003 Pass; rework after SR-021 | REQ-011/AC-010 green AGY DONE; IR-001 lifecycle recheck | Local Fix | SR-021; ARCH-REV-003; CRR/API-REV/DR N/A | Neutral path removed; approved green mapping and local checks complete; independent source review next. |
+| IR-003 | Code Reviewer `code-review-report.md` / `code-review-revision-record.md` CRR-001 Fail — Local Fix of IR-002 | CR-001, CR-002 | Local Fix | SR-016/019/021; ARCH-REV-003; CRR-001; API-REV/DR N/A | Org Team/Agent AGY permission draft corrections, focused checks and rendered editor check complete; return for independent source re-review. |
 
 ## Revision Entries
 
@@ -43,3 +44,15 @@ Current code and `implementation-handoff.md` are authoritative; this record inde
 - Local trace audit: one IR-001 development trace, `daily_assistant_b421bebb5fa045c1b737d1565a45a43b` sequence 3, contains neutral `completed_unverified`; no released-data migration added.
 - Classification continuity and next routing: **Large / High** confirmed; request independent Code Review under handoff rules.
 - Remaining limitations: green is AGY provider-step completion, not shell exit-zero proof; model-directed workspace targeting and provider-version variation remain; final denied label needs independent live/reload verification.
+
+### IR-003 — Org Team/Agent AGY launch permission correction
+
+- Triggering role/report/round: Code Reviewer `code-review-report.md` / `code-review-revision-record.md`, CRR-001 initial full source review of IR-002 at `d0ec1fc07`.
+- Triggering findings: CR-001 Org Team AGY selection omitted the default-on policy; CR-002 Org Agent later explicit-off selection used the wrong prior override and was forced on. Classification: **Local Fix**.
+- Prior authoritative result: IR-002 source-ready, but CRR-001 **Fail — Local Fix**. Current result: current code and `implementation-handoff.md` are authoritative; bounded correction ready for source re-review, not Code Review or API/E2E acceptance.
+- Related revisions: SR-016/019/021; ARCH-REV-001/002/003; CRR-001; API-REV **N/A**; DR **N/A**.
+- Why recorded: both supported Org launch paths affect BEH-004 / REQ-007/008/010 / AC-009 and could launch AGY with the wrong auto-execute flag. A direct UI check also showed synchronous runtime/model/config edits could overwrite the policy before store props reconciled; this is the same CR-001 path, fixed locally rather than an architecture change.
+- Implementation delta and locations: `autobyteus-web/stores/agentOrgRunConfigStore.ts` now applies the shared new-runtime policy to Team overrides and uses the exact prior Agent override for Agent transitions. `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue` applies the same policy to its pending Team/Agent edit before the synchronous reset events. Focused store/effective-form, component emission and mounted Org panel regressions cover new AGY selection and later deliberate off; no new launch model or compatibility branch.
+- Focused validation: nine web test files, **79/79 passed**, including adjacent non-AGY Team launch/form checks; `git diff --check` and source-size guardrail passed. Fresh browser preview showed Org Team AGY select-on, explicit-off, and direct Agent AGY select-on, explicit-off retained after collapse/reopen, with root off and clean layout. This is implementation-scoped validation only; the editor check did not launch an Org.
+- Classification continuity: **Large / High** confirmed from the completed design; no changed requirement or design decision. Return to independent Code Reviewer under handoff rules.
+- Remaining limitations/downstream gate: fresh final-code denied live/reload label and full AGY acceptance still require API/E2E. The user specifically requested Team test parity with Codex/Claude. Current `agy-mcp-team-live.test.ts` uses stub message delivery and is not the real GraphQL/WebSocket inter-agent roundtrip; API/E2E must author and execute the AGY equivalent before claiming that gate.

@@ -25,7 +25,7 @@ vi.mock('vue-router', () => ({
 const PassiveField = defineComponent({
   name: 'RuntimeModelConfigFields',
   props: ['idPrefix', 'runtimeHelpText', 'modelLabel', 'modelHelpText'],
-  emits: ['schema-state'],
+  emits: ['schema-state', 'update:runtimeKind', 'update:llmModelIdentifier', 'update:llmConfig'],
   setup(_, { emit }) {
     onMounted(() => emit('schema-state', { status: 'ready', message: null }))
   },
@@ -162,6 +162,28 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
       llmModelIdentifier: 'gpt-member', llmConfig: null,
     }, { flush: 'sync' })
     expect(wrapper.get('[data-test="org-placement-/requirements_engineer"]').text()).toContain('Overridden')
+  })
+
+  it('keeps Org Team AGY default on through one runtime-selection event batch, then accepts explicit off', async () => {
+    const wrapper = await mountPanel()
+    await wrapper.get('[data-test="org-member-overrides-toggle"]').trigger('click')
+    let software = wrapper.findAllComponents(TeamScopeConfigEditor)[1]!
+    const runtime = software.getComponent(PassiveField)
+    runtime.vm.$emit('update:runtimeKind', 'antigravity_cli')
+    runtime.vm.$emit('update:llmModelIdentifier', '')
+    runtime.vm.$emit('update:llmConfig', null)
+    await nextTick()
+
+    const store = useAgentOrgRunConfigStore()
+    expect(store.intent.teamOverrides['/software']).toMatchObject({ runtimeKind: 'antigravity_cli', autoExecuteTools: true })
+    software = wrapper.findAllComponents(TeamScopeConfigEditor)[1]!
+    expect(software.props('scope').effectiveConfig.autoExecuteTools).toBe(true)
+
+    await software.get('button[aria-expanded]').trigger('click')
+    await software.get('[role="switch"]').trigger('click')
+    await nextTick()
+    expect(store.intent.teamOverrides['/software']?.autoExecuteTools).toBeUndefined()
+    expect(wrapper.findAllComponents(TeamScopeConfigEditor)[1]!.props('scope').effectiveConfig.autoExecuteTools).toBe(false)
   })
 
   it('maps exact sparse Team and Agent patches to the unchanged AgentOrg launch command', async () => {

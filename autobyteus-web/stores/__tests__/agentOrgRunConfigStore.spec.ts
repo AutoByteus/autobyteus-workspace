@@ -1,6 +1,38 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
+import type { AgentOrgDefinition } from '../agentOrgDefinitionStore'
+import type { AgentTeamDefinition } from '../agentTeamDefinitionStore'
+import type { ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
+import { projectEditableAgentOrgRunFormModel } from '~/utils/editableAgentOrgRunFormModel'
 import { useAgentOrgRunConfigStore } from '../agentOrgRunConfigStore'
+
+const org: AgentOrgDefinition = {
+  id: 'org-1', name: 'Org', description: '', instructions: '', revision: '1', handoffs: [],
+  members: [{ memberName: 'software', ref: 'team-1', refType: 'AGENT_TEAM', refScope: 'SHARED' }],
+}
+const team: AgentTeamDefinition = {
+  id: 'team-1', name: 'Software', description: '', instructions: '',
+  coordinatorMemberName: 'worker', nodes: [{ memberName: 'worker', ref: 'agent-1' }],
+}
+const rootConfig: ResolvedTeamRunLaunchConfig = {
+  runtimeKind: 'autobyteus', workspaceId: 'workspace-1',
+  workspaceMetadata: { workspaceId: 'workspace-1', workspaceRootPath: '/workspace', displayName: 'Workspace', kind: 'filesystem' },
+  workspaceRootPath: '/workspace', llmModelIdentifier: 'gpt-root', llmConfig: null,
+  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY',
+}
+const effectiveOrg = (store: ReturnType<typeof useAgentOrgRunConfigStore>) => {
+  const projection = projectEditableAgentOrgRunFormModel({
+    orgDefinition: org, rootConfig,
+    teamOverrides: store.intent.teamOverrides, agentOverrides: store.intent.agentOverrides,
+    getTeamDefinitionById: (id) => id === team.id ? team : null,
+    getAgentDisplayNameById: () => null,
+    workspaceSelectionFor: () => ({ mode: 'existing', existingWorkspaceId: 'workspace-1', newWorkspacePath: '' }),
+    workspaceOperationFor: () => ({ status: 'idle', error: null }),
+    runtimeCatalogStateFor: () => ({ status: 'idle', error: null }),
+  })
+  if (projection.status !== 'ready') throw new Error(projection.diagnostic.message)
+  return projection.model.mountedTeams[0]!
+}
 
 describe('agentOrgRunConfigStore', () => {
   beforeEach(() => setActivePinia(createPinia()))
@@ -14,6 +46,35 @@ describe('agentOrgRunConfigStore', () => {
     expect(store.intent.teamOverrides).toEqual({ '/software': { runtimeKind: 'codex_app_server', llmConfig: null } })
     expect(store.intent.agentOverrides).toEqual({ '/software/worker': { llmModelIdentifier: 'gpt-worker', llmConfig: null } })
     expect(store.intent).not.toHaveProperty('memberOverrides')
+  })
+
+  it('defaults a newly selected Org Team AGY scope on, then preserves an explicit off edit', () => {
+    const store = useAgentOrgRunConfigStore()
+    store.begin({ definitionId: 'org-1', runtimeKind: 'autobyteus' })
+
+    store.setTeamOverride('/software', { runtimeKind: 'antigravity_cli' })
+    expect(store.intent.teamOverrides['/software']).toMatchObject({ runtimeKind: 'antigravity_cli', autoExecuteTools: true })
+    expect(effectiveOrg(store).scope.effectiveConfig.autoExecuteTools).toBe(true)
+    expect(effectiveOrg(store).children[0]!.effectiveConfig.autoExecuteTools).toBe(true)
+
+    store.setTeamOverride('/software', { runtimeKind: 'antigravity_cli', autoExecuteTools: false })
+    expect(store.intent.teamOverrides['/software']?.autoExecuteTools).toBe(false)
+    expect(effectiveOrg(store).scope.effectiveConfig.autoExecuteTools).toBe(false)
+    expect(effectiveOrg(store).children[0]!.effectiveConfig.autoExecuteTools).toBe(false)
+  })
+
+  it('preserves an explicit-off edit after selecting AGY for an Org Agent', () => {
+    const store = useAgentOrgRunConfigStore()
+    store.begin({ definitionId: 'org-1', runtimeKind: 'autobyteus' })
+
+    store.setAgentOverride('/software/worker', { runtimeKind: 'antigravity_cli' })
+    expect(store.intent.agentOverrides['/software/worker']).toMatchObject({ runtimeKind: 'antigravity_cli', autoExecuteTools: true })
+    expect(effectiveOrg(store).children[0]!.effectiveConfig.autoExecuteTools).toBe(true)
+
+    store.setAgentOverride('/software/worker', { runtimeKind: 'antigravity_cli', autoExecuteTools: false })
+    expect(store.intent.agentOverrides['/software/worker']?.autoExecuteTools).toBe(false)
+    expect(effectiveOrg(store).children[0]!.effectiveConfig.autoExecuteTools).toBe(false)
+    expect(effectiveOrg(store).scope.effectiveConfig.autoExecuteTools).toBe(false)
   })
 
   it('resets only the exact Team patch and its workspace authoring state', () => {
