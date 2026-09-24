@@ -1,0 +1,5 @@
+[22m[39mClaude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts[2m > [22mCodexAppServerClient spawn diagnostics[2m > [22muses an explicitly supplied Codex environment without applying the governed-launcher policy
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22mClaudeSession[2m > [22mswitches an opened but unconfirmed first query to exact resume after interrupt
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m27 passed[39m[22m[90m (29)[39m
