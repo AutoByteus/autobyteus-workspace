@@ -10,6 +10,8 @@
 | DR-004 | Formal Code Reviewer CRR-005 API-REV-003 package receipt | DR-003 API/E2E result reconciled | Reviewed-route package complete; user-verification hold | `handoff-summary.md`, `release-deployment-report.md` |
 | DR-005 | User requested README-guided Electron build for hands-on testing | DR-004 reviewed-route package ready | Local macOS arm64 Electron build passed; user-testing hold | `handoff-summary.md`, `release-deployment-report.md` |
 | DR-006 | User completion/verification and new-release authorization | DR-005 test artifact delivered, awaiting user | Verification gate passed; finalization/release in progress | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-007 | Ticket merge and v1.4.79 tag push | DR-006 authorized finalization | Repository finalized; release workflows pending | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-008 | All release workflows and Docker Hub image verified; safe cleanup | DR-007 tag pushed, rollout pending | Delivery Completed; terminal handoff eligible | `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -114,3 +116,36 @@
 - Why this revision was recorded: distinguish the now-completed user-verification gate from the not-yet-completed repository/release/cleanup gates.
 - Next recipient/action: Delivery archives ticket, commits/pushes ticket branch, merges/pushes `origin/personal` through clean staging, runs release helper for `1.4.79`, verifies workflows and cleans safely.
 - Remaining blockers, rollback concerns, or untested scope: no blocking finding at verification. Preserve unrelated local `personal` changes; do not overwrite them. Browser B-04 autonomous Team completion remains unproved but was disclosed before user approval. Conditional Org imported-Memory adapter remains N/A until its separate branch merges. Release/tag/rollout outcomes are not yet known.
+
+### DR-007 — Repository finalized and version tag pushed
+
+- Delivery round and trigger: seventh delivery-stage checkpoint; authorized repository finalization and release helper executed.
+- Prior authoritative delivery result: DR-006 user-verification gate passed, finalization/release pending.
+- Current authoritative delivery result: **Repository finalization completed and `v1.4.79` tag pushed; workflows/rollout and cleanup pending**, not Delivery Completed.
+- Docs sync report: `docs-sync-report.md` remains Pass; no product change after the user-verified candidate.
+- Handoff summary: `handoff-summary.md` updated with repository/tag checkpoint.
+- Release/publication/deployment report: `release-deployment-report.md` updated with exact commits, pushes, helper invocation and workflow IDs.
+- Integration and post-integration verification: tracked `origin/personal` remained at `40b1783f40c072b577ad9d0c5d8fe4f5418c6c38` before target merge. Ticket commit/push `f43bbe9dead163b36b940af440c1c183c43060f8`; merge commit/push `ecfc8cc0f3d08ba34db4329912f08d7e70e9e4df`; release commit/push `6674fc5136bf480f9a92b0157c145117975254e2`; annotated tag object `7ddfddfaf66f695de83b93516eafc91e859bfa9a` points to release commit. Repository artifact hygiene passed.
+- User verification/finalization state: user signal in DR-006; repository finalization completed. Release workflows and safe cleanup pending.
+- Terminal return to `/solution_designer`: **Not yet eligible**.
+- Terminal return message/reference: N/A.
+- Why recorded: do not conflate successful tag push with completed release/deployment/rollout and cleanup.
+- Next recipient/action: Delivery observes all applicable tag workflows and release assets, then cleans ticket/staging worktrees/branches when safe and records final terminal result.
+- Remaining blockers, rollback concerns, or untested scope: workflow outcomes pending. Browser B-04 autonomous Team completion unproved; conditional Org imported-Memory adapter N/A. Local `personal` checkout with unrelated edits remains untouched.
+
+### DR-008 — Versioned release rollout verified and cleanup completed
+
+- Delivery round and trigger: eighth delivery-stage result, 2026-09-24; all applicable tag-triggered release workflows finished and external release artifacts were verified.
+- Prior authoritative delivery result: DR-007 repository finalized and `v1.4.79` tag pushed, with rollout and cleanup pending.
+- Current authoritative delivery result: **Delivery Completed**; user-verification, repository-finalization, release/rollout and safe-cleanup gates passed. The terminal message is eligible after this completion record is committed/pushed and handoff rules are applied.
+- Docs sync report: `docs-sync-report.md` remains Pass; no product source or durable test changed after the verified candidate.
+- Handoff summary: `handoff-summary.md` updated with current final artifact checkout, release link and caveats.
+- Release/publication/deployment report: `release-deployment-report.md` updated with exact workflow IDs/results, release assets, Docker Hub architectures and cleanup.
+- Integration and post-integration verification: `origin/personal` was unchanged before the approved ticket merge. Ticket commit/push `f43bbe9dead163b36b940af440c1c183c43060f8`; target merge/push `ecfc8cc0f3d08ba34db4329912f08d7e70e9e4df`; release commit/push `6674fc5136bf480f9a92b0157c145117975254e2`; annotated `v1.4.79` tag points to that release commit. Desktop `36014459543`, Android APK `36014459617`, iOS App Store Connect `36014459530`, Messaging Gateway `36014459823` and Server Docker `36014459913` each concluded success. GitHub release is public/non-prerelease with 21 assets; Docker Hub `1.4.79` tag reports Linux amd64 and arm64.
+- User verification/finalization state: user explicitly stated “the task is done. lets finalize and release a new version.” No detailed manual observations are invented. Repository and release gates complete.
+- Cleanup: original ticket worktree removed with generated validation/local Electron byproducts; worktree metadata pruned; local and remote ticket branches deleted. Temporary release branch deleted. The clean final target checkout is retained detached as a durable local artifact path because the ordinary `personal` checkout has unrelated edits.
+- Terminal return to `/solution_designer`: **Eligible after final completion-record commit/push and handoff-rule resolution**; not claimed sent in this file.
+- Terminal return message/reference: pending transport; handoff tool confirmation will be the receipt.
+- Why recorded: distinguish actual five-workflow and published-artifact success, plus safe cleanup, from DR-007's tag-push checkpoint.
+- Next recipient/action: Solution Designer verifies the authoritative terminal package and returns the verified engineering result to the caller under its own handoff rules.
+- Remaining blockers, rollback concerns, or untested scope: none for this approved delivery. API-REV-003 B-04 did not demonstrate autonomous no-intervention Team completion; separate Org imported-Memory adapter remains conditional N/A until its branch merges. iOS workflow success means App Store Connect upload, not public App Store availability; Docker image publication is not a direct running-server deployment. No data migration applies.

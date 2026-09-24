@@ -2,34 +2,34 @@
 
 ## Status and scope
 
-**User verification and finalization/release authorization received; finalization in progress, not yet completed.** `task_size=Medium`, `architectural_risk=High`, independently reviewed route. The approved SR-002 requirements and SR-005 design are the intended behavior. ARCH-REV-003 design Pass, CRR-003 source Pass, CRR-004 durable test-code Pass, CRR-005 **Not Applicable for new test-code review** (no durable changes in the live round), and **API-REV-003 real-browser Pass / 95% with a Codex Team-runtime caveat** are the current applicable gates. API-REV-002 is retained as prior repository/API evidence. The prior API-REV-001/F-001 and CRR-002/CR-001 failures are historical and resolved, not erased.
+**Delivery completed: user verified, repository finalized, v1.4.79 released, and rollout/cleanup verified.** `task_size=Medium`, `architectural_risk=High`, independently reviewed route. The approved SR-002 requirements and SR-005 design are the intended behavior. ARCH-REV-003 design Pass, CRR-003 source Pass, CRR-004 durable test-code Pass, CRR-005 **Not Applicable for new test-code review** (no durable changes in the live round), and **API-REV-003 real-browser Pass / 95% with a Codex Team-runtime caveat** are the current applicable gates. API-REV-002 is retained as prior repository/API evidence. The prior API-REV-001/F-001 and CRR-002/CR-001 failures are historical and resolved, not erased.
 
 ## Integrated branch state
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/unify-agent-team-org-history-policy`.
-- Ticket branch: `codex/unify-agent-team-org-history-policy`; reviewed HEAD before delivery edits: `ba28b4bb7539387d9ff5a8ac90e73a1878a0c610`.
+- Durable final artifact checkout: `/Users/normy/autobyteus_org/autobyteus-worktrees/unify-history-release-v1.4.79` (detached; the original ticket worktree was removed after release).
+- Historical ticket branch: `codex/unify-agent-team-org-history-policy`, committed and pushed before merging, then deleted locally and remotely after successful release; reviewed HEAD before delivery edits: `ba28b4bb7539387d9ff5a8ac90e73a1878a0c610`.
 - Recorded bootstrap and finalization target: `origin/personal`; refreshed again after API-REV-003 on 2026-09-24 and still `40b1783f40c072b577ad9d0c5d8fe4f5418c6c38`, an ancestor of HEAD. Integration method: **Already current**; no checkpoint or merge required, and no post-integration rerun required because no new base commit entered the validated branch. Delivery docs were edited only after the respective base checks.
-- Current source/test/doc work is local in this worktree. Generated untracked SDK `dist/` outputs from validation are not part of the delivery commit and must be excluded/cleaned before finalization.
+- Reviewed source/tests/docs are committed and published on `origin/personal`. Generated SDK `dist/` and Electron test outputs were excluded from commits and removed with the ticket worktree after user acceptance.
 
 ## Packaged Electron build for user testing (DR-005)
 
 - User request: read the repository README and build Electron for hands-on testing. The root `README.md` and `autobyteus-web/README.md` prescribe the macOS `build:electron:mac` command and place artifacts in `autobyteus-web/electron-dist/`.
 - Command executed in this ticket worktree: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` — **passed**, including the web/localization guards, server preparation and sanitized built-server bootstrap, Nuxt Electron generation, Electron TypeScript/build compilation and electron-builder packaging. Build log: `/tmp/unify-team-org-history-electron-build.log`.
 - Host/target: macOS arm64, Electron 42.4.1, app version 1.4.78, `enterprise` build flavor from `.env.production`. This local build was explicitly **unsigned and not notarized** (`skipped macOS code signing` in the build log). It is a test artifact, not a published release or proof of a launched packaged app.
-- Openable DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/unify-agent-team-org-history-policy/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.78.dmg`; SHA-256 `1f7762942acf6245b5add0232ed1d6cce112199d586badfaaf61a2e22d9fd936`.
+- Historical local test DMG (removed with the ticket worktree after user completion): `/Users/normy/autobyteus_org/autobyteus-worktrees/unify-agent-team-org-history-policy/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.78.dmg`; SHA-256 `1f7762942acf6245b5add0232ed1d6cce112199d586badfaaf61a2e22d9fd936`.
 - ZIP: same `electron-dist/` directory, `AutoByteus_enterprise_macos-arm64-1.4.78.zip`; SHA-256 `3959afffedcfb7ab8718317c13e1d93caae3eebd8dbd1f0310685ca2c98ba44f`.
 - `hdiutil verify` passed for the DMG; this checks image integrity, not app signing or runtime behavior.
-- Unpacked executable for the README's isolated E2E launcher: `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus` (verified Mach-O arm64). For an isolated hands-on session without touching the normal packaged profile, from this worktree run `pnpm -C autobyteus-web test:e2e:electron --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/unify-agent-team-org-history-policy/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --hold-ms 3600000`. The README launcher chooses a non-default port and temporary data root and cleans up only its owned process/root after the hold. This command is offered for the user's test; Delivery has **not** launched the packaged app.
-- The ticket worktree/artifacts were retained for user verification; they remain available until safe post-release cleanup. The packaging output is generated/untracked and must not be committed as product source.
+- The historical unpacked executable was verified Mach-O arm64, but Delivery did not launch it. The local 1.4.78 test package was removed during cleanup after user acceptance; use the published v1.4.79 release asset for subsequent installation.
+- The test package and worktree were retained until user completion, then safely removed. Generated packaging output was never committed as source.
 
-## What to verify
+## User verification guidance supplied before acceptance
 
 1. Workspace Team/Org stored history shows admitted index rows without creating rows from an orphan tree or mutating an index merely by opening the view. Existing summary, termination and archive facts remain available.
 2. A stopped Team can be archived; a concurrent restore does not allow archive to succeed after the Team becomes managed. Archive is separate from destructive Delete.
 3. In Memory, select an imported source and open **Agent Teams** and a Team's runs. Cards and configured/nested member memory targets remain visible; the imported source remains byte-identical. The corrected current Team path uses at most one execution-tree read per admitted root per list request after readiness.
 4. If operational recovery is needed, use only the offline local dry-run command documented in `autobyteus-server-ts/scripts/repair-collaboration-run-history-index.md`; do not apply it to imports or while the server runs.
 
-The user subsequently stated, “the task is done. lets finalize and release a new version.” This is the explicit completion/verification and finalization/release authorization after the Electron artifact and the API-REV-003 caveat were presented. The user did not provide detailed manual-test observations; do not invent them. Finalization and release are now in progress. No push, target merge, tag or deployment is claimed until the corresponding command confirms it.
+The user subsequently stated, “the task is done. lets finalize and release a new version.” This is the explicit completion/verification and finalization/release authorization after the Electron artifact and the API-REV-003 caveat were presented. The user did not provide detailed manual-test observations; none are inferred. Finalization and release steps were subsequently confirmed as below.
 
 ## Final validation and residual boundary
 
@@ -44,7 +44,7 @@ The user subsequently stated, “the task is done. lets finalize and release a n
 
 ## Cumulative authoritative artifacts
 
-All canonical ticket artifacts below are now beneath `/Users/normy/autobyteus_org/autobyteus-worktrees/unify-agent-team-org-history-policy/tickets/done/unify-agent-team-org-run-history-policy/` after the user-authorized archival:
+All canonical ticket artifacts below are now beneath `/Users/normy/autobyteus_org/autobyteus-worktrees/unify-history-release-v1.4.79/tickets/done/unify-agent-team-org-run-history-policy/` in the detached final target checkout (also published on `origin/personal`):
 
 - Approved requirements/investigation/solution history: `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md`, `solution-handoff.md`.
 - Independent design and implementation: `design-review-report.md`, `architecture-review-revision-record.md`, `implementation-handoff.md`, `implementation-revision-record.md`.
@@ -52,6 +52,19 @@ All canonical ticket artifacts below are now beneath `/Users/normy/autobyteus_or
 - Executable evidence: `api-e2e-coverage-investigation.md`, `api-e2e-test-case-ledger.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`; supporting retained logs/probes at `/tmp/api-e2e-unified-history/`.
 - Delivery: `docs-sync-report.md`, this `handoff-summary.md`, `delivery-revision-record.md`, `release-deployment-report.md`, and preparatory `release-notes.md`.
 
-## Finalization hold
+## Finalization result
 
-The user verification/authorization gate is complete. Delivery refreshed `origin/personal` after that signal and found it unchanged at `40b1783f40c072b577ad9d0c5d8fe4f5418c6c38`; no re-integration or renewed verification is required. Ticket archived before its final commit. Next: commit/push the ticket branch, merge/push the recorded target, execute the requested versioned release, then complete safe cleanup and the rule-selected terminal return. The local `personal` checkout is independently dirty and 34 commits behind the remote target; Delivery must not overwrite that unrelated work and will use a clean target staging checkout for the remote merge/release.
+The user verification/authorization gate is complete. Delivery refreshed `origin/personal` after that signal and found it unchanged at `40b1783f40c072b577ad9d0c5d8fe4f5418c6c38`; no re-integration or renewed verification is required. Ticket was archived before ticket commit `f43bbe9dead163b36b940af440c1c183c43060f8`, pushed to `origin/codex/unify-agent-team-org-history-policy`, merged as `ecfc8cc0f3d08ba34db4329912f08d7e70e9e4df` into `origin/personal`, and released through commit `6674fc5136bf480f9a92b0157c145117975254e2` and tag `v1.4.79` (both pushed). All five tag-triggered workflows completed successfully; the release assets and Docker Hub image were verified, and safe ticket cleanup completed. The local `personal` checkout is independently dirty and was left untouched; a clean target checkout performed merge/release and retains final artifacts.
+
+## Repository/release checkpoint (DR-007; superseded by DR-008 completion)
+
+- Target remote `origin/personal` verified at release commit `6674fc5136bf480f9a92b0157c145117975254e2`; annotated tag `v1.4.79` object `7ddfddfaf66f695de83b93516eafc91e859bfa9a` resolves to that commit.
+- The local `personal` checkout at the superrepo was left untouched because it contains unrelated changes and is behind the remote. A clean staging branch/worktree performed the merge and release.
+- GitHub tag-triggered Desktop, Android APK, iOS App Store Connect upload, Messaging Gateway and Server Docker workflows all completed **success**. The public, non-prerelease [v1.4.79 release](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.79) has 21 assets, including [macOS arm64 DMG](https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.79/AutoByteus_personal_macos-arm64-1.4.79.dmg). Docker Hub’s `autobyteus/autobyteus-server:1.4.79` tag reports Linux amd64 and arm64. App Store Connect workflow success means upload, not public App Store availability.
+- The separate Org imported-Memory adapter remains conditional N/A until its branch merges. The B-04 manual Stop-generation caveat remains disclosed; no autonomous Team completion claim is made.
+
+## Final delivery completion (DR-008)
+
+- `origin/personal` contains the merge and release commits; the annotated `v1.4.79` tag remains on release commit `6674fc5136bf480f9a92b0157c145117975254e2`. The subsequent delivery-record-only commit is on `origin/personal` and does not move the tag.
+- All five tag workflows and release assets were verified. No direct environment deployment was requested. The ticket worktree, generated local test artifact, and local/remote ticket branch were removed after successful release; worktree metadata was pruned. The temporary release branch was deleted, while its detached checkout is intentionally retained as the readable final target artifact location because the ordinary local `personal` checkout has unrelated changes.
+- Final completion is eligible for terminal return to Solution Designer. This report does not assert autonomous Team completion, Org imported-Memory adapter coverage, a launched packaged app, or public App Store availability.
