@@ -504,7 +504,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const dispatch = coordinator.postUserMessage({
       runId: RUN_ID,
       messageId: "external-message-save-first",
-      dedupeKey: "external-channel:save-first",
+      dedupeKey: "user-command:save-first",
       message: new AgentInputUserMessage("external message after Save enters"),
     });
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -549,7 +549,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     await expect(coordinator.postUserMessage({
       runId: RUN_ID,
       messageId: "external-message-restore-first",
-      dedupeKey: "external-channel:restore-first",
+      dedupeKey: "user-command:restore-first",
       message: new AgentInputUserMessage("external message before Save"),
     })).resolves.toMatchObject({
       ack: { accepted: true, state: "accepted" },

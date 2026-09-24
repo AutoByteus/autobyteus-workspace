@@ -17,8 +17,8 @@ describe("AgentStreamBroadcaster", () => {
 
     const delivered = broadcaster.publishToRun(
       "run-1",
-      new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        content: "hello from telegram",
+      new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, {
+        todos: [],
       }),
     );
 
@@ -42,14 +42,14 @@ describe("AgentStreamBroadcaster", () => {
 
     const deliveredFirst = broadcaster.publishToRun(
       "run-1",
-      new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        content: "hello from telegram",
+      new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, {
+        todos: [],
       }),
     );
     const deliveredSecond = broadcaster.publishToRun(
       "run-1",
-      new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        content: "follow-up",
+      new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, {
+        todos: [{ todo_id: "todo-1", description: "follow-up", status: "pending" }],
       }),
     );
 

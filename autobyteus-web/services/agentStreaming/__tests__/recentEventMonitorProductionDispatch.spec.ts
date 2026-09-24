@@ -84,11 +84,12 @@ const liveMessagesForCycle = (index: number): ServerMessage[] => {
     },
     { type: 'SEGMENT_END', payload: { id: segmentId, turn_id: turnId, segment_type: 'text' } },
     {
-      type: 'EXTERNAL_USER_MESSAGE',
+      type: 'MEMBER_INPUT_MESSAGE',
       payload: {
-        content: `external-${index}`,
+        content: `user-input-${index}`,
         received_at: new Date(1_800_000_000_000 + index).toISOString(),
-        message_id: `external-${index}`,
+        message_id: `user-input-${index}`,
+        recipient_agent_run_id: 'recent-event-monitor-run',
       },
     },
   ] as ServerMessage[];

@@ -1,6 +1,6 @@
-import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import type { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
+import type { ExternalChannelProvider } from "../../external-channel/provider.js";
+import type { ExternalChannelTransport } from "../../external-channel/channel-transport.js";
+import type { ExternalMessageEnvelope } from "../../external-channel/external-message-envelope.js";
 
 export type InboundInboxStatus =
   | "RECEIVED"

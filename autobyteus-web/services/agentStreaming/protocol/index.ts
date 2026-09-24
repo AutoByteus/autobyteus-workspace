@@ -8,7 +8,6 @@ export type {
   SegmentStartPayload,
   SegmentContentPayload,
   SegmentEndPayload,
-  ExternalUserMessagePayload,
   MemberInputMessagePayload,
   UserMessageContextFilePathPayload,
   UserMessageProjectionPayload,

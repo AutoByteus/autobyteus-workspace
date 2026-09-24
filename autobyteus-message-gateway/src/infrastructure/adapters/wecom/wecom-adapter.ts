@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { ExternalChannelTransport } from "../../../external-channel/channel-transport.js";
 import {
   parseExternalMessageEnvelope,
   type ExternalMessageEnvelope,
-} from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
-import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+} from "../../../external-channel/external-message-envelope.js";
+import type { ExternalOutboundEnvelope } from "../../../external-channel/external-outbound-envelope.js";
+import { ExternalPeerType } from "../../../external-channel/peer-type.js";
+import { ExternalChannelProvider } from "../../../external-channel/provider.js";
 import type { InboundHttpRequest } from "../../../domain/models/inbound-http-request.js";
 import type {
   ProviderAdapter,

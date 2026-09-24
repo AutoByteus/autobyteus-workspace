@@ -90,4 +90,4 @@ This preserves stateful behavior (`cd`, environment changes) across calls for ca
 
 - Official Android profile is `Termux + Node.js`.
 - Companion Android app `Termux:API` is required for hardware bridge commands.
-- For Android bootstrap, use workspace-scoped install flow (server/core/gateway) to avoid desktop-only package postinstall paths on Android.
+- For Android bootstrap, use workspace-scoped install flow (server/core) to avoid desktop-only package postinstall paths on Android.

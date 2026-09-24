@@ -13,9 +13,6 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AGENT_TOOLS_MCP_SERVER_NAME } from "../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../src/agent-communication/services/send-message-to-tool-contract.js";
 import { getCodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
@@ -324,12 +321,9 @@ describeCodexStandaloneDirect(
     let testDataDir: string | null = null;
     let runtimeServerApp: FastifyInstance | null = null;
     let runtimeServerUrl: URL;
-    let originalInternalServerBaseUrl: string | undefined;
     const createdWorkspaceRoots = new Set<string>();
 
     beforeAll(async () => {
-      originalInternalServerBaseUrl =
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
       testDataDir = await mkdtemp(
         path.join(os.tmpdir(), "codex-standalone-send-message-e2e-"),
       );
@@ -355,12 +349,6 @@ describeCodexStandaloneDirect(
 
     afterAll(async () => {
       await getCodexAppServerClientManager().close();
-      if (originalInternalServerBaseUrl) {
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
-          originalInternalServerBaseUrl;
-      } else {
-        delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
-      }
       if (runtimeServerApp) {
         await runtimeServerApp.close();
         runtimeServerApp = null;

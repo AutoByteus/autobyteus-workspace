@@ -4,7 +4,6 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
-import { TeamStreamBroadcaster } from "../../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
@@ -63,7 +62,6 @@ const createHarness = (input: {
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    new TeamStreamBroadcaster(),
     lifecycle as never,
   );
   return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, emit: (event: unknown) => eventListener?.(event) };

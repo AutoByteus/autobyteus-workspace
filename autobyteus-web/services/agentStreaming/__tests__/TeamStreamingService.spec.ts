@@ -266,32 +266,6 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     error.mockRestore();
   });
 
-  it('projects an external user message only when AgentRun and logical member placement agree', () => {
-    const { callbacks, team } = createHarness();
-    admitReady(callbacks, team);
-    const teacher = team.view.getAgentContext(teacherRunId)!;
-    const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
-
-    emit(callbacks, 'EXTERNAL_USER_MESSAGE', {
-      agent_run_id: teacherRunId,
-      member_address: '/Teacher',
-      content: 'hello from telegram',
-      received_at: '2026-08-11T00:01:00.000Z',
-      provider: 'telegram',
-      transport: 'telegram',
-      account_id: 'account-1',
-      peer_id: 'peer-1',
-      thread_id: null,
-      external_message_id: 'external-1',
-      context_file_paths: [],
-    });
-
-    expect(teacher.state.conversation.messages.at(-1)).toMatchObject({
-      type: 'user', text: 'hello from telegram',
-    });
-    expect(persistentStudent.state.conversation.messages).toHaveLength(0);
-  });
-
   it('routes successful tool execution through the browser owner for the exact AgentRun', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);

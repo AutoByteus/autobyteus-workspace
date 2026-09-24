@@ -33,7 +33,7 @@ pnpm install
 Android (Termux) profile:
 
 ```bash
-pnpm install --no-optional --filter ./autobyteus-ts... --filter ./autobyteus-server-ts... --filter ./autobyteus-message-gateway...
+pnpm install --no-optional --filter ./autobyteus-ts... --filter ./autobyteus-server-ts...
 pnpm verify:android-profile
 ```
 

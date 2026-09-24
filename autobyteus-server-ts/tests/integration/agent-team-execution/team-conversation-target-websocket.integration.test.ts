@@ -5,7 +5,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
-import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 type WsMessage = { type: string; payload: Record<string, unknown> };
@@ -86,7 +85,6 @@ const startHarness = async () => {
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    new TeamStreamBroadcaster(),
     lifecycle as never,
   );
   await registerAgentWebsocket(app, {} as never, handler, {} as never);

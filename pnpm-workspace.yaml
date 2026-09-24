@@ -2,7 +2,6 @@ packages:
   - "autobyteus-web"
   - "autobyteus-server-ts"
   - "autobyteus-ts"
-  - "autobyteus-message-gateway"
   - "autobyteus-application-sdk-contracts"
   - "autobyteus-application-backend-sdk"
   - "autobyteus-application-frontend-sdk"

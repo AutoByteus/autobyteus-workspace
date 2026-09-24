@@ -193,26 +193,12 @@ jobs:
           set -euo pipefail
           TAG_VERSION="${{ steps.meta.outputs.version_name }}"
           DESKTOP_VERSION="$(grep -m1 '"version"' autobyteus-web/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
-          GATEWAY_VERSION="$(grep -m1 '"version"' autobyteus-message-gateway/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
           echo "Release tag version: $TAG_VERSION"
           echo "Desktop package version: $DESKTOP_VERSION"
-          echo "Gateway package version: $GATEWAY_VERSION"
           if [[ "$DESKTOP_VERSION" != "$TAG_VERSION" ]]; then
             echo "::error::autobyteus-web/package.json version ($DESKTOP_VERSION) must match release tag ($TAG_VERSION)."
             exit 1
           fi
-          if [[ "$GATEWAY_VERSION" != "$TAG_VERSION" ]]; then
-            echo "::error::autobyteus-message-gateway/package.json version ($GATEWAY_VERSION) must match release tag ($TAG_VERSION)."
-            exit 1
-          fi
-
-      - name: Validate bundled managed messaging manifest matches release tag
-        if: ${{ steps.meta.outputs.enforce_version == 'true' }}
-        shell: bash
-        run: |
-          node autobyteus-message-gateway/scripts/build-runtime-package.mjs \
-            --check-release-manifest \
-            --release-tag "${{ steps.meta.outputs.release_tag }}"
 
       - name: Resolve release commit SHA
         id: sha

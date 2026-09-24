@@ -20,8 +20,6 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSONObject: { input: any; output: any; }
   /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
@@ -705,78 +703,6 @@ export type EventMonitorUserVisual = {
   visualId: Scalars['ID']['output'];
 };
 
-export type ExternalChannelBindingGql = {
-  __typename?: 'ExternalChannelBindingGql';
-  accountId: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  launchPreset?: Maybe<ExternalChannelLaunchPresetGql>;
-  peerId: Scalars['String']['output'];
-  provider: Scalars['String']['output'];
-  targetAgentDefinitionId?: Maybe<Scalars['String']['output']>;
-  targetMemberAddress?: Maybe<Scalars['String']['output']>;
-  targetTeamDefinitionId?: Maybe<Scalars['String']['output']>;
-  targetType: Scalars['String']['output'];
-  teamLaunchPreset?: Maybe<ExternalChannelTeamLaunchPresetGql>;
-  teamRunId?: Maybe<Scalars['String']['output']>;
-  threadId?: Maybe<Scalars['String']['output']>;
-  transport: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type ExternalChannelCapabilities = {
-  __typename?: 'ExternalChannelCapabilities';
-  acceptedProviderTransportPairs: Array<Scalars['String']['output']>;
-  bindingCrudEnabled: Scalars['Boolean']['output'];
-  reason?: Maybe<Scalars['String']['output']>;
-};
-
-export type ExternalChannelLaunchPresetGql = {
-  __typename?: 'ExternalChannelLaunchPresetGql';
-  autoExecuteTools: Scalars['Boolean']['output'];
-  llmConfig?: Maybe<Scalars['JSONObject']['output']>;
-  llmModelIdentifier: Scalars['String']['output'];
-  runtimeKind: Scalars['String']['output'];
-  skillAccessMode: SkillAccessModeEnum;
-  workspaceRootPath: Scalars['String']['output'];
-};
-
-export type ExternalChannelLaunchPresetInput = {
-  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
-  llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode: SkillAccessModeEnum;
-  workspaceRootPath: Scalars['String']['input'];
-};
-
-export type ExternalChannelTeamDefinitionOptionGql = {
-  __typename?: 'ExternalChannelTeamDefinitionOptionGql';
-  coordinatorMemberName: Scalars['String']['output'];
-  description: Scalars['String']['output'];
-  memberCount: Scalars['Int']['output'];
-  teamDefinitionId: Scalars['String']['output'];
-  teamDefinitionName: Scalars['String']['output'];
-};
-
-export type ExternalChannelTeamLaunchPresetGql = {
-  __typename?: 'ExternalChannelTeamLaunchPresetGql';
-  autoExecuteTools: Scalars['Boolean']['output'];
-  llmConfig?: Maybe<Scalars['JSONObject']['output']>;
-  llmModelIdentifier: Scalars['String']['output'];
-  runtimeKind: Scalars['String']['output'];
-  skillAccessMode: SkillAccessModeEnum;
-  workspaceRootPath: Scalars['String']['output'];
-};
-
-export type ExternalChannelTeamLaunchPresetInput = {
-  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
-  llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode: SkillAccessModeEnum;
-  workspaceRootPath: Scalars['String']['input'];
-};
-
 export type GeminiConfigurationCommandResult = {
   __typename?: 'GeminiConfigurationCommandResult';
   credentialSetting: ProviderCredentialSettingObject;
@@ -919,52 +845,6 @@ export type ImportMcpServerConfigsResult = {
   importedCount: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
-};
-
-export type ManagedMessagingGatewayPeerCandidateListObject = {
-  __typename?: 'ManagedMessagingGatewayPeerCandidateListObject';
-  accountId?: Maybe<Scalars['String']['output']>;
-  items: Array<ManagedMessagingGatewayPeerCandidateObject>;
-  updatedAt: Scalars['String']['output'];
-};
-
-export type ManagedMessagingGatewayPeerCandidateObject = {
-  __typename?: 'ManagedMessagingGatewayPeerCandidateObject';
-  displayName?: Maybe<Scalars['String']['output']>;
-  lastMessageAt: Scalars['String']['output'];
-  peerId: Scalars['String']['output'];
-  peerType: Scalars['String']['output'];
-  threadId?: Maybe<Scalars['String']['output']>;
-};
-
-export type ManagedMessagingGatewayStatusObject = {
-  __typename?: 'ManagedMessagingGatewayStatusObject';
-  activeVersion?: Maybe<Scalars['String']['output']>;
-  bindHost?: Maybe<Scalars['String']['output']>;
-  bindPort?: Maybe<Scalars['Int']['output']>;
-  desiredVersion?: Maybe<Scalars['String']['output']>;
-  diagnostics: Scalars['JSONObject']['output'];
-  enabled: Scalars['Boolean']['output'];
-  excludedProviders: Array<Scalars['String']['output']>;
-  installedVersions: Array<Scalars['String']['output']>;
-  lastError?: Maybe<Scalars['String']['output']>;
-  lifecycleState: Scalars['String']['output'];
-  message?: Maybe<Scalars['String']['output']>;
-  pid?: Maybe<Scalars['Int']['output']>;
-  providerConfig: Scalars['JSONObject']['output'];
-  providerStatusByProvider: Scalars['JSONObject']['output'];
-  releaseTag?: Maybe<Scalars['String']['output']>;
-  runtimeReliabilityStatus?: Maybe<Scalars['JSONObject']['output']>;
-  runtimeRunning: Scalars['Boolean']['output'];
-  supported: Scalars['Boolean']['output'];
-  supportedProviders: Array<Scalars['String']['output']>;
-};
-
-export type ManagedMessagingGatewayWeComAccountObject = {
-  __typename?: 'ManagedMessagingGatewayWeComAccountObject';
-  accountId: Scalars['String']['output'];
-  label: Scalars['String']['output'];
-  mode: Scalars['String']['output'];
 };
 
 export type McpServerConfigUnion = StdioMcpServerConfig | StreamableHttpMcpServerConfig;
@@ -1221,7 +1101,6 @@ export type Mutation = {
   deleteAgentDefinition: DeleteAgentDefinitionResult;
   deleteAgentTeamDefinition: DeleteAgentTeamDefinitionResult;
   deleteCustomProvider: DeleteCustomProviderResult;
-  deleteExternalChannelBinding: Scalars['Boolean']['output'];
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
   deleteServerSetting: Scalars['String']['output'];
@@ -1229,10 +1108,8 @@ export type Mutation = {
   deleteSkillFile: Scalars['Boolean']['output'];
   deleteStoredRun: DeleteStoredRunMutationResult;
   deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
-  disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   disableSkill: Skill;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
-  enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   enableSkill: Skill;
   ensureProviderModelCatalog: ProviderModelCatalogSnapshotObject;
   importAgentPackage: Array<AgentPackage>;
@@ -1261,7 +1138,6 @@ export type Mutation = {
   saveGeminiAiStudio: GeminiConfigurationCommandResult;
   saveGeminiVertexExpress: GeminiConfigurationCommandResult;
   saveGeminiVertexProject: GeminiConfigurationCommandResult;
-  saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
   saveProviderApiKey: ProviderCredentialSettingObject;
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
@@ -1276,7 +1152,6 @@ export type Mutation = {
   updateAgentDefinition: AgentDefinition;
   updateAgentPackage: Array<AgentPackage>;
   updateAgentTeamDefinition: AgentTeamDefinition;
-  updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   updateMemoryHubConfig: MemorySyncStatusGql;
   updateMemorySyncSourceConfig: MemorySyncStatusGql;
   updateServerSetting: Scalars['String']['output'];
@@ -1284,7 +1159,6 @@ export type Mutation = {
   updateStoppedAgentRunModelConfig: UpdateStoppedAgentRunModelConfigResult;
   updateStoppedTeamRunModelConfigs: UpdateStoppedTeamRunModelConfigsResult;
   uploadSkillFile: Scalars['Boolean']['output'];
-  upsertExternalChannelBinding: ExternalChannelBindingGql;
   useGeminiMode: GeminiConfigurationCommandResult;
   writeFileContent: Scalars['String']['output'];
 };
@@ -1384,11 +1258,6 @@ export type MutationDeleteAgentTeamDefinitionArgs = {
 
 export type MutationDeleteCustomProviderArgs = {
   providerId: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteExternalChannelBindingArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -1574,11 +1443,6 @@ export type MutationSaveGeminiVertexProjectArgs = {
 };
 
 
-export type MutationSaveManagedMessagingGatewayProviderConfigArgs = {
-  input: Scalars['JSONObject']['input'];
-};
-
-
 export type MutationSaveProviderApiKeyArgs = {
   apiKey: Scalars['String']['input'];
   providerId: Scalars['String']['input'];
@@ -1687,11 +1551,6 @@ export type MutationUploadSkillFileArgs = {
 };
 
 
-export type MutationUpsertExternalChannelBindingArgs = {
-  input: UpsertExternalChannelBindingInput;
-};
-
-
 export type MutationUseGeminiModeArgs = {
   mode: GeminiSetupMode;
 };
@@ -1749,9 +1608,6 @@ export type Query = {
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
-  externalChannelBindings: Array<ExternalChannelBindingGql>;
-  externalChannelCapabilities: ExternalChannelCapabilities;
-  externalChannelTeamDefinitionOptions: Array<ExternalChannelTeamDefinitionOptionGql>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
   getAgentRunMemoryView: AgentMemoryView;
@@ -1792,9 +1648,6 @@ export type Query = {
   listMemoryHubUrlCandidates: Array<ServerAddressCandidateGql>;
   listMemoryImports: Array<MemoryImportSummaryGql>;
   listWorkspaceRunHistory: Array<WorkspaceRunHistoryGroupObject>;
-  managedMessagingGatewayPeerCandidates: ManagedMessagingGatewayPeerCandidateListObject;
-  managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject;
-  managedMessagingGatewayWeComAccounts: Array<ManagedMessagingGatewayWeComAccountObject>;
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
   providerCredentialSettings: Array<ProviderCredentialSettingObject>;
@@ -2016,13 +1869,6 @@ export type QueryListMemoryHubUrlCandidatesArgs = {
 
 export type QueryListWorkspaceRunHistoryArgs = {
   limitPerAgent?: Scalars['Int']['input'];
-};
-
-
-export type QueryManagedMessagingGatewayPeerCandidatesArgs = {
-  includeGroups?: Scalars['Boolean']['input'];
-  limit?: Scalars['Int']['input'];
-  provider: Scalars['String']['input'];
 };
 
 
@@ -2946,20 +2792,6 @@ export type UpdateStoppedTeamRunModelConfigsResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type UpsertExternalChannelBindingInput = {
-  accountId: Scalars['String']['input'];
-  launchPreset?: InputMaybe<ExternalChannelLaunchPresetInput>;
-  peerId: Scalars['String']['input'];
-  provider: Scalars['String']['input'];
-  targetAgentDefinitionId?: InputMaybe<Scalars['String']['input']>;
-  targetMemberAddress?: InputMaybe<Scalars['String']['input']>;
-  targetTeamDefinitionId?: InputMaybe<Scalars['String']['input']>;
-  targetType: Scalars['String']['input'];
-  teamLaunchPreset?: InputMaybe<ExternalChannelTeamLaunchPresetInput>;
-  threadId?: InputMaybe<Scalars['String']['input']>;
-  transport: Scalars['String']['input'];
-};
-
 export type UsageStatistics = {
   __typename?: 'UsageStatistics';
   aggregate: TokenUsageCostSummaryAggregateGraphql;
@@ -3257,20 +3089,6 @@ export type SetApplicationsEnabledMutationVariables = Exact<{
 
 
 export type SetApplicationsEnabledMutation = { __typename?: 'Mutation', setApplicationsEnabled: { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource } };
-
-export type UpsertExternalChannelBindingMutationVariables = Exact<{
-  input: UpsertExternalChannelBindingInput;
-}>;
-
-
-export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null } };
-
-export type DeleteExternalChannelBindingMutationVariables = Exact<{
-  id: Scalars['String']['input'];
-}>;
-
-
-export type DeleteExternalChannelBindingMutation = { __typename?: 'Mutation', deleteExternalChannelBinding: boolean };
 
 export type WriteFileContentMutationVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -3629,21 +3447,6 @@ export type GetApplicationByIdQueryVariables = Exact<{
 
 export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, localApplicationId: string, packageId: string, writable: boolean, executionResourceSlots: Array<{ __typename?: 'ApplicationExecutionResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationExecutionResource', kind: ApplicationExecutionResourceKind, localId: string, definitionId: string }> } | null };
 
-export type ExternalChannelCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ExternalChannelCapabilitiesQuery = { __typename?: 'Query', externalChannelCapabilities: { __typename: 'ExternalChannelCapabilities', bindingCrudEnabled: boolean, reason?: string | null, acceptedProviderTransportPairs: Array<string> } };
-
-export type ExternalChannelBindingsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null }> };
-
-export type ExternalChannelTeamDefinitionOptionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ExternalChannelTeamDefinitionOptionsQuery = { __typename?: 'Query', externalChannelTeamDefinitionOptions: Array<{ __typename: 'ExternalChannelTeamDefinitionOptionGql', teamDefinitionId: string, teamDefinitionName: string, description: string, coordinatorMemberName: string, memberCount: number }> };
-
 export type GetFileContentQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
   filePath: Scalars['String']['input'];
@@ -3693,25 +3496,6 @@ export type GetQwenSetupStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetQwenSetupStatusQuery = { __typename?: 'Query', qwenSetupStatus: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource } };
-
-export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ManagedMessagingGatewayStatusQuery = { __typename?: 'Query', managedMessagingGatewayStatus: { __typename: 'ManagedMessagingGatewayStatusObject', supported: boolean, enabled: boolean, lifecycleState: string, message?: string | null, lastError?: string | null, activeVersion?: string | null, desiredVersion?: string | null, releaseTag?: string | null, installedVersions: Array<string>, bindHost?: string | null, bindPort?: number | null, pid?: number | null, providerConfig: any, providerStatusByProvider: any, supportedProviders: Array<string>, excludedProviders: Array<string>, diagnostics: any, runtimeReliabilityStatus?: any | null, runtimeRunning: boolean } };
-
-export type ManagedMessagingGatewayWeComAccountsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ManagedMessagingGatewayWeComAccountsQuery = { __typename?: 'Query', managedMessagingGatewayWeComAccounts: Array<{ __typename: 'ManagedMessagingGatewayWeComAccountObject', accountId: string, label: string, mode: string }> };
-
-export type ManagedMessagingGatewayPeerCandidatesQueryVariables = Exact<{
-  provider: Scalars['String']['input'];
-  includeGroups: Scalars['Boolean']['input'];
-  limit: Scalars['Int']['input'];
-}>;
-
-
-export type ManagedMessagingGatewayPeerCandidatesQuery = { __typename?: 'Query', managedMessagingGatewayPeerCandidates: { __typename: 'ManagedMessagingGatewayPeerCandidateListObject', accountId?: string | null, updatedAt: string, items: Array<{ __typename: 'ManagedMessagingGatewayPeerCandidateObject', peerId: string, peerType: string, threadId?: string | null, displayName?: string | null, lastMessageAt: string }> } };
 
 export type GetMcpServersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5686,89 +5470,6 @@ export function useSetApplicationsEnabledMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<SetApplicationsEnabledMutation, SetApplicationsEnabledMutationVariables>(SetApplicationsEnabledDocument, options);
 }
 export type SetApplicationsEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetApplicationsEnabledMutation, SetApplicationsEnabledMutationVariables>;
-export const UpsertExternalChannelBindingDocument = gql`
-    mutation UpsertExternalChannelBinding($input: UpsertExternalChannelBindingInput!) {
-  upsertExternalChannelBinding(input: $input) {
-    __typename
-    id
-    provider
-    transport
-    accountId
-    peerId
-    threadId
-    targetType
-    targetAgentDefinitionId
-    targetTeamDefinitionId
-    launchPreset {
-      workspaceRootPath
-      llmModelIdentifier
-      runtimeKind
-      autoExecuteTools
-      skillAccessMode
-      llmConfig
-    }
-    teamLaunchPreset {
-      workspaceRootPath
-      llmModelIdentifier
-      runtimeKind
-      autoExecuteTools
-      skillAccessMode
-      llmConfig
-    }
-    teamRunId
-    updatedAt
-  }
-}
-    `;
-
-/**
- * __useUpsertExternalChannelBindingMutation__
- *
- * To run a mutation, you first call `useUpsertExternalChannelBindingMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpsertExternalChannelBindingMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useUpsertExternalChannelBindingMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useUpsertExternalChannelBindingMutation(options: VueApolloComposable.UseMutationOptions<UpsertExternalChannelBindingMutation, UpsertExternalChannelBindingMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpsertExternalChannelBindingMutation, UpsertExternalChannelBindingMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpsertExternalChannelBindingMutation, UpsertExternalChannelBindingMutationVariables>(UpsertExternalChannelBindingDocument, options);
-}
-export type UpsertExternalChannelBindingMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpsertExternalChannelBindingMutation, UpsertExternalChannelBindingMutationVariables>;
-export const DeleteExternalChannelBindingDocument = gql`
-    mutation DeleteExternalChannelBinding($id: String!) {
-  deleteExternalChannelBinding(id: $id)
-}
-    `;
-
-/**
- * __useDeleteExternalChannelBindingMutation__
- *
- * To run a mutation, you first call `useDeleteExternalChannelBindingMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeleteExternalChannelBindingMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useDeleteExternalChannelBindingMutation({
- *   variables: {
- *     id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteExternalChannelBindingMutation(options: VueApolloComposable.UseMutationOptions<DeleteExternalChannelBindingMutation, DeleteExternalChannelBindingMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteExternalChannelBindingMutation, DeleteExternalChannelBindingMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeleteExternalChannelBindingMutation, DeleteExternalChannelBindingMutationVariables>(DeleteExternalChannelBindingDocument, options);
-}
-export type DeleteExternalChannelBindingMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteExternalChannelBindingMutation, DeleteExternalChannelBindingMutationVariables>;
 export const WriteFileContentDocument = gql`
     mutation WriteFileContent($workspaceId: String!, $filePath: String!, $content: String!) {
   writeFileContent(
@@ -7393,122 +7094,6 @@ export function useGetApplicationByIdLazyQuery(variables?: GetApplicationByIdQue
   return VueApolloComposable.useLazyQuery<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>(GetApplicationByIdDocument, variables, options);
 }
 export type GetApplicationByIdQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>;
-export const ExternalChannelCapabilitiesDocument = gql`
-    query ExternalChannelCapabilities {
-  externalChannelCapabilities {
-    __typename
-    bindingCrudEnabled
-    reason
-    acceptedProviderTransportPairs
-  }
-}
-    `;
-
-/**
- * __useExternalChannelCapabilitiesQuery__
- *
- * To run a query within a Vue component, call `useExternalChannelCapabilitiesQuery` and pass it any options that fit your needs.
- * When your component renders, `useExternalChannelCapabilitiesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useExternalChannelCapabilitiesQuery();
- */
-export function useExternalChannelCapabilitiesQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>(ExternalChannelCapabilitiesDocument, {}, options);
-}
-export function useExternalChannelCapabilitiesLazyQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>(ExternalChannelCapabilitiesDocument, {}, options);
-}
-export type ExternalChannelCapabilitiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelCapabilitiesQuery, ExternalChannelCapabilitiesQueryVariables>;
-export const ExternalChannelBindingsDocument = gql`
-    query ExternalChannelBindings {
-  externalChannelBindings {
-    __typename
-    id
-    provider
-    transport
-    accountId
-    peerId
-    threadId
-    targetType
-    targetAgentDefinitionId
-    targetTeamDefinitionId
-    launchPreset {
-      workspaceRootPath
-      llmModelIdentifier
-      runtimeKind
-      autoExecuteTools
-      skillAccessMode
-      llmConfig
-    }
-    teamLaunchPreset {
-      workspaceRootPath
-      llmModelIdentifier
-      runtimeKind
-      autoExecuteTools
-      skillAccessMode
-      llmConfig
-    }
-    teamRunId
-    updatedAt
-  }
-}
-    `;
-
-/**
- * __useExternalChannelBindingsQuery__
- *
- * To run a query within a Vue component, call `useExternalChannelBindingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useExternalChannelBindingsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useExternalChannelBindingsQuery();
- */
-export function useExternalChannelBindingsQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>(ExternalChannelBindingsDocument, {}, options);
-}
-export function useExternalChannelBindingsLazyQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>(ExternalChannelBindingsDocument, {}, options);
-}
-export type ExternalChannelBindingsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>;
-export const ExternalChannelTeamDefinitionOptionsDocument = gql`
-    query ExternalChannelTeamDefinitionOptions {
-  externalChannelTeamDefinitionOptions {
-    __typename
-    teamDefinitionId
-    teamDefinitionName
-    description
-    coordinatorMemberName
-    memberCount
-  }
-}
-    `;
-
-/**
- * __useExternalChannelTeamDefinitionOptionsQuery__
- *
- * To run a query within a Vue component, call `useExternalChannelTeamDefinitionOptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useExternalChannelTeamDefinitionOptionsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useExternalChannelTeamDefinitionOptionsQuery();
- */
-export function useExternalChannelTeamDefinitionOptionsQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>(ExternalChannelTeamDefinitionOptionsDocument, {}, options);
-}
-export function useExternalChannelTeamDefinitionOptionsLazyQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>(ExternalChannelTeamDefinitionOptionsDocument, {}, options);
-}
-export type ExternalChannelTeamDefinitionOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>;
 export const GetFileContentDocument = gql`
     query GetFileContent($workspaceId: String!, $filePath: String!) {
   fileContent(workspaceId: $workspaceId, filePath: $filePath)
@@ -7725,128 +7310,6 @@ export function useGetQwenSetupStatusLazyQuery(options: VueApolloComposable.UseQ
   return VueApolloComposable.useLazyQuery<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>(GetQwenSetupStatusDocument, {}, options);
 }
 export type GetQwenSetupStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>;
-export const ManagedMessagingGatewayStatusDocument = gql`
-    query ManagedMessagingGatewayStatus {
-  managedMessagingGatewayStatus {
-    __typename
-    supported
-    enabled
-    lifecycleState
-    message
-    lastError
-    activeVersion
-    desiredVersion
-    releaseTag
-    installedVersions
-    bindHost
-    bindPort
-    pid
-    providerConfig
-    providerStatusByProvider
-    supportedProviders
-    excludedProviders
-    diagnostics
-    runtimeReliabilityStatus
-    runtimeRunning
-  }
-}
-    `;
-
-/**
- * __useManagedMessagingGatewayStatusQuery__
- *
- * To run a query within a Vue component, call `useManagedMessagingGatewayStatusQuery` and pass it any options that fit your needs.
- * When your component renders, `useManagedMessagingGatewayStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useManagedMessagingGatewayStatusQuery();
- */
-export function useManagedMessagingGatewayStatusQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>(ManagedMessagingGatewayStatusDocument, {}, options);
-}
-export function useManagedMessagingGatewayStatusLazyQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>(ManagedMessagingGatewayStatusDocument, {}, options);
-}
-export type ManagedMessagingGatewayStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>;
-export const ManagedMessagingGatewayWeComAccountsDocument = gql`
-    query ManagedMessagingGatewayWeComAccounts {
-  managedMessagingGatewayWeComAccounts {
-    __typename
-    accountId
-    label
-    mode
-  }
-}
-    `;
-
-/**
- * __useManagedMessagingGatewayWeComAccountsQuery__
- *
- * To run a query within a Vue component, call `useManagedMessagingGatewayWeComAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useManagedMessagingGatewayWeComAccountsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useManagedMessagingGatewayWeComAccountsQuery();
- */
-export function useManagedMessagingGatewayWeComAccountsQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>(ManagedMessagingGatewayWeComAccountsDocument, {}, options);
-}
-export function useManagedMessagingGatewayWeComAccountsLazyQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>(ManagedMessagingGatewayWeComAccountsDocument, {}, options);
-}
-export type ManagedMessagingGatewayWeComAccountsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>;
-export const ManagedMessagingGatewayPeerCandidatesDocument = gql`
-    query ManagedMessagingGatewayPeerCandidates($provider: String!, $includeGroups: Boolean!, $limit: Int!) {
-  managedMessagingGatewayPeerCandidates(
-    provider: $provider
-    includeGroups: $includeGroups
-    limit: $limit
-  ) {
-    __typename
-    accountId
-    updatedAt
-    items {
-      __typename
-      peerId
-      peerType
-      threadId
-      displayName
-      lastMessageAt
-    }
-  }
-}
-    `;
-
-/**
- * __useManagedMessagingGatewayPeerCandidatesQuery__
- *
- * To run a query within a Vue component, call `useManagedMessagingGatewayPeerCandidatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useManagedMessagingGatewayPeerCandidatesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useManagedMessagingGatewayPeerCandidatesQuery({
- *   provider: // value for 'provider'
- *   includeGroups: // value for 'includeGroups'
- *   limit: // value for 'limit'
- * });
- */
-export function useManagedMessagingGatewayPeerCandidatesQuery(variables: ManagedMessagingGatewayPeerCandidatesQueryVariables | VueCompositionApi.Ref<ManagedMessagingGatewayPeerCandidatesQueryVariables> | ReactiveFunction<ManagedMessagingGatewayPeerCandidatesQueryVariables>, options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>(ManagedMessagingGatewayPeerCandidatesDocument, variables, options);
-}
-export function useManagedMessagingGatewayPeerCandidatesLazyQuery(variables?: ManagedMessagingGatewayPeerCandidatesQueryVariables | VueCompositionApi.Ref<ManagedMessagingGatewayPeerCandidatesQueryVariables> | ReactiveFunction<ManagedMessagingGatewayPeerCandidatesQueryVariables>, options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>(ManagedMessagingGatewayPeerCandidatesDocument, variables, options);
-}
-export type ManagedMessagingGatewayPeerCandidatesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>;
 export const GetMcpServersDocument = gql`
     query GetMcpServers {
   mcpServers {

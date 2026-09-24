@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
+import { ExternalChannelProvider } from "../../../../src/external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../../src/external-channel/channel-transport.js";
+import { ExternalPeerType } from "../../../../src/external-channel/peer-type.js";
 import { InboundForwarderWorker } from "../../../../src/application/services/inbound-forwarder-worker.js";
 import type { InboundInboxRecord } from "../../../../src/domain/models/inbox-store.js";
 

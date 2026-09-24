@@ -32,7 +32,7 @@ describe('zh-CN glossary consistency', () => {
     expect(zhCnShellMessages['shell.navigation.agentTeams']).toBe('智能体团队');
     expect(zhCnSettingsMessages['settings.page.sections.applicationPackages']).toBe('应用包');
     expect(zhCnSettingsMessages['settings.page.sections.agentPackages']).toBe('智能体包');
-    expect(zhCnSettingsGeneratedMessages['settings.components.settings.messaging.ChannelBindingSetupCard.agent_definition']).toBe('智能体定义');
+    expect(zhCnSettingsGeneratedMessages['settings.components.settings.AgentPackagesManager.agent_packages']).toBe('智能体包');
     expect(zhCnAgentsMessages['agents.pages.agents.go_to_agents']).toBe('前往智能体');
     expect(zhCnAgentTeamsMessages['agentTeams.pages.agent_teams.go_to_agent_teams']).toBe('前往智能体团队');
     expect(zhCnWorkspaceMessages['workspace.components.workspace.common.WorkspaceHeaderActions.new_agent']).toBe('新建智能体');

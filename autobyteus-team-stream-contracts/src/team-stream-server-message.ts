@@ -7,7 +7,6 @@ import {
 } from "./team-agent-message-dtos.js";
 import {
   teamCommunicationMessagePayloadSchema,
-  teamExternalUserMessagePayloadSchema,
   teamMemberInputMessagePayloadSchema,
 } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
@@ -63,7 +62,6 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("TASK_DELEGATION_EVENT"), payload: teamTaskDelegationPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
-  z.object({ type: z.literal("EXTERNAL_USER_MESSAGE"), payload: teamExternalUserMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
 ]);
 
@@ -83,7 +81,6 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "TASK_DELEGATION_EVENT"; payload: z.infer<typeof teamTaskDelegationPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
-  | Readonly<{ type: "EXTERNAL_USER_MESSAGE"; payload: z.infer<typeof teamExternalUserMessagePayloadSchema> }>
   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;
 
 export const parseTeamStreamServerMessage = (value: string | unknown): TeamStreamServerMessage => {

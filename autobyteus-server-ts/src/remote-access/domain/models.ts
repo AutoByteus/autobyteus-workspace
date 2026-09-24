@@ -9,8 +9,7 @@ export type RemoteAccessRouteClassification =
   | "TRUSTED_NETWORK_OWNER"
   | "TRUSTED_NETWORK_PROTECTED"
   | "TRUSTED_NETWORK_WEBSOCKET"
-  | "LOCAL_DEV_ONLY"
-  | "EXTERNAL_SIGNATURE";
+  | "LOCAL_DEV_ONLY";
 
 export type RemoteAccessAuthMode = "trusted_network" | "loopback" | "mobile";
 
