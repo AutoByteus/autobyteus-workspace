@@ -1,0 +1,369 @@
+// TEMPORARY API/E2E probe for ticket claude-sdk-builtin-tool-restriction (gitignored tests/.tmp).
+// Drives the real AutoByteus Studio server + ClaudeSession + real Claude Code CLI against a local
+// fake Anthropic Messages API (credential-free). Removed after validation.
+import "reflect-metadata";
+import { createRequire } from "node:module";
+import http from "node:http";
+import path from "node:path";
+import os from "node:os";
+import fs from "node:fs";
+import { randomUUID } from "node:crypto";
+import { mkdtemp, rm, writeFile, mkdir, readdir } from "node:fs/promises";
+import WebSocket from "ws";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+
+// ---- sanitize the invoking Claude Code session env BEFORE importing server modules ----
+for (const key of Object.keys(process.env)) {
+  if (
+    key === "CLAUDECODE" ||
+    key === "AI_AGENT" ||
+    key.startsWith("ANTHROPIC_") ||
+    (key.startsWith("CLAUDE_") && key !== "CLAUDE_CODE_EXECUTABLE_PATH")
+  ) {
+    delete process.env[key];
+  }
+}
+
+const EVIDENCE_PATH = process.env.PROBE_EVIDENCE_PATH ?? "/tmp/api-e2e-claude-tools/probe-evidence.json";
+const EXPECTED_BUILT_INS = [
+  "Bash", "Edit", "Glob", "Grep", "NotebookEdit", "Read", "Skill", "WebFetch", "WebSearch", "Write",
+];
+const NATIVE_MULTI_AGENT = ["Agent", "Task", "Workflow", "SendMessage", "ListAgents", "AskUserQuestion"];
+const LEAK_PATTERN = /(Available agent|general-purpose|PROBE_PROJECT_AGENT|probe-project-reviewer|subagent_type|Explore agent|Plan agent)/gi;
+
+type Captured = { url: string; method: string; body: any; role: string; responseKind: string };
+const captured: Captured[] = [];
+let workspaceRoot = "";
+
+// ---------------- fake Anthropic Messages API ----------------
+const ev = (e: string, d: unknown) => `event: ${e}\ndata: ${JSON.stringify(d)}\n\n`;
+const textOf = (content: unknown): string =>
+  typeof content === "string"
+    ? content
+    : Array.isArray(content)
+      ? content.map((c: any) => (c?.type === "text" ? c.text : "")).join("\n")
+      : "";
+
+const classify = (body: any): string => {
+  const sys = JSON.stringify(body?.system ?? "");
+  if (sys.includes("PROBE_AGENT_PING")) return "ping";
+  if (sys.includes("PROBE_AGENT_PONG")) return "pong";
+  if (sys.includes("PROBE_PRECHANGE")) return "prechange";
+  return (body?.tools ?? []).length > 0 ? "other-with-tools" : "side";
+};
+
+const buildForcedBatch = (role: string, body: any): Array<[string, Record<string, unknown>]> => {
+  if (role === "prechange") {
+    return [["Agent", { description: "probe", prompt: "SUBAGENT_SAY_ACK", subagent_type: "general-purpose", run_in_background: false }]];
+  }
+  const toolNames: string[] = (body.tools ?? []).map((t: any) => t.name);
+  const mcpSend = toolNames.find((n) => n.endsWith("send_message_to")) ?? "mcp__autobyteus_agent_tools__send_message_to";
+  const skillsDir = path.join(workspaceRoot, ".claude", "skills");
+  const skillName = fs.existsSync(skillsDir) ? fs.readdirSync(skillsDir)[0] : "missing-skill";
+  return [
+    ["Agent", { description: "x", prompt: "do x", subagent_type: "general-purpose" }],
+    ["Task", { description: "x", prompt: "do x", subagent_type: "general-purpose" }],
+    ["Workflow", { script: "export const meta={name:'x',description:'x'}" }],
+    ["SendMessage", { to: "main", summary: "x", message: "x" }],
+    ["ListAgents", {}],
+    ["AskUserQuestion", { questions: [{ question: "Q?", header: "h", multiSelect: false, options: [{ label: "a", description: "a" }, { label: "b", description: "b" }] }] }],
+    ["Read", { file_path: path.join(workspaceRoot, "probe-read.txt") }],
+    ["Skill", { skill: skillName }],
+    [mcpSend, { recipient_address: "/pong", content: "PROBE_DELIVERY_TOKEN", message_type: "probe" }],
+  ];
+};
+
+const sse = (model: string, id: string, blocks: { tools?: Array<[string, Record<string, unknown>]>; text?: string }) => {
+  let out = ev("message_start", { type: "message_start", message: { id, type: "message", role: "assistant", model, content: [], stop_reason: null, stop_sequence: null, usage: { input_tokens: 1, output_tokens: 1 } } });
+  if (blocks.tools) {
+    blocks.tools.forEach(([name, input], i) => {
+      out += ev("content_block_start", { type: "content_block_start", index: i, content_block: { type: "tool_use", id: `toolu_${id}_${i}`, name, input: {} } });
+      out += ev("content_block_delta", { type: "content_block_delta", index: i, delta: { type: "input_json_delta", partial_json: JSON.stringify(input) } });
+      out += ev("content_block_stop", { type: "content_block_stop", index: i });
+    });
+    out += ev("message_delta", { type: "message_delta", delta: { stop_reason: "tool_use", stop_sequence: null }, usage: { output_tokens: 1 } });
+  } else {
+    out += ev("content_block_start", { type: "content_block_start", index: 0, content_block: { type: "text", text: "" } });
+    out += ev("content_block_delta", { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: blocks.text ?? "ok" } });
+    out += ev("content_block_stop", { type: "content_block_stop", index: 0 });
+    out += ev("message_delta", { type: "message_delta", delta: { stop_reason: "end_turn", stop_sequence: null }, usage: { output_tokens: 1 } });
+  }
+  return out + ev("message_stop", { type: "message_stop" });
+};
+
+let reqSeq = 0;
+const fakeApi = http.createServer((req, res) => {
+  let raw = "";
+  req.on("data", (c) => (raw += c));
+  req.on("end", () => {
+    let body: any = null;
+    try { body = raw ? JSON.parse(raw) : null; } catch { body = null; }
+    const url = req.url ?? "";
+    const role = classify(body);
+    const id = `msg_${++reqSeq}`;
+    if (url.startsWith("/v1/messages/count_tokens")) {
+      captured.push({ url, method: req.method ?? "", body, role, responseKind: "count_tokens" });
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ input_tokens: 1 }));
+      return;
+    }
+    if (url.startsWith("/v1/messages")) {
+      const msgs: any[] = body?.messages ?? [];
+      const last = [...msgs].reverse().find((m: any) => m?.role === "user");
+      const lastHasToolResult = Array.isArray(last?.content) && last.content.some((c: any) => c?.type === "tool_result");
+      const lastText = textOf(last?.content);
+      let blocks: { tools?: Array<[string, Record<string, unknown>]>; text?: string };
+      let kind: string;
+      if ((role === "ping" || role === "prechange") && !lastHasToolResult && lastText.includes("FORCE_NATIVE_TOOLS")) {
+        blocks = { tools: buildForcedBatch(role, body) }; kind = "forced-tools";
+      } else if (lastHasToolResult) {
+        blocks = { text: "TOOLS_DONE" }; kind = "after-tools";
+      } else {
+        blocks = { text: "ACK" }; kind = "ack";
+      }
+      captured.push({ url, method: req.method ?? "", body, role, responseKind: kind });
+      if (body?.stream) {
+        res.writeHead(200, { "content-type": "text/event-stream" });
+        res.end(sse(body?.model ?? "claude", id, blocks));
+      } else {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ id, type: "message", role: "assistant", model: body?.model ?? "claude", content: [{ type: "text", text: blocks.text ?? "ok" }], stop_reason: "end_turn", stop_sequence: null, usage: { input_tokens: 1, output_tokens: 1 } }));
+      }
+      return;
+    }
+    captured.push({ url, method: req.method ?? "", body, role: "non-messages", responseKind: "generic" });
+    res.writeHead(200, { "content-type": "application/json" });
+    res.end(url.startsWith("/v1/models") ? JSON.stringify({ data: [], has_more: false, first_id: null, last_id: null }) : "{}");
+  });
+});
+
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const waitFor = async <T>(fn: () => T | undefined | null | false, label: string, timeoutMs = 120_000): Promise<T> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const v = fn();
+    if (v) return v as T;
+    await wait(300);
+  }
+  throw new Error(`Timed out: ${label}`);
+};
+
+const toolNamesOf = (b: any): string[] => (b?.tools ?? []).map((t: any) => t.name).sort();
+const leaksOf = (b: any) => ({
+  system: [...new Set([...JSON.stringify(b?.system ?? "").matchAll(LEAK_PATTERN)].map((m) => m[0]))],
+  messages: [...new Set([...JSON.stringify(b?.messages ?? "").matchAll(LEAK_PATTERN)].map((m) => m[0]))],
+  byMessage: (b?.messages ?? []).map((m: any, i: number) => ({ i, role: m.role, hits: [...new Set([...JSON.stringify(m.content).matchAll(LEAK_PATTERN)].map((x) => x[0]))] })).filter((x: any) => x.hits.length > 0),
+});
+const toolResultsOf = (b: any) => {
+  const out: Array<{ id: string; is_error: boolean; text: string }> = [];
+  for (const m of b?.messages ?? []) {
+    if (m.role !== "user" || !Array.isArray(m.content)) continue;
+    for (const c of m.content) {
+      if (c?.type === "tool_result") {
+        out.push({ id: c.tool_use_id, is_error: Boolean(c.is_error), text: (typeof c.content === "string" ? c.content : JSON.stringify(c.content)).slice(0, 220) });
+      }
+    }
+  }
+  return out;
+};
+
+describe("TEMP probe: Claude built-in tool policy through the real AutoByteus server + real CLI (fake Messages API)", () => {
+  let schema: GraphQLSchema;
+  let graphql: typeof graphqlFn;
+  let testDataDir = "";
+  let app: any = null;
+  let mainUrl: URL;
+  const evidence: Record<string, unknown> = {};
+
+  const execGraphql = async <T>(source: string, variableValues?: Record<string, unknown>): Promise<T> => {
+    const result = await graphql({ schema, source, variableValues });
+    if (result.errors?.length) throw result.errors[0];
+    return result.data as T;
+  };
+
+  beforeAll(async () => {
+    await new Promise<void>((r) => fakeApi.listen(0, "127.0.0.1", () => r()));
+    const port = (fakeApi.address() as { port: number }).port;
+    process.env.ANTHROPIC_BASE_URL = `http://127.0.0.1:${port}`;
+    process.env.ANTHROPIC_API_KEY = "sk-ant-dummy-probe";
+    process.env.CLAUDE_AGENT_SDK_AUTH_MODE = "auto";
+    process.env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+
+    workspaceRoot = fs.realpathSync(await mkdtemp(path.join(os.tmpdir(), "claude-tool-policy-ws-")));
+    await mkdir(path.join(workspaceRoot, ".claude", "agents"), { recursive: true });
+    await writeFile(path.join(workspaceRoot, ".claude", "agents", "probe-project-reviewer.md"),
+      "---\nname: probe-project-reviewer\ndescription: PROBE_PROJECT_AGENT reviewer agent\n---\nYou review things.\n");
+    await writeFile(path.join(workspaceRoot, "probe-read.txt"), "PROBE_READ_CONTENT\n");
+
+    testDataDir = await mkdtemp(path.join(os.tmpdir(), "claude-tool-policy-appdata-"));
+    await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
+    const { appConfigProvider } = await import("../../src/config/app-config-provider.js");
+    appConfigProvider.config.setCustomAppDataDir(testDataDir);
+    const require = createRequire(import.meta.url);
+    const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+    graphql = (await import(require.resolve("graphql", { paths: [typeGraphqlRoot] }))).graphql;
+    const { startStudioE2eRuntimeServer } = await import("../e2e/helpers/studio-runtime-test-server.js");
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify;
+    mainUrl = started.mainUrl;
+    const { buildGraphqlSchema } = await import("../../src/api/graphql/schema.js");
+    schema = await buildGraphqlSchema();
+  }, 120_000);
+
+  afterAll(async () => {
+    fs.mkdirSync(path.dirname(EVIDENCE_PATH), { recursive: true });
+    fs.writeFileSync(EVIDENCE_PATH, JSON.stringify({ evidence, captured: captured.map((c) => ({ ...c, body: c.body ? { model: c.body.model, tools: toolNamesOf(c.body), system: c.body.system, messages: c.body.messages } : null })) }, null, 1));
+    if (app) await app.close();
+    fakeApi.close();
+    // clean Claude transcripts written for the temp workspace
+    const projects = path.join(os.homedir(), ".claude", "projects");
+    const base = path.basename(workspaceRoot);
+    for (const d of await readdir(projects).catch(() => [] as string[])) {
+      if (d.includes(base)) await rm(path.join(projects, d), { recursive: true, force: true });
+    }
+    await rm(workspaceRoot, { recursive: true, force: true });
+    await rm(testDataDir, { recursive: true, force: true });
+  });
+
+  it("VAL-011/006/007/008/009 team run + model discovery", async () => {
+    // ---- VAL-011 model discovery ----
+    const discoveryStart = captured.length;
+    let modelIdentifier = "sonnet";
+    try {
+      const catalog = await execGraphql<any>(`query M($runtimeKind: String) { providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }`, { runtimeKind: "claude_agent_sdk" });
+      const ids: string[] = catalog.providerModelCatalogSnapshots.flatMap((p: any) => p.llmModels.map((m: any) => m.modelIdentifier));
+      evidence.discoveryModelIds = ids;
+      if (ids.length > 0) modelIdentifier = ids.includes("sonnet") ? "sonnet" : ids[0]!;
+    } catch (e) {
+      evidence.discoveryError = String(e);
+    }
+    evidence.discoveryRequests = captured.slice(discoveryStart).map((c) => ({ url: c.url, role: c.role, tools: toolNamesOf(c.body) }));
+    evidence.modelIdentifier = modelIdentifier;
+
+    // ---- fixtures: skill, agents, team ----
+    const unique = randomUUID().slice(0, 8);
+    const skillName = `probe_skill_${unique}`;
+    await execGraphql(`mutation C($input: CreateSkillInput!) { createSkill(input: $input) { name } }`, {
+      input: { name: skillName, description: "PROBE_SKILL_MARKER probe skill", content: "# Probe skill\n\nPROBE_SKILL_BODY_MARKER\n" },
+    });
+    const createAgent = async (name: string, marker: string) =>
+      (await execGraphql<any>(`mutation A($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }`, {
+        input: { name: `${name}-${unique}`, role: "assistant", description: `${marker} probe agent`, instructions: `${marker}. Follow instructions.`, toolNames: ["send_message_to"], skillNames: [skillName] },
+      })).createAgentDefinition.id as string;
+    const pingId = await createAgent("probe-ping", "PROBE_AGENT_PING");
+    const pongId = await createAgent("probe-pong", "PROBE_AGENT_PONG");
+    const teamDefId = (await execGraphql<any>(`mutation T($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }`, {
+      input: { name: `probe-team-${unique}`, description: "probe", instructions: "probe", coordinatorMemberName: "ping",
+        nodes: [{ memberName: "ping", ref: pingId, refScope: "SHARED" }, { memberName: "pong", ref: pongId, refScope: "SHARED" }] },
+    })).createAgentTeamDefinition.id as string;
+    const memberCfg = (addr: string, id: string) => ({ memberAddress: addr, agentDefinitionId: id, llmModelIdentifier: modelIdentifier, autoExecuteTools: true, skillAccessMode: "PRELOADED_ONLY", runtimeKind: "claude_agent_sdk", workspaceRootPath: workspaceRoot });
+    const run = await execGraphql<any>(`mutation R($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }`, {
+      input: { teamDefinitionId: teamDefId,
+        teamConfigs: [{ teamAddress: "/", llmModelIdentifier: modelIdentifier, autoExecuteTools: true, skillAccessMode: "PRELOADED_ONLY", runtimeKind: "claude_agent_sdk", workspaceRootPath: workspaceRoot }],
+        memberConfigs: [memberCfg("/ping", pingId), memberCfg("/pong", pongId)] },
+    });
+    expect(run.createAgentTeamRun.success, run.createAgentTeamRun.message).toBe(true);
+    const teamRunId = run.createAgentTeamRun.teamRunId as string;
+    const { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } = await import("../e2e/helpers/team-run-graphql-documents.js");
+    const { flattenE2eConfiguredAgentExecutions } = await import("../e2e/helpers/team-run-metadata-helpers.js");
+    const { sendE2eSendMessageCommand } = await import("../e2e/helpers/websocket-command-helpers.js");
+    const resume = await execGraphql<any>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+    const members = flattenE2eConfiguredAgentExecutions(resume.getTeamRunResumeConfig.executionTree);
+    const runIdOf = (n: string) => members.find((m: any) => m.memberName === n)!.agentRunId as string;
+
+    const socket = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}/ws/agent-team/${teamRunId}`);
+    await new Promise<void>((res, rej) => { socket.once("open", () => res()); socket.once("error", rej); });
+    const stream: Array<{ type: string; payload: any }> = [];
+    socket.on("message", (raw) => { try { const p = JSON.parse(String(raw)); if (typeof p.type === "string") stream.push({ type: p.type, payload: p.payload ?? {} }); } catch { /* ignore */ } });
+
+    try {
+      // ---- turn 1 on ping: forced tool batch ----
+      sendE2eSendMessageCommand(socket, { agent_run_id: runIdOf("ping"), content: "FORCE_NATIVE_TOOLS now" });
+      await waitFor(() => captured.find((c) => c.role === "ping" && c.responseKind === "after-tools"), "ping tool results request", 180_000);
+      await waitFor(() => captured.find((c) => c.role === "pong"), "pong receiving turn request", 120_000);
+      await waitFor(() => stream.filter((m) => m.type === "TURN_COMPLETED" && m.payload.agent_run_id === runIdOf("ping")).length >= 1, "ping TURN_COMPLETED", 120_000);
+      await waitFor(() => stream.find((m) => m.type === "TURN_COMPLETED" && m.payload.agent_run_id === runIdOf("pong")), "pong TURN_COMPLETED", 120_000);
+
+      const pingFirst = captured.find((c) => c.role === "ping" && c.responseKind === "forced-tools")!;
+      const pingAfter = captured.find((c) => c.role === "ping" && c.responseKind === "after-tools")!;
+      const pongFirst = captured.find((c) => c.role === "pong")!;
+      evidence.VAL006 = { tools: toolNamesOf(pingFirst.body), leaks: leaksOf(pingFirst.body), skillListed: JSON.stringify(pingFirst.body.messages).includes(`- ${skillName}`), systemHasPingMarker: JSON.stringify(pingFirst.body.system).includes("PROBE_AGENT_PING") };
+      evidence.VAL007 = { toolResults: toolResultsOf(pingAfter.body), wsToolEvents: stream.filter((m) => /TOOL_EXECUTION_(STARTED|SUCCEEDED|FAILED)|TOOL_APPROVAL/.test(m.type) && m.payload.agent_run_id === runIdOf("ping")).map((m) => ({ type: m.type, tool: m.payload.tool_name, error: m.payload.error ? String(m.payload.error).slice(0, 160) : undefined })), teamComm: stream.filter((m) => m.type === "TEAM_COMMUNICATION_MESSAGE").map((m) => ({ sender: m.payload.message?.sender_agent_run_id, receiver: m.payload.message?.receiver_agent_run_id, content: m.payload.message?.content })) };
+      evidence.VAL008 = { tools: toolNamesOf(pongFirst.body), leaks: leaksOf(pongFirst.body), deliveredTokenInPrompt: JSON.stringify(pongFirst.body.messages).includes("PROBE_DELIVERY_TOKEN") };
+
+      // ---- turn 2 on ping: resume binding ----
+      const pingCountBefore = captured.filter((c) => c.role === "ping").length;
+      const pingCompletedBefore = stream.filter((m) => m.type === "TURN_COMPLETED" && m.payload.agent_run_id === runIdOf("ping")).length;
+      sendE2eSendMessageCommand(socket, { agent_run_id: runIdOf("ping"), content: "SECOND_TURN_MARKER" });
+      await waitFor(() => stream.filter((m) => m.type === "TURN_COMPLETED" && m.payload.agent_run_id === runIdOf("ping")).length > pingCompletedBefore, "ping second TURN_COMPLETED", 120_000);
+      const pingSecond = captured.filter((c) => c.role === "ping").slice(pingCountBefore).find((c) => JSON.stringify(c.body.messages).includes("SECOND_TURN_MARKER"))!;
+      evidence.VAL009 = { tools: toolNamesOf(pingSecond.body), leaks: leaksOf(pingSecond.body), historyHasFirstTurn: JSON.stringify(pingSecond.body.messages).includes("FORCE_NATIVE_TOOLS"), messageCount: pingSecond.body.messages.length };
+
+      // ---------- assertions ----------
+      const mcpOf = (names: string[]) => names.filter((n) => n.startsWith("mcp__"));
+      for (const key of ["VAL006", "VAL008", "VAL009"] as const) {
+        const v = evidence[key] as any;
+        expect(v.tools.filter((n: string) => !n.startsWith("mcp__")), key).toEqual(EXPECTED_BUILT_INS);
+        expect(mcpOf(v.tools).some((n: string) => n.endsWith("send_message_to")), key).toBe(true);
+        expect(v.leaks.system, key).toEqual([]);
+        // assistant-role hits are the probe's own forced Agent tool_use arguments replayed in history
+        expect(v.leaks.byMessage.filter((x: any) => x.role !== "assistant"), key).toEqual([]);
+        for (const n of NATIVE_MULTI_AGENT) expect(v.tools, key).not.toContain(n);
+      }
+      expect((evidence.VAL006 as any).skillListed).toBe(true);
+      const results = (evidence.VAL007 as any).toolResults as Array<{ is_error: boolean; text: string }>;
+      expect(results).toHaveLength(9);
+      for (let i = 0; i < 6; i++) {
+        expect(results[i]!.is_error).toBe(true);
+        expect(results[i]!.text).toContain(`No such tool available: ${NATIVE_MULTI_AGENT[i]}`);
+      }
+      expect(results[6]!.is_error).toBe(false);
+      expect(results[6]!.text).toContain("PROBE_READ_CONTENT");
+      expect(results[7]!.is_error).toBe(false);
+      expect(results[8]!.is_error).toBe(false);
+      expect((evidence.VAL007 as any).teamComm.some((t: any) => t.sender === runIdOf("ping") && t.receiver === runIdOf("pong") && t.content === "PROBE_DELIVERY_TOKEN")).toBe(true);
+      expect((evidence.VAL008 as any).deliveredTokenInPrompt).toBe(true);
+      expect((evidence.VAL009 as any).historyHasFirstTurn).toBe(true);
+    } finally {
+      socket.close();
+      await execGraphql(`mutation X($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success } }`, { teamRunId }).catch(() => undefined);
+    }
+  }, 600_000);
+
+  it("VAL-010 pre-change session (base options, executed Agent call) resumes with the new tool set", async () => {
+    const { query } = await import("@anthropic-ai/claude-agent-sdk");
+    const { resolveClaudeCodeExecutablePath } = await import("../../src/runtime-management/claude/client/claude-sdk-executable-path.js");
+    const { ClaudeSdkClient } = await import("../../src/runtime-management/claude/client/claude-sdk-client.js");
+    const sessionId = randomUUID();
+    const env: Record<string, string | undefined> = { ...process.env };
+    // Base (pre-change) buildQueryOptions shape: no `tools`, disallowedTools ["AskUserQuestion"].
+    const oldQuery = query({ prompt: "FORCE_NATIVE_TOOLS prechange", options: {
+      model: "sonnet", systemPrompt: "PROBE_PRECHANGE system", pathToClaudeCodeExecutable: resolveClaudeCodeExecutablePath(),
+      permissionMode: "default", cwd: workspaceRoot, env, disallowedTools: ["AskUserQuestion"], sessionId,
+      settingSources: ["user", "project", "local"], canUseTool: async (_n: string, input: Record<string, unknown>) => ({ behavior: "allow", updatedInput: input }),
+    } as any });
+    const oldStart = captured.length;
+    for await (const m of oldQuery as AsyncIterable<any>) { if (m.type === "result") break; }
+    const oldMain = captured.slice(oldStart).filter((c) => c.role === "prechange");
+    const oldToolResults = toolResultsOf(oldMain[oldMain.length - 1]?.body);
+
+    const newStart = captured.length;
+    const client = new ClaudeSdkClient();
+    const q = await client.startQueryTurn({ prompt: "RESUMED_AFTER_CHANGE", systemPrompt: "PROBE_PRECHANGE system", sessionBinding: { kind: "resume", sessionId }, model: "sonnet", workingDirectory: workspaceRoot, autoExecuteTools: true });
+    try { for await (const m of q as AsyncIterable<any>) { if (m.type === "result") break; } } finally { q.close(); }
+    const resumed = captured.slice(newStart).find((c) => c.role === "prechange" && JSON.stringify(c.body.messages).includes("RESUMED_AFTER_CHANGE"))!;
+    evidence.VAL010 = {
+      preChangeTools: toolNamesOf(oldMain[0]?.body),
+      preChangeAgentToolResult: oldToolResults,
+      resumedTools: toolNamesOf(resumed?.body),
+      resumedLeaks: leaksOf(resumed?.body),
+      resumedHistoryHasOldAgentToolUse: JSON.stringify(resumed?.body?.messages ?? "").includes('"name":"Agent"'),
+    };
+    const v = evidence.VAL010 as any;
+    expect(v.preChangeTools).toContain("Agent");
+    expect(v.resumedTools).toEqual(EXPECTED_BUILT_INS);
+    expect(v.resumedHistoryHasOldAgentToolUse).toBe(true);
+    expect(v.resumedLeaks.system).toEqual([]);
+  }, 300_000);
+});

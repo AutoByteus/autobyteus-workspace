@@ -17,6 +17,27 @@ const createMockQuery = () => {
   return query;
 };
 
+const EXPECTED_ENABLED_BUILT_IN_TOOLS = [
+  "Bash",
+  "Read",
+  "Edit",
+  "Write",
+  "Glob",
+  "Grep",
+  "NotebookEdit",
+  "WebFetch",
+  "WebSearch",
+  "Skill",
+];
+const EXPECTED_DISALLOWED_BUILT_IN_TOOLS = [
+  "AskUserQuestion",
+  "Agent",
+  "Task",
+  "Workflow",
+  "SendMessage",
+  "ListAgents",
+];
+
 const RESERVED_SESSION_ID = "11111111-1111-4111-8111-111111111111";
 const CLAUDE_CLI_RUNTIME_POLICY_ENV = {
   CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1",
@@ -161,7 +182,8 @@ describe("ClaudeSdkClient", () => {
       allowedTools: ["Bash"],
       settingSources: ["user", "project", "local"],
     }));
-    expect(call.options).not.toHaveProperty("tools");
+    expect(call.options.tools).toEqual(EXPECTED_ENABLED_BUILT_IN_TOOLS);
+    expect(call.options.disallowedTools).toEqual(EXPECTED_DISALLOWED_BUILT_IN_TOOLS);
   });
 
   it("fails value-free before SDK launch when explicit api-key resolution fails", async () => {
@@ -239,7 +261,8 @@ describe("ClaudeSdkClient", () => {
         mcpServers: { demo: mcpServer },
         permissionMode: "default",
         settingSources: ["user", "project", "local"],
-        disallowedTools: ["AskUserQuestion"],
+        tools: EXPECTED_ENABLED_BUILT_IN_TOOLS,
+        disallowedTools: EXPECTED_DISALLOWED_BUILT_IN_TOOLS,
         allowedTools: expect.arrayContaining([
           "Skill",
           "send_message_to",
@@ -254,7 +277,8 @@ describe("ClaudeSdkClient", () => {
     const firstCall = queryFn.mock.calls[0]?.[0] as {
       options?: Record<string, unknown>;
     };
-    expect(firstCall.options).not.toHaveProperty("tools");
+    expect(firstCall.options?.tools).toEqual(EXPECTED_ENABLED_BUILT_IN_TOOLS);
+    expect(firstCall.options?.disallowedTools).toEqual(EXPECTED_DISALLOWED_BUILT_IN_TOOLS);
     expect(firstCall.options).not.toHaveProperty("sessionId");
   });
 
@@ -399,9 +423,28 @@ describe("ClaudeSdkClient", () => {
         settingSources: ["user"],
       }),
     });
-    const discoveryCall = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string | undefined> } };
+    const discoveryCall = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> & { env: Record<string, string | undefined> } };
     expect(discoveryCall.options.env).not.toHaveProperty("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS");
     expect(discoveryCall.options.env).not.toHaveProperty("BASH_MAX_TIMEOUT_MS");
+    expect(discoveryCall.options).not.toHaveProperty("tools");
+    expect(discoveryCall.options).not.toHaveProperty("disallowedTools");
+  });
+
+  it("keeps the context-capacity discovery query tool-free instead of applying the turn tool policy", async () => {
+    const client = new ClaudeSdkClient();
+    const queryFn = vi.fn(async (_input: unknown) => ({ close: vi.fn(() => undefined) }));
+    client.setCachedModuleForTesting({ query: queryFn });
+
+    await client.resolveContextCapacities("/tmp/claude-client-capacity", ["haiku"]);
+
+    const capacityCall = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    expect(capacityCall.options).toEqual(expect.objectContaining({
+      maxTurns: 0,
+      permissionMode: "plan",
+      tools: [],
+      mcpServers: {},
+    }));
+    expect(capacityCall.options).not.toHaveProperty("disallowedTools");
   });
 
   it("prefers an explicit canUseTool callback and otherwise injects auto-exec tool approval", async () => {

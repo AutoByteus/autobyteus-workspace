@@ -99,7 +99,15 @@ const allowToolUseWithoutPrompt: ClaudeSdkCanUseTool = async (
     : {}),
 });
 
-const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = ["AskUserQuestion"] as const;
+// Claude Code built-ins exposed to normal turns (SDK `tools`); all others, incl. native
+// multi-agent tools, stay out of context. MCP tools are unaffected. Re-verify on SDK upgrades.
+const CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS = [
+  "Bash", "Read", "Edit", "Write", "Glob", "Grep", "NotebookEdit", "WebFetch", "WebSearch", "Skill",
+] as const;
+// Safety net even if the enabled list widens; AutoByteus delegate_task/send_message_to replace these.
+const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = [
+  "AskUserQuestion", "Agent", "Task", "Workflow", "SendMessage", "ListAgents",
+] as const;
 // Each turn closes its one-string query on `result`, so the Claude CLI exits and kills any
 // CLI-owned background task (explicit or auto-backgrounded at timeout). Force foreground-only
 // Bash with a 30 min ceiling. Remove with the streaming-input session migration.
@@ -428,6 +436,7 @@ export class ClaudeSdkClient {
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
       env: { ...spawnEnvironment, ...CLAUDE_CLI_RUNTIME_POLICY_ENV },
+      tools: [...CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS],
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionBinding.kind === "create"

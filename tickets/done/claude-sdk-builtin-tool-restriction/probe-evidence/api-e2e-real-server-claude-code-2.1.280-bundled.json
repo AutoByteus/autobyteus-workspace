@@ -1,0 +1,544 @@
+{
+ "cli": "claude-code-2.1.280-bundled",
+ "VAL011_model_discovery": {
+  "modelIds": [
+   "default",
+   "claude-fable-5-1[1m]",
+   "haiku",
+   "opus[1m]",
+   "sonnet",
+   "sonnet[1m]"
+  ],
+  "requests": [
+   {
+    "url": "/api/hello",
+    "role": "non-messages",
+    "tools": []
+   }
+  ],
+  "error": null
+ },
+ "VAL006_ping_turn": {
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "NotebookEdit",
+   "Read",
+   "Skill",
+   "WebFetch",
+   "WebSearch",
+   "Write",
+   "mcp__autobyteus_agent_tools__delegate_task",
+   "mcp__autobyteus_agent_tools__get_handoff_rules",
+   "mcp__autobyteus_agent_tools__send_message_to"
+  ],
+  "leaks": {
+   "system": [],
+   "messages": [],
+   "byMessage": []
+  },
+  "skillListed": true,
+  "systemHasPingMarker": true
+ },
+ "VAL007_forced_calls": {
+  "toolResults": [
+   {
+    "id": "toolu_msg_3_0",
+    "is_error": true,
+    "text": "<tool_use_error>Error: No such tool available: Agent. Agent is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "id": "toolu_msg_3_1",
+    "is_error": true,
+    "text": "<tool_use_error>Error: No such tool available: Task. Task is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "id": "toolu_msg_3_2",
+    "is_error": true,
+    "text": "<tool_use_error>Error: No such tool available: Workflow. Workflow is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "id": "toolu_msg_3_3",
+    "is_error": true,
+    "text": "<tool_use_error>Error: No such tool available: SendMessage. SendMessage is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "id": "toolu_msg_3_4",
+    "is_error": true,
+    "text": "<tool_use_error>Error: No such tool available: ListAgents. ListAgents is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "id": "toolu_msg_3_5",
+    "is_error": true,
+    "text": "<tool_use_error>Error: No such tool available: AskUserQuestion. AskUserQuestion is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "id": "toolu_msg_3_6",
+    "is_error": false,
+    "text": "1\tPROBE_READ_CONTENT\n2\t"
+   },
+   {
+    "id": "toolu_msg_3_7",
+    "is_error": false,
+    "text": "Launching skill: probe_skill_72569ae2"
+   },
+   {
+    "id": "toolu_msg_3_8",
+    "is_error": false,
+    "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pong.\",\"target_agent_run_id\":\"probe_pong_72569ae2_03850f425d4c48c285c95e55f5c9952e\"}"
+   }
+  ],
+  "wsToolEvents": [
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "Agent"
+   },
+   {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool": "Agent",
+    "error": "<tool_use_error>Error: No such tool available: Agent. Agent is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "Task"
+   },
+   {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool": "Task",
+    "error": "<tool_use_error>Error: No such tool available: Task. Task is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "Workflow"
+   },
+   {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool": "Workflow",
+    "error": "<tool_use_error>Error: No such tool available: Workflow. Workflow is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "SendMessage"
+   },
+   {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool": "SendMessage",
+    "error": "<tool_use_error>Error: No such tool available: SendMessage. SendMessage is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "ListAgents"
+   },
+   {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool": "ListAgents",
+    "error": "<tool_use_error>Error: No such tool available: ListAgents. ListAgents is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "AskUserQuestion"
+   },
+   {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool": "AskUserQuestion",
+    "error": "<tool_use_error>Error: No such tool available: AskUserQuestion. AskUserQuestion is disabled for this session, in subagents as well as here.</tool_use_error>"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "Read"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "Skill"
+   },
+   {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool": "send_message_to"
+   },
+   {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool": "Read"
+   },
+   {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool": "Skill"
+   },
+   {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool": "send_message_to"
+   }
+  ],
+  "teamComm": [
+   {
+    "sender": "probe_ping_72569ae2_4a38cd7375be4153829d2df1e9d4bbea",
+    "receiver": "probe_pong_72569ae2_03850f425d4c48c285c95e55f5c9952e",
+    "content": "PROBE_DELIVERY_TOKEN"
+   }
+  ]
+ },
+ "VAL008_pong_receiving_turn": {
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "NotebookEdit",
+   "Read",
+   "Skill",
+   "WebFetch",
+   "WebSearch",
+   "Write",
+   "mcp__autobyteus_agent_tools__delegate_task",
+   "mcp__autobyteus_agent_tools__get_handoff_rules",
+   "mcp__autobyteus_agent_tools__send_message_to"
+  ],
+  "leaks": {
+   "system": [],
+   "messages": [],
+   "byMessage": []
+  },
+  "deliveredTokenInPrompt": true
+ },
+ "VAL009_ping_next_turn_resume": {
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "NotebookEdit",
+   "Read",
+   "Skill",
+   "WebFetch",
+   "WebSearch",
+   "Write",
+   "mcp__autobyteus_agent_tools__delegate_task",
+   "mcp__autobyteus_agent_tools__get_handoff_rules",
+   "mcp__autobyteus_agent_tools__send_message_to"
+  ],
+  "leaks": {
+   "system": [],
+   "messages": [
+    "subagent_type",
+    "general-purpose"
+   ],
+   "byMessage": [
+    {
+     "i": 2,
+     "role": "assistant",
+     "hits": [
+      "subagent_type",
+      "general-purpose"
+     ]
+    }
+   ]
+  },
+  "historyHasFirstTurn": true,
+  "messageCount": 8
+ },
+ "VAL010_prechange_session_resume": {
+  "preChangeTools": [
+   "Agent",
+   "Bash",
+   "CronCreate",
+   "CronDelete",
+   "CronList",
+   "Edit",
+   "EnterPlanMode",
+   "EnterWorktree",
+   "ExitPlanMode",
+   "ExitWorktree",
+   "ListAgents",
+   "NotebookEdit",
+   "Read",
+   "ReportFindings",
+   "ScheduleWakeup",
+   "SendMessage",
+   "Skill",
+   "TaskStop",
+   "WebFetch",
+   "WebSearch",
+   "Workflow",
+   "Write"
+  ],
+  "resumedTools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "NotebookEdit",
+   "Read",
+   "Skill",
+   "WebFetch",
+   "WebSearch",
+   "Write"
+  ],
+  "resumedLeaks": {
+   "system": [],
+   "messages": [
+    "Available agent",
+    "general-purpose",
+    "General-purpose",
+    "probe-project-reviewer",
+    "PROBE_PROJECT_AGENT",
+    "subagent_type"
+   ],
+   "byMessage": [
+    {
+     "i": 1,
+     "role": "system",
+     "hits": [
+      "Available agent",
+      "general-purpose",
+      "General-purpose",
+      "probe-project-reviewer",
+      "PROBE_PROJECT_AGENT"
+     ]
+    },
+    {
+     "i": 2,
+     "role": "assistant",
+     "hits": [
+      "subagent_type",
+      "general-purpose"
+     ]
+    }
+   ]
+  },
+  "resumedHistoryHasOldAgentToolUse": true,
+  "preChangeAgentToolResultExecuted": true
+ },
+ "request_log": [
+  {
+   "url": "/api/hello",
+   "role": "non-messages",
+   "response": "generic",
+   "model": null,
+   "tools": null
+  },
+  {
+   "url": "/api/hello",
+   "role": "non-messages",
+   "response": "generic",
+   "model": null,
+   "tools": null
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "ping",
+   "response": "forced-tools",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Bash",
+    "Edit",
+    "Glob",
+    "Grep",
+    "NotebookEdit",
+    "Read",
+    "Skill",
+    "WebFetch",
+    "WebSearch",
+    "Write",
+    "mcp__autobyteus_agent_tools__delegate_task",
+    "mcp__autobyteus_agent_tools__get_handoff_rules",
+    "mcp__autobyteus_agent_tools__send_message_to"
+   ]
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "ping",
+   "response": "after-tools",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Bash",
+    "Edit",
+    "Glob",
+    "Grep",
+    "NotebookEdit",
+    "Read",
+    "Skill",
+    "WebFetch",
+    "WebSearch",
+    "Write",
+    "mcp__autobyteus_agent_tools__delegate_task",
+    "mcp__autobyteus_agent_tools__get_handoff_rules",
+    "mcp__autobyteus_agent_tools__send_message_to"
+   ]
+  },
+  {
+   "url": "/api/hello",
+   "role": "non-messages",
+   "response": "generic",
+   "model": null,
+   "tools": null
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "pong",
+   "response": "ack",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Bash",
+    "Edit",
+    "Glob",
+    "Grep",
+    "NotebookEdit",
+    "Read",
+    "Skill",
+    "WebFetch",
+    "WebSearch",
+    "Write",
+    "mcp__autobyteus_agent_tools__delegate_task",
+    "mcp__autobyteus_agent_tools__get_handoff_rules",
+    "mcp__autobyteus_agent_tools__send_message_to"
+   ]
+  },
+  {
+   "url": "/api/hello",
+   "role": "non-messages",
+   "response": "generic",
+   "model": null,
+   "tools": null
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "ping",
+   "response": "ack",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Bash",
+    "Edit",
+    "Glob",
+    "Grep",
+    "NotebookEdit",
+    "Read",
+    "Skill",
+    "WebFetch",
+    "WebSearch",
+    "Write",
+    "mcp__autobyteus_agent_tools__delegate_task",
+    "mcp__autobyteus_agent_tools__get_handoff_rules",
+    "mcp__autobyteus_agent_tools__send_message_to"
+   ]
+  },
+  {
+   "url": "/api/hello",
+   "role": "non-messages",
+   "response": "generic",
+   "model": null,
+   "tools": null
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "prechange",
+   "response": "forced-tools",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Agent",
+    "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "Edit",
+    "EnterPlanMode",
+    "EnterWorktree",
+    "ExitPlanMode",
+    "ExitWorktree",
+    "ListAgents",
+    "NotebookEdit",
+    "Read",
+    "ReportFindings",
+    "ScheduleWakeup",
+    "SendMessage",
+    "Skill",
+    "TaskStop",
+    "WebFetch",
+    "WebSearch",
+    "Workflow",
+    "Write"
+   ]
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "other-with-tools",
+   "response": "ack",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Agent",
+    "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "Edit",
+    "EnterWorktree",
+    "ExitWorktree",
+    "ListAgents",
+    "NotebookEdit",
+    "Read",
+    "ReportFindings",
+    "SendMessage",
+    "Skill",
+    "TaskStop",
+    "WebFetch",
+    "WebSearch",
+    "Write"
+   ]
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "prechange",
+   "response": "after-tools",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Agent",
+    "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "Edit",
+    "EnterPlanMode",
+    "EnterWorktree",
+    "ExitPlanMode",
+    "ExitWorktree",
+    "ListAgents",
+    "NotebookEdit",
+    "Read",
+    "ReportFindings",
+    "ScheduleWakeup",
+    "SendMessage",
+    "Skill",
+    "TaskStop",
+    "WebFetch",
+    "WebSearch",
+    "Workflow",
+    "Write"
+   ]
+  },
+  {
+   "url": "/api/hello",
+   "role": "non-messages",
+   "response": "generic",
+   "model": null,
+   "tools": null
+  },
+  {
+   "url": "/v1/messages?beta=true",
+   "role": "prechange",
+   "response": "ack",
+   "model": "claude-sonnet-5",
+   "tools": [
+    "Bash",
+    "Edit",
+    "Glob",
+    "Grep",
+    "NotebookEdit",
+    "Read",
+    "Skill",
+    "WebFetch",
+    "WebSearch",
+    "Write"
+   ]
+  }
+ ]
+}
