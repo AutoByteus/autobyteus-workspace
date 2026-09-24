@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E PASS (API-REV-001), direct low-risk route | N/A | Integrated (already current), docs synced, awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `autobyteus-server-ts/docs/modules/agent_execution.md` |
 | DR-002 | Explicit user verification (Electron build), no release | DR-001 (awaiting verification) | Archived, committed, merged into `personal` @ `61792bc75` and pushed; release not required; worktree cleanup held while the app runs | `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, ticket moved to `tickets/done/` |
+| DR-003 | User confirmed the app was closed; full cleanup requested | DR-002 (finalized; cleanup held) | Worktree removed and pruned, local ticket branch deleted; terminal return eligible | `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -44,3 +45,20 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Why this baseline or delivery revision was recorded: user verification and repository finalization.
 - Next recipient/action: once the user quits the app, remove the worktree, prune, delete the local ticket branch, then send the terminal return to `/solution_designer`.
 - Remaining blockers, rollback concerns, or untested scope: no blocker. Rollback is `git revert -m 1 61792bc75`. RR-1/RR-2 are documented; OBS-1/OBS-2 are separate-ticket candidates; R-001/ASM-001 are accepted.
+
+### DR-003 — Post-finalization cleanup completed; terminal return eligible
+
+- Delivery round and trigger: the user confirmed they had quit the verification app and asked for full finalization including cleanup.
+- Triggering upstream report, verification, or evidence: user message; no processes were running from the worktree.
+- Prior authoritative result: DR-002 (repository finalized into `personal`; cleanup held while the app ran from the worktree).
+- Current authoritative result: the ticket worktree was removed and pruned, and the local ticket branch was deleted. The remote ticket branch is kept. All ticket commits were verified in `origin/personal` (since advanced to `9d73f4966` by an unrelated merge).
+- Docs sync report: unchanged.
+- Handoff summary: unchanged.
+- Release/publication/deployment report: cleanup `Completed`; Final Status all `Yes`.
+- Integration and post-integration verification: N/A (cleanup-only round; no code changes).
+- User verification/finalization state: verified; finalized; cleanup completed.
+- Terminal return to `/solution_designer`: `Sent` after this record was pushed (confirmed by the tool result in the delivery session)
+- Terminal return message/reference: "Delivery Completed — claude-sdk-builtin-tool-restriction"
+- Why this baseline or delivery revision was recorded: completion of the last applicable delivery gate.
+- Next recipient/action: `/solution_designer` verifies the package and returns Terminal to the user.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Rollback is `git revert -m 1 61792bc75`. RR-1/RR-2 are documented; OBS-1/OBS-2 are separate-ticket candidates; R-001/ASM-001 are accepted.
