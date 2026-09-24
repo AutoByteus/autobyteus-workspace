@@ -1097,14 +1097,34 @@ off payload.
 
 Runtime-scoped model catalog rows can also carry an optional plain-text
 description independently from their display name and executable identifier.
-`useRuntimeScopedModelSelection` projects that metadata into the shared
+Every LLM model picker (run config, team member override, existing-run
+Settings, messaging binding, application launch profile) builds its options
+through the single `buildModelSelectionGroups` owner in
+`utils/modelSelectionOptions.ts` and renders them with the shared
 `SearchableGroupedSelect`: the open option list renders a wrapping secondary
-line and search matches the identifier, display/selected labels, and description
-case-insensitively. The closed control remains compact, and selection still
-emits only the model identifier. Null, empty, or whitespace-only descriptions
-fall back to the existing name-only row without a placeholder. Claude Agent SDK
-descriptions come from its live runtime catalog and must not be hard-coded in
-the frontend.
+line and search matches the identifier, display/selected labels, description,
+and the Recommended badge text case-insensitively. The closed control remains
+compact, and selection still emits only the model identifier. Null, empty, or
+whitespace-only descriptions fall back to the existing name-only row without a
+placeholder. Claude Agent SDK descriptions come from its live runtime catalog
+and must not be hard-coded in the frontend.
+
+For the Claude Agent SDK runtime, options are labeled by the server-provided
+canonical model ID (`canonicalName`, e.g. `claude-opus-5-5[1m]`, falling back
+to the SDK value), the secondary line is `<Claude display name> · <description>`,
+the selected field reads `Anthropic / <canonical ID>`, and options are ordered
+recommended-first. The builder follows the server's nullable
+`selectionPresentation` hint: a row with `aliasOfModelIdentifier` (the SDK
+`default` row) is folded into its target option's `aliasIds`, and the
+`recommended` row shows a localized **Recommended** badge. The frontend never
+tests for the string `default`; if the alias target is not listed, the alias
+row stays its own option. `SearchableGroupedSelect` and
+`RuntimeModelConfigFields` match a stored value by option id or alias
+(`utils/selectItemMatch.ts`), so a saved `default` opens as the Recommended
+option with no "unavailable" warning, and re-choosing the option that already
+represents the stored value emits nothing — the saved SDK value is never
+rewritten to the canonical one. Other runtimes keep their existing labels and
+receive `selectionPresentation: null`.
 
 Editable primary/global agent and team launch config initializes **Advanced**
 from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**

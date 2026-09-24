@@ -229,4 +229,66 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     wrapper.unmount()
   })
 
+  describe('Claude Agent SDK saved alias values', () => {
+    const claudeModel = (
+      modelIdentifier: string,
+      name: string,
+      canonicalName: string,
+      selectionPresentation: { recommended: boolean; aliasOfModelIdentifier: string | null },
+    ) => ({
+      modelIdentifier, name, value: modelIdentifier, canonicalName, description: `${name} description`,
+      providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'api',
+      configSchema: null, selectionPresentation,
+    })
+    beforeEach(() => {
+      providers = [{
+        provider: { id: 'ANTHROPIC', name: 'Anthropic', providerType: 'ANTHROPIC', isCustom: false },
+        models: [
+          claudeModel('default', 'Default (recommended)', 'claude-opus-5-5[1m]', { recommended: false, aliasOfModelIdentifier: 'opus[1m]' }),
+          claudeModel('opus[1m]', 'Opus (1M context)', 'claude-opus-5-5[1m]', { recommended: true, aliasOfModelIdentifier: null }),
+          claudeModel('sonnet', 'Sonnet', 'claude-sonnet-5', { recommended: false, aliasOfModelIdentifier: null }),
+        ],
+      }]
+    })
+
+    it('shows a saved default as the recommended canonical option without warning or rewrite', async () => {
+      const wrapper = mount(RuntimeModelConfigFields, {
+        props: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', llmConfig: null },
+      })
+      await flushPromises()
+      await wrapper.vm.$nextTick()
+
+      const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
+      expect(picker.text()).toContain('Anthropic / claude-opus-5-5[1m]')
+      expect(picker.props('options')[0].items.map((item: any) => [item.id, item.aliasIds ?? []]))
+        .toEqual([['opus[1m]', ['default']], ['sonnet', []]])
+      expect(wrapper.find('[data-test="selected-model-unavailable"]').exists()).toBe(false)
+      expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{ status: 'ready', message: null }])
+      expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
+      wrapper.unmount()
+    })
+
+    it('keeps the aliased option for an existing run saved with default and adds no raw saved row', async () => {
+      const wrapper = mount(RuntimeModelConfigFields, {
+        props: {
+          runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', llmConfig: null,
+          originalModelIdentifier: 'default', runtimeSelectionLocked: true,
+          modelOptions: { status: 'ready', options: {
+            currentModelIdentifier: 'default', currentContextTokens: 1000000,
+            replacements: [], unavailableReason: null,
+          } },
+        },
+      })
+      await flushPromises()
+
+      const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
+      expect(picker.props('options')).toEqual([expect.objectContaining({
+        label: 'Anthropic',
+        items: [expect.objectContaining({ id: 'opus[1m]', aliasIds: ['default'] })],
+      })])
+      expect(picker.text()).toContain('Anthropic / claude-opus-5-5[1m]')
+      wrapper.unmount()
+    })
+  })
+
 })

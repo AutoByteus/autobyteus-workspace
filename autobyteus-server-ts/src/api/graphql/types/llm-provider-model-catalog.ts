@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { GraphQLJSON } from 'graphql-scalars';
-import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
 import type { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
@@ -12,6 +11,10 @@ import type {
 } from '../../../llm-management/llm-providers/domain/models.js';
 import type { LocalProviderModelCatalogSnapshot } from '../../../llm-management/services/model-catalog-service.js';
 import type { ModelMetadataProvenanceValue } from '../../../llm-management/services/model-metadata-provisioning-service.js';
+import type {
+  ModelInfoWithSelectionPresentation,
+  ModelSelectionPresentation,
+} from '../../../llm-management/domain/model-selection-presentation.js';
 
 enum ModelMetadataProvenanceGraphql {
   LIVE = 'LIVE',
@@ -28,6 +31,12 @@ export class CatalogProviderObject {
   @Field(() => Boolean) isCustom!: boolean;
   @Field(() => String, { nullable: true }) baseUrl!: string | null;
   @Field(() => String) catalogMode!: string;
+}
+
+@ObjectType('ModelSelectionPresentation')
+export class ModelSelectionPresentationObject {
+  @Field(() => Boolean) recommended!: boolean;
+  @Field(() => String, { nullable: true }) aliasOfModelIdentifier!: string | null;
 }
 
 @ObjectType()
@@ -49,6 +58,8 @@ export class ModelDetail {
   @Field(() => Int, { nullable: true }) maxOutputTokens?: number | null;
   @Field(() => ModelMetadataProvenanceGraphql, { nullable: true })
   metadataProvenance?: ModelMetadataProvenanceGraphql | null;
+  @Field(() => ModelSelectionPresentationObject, { nullable: true })
+  selectionPresentation?: ModelSelectionPresentationObject | null;
 }
 
 @ObjectType()
@@ -72,9 +83,15 @@ export class ProviderModelCatalogSnapshotObject {
   @Field(() => [ModelDetail]) videoModels!: ModelDetail[];
 }
 
-type ModelInfoWithMetadata = ModelInfo & {
+type ModelInfoWithMetadata = ModelInfoWithSelectionPresentation & {
   metadata_provenance?: ModelMetadataProvenanceValue | null;
 };
+
+const mapSelectionPresentation = (
+  presentation: ModelSelectionPresentation | null | undefined,
+): ModelSelectionPresentationObject | null => presentation
+  ? { recommended: presentation.recommended, aliasOfModelIdentifier: presentation.aliasOfModelIdentifier }
+  : null;
 
 const mapLlm = (model: ModelInfoWithMetadata): ModelDetail => ({
   modelIdentifier: model.model_identifier,
@@ -95,6 +112,7 @@ const mapLlm = (model: ModelInfoWithMetadata): ModelDetail => ({
   metadataProvenance: model.metadata_provenance
     ? ModelMetadataProvenanceGraphql[model.metadata_provenance]
     : null,
+  selectionPresentation: mapSelectionPresentation(model.selection_presentation),
 });
 
 const mapMedia = (model: AudioModel | ImageModel | VideoModel): ModelDetail => ({
@@ -114,6 +132,7 @@ const mapMedia = (model: AudioModel | ImageModel | VideoModel): ModelDetail => (
   maxInputTokens: null,
   maxOutputTokens: null,
   metadataProvenance: null,
+  selectionPresentation: null,
 });
 
 export const mapProviderDescriptor = (

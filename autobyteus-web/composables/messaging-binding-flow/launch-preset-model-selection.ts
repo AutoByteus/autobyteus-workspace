@@ -12,10 +12,7 @@ import type {
   ExternalChannelLaunchPresetModel,
   ExternalChannelTeamLaunchPresetModel,
 } from '~/types/messaging';
-import {
-  getModelSelectionOptionLabel,
-  getModelSelectionSelectedLabel,
-} from '~/utils/modelSelectionLabel';
+import { buildModelSelectionGroups } from '~/utils/modelSelectionOptions';
 
 type MutableLaunchPreset =
   | ExternalChannelLaunchPresetModel
@@ -134,20 +131,9 @@ export function useBindingLaunchPresetModelSelection(input: {
     );
   });
 
-  const groupedModelOptions = computed<GroupedOption[]>(() => {
-    return availableProviderGroups.value.map((providerGroup) => ({
-      label: providerGroup.provider.name,
-      items: providerGroup.models.map((model) => ({
-        id: model.modelIdentifier,
-        name: getModelSelectionOptionLabel(model, activeLaunchPreset.value.runtimeKind),
-        selectedLabel: getModelSelectionSelectedLabel(
-          providerGroup.provider.name,
-          model,
-          activeLaunchPreset.value.runtimeKind,
-        ),
-      })),
-    }));
-  });
+  const groupedModelOptions = computed<GroupedOption[]>(() =>
+    buildModelSelectionGroups(availableProviderGroups.value, activeLaunchPreset.value.runtimeKind),
+  );
 
   const modelConfigSchema = computed(() => {
     if (!activeLaunchPreset.value.llmModelIdentifier) {

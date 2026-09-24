@@ -447,6 +447,52 @@ describe("ClaudeSdkClient", () => {
     expect(capacityCall.options).not.toHaveProperty("disallowedTools");
   });
 
+  it("lists every SDK row with its canonical model ID and picker presentation hint", async () => {
+    const client = new ClaudeSdkClient();
+    const control = {
+      supportedModels: vi.fn(async () => [
+        { value: "default", displayName: "Default (recommended)", resolvedModel: "claude-opus-5-5[1m]" },
+        { value: "claude-fable-5[1m]", displayName: "Fable", resolvedModel: "claude-fable-5" },
+        { value: "haiku", displayName: "Haiku", resolvedModel: "claude-haiku-4-5-20251001" },
+        { value: "opus[1m]", displayName: "Opus (1M context)", resolvedModel: "claude-opus-5-5[1m]" },
+        { value: "sonnet", displayName: "Sonnet" },
+      ]),
+      interrupt: vi.fn(async () => undefined),
+      close: vi.fn(() => undefined),
+    };
+    client.setCachedModuleForTesting({ query: vi.fn(async () => control) });
+
+    const models = await client.listModels();
+
+    expect(models.map((model) => ({
+      id: model.model_identifier,
+      value: model.value,
+      canonical: model.canonical_name,
+      presentation: model.selection_presentation,
+    }))).toEqual([
+      {
+        id: "default", value: "default", canonical: "claude-opus-5-5[1m]",
+        presentation: { recommended: false, aliasOfModelIdentifier: "opus[1m]" },
+      },
+      {
+        id: "claude-fable-5[1m]", value: "claude-fable-5[1m]", canonical: "claude-fable-5",
+        presentation: { recommended: false, aliasOfModelIdentifier: null },
+      },
+      {
+        id: "haiku", value: "haiku", canonical: "claude-haiku-4-5-20251001",
+        presentation: { recommended: false, aliasOfModelIdentifier: null },
+      },
+      {
+        id: "opus[1m]", value: "opus[1m]", canonical: "claude-opus-5-5[1m]",
+        presentation: { recommended: true, aliasOfModelIdentifier: null },
+      },
+      {
+        id: "sonnet", value: "sonnet", canonical: "sonnet",
+        presentation: { recommended: false, aliasOfModelIdentifier: null },
+      },
+    ]);
+  });
+
   it("prefers an explicit canUseTool callback and otherwise injects auto-exec tool approval", async () => {
     const client = new ClaudeSdkClient();
     const explicitCanUseTool: ClaudeSdkCanUseTool = vi.fn(async () => ({

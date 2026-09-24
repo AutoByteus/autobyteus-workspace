@@ -10,10 +10,7 @@ import {
   type ProviderWithModels,
 } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
-import {
-  getModelSelectionOptionLabel,
-  getModelSelectionSelectedLabel,
-} from '~/utils/modelSelectionLabel'
+import { buildModelSelectionGroups } from '~/utils/modelSelectionOptions'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
 
@@ -223,25 +220,9 @@ export const useRuntimeScopedModelSelection = (params: {
   )
 
   const groupedModelOptions = computed<GroupedOption[]>(() => {
-    if (!availableProviderGroups.value.length) {
-      return []
-    }
-
     const runtimeKind = effectiveRuntimeKind.value
     if (!runtimeKind) return []
-    return availableProviderGroups.value.map((providerGroup) => ({
-      label: providerGroup.provider.name,
-      items: providerGroup.models.map((model) => ({
-        id: model.modelIdentifier,
-        name: getModelSelectionOptionLabel(model, runtimeKind),
-        description: model.description,
-        selectedLabel: getModelSelectionSelectedLabel(
-          providerGroup.provider.name,
-          model,
-          runtimeKind,
-        ),
-      })),
-    }))
+    return buildModelSelectionGroups(availableProviderGroups.value, runtimeKind)
   })
 
   const modelIdentifiers = computed(() =>

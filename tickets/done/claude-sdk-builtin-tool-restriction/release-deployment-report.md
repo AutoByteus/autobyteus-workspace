@@ -9,7 +9,7 @@ This covers repository finalization of `codex/claude-sdk-builtin-tool-restrictio
 - Handoff summary artifact: `tickets/done/claude-sdk-builtin-tool-restriction/handoff-summary.md` (on `origin/personal`)
 - Handoff summary status: `Updated`
 - Delivery revision record: `tickets/done/claude-sdk-builtin-tool-restriction/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-003`
 - Notes: classification `task_size=Small`, `architectural_risk=Low`; direct low-risk route; review artifacts `N/A — not applicable`.
 
 ## Initial Delivery Integration Refresh
@@ -82,11 +82,12 @@ Not applicable. There is no version bump, tag or release commit (the user declin
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-builtin-tool-restriction`
-- Worktree cleanup result: `Pending`. When this record was written, the user-verification Electron app was still running from `<worktree>/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`. Removing the worktree would delete the running app bundle, so removal waits until the user quits the app or asks to keep the worktree. The final result is reported in the terminal handoff to `/solution_designer`.
-- Worktree prune result: `Pending` (runs with worktree removal)
-- Local ticket branch cleanup result: `Pending` (runs with worktree removal; the branch is fully merged into `personal`)
-- Remote branch cleanup result: `Not required` (`origin/codex/claude-sdk-builtin-tool-restriction` is kept as the pushed ticket-branch record)
-- Blocker (if applicable): none. This is a deliberate safety hold while the app runs from the worktree.
+- Worktree cleanup result: `Completed`. The user confirmed they had quit the verification app ("i already quite the app ... please do full finalization including cleanup"), and no processes were running from the worktree. `git worktree remove --force` was used; the remaining content was regenerable only (untracked `autobyteus-application-*/dist/`, `node_modules`, and the ignored `electron-dist`/`resources/server`, about 6.2 GB). Before removal, all ticket commits were verified to be in `origin/personal`, which had meanwhile advanced to `9d73f4966` through an unrelated merge.
+- Worktree prune result: `Completed` (`git worktree prune`; the worktree no longer appears in `git worktree list`)
+- Local ticket branch cleanup result: `Completed` (`git branch -d codex/claude-sdk-builtin-tool-restriction`, was `95ed04cd2`, contained in `origin/personal`)
+- Remote branch cleanup result: `Not required` (`origin/codex/claude-sdk-builtin-tool-restriction` @ `95ed04cd2` is kept as the pushed ticket-branch record)
+- Blocker (if applicable): None
+- Note: this record was committed from a temporary detached worktree of `origin/personal` (`/tmp/claude-sdk-tool-restriction-final`), which was removed afterwards.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -122,10 +123,10 @@ None.
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes`
-- Repository finalization complete: `Yes`
-- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: `No` (pending: the worktree app is still running)
-- Unresolved blocker: `None` (cleanup is on a deliberate safety hold)
-- Successful terminal package eligible for return: `No` (after cleanup)
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: sent after cleanup; recorded in the terminal handoff message
+- Repository finalization complete: `Yes` (merge `61792bc75`, finalization record `73f1c5fef`, both in `origin/personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required, by user decision)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record was pushed; confirmed by the `send_message_to` result in the delivery session
+- Terminal message/reference: "Delivery Completed — claude-sdk-builtin-tool-restriction" (DR-003)

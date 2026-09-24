@@ -100,6 +100,7 @@ import {
   useRuntimeScopedModelSelection,
 } from '~/composables/useRuntimeScopedModelSelection'
 import { projectHistoricalModelConfigFields } from '~/utils/historicalModelConfigFields'
+import { selectItemMatches } from '~/utils/selectItemMatch'
 import { validateUiModelConfig, type UiModelConfigValidationIssue } from '~/utils/llmConfigSchema'
 import { useLocalization } from '~/composables/useLocalization'
 import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
@@ -193,9 +194,9 @@ const {
 const selectableModelOptions = computed(() => {
   if (props.originalModelIdentifier === undefined) return groupedModelOptions.value
   const ids = new Set([props.originalModelIdentifier, ...(props.modelOptions?.options?.replacements.map((row) => row.llmModelIdentifier) ?? [])])
-  const groups = groupedModelOptions.value.map((group) => ({ ...group, items: group.items.filter((item) => ids.has(item.id)) })).filter((group) => group.items.length)
+  const groups = groupedModelOptions.value.map((group) => ({ ...group, items: group.items.filter((item) => [item.id, ...(item.aliasIds ?? [])].some((id) => ids.has(id))) })).filter((group) => group.items.length)
   const current = props.llmModelIdentifier
-  if (current && !groups.some((group) => group.items.some((item) => item.id === current))) {
+  if (current && !groups.some((group) => group.items.some((item) => selectItemMatches(item, current)))) {
     groups.unshift({ label: 'Saved / selected model', items: [{ id: current, name: current, selectedLabel: current, description: null }] })
   }
   return groups

@@ -119,6 +119,28 @@ describe("claude-sdk-model-normalizer", () => {
     });
   });
 
+  it("uses the SDK resolved model as canonical name and falls back to the SDK value", () => {
+    const descriptor = {
+      identifier: "claude-fable-5[1m]",
+      resolvedModel: "claude-fable-5",
+      resolvedModelAmbiguous: false,
+      displayName: "Fable",
+      description: null,
+      supportsEffort: false,
+      supportedEffortLevels: [],
+      supportsAdaptiveThinking: false,
+    };
+
+    expect(toModelInfo(descriptor)).toMatchObject({
+      model_identifier: "claude-fable-5[1m]",
+      value: "claude-fable-5[1m]",
+      canonical_name: "claude-fable-5",
+    });
+    expect(toModelInfo({ ...descriptor, resolvedModel: null }).canonical_name).toBe("claude-fable-5[1m]");
+    expect(toModelInfo({ ...descriptor, resolvedModel: null, resolvedModelAmbiguous: true }).canonical_name)
+      .toBe("claude-fable-5[1m]");
+  });
+
   it("keeps adaptive-thinking and effort capabilities independent", () => {
     const model = toModelInfo({
       identifier: "default",

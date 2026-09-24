@@ -3,7 +3,7 @@ import fs from "node:fs";
 import { readClaudeContextCapacities } from "./claude-sdk-context-capacity.js";
 import type { RuntimeModelCapacities } from "../../../llm-management/domain/runtime-model-capacity.js";
 import type { SecretValue } from "autobyteus-ts";
-import type { ModelInfo } from "autobyteus-ts/llm/models.js";
+import type { ModelInfoWithSelectionPresentation } from "../../../llm-management/domain/model-selection-presentation.js";
 import {
   asObject,
   asString,
@@ -22,6 +22,7 @@ import {
   toModelInfo,
   type NormalizedModelDescriptor,
 } from "./claude-sdk-model-normalizer.js";
+import { deriveClaudeModelSelectionPresentation } from "./claude-sdk-model-selection-presentation.js";
 import {
   getClaudeCatalogSettingSources,
   getClaudeRuntimeSettingSources,
@@ -234,7 +235,7 @@ export class ClaudeSdkClient {
     this.cachedSdkModule = (module as ClaudeSdkModuleLike | null) ?? null;
   }
 
-  async listModels(): Promise<ModelInfo[]> {
+  async listModels(): Promise<ModelInfoWithSelectionPresentation[]> {
     const sdk = await this.loadModuleSafe();
     let spawnEnvironment: Record<string, string | undefined>;
     try {
@@ -246,11 +247,11 @@ export class ClaudeSdkClient {
       sdk,
       spawnEnvironment,
     );
-    if (supportedRows.length > 0) {
-      return supportedRows.map((row) => toModelInfo(row));
-    }
-
-    return [];
+    const selectionPresentation = deriveClaudeModelSelectionPresentation(supportedRows);
+    return supportedRows.map((row) => ({
+      ...toModelInfo(row),
+      selection_presentation: selectionPresentation.get(row.identifier) ?? null,
+    }));
   }
 
   async resolveContextCapacities(workingDirectory: string, models: readonly string[]): Promise<RuntimeModelCapacities> {

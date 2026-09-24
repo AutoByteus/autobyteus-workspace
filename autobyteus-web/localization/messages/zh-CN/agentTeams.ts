@@ -76,6 +76,7 @@ const messages = {
   'agentTeams.components.agentTeams.SearchableGroupedSelect.loading': '加载中...',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultPlaceholder': '选择一个选项',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultSearchPlaceholder': '搜索...',
+  'agentTeams.components.agentTeams.SearchableGroupedSelect.recommended': '推荐',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.basics': '基础信息',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.removeAvatar': '移除',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.descriptionPlaceholder': '描述该团队的目标与职责...',
