@@ -425,9 +425,25 @@ Agent explorer summaries include display name, stable ID, run count, latest memo
 
 ### Agent Teams
 
-`TeamMemoryExplorerService` reads the V2 Team execution tree and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
+`TeamMemoryExplorerService` queries the Team catalog owner for optional display
+metadata, then reads each admitted V2 Team execution tree once per list request
+and builds member memory targets from that same tree snapshot. It includes a
+team run only when at least one member target has inspectable memory. Team
+groups use `teamDefinitionId`; each summary includes the team display name,
+team-run count, distinct member-memory count, latest memory timestamp, and
+merged availability. A catalog query itself never scans root trees or writes
+the history index.
 
-Team-run summaries include V2 TeamRun execution facts, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from the recursive execution tree and `AgentMemoryLocationService`: logical selection uses rooted `memberAddress`, while physical lookup uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened Team/member assumption.
+Team-run summaries include V2 TeamRun execution facts, merged availability
+across member targets, and `memberTargets` containing only members with memory.
+The backend passes the validated tree through
+`TeamMemoryMemberTargetBuilder.buildFromTree` and
+`AgentMemoryLocationService.listTeamMemberLocationsFromTree` to the pure
+`TeamRunExecutionTreeLocationService.listAgentsInTree` projection. This avoids
+an unscoped all-root lookup inside the per-root loop. Logical selection uses
+rooted `memberAddress`, while physical lookup uses
+`rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened
+Team/member assumption.
 
 When `AgentMemoryLocationService` is constructed with an explicit `memoryDir`,
 its topology/readback collaborators must use the same memory root. Do not mix a
@@ -444,6 +460,12 @@ all agent/team explorer and view readers under that import root.
 Imported source reads are marked read-only. The backend must not silently fall
 back to local memory for an unknown imported source id; returning an error keeps
 local and imported corpora separated.
+
+The current imported Team list and Team-run-list queries follow this bounded,
+read-only path. The separate Org root-memory source adapter is not present in
+this branch; when it merges, it must use the Org catalog owner's read-only
+`listCatalogRows()` query and be validated independently. Do not interpret the
+current Team checks as Org imported-source coverage.
 
 ### Explorer GraphQL Queries
 

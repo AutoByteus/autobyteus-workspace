@@ -15,7 +15,7 @@ export type AgentOrgRunHistorySummaryCommitResult = Readonly<{
   committedSummary: string | null;
 }>;
 
-/** Stateless first-write primitive shared by runtime history and startup recovery. */
+/** Historical startup-migration first-write primitive; runtime catalogs use the shared core. */
 export class AgentOrgRunHistorySummaryWriter {
   constructor(private readonly index: Pick<AgentOrgRunHistoryIndexStore, "readIndex" | "writeIndex">) {}
 
