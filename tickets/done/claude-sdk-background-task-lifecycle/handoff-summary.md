@@ -2,11 +2,17 @@
 
 ## Status
 
-- Stage: **Delivery, awaiting explicit user verification.** Nothing has been pushed, merged or released.
+- Stage: **User-verified, now finalizing and releasing.** On 2026-09-24 the user tested the local macOS personal Electron build and wrote "it works. lets finalize and release a new version". The ticket is archived to `tickets/done/`.
 - Classification (carried, unchanged): `task_size=Small`, `architectural_risk=Low`. Route: direct low-risk route (Solution Design → Implementation → API/E2E → Delivery).
 - Architecture review, code review and test-code review artifacts: `N/A — not applicable` (direct route).
-- Revision chain: SR-004 / IR-001 / API-REV-001 / DR-001.
-- Finalization target: `origin/personal`. Release: to be confirmed by the user. The previous ticket was finalized without a release.
+- Revision chain: SR-004 / IR-001 / API-REV-001 / DR-001 / DR-002.
+- Finalization target: `origin/personal`. Release: **requested by the user**, as `v1.4.78` through the documented helper `scripts/desktop-release.sh`. Curated notes are in `release-notes.md`; they also cover the unreleased built-in tool restriction and canonical model ID changes already on `personal`.
+- Re-integration after verification: `origin/personal` advanced to `f8d124750` (the `claude-sdk-canonical-model-ids` finalization, 7 commits). It merged cleanly as `1ce8233a3`. The only overlap is `claude-sdk-client.ts` `listModels` (picker labels); the turn-query `env`/`tools` path that carries this fix is untouched. Rechecks on the merged state:
+  - unit 149/150 (the same single pre-existing `claude-session` failure);
+  - `tsc` build pass;
+  - live policy integration + E2E 4/4 on both CLIs (`delivery-logs/pre-finalization-live-claude-policy.log`).
+
+  The verified Bash behavior is unchanged, and the added picker change was user-verified in its own delivery. Renewed verification was therefore judged not required.
 
 ## What Changed
 
@@ -70,7 +76,7 @@ Verification build: a local, unsigned macOS personal Electron build of the integ
 
 ## Release / Deployment
 
-- To be decided by the user at verification time (release or finalize-only merge into `personal`).
+- The user requested a new release. The ticket branch is merged into `personal`, then `scripts/desktop-release.sh release 1.4.78 --release-notes tickets/done/claude-sdk-background-task-lifecycle/release-notes.md` bumps the versions, creates the annotated tag `v1.4.78`, and the tag push triggers the release workflows. Final evidence is in `release-deployment-report.md`.
 
 ## Artifacts
 
