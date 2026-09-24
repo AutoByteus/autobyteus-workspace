@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-This delivery finalizes a server-side Claude runtime fix into `origin/personal`. It changes the forced CLI env for Claude turn queries and adds tests and docs. There is no persisted-data, API-contract or packaging change. Whether a release is published is decided by the user at verification time.
+This delivery finalizes a server-side Claude runtime fix into `origin/personal`. It changes the forced CLI env for Claude turn queries and adds tests and docs. There is no persisted-data, API-contract or packaging change. The user requested a release at verification, so this delivery also published `v1.4.78` through the documented release helper. That release also carries the built-in tool restriction and canonical model ID changes already on `personal`.
 
 - Classification (carried): `task_size=Small`, `architectural_risk=Low`. Route: direct low-risk route. Architecture, code and test-code review: `N/A — not applicable`.
 
@@ -11,7 +11,7 @@ This delivery finalizes a server-side Claude runtime fix into `origin/personal`.
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-background-task-lifecycle/tickets/in-progress/claude-sdk-background-task-lifecycle/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 - Notes: the summary was written after the integration refresh and post-integration checks.
 
 ## Initial Delivery Integration Refresh
@@ -39,11 +39,11 @@ This delivery finalizes a server-side Claude runtime fix into `origin/personal`.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`, pending.
-- Initial verification / acceptance reference: pending
-- Renewed verification required after later re-integration: `No` (so far)
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: 2026-09-24. After testing the local macOS personal Electron build (integrated branch `9bf6a3264`), the user wrote "it works. lets finalize and release a new version", then "yes. do full finalize and release".
+- Renewed verification required after later re-integration: `No`. The post-verification base advance (`f8d124750`, canonical model IDs) merged cleanly. It touches only `listModels` picker labels, not the verified turn-query Bash path, and the picker change had already been user-verified in its own delivery. Rechecks passed (see Finalization Progress).
 - Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A
+- Renewed verification / acceptance reference: N/A. After the release the user reported "the deployment is completely finished. now i am already runinng the latest version".
 
 ## Docs Sync Result
 
@@ -54,57 +54,78 @@ This delivery finalizes a server-side Claude runtime fix into `origin/personal`.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`, pending user verification.
-- Archived ticket path: pending
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes` (commit `035b0a1a9`)
+- Archived ticket path: `tickets/done/claude-sdk-background-task-lifecycle/`
 
 ## Version / Tag / Release Commit
 
-Pending the user's release decision.
+- Version: `1.4.78` (`autobyteus-web` and `autobyteus-message-gateway` `package.json`; the messaging-gateway release manifest points at `v1.4.78`)
+- Release commit: `1bb7bb1eb` "chore(release): bump workspace release version to 1.4.78", created by `scripts/desktop-release.sh`
+- Tag: annotated `v1.4.78` (tag object `396be1dd8`), which resolves to `1bb7bb1eb`
+- Curated notes: `.github/release-notes/release-notes.md` in the release commit, identical to the archived `release-notes.md`
 
 ## Repository Finalization
 
 - Bootstrap context source: `solution-handoff.md` § Workspace (finalization target `origin/personal`)
 - Ticket branch: `codex/claude-sdk-background-task-lifecycle`
-- Ticket branch commit result: pending
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`. Commits:
+  - `b041e34df`: fix
+  - `777853690`: checkpoint
+  - `9bf6a3264`: base merge
+  - `2cc90332b`: delivery baseline
+  - `1ce8233a3`: second base merge
+  - `035b0a1a9`: archive and release notes
+- Ticket branch push result: `Completed`. Pushed `origin/codex/claude-sdk-background-task-lifecycle` @ `035b0a1a9`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: pending user verification
-- Blocker (if applicable): user verification hold
+- Target advanced after verification / acceptance: `Yes`. It moved from `73f1c5fef` to `f8d124750` (the canonical model IDs finalization).
+- Delivery-owned edits protected before re-integration: `Completed`. Delivery baseline commit `2cc90332b`.
+- Re-integration before final merge result: `Completed`. Clean merge `1ce8233a3`. Rechecks: unit 149/150 (the known pre-existing `claude-session` failure), `tsc` build pass, live 4/4 on both CLIs.
+- Target branch update result: `Completed`. Re-fetched `origin/personal` @ `f8d124750` immediately before the merge.
+- Merge into target result: `Completed`. `git merge --no-ff` produced `b768b9356` ("Merge Claude SDK background task lifecycle fix") on local branch `delivery/claude-sdk-background-task-lifecycle-release`, which was cut from `origin/personal` in the ticket worktree. The user's shared checkout was not touched. The merged tree is identical to ticket branch `035b0a1a9`.
+- Push target branch result: `Completed`. Pushed `f8d124750..b768b9356 HEAD -> personal`, then the release commit `b768b9356..1bb7bb1eb`.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
+- Note: the user's shared checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, local `personal` @ `0f54978ba`, with an uncommitted `package.json` change) was already behind `origin/personal` before this ticket. It was left unchanged.
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Method: pending
-- Method reference / command: pending
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
+- Applicable: `Yes`. The user requested it.
+- Method: `Release Script` (documented helper, tag-triggered GitHub Actions)
+- Method reference / command: `bash scripts/desktop-release.sh release 1.4.78 --release-notes tickets/done/claude-sdk-background-task-lifecycle/release-notes.md --branch delivery/claude-sdk-background-task-lifecycle-release --no-push`
+  - After that, `git push origin HEAD:personal` and `git push origin v1.4.78`.
+  - `--branch` and `--no-push` were needed because the target is pushed from a local delivery branch; the user's checkout holds `personal`.
+  - The untracked `pnpm prepare:shared` `dist/` outputs were deleted first so the helper's clean-tree check passed.
+- Release/publication/deployment result: `Completed`. All five tag-triggered workflows succeeded:
+  - [Desktop Release](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291718): Windows x64, Linux x64/ARM64, macOS ARM64/x64, and GitHub Release publication
+  - [Android APK Release](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291773)
+  - [iOS App Store Connect Release](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291693): verifies archive and upload automation only, **not** App Store review or TestFlight availability
+  - [Server Docker Release](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291762): public `autobyteus/autobyteus-server:1.4.78` returns HTTP 200 for `linux/amd64` and `linux/arm64`
+  - [Release Messaging Gateway](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291769)
+- GitHub Release: [v1.4.78](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.78), non-draft stable, published 2026-09-24T06:00:48Z, with 21 assets.
+- Rollout: the user reports running the released `1.4.78`. Evidence: `evidence/delivery-release-v1.4.78.txt`.
+- Release notes handoff result: `Used`. The published body matches the tagged notes and the archived `release-notes.md`; the only difference is one trailing blank line added by GitHub.
 - Blocker (if applicable): None
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-background-task-lifecycle`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed` after this record's commit, as the last delivery step. The final record had to be committed from this worktree. The tested app was not running from it. Removal is confirmed in the terminal return to `/solution_designer`.
+- Worktree prune result: `Completed`, as part of the same final step.
+- Local ticket branch cleanup result: `Completed`. `codex/claude-sdk-background-task-lifecycle` was deleted (was `035b0a1a9`) after its ancestry in `origin/personal` was confirmed. The temporary local branch `delivery/claude-sdk-background-task-lifecycle-release` was deleted with the worktree in the final step.
+- Remote branch cleanup result: `Completed`. `origin/codex/claude-sdk-background-task-lifecycle` was deleted after the ancestry check. `ls-remote` returns nothing.
+- Also cleaned during delivery: 8 run-created `~/.claude/projects/*claude-live-background-bash*` / `*claude-cli-runtime-policy*` dirs from the two live reruns.
 - Blocker (if applicable): None
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: not created. It will be created only if the user requests a release.
-- Archived release notes artifact used for release/publication: pending
-- Release notes status: pending
+- Release notes artifact created before verification / acceptance: created right after the user's verification and release request, before the release: `tickets/done/claude-sdk-background-task-lifecycle/release-notes.md`
+- Archived release notes artifact used for release/publication: the same file, passed to `scripts/desktop-release.sh --release-notes`
+- Release notes status: `Updated`
 
 ## Deployment Steps
 
-None beyond repository finalization, unless the user requests a release.
+- No environment-specific server deployment was requested. The tag-triggered workflows published the desktop, Android, iOS upload, Docker image and messaging gateway artifacts. Installed-client adoption depends on each user's updater; the verifying user already runs 1.4.78.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -120,16 +141,29 @@ None beyond repository finalization, unless the user requests a release.
 
 ## Rollback Criteria
 
-- Roll back if Claude-runtime agents fail to run Bash at all, or if long foreground commands hit an unexpected ceiling below 30 min when the model requests a longer timeout.
-- Rollback method: revert the ticket merge commit on `personal`. That restores the pre-fix behavior, with background tasks killed at turn end. There is no data or migration impact.
+- Roll back if Claude-runtime agents cannot run Bash, or if long foreground commands hit a ceiling below 30 min when the model requests a longer timeout.
+- Do not delete the published tag or release. Ship a corrective commit and a new release instead: revert merge `b768b9356` on `personal` and release again. There is no data or migration impact. The GitHub assets, Docker image and App Store Connect upload are published externally and need platform-specific recovery if they must be withdrawn.
+
+## Finalization Progress (DR-002)
+
+- User verification: `Yes`. On 2026-09-24 the user wrote "it works. lets finalize and release a new version", after testing the local macOS personal Electron build.
+- Re-integration after verification: `origin/personal` advanced to `f8d124750` (the `claude-sdk-canonical-model-ids` finalization). It merged cleanly as `1ce8233a3`, touching only `listModels` picker labels. Rechecks: unit 149/150 (the known pre-existing failure), `tsc` build pass, live 4/4 on both CLIs (`delivery-logs/pre-finalization-live-claude-policy.log`). Renewed verification was judged not required, because the verified behavior is unchanged.
+- Ticket archived to `tickets/done/claude-sdk-background-task-lifecycle/`, commit `035b0a1a9`.
+- Ticket branch pushed to `origin/codex/claude-sdk-background-task-lifecycle` @ `035b0a1a9`.
+- Merged into the target with `git merge --no-ff` on the local branch `delivery/claude-sdk-background-task-lifecycle-release`, cut from `origin/personal` because the shared checkout has `personal` checked out. This produced merge commit `b768b9356` ("Merge Claude SDK background task lifecycle fix"), pushed with `f8d124750..b768b9356 HEAD -> personal`. The merged tree is identical to the ticket branch tree.
+- Release: `scripts/desktop-release.sh release 1.4.78 --release-notes tickets/done/claude-sdk-background-task-lifecycle/release-notes.md --branch delivery/claude-sdk-background-task-lifecycle-release --no-push`.
+  - It created release commit `1bb7bb1eb` (web and gateway `1.4.78`, messaging manifest `v1.4.78`, curated notes identical to the archived `release-notes.md`) and annotated tag `v1.4.78` (tag object `396be1dd8`, which resolves to `1bb7bb1eb`).
+  - The commit was pushed with `b768b9356..1bb7bb1eb HEAD -> personal`, and the tag was pushed as `v1.4.78`.
+  - The untracked `dist/` build outputs were deleted first so the helper's clean-tree check passed.
+- Release workflows started by the tag push: all five completed `success`. Polling stopped at the user's request; after the user said "the deployment is completely finished", delivery confirmed the workflows, the GitHub Release and the Docker Hub tag (see Release / Publication / Deployment).
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user verification hold
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: N/A
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (release `v1.4.78` published; user runs it)
+- Applicable safe cleanup complete or not required: `Yes`. Branches are deleted; the worktree removal is the final step right after this commit and is confirmed in the terminal return.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent right after cleanup. Confirmation is recorded in the terminal message itself, because the record is committed first.
+- Terminal message/reference: `send_message_to /solution_designer` "Delivery Completed: claude-sdk-background-task-lifecycle (DR-002, v1.4.78)"

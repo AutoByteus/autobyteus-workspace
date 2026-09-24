@@ -1,0 +1,23 @@
+Release verification for v1.4.78 — 2026-09-24 (verified after user signal "the deployment is completely finished. now i am already runinng the latest version")
+User verification: "it works. lets finalize and release a new version" (local macOS personal Electron build of integrated branch 9bf6a3264)
+Ticket commit: 035b0a1a9 (pushed to origin/codex/claude-sdk-background-task-lifecycle, then deleted after ancestry check)
+Target merge: b768b9356 "Merge Claude SDK background task lifecycle fix" (pushed to personal, f8d124750..b768b9356)
+Release commit/tag target: 1bb7bb1ebb0fe9191d58a884c62fab4181ab3139 (pushed to personal, b768b9356..1bb7bb1eb)
+Remote refs:
+1bb7bb1ebb0fe9191d58a884c62fab4181ab3139	refs/heads/personal
+396be1dd87ee11dd013b3ae56c3b326175bf4fbe	refs/tags/v1.4.78
+1bb7bb1ebb0fe9191d58a884c62fab4181ab3139	refs/tags/v1.4.78^{}
+Package versions: web=1.4.78 gateway=1.4.78; messaging manifest releaseTag=v1.4.78
+GitHub release:
+https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.78	2026-09-24T06:00:48Z	draft=false	prerelease=false	assets=21
+Assets: gateway tar.gz/.json/.sha256; android apk/.sha256; linux arm64/x64 AppImage; macos arm64/x64 dmg/zip (+blockmaps); windows exe; latest*.yml (4); release-manifest.json
+Workflows:
+Desktop Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291718
+Android APK Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291773
+iOS App Store Connect Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291693
+Server Docker Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291762
+Release Messaging Gateway	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/35962291769
+Docker Hub public tag:
+HTTP 200 tag 1.4.78 platforms linux/amd64,linux/arm64
+Rollout: user reports running the latest released version (1.4.78).
+Release notes: published GitHub Release body matches tagged .github/release-notes/release-notes.md (diff: one trailing blank line only), which equals archived release-notes.md; notes were written after user verification, so no post-publication correction was needed.

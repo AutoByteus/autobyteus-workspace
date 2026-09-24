@@ -2,7 +2,7 @@
 
 ## Status
 
-- Stage: **User-verified, now finalizing and releasing.** On 2026-09-24 the user tested the local macOS personal Electron build and wrote "it works. lets finalize and release a new version". The ticket is archived to `tickets/done/`.
+- Stage: **Delivered: finalized into `personal` and released as `v1.4.78`.** All 5 release workflows succeeded, the GitHub Release has 21 assets, and Docker `1.4.78` is live; the user reports running 1.4.78. On 2026-09-24 the user tested the local macOS personal Electron build and wrote "it works. lets finalize and release a new version". The ticket is archived to `tickets/done/`.
 - Classification (carried, unchanged): `task_size=Small`, `architectural_risk=Low`. Route: direct low-risk route (Solution Design → Implementation → API/E2E → Delivery).
 - Architecture review, code review and test-code review artifacts: `N/A — not applicable` (direct route).
 - Revision chain: SR-004 / IR-001 / API-REV-001 / DR-001 / DR-002.
@@ -76,7 +76,7 @@ Verification build: a local, unsigned macOS personal Electron build of the integ
 
 ## Release / Deployment
 
-- The user requested a new release. The ticket branch is merged into `personal`, then `scripts/desktop-release.sh release 1.4.78 --release-notes tickets/done/claude-sdk-background-task-lifecycle/release-notes.md` bumps the versions, creates the annotated tag `v1.4.78`, and the tag push triggers the release workflows. Final evidence is in `release-deployment-report.md`.
+- Completed. The ticket branch was merged into `personal` (`b768b9356`), then `scripts/desktop-release.sh release 1.4.78 --release-notes tickets/done/claude-sdk-background-task-lifecycle/release-notes.md` bumps the versions, creates the annotated tag `v1.4.78`, and the tag push triggered the release workflows (release commit `1bb7bb1eb`, all 5 workflows success). Final evidence: `release-deployment-report.md` and `evidence/delivery-release-v1.4.78.txt`.
 
 ## Artifacts
 
