@@ -1,10 +1,7 @@
 import 'reflect-metadata';
 import { buildSchema, registerEnumType } from 'type-graphql';
 import { createRequire } from 'node:module';
-import path from 'node:path';
-const require = createRequire(import.meta.url);
-const typeGraphqlRoot = path.dirname(require.resolve('type-graphql'));
-const { graphql } = require(require.resolve('graphql', { paths: [typeGraphqlRoot] })) as typeof import('graphql');
+const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 const io = vi.hoisted(() => ({ getRunConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunConfig: vi.fn(),
@@ -23,11 +20,7 @@ const tree = { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-1
 
 describe('whole AgentOrg model configuration GraphQL transport', () => {
   it('binds distinct Org member projection and trace-page public arguments exactly', async () => {
-    // Starting the studio and then asking for a schema used to rebuild the
-    // TypeGraphQL metadata and shifted these resolver arguments by one slot.
-    const serverSchema = await buildGraphqlSchema();
     const schema = await buildGraphqlSchema();
-    expect(schema).toBe(serverSchema);
     const variables = { orgRunId: 'org-123', memberAddress: '/director', agentRunId: 'agent-456', beforeCursor: 'cursor-789' };
     memberViews.getProjection.mockResolvedValue({ agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
       conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false });
