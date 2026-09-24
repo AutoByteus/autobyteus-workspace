@@ -84,7 +84,7 @@ const sendTeamMessageOverSocket = (
 };
 
 describeAgyRuntime(
-  "AGY team inter-agent roundtrip e2e (live transport)",
+  "AGY Team and Org collaboration e2e (live transport)",
   () => {
     let schema: GraphQLSchema;
     let graphql: typeof graphqlFn;
@@ -95,6 +95,8 @@ describeAgyRuntime(
     const createdAgentDefinitionIds = new Set<string>();
     const createdTeamDefinitionIds = new Set<string>();
     const createdTeamRunIds = new Set<string>();
+    const createdOrgDefinitionIds = new Set<string>();
+    const createdOrgRunIds = new Set<string>();
     const createdWorkspaceRoots = new Set<string>();
 
     beforeAll(async () => {
@@ -168,6 +170,20 @@ describeAgyRuntime(
         await exec(terminateTeamRunMutation, { teamRunId });
       }
       createdTeamRunIds.clear();
+
+      for (const agentOrgRunId of createdOrgRunIds) {
+        await exec(`mutation($agentOrgRunId: String!) {
+          terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success }
+        }`, { agentOrgRunId });
+      }
+      createdOrgRunIds.clear();
+
+      for (const id of createdOrgDefinitionIds) {
+        await exec(`mutation($id: String!) {
+          deleteAgentOrgDefinition(id: $id)
+        }`, { id });
+      }
+      createdOrgDefinitionIds.clear();
 
       const deleteTeamDefinitionMutation = `
       mutation DeleteAgentTeamDefinition($id: String!) {
@@ -606,8 +622,211 @@ Rules:
         };
         await waitForPersistedToken("ping");
         await waitForPersistedToken("pong");
+
+        // A successful delivery is not enough to prove that the Team can
+        // resume its exact AGY member bindings and continue on the same run.
+        const beforeRestore = await execGraphql<{
+          getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+        }>(teamResumeQuery, { teamRunId });
+        const boundBeforeRestore = flattenE2eConfiguredAgentExecutions(
+          beforeRestore.getTeamRunResumeConfig.executionTree,
+        );
+        expect(boundBeforeRestore).toHaveLength(2);
+        expect(boundBeforeRestore.every((member) =>
+          member.runtimeKind === "antigravity_cli" &&
+          member.workspaceRootPath === workspaceRootPath &&
+          !!member.platformAgentRunId,
+        )).toBe(true);
+
+        const terminated = await execGraphql<{
+          terminateAgentTeamRun: { success: boolean; message: string };
+        }>(`mutation TerminateTeam($teamRunId: String!) {
+          terminateAgentTeamRun(teamRunId: $teamRunId) { success message }
+        }`, { teamRunId });
+        expect(terminated.terminateAgentTeamRun.success).toBe(true);
+
+        const restored = await execGraphql<{
+          restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+        }>(`mutation RestoreTeam($teamRunId: String!) {
+          restoreAgentTeamRun(teamRunId: $teamRunId) { success message teamRunId }
+        }`, { teamRunId });
+        expect(restored.restoreAgentTeamRun).toMatchObject({
+          success: true,
+          teamRunId,
+        });
+        const afterRestore = await execGraphql<{
+          getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+        }>(teamResumeQuery, { teamRunId });
+        expect(flattenE2eConfiguredAgentExecutions(
+          afterRestore.getTeamRunResumeConfig.executionTree,
+        )).toEqual(boundBeforeRestore);
+
+        const continuationStartIndex = streamMessages.length;
+        sendTeamMessageOverSocket(teamSocket, {
+          agentRunId: memberRunIdByName.get("pong") as string,
+          content: `After Team restore, reply with exactly ACK-RESTORED ${pingToken}.`,
+        });
+        await waitForTeamStreamEvent(
+          (message) => streamMessages.indexOf(message) >= continuationStartIndex &&
+            message.type === "TURN_COMPLETED" &&
+            message.payload["agent_run_id"] === memberRunIdByName.get("pong"),
+          "pong attributed post-restore TURN_COMPLETED",
+        );
+        let continuedConversation: unknown[] | null = null;
+        for (let attempt = 0; attempt < 120; attempt++) {
+          const projection = await getTeamMemberRunViewProjectionService().getProjection(
+            teamRunId,
+            memberRunIdByName.get("pong") as string,
+          );
+          if (JSON.stringify(projection.conversation).includes(`ACK-RESTORED ${pingToken}`)) {
+            continuedConversation = projection.conversation;
+            break;
+          }
+          await wait(500);
+        }
+        expect(continuedConversation).not.toBeNull();
       } finally {
         await closeSocket(teamSocket);
+      }
+    }, 300_000);
+
+    it("launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns", async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchPreferredAgyToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "agy-org-runtime-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+      const instructions = "Do not use tools. On a direct user message, reply with the exact requested marker and no other text.";
+      const createAgent = async (name: string): Promise<string> => {
+        const result = await execGraphql<{ createAgentDefinition: { id: string } }>(
+          `mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }`,
+          { input: { name: `agy-org-${name}-${unique}`, role: "assistant", description: "Live AGY Org member", instructions } },
+        );
+        createdAgentDefinitionIds.add(result.createAgentDefinition.id);
+        return result.createAgentDefinition.id;
+      };
+      const directorDefinitionId = await createAgent("director");
+      const workerDefinitionId = await createAgent("worker");
+      const team = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        `mutation($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }`,
+        { input: { name: `agy-org-team-${unique}`, description: "Live nested AGY team", instructions,
+          coordinatorMemberName: "worker", nodes: [{ memberName: "worker", ref: workerDefinitionId, refScope: "SHARED" }] } },
+      );
+      const teamDefinitionId = team.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+      const org = await execGraphql<{ createAgentOrgDefinition: { id: string } }>(
+        `mutation($input: CreateAgentOrgDefinitionInput!) { createAgentOrgDefinition(input: $input) { id } }`,
+        { input: { name: `agy-org-${unique}`, description: "Live AGY Org boundary", instructions,
+          members: [
+            { memberName: "director", ref: directorDefinitionId, refType: "AGENT", refScope: "SHARED" },
+            { memberName: "team", ref: teamDefinitionId, refType: "AGENT_TEAM", refScope: "SHARED" },
+          ], handoffs: [] } },
+      );
+      createdOrgDefinitionIds.add(org.createAgentOrgDefinition.id);
+      const created = await execGraphql<{ createAgentOrgRun: { success: boolean; message: string; agentOrgRunId: string | null } }>(
+        `mutation($input: CreateAgentOrgRunInput!) {
+          createAgentOrgRun(input: $input) { success message agentOrgRunId }
+        }`,
+        { input: { agentOrgDefinitionId: org.createAgentOrgDefinition.id,
+          rootConfiguration: { runtimeKind: "antigravity_cli", llmModelIdentifier: modelIdentifier,
+            llmConfig: null, autoExecuteTools: true, skillAccessMode: "NONE", workspaceRootPath },
+          agentOverrides: [], teamOverrides: [] } },
+      );
+      expect(created.createAgentOrgRun.success, created.createAgentOrgRun.message).toBe(true);
+      const orgRunId = created.createAgentOrgRun.agentOrgRunId as string;
+      expect(orgRunId).toBeTruthy();
+      createdOrgRunIds.add(orgRunId);
+      const config = await execGraphql<{ getAgentOrgRunConfig: { executionTree: Record<string, unknown> } }>(
+        `query($orgRunId: String!) { getAgentOrgRunConfig(orgRunId: $orgRunId) { executionTree } }`,
+        { orgRunId },
+      );
+      const tree = config.getAgentOrgRunConfig.executionTree as {
+        rootOrg: { members: Array<Record<string, unknown>> };
+      };
+      const direct = tree.rootOrg.members.find((member) => member.address === "/director");
+      const nestedTeam = tree.rootOrg.members.find((member) => member.address === "/team");
+      const nested = (nestedTeam?.members as Array<Record<string, unknown>> | undefined)
+        ?.find((member) => member.address === "/team/worker");
+      expect(direct?.agentRunId).toEqual(expect.any(String));
+      expect(nested?.agentRunId).toEqual(expect.any(String));
+      expect(direct?.launchConfiguration).toMatchObject({ runtimeKind: "antigravity_cli", workspaceRootPath });
+      expect(nested?.launchConfiguration).toMatchObject({ runtimeKind: "antigravity_cli", workspaceRootPath });
+
+      const socket = new WebSocket(`ws://${runtimeServerUrl.hostname}:${runtimeServerUrl.port}/ws/agent-org/${orgRunId}`);
+      const frames: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      socket.on("message", (raw: unknown) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as { type: string; payload: Record<string, unknown> };
+          frames.push(parsed);
+        } catch { /* Ignore malformed frames only in the diagnostic capture. */ }
+      });
+      await waitForSocketOpen(socket);
+      try {
+        // The Org handler installs its command listener after publishing its
+        // snapshot. A client command sent merely on TCP/WS open can race it.
+        const readyDeadline = Date.now() + 15_000;
+        while (Date.now() < readyDeadline &&
+          !frames.some((frame) => frame.type === "ROOT_LIFECYCLE" && frame.payload.is_active === true)) {
+          await wait(100);
+        }
+        expect(frames.some((frame) => frame.type === "CONNECTED" && frame.payload.root_run_id === orgRunId),
+          JSON.stringify(frames)).toBe(true);
+        expect(frames.some((frame) => frame.type === "ROOT_LIFECYCLE" && frame.payload.is_active === true),
+          JSON.stringify(frames)).toBe(true);
+        await wait(100);
+        for (const [address, runId] of [
+          ["/director", direct?.agentRunId], ["/team/worker", nested?.agentRunId],
+        ] as const) {
+          const marker = `ORG-${address.replaceAll("/", "-")}-${unique}`;
+          const commandId = randomUUID();
+          const start = frames.length;
+          socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+            root_subject_kind: "agent_org", root_run_id: orgRunId,
+            target_agent_run_id: runId, command_id: commandId,
+            content: `Reply with exactly ${marker}.`, context_file_paths: [], image_urls: [],
+            message_id: randomUUID(), dedupe_key: randomUUID(),
+          } }));
+          const deadline = Date.now() + 120_000;
+          while (Date.now() < deadline) {
+            const accepted = frames.slice(start).some((frame) => frame.type === "AGENT_COMMAND_ACK" &&
+              frame.payload.command_id === commandId && frame.payload.state === "accepted");
+            const attributed = frames.slice(start).some((frame) => {
+              if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+              const event = frame.payload.event as Record<string, unknown> | undefined;
+              return frame.payload.root_run_id === orgRunId && event?.kind === "agent_presentation" &&
+                event.member_address === address && event.agent_run_id === runId;
+            });
+            if (accepted && attributed) break;
+            await wait(500);
+          }
+          expect(frames.slice(start).some((frame) => frame.type === "AGENT_COMMAND_ACK" &&
+            frame.payload.command_id === commandId && frame.payload.state === "accepted"),
+          JSON.stringify(frames.slice(start).slice(-10))).toBe(true);
+          expect(frames.slice(start).some((frame) => {
+            if (frame.type !== "ROOT_EXECUTION_EVENT") return false;
+            const event = frame.payload.event as Record<string, unknown> | undefined;
+            return frame.payload.root_run_id === orgRunId && event?.kind === "agent_presentation" &&
+              event.member_address === address && event.agent_run_id === runId;
+          }), JSON.stringify(frames.slice(start).slice(-10))).toBe(true);
+          let outputFound = false;
+          for (let attempt = 0; attempt < 120; attempt++) {
+            const projection = await execGraphql<{ getAgentOrgMemberRunProjection: {
+              agentRunId: string; memberAddress: string; conversation: unknown[];
+            } }>(`query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+              getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+                agentRunId memberAddress conversation
+              }
+            }`, { orgRunId, memberAddress: address, agentRunId: runId });
+            expect(projection.getAgentOrgMemberRunProjection).toMatchObject({ agentRunId: runId, memberAddress: address });
+            if (JSON.stringify(projection.getAgentOrgMemberRunProjection.conversation).includes(marker)) {
+              outputFound = true;
+              break;
+            }
+            await wait(500);
+          }
+          expect(outputFound).toBe(true);
+        }
+      } finally {
+        await closeSocket(socket);
       }
     }, 300_000);
   });

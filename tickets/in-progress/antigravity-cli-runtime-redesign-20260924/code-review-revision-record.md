@@ -7,6 +7,8 @@
 | CRR-001 | `code-review-report.md` | Initial full source review of IR-002 at `d0ec1fc07` | N/A | Fail — Local Fix | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | IR-003 Org source re-review at `575520264` | Fail — Local Fix | Pass | CR-001/002 resolved |
 | CRR-003 | `code-review-report.md` | API-REV-001 AGY-02 real Team launch failure | Pass | Fail — Local Fix | CR-003; CR-001/002 remain resolved |
+| CRR-004 | `code-review-report.md` | IR-004 current validator source re-review | Fail — Local Fix | Pass | CR-003 resolved; CR-001/002 remain resolved |
+| CRR-005 | `code-review-report.md` | API-REV-002 AGY Org native stream failure | Pass | Fail — Local Fix | CR-004; CR-003 confirmed resolved |
 
 ## Revision Entries
 
@@ -70,3 +72,49 @@ None.
 - Score/classification change: affected API/E2E readiness and runtime fidelity 9.0 → 7.0; summary 9.0 → 8.6; Pass → Fail — Local Fix. Other source-audit categories were not repeated.
 - Recommended recipient: `/implementation_engineer` for bounded repair, source re-review, then API/E2E rerun.
 - Remaining risk: AGY-02 real inter-agent roundtrip, direct Org launch and Team restore/continuation still unproven. Final denial live/reload parity is now confirmed by API-REV-001.
+
+### CRR-004 — Current Team/Org runtime admission source repair passed
+
+- Canonical review report updated: `code-review-report.md`.
+- Entry point and round: Implementation Review, round 4; bounded IR-004 source re-review after failure-origin CRR-003.
+- Trigger: Implementation Engineer IR-004 / `implementation-handoff.md` at `b2e91b83f`, responding to CR-003 and API-REV-001/API-F-001.
+- Relevant solution revisions: SR-016/019/021. Architecture review: ARCH-REV-003. Implementation: IR-004. API/E2E: API-REV-001. Delivery: N/A.
+- Prior authoritative result: **Fail — Local Fix**. Current authoritative result: **Pass**.
+- What changed: shared current Team/Org `validateLaunchConfiguration` now admits the supported `RuntimeKind` enum instead of a stale three-runtime literal list. This restores the source admission path for approved SCN-002 without a separate Team architecture. New current-tree tests cover AGY Team and Org nested placement, plus unknown-kind rejection; reviewer reran the new suite 3/3.
+- Supported scenario/material premise: unchanged approved normal SCN-002; no new fallback, concurrency or migration premise. Migration-only released-Team-V2 reader was assessed; historical shape unchanged, no released old AGY population and no migration needed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Revision references | Verification evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Remains resolved | IR-003 / CRR-002 | No conflicting new evidence. |
+| CR-002 | Resolved | Remains resolved | IR-003 / CRR-002 | No conflicting new evidence. |
+| CR-003 | Open | Resolved at source | IR-004 / CRR-004 | Enum-driven current validator, Team builder/root/member and Org root/nested tests, unknown-kind rejection; reviewer reran 3/3 new tests. Real AGY-02 still required downstream. |
+
+- New or remaining source findings: None.
+- Score/classification change: affected API/E2E readiness and runtime fidelity 7.0 → 9.0; summary 8.6 → 9.0; Fail — Local Fix → Pass. Other source-audit categories not repeated.
+- Recommended recipient: `/api_e2e_engineer` primary; `/implementation_engineer` informational after primary succeeds.
+- Remaining risk: AGY-02 real GraphQL/WebSocket Team roundtrip, direct Org launch, exact attribution and Team restore/continuation have not been rerun after this repair. The separate historical-candidate suite's old token-table fixture failure is not attributed to the AGY validator change.
+
+### CRR-005 — API/E2E failure origin: AGY Org native snapshot rejected
+
+- Canonical review report updated: `code-review-report.md`.
+- Entry point and round: focused API/E2E Failure-Origin Review, round 5; no successful test-code review.
+- Trigger: API/E2E Engineer API-REV-002 / `api-e2e-execution-coverage-report.md`, API-F-002/AGY-05, final corrected Org command/log `/tmp/agy-api-r2-org-final.log`; source commit `b2e91b83f`.
+- Relevant solution revisions: SR-016/019/021. Architecture review: ARCH-REV-003. Implementation: IR-004. API/E2E: API-REV-001/002. Delivery: N/A.
+- Prior authoritative result: CRR-004 **Pass**. Current authoritative result: **Fail — Local Fix** to `/implementation_engineer`.
+- Why: approved normal SCN-002 real Org launch succeeds, then native Org WebSocket parses its execution snapshot through a current DTO whose runtime enum excludes AGY. The socket emits CONNECTED then `AGENT_ORG_STREAM_UNAVAILABLE`, preventing the supported Org view/member command/trace. Independent product UI/GraphQL/socket path establishes the scenario; corrected real E2E confirms the source failure.
+- Origin/review gap: implementation-owned current contract omission. CRR-002/004 did not trace the Org return-event spine to its DTO, particularly after the previous stale runtime whitelist was found. No requirement/design change or migration is needed on current evidence.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Revision references | Verification evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Remains resolved | IR-003 / CRR-002 | No conflicting new evidence. |
+| CR-002 | Resolved | Remains resolved | IR-003 / CRR-002 | No conflicting new evidence. |
+| CR-003 | Resolved at source | Confirmed resolved at execution | IR-004 / CRR-004 / API-REV-002 | Real AGY Team GraphQL/WebSocket ping→pong delivered to a real member; exact IDs/projections and Team terminate/restore continuation passed. |
+
+- New finding: CR-004 / CF-004 (Org native stream DTO rejects AGY runtime).
+- Score/classification change: affected API/E2E readiness and runtime fidelity 9.0 → 7.0; summary 9.0 → 8.6; Pass → Fail — Local Fix. Other source-audit categories were not repeated.
+- Recommended recipient: `/implementation_engineer` for bounded current DTO correction, source re-review, then API/E2E Org rerun.
+- Remaining risk: real Org direct/nested member commands, scoped delivery and trace remain blocked; Team parity/continuation now pass. Prior standalone denial/DONE browser controls remain passed but were not rerun in API-REV-002.

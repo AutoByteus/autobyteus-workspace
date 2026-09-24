@@ -5,6 +5,7 @@ import { RootEventPublisher } from "../../../../src/agent-collaboration/executio
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 const orgRunId = "org-run-1";
 const agent = testOrgAgentNode("/director", "agent-run-1");
@@ -98,6 +99,45 @@ const harness = (snapshot = { tree, tasks, messages, statuses }) => {
 };
 
 describe("AgentOrgStreamHandler", () => {
+  it("sends the native snapshot for AGY Org root, direct Agents and nested Team members", async () => {
+    const current = taskBearingPackage();
+    const agy = (launch: typeof current.tree.rootOrg.defaultLaunchConfiguration) => ({
+      ...launch, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI,
+    });
+    const root = current.tree.rootOrg;
+    const agyTree = {
+      ...current.tree,
+      rootOrg: {
+        ...root,
+        defaultLaunchConfiguration: agy(root.defaultLaunchConfiguration),
+        members: root.members.map((member) => "agentRunId" in member
+          ? { ...member, launchConfiguration: agy(member.launchConfiguration) }
+          : { ...member, defaultLaunchConfiguration: agy(member.defaultLaunchConfiguration),
+            members: member.members.map((child) => ({ ...child, launchConfiguration: agy(child.launchConfiguration) })) }),
+      },
+    };
+    const test = harness({ ...current, tree: agyTree });
+    const client = connection();
+    const sessionId = await test.handler.connect(client.socket, orgRunId);
+
+    expect(sessionId, client.sent.at(-1)).toBeTruthy();
+    expect(client.socket.close).not.toHaveBeenCalled();
+    const messages = client.sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
+    expect(messages.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
+    expect(messages[1]).toMatchObject({ payload: { root_org: { execution_tree: { rootOrg: {
+      defaultLaunchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI },
+      members: [
+        { launchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI } },
+        { launchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI } },
+        { defaultLaunchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI },
+          members: [
+            { launchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI } },
+            { launchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI } },
+          ] },
+      ],
+    } } } } });
+  });
+
   it("opens one correlated native Org snapshot barrier and sequences events", async () => {
     const test = harness(); const client = connection(); const sessionId = await test.handler.connect(client.socket, orgRunId);
     expect(sessionId).toBeTruthy();
