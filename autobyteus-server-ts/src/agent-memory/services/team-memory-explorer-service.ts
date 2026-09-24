@@ -118,7 +118,7 @@ export class TeamMemoryExplorerService {
       if (!tree) {
         continue;
       }
-      const memberTargets = await this.memberTargetBuilder.build(teamRunId);
+      const memberTargets = this.memberTargetBuilder.buildFromTree(teamRunId, tree);
       if (memberTargets.length === 0) {
         continue;
       }
@@ -148,7 +148,11 @@ export class TeamMemoryExplorerService {
 
   private async safeReadTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
     try {
-      return await this.treeLocations.readTree(teamRunId);
+      const tree = await this.treeLocations.readTree(teamRunId);
+      if (tree && tree.rootTeam.teamRunId !== teamRunId) {
+        throw new Error(`Execution tree root does not match Team run '${teamRunId}'.`);
+      }
+      return tree;
     } catch (error) {
       console.warn(`Skipping team run '${teamRunId}' in memory explorer: ${String(error)}`);
       return null;

@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TeamMemoryExplorerService } from "../../../src/agent-memory/services/team-memory-explorer-service.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
@@ -11,6 +12,20 @@ import { TaskDelegationRecordsV1Store } from "../../../src/agent-team-execution/
 import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+
+const fileHashes = async (root: string): Promise<Map<string, string>> => {
+  const hashes = new Map<string, string>();
+  const visit = async (dir: string): Promise<void> => {
+    for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) await visit(full);
+      else if (entry.isFile()) hashes.set(path.relative(root, full),
+        createHash("sha256").update(await fs.readFile(full)).digest("hex"));
+    }
+  };
+  await visit(root);
+  return hashes;
+};
 
 const touch = async (filePath: string, mtime: number) => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -65,6 +80,28 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
     resetTeamRunHistoryCatalogState(memoryDir);
     resetRootRunPackageReadinessIndex(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
+  });
+
+  it("uses one read per admitted root for each imported-style list request and leaves all files unchanged", async () => {
+    const before = await fileHashes(memoryDir);
+    const read = vi.spyOn(TeamRunExecutionTreeStore.prototype, "read");
+    try {
+      const teams = await new TeamMemoryExplorerService(memoryDir).listAgentTeamsWithMemory();
+      expect(teams.entries).toHaveLength(1);
+      expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId).sort())
+        .toEqual(["classroom-run-1", "classroom-run-2"]);
+      expect(await fileHashes(memoryDir)).toEqual(before);
+
+      read.mockClear();
+      const runs = await new TeamMemoryExplorerService(memoryDir)
+        .listAgentTeamRunsWithMemory("classroom-team");
+      expect(runs.entries).toHaveLength(2);
+      expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId).sort())
+        .toEqual(["classroom-run-1", "classroom-run-2"]);
+      expect(await fileHashes(memoryDir)).toEqual(before);
+    } finally {
+      read.mockRestore();
+    }
   });
 
   it("groups stored V1 roots by Team definition and exact configured Agent address", async () => {
