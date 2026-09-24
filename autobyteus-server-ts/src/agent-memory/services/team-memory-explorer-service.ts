@@ -41,7 +41,7 @@ type TeamGroup = {
 
 const STORED_HISTORY_MANAGER = Object.freeze({
   hasManagedTeamRun: () => false,
-  withUnmanagedHistoryDeletion: async <T>(_teamRunId: string, operation: () => Promise<T>) => ({
+  withInactiveHistoryMutation: async <T>(_teamRunId: string, operation: () => Promise<T>) => ({
     kind: "completed" as const,
     value: await operation(),
   }),
