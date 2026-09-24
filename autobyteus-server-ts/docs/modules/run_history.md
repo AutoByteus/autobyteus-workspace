@@ -15,9 +15,10 @@ and AgentOrg roots.
   index without converting either root family into a generic on-disk schema.
 - Keep standalone index mutation behind `AgentRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `run_history_index.json` directly.
 - Keep team index mutation behind `TeamRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `team_run_history_index.json` directly.
-- Keep AgentOrg index mutation behind `AgentOrgRunHistoryCatalogService` and
-  `AgentOrgRunHistorySummaryWriter`; runtime and migration share the strict
-  first-non-empty writer rather than implementing title policy separately.
+- Keep normal AgentOrg index mutation behind
+  `AgentOrgRunHistoryCatalogService`, whose shared catalog core owns the strict
+  first-non-empty summary policy. `AgentOrgRunHistorySummaryWriter` remains a
+  historical migration owner, not a current runtime query/write path.
 - Keep legacy/partial standalone and team index repair explicit and bounded to startup app-data migrations, plus the standalone manual migration script; normal history listing must not perform metadata-directory repair scans.
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
@@ -95,10 +96,10 @@ requested.
 
 Readiness failure rejects the history operation; it is not converted into a
 successful empty result and cannot publish unvalidated index rows. After
-readiness succeeds, the AgentOrg catalog retains its existing serialized
-index/tree projection and derived-index write. Readiness state is reconstructed
-in memory for each process and changes no history package or index format, so
-no persisted-data migration is required.
+readiness succeeds, Team and AgentOrg catalog queries read their strict current
+indexes without scanning trees to derive rows or writing indexes. Readiness
+state is reconstructed in memory for each process and changes no history
+package or index format, so no persisted-data migration is required.
 
 ## Stopped Run Model Configuration
 
@@ -430,6 +431,18 @@ Important identity/storage rules:
 - `AgentOrgRunHistoryCatalogService` is the normal semantic owner for AgentOrg
   catalog mutations; `AgentOrgRunPackageCatalog` admits only complete current
   V1 packages
+- Team and AgentOrg catalogs share the narrow
+  `CollaborationRunHistoryCatalogCore` policy: state and write queues are keyed
+  by resolved memory directory **and family**, initialization strictly reads
+  the existing index once per process-local state, and queries expose only
+  admitted rows with normalized summaries. The index decides history-row
+  membership and index-only summary/termination facts. Execution trees remain
+  authoritative for package details and tree-owned archive facts at lifecycle
+  mutation or explicit repair, not an implicit source of missing rows.
+- A missing Team or AgentOrg index reads as an empty catalog; a corrupt index
+  fails visibly and is not overwritten. A valid tree without an index row stays
+  unlisted until an explicit local repair. First and subsequent catalog queries
+  do not reconcile trees, write an index, or infer lost index-only facts.
 - ordinary message activity and live status transitions must not rewrite any
   standalone, Team, or AgentOrg history index
 - normal standalone history listing reads the V2 index/in-memory catalog; it
@@ -440,6 +453,16 @@ Important identity/storage rules:
   incomplete package
 - normal AgentOrg history listing starts from the AgentOrg index and reads each
   exact V1 execution tree and sidecar set; it never falls back to a Team package
+- Team archive, unarchive, and delete acquire the family catalog queue before
+  the manager's exact-root `withInactiveHistoryMutation` lane. The managed-root
+  check happens inside that lane, so restore cannot race a stale precheck;
+  determinate archive failure compensates and verifies prior tree/index state.
+  AgentOrg archive/delete retain the same queue-before-manager-lane order.
+- Missing-row recovery is the explicit offline, local-only
+  [`repair-collaboration-run-history-index`](../../scripts/repair-collaboration-run-history-index.md)
+  command: dry-run by default, backup and strict readback on apply, never a
+  normal query/startup or imported-memory operation. Existing valid current
+  Team/Org index arrays are directly usable without a data migration.
 - `TeamRunPackageCatalog` and `AgentOrgRunPackageCatalog` perform bounded family-
   specific admission and exclude predecessor, incomplete, malformed, or
   unsupported roots from runtime/history

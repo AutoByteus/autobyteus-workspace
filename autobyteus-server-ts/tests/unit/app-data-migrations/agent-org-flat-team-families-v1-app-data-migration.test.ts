@@ -301,7 +301,7 @@ describe("AgentOrg flat-Team family startup migration", () => {
     expect(result.errorMessage).not.toContain("require correction and restart");
     await expect(fs.access(source)).rejects.toMatchObject({ code: "ENOENT" });
     await fs.access(getTeamRunExecutionTreePath(target));
-    expect(await new TeamRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
+    expect((await new TeamRunHistoryIndexStore(env.memoryDir).readIndexStrict()).rows).toEqual([]);
     expect(await new AgentOrgRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
   });
 
@@ -448,7 +448,7 @@ describe("AgentOrg flat-Team family startup migration", () => {
     await expect(fs.access(getTeamRunExecutionTreePath(target))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.access(getTaskDelegationRecordsV1Path(target))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.access(getTeamCommunicationMessagesV1Path(target))).rejects.toMatchObject({ code: "ENOENT" });
-    expect(await new TeamRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
+    expect((await new TeamRunHistoryIndexStore(env.memoryDir).readIndexStrict()).rows).toEqual([]);
     expect(await new AgentOrgRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([expect.objectContaining({ orgRunId: runId, summary: "Preserved summary", terminatedAt: "2026-08-16T00:00:00.000Z" })]);
   });
 

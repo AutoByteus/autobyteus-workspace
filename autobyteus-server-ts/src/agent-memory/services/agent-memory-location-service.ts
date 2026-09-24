@@ -13,6 +13,7 @@ import type {
 } from "../domain/agent-memory-location.js";
 import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
 import { normalizeTeamRunPhysicalScope } from "../../agent-team-execution/domain/team-run-physical-scope.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 
 const optional = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim() ? value.trim() : null;
@@ -60,6 +61,19 @@ export class AgentMemoryLocationService {
   async listTeamMemberLocations(input: { teamRunId: string }): Promise<TeamMemberAgentMemoryLocation[]> {
     const teamRunId = required(input.teamRunId, "teamRunId");
     return (await this.locations.listAgents()).filter((item) => this.matchesTeam(item, teamRunId)).map(toMemoryLocation);
+  }
+
+  listTeamMemberLocationsFromTree(input: {
+    teamRunId: string;
+    tree: TeamRunExecutionTreeSnapshot;
+  }): TeamMemberAgentMemoryLocation[] {
+    const teamRunId = required(input.teamRunId, "teamRunId");
+    if (input.tree.rootTeam.teamRunId !== teamRunId) {
+      throw new Error(`Execution tree root does not match Team run '${teamRunId}'.`);
+    }
+    return this.locations.listAgentsInTree(input.tree)
+      .filter((item) => this.matchesTeam(item, teamRunId))
+      .map(toMemoryLocation);
   }
 
   async resolveTeamMemberLocation(input: {

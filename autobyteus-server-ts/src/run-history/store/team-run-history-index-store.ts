@@ -7,10 +7,6 @@ import type {
 import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-};
-
 const allowedRowKeys = new Set([
   "teamRunId",
   "teamDefinitionId",
@@ -21,8 +17,6 @@ const allowedRowKeys = new Set([
   "archivedAt",
   "terminatedAt",
 ]);
-
-const createEmptyIndex = (): TeamRunIndexFileRecord => [];
 
 export type TeamRunHistoryIndexSnapshot = Readonly<{
   rows: readonly Readonly<TeamRunIndexRowRecord>[];
@@ -135,11 +129,6 @@ export class TeamRunHistoryIndexStore {
     this.indexFilePath = path.join(memoryDir, "team_run_history_index.json");
   }
 
-  async readIndex(): Promise<TeamRunIndexFileRecord> {
-    await this.writeQueue;
-    return this.readIndexFile();
-  }
-
   async readIndexStrict(): Promise<TeamRunHistoryIndexSnapshot> {
     await this.writeQueue;
     try {
@@ -171,15 +160,6 @@ export class TeamRunHistoryIndexStore {
     }
   }
 
-  async listRows(): Promise<TeamRunIndexRowRecord[]> {
-    return this.readIndex();
-  }
-
-  async getRow(teamRunId: string): Promise<TeamRunIndexRowRecord | null> {
-    const rows = await this.listRows();
-    return rows.find((row) => row.teamRunId === teamRunId.trim()) ?? null;
-  }
-
   async writeIndex(rows: TeamRunIndexFileRecord): Promise<void> {
     await this.queueWrite(async () => {
       await atomicWriteJsonFile(this.indexFilePath, rows.map(normalizeRow));
@@ -195,21 +175,4 @@ export class TeamRunHistoryIndexStore {
     return next;
   }
 
-  private async readIndexFile(): Promise<TeamRunIndexFileRecord> {
-    try {
-      const raw = await fs.readFile(this.indexFilePath, "utf-8");
-      const parsed = JSON.parse(raw) as unknown;
-      const validated = parseIndexFile(parsed);
-      if (!validated) {
-        logger.warn(`Invalid team run history index format: ${this.indexFilePath}`);
-        return createEmptyIndex();
-      }
-      return validated;
-    } catch (error) {
-      if (!String(error).includes("ENOENT")) {
-        logger.warn(`Failed reading team run history index: ${String(error)}`);
-      }
-      return createEmptyIndex();
-    }
-  }
 }

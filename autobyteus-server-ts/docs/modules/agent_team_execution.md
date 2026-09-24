@@ -312,10 +312,11 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
    **Delete**. Delete is a new user decision with permanent-deletion
    confirmation; Stop never opens that confirmation and never invokes Delete.
 5. `TeamRunHistoryService.deleteStoredTeamRun(...)` delegates physical removal
-   to the history catalog. `AgentTeamRunManager.withUnmanagedHistoryDeletion(...)`
-   serializes the exact-ID exclusion through the complete catalog/package
-   transition, rejects active or stopping roots, and lets compensated storage
-   failure preserve a truthful inactive retry target.
+   to the history catalog. Archive, unarchive, and delete acquire the catalog
+   queue before `AgentTeamRunManager.withInactiveHistoryMutation(...)` checks
+   the exact root inside the same transition lane as restore. Active or stopping
+   roots are rejected; compensated storage failure preserves a truthful inactive
+   retry target.
 
 Thus the supported journey is `Stop -> terminal retained inactive history ->`
 an optional, separately confirmed `Delete`. There is no combined

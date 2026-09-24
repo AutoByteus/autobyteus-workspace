@@ -62,7 +62,7 @@ describe("family candidate scope and durable interruption boundaries", () => {
     expect((await e.migrate()).status).toBe("SUCCEEDED");
     expect(read.mock.calls.every(([file]) => /(?:execution_tree|history_index)\.json$/.test(String(file)))).toBe(true);
     expect(enumerate.mock.calls).toHaveLength(2);
-    expect(await new TeamRunHistoryIndexStore(e.memory).readIndex()).toEqual([teamRow("unrelated")]);
+    expect((await new TeamRunHistoryIndexStore(e.memory).readIndexStrict()).rows).toEqual([teamRow("unrelated")]);
     const write = vi.spyOn(fs, "writeFile"), rename = vi.spyOn(fs, "rename");
     expect((await e.migrate()).status).toBe("SUCCEEDED"); expect(write).not.toHaveBeenCalled(); expect(rename).not.toHaveBeenCalled();
   });
@@ -100,7 +100,7 @@ describe("family candidate scope and durable interruption boundaries", () => {
     vi.restoreAllMocks(); expect((await e.migrate()).status).toBe("SUCCEEDED");
     const after = await e.client.tokenUsageRunRecord.findUniqueOrThrow({ where: { runId: "org-direct" } });
     expect(after).toEqual({ ...before, rootTeamRunId: null, rootAttributionStatus: "unknown", identitySummaryJson: JSON.stringify({ ...JSON.parse(before.identitySummaryJson), rootTeamRunIds: { status: "unknown" } }) });
-    expect(await new TeamRunHistoryIndexStore(e.memory).readIndex()).toEqual([teamRow("unrelated")]);
+    expect((await new TeamRunHistoryIndexStore(e.memory).readIndexStrict()).rows).toEqual([teamRow("unrelated")]);
     const orgs = await new AgentOrgRunHistoryIndexStore(e.memory).readIndex();
     expect(orgs.find((r) => r.orgRunId === "unrelated-org")?.summary).toBe("Preserved despite no directory");
     expect(orgs.find((r) => r.orgRunId === "org")?.summary).toBe("Summary org");
