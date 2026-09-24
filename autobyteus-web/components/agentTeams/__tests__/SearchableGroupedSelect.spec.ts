@@ -110,9 +110,9 @@ it('keeps the closed label compact and emits only the selected identifier', asyn
 
   await wrapper.get('button').trigger('click')
   await nextTick()
-  await new DOMWrapper(optionRows()[0]!).trigger('click')
+  await new DOMWrapper(optionRows()[1]!).trigger('click')
 
-  expect(wrapper.emitted('update:modelValue')).toEqual([['sonnet']])
+  expect(wrapper.emitted('update:modelValue')).toEqual([['opus']])
   expect(document.body.querySelector('input')).toBeNull()
 
   wrapper.unmount()
@@ -140,4 +140,77 @@ it('supports keyboard search, option navigation, selection and Escape focus reco
   expect(document.body.querySelector('input')).toBeNull()
   expect(document.activeElement).toBe(trigger.element)
   wrapper.unmount()
+})
+
+describe('alias-aware Claude options', () => {
+  const claudeOptions: GroupedOption[] = [
+    {
+      label: 'Anthropic',
+      items: [
+        {
+          id: 'opus[1m]',
+          aliasIds: ['default'],
+          recommended: true,
+          name: 'claude-opus-5-5[1m]',
+          description: 'Opus (1M context) · Opus 5.5 with 1M context · Best for everyday, complex tasks',
+          selectedLabel: 'Anthropic / claude-opus-5-5[1m]',
+        },
+        {
+          id: 'haiku',
+          name: 'claude-haiku-4-5-20251001',
+          description: 'Haiku · Haiku 4.5 · Fastest for quick answers',
+          selectedLabel: 'Anthropic / claude-haiku-4-5-20251001',
+        },
+        {
+          id: 'sonnet',
+          name: 'claude-sonnet-5',
+          description: 'Sonnet · Sonnet 5 · Efficient for routine tasks',
+          selectedLabel: 'Anthropic / claude-sonnet-5',
+        },
+      ],
+    },
+  ]
+
+  it('shows a saved alias value as the option that represents it, with the check mark', async () => {
+    const wrapper = await openSelect(claudeOptions, 'default')
+
+    expect(wrapper.get('button').text()).toContain('Anthropic / claude-opus-5-5[1m]')
+    const rows = optionRows()
+    expect(rows.map((row) => row.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false'])
+    expect(rows[0]?.querySelector('svg')).not.toBeNull()
+    expect(rows[1]?.querySelector('svg')).toBeNull()
+    expect(rows[0]?.querySelector('[data-test="select-item-recommended"]')?.textContent?.trim()).toBe('Recommended')
+    expect(rows[1]?.querySelector('[data-test="select-item-recommended"]')).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('does not emit when the option already representing the value is chosen again', async () => {
+    const wrapper = await openSelect(claudeOptions, 'default')
+
+    await new DOMWrapper(optionRows()[0]!).trigger('click')
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(document.body.querySelector('input')).toBeNull()
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+    await new DOMWrapper(optionRows()[2]!).trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('update:modelValue')).toEqual([['sonnet']])
+
+    wrapper.unmount()
+  })
+
+  it.each([
+    ['opus', ['claude-opus-5-5[1m]']],
+    ['claude-haiku', ['claude-haiku-4-5-20251001']],
+    ['haiku', ['claude-haiku-4-5-20251001']],
+    ['recommended', ['claude-opus-5-5[1m]']],
+  ])('searching %j shows the matching option', async (term, expected) => {
+    const wrapper = await openSelect(claudeOptions)
+    await new DOMWrapper(document.body.querySelector<HTMLInputElement>('input')!).setValue(term)
+
+    expect(optionRows().map((row) => row.querySelector('span')?.textContent?.trim())).toEqual(expected)
+
+    wrapper.unmount()
+  })
 })

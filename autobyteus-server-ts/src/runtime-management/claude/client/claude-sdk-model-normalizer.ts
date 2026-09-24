@@ -72,6 +72,10 @@ const supportsClaudeThinking = (descriptor: NormalizedModelDescriptor): boolean 
   descriptor.supportsEffort ||
   descriptor.supportedEffortLevels.length > 0;
 
+/** The SDK-reported canonical model ID for a row; never guessed when absent or ambiguous. */
+export const resolveCanonicalModelId = (descriptor: NormalizedModelDescriptor): string | null =>
+  descriptor.resolvedModelAmbiguous ? null : descriptor.resolvedModel;
+
 export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo => ({
   model_identifier: descriptor.identifier,
   display_name:
@@ -80,7 +84,7 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
       : null) ?? descriptor.identifier,
   description: descriptor.description,
   value: descriptor.identifier,
-  canonical_name: descriptor.identifier,
+  canonical_name: resolveCanonicalModelId(descriptor) ?? descriptor.identifier,
   provider_id: LLMProvider.ANTHROPIC,
   provider_name: getLlmProviderDisplayName(LLMProvider.ANTHROPIC),
   provider_type: LLMProvider.ANTHROPIC,

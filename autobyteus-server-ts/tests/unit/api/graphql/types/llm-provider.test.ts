@@ -204,6 +204,41 @@ describe('LlmProviderResolver', () => {
     expect(mockLlmProviderService.listProviderCredentialSettings).not.toHaveBeenCalled();
   });
 
+  it('maps runtime selection presentation hints and leaves other rows without one', async () => {
+    const claudeRow = (id: string, name: string, extra: Record<string, unknown> = {}) => ({
+      model_identifier: id, display_name: name, description: null,
+      value: id, canonical_name: 'claude-opus-5-5[1m]', provider_id: 'ANTHROPIC',
+      provider_name: 'Anthropic', provider_type: 'ANTHROPIC', runtime: 'api',
+      max_context_tokens: null, active_context_tokens: null,
+      max_input_tokens: null, max_output_tokens: null, resolved_model_metadata: null,
+      ...extra,
+    });
+    mockModelCatalogService.listProviderModelCatalogSnapshots.mockResolvedValue([{
+      runtimeKind: 'claude_agent_sdk',
+      ownerProvider: provider('ANTHROPIC'),
+      sources: [],
+      llmModels: [
+        claudeRow('default', 'Default (recommended)', {
+          selection_presentation: { recommended: false, aliasOfModelIdentifier: 'opus[1m]' },
+        }),
+        claudeRow('opus[1m]', 'Opus (1M context)', {
+          selection_presentation: { recommended: true, aliasOfModelIdentifier: null },
+        }),
+        claudeRow('plain', 'Plain'),
+      ],
+      audioModels: [], imageModels: [], videoModels: [],
+    }]);
+
+    const [snapshot] = await new LlmProviderResolver().providerModelCatalogSnapshots('claude_agent_sdk');
+    expect(snapshot?.llmModels.map((model) => [
+      model.modelIdentifier, model.canonicalName, model.selectionPresentation,
+    ])).toEqual([
+      ['default', 'claude-opus-5-5[1m]', { recommended: false, aliasOfModelIdentifier: 'opus[1m]' }],
+      ['opus[1m]', 'claude-opus-5-5[1m]', { recommended: true, aliasOfModelIdentifier: null }],
+      ['plain', 'claude-opus-5-5[1m]', null],
+    ]);
+  });
+
   it('delegates exact-provider ensure and reload mutations', async () => {
     const snapshot = {
       runtimeKind: 'autobyteus',

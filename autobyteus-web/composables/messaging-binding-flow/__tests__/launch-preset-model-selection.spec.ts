@@ -99,16 +99,19 @@ describe('useBindingLaunchPresetModelSelection', () => {
           {
             id: 'qwen:deepseek-v4-pro',
             name: 'DeepSeek V4 Pro (Qwen)',
+            description: null,
             selectedLabel: 'Qwen / DeepSeek V4 Pro (Qwen)',
           },
           {
             id: 'qwen:deepseek-v4-flash-0731',
             name: 'DeepSeek V4 Flash 0731 (Qwen)',
+            description: null,
             selectedLabel: 'Qwen / DeepSeek V4 Flash 0731 (Qwen)',
           },
           {
             id: 'qwen:glm-5.2',
             name: 'GLM-5.2 (Qwen)',
+            description: null,
             selectedLabel: 'Qwen / GLM-5.2 (Qwen)',
           },
         ],
