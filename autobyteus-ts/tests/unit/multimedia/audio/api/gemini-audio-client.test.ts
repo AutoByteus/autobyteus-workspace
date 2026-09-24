@@ -133,6 +133,28 @@ describe('GeminiAudioClient 3.8 speech contract', () => {
   });
 
   it.each([
+    ['non-PCM format', (bytes: Buffer) => bytes.writeUInt16LE(3, 20)],
+    ['zero channels', (bytes: Buffer) => bytes.writeUInt16LE(0, 22)],
+    ['zero sample rate', (bytes: Buffer) => bytes.writeUInt32LE(0, 24)],
+    ['unsupported bit depth', (bytes: Buffer) => bytes.writeUInt16LE(12, 34)],
+    ['incorrect block alignment', (bytes: Buffer) => bytes.writeUInt16LE(0, 32)],
+    ['incorrect byte rate', (bytes: Buffer) => bytes.writeUInt32LE(0, 28)],
+    ['non-frame-aligned data', (bytes: Buffer) => {
+      bytes.writeUInt16LE(2, 22);
+      bytes.writeUInt16LE(4, 32);
+      bytes.writeUInt32LE(96000, 28);
+      bytes.writeUInt32LE(2, 40);
+      bytes.writeUInt32LE(38, 4);
+      return bytes.subarray(0, 46);
+    }],
+  ])('rejects malformed WAV: %s', async (_label, change) => {
+    const bytes = wav();
+    const changed = change(bytes);
+    generateContentMock.mockResolvedValue(reply(Buffer.isBuffer(changed) ? changed : bytes, 'audio/wav'));
+    await expect(clientFor().generateSpeech('Hello')).rejects.toThrow(/WAV/);
+  });
+
+  it.each([
     [Buffer.from([1, 2, 3, 4]), undefined],
     [Buffer.from([1, 2, 3, 4]), 'audio/wav'],
     [Buffer.from([1, 2, 3, 4]), 'audio/pcm'],

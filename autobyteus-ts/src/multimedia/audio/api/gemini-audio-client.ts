@@ -55,18 +55,37 @@ function validateWav(bytes: Buffer): void {
     throw new Error('Gemini TTS returned an invalid WAV container.');
   }
   let offset = 12;
-  let hasFormat = false;
-  let hasAudio = false;
+  let frameSize: number | null = null;
+  const dataSizes: number[] = [];
   while (offset + 8 <= bytes.length) {
     const id = bytes.toString('ascii', offset, offset + 4);
     const size = bytes.readUInt32LE(offset + 4);
     const next = offset + 8 + size + (size % 2);
     if (next > bytes.length) throw new Error('Gemini TTS returned a truncated WAV chunk.');
-    if (id === 'fmt ' && size >= 16) hasFormat = true;
-    if (id === 'data' && size > 0) hasAudio = true;
+    if (id === 'fmt ') {
+      if (size < 16 || frameSize !== null) throw new Error('Gemini TTS returned an invalid WAV format chunk.');
+      const format = bytes.readUInt16LE(offset + 8);
+      const channels = bytes.readUInt16LE(offset + 10);
+      const rate = bytes.readUInt32LE(offset + 12);
+      const byteRate = bytes.readUInt32LE(offset + 16);
+      const blockAlign = bytes.readUInt16LE(offset + 20);
+      const bitsPerSample = bytes.readUInt16LE(offset + 22);
+      const bytesPerSample = bitsPerSample / 8;
+      if (format !== 1 || channels < 1 || channels > 2
+        || rate < 8000 || rate > 192000
+        || ![8, 16, 24, 32].includes(bitsPerSample)
+        || blockAlign !== channels * bytesPerSample
+        || byteRate !== rate * blockAlign) {
+        throw new Error('Gemini TTS returned an unsupported or unplayable WAV format.');
+      }
+      frameSize = blockAlign;
+    }
+    if (id === 'data') dataSizes.push(size);
     offset = next;
   }
-  if (offset !== bytes.length || !hasFormat || !hasAudio) {
+  if (offset !== bytes.length || frameSize === null || dataSizes.length === 0
+    || dataSizes.every((size) => size === 0)
+    || dataSizes.some((size) => size % frameSize !== 0)) {
     throw new Error('Gemini TTS returned a WAV file without playable audio.');
   }
 }

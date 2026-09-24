@@ -2,7 +2,7 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review selected; ARCH-REV-002 Pass. Large/High implementation routes to `/code_reviewer`.
+- Upstream review applicability and handoff-rule result: Independent architecture review selected; ARCH-REV-002 Pass. Large/High implementation-owned Local Fix returns to `/code_reviewer` for source re-review.
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/requirements-doc.md` (approved SR-004).
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/investigation-notes.md`.
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/solution-revision-record.md`.
@@ -10,28 +10,28 @@
 - Supplemental task artifacts: N/A — none. User screenshot is investigation evidence, not a normative UI supplement.
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/design-review-report.md`.
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/architecture-review-revision-record.md`.
-- Triggering rework evidence: N/A — initial implementation after Pass. Reviewed revised solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/solution-handoff-sr006.md`.
+- Triggering rework evidence: `code-review-report.md` and `code-review-revision-record.md` in this ticket directory (`CRR-001`, `CR-001` Local Fix). Reviewed revised solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/solution-handoff-sr006.md`.
 
 ## Current Implementation Summary
 
-Current-only Gemini 3.8 Flash/Flash-Lite TTS is wired through the existing audio catalog and adapter. The saved retired-ID transition is isolated to shared `AppConfig.initialize()` and reuses the durable one-key writer. The shared Google SDK is 2.24.0 in both lockfiles. Gemini LLM/image/video production adapters and LLM catalog IDs remain unchanged. Focused installed-SDK and unit checks pass; no provider or secret-vault result is claimed.
+Current-only Gemini 3.8 Flash/Flash-Lite TTS is wired through the existing audio catalog and adapter. The saved retired-ID transition is isolated to shared `AppConfig.initialize()` and reuses the durable one-key writer. The shared Google SDK is 2.24.0 in both lockfiles. Gemini LLM/image/video production adapters and LLM catalog IDs remain unchanged. In IR-002 the WAV validator now enforces supported PCM `fmt` fields and frame-aligned nonempty data before reporting success, addressing the implementation-owned CR-001 finding. Focused installed-SDK and unit checks pass; no provider or secret-vault result is claimed.
 
-- Implementation cycle: Initial.
+- Implementation cycle: Rework (IR-002 Local Fix following initial IR-001).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/implementation-revision-record.md`.
-- Current implementation revision ID: IR-001.
+- Current implementation revision ID: IR-002.
 - Related solution revision IDs: SR-004, SR-006.
 - Related architecture-review revision IDs: ARCH-REV-002.
-- Related code-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-001 (Fail / Local Fix).
 - Related API/E2E revision IDs: N/A.
 - Related delivery revision IDs: N/A.
-- Triggering finding IDs: N/A.
+- Triggering finding IDs: CR-001.
 
 ## Routing Classification
 
 - Task size: **Large**.
 - Architecture risk: **High**.
 - Design classification reference: `design-spec.md` “Task Size And Architectural Risk”.
-- Classification confirmed: Yes. Shared major SDK cutover, provider wire/output change, private persisted-setting migration, and cross-modality blast radius remain material. No new architecture/requirements gap was found.
+- Classification confirmed: Yes. Shared major SDK cutover, provider wire/output change, private persisted-setting migration, and cross-modality blast radius remain material. No new architecture/requirements gap was found; CR-001 is an implementation-local audio validation fix.
 - Selected route: **Code Review** per `get_handoff_rules` result, recipient `/code_reviewer`.
 - Lightweight direct-route self-review: Not Applicable; independent source review selected.
 - New design impact or escalation trigger: None.
@@ -41,7 +41,7 @@ Current-only Gemini 3.8 Flash/Flash-Lite TTS is wired through the existing audio
 | Behavior ID | Approved change / preserved outcome | Implemented production path / key files | Result / notes |
 | --- | --- | --- | --- |
 | BEH-001 | Two exact 3.8 Google TTS choices, Flash fallback, saved retired choice transition; preserve other providers | AudioClientFactory → `gemini-model-mapping.ts`; server/web `media-default-model-settings`; `AppConfig.initialize()` → `config/migrations/retired-speech-model-selection.ts` → durable assignment writer | Current catalog has only Flash/Lite Google TTS and retains OpenAI. Known retired file selection becomes Flash before runtime; inherited retired override fails value-safely; non-retired file/override unchanged. |
-| BEH-002 | Existing speech tool input/file contract; verbatim transcript, style/voice/speaker metadata, playable audio or explicit error | `generate_speech` schema → MediaGenerationService (unchanged) → factory → `GeminiAudioClient.generateSpeech` → SDK `generateContent` → WAV-validated temp file → existing media path writer | Strict single and labeled one/two-speaker turns; exact nested voice config; WAV header/chunk/nonempty validation or explicitly described PCM wrapping; no style-as-text or silent fallback. |
+| BEH-002 | Existing speech tool input/file contract; verbatim transcript, style/voice/speaker metadata, playable audio or explicit error | `generate_speech` schema → MediaGenerationService (unchanged) → factory → `GeminiAudioClient.generateSpeech` → SDK `generateContent` → WAV-validated temp file → existing media path writer | Strict single and labeled one/two-speaker turns; exact nested voice config; WAV header/chunk/PCM-format/frame-alignment validation or explicitly described PCM wrapping; no style-as-text or silent fallback. |
 | BEH-003 | Isolated credential-safe live validation | Existing `pnpm secrets:import`/isolated vault and live runner retained; `test-support/live-e2e/live-e2e-scenarios.mjs` audio model changed to Flash | Implementation does not read owner `.env`, import credentials or run live provider. API/E2E must classify real outcomes. |
 | BEH-004 | Latest stable shared SDK, preserve LLM/image/video and assess LLM catalog without unapproved change | `autobyteus-ts/package.json`, root and nested lockfiles → existing `GeminiLLM`, `GeminiImageClient`, `GeminiVideoClient` → SDK; installed-SDK LLM wire unit/integration checks | npm stable rechecked as 2.24.0. Builds and focused LLM/image/video checks pass, including installed-SDK nonstream and stream requests. Existing LLM catalog unchanged; upstream official-source assessment found no warranted LLM model-ID change. Real existing Gemini LLM provider check remains mandatory downstream. |
 
@@ -83,7 +83,7 @@ Current-only Gemini 3.8 Flash/Flash-Lite TTS is wired through the existing audio
 - Dead/obsolete code, files, helpers, flags and dormant replaced paths removed in scope: Yes — old catalog/runtime maps, style-prefixed string request, implicit missing-MIME PCM, old live fixture and stale expectations removed.
 - Shared structures remain tight: Yes — audio-owned voice vocabulary extracted and used by factory/adapter; local SpeechTurn has one text meaning.
 - Canonical shared design guidance reapplied: Yes.
-- Changed source implementation files within size guardrails: Yes. AppConfig remains exactly 500 effective nonempty lines; audio adapter 200; audio factory 228. Audio replacement crossed the >220 changed-line signal and was checked for cohesive ownership; shared voice vocabulary was extracted, rather than creating a generic provider helper.
+- Changed source implementation files within size guardrails: Yes. AppConfig remains exactly 500 effective nonempty lines; audio adapter remains below 500 effective nonempty lines; audio factory 228. Initial audio replacement crossed the >220 changed-line signal and was checked for cohesive ownership; shared voice vocabulary was extracted, rather than creating a generic provider helper.
 
 ## Persisted Data Transition Check
 
@@ -102,8 +102,8 @@ Current-only Gemini 3.8 Flash/Flash-Lite TTS is wired through the existing audio
 ## Local Implementation Checks Run
 
 - PASS: `pnpm --filter autobyteus-ts build`; `pnpm --filter autobyteus-server-ts build` (including sanitized server bootstrap smoke).
-- PASS: focused `vitest` audio catalog/adapter/map: 39 tests; AppConfig migration: 37 tests; migration write-failure: 1 test; server settings service: 39 tests.
-- PASS: focused Gemini LLM installed-SDK wire/nonstream/stream: 4 tests; LLM unit: 11; image unit: 6; video unit: 11. Audio installed-SDK metadata wire test included in adapter tests.
+- PASS after CR-001 fix: focused `vitest` audio adapter/catalog/map plus LLM/image/video set: 68 tests (21 audio-adapter tests, including seven malformed-WAV cases); AppConfig/migration/settings set: 77 tests. Prior broader audio suite and web component checks remain recorded in IR-001.
+- PASS after CR-001 fix: Gemini LLM installed-SDK wire/nonstream/stream: 4 tests; LLM unit: 11; image unit: 6; video unit: 11. Audio installed-SDK metadata wire and malformed-WAV tests included in the 21 adapter tests.
 - PASS: web Settings component test: 4 tests; `git diff --check`.
 - These are local implementation checks, not API/E2E sign-off. Server GraphQL E2E expectation was updated but not executed by this role.
 
@@ -113,15 +113,15 @@ Current-only Gemini 3.8 Flash/Flash-Lite TTS is wired through the existing audio
 - References: REQ-001–003, SCN-001, design DS-001; existing `MediaDefaultModelsCard.vue`, `useMediaDefaultModelsCard.ts`, shared selector styling and component test reviewed.
 - Preview: Read `autobyteus-web/README.md`; launched Nuxt dev renderer at `localhost:3048` and opened `/settings` in Chrome.
 - Inspection result: Browser showed a blank surface, while dev proxy reported `/rest/health` `ECONNREFUSED` because no backend was running. No selector, loading/error interaction, viewport or visual layout claim is made. The adjacent component's focused 4-test suite passed, including fallback projection; API/E2E should inspect rendered Settings with a backend/test fixture.
-- No visual defect was identified or corrected; rendered state remains unverified due to environment limitation.
+- No visual defect was identified or corrected; rendered state remains unverified due to environment limitation. This IR-002 backend-only validator fix does not alter that frontend state.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Source reviewer: check migration provenance and post-rename validation, exact SDK 3.8 voice/turn wire shape, WAV validator, both lockfiles and non-TTS SDK boundaries.
+- Source reviewer: recheck CR-001 against new `fmt`/frame-alignment guard and seven deterministic malformed-WAV cases; retain prior migration, SDK wire, lockfile and non-TTS context.
 - API/E2E: exercise Settings catalog/default/saved transition and speech tool output; validate malformed dialogue/mapping and provider failures; confirm no old choices or silent alias.
 - **User-emphasized real Gemini LLM regression:** safely import only through explicit `pnpm secrets:import` dry-run + direct TTY confirmation to an isolated SQLite vault, then run scoped `gemini.vertex-express.llm` or `gemini.ai-studio.llm` through the existing runner and assert a nonempty real response. Run scoped 3.8 audio similarly when configured. Report pass/skip/failure truthfully; no safe access is a skip/blocker, not a pass. Never target production vault, read owner `.env` implicitly or print secret values.
 - Current-source LLM catalog assessment remains “no model-ID change warranted” per SR-006 official-source research; Delivery should recheck/report and sync model catalog docs without bundling an unapproved LLM offering.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. The API/E2E engineer owns broader executable validation, live scoped provider calls, isolated test-vault procedure, pass/skip/failure classification, and final confidence. Implementation did not perform those gates.
+Yes. The API/E2E engineer owns broader executable validation, live scoped provider calls, isolated test-vault procedure, pass/skip/failure classification, and final confidence. Implementation did not perform those gates. CR-001 source re-review must pass first.
