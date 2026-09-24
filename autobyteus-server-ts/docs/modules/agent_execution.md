@@ -450,8 +450,15 @@ turns; model discovery keeps its own options. These bare built-in names are not
 AutoByteus MCP tool preapproval rules. AutoByteus MCP tools are unaffected by
 `tools`. They continue to be supplied through `mcpServers` and pre-approved
 through `allowedTools` according to the configured tool exposure. Claude Code
-tool names can change between SDK releases, so re-verify both lists against the
-upgraded CLI whenever the SDK version changes.
+tool names can change between Claude Code releases. The CLI that actually runs
+is resolved by `resolveClaudeCodeExecutablePath()`: an explicit
+`CLAUDE_CODE_EXECUTABLE_PATH` / `CLAUDE_CODE_PATH` / `CLAUDE_CLI_PATH` override
+first, then `claude` on `PATH`. It is therefore not necessarily the CLI bundled
+with the pinned SDK. Re-verify both lists against the CLI in use whenever the SDK
+version changes and whenever the resolved Claude Code CLI is updated. Sessions
+created before this policy keep any earlier agent-type listing in their
+persisted transcript history. On resume, the tool list itself is still
+restricted and native multi-agent calls still fail.
 
 Claude Agent SDK `0.3.280` is used with exact direct peers
 `@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter

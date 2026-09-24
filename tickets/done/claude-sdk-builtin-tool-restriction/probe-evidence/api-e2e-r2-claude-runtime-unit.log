@@ -1,0 +1,54 @@
+[22m[39mClaude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+     [32m✓[39m forwards persisted thinking and effort on a restored session turn[32m 4[2mms[22m[39m
+     [32m✓[39m captures and publishes the exact SDK systemPrompt after a usable query is returned[32m 3[2mms[22m[39m
+     [32m✓[39m closes the usable query without iteration when post-handoff persistence fails[32m 5[2mms[22m[39m
+     [32m✓[39m defensively rejects an impossible explicit start while another turn is active[32m 1[2mms[22m[39m
+     [32m✓[39m does not clear an identified active turn for missing or mismatched completion identity[32m 0[2mms[22m[39m
+     [32m✓[39m caches and sends local context file reference paths in user content[32m 1[2mms[22m[39m
+     [32m✓[39m caches and sends an already-normalized finalized context-file path[32m 0[2mms[22m[39m
+     [32m✓[39m applies idle status before emitting normal turn completion[32m 2[2mms[22m[39m
+     [32m✓[39m auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode[32m 8[2mms[22m[39m
+     [32m✓[39m keeps manual mode gated for a safe outside-scratch permission request until approval resolves[32m 4[2mms[22m[39m
+     [32m✓[39m enriches generic Claude process exits with bounded redacted stderr diagnostics[32m 1[2mms[22m[39m
+     [32m✓[39m classifies Claude terminal auth result chunks as runtime errors instead of completed turns[32m 2[2mms[22m[39m
+     [32m✓[39m settles an interrupted active turn before emitting TURN_INTERRUPTED[32m 2[2mms[22m[39m
+     [32m✓[39m keeps manager-owned closure cleanup idempotent without an active turn execution[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a foreign interrupt turn without mutating the active query[32m 2[2mms[22m[39m
+     [32m✓[39m delegates terminate to the session manager dependency[32m 0[2mms[22m[39m
+     [32m✓[39m exposes the caller-reserved provider UUID before the first query[32m 0[2mms[22m[39m
+     [32m✓[39m resumes an interrupted incomplete turn using its immutable reserved provider UUID[32m 3[2mms[22m[39m
+[31m     [31m×[31m switches an opened but unconfirmed first query to exact resume after interrupt[39m[32m 3[2mms[22m[39m
+     [32m✓[39m uses SDK sessionId for the first turn and resume for every completed follow-up[32m 1[2mms[22m[39m
+     [32m✓[39m continues to resume restored Claude runs with the restored provider session id[32m 0[2mms[22m[39m
+     [32m✓[39m fails a turn when Claude reports a conflicting provider UUID[32m 2[2mms[22m[39m
+     [32m✓[39m fails a successful-looking turn that never confirms the provider UUID[32m 1[2mms[22m[39m
+     [32m✓[39m emits provider-derived text segment ids and preserves text-tool-text order[32m 2[2mms[22m[39m
+     [32m✓[39m coalesces partial stream_event text deltas by message and content block[32m 2[2mms[22m[39m
+     [32m✓[39m preserves the pre-ticket external Codex environment and real home selection[32m 2[2mms[22m[39m
+[31m     [31m×[31m uses an explicitly supplied Codex environment without applying the governed-launcher policy[39m[32m 3[2mms[22m[39m
+     [32m✓[39m includes descriptor pressure and runtime context for EBADF failures[32m 1[2mms[22m[39m
+     [32m✓[39m keeps non-descriptor spawn errors distinguishable[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/model-context-capacity.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 353[2mms[22m[39m
+     [33m[2m✓[22m[39m reads only the current client home and refuses a wrong-home catalog [33m 326[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts [2m([22m[2m32 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/codex/codex-sandbox-mode-setting.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-process-diagnostics.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts[2m > [22mCodexAppServerClient spawn diagnostics[2m > [22muses an explicitly supplied Codex environment without applying the governed-launcher policy
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22mClaudeSession[2m > [22mswitches an opened but unconfirmed first query to exact resume after interrupt
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m18 passed[39m[22m[90m (20)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m145 passed[39m[22m[90m (147)[39m
