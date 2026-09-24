@@ -8,6 +8,15 @@ const listWorkspaceRunHistoryMock = vi.fn();
 const getWorkspaceRunHistoryMock = vi.fn();
 const getWorkspaceRootPathForHistoryMock = vi.fn();
 
+// RunHistoryResolver also constructs the agent-history service even when a
+// query only uses the mocked workspace-history service.
+vi.mock("../../../src/run-history/services/agent-run-history-service.js", async () => {
+  const actual = await vi.importActual<
+    typeof import("../../../src/run-history/services/agent-run-history-service.js")
+  >("../../../src/run-history/services/agent-run-history-service.js");
+  return { ...actual, getAgentRunHistoryService: () => ({}) };
+});
+
 vi.mock("../../../src/run-history/services/workspace-run-history-service.js", async () => {
   const actual = await vi.importActual<
     typeof import("../../../src/run-history/services/workspace-run-history-service.js")

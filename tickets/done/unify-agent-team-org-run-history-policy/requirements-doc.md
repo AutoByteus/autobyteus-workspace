@@ -3,7 +3,7 @@
 ## Document status
 
 - Status: **Approved**.
-- Current solution revision: `SR-004` (design-only recovery; approval basis remains SR-002).
+- Current solution revision: `SR-005` (design-only recovery of the current Team Memory path; approval basis remains SR-002).
 - Package identifier: `unify-agent-team-org-run-history-policy`.
 - Request: User ticket and verification instruction, 2026-09-24.
 - Requirements owner: Solution Designer.
@@ -25,7 +25,7 @@ The reported divergence is confirmed: Team reads a cached, admitted history inde
 | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User, SCN-001 | Team catalog read is index-only; Org first instance read scans trees and writes index. | Same admitted, normalized, no-write row query for both; no history tree scan on catalog query after readiness. | Mixed history still filters archived inactive roots and reads detail trees as needed. | Investigation source log. |
 | BEH-002 | System, SCN-002 | Both catalog owners record lifecycle rows; Org create preinitializes before manager create. | Explicit lifecycle write semantics without hidden pre-create dependency; preserve supported create/restore/summary/terminate/archive/delete and Team unarchive. | Manager gates, serialization, compensation and existing row fields. | Source log. |
-| BEH-003 | Operational, SCN-003 | Imported Team memory can query catalog; Org memory branch bypasses catalog store to avoid writes. | Both memory sources use the same read-only owner query; imported folders never have index mutations. | One tree read per inspected root in memory explorer; admission exclusion. | Memory branch source; ticket constraint. |
+| BEH-003 | Operational, SCN-003 | Imported Team memory can query catalog, but the current Team explorer rereads all roots for each root's member lookup; the unmerged Org memory branch bypasses its catalog store to avoid writes. | Both memory sources use the same read-only owner query; imported folders never have index mutations. | At most one tree read per inspected root per request in memory explorer; admission exclusion. | Current Team source and API-REV-001 F-001; unmerged Org memory branch; ticket constraint. |
 | BEH-004 | Operational/contract, SCN-004 | Team orphan tree stays unlisted; Org first initialization projects it. Missing/corrupt index handling differs. | Approved index authority: no automatic orphan recovery; explicit local-only repair if supported; missing empty; corrupt error, no overwrite. | Existing valid index files and trees remain usable, summary/termination facts retained. | Catalog/store code. |
 
 ## Stakeholders and scope guardrail
@@ -35,7 +35,7 @@ The reported divergence is confirmed: Team reads a cached, admitted history inde
 - UC-002: Create/restore/update/archive/delete current collaboration runs with correct durable row behavior.
 - UC-003: Inspect local/imported memory catalogs read-only, with bounded tree reads.
 - UC-004: Recover a damaged/missing local history index only through an explicit approved operation, under the approved policy.
-- In scope: both catalog services, justified shared core, direct consumers, memory-branch source integration after merge, obsolete Team index adapter assessment, compatibility checks.
+- In scope: both catalog services, justified shared core, direct consumers, the current Team Memory explorer's bounded root traversal, Org memory-branch source integration after merge, obsolete Team index adapter assessment, compatibility checks.
 - Out of scope: standalone agent history, execution-tree schema, unrelated UI changes, legacy migration redesign, generic corruption recovery beyond the approved catalog policy.
 - Preserved boundary: existing supported listing/order/filtering, row data, Team unarchive, Org archive, deletion, summary first-write, termination, restore, readiness admission, queue/compensation, and non-local read-only behavior, except explicit decisions in BEH-004.
 - Review authority: a downstream finding that introduces new recovery, migration, operational or compatibility obligations must return as a requirement gap for user approval; technical review cannot amend this policy by itself.
@@ -77,7 +77,7 @@ The reported divergence is confirmed: Team reads a cached, admitted history inde
 - QR-002 (REQ-002/004): Serialized writes and compensation/readback on applicable failed delete/archive.
 - QR-003 (REQ-005): Zero writes to imported folder history data.
 - Persisted data affected: **Yes**. Existing valid arrays must be directly usable; no schema change is requested. Under the approved policy no routine rebuild/migration is needed, but explicit recovery may need to preserve an existing good index row's summary/termination because those fields are not derivable from a tree. No loss of data present in a valid existing index is authorized; an absent/corrupt index may have unrecoverable index-only facts, so repair must not claim lossless reconstruction.
-- External dependency: unmerged `codex/memory-team-view-slow-load` branch; integrate its sources only if/when merged. Current shared package-readiness owner and app-data migration contracts must remain intact.
+- External dependency: unmerged `codex/memory-team-view-slow-load` branch for the Org root-memory source only; integrate that source if/when merged. The existing Team Memory explorer and its AC-003 read bound are in this package now. Current shared package-readiness owner and app-data migration contracts must remain intact.
 - UI/prototype: N/A — no visual change requested.
 - Behavior-defining supplements: N/A.
 
