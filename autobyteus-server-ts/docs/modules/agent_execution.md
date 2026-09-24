@@ -460,6 +460,23 @@ created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
 restricted and native multi-agent calls still fail.
 
+Every Claude turn query also forces the Claude CLI runtime policy env
+`CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` and `BASH_MAX_TIMEOUT_MS=1800000` at the
+`ClaudeSdkClient` boundary, overriding inherited or caller-supplied values.
+Because each turn closes its one-string query on `result`, the Claude CLI process
+exits at turn end and kills any CLI-owned background task, including a foreground
+Bash command the CLI auto-backgrounds when it exceeds its timeout. With the policy
+applied, Bash has no `run_in_background` option and no auto-backgrounding: a long
+command runs in the foreground inside the turn and either completes or ends with a
+visible timeout error. A single command may run up to 30 minutes when the model
+requests that `timeout`; the per-call default stays the CLI default (2 minutes,
+`BASH_DEFAULT_TIMEOUT_MS` is not set). Model-discovery and context-capacity probes
+do not receive this policy. A user-level `~/.claude/settings.json` `env` block can
+still override these values inside the CLI. Both variables are documented Claude
+Code CLI env contracts; re-check them after Claude CLI or Agent SDK version bumps.
+This policy is temporary and must be removed when the Claude backend moves to SDK
+streaming input mode with a long-lived session per run.
+
 Claude Agent SDK `0.3.280` is used with exact direct peers
 `@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter
 continues to call one `query({ prompt: string, options })` per AgentRun
