@@ -1,0 +1,148 @@
+{
+  "startedAt": "2026-09-25T02:41:18.478Z",
+  "commit": null,
+  "runtime": {
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-HWHSUO/server-data",
+    "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-HWHSUO/workspace",
+    "backendUrl": "http://127.0.0.1:52251",
+    "frontendUrl": "http://127.0.0.1:52252",
+    "model": "gemini-3.8-flash-low",
+    "browserErrors": []
+  },
+  "identities": {
+    "team": {
+      "rootRunId": "agy_r5_team_71575f6a_e3f0_4c27_85dd_6ddeb7c4956e_d744749cc45144aea88b2892d79d242a",
+      "members": [
+        {
+          "address": "/first",
+          "agentRunId": "agy_r5_team_a_71575f6a_e3f0_4c27_85dd_6ddeb7c495_69bf13906af948aeaccb2002e0ba373a",
+          "platformAgentRunId": null
+        },
+        {
+          "address": "/second",
+          "agentRunId": "agy_r5_team_b_71575f6a_e3f0_4c27_85dd_6ddeb7c495_d9f44534a2aa491daab09da930ae9d23",
+          "platformAgentRunId": null
+        }
+      ],
+      "selected": {
+        "address": "/second",
+        "agentRunId": "agy_r5_team_b_71575f6a_e3f0_4c27_85dd_6ddeb7c495_d9f44534a2aa491daab09da930ae9d23",
+        "platformAgentRunId": null
+      },
+      "membersBeforeStop": [
+        {
+          "address": "/first",
+          "agentRunId": "agy_r5_team_a_71575f6a_e3f0_4c27_85dd_6ddeb7c495_69bf13906af948aeaccb2002e0ba373a",
+          "platformAgentRunId": null
+        },
+        {
+          "address": "/second",
+          "agentRunId": "agy_r5_team_b_71575f6a_e3f0_4c27_85dd_6ddeb7c495_d9f44534a2aa491daab09da930ae9d23",
+          "platformAgentRunId": "0cb9cbf1-76cb-49aa-bc12-790bbe143361"
+        }
+      ]
+    },
+    "org": {
+      "rootRunId": "agy_r5_org_71575f6a_e3f0_4c27_85dd_6ddeb7c4956e_db297fe22f684e388c11ea3cd29dbf05",
+      "direct": {
+        "address": "/director",
+        "agentRunId": "agy_r5_director_71575f6a_e3f0_4c27_85dd_6ddeb7c4_f40a3534798d4f6c8dfa6960f7e071f3",
+        "platformAgentRunId": null
+      },
+      "worker": {
+        "address": "/team/worker",
+        "agentRunId": "agy_r5_worker_71575f6a_e3f0_4c27_85dd_6ddeb7c495_cdb12b7ee6b54e95bd012d0020ec8170",
+        "platformAgentRunId": null
+      },
+      "directBeforeStop": {
+        "agentRunId": "agy_r5_director_71575f6a_e3f0_4c27_85dd_6ddeb7c4_f40a3534798d4f6c8dfa6960f7e071f3",
+        "platformAgentRunId": "7ce23667-a3f6-426d-b9d1-5761043990c9"
+      },
+      "workerBeforeStop": {
+        "agentRunId": "agy_r5_worker_71575f6a_e3f0_4c27_85dd_6ddeb7c495_cdb12b7ee6b54e95bd012d0020ec8170",
+        "platformAgentRunId": "29a40343-5d90-4278-94d1-d09e694ad410"
+      }
+    }
+  },
+  "cases": {
+    "beforeRestart": {
+      "result": "Pass",
+      "teamMarker": "BEFORE-TEAM-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e",
+      "orgMarker": "BEFORE-ORG-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e",
+      "workerMarker": "BEFORE-WORKER-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e",
+      "teamFrameCount": 23,
+      "orgFrameCount": 20,
+      "workerFrameCount": 22
+    },
+    "processRestart": {
+      "result": "Pass",
+      "oldPid": 16695,
+      "newPid": 16771,
+      "sameDataRoot": true,
+      "teamIdentityStable": true,
+      "orgIdentityStable": true
+    },
+    "teamBrowser": {
+      "result": "Pass",
+      "selectedMemberRunId": "agy_r5_team_b_71575f6a_e3f0_4c27_85dd_6ddeb7c495_d9f44534a2aa491daab09da930ae9d23",
+      "selectedAddress": "/second",
+      "url": "http://127.0.0.1:52252/workspace",
+      "surfaceText": "S\nsecond\nIdle\nYou\nReply with exactly BEFORE-TEAM-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e.\nS\nsecond\n\nBEFORE-TEAM-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e\n\nYou\nReply with exactly AFTER-TEAM-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e.\nS\nsecond\n\nAFTER-TEAM-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e\n\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    "teamPersistence": {
+      "result": "Pass",
+      "oldAndNewMarkers": true
+    },
+    "orgBrowser": {
+      "result": "Pass",
+      "selectedMemberRunId": "agy_r5_director_71575f6a_e3f0_4c27_85dd_6ddeb7c4_f40a3534798d4f6c8dfa6960f7e071f3",
+      "selectedAddress": "/director",
+      "url": "http://127.0.0.1:52252/workspace?rootSubjectKind=agent_org&definitionId=agy-r5-org-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e&orgRunId=agy_r5_org_71575f6a_e3f0_4c27_85dd_6ddeb7c4956e_db297fe22f684e388c11ea3cd29dbf05&mode=active&memberAddress=/director",
+      "surfaceText": "D\ndirector - 71F3\nIdle\nYou\nReply with exactly BEFORE-ORG-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e.\nD\ndirector\n\nBEFORE-ORG-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e\n\nYou\nReply with exactly AFTER-ORG-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e.\nD\ndirector\n\nAFTER-ORG-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e\n\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    "orgNestedBrowser": {
+      "result": "Pass",
+      "selectedMemberRunId": "agy_r5_worker_71575f6a_e3f0_4c27_85dd_6ddeb7c495_cdb12b7ee6b54e95bd012d0020ec8170",
+      "selectedAddress": "/team/worker",
+      "url": "http://127.0.0.1:52252/workspace?rootSubjectKind=agent_org&definitionId=agy-r5-org-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e&orgRunId=agy_r5_org_71575f6a_e3f0_4c27_85dd_6ddeb7c4956e_db297fe22f684e388c11ea3cd29dbf05&mode=active&memberAddress=/team/worker",
+      "surfaceText": "W\nworker\nIdle\nYou\nReply with exactly BEFORE-WORKER-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e.\nW\nworker\n\nBEFORE-WORKER-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e\n\nYou\nReply with exactly AFTER-WORKER-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e.\nW\nworker\n\nAFTER-WORKER-71575f6a-e3f0-4c27-85dd-6ddeb7c4956e\n\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    "orgPersistence": {
+      "result": "Pass",
+      "directAndNestedOldAndNewMarkers": true
+    }
+  },
+  "processes": [
+    {
+      "label": "backend-A",
+      "pid": 16695,
+      "readyAt": "2026-09-25T02:41:20.780Z",
+      "stopped": {
+        "pid": 16695,
+        "exitCode": 0,
+        "signalCode": null
+      }
+    },
+    {
+      "label": "backend-B",
+      "pid": 16771,
+      "readyAt": "2026-09-25T02:41:54.012Z"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "frontend": {
+      "pid": 16780,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "backend": {
+      "pid": 16771,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "ownedDataRootRemoved": true
+  },
+  "result": "Pass",
+  "finishedAt": "2026-09-25T02:42:52.147Z"
+}
