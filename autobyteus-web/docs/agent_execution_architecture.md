@@ -4,6 +4,18 @@
 
 This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
 
+For `antigravity_cli`, the backend converts provider steps into these same
+structured events; the frontend does not parse AGY stream-JSON. New editable
+AGY launch selections default `autoExecuteTools` on and preserve a subsequent
+explicit off choice. AGY tool `DONE` without explicit error renders canonical
+success, but must not be labeled as a verified shell exit-zero; explicit
+denial/error remains non-green. The server-owned runtime contract is in
+[Antigravity CLI Runtime](../../autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md).
+The opt-in web-equivalent restart journey has also verified that a fresh
+browser can focus the original Team/direct Org/nested Org member after a clean
+backend process restart, display its old answer, send a new message, and keep
+both answers visible. This does not assert Electron-shell or crash recovery.
+
 The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.

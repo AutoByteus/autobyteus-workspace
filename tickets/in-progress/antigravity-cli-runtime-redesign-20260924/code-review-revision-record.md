@@ -14,6 +14,10 @@
 | CRR-008 | `code-review-report.md` | IR-006 repeated-schema premise re-review | Fail — Local Fix | Fail — Local Fix | CR-005 attribution withdrawn; CR-006 new |
 | CRR-009 | `code-review-report.md` | IR-007 schema-cache removal re-review | Fail — Local Fix | Pass | CR-006 resolved; CR-005 remains withdrawn |
 | CRR-010 | `api-e2e-test-review-report.md` | API-REV-004 changed-test-code review | N/A (first test review) | Pass | No test findings; prior source findings unchanged |
+| CRR-011 | `api-e2e-test-review-report.md` | API-REV-005 browser/process test review | Pass | Fail — Local Fix | TR-001 new; source findings unchanged |
+| CRR-012 | `api-e2e-test-review-report.md` | API-REV-006 bounded browser assertion re-review | Fail — Local Fix | Pass | TR-001 resolved; source findings unchanged |
+| CRR-013 | `code-review-report.md` | IR-008 / SR-023 renewed source review | Pass (prior source basis) | Pass | No new source findings; prior source findings unchanged |
+| CRR-014 | `api-e2e-test-review-report.md` | API-REV-007 two changed durable tests | Pass | Pass | No new test findings; TR-001 remains resolved |
 
 ## Revision Entries
 
@@ -243,3 +247,78 @@ None.
 - Score/classification change: source scorecard unchanged; test-review Pass. API/E2E confidence 95% is API Engineer's execution result, not a reviewer score.
 - Recommended recipient: `/delivery_engineer`.
 - Remaining risks: Delivery Engineer must assess final verification/docs; no fresh Org browser or Electron claim, one pre-quiescence Org stop failure not origin-proven, and the selected LMStudio test used 290s of its 300s timeout.
+
+### CRR-011 — Browser/process durable test misses prior visible reply assertion
+
+- Canonical review report: `api-e2e-test-review-report.md`; `code-review-report.md` CRR-009 source result remains authoritative and unchanged.
+- Entry point and round: proportional successful-API/E2E changed-test-code review, round 11; independent bounded assessment of an intermittent older-suite lifecycle observation.
+- Trigger: API/E2E Engineer API-REV-005 Pass / 96%, new durable `autobyteus-web/tests/e2e/agy-process-restart-focus-continuation-probe.mjs` at test commit `3b22be2a9`, after source base `c9c8373e1`; explicit user backend restart/browser continuation journey.
+- Related solution revisions: SR-016/019/021. Architecture review: ARCH-REV-003. Implementation: IR-007. API/E2E: API-REV-005. Delivery: DR-001 checkpoint; no final delivery acceptance.
+- Prior authoritative test-review result: CRR-010 **Pass** for the earlier two server E2Es. Current test-review result: **Fail — Local Fix** to `/api_e2e_engineer` for new browser probe TR-001. No source scorecard change.
+- What changed: API-REV-005 directly observed separate backend PIDs, stable Team/Org member/provider IDs and old/new real Chrome replies after history clicks. The durable script checks exact selection and new reply in the UI plus old/new backend projections, but does not assert the **old reply in the browser UI**, so a visible-history regression could pass. Require all three focused member paths to assert old visible reply before sending and old+new visible replies after, then rerun the probe. Existing screenshots/evidence show the behavior occurred; this is durable-test quality, not a claim of current product failure.
+- Supported scenario basis: user-explicit restart → history focus same member → old reply visible → new message/reply, aligned with approved SCN-002/003 and REQ-009. The test does not establish the scenario by itself.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior status | Current status | Revision references | Verification evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | N/A | **Open** | API-REV-005 / CRR-011 | New browser helper checks only the new marker; old marker is asserted in public projection, not on the UI surface. |
+| CR-001–CR-004, CR-006 | Resolved | Remain resolved | CRR-009/010; API-REV-005 | No contrary source evidence; no source review reopened. |
+| CR-005 | Withdrawn | Remains withdrawn | CRR-008/009/010 | No second schema build or new contrary evidence. |
+
+- Intermittent Team terminate: **held for evidence, not a finding**. One `not the current published run` failure after relay, later passing reruns; pre-stop quiescence/current-registry state unknown. No product-origin attribution or speculative machinery.
+- New/remaining test-review findings: TR-001 only. No reviewer confidence score; API Engineer's 96% execution score is reported, not adopted as a test-code grade.
+- Recommended recipient: `/api_e2e_engineer` for assertion/report correction and affected real browser probe rerun, then proportional re-review.
+- Remaining risks: arbitrary mid-turn Team termination is not validated; Delivery Engineer retains final verification and documentation gates.
+
+### CRR-012 — Visible old-reply browser assertion resolved
+
+- Canonical review report: `api-e2e-test-review-report.md`; `code-review-report.md` CRR-009 source result and scorecard remain authoritative and unchanged.
+- Entry point and round: proportional successful-API/E2E changed-test-code re-review, round 12, bounded to TR-001 and the updated durable browser test.
+- Trigger: API/E2E Engineer API-REV-006 Pass / 96%; final durable assertion/evidence commit `c4f2c3a55`, report/revision commit `706012fe4`; source base `c9c8373e1`, initial browser test `3b22be2a9`.
+- Related solution revisions: SR-016/019/021. Architecture review: ARCH-REV-003. Implementation: IR-007. API/E2E: API-REV-006. Delivery: DR-001 checkpoint; no final delivery acceptance.
+- Prior authoritative test-review result: CRR-011 **Fail — Local Fix** to `/api_e2e_engineer`. Current test-review result: **Pass**. No source review or API/E2E live rerun by this reviewer.
+- What changed: shared browser helper now checks the old member-specific marker in the selected visible conversation feed before send and old plus new markers after send for Team `/second`, Org `/director` and nested Org `/team/worker`. The final real A→B backend/Chrome rerun recorded distinct PIDs 22997/23069, stable exact IDs and old-before/old-after/new-after counts of 2/2/2 for each selected member; rendered feed evidence distinguishes user prompt from AGY reply. Public projections retained both. API provenance is now explicit.
+- Supported scenario basis: the user's explicit OS-process restart and same-member browser continuation journey, aligned with approved SCN-002/003 and REQ-003/009. The test and marker counts verify this established path; they do not create a new product scenario.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior status | Current status | Revision references | Verification evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open | **Resolved** | CRR-011 / API-REV-006 / CRR-012 | Durable visible-feed assertions cover old-before and old+new-after for all three member paths; final evidence and log pass. |
+| CR-001–CR-004, CR-006 | Resolved | Remain resolved | CRR-009/010/011 | No production source change or contrary evidence; source scorecard not reopened. |
+| CR-005 | Withdrawn | Remains withdrawn | CRR-008/009 | No second in-process GraphQL schema build or clean production defect evidence. |
+
+- New or remaining test-review findings: None. The earlier intermittent Team termination remains held without product/test attribution, separate from the A→B browser path; capture pre-stop lifecycle state if it recurs rather than prescribing machinery.
+- Score/classification change: no source score change; test-review Fail — Local Fix → Pass. API Engineer's 96% is its execution confidence, not a reviewer grade.
+- Recommended recipient: `/delivery_engineer` for delivery-owned verification/docs/finalization gates, with the complete passed package.
+
+### CRR-013 — SR-023 Org preflight and AGY discovery source passed
+
+- Canonical review report: `code-review-report.md`; this is renewed Large/High implementation-source review, not post-API test-code review.
+- Trigger: IR-008 at `40641dfca`, SR-023 DS-005 / ARCH-REV-004 Pass, following user-verification hold on slow 18-placement Org launch and controlled concurrent-health starvation. Prior CRR-009 source Pass and API-REV-006/CRR-012 passes apply only to earlier source. Delivery DR-001 remains on explicit user-verification hold.
+- Approved behavior basis: SR-016/SR-021 REQ-001/AC-001 and SCN-002 unchanged. Supported user Run action and operational health poll lead through Org create, ordered placement preflight, AGY discovery and addressed GraphQL/browser result. The original Org eventually became active; neither screenshot nor source review proves permanent hang or post-fix browser acceptance.
+- Source result: **Pass**. Org invokes `validateMany` once for ordered root/Team/Agent placements; validator shares fresh equivalent-context catalog evidence and preserves first affected address. AGY discovery uses bounded nonblocking child I/O and safe typed diagnostics, including unexpected failure versus valid missing slug. Availability, GraphQL, application and backend factory await the owner. No process-global cache, migration or AGY-native subagent path. Reviewer independently reran the two directly affected suites **21/21 passed**; implementation reports broader 79/79, production TypeScript and build/bootstrap passes. Scorecard renewed at **9.0/10 (90/100)**; no new finding.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior status | Current status | Verification evidence |
+| --- | --- | --- | --- |
+| CR-001–CR-004, CR-006 | Resolved | Remain resolved | No contrary changed-source evidence; prior behavior contracts unchanged. |
+| CR-005 | Withdrawn as production attribution | Remains withdrawn | No second in-process GraphQL schema build or new clean production defect evidence. |
+| TR-001 | Resolved in test review | Remains resolved | Separate CRR-012/API-REV-006 test boundary; not reopened by IR-008. |
+
+- New/remaining source findings: None. Candidate CF-008 (claiming packaged/browser proof from source and unit tests) is held for API/E2E, not attributed as a product defect. MP-004 supported large-Org/health premise remains confirmed and the approved correction is implemented.
+- Route: `/api_e2e_engineer` primary for full 18-placement packaged/equivalent browser, health, addressed safe timeout/failure, missing-slug and regressions; `/implementation_engineer` informational only after primary succeeds. Delivery user-verification hold persists; no release or cleanup.
+
+### CRR-014 — SR-023 API/E2E durable tests passed proportional review
+
+- Canonical review report: `api-e2e-test-review-report.md`, separate from authoritative CRR-013 `code-review-report.md` source result and scorecard.
+- Entry point and round: successful API/E2E proportional changed-test-code review, round 14. Trigger: API-REV-007 Pass / 95%, test/evidence commit `32fd63dd6` on IR-008 source `40641dfca`; Large/High route.
+- Related authorities: approved SR-016/SR-021; SR-023 DS-005, ARCH-REV-004, IR-008, CRR-013, API-REV-007. Delivery DR-001 explicit user-verification hold remains.
+- Changed durable paths: added `autobyteus-web/tests/e2e/agy-large-org-launch-health-probe.mjs`; updated `autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts`. No removed durable tests or production source change.
+- Supported scenario basis: exposed user 18-placement Org Run and concurrent operational backend health poll with finite addressed discovery failure; real Team relay then quiescent stop/restore/continue. The external CLI wrapper controls latency/failure within the established path and does not itself establish product validity.
+- Proportional result: **Pass**. Browser probe asserts 1/3/14 active persisted tree, one delayed real AGY catalog call, responsive health, safe distinct timeout/nonzero/missing-slug alerts, launch-button reset and exact tree after backend process restart. Team test now waits for `hasOpenExecutionWork=false` before stop; final Team+Org suite 2/2 passes. Test setup is isolated/opt-in and cleanup is owned. Reviewer inspected diff/evidence/logs but did not rerun the successful live workflow.
+- Prior Team stop observation: failing log has `/ping` still running and `hasOpenExecutionWork=true`; arbitrary mid-turn terminate is not classified as product/test defect or accepted behavior. No speculative recovery machinery.
+- Prior findings: TR-001 remains resolved; CR-001–CR-004 and CR-006 remain resolved; CR-005 remains withdrawn. No new actionable test finding and no source scorecard change.
+- Route: `/delivery_engineer` for delivery-owned explicit user verification, fresh shell/package and finalization gates. No delivery acceptance, release or cleanup from this review.

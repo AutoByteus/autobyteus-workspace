@@ -13,6 +13,11 @@ AgentOrg
     └── Agent
 ```
 
+AGY is a supported Agent runtime at direct and Team-nested member addresses;
+the Org's native execution tree and public member projection keep the exact
+root/address/member identities. See [Antigravity CLI Runtime](./antigravity_cli_runtime.md)
+for its provider binding, run capsule, and permission/trace semantics.
+
 An AgentTeam contains Agents only. AgentOrg cannot contain another AgentOrg, and
 configured Team-within-Team nesting is rejected. Task-scoped delegation to a
 flat Team remains supported and is not configured membership.

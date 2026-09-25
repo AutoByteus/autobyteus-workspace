@@ -25,6 +25,11 @@ Manages runtime agent runs and message execution flow.
 
 Runtime managers compose definitions, prompts, tools, processors, and workspace context.
 
+For the `antigravity_cli` provider's run-owned project capsule, exact provider
+conversation binding, headless tool policy, and canonical event mapping, see
+[Antigravity CLI Runtime](./antigravity_cli_runtime.md). It joins the existing
+manager/factory boundary rather than defining a second Agent lifecycle.
+
 ## Execution Family Composition
 
 `AgentProviderFactoryBuilder` freezes process-wide provider primitives and

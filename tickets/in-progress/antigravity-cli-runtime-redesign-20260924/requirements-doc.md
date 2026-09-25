@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: **Approved — SR-021 AGY DONE-to-success clarification**, supplementing the unchanged SR-016 baseline. Architecture/design correction and independent re-review are still required before affected implementation resumes.
-- Current solution revision ID: `SR-021` (approved status delta; baseline `SR-016`)
+- Status: **Approved — SR-021 intended behavior unchanged** (SR-016 baseline). SR-023 is a technical correction for large-Org launch latency and health starvation found during the integrated Electron user-verification hold; its revised design needs independent review before affected implementation resumes. No renewed behavior approval or final delivery acceptance is inferred.
+- Current solution revision ID: `SR-023` (design recovery; last approved behavior delta `SR-021`, baseline `SR-016`)
 - Package identifier: `antigravity-cli-runtime-redesign-20260924`
 - Requirements owner: Solution Designer
 - Date: 2026-09-24

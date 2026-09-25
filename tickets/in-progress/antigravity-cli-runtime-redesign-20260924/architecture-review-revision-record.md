@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative.
 | ARCH-REV-001 | Round 1 / Architecture Design Complete handoff | SR-016, SR-017 | N/A | Fail — Design Impact | DR-001 |
 | ARCH-REV-002 | Round 2 / Revised architecture re-review | SR-016, SR-018, SR-019 | Fail — Design Impact | Pass | DR-001 resolved |
 | ARCH-REV-003 | Round 3 / User-approved AGY tool-status revision | SR-020, SR-021; IR-001 trigger | Pass | Pass | None; DR-001 remains resolved |
+| ARCH-REV-004 | Round 4 / SR-023 large-Org preflight re-review | SR-023; SR-021 preserved | Pass | Pass | None; DR-001 remains resolved |
 
 ## Revision Entries
 
@@ -72,3 +73,24 @@ None.
 - Material classification changes: Prior Pass retained for a new, explicitly approved AGY status contract; SR-020 neutral-green proposal superseded.
 - Recommended recipient: `/implementation_engineer` primary to resume IR-001 against SR-021; `/solution_designer` informational after primary succeeds.
 - Remaining risks or uncertainty: Product live/reloaded result shape, visible textual errors on green command cards, separate segment-lifecycle fix, version drift, removal of neutral branch and remaining integration/API-E2E gates require implementation/independent validation.
+
+### ARCH-REV-004 — Large AGY Org launch preflight correction
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/design-review-report.md`.
+- Review round and trigger: 4; SR-023 Architecture Design Complete re-review after user's packaged-Electron 18-placement Org launch/health report during Delivery user-verification hold.
+- Triggering role, report path, and finding IDs: Solution Designer, `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/solution-org-launch-recovery-handoff.md`; no new prior architecture finding. Prior DR-001 remains resolved.
+- Relevant solution revision IDs: SR-016 baseline, SR-021 approved mapping, SR-022 evidence-only observation, SR-023 current technical correction.
+- Prior authoritative decision: **Pass** (ARCH-REV-003 on SR-021), which did not review SR-023.
+- Current authoritative decision: **Pass** on SR-023; not implementation or user-verification acceptance.
+- What changed in the review result or what baseline was established: The exposed Agent Orgs launch of 18 AGY placements was reproduced through browser→packaged backend and eventually became active. Current Org preflight serially calls the synchronous AGY version/help/models catalog path per placement; a separate overlapping catalog/health control directly demonstrated event-loop starvation. SR-023 DS-005 reuses request-local `validateMany` for complete addressed placement validation, gives one async bounded AGY capability owner to catalog/availability/factory callers and propagates safe typed discovery failure through validator, addressed Org error, GraphQL and existing browser alert. A missing slug in a valid catalog remains distinct. The reviewer identified the current reasonless catalog-exception catch during review; Solution Designer clarified DS-005 before verdict without changing approved behavior. Full 18-placement browser, responsive health, timeout/error/redaction and non-AGY checks are downstream gates. No permanent AGY hang, migration, final Electron acceptance or release is inferred.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| DR-001 | Resolved at architecture level in ARCH-REV-002 and unaffected by ARCH-REV-003 | Remains resolved; SR-023 does not change workspace/capsule behavior | ARCH-REV-001/002/003; SR-019/021/023 | Current `design-spec.md` retains the selected-workspace stanza, saved binding and target-path verification; DS-005 changes only preflight/discovery. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: Prior Pass retained for a new technical correction; ARCH-REV-003 must not be treated as covering SR-023. No new approved behavior or user approval required.
+- Recommended recipient: `/implementation_engineer` primary; `/solution_designer` informational after successful primary handoff, subject to current `get_handoff_rules`.
+- Remaining risks or uncertainty: AGY duration/auth drift, Promise fanout through availability/application callers, exact safe failure/reload presentation, distinct-context validation and real rebuilt Electron-equivalent 18-placement result remain to validate. Earlier source/API-E2E passes are not inherited by changed SR-023 code; Delivery remains on explicit user-verification hold.
