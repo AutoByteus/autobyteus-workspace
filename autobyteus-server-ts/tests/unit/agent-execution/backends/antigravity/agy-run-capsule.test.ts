@@ -1,9 +1,11 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { realpathSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
+import type { ConfiguredAgentSkillBinding } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
 
 const roots = async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-capsule-test-"));
@@ -12,6 +14,10 @@ const roots = async () => {
   await fs.mkdir(workspacePath);
   return { base, workspacePath, memoryDir };
 };
+const globalBinding = (source: string, name = "example-skill"): ConfiguredAgentSkillBinding => ({
+  kind: "resolved", skill: new Skill({ name, description: "test", content: "", rootPath: source }),
+  source: { origin: "global", sourceRoot: realpathSync(source), trustedRoot: realpathSync(source) },
+});
 
 describe("AGY run capsule", () => {
   it("snapshots full identity and selected workspace without writing user .agents", async () => {
@@ -36,7 +42,7 @@ describe("AGY run capsule", () => {
     const source = path.join(root.base, "skill-source");
     await fs.mkdir(source);
     await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
-    const binding = { kind: "resolved" as const, skill: new Skill({ name: "example-skill", description: "test", content: "", rootPath: source }) };
+    const binding = globalBinding(source);
     const preloaded = await createAgyRunCapsule({ runId: "preload", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
       skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
@@ -55,7 +61,7 @@ describe("AGY run capsule", () => {
     await fs.mkdir(source); await fs.mkdir(userSkill, { recursive: true });
     await fs.writeFile(path.join(source, "SKILL.md"), "# Configured");
     await fs.writeFile(path.join(userSkill, "SKILL.md"), "# User owned");
-    const binding = { kind: "resolved" as const, skill: new Skill({ name: "example-skill", description: "test", content: "", rootPath: source }) };
+    const binding = globalBinding(source);
     await expect(createAgyRunCapsule({ runId: "collision", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
       skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");

@@ -55,7 +55,8 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADE
   const source = path.join(base, "configured-source");
   await fs.mkdir(workspacePath); await fs.mkdir(source);
   await fs.writeFile(path.join(source, "SKILL.md"), "# Codebook\nWhen asked for the codebook marker, answer SKILL-MARKER-6381.\n");
-  const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }) };
+  const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }),
+    source: { origin: "global" as const, sourceRoot: await fs.realpath(source), trustedRoot: await fs.realpath(source) } };
   const capsule = await createAgyRunCapsule({ runId: "skill-live", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are an AutoByteus agent. Consult the codebook skill when asked about its marker.",
     configuredSkillBindings: [binding], skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });

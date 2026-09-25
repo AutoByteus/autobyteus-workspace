@@ -29,6 +29,8 @@ import { testMemberExecutionContext } from "../../../../../fixtures/current-team
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
+const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill,
+  source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } });
 
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
@@ -155,7 +157,7 @@ const createBootstrapper = (input: {
   } as unknown as CodexWorkspaceResolver;
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async () => ({
-      skillNames: (input.bindings ?? input.skills.map((skill) => ({ kind: "resolved" as const, skill })))
+      skillNames: (input.bindings ?? input.skills.map(resolvedBinding))
         .map((binding) => binding.kind === "resolved" ? binding.skill.name : binding.name),
       toolNames: input.toolNames ?? [],
       name: "Codex test agent",
@@ -165,7 +167,7 @@ const createBootstrapper = (input: {
   } as unknown as AgentDefinitionService;
   const skillService = {
     resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
-      input.bindings ?? input.skills.map((skill) => ({ kind: "resolved" as const, skill }))),
+      input.bindings ?? input.skills.map(resolvedBinding)),
   } as unknown as SkillService;
   const client = {
     request: vi.fn(input.requestImplementation),
@@ -397,9 +399,9 @@ describe("CodexThreadBootstrapper", () => {
     const installed = createSkill("installed_skill");
     const missing = createSkill("missing_skill");
     const bindings: ConfiguredAgentSkillBinding[] = [
-      { kind: "resolved", skill: installed },
+      resolvedBinding(installed),
       { kind: "unresolved", name: "unresolved_skill" },
-      { kind: "resolved", skill: missing },
+      resolvedBinding(missing),
     ];
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
       skills: [installed, missing],
@@ -509,7 +511,7 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
       skills: [skill],
       bindings: [
-        { kind: "resolved", skill },
+        resolvedBinding(skill),
         { kind: "unresolved", name: "still_missing" },
       ],
       requestImplementation: async () => {

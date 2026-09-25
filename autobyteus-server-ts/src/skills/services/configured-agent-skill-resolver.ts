@@ -5,7 +5,7 @@ import type {
   AgentDefinitionSourceInfo,
 } from "../../agent-definition/domain/models.js";
 import { Skill } from "../domain/models.js";
-import type { ConfiguredAgentSkillBinding } from "../domain/configured-agent-skill-binding.js";
+import type { ConfiguredAgentSkillBinding, ConfiguredSkillSource } from "../domain/configured-agent-skill-binding.js";
 import { SkillLoader } from "../loader.js";
 import { isSkillDirectory } from "./skill-discovery.js";
 
@@ -61,9 +61,8 @@ export class ConfiguredAgentSkillResolver {
         continue;
       }
 
-      const skill =
-        this.resolveContextualSkill(configuredName, input.sourceInfo ?? null)
-        ?? this.resolveGlobalSkill(configuredName);
+      const contextual = this.resolveContextualSkill(configuredName, input.sourceInfo ?? null);
+      const skill = contextual?.skill ?? this.resolveGlobalSkill(configuredName);
 
       if (!skill) {
         this.logger.warn(
@@ -73,7 +72,8 @@ export class ConfiguredAgentSkillResolver {
         continue;
       }
 
-      bindings.push({ kind: "resolved", skill });
+      const source = contextual?.source ?? this.sourceFor("global", skill, skill.rootPath);
+      bindings.push({ kind: "resolved", skill, source });
     }
 
     return bindings;
@@ -113,8 +113,9 @@ export class ConfiguredAgentSkillResolver {
   private resolveContextualSkill(
     configuredName: string,
     sourceInfo: AgentDefinitionSourceInfo | null,
-  ): Skill | null {
+  ): { skill: Skill; source: ConfiguredSkillSource } | null {
     const agentDirPath = this.normalizeExistingDirectory(sourceInfo?.agentDirPath);
+    const teamDirPath = this.normalizeExistingDirectory(sourceInfo?.teamDirPath);
     if (agentDirPath) {
       const privateSkill = this.loadContextualCandidate(
         configuredName,
@@ -122,11 +123,10 @@ export class ConfiguredAgentSkillResolver {
         "agent-private skill folder",
       );
       if (privateSkill) {
-        return privateSkill;
+        return { skill: privateSkill, source: this.sourceFor("agent_private", privateSkill, teamDirPath ?? agentDirPath) };
       }
     }
 
-    const teamDirPath = this.normalizeExistingDirectory(sourceInfo?.teamDirPath);
     if (teamDirPath) {
       const teamSkill = this.loadContextualCandidate(
         configuredName,
@@ -134,11 +134,17 @@ export class ConfiguredAgentSkillResolver {
         "team-shared skill folder",
       );
       if (teamSkill) {
-        return teamSkill;
+        return { skill: teamSkill, source: this.sourceFor("team_shared", teamSkill, teamDirPath) };
       }
     }
 
     return null;
+  }
+
+  private sourceFor(
+    origin: ConfiguredSkillSource["origin"], skill: Skill, trustedRoot: string,
+  ): ConfiguredSkillSource {
+    return { origin, sourceRoot: fs.realpathSync(skill.rootPath), trustedRoot: fs.realpathSync(trustedRoot) };
   }
 
   private loadContextualCandidate(

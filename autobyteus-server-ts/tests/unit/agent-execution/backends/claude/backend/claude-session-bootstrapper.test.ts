@@ -98,7 +98,7 @@ describe("ClaudeSessionBootstrapper", () => {
       rootPath: "/tmp/claude-skill",
     });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill },
+      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
       { kind: "unresolved", name: "missing-skill" },
     ]);
 
