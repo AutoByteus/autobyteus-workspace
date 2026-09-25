@@ -6,6 +6,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-002 | User verification ("its working now. lets finalize and release") after the real-data Electron test | DR-001 (awaiting verification) | Completed. Archived and merged into `personal` (`275da3520`). Released as `v1.4.80` @ `3e5d6add5`: 4 of 4 workflows succeeded, GitHub Release Latest with 17 assets and no gateway assets, Docker `1.4.80`/`latest` live. Two failed attempts (evidence paths) and two wrong version bumps were recovered under 1.4.80 at the user's direction; the interim tags were deleted unpublished. | `release-deployment-report.md`, `handoff-summary.md`, `delivery-revision-record.md`, ticket archive, `api-e2e-evidence/fixture-legacy-baseline-40b1783f4/memory.tar.gz`, renamed `api-e2e-evidence/logs/R-07-*` |
 | DR-001 | `/code_reviewer` delivery package after CRR-005 `Not Applicable` / API-REV-002 Pass (95.3%) / CRR-004 Pass, reviewed route (Large/High) | N/A | Merged latest `origin/personal` (`fdbd07124`, v1.4.79) as `b818a6860` with 2 mechanical conflicts resolved. Post-integration checks passed (tsc, targeted, full unit and integration with 0 regressions, REQ-120 gates identical, added-file set exact). Docs synced. Release notes prepared. Awaiting user verification. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/D-01`–`D-08`, `autobyteus-server-ts/README.md`, `autobyteus-server-ts/docs/ARCHITECTURE.md`, `agent-team-run-manager.integration.test.ts` (merge resolution) |
 
 ## Revision Entries
@@ -50,3 +51,39 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - The data deletion is irreversible once a build containing it starts. That is about 6.9 GB plus the binding and bot tokens on this machine.
   - Release workflows are unexercised on GitHub until a tag is pushed.
   - The gateway is unvalidated (REQ-121).
+
+### DR-002 — User-verified finalization and v1.4.80 release (with release-attempt recovery)
+
+- Delivery round and trigger: the user verified the local personal Electron build on real data: "its working now. lets finalize and release".
+- Triggering upstream report, verification, or evidence:
+  - `handoff-summary.md` → User Verification Build, and the User Test Finding (the stale record repair, then the cleanup SUCCEEDED 4/4 on real data).
+- Prior authoritative result: DR-001 (integrated, docs-synced, awaiting user verification).
+- Current authoritative result:
+  - `origin/personal` was unchanged at `fdbd07124`, so no re-integration was needed.
+  - The ticket was archived after a secret scan: `339b13a41`, pushed to the ticket branch.
+  - `merge --no-ff` into `personal` produced `275da3520`.
+  - Released as **`v1.4.80`**, tag at `3e5d6add5`:
+    - Desktop `36096950461`, Android `36096950438`, iOS `36096950478` and Docker `36096950480` all succeeded.
+    - The GitHub Release is Latest with 17 assets. It has no gateway assets, confirming REQ-117 in production.
+    - Docker Hub `1.4.80`/`latest` are live for amd64 and arm64.
+  - Release incident, all delivery-caused:
+    - Attempt 1 on `986d94714`: Desktop failed the repository hygiene check because of 6 tracked evidence paths over 200 characters. Fixed in `1d6c94746`.
+    - Delivery then bumped to `v1.4.81`. It failed the Windows checkout because 3 evidence log names contained `:`. Fixed in `589005470`, then a build-only proof run `36095434388` passed all 5 desktop builds.
+    - Delivery bumped again to `v1.4.82`. The user rejected the bumps. All interim runs were cancelled before publishing.
+    - `3e5d6add5` restored version 1.4.80. Tags `v1.4.81` and `v1.4.82` were deleted, and `v1.4.80` was re-pointed and re-run.
+    - Nothing was published under the withdrawn attempts, and v1.4.79 stayed Latest until v1.4.80 published.
+- Docs sync report: `docs-sync-report.md` (unchanged since DR-001)
+- Handoff summary: `handoff-summary.md` (Delivered)
+- Release/publication/deployment report: `release-deployment-report.md` (Version/Tag, Release Incident, Repository Finalization, Release sections)
+- Integration and post-integration verification: there was no new base. The final REQ-120 gate on the merged tree was identical to D-06. The hygiene check and the Windows path scan are clean on the release tree.
+- User verification/finalization state: verified; finalized; released.
+- Terminal return to `/solution_designer`: sent after the post-release cleanup (see `release-deployment-report.md` → Final Status).
+- Terminal return message/reference: see Final Status.
+- Why this baseline or delivery revision was recorded: completion of finalization and release, and a truthful record of the release-attempt failures and their recovery.
+- Next recipient/action: post-finalization cleanup (worktree, local branches, remote ticket branch), then the terminal return.
+- Remaining blockers, rollback concerns, or untested scope:
+  - Release-process lessons:
+    - Run the hygiene check and a Windows path-validity scan before tagging.
+    - Re-point the same tag to retry with the user's go-ahead; never bump the version.
+    - The hygiene script lacks a Windows invalid-character check, which is a separate-ticket candidate.
+  - The earlier risks carry over: the data deletion is irreversible by design, and the gateway is unvalidated (REQ-121).

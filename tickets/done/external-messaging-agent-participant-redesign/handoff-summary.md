@@ -2,11 +2,15 @@
 
 ## Status
 
-- Stage: **User-verified. Finalization and release are in progress.** On 2026-09-25 the user ran the local personal Electron build on real data and confirmed: "its working now. lets finalize and release". The ticket is archived to `tickets/done/`. The final finalization and release results are recorded in `release-deployment-report.md` and `delivery-revision-record.md` DR-002.
+- Stage: **Delivered. Finalized into `personal` and released as `v1.4.80`.** On 2026-09-25 the user ran the local personal Electron build on real data and confirmed: "its working now. lets finalize and release".
+  - Ticket branch `339b13a41` was merged `--no-ff` into `personal` as `275da3520`. The release tag `v1.4.80` points at `3e5d6add5`.
+  - All four release workflows (desktop, Android, iOS, server Docker) succeeded. The GitHub Release is Latest with 17 assets and no gateway assets. Docker `1.4.80`/`latest` are live for amd64 and arm64.
+  - Delivery made two failed attempts caused by archived-evidence file paths, and wrongly bumped the version twice. Both interim tags were withdrawn unpublished, and the release shipped as 1.4.80 at the user's direction. See `release-deployment-report.md` → "Release Incident".
+  - The ticket is archived to `tickets/done/`. Details are in `release-deployment-report.md` and `delivery-revision-record.md` DR-002.
 - Classification (carried, unchanged): `task_size=Large`, `architectural_risk=High`. Route: reviewed (Solution Design → Architecture Review → Implementation → Code Review → API/E2E → proportional test-code review → Delivery).
-- Revision chain: SR-014 (requirements approved) / SR-016 (design) / ARCH-REV-002 Pass / IR-001 to IR-003 / CRR-001 to CRR-004 (final Pass 9.45/10), CRR-005 `Not Applicable` / API-REV-001 Fail (G-01) → API-REV-002 Pass (95.3%) / DR-001.
+- Revision chain: SR-014 (requirements approved) / SR-016 (design) / ARCH-REV-002 Pass / IR-001 to IR-003 / CRR-001 to CRR-004 (final Pass 9.45/10), CRR-005 `Not Applicable` / API-REV-001 Fail (G-01) → API-REV-002 Pass (95.3%) / DR-001 / DR-002.
 - Findings: CR-001 and CR-002 are resolved. None are open.
-- Finalization target: `personal` on `origin`. Release: not yet requested. The curated `release-notes.md` is prepared.
+- Finalization target: `personal` on `origin`, completed. Release: `v1.4.80`, completed, published with `release-notes.md`.
 
 ## What Changed
 
