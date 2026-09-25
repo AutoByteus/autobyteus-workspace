@@ -100,6 +100,17 @@ This is delivery round **DR-003: user-verified finalization, with no release**. 
   - No tag or publication was made.
   - The smoke test checks startup and health only. It does not replace the user's Memory-page test.
 
+## Finalization Record
+
+- Ticket branch commit: `c7f8916cafde85ceb6367ab52621e9648e736bd7`, "docs(memory): sync team/org memory explorer docs; archive memory-team-view-slow-load". Result: `Completed`.
+- Ticket branch push: `origin/codex/memory-team-view-slow-load`, new branch. Result: `Completed`.
+- Target branch update: re-fetched `origin/personal` immediately before the merge; still `a2694ed453e353550d8b345fa82ef489634dcaf2`. Result: `Completed`.
+- Merge into target: `git merge --no-ff` onto a detached `origin/personal`, producing `6c98cf02a611038a61f8c7f00bee4ef4395a219f`. No conflicts. Result: `Completed`.
+- Push to target: `a2694ed45..6c98cf02a  HEAD -> personal`. Result: `Completed`.
+- Report-only follow-up: this section was committed on top of the merge and pushed to `personal`.
+- Repository finalization status: `Completed`.
+- Release/publication/deployment: `Not required`, per the user.
+
 ## Environment Or Persisted-Data Transition Notes
 
 - Approved persisted-data decision: No persisted or external data is affected; all paths are read-only.
@@ -118,12 +129,12 @@ See "Initial Delivery Integration Refresh". Upstream evidence remains authoritat
 
 ## Rollback Criteria
 
-To roll back, run `git revert -m 1 <merge commit>` on `personal`; the merge SHA is in "Finalization Record". No data migration rollback applies because all paths are read-only. No release or tag exists that would need to be pulled.
+To roll back, run `git revert -m 1 <merge commit>` on `personal`; the merge commit is `6c98cf02a`. No data migration rollback applies because all paths are read-only. No release or tag exists that would need to be pulled.
 
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes`
-- Repository finalization complete: see "Finalization Record"
+- Repository finalization complete: `Yes`, merge `6c98cf02a` pushed to `origin/personal`
 - Applicable release/deployment/rollout complete or not required: `Not required`, per the user
 - Applicable safe cleanup: runs after the report commit and is confirmed in the terminal message
 - Unresolved blocker: `None`

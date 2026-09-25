@@ -63,5 +63,5 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - the ticket branch was committed and pushed, then merged into `personal` and pushed;
   - release/publication/deployment: `Not required`, at the user's direction;
   - the worktree and branches are cleaned up after the report commit.
-- Final SHAs: see `release-deployment-report.md` → "Finalization Record".
+- Final SHAs: ticket branch `c7f8916ca`; merge into `personal` `6c98cf02a`, pushed. There is also a report-only follow-up commit on `personal`.
 - Terminal return to `/solution_designer`: sent after finalization and cleanup succeed.
