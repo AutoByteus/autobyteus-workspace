@@ -37,7 +37,33 @@ const wsClose = ({socket}) => new Promise(resolve=>{if(socket.readyState===WebSo
 const model = async base => {const r=await gql(base,'query($runtimeKind: String){providerModelCatalogSnapshots(runtimeKind:$runtimeKind){llmModels{modelIdentifier}}}',{runtimeKind:'antigravity_cli'});const xs=r.providerModelCatalogSnapshots.flatMap(x=>x.llmModels.map(m=>m.modelIdentifier));const preferred=process.env.AGY_E2E_TOOL_MODEL;if(preferred&&xs.includes(preferred))return preferred;return xs.includes('gemini-3.8-flash-low')?'gemini-3.8-flash-low':xs[0];};
 const agent = async (base,name,instructions) => (await gql(base,'mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',{input:{name,role:'assistant',description:'AGY process restart browser E2E',instructions,toolNames:[]}})).createAgentDefinition.id;
 const browserOpen = async (page, frontend, workspace) => {await page.goto(`${frontend}/workspace`,{waitUntil:'domcontentloaded'});await page.locator('[data-test="app-left-panel-run-history"]').waitFor({timeout:30000});const row=page.locator(`[data-test="workspace-row"][data-workspace-root="${workspace}"]`);if(await row.count()===0){const add=page.locator('[data-test="app-left-panel-run-history"] button[title]').first();await add.click();await page.locator('[data-test="workspace-path-input"]').fill(workspace);await page.locator('[data-test="confirm-create-workspace"]').click();}await wait('workspace row',()=>row.count());if(await row.getAttribute('aria-expanded')!=='true')await row.locator('button').first().click();};
-const sendBrowser = async (page, text, marker) => {const surface=page.locator('[data-testid="agent-workspace-surface"], [data-testid="team-workspace-surface"]').first();await surface.waitFor({timeout:30000});const input=surface.locator('textarea').last();await wait('enabled composer',async()=>await input.isEnabled());await input.fill(text);await surface.getByRole('button',{name:'Send message'}).click();await wait(`browser response ${marker}`,async()=>{const body=await surface.innerText();return body.split(marker).length>=3&&!body.includes('AgentOrg send target is not ready or is stale.')},180000);return {url:page.url(),surfaceText:(await surface.innerText()).slice(-2000)};};
+const sendBrowser = async (page, text, oldMarker, newMarker) => {
+  const surface = page.locator('[data-testid="agent-workspace-surface"], [data-testid="team-workspace-surface"]').first();
+  await surface.waitFor({ timeout: 30000 });
+  const feed = surface.locator('[data-testid="agent-conversation-feed"]');
+  // The old marker occurs once in the user's prompt and once in the AGY reply.
+  // Checking the focused, visible feed (not the API projection or composer)
+  // guards against losing the old answer during browser history hydration.
+  const visibleReplyCount = async marker => (await feed.innerText()).split(marker).length - 1;
+  await wait(`old AGY reply visible before send: ${oldMarker}`,
+    async () => (await visibleReplyCount(oldMarker)) >= 2);
+  const oldReplyCountBeforeSend = await visibleReplyCount(oldMarker);
+  const input = surface.locator('textarea').last();
+  await wait('enabled composer', async () => await input.isEnabled());
+  await input.fill(text);
+  await surface.getByRole('button', { name: 'Send message' }).click();
+  await wait(`old and new AGY replies visible after send: ${newMarker}`, async () =>
+    (await visibleReplyCount(oldMarker)) >= 2
+    && (await visibleReplyCount(newMarker)) >= 2
+    && !(await surface.innerText()).includes('AgentOrg send target is not ready or is stale.'), 180000);
+  return {
+    url: page.url(),
+    oldReplyCountBeforeSend,
+    oldReplyCountAfterSend: await visibleReplyCount(oldMarker),
+    newReplyCountAfterSend: await visibleReplyCount(newMarker),
+    surfaceText: (await surface.innerText()).slice(-2000),
+  };
+};
 const findTeamRuns = tree => {const found=[];const visit=x=>{if(!x||typeof x!=='object')return;if(x.kind==='configured_agent'&&typeof x.agent_run_id==='string')found.push({address:x.address,agentRunId:x.agent_run_id,platformAgentRunId:x.platform_agent_run_id||null});for(const v of Object.values(x))if(v&&typeof v==='object')Array.isArray(v)?v.forEach(visit):visit(v);};visit(tree);return [...new Map(found.map(x=>[x.agentRunId,x])).values()];};
 const orgNodes = tree => {const d=tree.rootOrg.members.find(x=>x.address==='/director');const t=tree.rootOrg.members.find(x=>x.address==='/team');const w=t.members.find(x=>x.address==='/team/worker');return {direct:d,worker:w};};
 let ownedRoot,backend,frontend,browser,page;
@@ -104,7 +130,7 @@ try {
   const teamRow=page.locator(`[data-test="workspace-team-row-${teamId}"]`);await teamRow.waitFor();await teamRow.click();
   const memberRow=page.locator(`[data-test="workspace-team-member-${teamId}-/second"]`);await memberRow.waitFor();await memberRow.click();
   await wait('Team same member selected',async()=>await memberRow.getAttribute('aria-selected')==='true');
-  const teamAfterText=`AFTER-TEAM-${id}`;const teamUi=await sendBrowser(page,`Reply with exactly ${teamAfterText}.`,teamAfterText);
+  const teamAfterText=`AFTER-TEAM-${id}`;const teamUi=await sendBrowser(page,`Reply with exactly ${teamAfterText}.`,firstTeam,teamAfterText);
   evidence.cases.teamBrowser={result:'Pass',selectedMemberRunId:second.agentRunId,selectedAddress:'/second',...teamUi};await page.screenshot({path:path.join(outDir,'team-after-restart.png')});
   const teamProjection=(await gql(base,'query($teamRunId:String!,$agentRunId:String!){getTeamMemberRunProjection(teamRunId:$teamRunId,agentRunId:$agentRunId){agentRunId conversation}}',{teamRunId:teamId,agentRunId:second.agentRunId})).getTeamMemberRunProjection;
   assert(teamProjection.agentRunId===second.agentRunId&&JSON.stringify(teamProjection.conversation).includes(firstTeam)&&JSON.stringify(teamProjection.conversation).includes(teamAfterText),'Team old/new persisted projection missing after browser continuation');
@@ -113,12 +139,12 @@ try {
   const orgGroup=page.locator(`[data-test="agent-org-definition-${orgDef}"]`);await orgGroup.waitFor();if(await orgGroup.getAttribute('aria-expanded')!=='true')await orgGroup.click();
   const orgRow=page.locator(`[data-test="agent-org-run-open-${orgId}"]`);await orgRow.waitFor();await orgRow.click();
   const directRow=page.locator(`[data-test="agent-org-agent-row-${nodes.direct.agentRunId}"]`);await directRow.waitFor();await directRow.click();await wait('Org same direct member selected',async()=>await directRow.getAttribute('aria-selected')==='true');
-  const orgAfterText=`AFTER-ORG-${id}`;const orgUi=await sendBrowser(page,`Reply with exactly ${orgAfterText}.`,orgAfterText);evidence.cases.orgBrowser={result:'Pass',selectedMemberRunId:nodes.direct.agentRunId,selectedAddress:'/director',...orgUi};await page.screenshot({path:path.join(outDir,'org-after-restart.png')});
+  const orgAfterText=`AFTER-ORG-${id}`;const orgUi=await sendBrowser(page,`Reply with exactly ${orgAfterText}.`,firstOrg,orgAfterText);evidence.cases.orgBrowser={result:'Pass',selectedMemberRunId:nodes.direct.agentRunId,selectedAddress:'/director',...orgUi};await page.screenshot({path:path.join(outDir,'org-after-restart.png')});
   const nestedTeamRow=page.locator('[data-test^="agent-org-team-row-"]').filter({hasText:'team'}).first();
   assert(await nestedTeamRow.count()===1,'Nested Org Team row missing after direct continuation');
   if(await nestedTeamRow.getAttribute('aria-expanded')!=='true')await nestedTeamRow.click();
   const workerRow=page.locator(`[data-test="agent-org-agent-row-${nodes.worker.agentRunId}"]`);await workerRow.waitFor();await workerRow.click();await wait('Org same nested worker selected',async()=>await workerRow.getAttribute('aria-selected')==='true');
-  const workerAfterText=`AFTER-WORKER-${id}`;const workerUi=await sendBrowser(page,`Reply with exactly ${workerAfterText}.`,workerAfterText);evidence.cases.orgNestedBrowser={result:'Pass',selectedMemberRunId:nodes.worker.agentRunId,selectedAddress:'/team/worker',...workerUi};await page.screenshot({path:path.join(outDir,'org-worker-after-restart.png')});
+  const workerAfterText=`AFTER-WORKER-${id}`;const workerUi=await sendBrowser(page,`Reply with exactly ${workerAfterText}.`,firstWorker,workerAfterText);evidence.cases.orgNestedBrowser={result:'Pass',selectedMemberRunId:nodes.worker.agentRunId,selectedAddress:'/team/worker',...workerUi};await page.screenshot({path:path.join(outDir,'org-worker-after-restart.png')});
   const orgProjectionQuery='query($orgRunId:String!,$memberAddress:String!,$agentRunId:String!){getAgentOrgMemberRunProjection(orgRunId:$orgRunId,memberAddress:$memberAddress,agentRunId:$agentRunId){agentRunId memberAddress conversation}}';
   const orgProjection=(await gql(base,orgProjectionQuery,{orgRunId:orgId,memberAddress:'/director',agentRunId:nodes.direct.agentRunId})).getAgentOrgMemberRunProjection;
   assert(orgProjection.agentRunId===nodes.direct.agentRunId,'Org projection member ID mismatch');assert(JSON.stringify(orgProjection.conversation).includes(firstOrg)&&JSON.stringify(orgProjection.conversation).includes(orgAfterText),'Org old/new turns missing after browser continuation');

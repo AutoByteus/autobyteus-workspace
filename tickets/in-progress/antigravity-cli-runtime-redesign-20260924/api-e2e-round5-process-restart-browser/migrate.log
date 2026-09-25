@@ -1,7 +1,7 @@
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "r5.db" at "file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-HWHSUO/server-data/db/r5.db"
+Datasource "db": SQLite database "r5.db" at "file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-uo8se7/server-data/db/r5.db"
 
-SQLite database r5.db created at file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-HWHSUO/server-data/db/r5.db
+SQLite database r5.db created at file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-uo8se7/server-data/db/r5.db
 
 25 migrations found in prisma/migrations
 
