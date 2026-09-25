@@ -10,6 +10,7 @@ The latest `design-review-report.md` is authoritative.
 | ARCH-REV-002 | Round 2 / Revised architecture re-review | SR-016, SR-018, SR-019 | Fail — Design Impact | Pass | DR-001 resolved |
 | ARCH-REV-003 | Round 3 / User-approved AGY tool-status revision | SR-020, SR-021; IR-001 trigger | Pass | Pass | None; DR-001 remains resolved |
 | ARCH-REV-004 | Round 4 / SR-023 large-Org preflight re-review | SR-023; SR-021 preserved | Pass | Pass | None; DR-001 remains resolved |
+| ARCH-REV-005 | Round 5 / SR-024 Org-member linked-skill re-review | SR-024; SR-016/021 behavior preserved | Pass | Pass | None; DR-001 remains resolved |
 
 ## Revision Entries
 
@@ -94,3 +95,24 @@ None.
 - Material classification changes: Prior Pass retained for a new technical correction; ARCH-REV-003 must not be treated as covering SR-023. No new approved behavior or user approval required.
 - Recommended recipient: `/implementation_engineer` primary; `/solution_designer` informational after successful primary handoff, subject to current `get_handoff_rules`.
 - Remaining risks or uncertainty: AGY duration/auth drift, Promise fanout through availability/application callers, exact safe failure/reload presentation, distinct-context validation and real rebuilt Electron-equivalent 18-placement result remain to validate. Earlier source/API-E2E passes are not inherited by changed SR-023 code; Delivery remains on explicit user-verification hold.
+
+### ARCH-REV-005 — Team-owned linked configured-skill snapshot
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/design-review-report.md`.
+- Review round and trigger: 5; SR-024 Architecture Design Complete recovery after the user's packaged 1.4.80 Electron first-prompt Org-member preparation error.
+- Triggering role, report path, and finding IDs: Solution Designer, `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/solution-org-member-skill-recovery-handoff.md`; no new architecture finding.
+- Relevant solution revision IDs: SR-016 baseline, SR-021 approved tool mapping, SR-023 prior Org preflight correction, **SR-024 current technical correction**.
+- Prior authoritative decision: **Pass** (ARCH-REV-004 on SR-023 only).
+- Current authoritative decision: **Pass** on SR-024; not implementation, executable validation or user-verification acceptance.
+- What changed in the review result or what baseline was established: The active Org's first member prompt failed before AGY init with a generic preparation error. The actual team-local Solution Designer's private configured skill has two file links into its owning team's `shared/`; a disposable call to the same packaged AGY materializer deterministically rejects one with `AGY_SKILL_SOURCE_SYMLINK`. The live underlying exception was not logged, so attribution remains high-confidence rather than captured production proof. SR-024 DS-006 extends the existing configured-skill resolver's resolved binding with winning agent-private/team-shared/global provenance and a canonical trusted root, explicitly letting a team-local private skill resolve in-team shared files while never letting a global fallback borrow that team's root. One AGY checked snapshot path copies only regular bytes into the run capsule and rejects unsafe links/collisions/source changes; the blanket reject and unchecked generic copy are removed. Existing capsules remain immutable and readable without migration. The reviewer's in-round provenance and requirements-revision coherence questions were corrected before verdict. Full first-turn/rebuilt Electron and source-race controls remain downstream gates.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| DR-001 | Resolved at architecture level in ARCH-REV-002; unaffected in ARCH-REV-003/004 | Remains resolved; SR-024 does not change selected-workspace binding | ARCH-REV-001–004; SR-019/024 | Current `design-spec.md` retains the selected-workspace main-agent stanza, manifest binding and target-path gate. DS-006 writes skill bytes only into the run capsule and explicitly leaves the selected workspace unchanged. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: Prior Pass retained on a newly reviewed technical design impact; previous review passes do not cover SR-024. No new approved behavior or user approval was required.
+- Recommended recipient: `/implementation_engineer` primary; `/solution_designer` informational after successful primary handoff, subject to current `get_handoff_rules`.
+- Remaining risks or uncertainty: Live original cause not logged; same-build reproduction is not integrated acceptance. Implementation/code/API-E2E must prove checked source snapshot, precedence/provenance, negative links, old-capsule restore and full Org-member first turn; Delivery must repeat packaged Electron user verification before finalization.

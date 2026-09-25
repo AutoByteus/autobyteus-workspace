@@ -18,6 +18,26 @@ the runtime-aware model catalog rather than a Codex fallback. The supported
 integration was exercised against AGY CLI 1.2.10; other CLI versions require
 their own compatibility check.
 
+AGY version, feature, and model discovery on backend request paths uses one
+bounded asynchronous child-process owner. A slow CLI can still delay the
+request that needs its answer, but it does not synchronously block unrelated
+health requests. Probe timeout, process, authentication/network, unsupported
+capability, and unparseable/empty catalog failures are classified into safe
+diagnostics; raw child stderr, paths, commands, and credentials are not sent
+to GraphQL or the browser. A successfully read catalog that lacks the selected
+model is a different, ordinary model-unavailable result. Discovery is fresh
+for each operation, not a process-global model cache.
+
+At AgentOrg creation, the service resolves and validates every root, Team,
+and Agent placement in order through one `RunModelSelectionService.validateMany`
+operation. Equivalent runtime/workspace placements share catalog evidence
+only within that request; distinct contexts are validated separately. The
+first invalid placement retains its exact Org address in the failure. A safe
+AGY discovery diagnostic travels through the existing GraphQL result and the
+web launch alert; the launch state clears rather than spinning indefinitely.
+Org creation configures and persists the execution tree but does not start
+every member's provider conversation. Member activation remains lazy.
+
 ## Run-owned project and workspace
 
 Each new run creates an `agy-project` capsule under its own memory directory.
@@ -35,6 +55,23 @@ a filesystem sandbox or proof that every relative provider action will land
 there. User/provider-owned workspace skills and MCP configurations may still
 be visible; `skillAccessMode: NONE` only prevents materialization of
 AutoByteus-configured skills.
+
+Configured skill bindings carry the resolver's winning source provenance.
+For an agent-private skill in a Team, or a team-shared skill, AGY trusts only
+that owning Team package root; a standalone private skill uses its Agent
+package root, and a global fallback uses only the global skill's own root.
+The capsule materializer snapshots regular files and file links that resolve
+to existing regular files **within** that root as ordinary private files.
+It rejects links that escape the root, dangling/cyclic/directory links,
+nonregular targets, collisions, or a source changed during copying; a failed
+candidate is removed. It does not dereference unchecked links into the real
+task workspace or retain symlinks in the capsule. `skillAccessMode: NONE`
+skips configured-skill materialization without inspecting the source.
+Restore uses the already checked capsule bytes rather than re-resolving
+possibly edited source links. The actual Team-local Solution Designer skill's
+two links into its Team `shared/` directory passed a disposable full-Org
+first prompt and distinct-backend same-member browser continuation, with
+ordinary exact-byte capsule files and an unchanged selected workspace.
 
 `AgyStreamProcess` communicates over stdin/stdout stream-JSON pipes, not a PTY.
 The created provider `init.conversation_id` is stored as
@@ -86,3 +123,17 @@ replies afterward, with exact identities retained in public projections. This
 proves clean process-restart continuation for those paths, not arbitrary
 mid-turn termination, crash/SIGKILL recovery, an Electron-shell run, or
 compatibility with every AGY CLI version.
+
+The full-size Org browser regression used one root, three Teams, and fourteen
+Agents (18 AGY placements) against the real built backend. It observed an
+active persisted tree, one delayed real CLI catalog discovery for equivalent
+placements, and responsive concurrent health. Separate timeout, nonzero
+discovery, and valid-catalog/missing-slug controls showed finite addressed,
+safe browser alerts and reset launch controls. These are browser/equivalent-
+backend checks, not proof that a packaged Electron shell was manually tested.
+The later actual-Solution-Designer member test also verified a first AGY
+provider binding and visible answer after lazy activation, then old and new
+answers after backend A→B restoration. Backend A exited 1 on SIGTERM with a
+generic supervisor-close error, so this test is **not** a clean-shutdown
+claim; the subsequent B-side restore/continuation passed. It does not prove
+the user's normal Org or the superseded Electron package is fixed.

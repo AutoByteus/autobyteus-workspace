@@ -19,6 +19,9 @@
 | CRR-013 | `code-review-report.md` | IR-008 / SR-023 renewed source review | Pass (prior source basis) | Pass | No new source findings; prior source findings unchanged |
 | CRR-014 | `api-e2e-test-review-report.md` | API-REV-007 two changed durable tests | Pass | Pass | No new test findings; TR-001 remains resolved |
 | CRR-015 | `api-e2e-test-review-report.md` | API-REV-008 three integrated-base durable test edits | Pass | Pass | DR-004 test collection fixed; no new test findings |
+| CRR-016 | `code-review-report.md` | IR-009 / SR-024 linked-skill source review | Pass (prior source basis) | Pass | No new source findings; prior findings unchanged |
+| CRR-017 | `api-e2e-test-review-report.md` | API-REV-009 actual Solution Designer browser-test review | Pass (prior test basis) | Fail — Local Fix | TR-002 reporting mismatch; TR-001 remains resolved |
+| CRR-018 | `api-e2e-test-review-report.md` | API-REV-009 TR-002 reporting correction re-review | Fail — Local Fix | Pass | TR-002 resolved; TR-001 remains resolved |
 
 ## Revision Entries
 
@@ -333,3 +336,38 @@ None.
 - Proportional result: **Pass**, no new actionable test finding. Exact Team/Org command now collects/passes 2/2; current-base full 18-placement Chrome/health/safe alert and A→B same-member browser continuations passed with independent round-8 evidence. Reviewer inspected diff/evidence/logs without rerunning live work.
 - Prior findings: TR-001 remains resolved. CR-001–CR-004 and CR-006 remain resolved; CR-005 remains withdrawn. Source CRR-013 scorecard unchanged. Arbitrary mid-turn Team termination remains unclassified/not accepted; current test stops only after quiescence.
 - Route: `/delivery_engineer` for DR-004 recovery, replacement Electron build and explicit user-verification/finalization gates. Old DMG is stale; no delivery acceptance, release or cleanup from this review.
+
+### CRR-016 — SR-024 linked configured-skill source passed
+
+- Canonical report: `code-review-report.md`; renewed Large/High implementation-source review, separate from CRR-015 post-API test review.
+- Trigger: IR-009 commit `42ec93de0`, SR-024 DS-006 / ARCH-REV-005 Pass, after the user's 1.4.80 first-prompt Solution Designer Org-member preparation failure. Prior IR-008/CRR-013, API-REV-008/CRR-015 and Delivery DR-005 passes are pre-SR-024 only; user-verification hold remains.
+- Supported basis: exposed user first prompt to the configured Org member; actual mounted private skill has two file links into its owning team's `shared/`. Same-build packaged old materializer deterministically rejected these links, but the live exception cause was not logged. Attribution remains high confidence, not a captured live stack or post-fix integration claim. Approved capsule trust/isolation and non-AGY preservation are governing contracts.
+- Source result: **Pass**. Existing resolver records agent-private/team-shared/global winner with canonical source/trusted root; AGY uses one checked snapshot that copies in-bound regular-file link bytes into private ordinary files, rejects unsafe links/collisions/changed source, and removes failed candidates. `NONE` and immutable exact restore remain. No broad global fallback, unchecked copy, migration or source/workspace mutation. Reviewer independently reran two highest-signal suites **53/53**; implementation reports broader 87/87 plus production TypeScript/build/bootstrap. Scorecard **9.0/10 (90/100)**; no new finding.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior status | Current status | Verification evidence |
+| --- | --- | --- | --- |
+| CR-001–CR-004, CR-006 | Resolved | Remain resolved | Changed scope does not alter prior launch/stream/source contracts; no contrary evidence. |
+| CR-005 | Withdrawn as production attribution | Remains withdrawn | No new clean production GraphQL-binding evidence. |
+| TR-001 | Resolved in test review | Remains resolved | Separate prior browser assertion path not changed by IR-009. |
+
+- Candidate CF-011: full live first-turn cause/success cannot be inferred from packaged reproduction plus local units; held for API/E2E, not scored or attributed as proven live. No new source finding.
+- Route: `/api_e2e_engineer` primary for disposable full Org actual linked-skill Solution Designer first prompt, AGY init/provider ID/visible answer, negative link/restore and non-AGY checks; `/implementation_engineer` informational after primary succeeds. Delivery must rebuild Electron and obtain explicit user verification before finalization/release/cleanup.
+
+### CRR-017 — SR-024 actual-member browser test review; API report identity correction required
+
+- Canonical report: `api-e2e-test-review-report.md`, separate from authoritative CRR-016 production-source report and scorecard.
+- Trigger: API-REV-009 Pass / 96% on IR-009 source `42ec93de0`, test/evidence commit `9df7ac417`; Large/High reviewed route. Prior CRR-015 test Pass was pre-SR-024.
+- Changed durable scope: one added opt-in `autobyteus-web/tests/e2e/agy-actual-solution-designer-skill-org-probe.mjs`; no updated or removed durable test and no API/E2E production-source edit.
+- Supported basis: the user's first prompt to the configured Solution Designer in a real full Org and later same-member backend-process restart, under approved linked-skill snapshot/isolation and exact-identity contracts. The test's live first answer, capsule byte equality, old-before/new-after visible replies and public projection passed proportional test-code inspection. Backend A exited 1 on shutdown; its origin remains unclassified and is not called clean.
+- **Result: Fail — Local Fix, reporting only (TR-002).** Canonical API-REV-009 report claims provider ID `dd5dd0bc-56fe-4d41-bb7b-0eab2d9b2f18`, but its linked final evidence records `0784e353-e6d3-42b4-921b-a641e9ad57a3` for first turn and restore. Correct or reconcile the precise claim before Delivery uses the package. This is not a changed-test defect, API execution reversal, or source finding; CRR-016 scorecard remains unchanged. TR-001 stays resolved.
+- Route: `/api_e2e_engineer` for bounded canonical-report correction and renewed review; Delivery/user verification hold persists, with no release/finalization/cleanup.
+
+### CRR-018 — API-REV-009 final provider-identity reporting reconciled
+
+- Canonical report: `api-e2e-test-review-report.md`, separate from CRR-016 production-source report and scorecard.
+- Trigger: API/E2E report/ledger/revision correction commit `fe4c0d556` after CRR-017/TR-002. IR-009 source `42ec93de0`, final durable test/evidence `9df7ac417`, API-REV-009 Pass / 96%; Large/High route unchanged.
+- Bounded verification: final evidence `firstTurn.providerRunId` and `restore.providerRunId` both equal `0784e353-e6d3-42b4-921b-a641e9ad57a3`; the canonical AGY-16 report now names that exact ID. Ledger 89 distinguishes the earlier `dd5dd0bc-...` run and historical log from ledger 90's final evidence; ledger 91 records report-only correction. No durable test, production source, final evidence, execution confidence or exit-1 shutdown caveat changed. No E2E rerun was claimed or needed to correct provenance.
+- **TR-002 resolved. Latest result: Pass.** CRR-017's other proportional test checks remain passing; TR-001 remains resolved and CRR-016 source scorecard is unchanged. The backend-A exit-1 cause remains unclassified, not called clean shutdown or product/test defect.
+- Route: `/delivery_engineer` with cumulative passed package for fresh Electron rebuild and explicit user verification. No delivery acceptance, release, finalization or cleanup from this review.

@@ -17,6 +17,15 @@ AGY is a supported Agent runtime at direct and Team-nested member addresses;
 the Org's native execution tree and public member projection keep the exact
 root/address/member identities. See [Antigravity CLI Runtime](./antigravity_cli_runtime.md)
 for its provider binding, run capsule, and permission/trace semantics.
+For AGY Org creation, all root, Team, and Agent placements are validated in
+one ordered request-local model-selection batch. Equivalent runtime/workspace
+contexts share fresh catalog evidence for that launch only; failures retain
+the first affected placement address and a safe discovery reason when the CLI
+catalog probe fails. A valid catalog missing the selected model remains a
+distinct model-unavailable error. The bounded asynchronous AGY probe does not
+block unrelated backend health requests while it is pending. Creating the
+Org persists its configured tree without eagerly opening every member's
+provider conversation.
 
 An AgentTeam contains Agents only. AgentOrg cannot contain another AgentOrg, and
 configured Team-within-Team nesting is rejected. Task-scoped delegation to a

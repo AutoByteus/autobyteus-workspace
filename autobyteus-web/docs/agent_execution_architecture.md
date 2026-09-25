@@ -15,6 +15,16 @@ The opt-in web-equivalent restart journey has also verified that a fresh
 browser can focus the original Team/direct Org/nested Org member after a clean
 backend process restart, display its old answer, send a new message, and keep
 both answers visible. This does not assert Electron-shell or crash recovery.
+For a large AGY AgentOrg launch, the backend validates every placement with
+request-local catalog sharing and an asynchronous bounded CLI probe; the
+frontend does not run discovery itself. A failed probe is reported as a safe,
+addressed `createAgentOrgRun` message and rendered in the existing launch
+alert, distinct from a valid catalog missing the selected model. The launch
+control leaves its loading state after either failure. A real-browser
+18-placement regression observed active persisted topology and responsive
+health during delayed discovery, plus finite safe timeout/nonzero/missing-
+model alerts. This remains web-equivalent evidence, not a manual packaged
+Electron journey.
 
 The data flow follows a top-down approach:
 
