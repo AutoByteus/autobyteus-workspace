@@ -1,5 +1,13 @@
 # Delivery / Release / Deployment Report — AGY CLI Runtime
 
+> **DR-004 latest status — Blocked / Local Fix.** This integrated IR-008
+> package cannot proceed to docs sync, a replacement Electron build, user
+> verification or repository finalization until its AGY Team/Org E2E collects
+> and passes on the refreshed base. The older DR-003 `1.4.79` DMG is retained
+> but is not current for SR-023. Details and exact upstream route are in the
+> DR-004 section below. All earlier completion fields are historical results,
+> not claims that the new integrated state passed.
+
 ## Release / Publication / Deployment Scope
 
 Latest delivery round **DR-003**, adding the user-requested local Electron test build to DR-002's API-REV-006 / CRR-012 verified handoff. This is still a **user-verification hold**, not a release or terminal delivery result. Task size **Large**, architectural risk **High**, reviewed route. The recorded bootstrap/finalization target is `origin/personal`. No versioned release, publication, or direct deployment has been requested for this handoff. `release-notes.md` is prepared before verification in case the user requests a release; applicability and version remain subject to that explicit instruction. No release/tag/deployment may proceed before user verification and repository finalization.
@@ -86,3 +94,14 @@ Before finalization: keep the ticket in progress and revise/reroute the branch i
 - Safe cleanup complete: **No, not yet permitted**.
 - Unresolved blocker to terminal return: **Explicit user verification missing**; not a product defect classification.
 - Successful terminal package eligible for `/solution_designer`: **No**. No terminal handoff has been sent.
+
+## DR-004 — renewed source/test review, latest-base refresh, and blocker
+
+- Trigger: Code Reviewer CRR-014 proportional changed-test-code **Pass** after API-REV-007 **Pass / 95%**, source CRR-013 Pass (IR-008 at `40641dfca`, test/evidence `32fd63dd6`). SR-023 approved technical correction adds request-local full-placement Org preflight, bounded asynchronous AGY discovery, safe addressed failure diagnostics and responsive health. Prior `1.4.79` local Electron package predates this source.
+- Latest base: fetched `origin/personal@3e5d6add526e669b0ac0b37fbbd694af1cc47102`, ten commits beyond the prior tracked base `fdbd07124f0eaaa1310379c1ca8e2449f97b0dcf`. It includes external-messaging removal and workspace package version `1.4.80`. Reviewed uncommitted canonical review/solution artifacts and DR-001–003 delivery artifacts were protected in local checkpoint `bdb408dcc` before merge. `git merge --no-ff --no-edit origin/personal` completed without textual conflicts as `678bece5f`; branch is 16 ahead / 0 behind. This is a **local safety/integration action**, not finalization or user acceptance.
+- Post-integration checks: `pnpm -C autobyteus-server-ts prepare:shared` passed (`/tmp/agy-delivery-r4-prepare.log`). Focused AGY capability and Org model-selection unit suites **21/21 passed** (`/tmp/agy-delivery-r4-focused.log`), including bounded timeout and concurrent-health behavior. The required real AGY Team/Org E2E command `RUN_AGY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts --no-watch` **failed before collection: 0 tests**, because `agy-team-inter-agent-roundtrip.e2e.test.ts:10` imports `../../../src/config/server-runtime-endpoints.js`, removed by the newly integrated base. Exact log: `/tmp/agy-delivery-r4-team-org.log`. This is an integration-time **test-code Local Fix**, not a demonstrated AGY product failure or a passing post-merge E2E. Generated untracked shared SDK dist was removed afterward.
+- Classification/routing: **Blocked — Local Fix** in the durable E2E fixture after base removal of the old endpoint module. Per delivery handoff rules, recommended accountable recipient `/implementation_engineer` for correction/coordination with the API/E2E owner and renewed executable validation/review as needed. Do not remove the stale import or skip the E2E from Delivery. If correction reveals changed intended behavior or production impact, route to Solution Designer instead of assuming a test-only fix.
+- Docs sync: **Blocked for the new integrated IR-008/base state**. The prior `docs-sync-report.md` is marked historical; long-lived AGY docs still need the SR-023 finite safe discovery/large-Org knowledge after passing integration checks. No such docs were edited at this gate.
+- User verification/package: **Not current / awaiting new evidence.** The old `AutoByteus_personal_macos-arm64-1.4.79.dmg` remains a successful DR-003 build of earlier source, not a valid SR-023 test package. No `1.4.80` replacement was built. The user's earlier packaged screenshot/observation was a correction trigger, **not** acceptance; no explicit final user verification, release or cleanup authorization exists.
+- Ticket state/finalization/release/cleanup: ticket remains `tickets/in-progress`; no ticket-branch push, final-target merge/push, release tag/publication/deployment or worktree cleanup. All remain blocked at the post-integration gate. Do not use the prior DR-003 hold as terminal completion.
+- Rollback visibility: local checkpoint/merge remain on the ticket branch; no remote target/tag is affected. Once corrected, re-run integrated checks, update canonical docs/handoff and make a new test package before renewed user verification. Do not overwrite or silently delete the older DMG while the user may still have it open.

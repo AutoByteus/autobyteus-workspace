@@ -1,5 +1,13 @@
 # Docs Sync Report — AGY CLI Runtime
 
+> **DR-004 hold:** The report below is the last completed docs sync on the
+> earlier integrated basis. IR-008 and latest `origin/personal` are locally
+> merged, but a required post-merge AGY E2E failed at test collection. Do not
+> use this report as a current docs-sync Pass for the new integrated state;
+> long-lived docs need revalidation and an SR-023 addendum after the local test
+> fix and passing integrated checks. No further long-lived docs were edited at
+> this blocked gate.
+
 ## Scope
 
 - Ticket: `antigravity-cli-runtime-redesign-20260924`.

@@ -1,5 +1,13 @@
 # Local Electron Test Build — AGY CLI Runtime
 
+> **Superseded for current verification (DR-004, 2026-09-25):** This successful
+> `1.4.79` package was built before IR-008 and before integration of current
+> `origin/personal@3e5d6add5`. It remains on disk because the user may still be
+> testing it, but it does **not** contain the reviewed large-Org launch fix and
+> must not be used as acceptance evidence for the current package. A replacement
+> build is held until the post-merge AGY E2E collection failure is corrected
+> and revalidated. Current base package version is `1.4.80`.
+
 - Date: 2026-09-25. Purpose: user-requested **testable local macOS build**, not user acceptance, a version bump, a release, or deployment.
 - Source: ticket branch `codex/antigravity-cli-runtime-redesign-20260924` at production/test HEAD `706012fe4` (latest integrated base `origin/personal@fdbd07124f0eaaa1310379c1ca8e2449f97b0dcf`, 12 ahead / 0 behind after a fresh fetch). Delivery docs and CRR-012 review updates were uncommitted at build time; no production source changed by this build.
 - Instructions read: root `README.md` Setup and desktop release/build sections; `autobyteus-web/README.md` Desktop Application Build, integrated backend and packaged Electron E2E sections; `autobyteus-web/AGENTS.md`; `autobyteus-web/package.json` `build:electron:mac` script. Host is macOS arm64, Node 22.23.1, pnpm 10.28.2.

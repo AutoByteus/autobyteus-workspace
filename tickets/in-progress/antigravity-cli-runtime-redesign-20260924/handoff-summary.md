@@ -1,5 +1,15 @@
 # User Verification Handoff — AGY CLI Runtime
 
+> **DR-004 integration hold (2026-09-25):** This DR-003 handoff and its
+> `1.4.79` Electron DMG are **not current test artifacts** for the later IR-008
+> large-Org correction or the latest `origin/personal` base. The delivery branch
+> was refreshed, but its required post-merge AGY Team/Org E2E could not collect
+> tests because it imports the base-removed
+> `src/config/server-runtime-endpoints.js`. Delivery has routed that local test
+> fix upstream. Do not treat this handoff as finalization-ready or the old DMG
+> as validation of the corrected Org launch. A new package will require the
+> corrected reviewed test and a passing integrated check first.
+
 ## Delivery state
 
 **Ready for explicit user verification, not yet finalized or released.** The approved **Large / High** package followed architecture review, independent source review, API/E2E validation and independent changed-test-code review. Latest API-REV-006 passed at **96%** and CRR-012 proportional test-code review passed; CRR-009 remains the source-review authority. The previously reported production GraphQL schema-cache defect attribution was withdrawn: the E2E fixture's second full schema build caused that diagnostic, and the production cache was removed. Current real-server tests use the running server's HTTP GraphQL with one schema build.

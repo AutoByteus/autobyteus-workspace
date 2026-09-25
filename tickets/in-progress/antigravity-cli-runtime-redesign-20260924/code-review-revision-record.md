@@ -18,6 +18,7 @@
 | CRR-012 | `api-e2e-test-review-report.md` | API-REV-006 bounded browser assertion re-review | Fail — Local Fix | Pass | TR-001 resolved; source findings unchanged |
 | CRR-013 | `code-review-report.md` | IR-008 / SR-023 renewed source review | Pass (prior source basis) | Pass | No new source findings; prior source findings unchanged |
 | CRR-014 | `api-e2e-test-review-report.md` | API-REV-007 two changed durable tests | Pass | Pass | No new test findings; TR-001 remains resolved |
+| CRR-015 | `api-e2e-test-review-report.md` | API-REV-008 three integrated-base durable test edits | Pass | Pass | DR-004 test collection fixed; no new test findings |
 
 ## Revision Entries
 
@@ -322,3 +323,13 @@ None.
 - Prior Team stop observation: failing log has `/ping` still running and `hasOpenExecutionWork=true`; arbitrary mid-turn terminate is not classified as product/test defect or accepted behavior. No speculative recovery machinery.
 - Prior findings: TR-001 remains resolved; CR-001–CR-004 and CR-006 remain resolved; CR-005 remains withdrawn. No new actionable test finding and no source scorecard change.
 - Route: `/delivery_engineer` for delivery-owned explicit user verification, fresh shell/package and finalization gates. No delivery acceptance, release or cleanup from this review.
+
+### CRR-015 — Integrated-base API/E2E durable tests passed proportional review
+
+- Canonical report: `api-e2e-test-review-report.md`, separate from CRR-013 authoritative production-source report and scorecard.
+- Entry point/trigger: API-REV-008 Pass / 96% after Delivery DR-004 zero-test collection; integrated merge/source base `678bece5f` (`origin/personal@3e5d6add5`), test/evidence commit `533457040`. Large/High reviewed route. Prior CRR-014 test Pass and API-REV-007 Pass were pre-merge only.
+- Changed durable scope: Team/Org real transport E2E removed deleted `server-runtime-endpoints.js` import and dead env save/restore; large-Org and process-restart browser probes gained output-directory override/current HEAD provenance. No assertion or durable test removed; no production source edit.
+- Independent scenario basis: approved/exposed large AGY Org launch with concurrent operational health and safe failure, real Team/Org scoped collaboration with quiescent restore, and user-explicit separate-backend same-member browser continuation. DR-004 collection failure was test-only and did not prove an AGY product defect.
+- Proportional result: **Pass**, no new actionable test finding. Exact Team/Org command now collects/passes 2/2; current-base full 18-placement Chrome/health/safe alert and A→B same-member browser continuations passed with independent round-8 evidence. Reviewer inspected diff/evidence/logs without rerunning live work.
+- Prior findings: TR-001 remains resolved. CR-001–CR-004 and CR-006 remain resolved; CR-005 remains withdrawn. Source CRR-013 scorecard unchanged. Arbitrary mid-turn Team termination remains unclassified/not accepted; current test stops only after quiescence.
+- Route: `/delivery_engineer` for DR-004 recovery, replacement Electron build and explicit user-verification/finalization gates. Old DMG is stale; no delivery acceptance, release or cleanup from this review.

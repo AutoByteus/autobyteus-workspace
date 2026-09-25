@@ -2,39 +2,38 @@
 
 ## Review meta
 
-- **CRR-014 — Pass.** Proportional review of API-REV-007 **Pass / 95%** at test/evidence commit `32fd63dd6`, after IR-008 source `40641dfca` and CRR-013 source Pass. Task remains **Large / High**. Only the two changed durable tests were reviewed; `code-review-report.md` CRR-013 and its source scorecard remain authoritative and unchanged. No delivery acceptance.
-- Context reviewed: approved SR-016/SR-021 requirements and SR-023 technical correction; `investigation-notes.md` §SR-023, solution revision record, DS-005, ARCH-REV-004, IR-008, CRR-013, current API coverage investigation/execution report/revision record/ledger, final browser evidence and selected Team lifecycle logs. DR-001 remains an explicit user-verification hold.
-- Independent scenario basis: **Yes.** The supported user action is launching the exposed 1-root/3-Team/14-Agent AGY Org through the browser, with the backend operational health poll concurrent with provider discovery; the approved error path must report an addressed safe reason and reset the launch control. The Team test separately covers real member relay followed by **quiescent** stop/restore/continue. These come from approved SCN-002/REQ-001/AC-001, DS-005, and the observed user Org journey, not merely from test construction.
-- Reviewer method: inspected changed test diff, final `evidence.json`, API report and both failing/quiescent Team logs. No repeat of the successful real AGY/Chrome workflow by this reviewer.
+- **CRR-015 — Pass.** Proportional review of API-REV-008 **Pass / 96%** on integrated merge/source base `678bece5f` (`origin/personal@3e5d6add5`) and test/evidence commit `533457040`. Task remains **Large / High**. Only three changed durable test files are in scope; IR-008/CRR-013 production-source report and scorecard remain authoritative and unchanged. No Electron-package, user-verification, release or delivery acceptance.
+- Context: approved SR-016/SR-021 requirements and SR-023 technical correction, DS-005/ARCH-REV-004, IR-008, CRR-013, prior CRR-014/API-REV-007, Delivery DR-004 zero-test collection evidence, API-REV-008 investigation/report/revision/ledger, two current-base evidence directories and selected logs. Delivery's explicit verification hold continues.
+- Independent scenario basis: **Yes.** Exposed user Org Run supports full 18-placement AGY launch and safe addressed failure while the backend's operational health endpoint remains responsive; existing Team/Org conversation surfaces support scoped delivery and quiescent restore; the user expressly requested fresh-backend same-member browser continuation. The tests exercise these approved/observed paths, rather than establishing their validity themselves.
+- Review method: inspected the exact `678bece5f..533457040` test diff, helper/server boundary, current API report and final evidence/logs. Did not rerun successful live E2E or reopen production code.
 
 ## Changed durable test scope
 
-| Durable test path | Change | Scenario / coherent responsibility |
+| Durable path | Change | Coherent responsibility |
 | --- | --- | --- |
-| `autobyteus-web/tests/e2e/agy-large-org-launch-health-probe.mjs` | Added | One opt-in full browser/current built-backend Org launch: real AGY catalog with controlled delay, concurrent health, active persisted 18-placement tree, backend OS restart, and timeout/nonzero/missing-slug rendered alert distinctions. |
-| `autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts` | Updated | Real Team scoped delivery/attribution and stop/restore/continue after relay completion; quiescent-stop fixture and conditional failure diagnostics. |
+| `autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts` | Updated | Remove deleted latest-base endpoint-module import and unused environment save/restore; retain real Team/Org GraphQL/WebSocket scoped delivery, exact attribution and quiescent restore assertions. |
+| `autobyteus-web/tests/e2e/agy-large-org-launch-health-probe.mjs` | Updated | Parameterize evidence output directory and record current repository HEAD; retain real full-Org/health/safe-error/browser/restart assertions. |
+| `autobyteus-web/tests/e2e/agy-process-restart-focus-continuation-probe.mjs` | Updated | Parameterize evidence output directory and record current repository HEAD; retain old-before and old+new-after visible-feed assertions for exact Team/direct+nested Org members. |
 
-No durable test was removed; logs, screenshots and JSON are execution artifacts, not test code under review. No production source changed in API-REV-007.
+No durable test removed. Evidence JSON, screenshots and logs are execution artifacts, not test code under review. No production source edit or compatibility shim was made by API/E2E.
 
-## Proportional test-code checks
+## Proportional checks
 
 | Check | Result | Evidence / note |
 | --- | --- | --- |
-| Scenario grouping and names | Pass | New probe is one forward large-Org lifecycle with explicit positive, error and persistence stages. Team edit remains within existing Team restore case. |
-| Requirement-relevant assertions | Pass | Browser actually clicks Run; asserts active route plus 1/3/14 persisted structure, unique addresses/member IDs and one delayed `models` call. Health is measured while the slow/timeout child is pending. Timeout, failed discovery and valid missing slug have distinct addressed visible alerts and launch-button reset. Restart compares the full persisted tree. Team test waits no open work before public stop/restore. |
-| Fixture/setup/helper reuse | Pass | Shared `openConfig`, `failCase`, HTTP/health and owned-process helpers avoid repeating meaningful stages. External wrapper delegates positive discovery to real AGY and controls only latency/failure outcomes. |
-| Isolation and determinism | Pass, bounded | Explicit opt-in; temporary SQLite/app-data/workspace, dynamic ports, owned backend A/B/Nuxt/Chrome and cleanup. Unique fixture names. Timeouts and health bounds are finite; no user Org or packaged app modified. |
-| File coherence and navigability | Pass | The new script is dense/semicolon-compressed, but its 87 physical lines cover one coherent end-to-end journey; formatting is a readability watch item, not a finding or split mandate. |
-| Stale/duplicated/disabled coverage | Pass | Existing smaller Team/Org coverage is complementary. The quiescence gate corrects premature in-flight termination rather than disabling the restore assertion. No test-only second GraphQL schema build or stubbed scoped delivery is offered as parity. |
-| Coverage and evidence agreement | Pass | Final evidence records launch 6.058 s, one slow real AGY catalog call, health 2/2/1 ms, 18 exact placements, and identical tree after distinct backend PIDs 42407/43471. Timeout alert 16.344 s with health 1/3/3 ms; nonzero and valid-missing-slug alerts differ. Final Team+Org 2/2 and focused suites passed. The current Electron shell itself was not rebuilt and the report says so. |
-| Independent supported scenario | Pass | User large-Org launch and operational health/error contract predate the test. The wrapper simulates an external dependency outcome within that established path; it does not invent a product workflow. |
+| Scenario grouping and names | Pass | Existing three coherent journeys remain separate; this round changes only fixture collection/provenance/output isolation. |
+| Requirement-relevant assertions | Pass | No assertion removed. Exact Delivery command now collects and passes real Team/Org 2/2; full browser Org retains 1/3/14 tree, responsive health, safe distinct alerts/reset and persisted tree; restart browser retains exact-member visible old/new replies and public projections. |
+| Fixture/setup/helper reuse | Pass | Removed import refers to a deleted module; `startStudioE2eRuntimeServer()` supplies `mainUrl` for public HTTP/WS clients, and no source path uses the removed env constant. Existing setup/cleanup remains. |
+| Isolation and determinism | Pass | Opt-in live tests use owned temporary data/processes. `AGY_E2E_OUTPUT_DIR` prevents overwriting earlier round evidence; current-base HEAD is recorded in each browser evidence file. The API report separately identifies final test/evidence commit, avoiding a claim that HEAD alone captures uncommitted test edits at run time. |
+| File coherence/navigability | Pass | Small bounded deltas; the prior one-journey script organization remains. Existing dense formatting is not a new actionable regression. |
+| Stale/duplicate/disabled coverage | Pass | Deleted endpoint import and dead env cleanup are removed, not replaced with a production shim. No test skipped or muted to make the run pass. |
+| Coverage/evidence agreement | Pass | Current exact opt-in Team/Org command 2/2; full Org browser active in 5.316 s with one delayed real AGY model call and health 1/1/1 ms; safe timeout/failure/missing-slug alerts; separate backend restart browser shows old-before/old-after/new-after=2/2/2 for all three selected members. Current 77/77 server/API/admission and 39/39 web focused suites pass. Reports clearly say old Electron DMG and provider-real LMStudio were not freshly validated. |
+| Independent supported scenario | Pass | DR-004's zero-test collection is a test-fixture issue. The product journeys are approved/exposed; current-base test reruns witness them. Arbitrary mid-turn Team termination is not inferred from quiescent restore. |
 
-## Team termination observation
+## Findings, residual and result
 
-The earlier Team stop failure was captured with `hasOpenExecutionWork=true` and `/ping` still running, despite a persisted token. That does not prove a defect in the supported **completed-turn stop/restore** journey, nor does it establish arbitrary mid-turn termination as an approved scenario. The updated test waits for a quiescent checkpoint and preserves pre/post diagnostics only if stop fails; final full 2/2 and targeted Team passes support the corrected test sequence. No production or test-origin finding is asserted for arbitrary mid-turn stop. Preserve the failing log and do not claim that behavior is validated.
-
-## Findings and result
-
-- **New actionable test-code findings:** None. Historical TR-001 remains resolved; no new UI assertion gap was identified in this SR-023 test scope.
-- **Latest authoritative test-code result:** **Pass**. Source CRR-013 is not reopened; API Engineer's 95% execution confidence is not a reviewer score.
-- **Recommended recipient:** `/delivery_engineer` with the cumulative passed package. Delivery's explicit user-verification hold, fresh Electron shell verification and release/finalization decisions remain its responsibility; this review grants no acceptance or cleanup authority.
+- **New actionable test-code findings:** None. Historical TR-001 remains resolved; CRR-013 source scorecard is not reopened.
+- **DR-004 collection blocker:** Resolved at the test boundary. The obsolete import prevented collection, so it was not an AGY runtime failure; exact command now collects/passes 2/2 without weakened assertions.
+- **Bounded residual:** The prior in-flight Team stop failure is not attributed or accepted as supported arbitrary mid-turn termination. Current test covers the coherent quiescent stop/restore path. Current Electron shell package is stale; Delivery must rebuild and obtain explicit user verification before finalization. No fresh real LMStudio provider claim.
+- **Latest authoritative test-code result:** **Pass**. API Engineer's 96% execution confidence is its assessment, not a reviewer score.
+- **Recommended recipient:** `/delivery_engineer` with the cumulative passed package for DR-004 recovery and delivery-owned gates. This review does not authorize release, merge, cleanup or user acceptance.
