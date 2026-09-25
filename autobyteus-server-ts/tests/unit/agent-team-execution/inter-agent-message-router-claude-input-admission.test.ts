@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { ClaudeSdkQueryLike } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { createFakeClaudeSdkClient, flushClaudeSession } from "../../helpers/fake-claude-streaming-sdk.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -50,34 +50,11 @@ const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
   };
 };
 
-const createControlledQuery = (): { query: ClaudeSdkQueryLike; release: () => void } => {
-  let release!: () => void;
-  const settled = new Promise<void>((resolve) => { release = resolve; });
-  return {
-    query: {
-      async *[Symbol.asyncIterator]() { await settled; },
-      interrupt: vi.fn(async () => undefined),
-      close: vi.fn(() => undefined),
-    },
-    release,
-  };
-};
-
 const PROVIDER_SESSION_ID = "12345678-1234-4234-8234-123456789abc";
 
-const createCompletedQuery = (): ClaudeSdkQueryLike => ({
-  async *[Symbol.asyncIterator]() {
-    yield { type: "result", session_id: PROVIDER_SESSION_ID, result: "done" };
-  },
-  interrupt: vi.fn(async () => undefined),
-  close: vi.fn(() => undefined),
-});
-
 describe("InterAgentMessageRouter Claude input admission", () => {
-  it("accepts one active task-peer reply and starts it once after the current Claude turn terminates", async () => {
-    const activeQuery = createControlledQuery();
-    const queryQueue: ClaudeSdkQueryLike[] = [activeQuery.query, createCompletedQuery()];
-    const startQueryTurn = vi.fn(async () => queryQueue.shift()!);
+  it("delivers a task-peer message into the running Claude turn without waiting for it to end (AC-004)", async () => {
+    const sdkClient = createFakeClaudeSdkClient({ providerSessionId: PROVIDER_SESSION_ID });
     const messageCache = new ClaudeSessionMessageCache();
     const runContext = new AgentRunContext({
       runId: "student-one-task-run",
@@ -111,11 +88,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
       ),
       dependencies: {
         sessionMessageCache: messageCache,
-        sdkClient: {
-          startQueryTurn,
-          closeQuery: vi.fn((query: ClaudeSdkQueryLike | null) => query?.close()),
-        } as never,
-        activeQueriesByRunId: new Map(),
+        sdkClient: sdkClient as never,
         toolingCoordinator: new ClaudeSessionToolUseCoordinator(
           new Map(),
           new Map(),
@@ -129,29 +102,30 @@ describe("InterAgentMessageRouter Claude input admission", () => {
       },
     });
 
-    await session.startTurn(new AgentInputUserMessage("active work"));
-    await vi.waitFor(() => expect(startQueryTurn).toHaveBeenCalledTimes(1));
+    const started = await session.submitInput(new AgentInputUserMessage("active work"), { kind: "start_turn" });
+    await flushClaudeSession();
+    if (!started.accepted) throw new Error(started.code);
+    const fake = sdkClient.current;
+    fake.init();
+    await flushClaudeSession();
 
     const backend = new ClaudeAgentRunBackend(runContext as never, session);
     const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: runContext, backend });
     const request = buildRequest();
     const result = await new InterAgentMessageRouter().deliver({ recipientRun: run, request });
+    await vi.waitFor(() => expect(fake.sent).toHaveLength(2));
 
-    expect(result).toEqual({ accepted: true, turnId: null });
-    expect(startQueryTurn).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ accepted: true, turnId: started.turnId });
+    const deliveredText = JSON.stringify(fake.sent[1]!.message.content);
+    expect(deliveredText).toContain("The delegated analysis is complete.");
+    expect(deliveredText).toContain("sender id: student-two-task-run");
+    expect(session.activeTurnId).toBe(started.turnId);
+    expect(fake.interruptAndCancelQueued).not.toHaveBeenCalled();
+    expect(sdkClient.openStreamingSession).toHaveBeenCalledTimes(1);
 
-    activeQuery.release();
-
-    await vi.waitFor(() => expect(startQueryTurn).toHaveBeenCalledTimes(2));
-    const cachedUserMessages = messageCache
-      .getCachedMessages(PROVIDER_SESSION_ID)
-      .filter((message) => message.role === "user");
-    expect(cachedUserMessages).toHaveLength(2);
-    expect(cachedUserMessages[1]?.content).toContain("The delegated analysis is complete.");
-    expect(cachedUserMessages[1]?.content).toContain("sender id: student-two-task-run");
-    expect(startQueryTurn.mock.calls[1]?.[0]).toMatchObject({
-      prompt: expect.stringContaining("The delegated analysis is complete."),
-    });
-    expect(activeQuery.query.interrupt).not.toHaveBeenCalled();
+    fake.assistantText("done with both");
+    fake.result(fake.sent.map((message) => message.uuid));
+    await flushClaudeSession();
+    expect(session.activeTurnId).toBeNull();
   });
 });

@@ -24,6 +24,7 @@ export type RawTraceItemOptions = {
   toolResult?: unknown;
   toolError?: string | null;
   correlationId?: string | null;
+  senderId?: string | null;
 };
 
 export class RawTraceItem implements MemoryItem {
@@ -42,6 +43,7 @@ export class RawTraceItem implements MemoryItem {
   toolResult: unknown | undefined;
   toolError: string | null | undefined;
   correlationId: string | null;
+  senderId: string | null;
 
   constructor(options: RawTraceItemOptions) {
     this.id = options.id;
@@ -62,6 +64,7 @@ export class RawTraceItem implements MemoryItem {
     this.toolResult = options.toolResult;
     this.toolError = options.toolError;
     this.correlationId = options.correlationId ?? null;
+    this.senderId = options.senderId ?? null;
   }
 
   get memoryType(): MemoryType {
@@ -87,6 +90,7 @@ export class RawTraceItem implements MemoryItem {
     if (this.toolResult !== undefined) data.tool_result = this.toolResult;
     if (this.toolError !== undefined) data.tool_error = this.toolError;
     if (this.correlationId) data.correlation_id = this.correlationId;
+    if (this.senderId) data.sender_id = this.senderId;
 
     return data;
   }
@@ -109,7 +113,8 @@ export class RawTraceItem implements MemoryItem {
       toolError: Object.prototype.hasOwnProperty.call(data, 'tool_error')
         ? typeof data.tool_error === 'string' ? data.tool_error : null
         : undefined,
-      correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null
+      correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null,
+      senderId: typeof data.sender_id === 'string' ? data.sender_id : null
     });
   }
 }

@@ -1,0 +1,25 @@
+   0.0s O >>> SEND 1a52b3ef Step 1: use Bash with run_in_background true to run: sleep 15; echo OK > /tmp/st
+   0.3s O command_lifecycle 
+   0.3s O command_lifecycle 
+   0.3s O system init    
+   2.9s O assistant ["thinking"]
+   3.8s O assistant ["tool_use:Bash:{\"command\":\"sleep 15; echo OK > /tmp/streamprobe/O.marker\",\"descriptio"]
+   4.2s O assistant ["tool_use:Bash:{\"command\":\"python3 -c 'import time; time.sleep(40)'\",\"description\":\"S"]
+   4.5s O system background_tasks_changed    ["local_bash:Sleep 15 seconds then write marker file in background"]
+   4.5s O system task_started  type=local_bash tool=toolu_01 
+   4.5s O user tool_result:"Command running in background with ID: bgpqttqez. Output is being written to: /private/tmp/claude-501/-privat
+   7.5s O system task_started  type=local_bash tool=toolu_01 
+  10.0s O: interrupt() {"still_queued":[]}
+  10.0s O system task_notification stopped  tool=toolu_01 
+  10.0s O user tool_result:"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, th
+  10.0s O user text:[Request interrupted by user for tool use]
+  10.0s O result error_during_execution origin=undefined answers=[1a52b3ef] terminal=aborted_tools
+  10.0s O command_lifecycle 
+  19.5s O system background_tasks_changed    []
+  19.5s O system task_updated    
+  19.5s O system task_notification completed  tool=toolu_01 
+  19.5s O system init    
+  21.0s O assistant ["thinking"]
+  21.7s O assistant ["I see the background command completed successfully. The second foregr"]
+  21.7s O result success origin={"kind":"task-notification"} answers=[] terminal=completed
+  25.0s O: marker exists after interrupt: true

@@ -1,4 +1,3 @@
-import { resolveClaudeSdkSelectedModelForQuery } from "./claude-sdk-selected-model-binding.js";
 import fs from "node:fs";
 import { readClaudeContextCapacities } from "./claude-sdk-context-capacity.js";
 import type { RuntimeModelCapacities } from "../../../llm-management/domain/runtime-model-capacity.js";
@@ -28,8 +27,11 @@ import {
   getClaudeRuntimeSettingSources,
 } from "./claude-sdk-setting-sources.js";
 import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
-
-type ClaudePermissionDecision = { behavior: "allow" };
+import {
+  ClaudeSdkInputChannel,
+  createClaudeSdkStreamingSession,
+  type ClaudeSdkStreamingSession,
+} from "./claude-sdk-streaming-session.js";
 
 type ClaudeSdkFunctionName =
   | "query"
@@ -60,8 +62,8 @@ export type ClaudeSdkCanUseTool = (
 export type ClaudeSdkStderrCallback = (data: string) => void;
 type ClaudeApiKeyResolver = () => Promise<SecretValue>;
 
-export type ClaudeSdkStartQueryTurnOptions = {
-  prompt: string;
+/** Options for one long-lived streaming-input session (one Claude CLI process). */
+export type ClaudeSdkStreamingSessionOptions = {
   systemPrompt: string;
   sessionBinding: ClaudeSdkSessionBinding;
   model: string;
@@ -70,16 +72,14 @@ export type ClaudeSdkStartQueryTurnOptions = {
   mcpServers?: Record<string, unknown> | null;
   allowedTools?: Iterable<string> | null;
   permissionMode?: ClaudeSdkPermissionMode;
-  autoExecuteTools?: boolean;
   canUseTool?: ClaudeSdkCanUseTool;
   stderr?: ClaudeSdkStderrCallback;
-  abortController?: AbortController;
   thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
-  interrupt: () => Promise<void>;
+  interrupt: () => Promise<unknown>;
   close: () => void;
   supportedModels?: () => Promise<unknown>;
   setMcpServers?: (servers: Record<string, unknown>) => Promise<unknown>;
@@ -87,18 +87,6 @@ export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
 
 let sdkSessionSpawnQueue: Promise<void> = Promise.resolve();
 let cachedClaudeSdkClient: ClaudeSdkClient | null = null;
-
-const allowToolUseWithoutPrompt: ClaudeSdkCanUseTool = async (
-  _toolName,
-  input,
-  options,
-): Promise<ClaudePermissionDecision & { updatedInput: Record<string, unknown>; toolUseID?: string }> => ({
-  behavior: "allow",
-  updatedInput: input,
-  ...(typeof options.toolUseID === "string" && options.toolUseID.length > 0
-    ? { toolUseID: options.toolUseID }
-    : {}),
-});
 
 // Claude Code built-ins exposed to normal turns (SDK `tools`); all others, incl. native
 // multi-agent tools, stay out of context. MCP tools are unaffected. Re-verify on SDK upgrades.
@@ -109,13 +97,6 @@ const CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS = [
 const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = [
   "AskUserQuestion", "Agent", "Task", "Workflow", "SendMessage", "ListAgents",
 ] as const;
-// Each turn closes its one-string query on `result`, so the Claude CLI exits and kills any
-// CLI-owned background task (explicit or auto-backgrounded at timeout). Force foreground-only
-// Bash with a 30 min ceiling. Remove with the streaming-input session migration.
-const CLAUDE_CLI_RUNTIME_POLICY_ENV = Object.freeze({
-  CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1",
-  BASH_MAX_TIMEOUT_MS: "1800000",
-});
 const CLAUDE_API_KEY_UNAVAILABLE = "CLAUDE_RUNTIME_API_KEY_UNAVAILABLE";
 
 const resolveClaudeApiKeyFromVault: ClaudeApiKeyResolver = () =>
@@ -288,7 +269,11 @@ export class ClaudeSdkClient {
     }
   }
 
-  async startQueryTurn(options: ClaudeSdkStartQueryTurnOptions): Promise<ClaudeSdkQueryLike> {
+  /**
+   * Opens one streaming-input query (`prompt: AsyncIterable`), which keeps one Claude CLI
+   * process alive until `close()` or an unexpected exit.
+   */
+  async openStreamingSession(options: ClaudeSdkStreamingSessionOptions): Promise<ClaudeSdkStreamingSession> {
     const sdk = await this.loadModuleSafe();
     const queryFn = this.resolveFunction(sdk, "query");
     if (!queryFn) {
@@ -297,27 +282,14 @@ export class ClaudeSdkClient {
 
     const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
     const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
-    return this.createSdkQuery(options.workingDirectory, () =>
+    const input = new ClaudeSdkInputChannel();
+    const query = await this.createSdkQuery(options.workingDirectory, () =>
       queryFn({
-        prompt: options.prompt,
+        prompt: input,
         options: queryOptions,
       }),
     );
-  }
-
-  resolveSelectedModelForQuery(query: ClaudeSdkQueryLike, selectedValue: string) {
-    return resolveClaudeSdkSelectedModelForQuery(query, selectedValue);
-  }
-
-  closeQuery(query: ClaudeSdkQueryLike | null): void {
-    if (!query) {
-      return;
-    }
-    try {
-      query.close();
-    } catch {
-      // best-effort cleanup
-    }
+    return createClaudeSdkStreamingSession(query, input);
   }
 
   async createToolDefinition(options: {
@@ -417,7 +389,7 @@ export class ClaudeSdkClient {
   }
 
   private buildQueryOptions(
-    options: ClaudeSdkStartQueryTurnOptions,
+    options: ClaudeSdkStreamingSessionOptions,
     spawnEnvironment: Record<string, string | undefined>,
   ): Record<string, unknown> {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
@@ -436,7 +408,7 @@ export class ClaudeSdkClient {
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
-      env: { ...spawnEnvironment, ...CLAUDE_CLI_RUNTIME_POLICY_ENV },
+      env: spawnEnvironment,
       tools: [...CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS],
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
@@ -444,16 +416,11 @@ export class ClaudeSdkClient {
         ? { sessionId: options.sessionBinding.sessionId }
         : { resume: options.sessionBinding.sessionId }),
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
-      ...(options.abortController ? { abortController: options.abortController } : {}),
       ...(options.stderr ? { stderr: options.stderr } : {}),
       settingSources,
       ...(options.thinking ? { thinking: options.thinking } : {}),
       ...(options.effort ? { effort: options.effort } : {}),
-      ...(options.canUseTool
-        ? { canUseTool: options.canUseTool }
-        : options.autoExecuteTools
-          ? { canUseTool: allowToolUseWithoutPrompt }
-          : {}),
+      ...(options.canUseTool ? { canUseTool: options.canUseTool } : {}),
     };
   }
 

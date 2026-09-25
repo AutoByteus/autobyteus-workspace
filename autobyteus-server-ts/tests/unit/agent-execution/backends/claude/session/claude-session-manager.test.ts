@@ -9,7 +9,7 @@ import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/
 import { ClaudeSessionManager } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
 
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
@@ -20,35 +20,6 @@ const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn()
     sdkClient as never,
     { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) } as never,
   );
-
-const waitFor = async (predicate: () => boolean, label: string): Promise<void> => {
-  const deadline = Date.now() + 1_000;
-  while (Date.now() < deadline) {
-    if (predicate()) {
-      return;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  }
-  throw new Error(`Timed out waiting for ${label}`);
-};
-
-const createManuallySettledQuery = (): {
-  query: ClaudeSdkQueryLike;
-  release: () => void;
-} => {
-  let release!: () => void;
-  const released = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-  const query = {
-    async *[Symbol.asyncIterator]() {
-      await released;
-    },
-    interrupt: vi.fn(async () => undefined),
-    close: vi.fn(() => undefined),
-  };
-  return { query, release };
-};
 
 const createRunContext = (input: { runId: string; sessionId?: string }) =>
   new AgentRunContext({
@@ -220,78 +191,52 @@ describe("ClaudeSessionManager", () => {
     expect(manager.hasRunSession("run-terminate")).toBe(false);
   });
 
-  it("settles an active turn through the session-owned interrupt sequence before termination cleanup", async () => {
-    const controlledQuery = createManuallySettledQuery();
-    const closeQuery = vi.fn((query: ClaudeSdkQueryLike | null) => {
-      query?.close();
-    });
-    const sdkClient = {
-      getSessionMessages: vi.fn(async () => []),
-      listModels: vi.fn(async () => []),
-      startQueryTurn: vi.fn(async () => controlledQuery.query),
-      closeQuery,
-    };
+  it("settles an active turn as interrupted, then closes the run's Claude process before SESSION_TERMINATED (AC-008)", async () => {
+    const sdkClient = createFakeClaudeSdkClient({});
     const manager = createManager(sdkClient);
     const session = await manager.createRunSession(
       createRunContext({ runId: "run-active-terminate" }) as never,
     );
     const events: Array<{ method: string; activeTurnId: string | null }> = [];
     session.subscribeRuntimeEvents((event) => {
-      events.push({
-        method: event.method,
-        activeTurnId: session.activeTurnId,
-      });
+      events.push({ method: event.method, activeTurnId: session.activeTurnId });
     });
-
     const clearPendingToolApprovals = vi.fn();
-    (manager as any).toolingCoordinator.clearPendingToolApprovals =
-      clearPendingToolApprovals;
+    (manager as any).toolingCoordinator.clearPendingToolApprovals = clearPendingToolApprovals;
 
-    const { turnId } = await session.startTurn(new AgentInputUserMessage("hello"));
-    await waitFor(
-      () =>
-        (manager as any).activeQueriesByRunId.get("run-active-terminate") ===
-        controlledQuery.query,
-      "active Claude query registration",
-    );
-    const startQueryOptions = sdkClient.startQueryTurn.mock.calls[0]?.[0] as {
-      abortController?: AbortController;
-    };
-    expect(startQueryOptions.abortController).toBeInstanceOf(AbortController);
-    clearPendingToolApprovals.mockImplementationOnce(() => {
-      expect(startQueryOptions.abortController?.signal.aborted).toBe(false);
-    });
-    const terminatePromise = manager.terminateRun("run-active-terminate");
-    await waitFor(
-      () => startQueryOptions.abortController?.signal.aborted === true,
-      "active terminate abort signal",
-    );
+    const started = await session.submitInput(new AgentInputUserMessage("hello"), { kind: "start_turn" });
+    await flushClaudeSession();
+    expect(started.accepted).toBe(true);
+    sdkClient.current.init();
+    await flushClaudeSession();
 
-    expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
+    await manager.terminateRun("run-active-terminate");
+
     expect(clearPendingToolApprovals).toHaveBeenCalledWith(
       "run-active-terminate",
       "Tool approval cancelled because run was closed.",
     );
-    expect(events.map((event) => event.method)).not.toContain(
-      ClaudeSessionEventName.SESSION_TERMINATED,
-    );
-    expect(session.activeTurnId).toBe(turnId);
-
-    controlledQuery.release();
-    await terminatePromise;
-
     const eventMethods = events.map((event) => event.method);
     const interruptedIndex = eventMethods.indexOf(ClaudeSessionEventName.TURN_INTERRUPTED);
     const terminatedIndex = eventMethods.indexOf(ClaudeSessionEventName.SESSION_TERMINATED);
     expect(interruptedIndex).toBeGreaterThanOrEqual(0);
     expect(terminatedIndex).toBeGreaterThan(interruptedIndex);
-    expect(
-      events.find((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED)
-        ?.activeTurnId,
-    ).toBeNull();
+    expect(events[interruptedIndex]?.activeTurnId).toBeNull();
+    expect(sdkClient.current.close).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.interruptAndCancelQueued).not.toHaveBeenCalled();
     expect(manager.hasRunSession("run-active-terminate")).toBe(false);
-    expect(closeQuery).toHaveBeenCalledTimes(1);
-    expect(closeQuery).toHaveBeenCalledWith(controlledQuery.query);
-    expect(controlledQuery.query.interrupt).not.toHaveBeenCalled();
+  });
+
+  it("closes the previous run process when a run session is replaced", async () => {
+    const sdkClient = createFakeClaudeSdkClient({});
+    const manager = createManager(sdkClient);
+    const session = await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never);
+    await session.submitInput(new AgentInputUserMessage("hello"), { kind: "start_turn" });
+    await flushClaudeSession();
+    const first = sdkClient.current;
+
+    await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never);
+
+    expect(first.close).toHaveBeenCalledTimes(1);
   });
 });

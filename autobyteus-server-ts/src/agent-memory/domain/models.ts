@@ -20,6 +20,7 @@ type MemoryTraceEventBase = {
   toolResult?: unknown | null;
   toolError?: string | null;
   media?: RawTraceMedia | null;
+  senderId?: string | null;
   ts: number;
 };
 

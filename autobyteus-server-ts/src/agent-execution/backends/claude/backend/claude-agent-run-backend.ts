@@ -14,7 +14,7 @@ const logger = {
 };
 
 export class ClaudeAgentRunBackend implements AgentRunBackend {
-  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
+  readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly context: ClaudeRunContext;
   private readonly session: ClaudeSession;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
@@ -76,16 +76,16 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
   async dispatchUserInput(
     dispatch: AgentRunBackendInputDispatch,
   ): Promise<AgentRunBackendInputDispatchResult> {
-    if (dispatch.kind !== "start_turn") {
-      return {
-        forwarded: false,
-        code: "UNSUPPORTED_RUNTIME_COMMAND",
-        message: "Claude Agent SDK does not support active-turn input append.",
-        turnId: null,
-      };
-    }
     try {
-      const result = await this.session.startTurn(dispatch.message);
+      const result = await this.session.submitInput(
+        dispatch.message,
+        dispatch.kind === "start_turn"
+          ? { kind: "start_turn" }
+          : { kind: "append_to_active_turn", turnId: dispatch.turnId },
+      );
+      if (!result.accepted) {
+        return { forwarded: false, code: result.code, message: result.message, turnId: null };
+      }
       return {
         forwarded: true,
         turnId: result.turnId,
