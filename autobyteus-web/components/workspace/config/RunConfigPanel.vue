@@ -32,7 +32,7 @@
         v-else-if="effectiveAgentConfig && activeAgentDefinition"
         :key="activeRunConfigContextRenderKey"
         :config="effectiveAgentConfig"
-        :seed-model-identifier="agentRunConfigStore.seedModelIdentifier"
+        :seed-model-identifier="runConfigStore.seedModelIdentifier"
         :agent-definition="activeAgentDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :workspace-selection="workspaceSelection"

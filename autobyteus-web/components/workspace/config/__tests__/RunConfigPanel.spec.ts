@@ -10,6 +10,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 const { agentRunState, teamRunState, agentContextState, teamContextState, teamRunOwnerState } = vi.hoisted(() => ({
   agentRunState: {
     config: null,
+    seedModelIdentifier: null as string | null,
     workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
     isConfigured: false,
     updateAgentConfig: vi.fn((patch: Record<string, unknown>) => {
@@ -237,6 +238,7 @@ describe('RunConfigPanel', () => {
     setActivePinia(createPinia())
     workspaceCenterViewStoreMock.showChat.mockReset()
     agentRunState.config = null
+    agentRunState.seedModelIdentifier = null
     agentRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
     agentRunState.isConfigured = false
     teamRunState.config = null
@@ -309,6 +311,30 @@ describe('RunConfigPanel', () => {
     })
 
     expect(wrapper.findComponent(AgentRunConfigForm).exists()).toBe(true)
+  })
+
+  it('renders a saved Claude exact-default definition seed in the Agent Run form', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const store = useAgentRunConfigStore() as any
+    store.config = {
+      agentDefinitionId: 'claude-definition',
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'default',
+      llmConfig: null,
+      workspaceId: null,
+    }
+    store.seedModelIdentifier = 'default'
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+    })
+
+    const form = wrapper.getComponent(AgentRunConfigForm)
+    expect(form.props('seedModelIdentifier')).toBe('default')
+    expect(form.props('config')).toMatchObject({
+      runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default',
+    })
+    expect(store.config.llmModelIdentifier).toBe('default')
   })
 
   it('renders Team Form when Team Template set', async () => {
