@@ -16,8 +16,8 @@ const here=path.dirname(fileURLToPath(import.meta.url)), webDir=path.resolve(her
 const {chromium}=createRequire(path.join(webDir,'package.json'))('playwright-core');
 const chrome=process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const realAgy=process.env.AGY_REAL_COMMAND||spawnSync('which',['agy'],{encoding:'utf8'}).stdout.trim();
-const outDir=path.join(rootDir,'tickets/in-progress/antigravity-cli-runtime-redesign-20260924/api-e2e-round7-large-org-browser');
-const evidence={startedAt:new Date().toISOString(),sourceCommit:'40641dfca12d030f438075499e713750acf73574',environment:{},cases:{},failures:[],cleanup:{}};
+const outDir=path.resolve(process.env.AGY_E2E_OUTPUT_DIR||path.join(rootDir,'tickets/in-progress/antigravity-cli-runtime-redesign-20260924/api-e2e-round7-large-org-browser'));
+const evidence={startedAt:new Date().toISOString(),sourceCommit:spawnSync('git',['rev-parse','HEAD'],{cwd:rootDir,encoding:'utf8'}).stdout.trim(),environment:{},cases:{},failures:[],cleanup:{}};
 const assert=(v,m)=>{if(!v)throw new Error(m)};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const port=()=>new Promise((resolve,reject)=>{const s=net.createServer();s.once('error',reject);s.listen(0,'127.0.0.1',()=>{const n=s.address().port;s.close(()=>resolve(n))})});

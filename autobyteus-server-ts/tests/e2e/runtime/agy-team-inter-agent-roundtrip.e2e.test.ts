@@ -7,9 +7,6 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { getAgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
@@ -88,7 +85,6 @@ describeAgyRuntime(
     let testDataDir: string | null = null;
     let runtimeServerApp: FastifyInstance | null = null;
     let runtimeServerUrl: URL;
-    let originalInternalServerBaseUrl: string | undefined;
     const createdAgentDefinitionIds = new Set<string>();
     const createdTeamDefinitionIds = new Set<string>();
     const createdTeamRunIds = new Set<string>();
@@ -97,8 +93,6 @@ describeAgyRuntime(
     const createdWorkspaceRoots = new Set<string>();
 
     beforeAll(async () => {
-      originalInternalServerBaseUrl =
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
       testDataDir = await mkdtemp(
         path.join(os.tmpdir(), "agy-team-runtime-e2e-appdata-"),
       );
@@ -114,12 +108,6 @@ describeAgyRuntime(
     });
 
     afterAll(async () => {
-      if (originalInternalServerBaseUrl) {
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
-          originalInternalServerBaseUrl;
-      } else {
-        delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
-      }
       if (runtimeServerApp) {
         await runtimeServerApp.close();
         runtimeServerApp = null;
