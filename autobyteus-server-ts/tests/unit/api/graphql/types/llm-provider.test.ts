@@ -5,6 +5,7 @@ const mockModelCatalogService = vi.hoisted(() => ({
   listProviderModelCatalogSnapshots: vi.fn(),
   ensureProviderModelCatalog: vi.fn(),
   reloadProviderModelCatalog: vi.fn(),
+  runtimeModelSelectionCatalog: vi.fn(),
 }));
 
 const mockLlmProviderService = vi.hoisted(() => ({
@@ -204,7 +205,7 @@ describe('LlmProviderResolver', () => {
     expect(mockLlmProviderService.listProviderCredentialSettings).not.toHaveBeenCalled();
   });
 
-  it('maps runtime selection presentation hints and leaves other rows without one', async () => {
+  it('maps normalized offered rows without an alias target transport', async () => {
     const claudeRow = (id: string, name: string, extra: Record<string, unknown> = {}) => ({
       model_identifier: id, display_name: name, description: null,
       value: id, canonical_name: 'claude-opus-5-5[1m]', provider_id: 'ANTHROPIC',
@@ -218,9 +219,6 @@ describe('LlmProviderResolver', () => {
       ownerProvider: provider('ANTHROPIC'),
       sources: [],
       llmModels: [
-        claudeRow('default', 'Default (recommended)', {
-          selection_presentation: { recommended: false, aliasOfModelIdentifier: 'opus[1m]' },
-        }),
         claudeRow('opus[1m]', 'Opus (1M context)', {
           selection_presentation: { recommended: true, aliasOfModelIdentifier: null },
         }),
@@ -233,10 +231,23 @@ describe('LlmProviderResolver', () => {
     expect(snapshot?.llmModels.map((model) => [
       model.modelIdentifier, model.canonicalName, model.selectionPresentation,
     ])).toEqual([
-      ['default', 'claude-opus-5-5[1m]', { recommended: false, aliasOfModelIdentifier: 'opus[1m]' }],
-      ['opus[1m]', 'claude-opus-5-5[1m]', { recommended: true, aliasOfModelIdentifier: null }],
+      ['opus[1m]', 'claude-opus-5-5[1m]', { recommended: true }],
       ['plain', 'claude-opus-5-5[1m]', null],
     ]);
+  });
+
+  it('resolves exact current descriptors separately without adding them to offered snapshots', async () => {
+    const raw = { model_identifier: 'default', display_name: 'Default', description: null,
+      value: 'default', canonical_name: 'claude-opus-5-5[1m]', provider_id: 'ANTHROPIC',
+      provider_name: 'Anthropic', provider_type: 'ANTHROPIC', runtime: 'api', config_schema: null };
+    mockModelCatalogService.runtimeModelSelectionCatalog.mockResolvedValue({ offeredModels: [],
+      findExactCurrent: (id: string) => id === 'default' ? raw : null });
+    await expect(new LlmProviderResolver().runtimeCurrentModelDescriptors('claude_agent_sdk',
+      ['default', 'default', 'missing'])).resolves.toEqual([
+      { identifier: 'default', model: expect.objectContaining({ modelIdentifier: 'default', canonicalName: 'claude-opus-5-5[1m]' }) },
+      { identifier: 'missing', model: null },
+    ]);
+    expect(mockModelCatalogService.runtimeModelSelectionCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk');
   });
 
   it('delegates exact-provider ensure and reload mutations', async () => {

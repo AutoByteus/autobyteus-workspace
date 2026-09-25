@@ -5,6 +5,7 @@ import { nextTick } from 'vue'
 import MemberOverrideItem from '../MemberOverrideItem.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
+import { getApolloClient } from '~/utils/apolloClient'
 import type { AgentConfigOverride, ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
 import type { EditableTeamFormAgentNode } from '~/types/agent/EditableTeamRunFormModel'
 import type { ExistingTeamFormAgentNode } from '~/types/agent/ExistingTeamRunFormModel'
@@ -16,6 +17,7 @@ const flushPromises = async () => {
 
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: vi.fn() }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: vi.fn() }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
 
 const model = (
   modelIdentifier: string,
@@ -87,6 +89,7 @@ const editableNode = (input: {
   const baseline = resolved(input.baseline)
   return {
     mode: 'editable',
+    seedModelIdentifier: baseline.llmModelIdentifier,
     kind: 'agent',
     address: '/reviewer',
     displayName: 'Reviewer',
@@ -108,6 +111,12 @@ const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): Existin
   isCustomized: true,
   directlyEdited: false,
   effectiveConfig: resolved(changes),
+  modelOptions: { status: 'ready', options: { currentModelIdentifier: resolved(changes).llmModelIdentifier,
+    currentModel: resolved(changes).runtimeKind === 'removed-runtime' ? null : {
+      llmModelIdentifier: resolved(changes).llmModelIdentifier, providerName: 'OpenAI',
+      displayName: resolved(changes).llmModelIdentifier, canonicalName: resolved(changes).llmModelIdentifier,
+      description: null, configSchema: codexSchema, recommended: false,
+    }, replacements: [], unavailableReason: null } },
   storedWorkspace: {
     workspaceId: null,
     displayName: '/history/reviewer',
@@ -130,6 +139,9 @@ describe('MemberOverrideItem', () => {
 
   beforeEach(() => {
     setActivePinia(createPinia())
+    ;(getApolloClient as any).mockReturnValue({ query: vi.fn(async ({ variables }: any) => ({ data: {
+      runtimeCurrentModelDescriptors: variables.identifiers.map((identifier: string) => ({ identifier, model: null })),
+    } })) })
     llmStore = {
       providersWithModels: [],
       providerSnapshots: vi.fn(() => []),

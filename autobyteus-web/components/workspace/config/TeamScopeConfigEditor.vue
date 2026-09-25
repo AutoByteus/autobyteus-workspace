@@ -23,6 +23,7 @@
     <RuntimeModelConfigFields
       :runtime-kind="scope.effectiveConfig.runtimeKind"
       :llm-model-identifier="scope.effectiveConfig.llmModelIdentifier"
+      :seed-model-identifier="editableScope?.seedModelIdentifier"
       :llm-config="scope.effectiveConfig.llmConfig"
       :disabled="scope.mode === 'editable' && isInteractionDisabled"
       :read-only="scope.mode === 'editable' && isInteractionDisabled"
@@ -175,6 +176,7 @@
       <RuntimeModelConfigFields
         :runtime-kind="scope.effectiveConfig.runtimeKind"
         :llm-model-identifier="scope.effectiveConfig.llmModelIdentifier"
+      :seed-model-identifier="editableScope?.seedModelIdentifier"
         :llm-config="scope.effectiveConfig.llmConfig"
         :disabled="scope.mode === 'editable' && isInteractionDisabled"
         :read-only="scope.mode === 'editable' && isInteractionDisabled"

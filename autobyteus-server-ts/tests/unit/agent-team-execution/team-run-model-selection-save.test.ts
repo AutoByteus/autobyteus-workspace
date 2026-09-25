@@ -8,13 +8,16 @@ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team
 import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
 import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
 import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
-const harness = (physicalOutcome = 'committed', readback = 'ok') => {
+const view = (rows: any[]) => ({ offeredModels: rows,
+  findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
+
+const harness = (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
   let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
   saved = structuredClone(saved);
   saved.rootTeam.taskExecutions = [{ address: '/task-run', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
     startedAt: '2026-09-01T00:00:00Z', settledAt: '2026-09-01T00:01:00Z' }];
   const root = saved.rootTeam.defaultLaunchConfiguration;
-  root.runtimeKind = 'codex_app_server'; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
+  root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
   const member = saved.rootTeam.members[0].launchConfiguration;
   Object.assign(member, root, { llmModelIdentifier: 'large' });
   let attempted = false;
@@ -27,8 +30,8 @@ const harness = (physicalOutcome = 'committed', readback = 'ok') => {
     if (physicalOutcome !== 'not_renamed') saved = next;
     return { outcome: physicalOutcome };
   });
-  const catalog = { listLlmModels: vi.fn(async () => ['small','equal','large'].map(model_identifier => ({ model_identifier } as any))) };
-  const capacity = { resolveMany: vi.fn(async () => Object.fromEntries([['small',128000],['equal',128000],['large',272000]].map(([id,tokens])=>[id,{ kind: 'known' as const, tokens: Number(tokens), source: 'provider' }]))) };
+  const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => view(['small','equal','large'].map(model_identifier => ({ model_identifier } as any)))) };
+  const capacity = { resolveMany: vi.fn(() => ({ small: 128000, equal: 128000, large: 272000 })) };
   const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
   const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any);
   const manager = new AgentTeamRunManager({ memoryDir: '/tmp/model-save-unit-no-disk', flatTeamExecutionFactory, memberExecutionContextBuilder,
@@ -37,18 +40,18 @@ const harness = (physicalOutcome = 'committed', readback = 'ok') => {
   return { manager, read, write, capacity, saved: () => saved };
 };
 describe('configured Team model selection Save', () => {
-  it('validates every original baseline before writing and does not omit incompatible children', async () => {
-    const h = harness(); const original = structuredClone(h.saved());
+  it('validates every native original baseline before writing and does not omit incompatible children', async () => {
+    const h = harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
     const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [
       { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', llmModelIdentifier: 'equal', llmConfig: null },
       { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null },
     ] });
     expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'patches[/member].llmModelIdentifier' }] });
     expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
-    expect(h.capacity.resolveMany).toHaveBeenCalledTimes(1);
+    expect(h.capacity.resolveMany).toHaveBeenCalledTimes(2);
   });
-  it('commits one tree preserving configured identities and task records; later Save uses new baseline', async () => {
-    const h = harness(); const original = structuredClone(h.saved());
+  it('commits one native tree preserving configured identities and task records; later Save uses new baseline', async () => {
+    const h = harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
     const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', llmModelIdentifier: 'large', llmConfig: null };
     expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [patch] })).outcome).toBe('UPDATED');
     expect(h.write).toHaveBeenCalledTimes(1);

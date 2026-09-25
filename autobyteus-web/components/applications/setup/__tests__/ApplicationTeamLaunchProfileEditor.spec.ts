@@ -3,7 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ApplicationTeamLaunchProfileEditor from '../ApplicationTeamLaunchProfileEditor.vue'
 
-const { loadRuntimeProviderGroupsForSelectionMock } = vi.hoisted(() => ({
+const { loadRuntimeProviderGroupsForSelectionMock, loadRuntimeCurrentModelDescriptorsMock } = vi.hoisted(() => ({
   loadRuntimeProviderGroupsForSelectionMock: vi.fn(async (runtimeKind: string) => ([
     {
       provider: { name: runtimeKind },
@@ -14,6 +14,11 @@ const { loadRuntimeProviderGroupsForSelectionMock } = vi.hoisted(() => ({
       }],
     },
   ])),
+  loadRuntimeCurrentModelDescriptorsMock: vi.fn(async () => ({})),
+}))
+vi.mock('~/composables/useRuntimeCurrentModelDescriptor', () => ({
+  loadRuntimeCurrentModelDescriptors: loadRuntimeCurrentModelDescriptorsMock,
+  formatRuntimeCurrentModelDisplay: (_runtime: string, model: { name: string }) => model.name,
 }))
 
 vi.mock('~/composables/useLocalization', () => ({
@@ -43,7 +48,7 @@ vi.mock('~/composables/useLocalization', () => ({
 vi.mock('~/components/agentTeams/SearchableGroupedSelect.vue', () => ({
   default: defineComponent({
     name: 'SearchableGroupedSelect',
-    props: ['modelValue', 'options', 'disabled', 'placeholder', 'searchPlaceholder'],
+    props: ['modelValue', 'options', 'selectedDisplay', 'disabled', 'placeholder', 'searchPlaceholder'],
     emits: ['update:modelValue'],
     template: '<div data-testid="model-select-stub"></div>',
   }),
@@ -205,6 +210,46 @@ describe('ApplicationTeamLaunchProfileEditor', () => {
       blockingReason: null,
       hasEffectiveResource: true,
     })
+  })
+
+  it('keeps exact inherited Claude default ready without re-offering it in the picker', async () => {
+    const current = { modelIdentifier: 'default', name: 'Opus current', canonicalName: 'claude-opus',
+      providerName: 'Anthropic', providerType: 'CLAUDE_AGENT_SDK', description: null, configSchema: null }
+    loadRuntimeCurrentModelDescriptorsMock.mockResolvedValue({ default: current })
+    const profiles = [{ ...inheritedProfiles[1], llmModelIdentifier: 'default' }]
+    const wrapper = mount(ApplicationTeamLaunchProfileEditor, {
+      props: { slot, inheritedProfiles: profiles, draft: { kind: 'AGENT_TEAM',
+        defaults: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', workspaceRootPath: '' },
+        memberProfiles: [{ memberAddress: '/writer', displayName: 'writer',
+          agentDefinitionId: 'bundle-agent__writer-new', runtimeKind: '', llmModelIdentifier: '' }],
+      } },
+    })
+    await flushPromises()
+
+    expect(loadRuntimeCurrentModelDescriptorsMock).toHaveBeenCalledWith('claude_agent_sdk', ['default'])
+    expect(wrapper.getComponent({ name: 'SearchableGroupedSelect' }).props('selectedDisplay')).toBe('Opus current')
+    expect(wrapper.getComponent({ name: 'SearchableGroupedSelect' }).props('options')).toEqual([])
+    expect(wrapper.emitted('readiness-change')?.at(-1)?.[0]).toEqual({
+      isReady: true, blockingReason: null, hasEffectiveResource: true,
+    })
+  })
+
+  it('resolves a saved team default even when its inherited baseline is a different model', async () => {
+    loadRuntimeCurrentModelDescriptorsMock.mockResolvedValue({ default: { modelIdentifier: 'default',
+      name: 'Saved Opus', canonicalName: 'claude-opus', providerName: 'Anthropic',
+      providerType: 'CLAUDE_AGENT_SDK', description: null, configSchema: null } })
+    const saved = { kind: 'AGENT_TEAM' as const,
+      defaults: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', workspaceRootPath: '' },
+      memberProfiles: [{ memberAddress: '/writer', displayName: 'writer',
+        agentDefinitionId: 'bundle-agent__writer-new', runtimeKind: '', llmModelIdentifier: '' }] }
+    const wrapper = mount(ApplicationTeamLaunchProfileEditor, {
+      props: { slot, inheritedProfiles: [inheritedProfiles[1]], draft: saved, serverOriginDraft: saved },
+    })
+    await flushPromises()
+
+    expect(loadRuntimeCurrentModelDescriptorsMock).toHaveBeenCalledWith('claude_agent_sdk', ['default'])
+    expect(wrapper.getComponent({ name: 'SearchableGroupedSelect' }).props('selectedDisplay')).toBe('Saved Opus')
+    expect(wrapper.emitted('readiness-change')?.at(-1)?.[0]).toMatchObject({ isReady: true })
   })
 
   it('preserves stale topology until explicit replacement, then carries only exact member identity matches', async () => {

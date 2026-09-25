@@ -6,6 +6,9 @@ import { AgentOrgRunService } from "../../../src/agent-org-execution/services/ag
 import { RunModelSelectionService } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { AgyDiscoveryError } from "../../../src/runtime-management/antigravity-cli-capability.js";
 
+const view = (rows: any[]) => ({ offeredModels: rows,
+  findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
+
 const harness = (large = false) => {
   const definition = new AgentOrgDefinition({
     id: "org-1", name: "Org One", description: "", instructions: "",
@@ -23,9 +26,9 @@ const harness = (large = false) => {
     nodes: (large ? ["lead", "worker-one", "worker-two", "worker-three"] : ["lead"])
       .map((name) => new TeamMember({ memberName: name, ref: `${name}-def`, refScope: "shared" })),
   });
-  const catalog = { listLlmModels: vi.fn(async (_runtime: string, _workspace: string) => ["root-model", "team-model", "agent-model"].map(model_identifier => ({
+  const catalog = { runtimeModelSelectionCatalog: vi.fn(async (_runtime: string, _workspace: string) => view(["root-model", "team-model", "agent-model"].map(model_identifier => ({
     model_identifier, config_schema: { properties: { effort: { type: "string", enum: ["low", "high"] } } },
-  }))) };
+  })))) };
   const capacity = { resolveMany: vi.fn() };
   const create = vi.fn(async (tree) => ({ orgRunId: tree.rootOrg.orgRunId, getExecutionTreeSnapshot: () => tree }));
   let identitySequence = 0;
@@ -64,7 +67,7 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     const run = await h.service.create(input);
     expect(validateMany).toHaveBeenCalledOnce();
     expect(validateMany.mock.calls[0]![0]).toHaveLength(18);
-    expect(h.catalog.listLlmModels).toHaveBeenCalledExactlyOnceWith("antigravity_cli", "/workspace/shared");
+    expect(h.catalog.runtimeModelSelectionCatalog).toHaveBeenCalledExactlyOnceWith("antigravity_cli", "/workspace/shared");
     const members = run.getExecutionTreeSnapshot().rootOrg.members;
     expect(members).toHaveLength(5);
     expect(members.filter((member) => "members" in member).flatMap((team) => "members" in team ? team.members : [])).toHaveLength(12);
@@ -76,7 +79,7 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     await h.service.create({ agentOrgDefinitionId: "org-1", rootConfiguration: {
       ...command().rootConfiguration, runtimeKind: "antigravity_cli", workspaceRootPath: "/workspace/shared",
     }, teamOverrides: [{ address: "/team-two", configuration: { workspaceRootPath: "/workspace/other" } }] });
-    expect(h.catalog.listLlmModels.mock.calls).toEqual([
+    expect(h.catalog.runtimeModelSelectionCatalog.mock.calls).toEqual([
       ["antigravity_cli", "/workspace/shared"], ["antigravity_cli", "/workspace/other"],
     ]);
   });
@@ -86,18 +89,18 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     await h.service.create({ agentOrgDefinitionId: "org-1", rootConfiguration: {
       ...command().rootConfiguration, runtimeKind: "antigravity_cli", workspaceRootPath: "/workspace/shared",
     }, agentOverrides: [{ address: "/direct-one", configuration: { runtimeKind: "codex_app_server" } }] });
-    expect(h.catalog.listLlmModels.mock.calls).toEqual([
+    expect(h.catalog.runtimeModelSelectionCatalog.mock.calls).toEqual([
       ["antigravity_cli", "/workspace/shared"], ["codex_app_server", "/workspace/shared"],
     ]);
   });
 
   it("preserves a safe AGY discovery diagnostic at the first affected address", async () => {
     const h = harness();
-    h.catalog.listLlmModels.mockImplementation(async (_runtime: string, workspace: string) => {
+    h.catalog.runtimeModelSelectionCatalog.mockImplementation(async (_runtime: string, workspace: string) => {
       if (workspace === "/workspace/team") throw new AgyDiscoveryError("AGY_MODEL_DISCOVERY_TIMEOUT");
-      return ["root-model", "team-model", "agent-model"].map(model_identifier => ({
+      return view(["root-model", "team-model", "agent-model"].map(model_identifier => ({
         model_identifier, config_schema: { properties: { effort: { type: "string", enum: ["low", "high"] } } },
-      }));
+      })));
     });
     const input = command();
     input.rootConfiguration.runtimeKind = "antigravity_cli";
@@ -112,12 +115,12 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     const input = command();
     input.rootConfiguration.runtimeKind = "antigravity_cli";
     const failed = harness();
-    failed.catalog.listLlmModels.mockRejectedValue(new Error("secret /private/credential-path"));
+    failed.catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error("secret /private/credential-path"));
     await expect(failed.service.create(input)).rejects.toThrow(
       "Invalid configuration for '/': Antigravity model discovery failed; check authentication or network and retry.",
     );
     const missing = harness();
-    missing.catalog.listLlmModels.mockResolvedValue([]);
+    missing.catalog.runtimeModelSelectionCatalog.mockResolvedValue(view([]));
     await expect(missing.service.create(input)).rejects.toThrow(
       "Invalid configuration for '/': The selected model is unavailable.",
     );
@@ -137,7 +140,7 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
   it("validates complete root, mounted Team and exact Agent scopes without treating launch as stopped replacement", async () => {
     const h = harness();
     const run = await h.service.create(command());
-    expect(h.catalog.listLlmModels.mock.calls).toEqual([
+    expect(h.catalog.runtimeModelSelectionCatalog.mock.calls).toEqual([
       ["codex_app_server", "/workspace/root"], ["codex_app_server", "/workspace/team"],
     ]);
     expect(h.capacity.resolveMany).not.toHaveBeenCalled();

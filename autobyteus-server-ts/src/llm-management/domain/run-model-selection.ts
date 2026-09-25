@@ -8,9 +8,18 @@ export type RunModelSelectionContext = Readonly<{
   currentModelIdentifier: string;
   workspaceRootPath: string;
 }>;
-export type RunModelOption = Readonly<{ llmModelIdentifier: string }>;
+export type RunModelChoice = Readonly<{
+  llmModelIdentifier: string;
+  providerName: string;
+  displayName: string;
+  canonicalName: string;
+  description: string | null;
+  configSchema: Record<string, unknown> | null;
+  recommended: boolean;
+}>;
 export type RunModelOptions = Readonly<{
   currentModelIdentifier: string;
-  replacements: readonly RunModelOption[];
+  currentModel: RunModelChoice | null;
+  replacements: readonly RunModelChoice[];
   unavailableReason: string | null;
 }>;

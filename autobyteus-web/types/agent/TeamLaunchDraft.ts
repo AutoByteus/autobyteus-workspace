@@ -79,6 +79,8 @@ export type TeamLaunchConfigEdit =
 export interface TeamLaunchDraft {
   readonly draftId: TeamLaunchDraftId
   readonly config: Readonly<TeamRunConfig>
+  /** Immutable server-origin template or copied-run configuration. */
+  readonly seedConfig: Readonly<TeamRunConfig>
   readonly teamWorkspaceAuthoringByTeamAddress: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>
   readonly focusedMemberAddress: AgentTeamAddress
   readonly pendingInputsByMemberAddress: Readonly<Record<AgentTeamAddress, TeamLaunchPendingInput>>

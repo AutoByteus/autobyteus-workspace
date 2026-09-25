@@ -214,6 +214,7 @@ export type AgentOrgRunModelConfigPatchInput = {
 
 export type AgentOrgRunModelOptionObject = {
   __typename?: 'AgentOrgRunModelOptionObject';
+  currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
   replacements: Array<RunModelOptionObject>;
   scopeAddress: Scalars['String']['output'];
@@ -1309,7 +1310,6 @@ export enum ModelMetadataProvenance {
 
 export type ModelSelectionPresentation = {
   __typename?: 'ModelSelectionPresentation';
-  aliasOfModelIdentifier?: Maybe<Scalars['String']['output']>;
   recommended: Scalars['Boolean']['output'];
 };
 
@@ -1964,6 +1964,7 @@ export type Query = {
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
+  runtimeCurrentModelDescriptors: Array<RuntimeCurrentModelDescriptorObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
@@ -2255,6 +2256,12 @@ export type QueryProviderModelCatalogSnapshotsArgs = {
 };
 
 
+export type QueryRuntimeCurrentModelDescriptorsArgs = {
+  identifiers: Array<Scalars['String']['input']>;
+  runtimeKind: Scalars['String']['input'];
+};
+
+
 export type QuerySearchFilesArgs = {
   query: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
@@ -2451,11 +2458,18 @@ export type RunModelConfigFieldErrorObject = {
 
 export type RunModelOptionObject = {
   __typename?: 'RunModelOptionObject';
+  canonicalName: Scalars['String']['output'];
+  configSchema?: Maybe<Scalars['JSON']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
   llmModelIdentifier: Scalars['String']['output'];
+  providerName: Scalars['String']['output'];
+  recommended: Scalars['Boolean']['output'];
 };
 
 export type RunModelOptionsObject = {
   __typename?: 'RunModelOptionsObject';
+  currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
   replacements: Array<RunModelOptionObject>;
   unavailableReason?: Maybe<Scalars['String']['output']>;
@@ -2498,6 +2512,12 @@ export type RuntimeAvailabilityObject = {
   enabled: Scalars['Boolean']['output'];
   reason?: Maybe<Scalars['String']['output']>;
   runtimeKind: Scalars['String']['output'];
+};
+
+export type RuntimeCurrentModelDescriptorObject = {
+  __typename?: 'RuntimeCurrentModelDescriptorObject';
+  identifier: Scalars['String']['output'];
+  model?: Maybe<ModelDetail>;
 };
 
 export type SearchConfig = {
@@ -2753,6 +2773,7 @@ export type TeamScopeLaunchConfigInput = {
 
 export type TeamScopeModelOptionsObject = {
   __typename?: 'TeamScopeModelOptionsObject';
+  currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
   replacements: Array<RunModelOptionObject>;
   scopeAddress: Scalars['String']['output'];
@@ -3602,7 +3623,7 @@ export type EnsureProviderModelCatalogMutationVariables = Exact<{
 }>;
 
 
-export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ReloadProviderModelCatalogMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
@@ -3610,7 +3631,7 @@ export type ReloadProviderModelCatalogMutationVariables = Exact<{
 }>;
 
 
-export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ProbeCustomProviderMutationVariables = Exact<{
   input: CustomProviderInputObject;
@@ -3952,14 +3973,14 @@ export type GetProviderCredentialSettingsQueryVariables = Exact<{
 
 export type GetProviderCredentialSettingsQuery = { __typename?: 'Query', providerCredentialSettings: Array<{ __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } }> };
 
-export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
+export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
 
 export type GetProviderModelCatalogSnapshotsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4205,21 +4226,21 @@ export type GetAgentOrgRunInspectionQueryVariables = Exact<{
 
 export type GetAgentOrgRunInspectionQuery = { __typename?: 'Query', getAgentOrgRunInspection: any };
 
-export type RunModelOptionsFieldsFragment = { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string }> };
+export type RunModelOptionsFieldsFragment = { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> };
 
 export type AgentRunModelOptionsQueryVariables = Exact<{
   agentRunId: Scalars['String']['input'];
 }>;
 
 
-export type AgentRunModelOptionsQuery = { __typename?: 'Query', agentRunModelOptions: { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string }> } };
+export type AgentRunModelOptionsQuery = { __typename?: 'Query', agentRunModelOptions: { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> } };
 
 export type TeamRunModelOptionsQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string }> }> };
+export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
 
 export type AgentOrgRunConfigQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
@@ -4234,7 +4255,15 @@ export type AgentOrgRunModelOptionsQueryVariables = Exact<{
 }>;
 
 
-export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string }> }> };
+export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+
+export type RuntimeCurrentModelDescriptorsQueryVariables = Exact<{
+  runtimeKind: Scalars['String']['input'];
+  identifiers: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type RuntimeCurrentModelDescriptorsQuery = { __typename?: 'Query', runtimeCurrentModelDescriptors: Array<{ __typename?: 'RuntimeCurrentModelDescriptorObject', identifier: string, model?: { __typename?: 'ModelDetail', modelIdentifier: string, name: string, canonicalName: string, providerName: string, providerType: string, description?: string | null, configSchema?: any | null } | null }> };
 
 export type GetRuntimeAvailabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4793,7 +4822,6 @@ export const ProviderModelCatalogSnapshotFieldsFragmentDoc = gql`
     metadataProvenance
     selectionPresentation {
       recommended
-      aliasOfModelIdentifier
     }
   }
   audioModels {
@@ -4932,8 +4960,23 @@ export const RunModelOptionsFieldsFragmentDoc = gql`
     fragment RunModelOptionsFields on RunModelOptionsObject {
   currentModelIdentifier
   unavailableReason
+  currentModel {
+    llmModelIdentifier
+    providerName
+    displayName
+    canonicalName
+    description
+    configSchema
+    recommended
+  }
   replacements {
     llmModelIdentifier
+    providerName
+    displayName
+    canonicalName
+    description
+    configSchema
+    recommended
   }
 }
     `;
@@ -9802,8 +9845,23 @@ export const TeamRunModelOptionsDocument = gql`
     scopeAddress
     currentModelIdentifier
     unavailableReason
+    currentModel {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
     replacements {
       llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
     }
   }
 }
@@ -9877,8 +9935,23 @@ export const AgentOrgRunModelOptionsDocument = gql`
     scopeAddress
     currentModelIdentifier
     unavailableReason
+    currentModel {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
     replacements {
       llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
     }
   }
 }
@@ -9907,6 +9980,49 @@ export function useAgentOrgRunModelOptionsLazyQuery(variables?: AgentOrgRunModel
   return VueApolloComposable.useLazyQuery<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>(AgentOrgRunModelOptionsDocument, variables, options);
 }
 export type AgentOrgRunModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>;
+export const RuntimeCurrentModelDescriptorsDocument = gql`
+    query RuntimeCurrentModelDescriptors($runtimeKind: String!, $identifiers: [String!]!) {
+  runtimeCurrentModelDescriptors(
+    runtimeKind: $runtimeKind
+    identifiers: $identifiers
+  ) {
+    identifier
+    model {
+      modelIdentifier
+      name
+      canonicalName
+      providerName
+      providerType
+      description
+      configSchema
+    }
+  }
+}
+    `;
+
+/**
+ * __useRuntimeCurrentModelDescriptorsQuery__
+ *
+ * To run a query within a Vue component, call `useRuntimeCurrentModelDescriptorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRuntimeCurrentModelDescriptorsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useRuntimeCurrentModelDescriptorsQuery({
+ *   runtimeKind: // value for 'runtimeKind'
+ *   identifiers: // value for 'identifiers'
+ * });
+ */
+export function useRuntimeCurrentModelDescriptorsQuery(variables: RuntimeCurrentModelDescriptorsQueryVariables | VueCompositionApi.Ref<RuntimeCurrentModelDescriptorsQueryVariables> | ReactiveFunction<RuntimeCurrentModelDescriptorsQueryVariables>, options: VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>(RuntimeCurrentModelDescriptorsDocument, variables, options);
+}
+export function useRuntimeCurrentModelDescriptorsLazyQuery(variables?: RuntimeCurrentModelDescriptorsQueryVariables | VueCompositionApi.Ref<RuntimeCurrentModelDescriptorsQueryVariables> | ReactiveFunction<RuntimeCurrentModelDescriptorsQueryVariables>, options: VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>(RuntimeCurrentModelDescriptorsDocument, variables, options);
+}
+export type RuntimeCurrentModelDescriptorsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>;
 export const GetRuntimeAvailabilitiesDocument = gql`
     query GetRuntimeAvailabilities {
   runtimeAvailabilities {

@@ -1,7 +1,8 @@
 import gql from 'graphql-tag'
 const options = gql`fragment RunModelOptionsFields on RunModelOptionsObject {
   currentModelIdentifier unavailableReason
-  replacements { llmModelIdentifier }
+  currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
+  replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
 }`
 export const AgentRunModelOptions = gql`query AgentRunModelOptions($agentRunId: String!) {
   agentRunModelOptions(agentRunId: $agentRunId) { ...RunModelOptionsFields }
@@ -9,7 +10,8 @@ export const AgentRunModelOptions = gql`query AgentRunModelOptions($agentRunId: 
 export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: String!) {
   teamRunModelOptions(teamRunId: $teamRunId) {
     scopeKind scopeAddress currentModelIdentifier unavailableReason
-    replacements { llmModelIdentifier }
+    currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
+    replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   }
 }`
 
@@ -21,6 +23,7 @@ export const AgentOrgRunConfig = gql`query AgentOrgRunConfig($orgRunId: String!)
 export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRunId: String!, $teamWorkspacePatches: [AgentOrgTeamWorkspacePatchInput!]!) {
   agentOrgRunModelOptions(orgRunId: $orgRunId, teamWorkspacePatches: $teamWorkspacePatches) {
     scopeKind scopeAddress currentModelIdentifier unavailableReason
-    replacements { llmModelIdentifier }
+    currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
+    replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   }
 }`

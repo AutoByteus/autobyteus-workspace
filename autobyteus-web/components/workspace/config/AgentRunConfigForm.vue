@@ -10,6 +10,7 @@
     <RuntimeModelConfigFields
       :runtime-kind="config.runtimeKind"
       :llm-model-identifier="config.llmModelIdentifier"
+      :seed-model-identifier="existingRun ? null : seedModelIdentifier"
       :llm-config="config.llmConfig"
       :disabled="!existingRun && isFormReadOnly"
       :read-only="!existingRun && isFormReadOnly"
@@ -116,6 +117,7 @@ interface WorkspaceLoadingState {
 
 const props = defineProps<{
   config: AgentRunConfig | any;
+  seedModelIdentifier?: string | null;
   agentDefinition: Pick<AgentDefinition, 'name'>;
   workspaceLoadingState: WorkspaceLoadingState;
   workspaceSelection: WorkspaceSelectionState;

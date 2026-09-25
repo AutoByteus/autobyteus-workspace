@@ -31,11 +31,19 @@ export class RunModelSelectionObject {
 export class RunModelOptionObject {
   @Field(() => String)
   llmModelIdentifier!: string;
+  @Field(() => String) providerName!: string;
+  @Field(() => String) displayName!: string;
+  @Field(() => String) canonicalName!: string;
+  @Field(() => String, { nullable: true }) description!: string | null;
+  @Field(() => GraphQLJSON, { nullable: true }) configSchema!: Record<string, unknown> | null;
+  @Field(() => Boolean) recommended!: boolean;
 }
 @ObjectType()
 export class RunModelOptionsObject {
   @Field(() => String)
   currentModelIdentifier!: string;
+  @Field(() => RunModelOptionObject, { nullable: true })
+  currentModel!: RunModelOptionObject | null;
   @Field(() => [RunModelOptionObject])
   replacements!: readonly RunModelOptionObject[];
   @Field(() => String, { nullable: true })

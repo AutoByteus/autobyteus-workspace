@@ -2,105 +2,85 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review selected and passed (ARCH-REV-001). `get_handoff_rules` selected the Medium/High implementation-owned Local Fix route back to `/code_reviewer` for IR-002 source re-review.
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/requirements-doc.md` (approved SR-002).
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/investigation-notes.md`.
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/solution-revision-record.md`.
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-spec.md` (SR-003).
-- Design supplement: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/architecture-design-result.md`.
-- Supplemental task artifacts: user screenshot at `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_c4679009eae342829ca9397f5224a9d7/solution_designer_ccc76494f523485bb3ce745671dd8b90/context_files/ctx_2e4254c59c0d__image.png` is current-state evidence only. Product prototype/UI-UX spec: N/A — not applicable. Prior completed ticket is read-only historical context, indexed upstream.
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-review-report.md` (Pass).
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/architecture-review-revision-record.md` (ARCH-REV-001).
-- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/code-review-report.md` (CRR-001, F-001 Local Fix); review history: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/code-review-revision-record.md`.
+- Review: ARCH-REV-003 **Pass** on SR-009 design against SR-006-approved requirements; prior ARCH-REV-002 DR-001 resolved. Independent source review is required for Medium/High.
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/requirements-doc.md` (SR-002/SR-006 approval).
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/investigation-notes.md`; cumulative solution history: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/solution-revision-record.md`.
+- Current design: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-spec.md` (SR-009). Recovery handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/architecture-design-recovery-result.md`. Earlier design supplements remain historical context: `architecture-design-result.md`, `architecture-design-revision-result.md`.
+- Independent review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/architecture-review-revision-record.md`.
+- Supplemental evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/model-picker-verification-investigation.md`; user screenshots and the completed `claude-sdk-canonical-model-ids` test ledger are evidence, not behavior-defining UI specs. Product prototype/UI-UX spec: N/A — not applicable.
+- Historical source review: `code-review-report.md` / `code-review-revision-record.md` CRR-001/002 on the old SR-003 implementation; CRR-002 Pass is not a pass on SR-009 source. Prior API/E2E and delivery artifacts do not validate this round.
 
 ## Current Implementation Summary
 
-- Implementation cycle: Rework — CRR-001 F-001 Local Fix.
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/implementation-revision-record.md`.
-- Current implementation revision ID: IR-002 (IR-001 initial baseline retained).
-- Related solution revision IDs: SR-002, SR-003. Architecture review: ARCH-REV-001. Code review: CRR-001 Fail — Local Fix; API-E2E/delivery revisions: N/A.
-- Triggering finding IDs: F-001.
-- External stopped-run selections now accept every current runtime-catalog replacement after target-schema validation, without fetching or comparing context capacities. AutoByteus retains verified positive non-decreasing capacity for replacements and exempts same-model settings. The option DTO/GraphQL/Web query/generated type carries identifiers and unavailability reason only. The Web picker exposes every server-offered exact ID, including both Claude `default` and its explicit sibling as distinct stopped-run choices; the launch picker retains its alias folding. A server-offered ID remains visible if the separately fetched label/schema catalog lags, while schema-unavailable Save remains blocked with retry feedback. Agent/Team/Org lifecycle writers and provider restore were deliberately not changed.
+- Cycle: **Rework, IR-003**. Revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/implementation-revision-record.md`. Trigger: SR-009/ARCH-REV-003 after DR-001; CRR-001 F-001 and CRR-002 Pass are historical, API-REV/DR for this round N/A.
+- Claude raw SDK rows remain intact. ClaudeModelCatalog omits `default` from *offered* rows only when SDK-derived alias evidence proves a distinct listed sibling, while retaining exact raw current lookup. ModelCatalogService owns offered/current views. Provider snapshots, `listLlmModels`, changed stopped Save, and new picker choices use offered rows; unchanged persisted ID uses fresh exact raw row and its schema. No implicit ID rewrite.
+- Stopped Agent/Team/Org options now carry full current/replacement descriptors. GraphQL/Web generated shapes agree. Existing-run picker uses only that self-contained response; no alias folding, numeric capacity metadata, client-side catalog intersection, or mixed saved/offered fallback. AutoByteus verified non-decreasing replacement capacity remains; external runtimes have no platform capacity gate.
+- A batched exact-current GraphQL descriptor query supports server-origin Agent/Team definition and Run seeds, mobile launch, Team inheritance, and Application Launch Setup. These UIs display current-only IDs and schema without re-offering them. Application readiness uses ModelCatalogService exact-current resolution for saved/effective models and credential identity. Application draft consumers guard exact-current lookups to saved/baseline origin; a newly edited arbitrary ID does not gain current status.
+- Stopped lifecycle, per-scope atomic Save, ownership/archive checks, provider binding, local history, visible resume failure path and persistence format are unchanged. No migration.
 
 ## Routing Classification
 
-- Task size: **Medium**; architecture risk: **High**.
-- Basis: `design-spec.md` Task Size And Architectural Risk; confirmed by shared eligibility/GraphQL contract, three Settings surfaces, and no persistence/restore schema change.
-- Classification: Confirmed, not downgraded. Selected route: **Code Review re-review** under the High-risk Local Fix condition, confirmed by `get_handoff_rules`.
-- Lightweight direct-route self-review: Not Applicable; independent review required.
-- New design impact / escalation trigger: None found. No external GraphQL consumer was found in-repo; external consumers remain a residual contract risk.
+- `task_size=Medium`, `architectural_risk=High` — **confirmed** against SR-009's classification. Shared catalog/GraphQL/Web current-value semantics and application readiness remain High risk; no new subsystem/storage schema was added.
+- Route: independent **Code Review** before API/E2E. Lightweight direct-route self-review: N/A. Design Impact/Requirement Gap: none discovered. ARCH-REV-003's Codex workspace-scoping caution remains a focused downstream check; no divergent local catalog was proven.
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior | Approved outcome | Actual production path / result |
-| --- | --- | --- |
-| BEH-001 | All external runtime-catalog replacements in stopped Agent/Team/Org Settings | `RunModelSelectionService.listOptions/listOptionsMany` returns all external IDs other than saved ID; `run-model-config.ts` → GraphQL query → `RuntimeModelConfigFields.vue` renders exact IDs with saved fallback, stripping launch-only alias folding; CRR-001 F-001 is covered in both Claude alias directions. |
-| BEH-002 | Fresh catalog/schema Save without external capacity gate | `validate/validateMany` rereads request-local catalog, verifies selected ID and config schema, then existing Agent/Team/Org owners commit. External capacity readers are removed. |
-| BEH-003 | AutoByteus verified non-decreasing rule; same-model exception | `NativeModelCapacityService` admits only verified positive native evidence; shared validator compares fresh current/target only for changed AutoByteus models. Same-model schema edits skip capacity. |
-| BEH-004 | Resume same run/provider with history and visible failures | Existing lifecycle writers, metadata/tree records and restore adapters were not changed; no Save-time compaction/reset. Downstream real-provider continuation still requires validation. |
-| BEH-005 | Runtime-accurate option/status/help copy | `existingRunModelHelp.ts`, Agent/Team/Org form props, picker status, EN/ZH localization; server-offered ID survives Web catalog mismatch with retry/schema-unavailable state. |
-| BEH-006 | Per-scope Team/Org validation and atomic Save | Existing linked-scope planners and atomic writers remain; `validateMany` shares only fresh catalog evidence by runtime/workspace and applies each scope's own runtime rule. |
+| Behavior | Production path / result |
+| --- | --- |
+| BEH-001/005; REQ-002/007/008; AC-001/009/010 | ClaudeModelCatalog normalizes only proven redundant `default`; ModelCatalogService snapshots and RunModelSelectionService options use offered rows; GraphQL run-option descriptors feed `RuntimeModelConfigFields` exact-ID picker/status. |
+| BEH-002/006; REQ-004/006/008; AC-002/004/005/008/011 | RunModelSelectionService fresh Save resolves changed ID from offered rows, unchanged ID from exact raw row, then validates that row's schema. Existing Agent/Team/Org lifecycle owners retain guarded, per-scope atomic commit. |
+| BEH-003; REQ-003; AC-003 | NativeModelCapacityService checks verified non-decreasing capacity only for changed AutoByteus selections; unchanged settings skip the capacity comparison. |
+| BEH-004; REQ-005; AC-006/007/011 | Existing persisted exact ID/provider/session/history and normal resume boundary are untouched; rejection remains surfaced by the existing provider path. |
+| BEH-007 preserved; REQ-008; AC-010/011 | Exact-current GraphQL descriptors support definition→Run/mobile and Application Setup current-only display/schema; application host validator uses exact-current model metadata. Offered new choices remain normalized. |
 
 ## Key Files Or Areas
 
-- Server authority: `autobyteus-server-ts/src/llm-management/services/{run-model-selection-service,native-model-capacity}.ts`.
-- Removed: `runtime-model-capacity-service.ts`, `runtime-model-capacity.ts`, Codex/Claude stopped-selection-only capacity readers and Claude SDK capacity method/test.
-- Contract: `autobyteus-server-ts/src/{llm-management/domain/run-model-selection.ts,api/graphql/types/run-model-config.ts}`; `autobyteus-web/{graphql/queries/runModelOptionsQueries.ts,generated/graphql.ts,types/agent/ExistingRunModelConfigDraft.ts}`.
-- Web: `RuntimeModelConfigFields.vue`, `AgentRunConfigForm.vue`, `TeamScopeConfigEditor.vue`, `existingRunModelHelp.ts`, EN/ZH workspace messages.
-- Focused tests and docs in changed file list; generated GraphQL was regenerated from current backend schema, which also synchronizes preexisting unrelated schema drift (the large generated diff is not handwritten).
+- Server catalog/policy: `autobyteus-server-ts/src/llm-management/services/{claude-model-catalog,model-catalog-service,run-model-selection-service}.ts`; internal Claude SDK presentation evidence; `application-platform/launch-configuration/application-launch-host-capability-validator.ts`.
+- GraphQL/domain: `api/graphql/types/{llm-provider,llm-provider-model-catalog,run-model-config}.ts`; `llm-management/domain/run-model-selection.ts`.
+- Web contract/picker: `graphql/queries/{runtimeCurrentModelDescriptorsQueries,runModelOptionsQueries,llm_provider_queries}.ts`, `generated/graphql.ts`, `composables/useRuntimeCurrentModelDescriptor.ts`, `RuntimeModelConfigFields.vue`, `SearchableGroupedSelect.vue`, `modelSelectionOptions.ts`.
+- Launch/application propagation: Agent/Team definitions, Run forms/stores, Team member editors/readiness sync, mobile launch, Application Agent/Team profile editors and parent slot editor. Focused tests are adjacent to these owners.
+- Removed obsolete Web alias matching helper/test. Generated GraphQL contains non-handwritten schema-sync diff; no compatibility wrapper was added.
 
 ## Important Assumptions And Known Risks
 
-- Catalog membership is option authority at load; Save always rechecks the fresh catalog and target schema. A provider may still reject an oversized history on later resume. Do not claim universal external continuation success.
-- Web model display/schema catalog is fetched independently from server options. A server-offered but not-yet-displayed model is visible by identifier, but schema-unavailable state blocks Save until retry resolves it; no fabricated schema or capacity veto.
-- An out-of-repo GraphQL client using removed numeric fields would need a contract update. No known in-repo consumer uses those fields.
+- The Claude SDK's resolved-model identity, not display-name similarity, proves the redundant `default` relation. If no sibling is proven, `default` remains offered.
+- Catalog membership at display can change before Save; Save rechecks fresh membership and schema. Provider continuation with a smaller window may compact or reject normally; universal success is not claimed.
+- Exact-current query currently uses ModelCatalogService's default environment when no workspace is supplied. Codex can discover by CWD; no divergent workspace catalog was established. Validate if a saved workspace-scoped Codex current ID is absent from process-CWD discovery; do not conflate this with Claude alias normalization.
+- Provider snapshots may lag exact-current query; a missing raw current remains visible by identifier but cannot claim schema/readiness. Current-only descriptors never become offered picker items.
+- Electron delivery is still in explicit user-verification hold. Prior packaged build and API/E2E artifacts predate SR-009.
 
-## Task Design Health Assessment Implementation Check
+## Design Health / Legacy / Persisted Data
 
-- Posture: Behavior Change; root cause: overly broad shared capacity invariant and loose numeric option DTO.
-- Reviewed refactor decision: Refactor Needed Now, bounded. Matched: Yes — one shared policy, native-only evidence, obsolete external readers removed.
-- Routed as Design Impact: N/A; no design contradiction found.
-
-## Legacy / Compatibility Removal Check
-
-- Backward-compatibility mechanisms introduced: None. Legacy old-behavior retained in scope: No.
-- Dead code/readers/tests removed: Yes. Shared option structure tightened: Yes.
-- Design guidance reapplied; no boundary bypass or second validator introduced.
-- Changed source implementation files stay below 500 effective nonempty lines; no handwritten source delta exceeds 220 lines. Generated `graphql.ts` is a codegen artifact and its larger schema-sync delta is noted above.
-
-## Persisted Data Transition Check
-
-- Approved decision: **Directly Usable — No Migration** (`design-spec.md` Legacy Removal Policy And Persisted-Data Decision).
-- Implementation follows decision: Yes. No persistence shape, reader, writer, provider-binding or history change; no migration or version-specific fallback. Only Save eligibility/allowed selected values change.
-- Deviation: None.
+- Reviewed posture/root cause/refactor: behavior correction with catalog ownership and duplicate alias policy; **Refactor Needed Now**, bounded. Implementation matches the SR-009 authoritative boundary; no frontend alias rule, raw SDK bypass, or dual old/new GraphQL option shape.
+- Dead alias matcher and obsolete stopped-run catalog intersection removed. Changed source implementation files remain under 500 effective nonempty lines; largest is `ApplicationTeamLaunchProfileEditor.vue` at 470. No changed handwritten source delta exceeded 220 lines. No Design Impact escalation.
+- Persisted data: **Directly Usable — No Migration**. Read-only local scan parsed 460 Agent, 540 Team, 23 Org JSON files without parse errors; indexed exact `claude_agent_sdk/default` occurs in 1 Agent and 4 Team records, 0 Org. Those records were not modified. Exact IDs, provider history and writer format remain unchanged.
 
 ## Environment Or Dependency Notes
 
-- Offline pnpm install used the existing lockfile/store. Shared packages and Prisma client were generated for local checks; untracked shared `dist/` outputs were removed before handoff.
-- GraphQL client codegen used a printed schema from the newly compiled backend (the schema builder's one log line was removed from the SDL file before codegen). No live backend endpoint was needed.
+- Backend GraphQL schema was printed from the built server and Web codegen regenerated `generated/graphql.ts`; no live user-data write was used.
+- Build-produced `autobyteus-application-*-sdk/dist/` directories are untracked local artifacts, not implementation source and not included in the development commit.
 
 ## Local Implementation Checks Run
 
-- Server `tsc -p tsconfig.build.json --noEmit`: Pass after shared build/Prisma generation.
-- Focused server Vitest: 5 suites/41 tests pass; subsequent targeted policy/native rerun: 2 suites/14 tests pass.
-- Focused Web Vitest (IR-001): 4 suites/52 tests pass; affected component after copy polish: 1 suite/12 tests pass. IR-002 focused Web rerun: 4 suites/54 tests pass, including actual picker clicks `default → opus[1m]` and `opus[1m] → default` with launch alias behavior retained.
-- Nuxt production build: Pass at IR-001 and again after IR-002. GraphQL codegen: Pass at IR-001. `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, `git diff --check`: Pass.
-- `nuxi typecheck`: toolchain failure before checking source (`vue-tsc` fetched by npx cannot import the paired TypeScript `./lib/tsc` export). This is not claimed as a pass; production build and focused tests passed.
-- No downstream API/E2E or real-provider test is claimed.
+- Server `pnpm -C autobyteus-server-ts run build:full`: Pass, including sanitized built-module/bootstrap smoke.
+- Server focused Vitest: 9 suites / 98 tests pass after mock contract repair. Covers Claude no-sibling/redundant/default exact lookup, fresh stopped Save, ModelCatalogService, GraphQL descriptor, application host validator, Team/Org save/lifecycle.
+- Web focused Vitest: 9 suites / 88 tests pass; separate Application Agent 6/6 and Team 4/4 reruns pass. Covers current-only `default`, unchanged exact ID/schema, offered-only picker, application readiness, Team seed/inheritance and store behavior.
+- Nuxt production build, Web boundary/localization guards, localization literal audit and `git diff --check`: Pass.
+- Full Web typecheck is **not** claimed: `nuxi typecheck` failed in the npx `vue-tsc`/TypeScript package-export toolchain; direct `tsc --noEmit` previously aborted. Production build and focused tests pass, but they are not full template typechecking.
+- No new API/E2E or live provider continuation pass is claimed.
 
 ## Frontend Rendered-Result Check
 
-- Affected surfaces: stopped Agent, Team and Org Settings picker/help/status; reviewed existing shared picker/forms and current-state screenshot. No approved UI prototype; established shared components/styles retained.
-- Component render/interactions in focused Vue tests: native eligible filtering, exact Claude alias/sibling picker clicks in both directions, launch alias preservation, external server-offered model visibility during Web catalog lag, selection emissions, schema-unavailable/retry state, and Agent/Team/Org-related store/form cases passed.
-- Browser preview attempt: started project Nuxt dev server and a temporary route mounting the changed shared component. The app bootstrap remained blank because its `/rest/health` proxy had no backend (`ECONNREFUSED`). The temporary route, browser tab and dev server were removed/stopped. **No direct browser visual polish or real stopped-run interaction pass is claimed.** Independent browser/API validation remains required.
+- Reviewed the user current-state screenshot, shared picker, Agent/Team/Org Settings and adjacent launch/application component styles and Web README. The changed components retain established Tailwind controls, copy and grouping.
+- Component-rendered interaction checks exercise exact IDs, current-only label/schema, loading/unavailable states, Team inheritance and application readiness. The prior temporary browser preview stayed blank because its `/rest/health` backend proxy was unavailable. No later isolated browser state for SR-009 was established without risking an unrelated running server/user data. **Direct browser visual inspection of the new stopped-run and application surfaces is unverified**; downstream browser/API validation is required. No screenshot alone is claimed as verification.
 
-## Downstream Coverage Hints / Suggested Scenarios
+## Downstream Coverage Hints
 
-- Exercise smaller/unknown-capacity offered models for Claude, Codex and Antigravity across stopped Agent/Team/Org; verify AutoByteus equal/larger/smaller/unknown and same-model settings.
-- Recheck removed catalog target, unavailable catalog, invalid target schema, active/archive/ownership race, and mixed-runtime linked scopes with no partial write.
-- Verify saved model/settings, local history and provider conversation identity on normal resume; probe representative smaller-window external continuations with isolated test runs and record provider rejection visibly without history loss.
-- Verify Web display/schema catalog lag: server option remains visible, retry works, and Save is not falsely enabled without a schema. Verify both Claude `default` ↔ explicit sibling transitions on stopped Agent, Team and Org Settings, not just launch display.
+- Probe live Claude SDK catalog `default` + sibling, no sibling/ambiguous case, exact saved `default` same-model settings and explicit switch, missing raw current, stale catalog and invalid schema across stopped Agent/Team/Org.
+- Exercise definition→Run (Agent/Team/mobile), member inheritance and Application Agent/Team Launch Setup/readiness with exact default; verify current-only display, unchanged persisted ID, and no newly offered default.
+- Check Codex workspace-CWD catalog difference against exact-current query/snapshot and record any genuine mismatch.
+- Verify linked Team/Org atomicity, AutoByteus equal/larger/smaller/unknown capacity, external smaller-window offered choices and truthful provider rejection/history preservation. Use isolated test data; do not mutate the five indexed local exact-default records.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Owned by API/E2E Engineer after Code Review. Local implementation checks above are not API/E2E sign-off. Real provider/model matrix and rendered stopped-run browser journey remain unverified.
+Owned by API/E2E Engineer after independent source-review pass. Local checks above do not sign off integrated GraphQL/browser/provider behavior or user verification.
